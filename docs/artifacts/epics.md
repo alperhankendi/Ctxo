@@ -29,14 +29,14 @@ FR11: AI assistant can retrieve an architectural overlay — a layer map identif
 FR12: AI assistant can retrieve why-context for a symbol — git commit intent, PR rationale, and anti-pattern warnings from revert history
 FR13: AI assistant can retrieve a change intelligence score for a symbol — a composite of cyclomatic complexity and change frequency
 FR14: The system parses git history to detect revert commits and associates revert rationale with affected symbols
-FR15: The system surfaces anti-pattern warnings when a symbol with revert history is queried via get_why_context
-FR16: Anti-pattern warnings persist in the committed index and are available to any developer or AI assistant after git clone
+FR15: The system surfaces anti-pattern warnings when a symbol with revert history is queried via `get_why_context`
+FR16: Anti-pattern warnings persist in the committed index and are available to any developer or AI assistant after `git clone`
 FR17: The system strips API keys, credentials, tokens, and private IP addresses from all MCP tool responses before delivery to the AI client
 FR18: The privacy masking pipeline is configurable — developers can extend the pattern list for domain-specific sensitive identifiers
-FR19: The local SQLite query cache is never committed to git (enforced via .gitignore template generated on first run)
+FR19: The local SQLite query cache is never committed to git (enforced via `.gitignore` template generated on first run)
 FR20: Developer can commit the codebase index to git as text-based, per-file JSON artifacts
 FR21: The committed index is diffable in pull requests — changes to indexed symbols appear as line-level diffs
-FR22: A developer who clones a repository with a committed index gets full context immediately, without running ctxo index
+FR22: A developer who clones a repository with a committed index gets full context immediately, without running `ctxo index`
 FR23: The CI system can gate pull requests on index freshness — failing the build when source changes are not reflected in the index
 FR24: Developer can configure any MCP-compatible AI client to use Ctxo with a single JSON configuration entry
 FR25: Ctxo MCP server starts as a subprocess and is ready to serve queries without manual startup steps
@@ -44,7 +44,7 @@ FR26: All five MCP tools are callable from Claude Code, Cursor, and VS Code Copi
 FR27: Developer can index and query TypeScript, JavaScript, and TSX/JSX codebases with full type-aware dependency resolution (V1)
 FR28: Developer can index and query Go and C# codebases with syntax-level dependency resolution (V1.5)
 
-### NonFunctional Requirements
+### Non-Functional Requirements
 
 NFR1: All five MCP tools respond in < 500ms p95 on a warm index for a TypeScript codebase of ≤ 1,000 files
 NFR2: MCP server process is ready to accept connections in < 100ms from process spawn
@@ -53,16 +53,16 @@ NFR4: Incremental re-indexing for a single changed file completes in < 2s
 NFR5: Logic-Slice responses at L1 depth are ≤ 150 lines; L4 depth responses stay within an 8,000-token budget
 NFR6: Index size for a 1,000-file TypeScript codebase does not exceed 10MB on disk
 NFR7: No source code, symbol names, or index content is transmitted to any remote server — all processing is strictly local
-NFR8: Privacy masking pipeline detects and redacts AWS/GCP/Azure credential patterns, JWT tokens, private IPv4/IPv6 addresses, and common .env variable patterns (*_SECRET, *_KEY, *_TOKEN, *_PASSWORD)
-NFR9: SQLite query cache (.ctxo/.cache/) contains no plaintext source code — only derived query results
+NFR8: Privacy masking pipeline detects and redacts AWS/GCP/Azure credential patterns, JWT tokens, private IPv4/IPv6 addresses, and common `.env` variable patterns (`*_SECRET`, `*_KEY`, `*_TOKEN`, `*_PASSWORD`)
+NFR9: SQLite query cache (`.ctxo/.cache/`) contains no plaintext source code — only derived query results
 NFR10: Ctxo runs with no elevated privileges; does not require sudo or admin rights
 NFR11: Index staleness is detected and reported within the MCP tool response — never silently served as fresh context
 NFR12: A crashed or stopped file watcher does not corrupt the committed index; on restart re-validates state before resuming
 NFR13: If the SQLite cache is deleted or corrupted, Ctxo rebuilds it from the committed JSON index without user intervention
-NFR14: npx ctxo index --check exits with a non-zero code when any source file has been modified after the index was last built
+NFR14: `npx ctxo index --check` exits with a non-zero code when any source file has been modified after the index was last built
 NFR15: Ctxo implements the MCP specification without extensions or deviations that break conformant MCP client compatibility
 NFR16: All five MCP tools are tested for functional equivalence across Claude Code, Cursor, and VS Code Copilot before V1 release
-NFR17: The MCP server exposes a tools/list response conformant with the MCP spec
+NFR17: The MCP server exposes a `tools/list` response conformant with the MCP spec
 NFR18: Ctxo requires only Node.js ≥ 18 and git as runtime dependencies — no additional system installation required
 
 ### Additional Requirements

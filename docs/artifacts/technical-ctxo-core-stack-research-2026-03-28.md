@@ -324,11 +324,7 @@ _Sources: [How I Built CodeRAG with Tree-Sitter](https://medium.com/@shsax/how-i
 
 ---
 
----
-
 ## Integration Patterns Analysis
-
----
 
 ### Integration 1: MCP Server ↔ AI Client (stdio)
 
@@ -657,11 +653,7 @@ Source Code Changes
 
 ---
 
----
-
 ## Architectural Patterns and Design
-
----
 
 ### System Architecture: Hexagonal (Ports & Adapters)
 
@@ -1073,8 +1065,6 @@ Zero infrastructure. No Docker. No cloud. No external process (except dotnet for
 ---
 
 ## Implementation Approaches and Technology Adoption
-
----
 
 ### Development Workflow
 
