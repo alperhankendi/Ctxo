@@ -1,5 +1,11 @@
 {
-  "antiPatterns": [],
+  "antiPatterns": [
+    {
+      "date": "2026-03-29T23:09:49+03:00",
+      "hash": "f9867129db0000956a3bc46879883b880be68723",
+      "message": "Fix issues #2, #3, #4, #5: masking and revert detection improvements"
+    }
+  ],
   "complexity": [
     {
       "cyclomatic": 4,
@@ -10,10 +16,16 @@
       "symbolId": "src/core/masking/masking-pipeline.ts::MaskingPipeline.mask::method"
     }
   ],
-  "contentHash": "0264e3f4331d6ed805d2b84be5cb9287173573b703523e0ddf3639e9bfdf899f",
+  "contentHash": "c81e53591e89f680dc34cce4e93059b6f79fdc851cc92674622c0e1b09cc6ce6",
   "edges": [],
   "file": "src/core/masking/masking-pipeline.ts",
   "intent": [
+    {
+      "date": "2026-03-29T23:09:49+03:00",
+      "hash": "f9867129db0000956a3bc46879883b880be68723",
+      "kind": "commit",
+      "message": "Fix issues #2, #3, #4, #5: masking and revert detection improvements"
+    },
     {
       "date": "2026-03-29T19:09:54+03:00",
       "hash": "0e90f2bd51bb62190c9f24724b16ef058acca1c0",
@@ -45,7 +57,7 @@
       "message": "Add MCP server with get_logic_slice tool and privacy masking pipeline"
     }
   ],
-  "lastModified": 1774814623,
+  "lastModified": 1774815130,
   "symbols": [
     {
       "endLine": 59,

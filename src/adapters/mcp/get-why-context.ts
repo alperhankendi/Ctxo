@@ -78,8 +78,17 @@ export function handleGetWhyContext(
       const targetChurn = churnResults.find((c) => normalizePath(c.filePath) === normalizePath(filePath));
       const normalizedChurn = churnAnalyzer.normalize(targetChurn?.commitCount ?? 0, maxChurn);
 
-      const symbolComplexity = fileIndex?.complexity?.find((c) => c.symbolId === symbolId);
-      const cyclomatic = symbolComplexity?.cyclomatic ?? 1;
+      const complexityEntries = fileIndex?.complexity ?? [];
+      let cyclomatic = complexityEntries.find((c) => c.symbolId === symbolId)?.cyclomatic;
+      if (cyclomatic === undefined) {
+        const symbolName = symbolId.split('::')[1] ?? '';
+        const relatedEntries = complexityEntries.filter((c) =>
+          c.symbolId.startsWith(`${filePath}::${symbolName}.`),
+        );
+        cyclomatic = relatedEntries.length > 0
+          ? Math.max(...relatedEntries.map((c) => c.cyclomatic))
+          : 1;
+      }
       const normalizedComplexity = Math.min((cyclomatic - 1) / 9, 1);
 
       const changeIntelligence = healthScorer.score(symbolId, normalizedComplexity, normalizedChurn);

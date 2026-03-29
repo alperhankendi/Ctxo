@@ -56,8 +56,20 @@ export function handleGetChangeIntelligence(
       // Read cyclomatic complexity from committed index
       const indices = indexReader.readAll();
       const fileIndex = indices.find((i) => i.file === filePath);
-      const symbolComplexity = fileIndex?.complexity?.find((c) => c.symbolId === symbolId);
-      const cyclomatic = symbolComplexity?.cyclomatic ?? 1;
+      const complexityEntries = fileIndex?.complexity ?? [];
+
+      // Exact match first, then aggregate (max of methods for class-level queries)
+      let cyclomatic = complexityEntries.find((c) => c.symbolId === symbolId)?.cyclomatic;
+      if (cyclomatic === undefined) {
+        // For class/file: use max complexity of all methods in this file
+        const symbolName = symbolId.split('::')[1] ?? '';
+        const relatedEntries = complexityEntries.filter((c) =>
+          c.symbolId.startsWith(`${filePath}::${symbolName}.`),
+        );
+        cyclomatic = relatedEntries.length > 0
+          ? Math.max(...relatedEntries.map((c) => c.cyclomatic))
+          : 1;
+      }
       // Normalize: cyclomatic 1=0, 10+=1.0
       const normalizedComplexity = Math.min((cyclomatic - 1) / 9, 1);
 

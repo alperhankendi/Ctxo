@@ -1,12 +1,22 @@
 {
-  "antiPatterns": [],
-  "complexity": [
+  "antiPatterns": [
     {
-      "cyclomatic": 5,
-      "symbolId": "src/core/why-context/revert-detector.ts::RevertDetector.detect::method"
+      "date": "2026-03-29T23:09:49+03:00",
+      "hash": "f9867129db0000956a3bc46879883b880be68723",
+      "message": "Fix issues #2, #3, #4, #5: masking and revert detection improvements"
     }
   ],
-  "contentHash": "9377dfef730490a3dfed09c364cf8273f3815a6ee6bf5a860bbadf51cf1f5255",
+  "complexity": [
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/core/why-context/revert-detector.ts::RevertDetector.detect::method"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "src/core/why-context/revert-detector.ts::RevertDetector.isRevert::method"
+    }
+  ],
+  "contentHash": "54bbc25c1856aca634ff865694603b0e66cd18a88b8e7178461fe73604713edc",
   "edges": [
     {
       "from": "src/core/why-context/revert-detector.ts::RevertDetector::class",
@@ -22,27 +32,40 @@
   "file": "src/core/why-context/revert-detector.ts",
   "intent": [
     {
+      "date": "2026-03-29T23:09:49+03:00",
+      "hash": "f9867129db0000956a3bc46879883b880be68723",
+      "kind": "commit",
+      "message": "Fix issues #2, #3, #4, #5: masking and revert detection improvements"
+    },
+    {
       "date": "2026-03-29T16:31:14+03:00",
       "hash": "a193b5f72cb6284291ba0e38fdc13017e0953816",
       "kind": "commit",
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1774814623,
+  "lastModified": 1774815130,
   "symbols": [
     {
-      "endLine": 34,
+      "endLine": 52,
       "kind": "class",
       "name": "RevertDetector",
-      "startLine": 5,
+      "startLine": 19,
       "symbolId": "src/core/why-context/revert-detector.ts::RevertDetector::class"
     },
     {
-      "endLine": 33,
+      "endLine": 36,
       "kind": "method",
       "name": "RevertDetector.detect",
-      "startLine": 6,
+      "startLine": 20,
       "symbolId": "src/core/why-context/revert-detector.ts::RevertDetector.detect::method"
+    },
+    {
+      "endLine": 51,
+      "kind": "method",
+      "name": "RevertDetector.isRevert",
+      "startLine": 38,
+      "symbolId": "src/core/why-context/revert-detector.ts::RevertDetector.isRevert::method"
     }
   ]
 }
