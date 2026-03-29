@@ -8,12 +8,60 @@ permissions:
   contents: write
 
 jobs:
+  ci-check:
+    name: Verify CI passed
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check CI status for this commit
+        run: |
+          SHA=$(git rev-parse HEAD)
+          echo "Checking CI status for $SHA..."
+
+          # Wait up to 5 minutes for CI to complete
+          for i in $(seq 1 30); do
+            STATUS=$(gh run list --commit "$SHA" --workflow ci.yml --json conclusion --jq '.[0].conclusion // "pending"')
+            echo "Attempt $i: CI status = $STATUS"
+
+            if [ "$STATUS" = "success" ]; then
+              echo "✅ CI passed" >> $GITHUB_STEP_SUMMARY
+              exit 0
+            elif [ "$STATUS" = "failure" ]; then
+              echo "❌ CI failed for this commit — aborting release" >> $GITHUB_STEP_SUMMARY
+              exit 1
+            fi
+
+            sleep 10
+          done
+
+          echo "⚠️ CI did not complete in time — aborting release" >> $GITHUB_STEP_SUMMARY
+          exit 1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   release:
     name: Release & Publish
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [ci-check]
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Verify version matches tag
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          echo "Tag version: $TAG_VERSION"
+          echo "Package version: $PKG_VERSION"
+
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "❌ Tag $GITHUB_REF_NAME does not match package.json version $PKG_VERSION" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          echo "✅ Version $PKG_VERSION matches tag" >> $GITHUB_STEP_SUMMARY
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -40,3 +88,11 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
+
+      - name: Release Summary
+        if: always()
+        run: |
+          echo "## Release ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- npm: https://www.npmjs.com/package/ctxo" >> $GITHUB_STEP_SUMMARY
+          echo "- GitHub: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
