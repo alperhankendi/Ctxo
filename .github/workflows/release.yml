@@ -4,29 +4,30 @@ on:
   push:
     tags: ['v*']
 
-permissions:
-  contents: write
+permissions: {}
 
 jobs:
   ci-check:
     name: Verify CI passed
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Check CI status for this commit
         run: |
           SHA=$(git rev-parse HEAD)
           echo "Checking CI status for $SHA..."
 
-          # Wait up to 5 minutes for CI to complete
           for i in $(seq 1 30); do
             STATUS=$(gh run list --commit "$SHA" --workflow ci.yml --json conclusion --jq '.[0].conclusion // "pending"')
             echo "Attempt $i: CI status = $STATUS"
 
             if [ "$STATUS" = "success" ]; then
-              echo "✅ CI passed" >> $GITHUB_STEP_SUMMARY
+              echo "✅ CI passed for $SHA" >> $GITHUB_STEP_SUMMARY
               exit 0
             elif [ "$STATUS" = "failure" ]; then
               echo "❌ CI failed for this commit — aborting release" >> $GITHUB_STEP_SUMMARY
@@ -46,16 +47,24 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [ci-check]
+    environment:
+      name: npm-production
+      url: https://www.npmjs.com/package/ctxo
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Verify version matches tag
+        id: version
         run: |
           TAG_VERSION="${GITHUB_REF_NAME#v}"
           PKG_VERSION=$(node -p "require('./package.json').version")
-          echo "Tag version: $TAG_VERSION"
-          echo "Package version: $PKG_VERSION"
+          echo "tag=$TAG_VERSION" >> "$GITHUB_OUTPUT"
+          echo "pkg=$PKG_VERSION" >> "$GITHUB_OUTPUT"
 
           if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
             echo "❌ Tag $GITHUB_REF_NAME does not match package.json version $PKG_VERSION" >> $GITHUB_STEP_SUMMARY
@@ -64,7 +73,7 @@ jobs:
           echo "✅ Version $PKG_VERSION matches tag" >> $GITHUB_STEP_SUMMARY
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
           cache: npm
@@ -73,19 +82,62 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Check if already published
+        id: check
+        run: |
+          VERSION="${{ steps.version.outputs.pkg }}"
+          if npm view "ctxo@${VERSION}" version 2>/dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "⚠️ Version ${VERSION} already published — skipping" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Test
+        if: steps.check.outputs.exists == 'false'
         run: npm run test:coverage
 
       - name: Build
+        if: steps.check.outputs.exists == 'false'
         run: npm run build
 
+      - name: Publish dry-run
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          echo "## Package dry-run" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          npm publish --dry-run --provenance --access public 2>&1 | tee -a $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
       - name: Publish to npm
-        run: npm publish --access public
+        if: steps.check.outputs.exists == 'false'
+        run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Attest build provenance
+        if: steps.check.outputs.exists == 'false'
+        uses: actions/attest-build-provenance@ef244123eb79f2f7a7e75d99086184515e050ead # v2.3.0
+        with:
+          subject-path: '*.tgz'
+
+      - name: Post-publish verification
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          VERSION="${{ steps.version.outputs.pkg }}"
+          echo "Waiting for npm registry propagation..."
+          sleep 15
+
+          PUBLISHED=$(npm view "ctxo@${VERSION}" version 2>/dev/null || echo "")
+          if [ "$PUBLISHED" = "$VERSION" ]; then
+            echo "✅ Verified: ctxo@${VERSION} is live on npm" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Could not verify ctxo@${VERSION} on npm (may still be propagating)" >> $GITHUB_STEP_SUMMARY
+          fi
+
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        if: steps.check.outputs.exists == 'false'
+        uses: softprops/action-gh-release@da05d552573ad5aba039eaac05058a918a7bf631 # v2.2.2
         with:
           generate_release_notes: true
 
@@ -94,5 +146,8 @@ jobs:
         run: |
           echo "## Release ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- npm: https://www.npmjs.com/package/ctxo" >> $GITHUB_STEP_SUMMARY
-          echo "- GitHub: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "| Item | Link |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|------|" >> $GITHUB_STEP_SUMMARY
+          echo "| npm | https://www.npmjs.com/package/ctxo/v/${{ steps.version.outputs.pkg }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| GitHub | ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Provenance | https://www.npmjs.com/package/ctxo/v/${{ steps.version.outputs.pkg }}?activeTab=provenance |" >> $GITHUB_STEP_SUMMARY

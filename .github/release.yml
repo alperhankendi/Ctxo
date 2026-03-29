@@ -1,0 +1,18 @@
+changelog:
+  categories:
+    - title: Breaking Changes
+      labels: [breaking-change]
+    - title: Features
+      labels: [enhancement, feature]
+    - title: Bug Fixes
+      labels: [bug, fix]
+    - title: Performance
+      labels: [performance]
+    - title: Documentation
+      labels: [documentation]
+    - title: CI/CD
+      labels: [ci, devops]
+    - title: Other Changes
+      labels: ['*']
+  exclude:
+    labels: [skip-changelog]
