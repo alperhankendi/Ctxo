@@ -9,9 +9,11 @@ async function main(): Promise<void> {
   const args = process.argv.slice(2);
 
   if (args.length > 0) {
-    // CLI mode — will be wired in Phase 6
-    console.error(`[ctxo] CLI not yet implemented. Received: ${args.join(' ')}`);
-    process.exit(1);
+    // CLI mode
+    const { CliRouter } = await import('./cli/cli-router.js');
+    const router = new CliRouter(process.cwd());
+    await router.route(args);
+    return;
   }
 
   // Initialize adapters
