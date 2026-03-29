@@ -93,13 +93,13 @@ jobs:
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Test
-        if: steps.check.outputs.exists == 'false'
-        run: npm run test:coverage
-
       - name: Build
         if: steps.check.outputs.exists == 'false'
         run: npm run build
+
+      - name: Test
+        if: steps.check.outputs.exists == 'false'
+        run: npm run test:coverage
 
       - name: Publish dry-run
         if: steps.check.outputs.exists == 'false'

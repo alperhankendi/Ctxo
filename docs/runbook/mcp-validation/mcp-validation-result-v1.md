@@ -126,7 +126,7 @@ Duration:    4.39s
 
 #### `get_logic_slice` — LogicSliceQuery
 
-| Metric          | Manual        | Ctxo Tool  |
+| Metric          | Manual        | Ctxo Tool |
 | --------------- | ------------- | --------- |
 | Tool calls      | 3 (Read x3)   | **1**     |
 | Files read      | 3 (334 lines) | 0         |
@@ -134,7 +134,7 @@ Duration:    4.39s
 
 #### `get_blast_radius` — SymbolNode
 
-| Metric          | Manual                 | Ctxo Tool  |
+| Metric          | Manual                 | Ctxo Tool |
 | --------------- | ---------------------- | --------- |
 | Tool calls      | 27 (Grep x5, Read x22) | **1**     |
 | Files read      | 22 (3,027 lines)       | 0         |
@@ -142,7 +142,7 @@ Duration:    4.39s
 
 #### `get_architectural_overlay`
 
-| Metric          | Manual (26-file sample) | Manual (full 97-file scan) | Ctxo Tool    |
+| Metric          | Manual (26-file sample) | Manual (full 97-file scan) | Ctxo Tool   |
 | --------------- | ----------------------- | -------------------------- | ----------- |
 | Tool calls      | 27 (Glob x1, Read x26)  | \~100 (Glob + \~97 Read)   | **1**       |
 | Files read      | 26 (260 lines)          | \~97 (\~5,000+ lines)      | 0           |
@@ -150,7 +150,7 @@ Duration:    4.39s
 
 #### `get_why_context` — MaskingPipeline
 
-| Metric          | Manual                                    | Ctxo Tool  |
+| Metric          | Manual                                    | Ctxo Tool |
 | --------------- | ----------------------------------------- | --------- |
 | Bash commands   | 8 (git log + 6x git show + revert search) | **1**     |
 | Output lines    | 464 lines                                 | 0         |
@@ -158,7 +158,7 @@ Duration:    4.39s
 
 #### `get_change_intelligence` — SqliteStorageAdapter
 
-| Metric          | Manual                  | Ctxo Tool  |
+| Metric          | Manual                  | Ctxo Tool |
 | --------------- | ----------------------- | --------- |
 | Tool calls      | 3 (Read x1, Bash x2)    | **1**     |
 | Lines read      | 378 (362 file + 16 git) | 0         |
@@ -194,10 +194,10 @@ Savings: 137K tokens preserved per query set
 ```
 
 | Scenario                          | Manual | Ctxo Tools | Multiplier   |
-| --------------------------------- | ------ | --------- | ------------ |
-| Query sets before 50% context     | \~3    | \~172     | **57x more** |
-| Query sets before 80% context     | \~5    | \~275     | **55x more** |
-| Queries before context exhaustion | \~7    | \~344     | **49x more** |
+| --------------------------------- | ------ | ---------- | ------------ |
+| Query sets before 50% context     | \~3    | \~172      | **57x more** |
+| Query sets before 80% context     | \~5    | \~275      | **55x more** |
+| Queries before context exhaustion | \~7    | \~344      | **49x more** |
 
 ***
 
