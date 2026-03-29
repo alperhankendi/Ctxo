@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
 import { join, relative, extname } from 'node:path';
+import { ContentHasher } from '../core/staleness/content-hasher.js';
 import { TsMorphAdapter } from '../adapters/language/ts-morph-adapter.js';
 import { LanguageAdapterRegistry } from '../adapters/language/language-adapter-registry.js';
 import { JsonIndexWriter } from '../adapters/storage/json-index-writer.js';
@@ -29,6 +30,7 @@ export class IndexCommand {
 
     const writer = new JsonIndexWriter(this.ctxoRoot);
     const schemaManager = new SchemaManager(this.ctxoRoot);
+    const hasher = new ContentHasher();
 
     // Discover files (single file, monorepo workspaces, or full project)
     let files: string[];
@@ -67,6 +69,7 @@ export class IndexCommand {
         const fileIndex: FileIndex = {
           file: relativePath,
           lastModified,
+          contentHash: hasher.hash(source),
           symbols,
           edges,
           intent: [],
@@ -161,6 +164,7 @@ export class IndexCommand {
   private async runCheck(): Promise<void> {
     console.error('[ctxo] Checking index freshness...');
 
+    const hasher = new ContentHasher();
     const files = this.discoverFilesIn(this.projectRoot);
     const reader = new (await import('../adapters/storage/json-index-reader.js')).JsonIndexReader(this.ctxoRoot);
     const indices = reader.readAll();
@@ -181,12 +185,19 @@ export class IndexCommand {
         continue;
       }
 
-      // Compare source mtime vs index timestamp
+      // Fast path: mtime check (skip hash if mtime hasn't changed)
       const mtime = Math.floor(statSync(filePath).mtimeMs / 1000);
-      if (mtime > indexed.lastModified) {
-        console.error(`[ctxo] STALE: ${relativePath} (modified after index)`);
-        staleCount++;
+      if (mtime <= indexed.lastModified) continue;
+
+      // Slow path: hash-based verification (handles git checkout, cp -p, CI)
+      if (indexed.contentHash) {
+        const source = readFileSync(filePath, 'utf-8');
+        const currentHash = hasher.hash(source);
+        if (currentHash === indexed.contentHash) continue;
       }
+
+      console.error(`[ctxo] STALE: ${relativePath}`);
+      staleCount++;
     }
 
     if (staleCount > 0) {

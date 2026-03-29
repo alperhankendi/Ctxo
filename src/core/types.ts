@@ -108,6 +108,7 @@ export type AntiPattern = z.infer<typeof AntiPatternSchema>;
 export const FileIndexSchema = z.object({
   file: z.string().min(1),
   lastModified: z.number().nonnegative(),
+  contentHash: z.string().optional(),
   symbols: z.array(SymbolNodeSchema),
   edges: z.array(GraphEdgeSchema),
   intent: z.array(CommitIntentSchema),

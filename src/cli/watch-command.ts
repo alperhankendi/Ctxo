@@ -1,10 +1,11 @@
 import { join, extname, relative } from 'node:path';
 import { readFileSync } from 'node:fs';
-import { watch } from 'chokidar';
 import { TsMorphAdapter } from '../adapters/language/ts-morph-adapter.js';
 import { LanguageAdapterRegistry } from '../adapters/language/language-adapter-registry.js';
 import { JsonIndexWriter } from '../adapters/storage/json-index-writer.js';
 import { SqliteStorageAdapter } from '../adapters/storage/sqlite-storage-adapter.js';
+import { ChokidarWatcherAdapter } from '../adapters/watcher/chokidar-watcher-adapter.js';
+import { ContentHasher } from '../core/staleness/content-hasher.js';
 import type { FileIndex } from '../core/types.js';
 
 const SUPPORTED_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx']);
@@ -28,20 +29,10 @@ export class WatchCommand {
     const writer = new JsonIndexWriter(this.ctxoRoot);
     const storage = new SqliteStorageAdapter(this.ctxoRoot);
     await storage.init();
+    const hasher = new ContentHasher();
 
+    const watcher = new ChokidarWatcherAdapter(this.projectRoot);
     const pendingFiles = new Map<string, NodeJS.Timeout>();
-
-    const watcher = watch(this.projectRoot, {
-      ignored: [
-        '**/node_modules/**',
-        '**/.git/**',
-        '**/.ctxo/**',
-        '**/dist/**',
-        '**/coverage/**',
-      ],
-      persistent: true,
-      ignoreInitial: true,
-    });
 
     const reindexFile = (filePath: string) => {
       const ext = extname(filePath).toLowerCase();
@@ -62,6 +53,7 @@ export class WatchCommand {
         const fileIndex: FileIndex = {
           file: relativePath,
           lastModified,
+          contentHash: hasher.hash(source),
           symbols,
           edges,
           intent: [],
@@ -89,28 +81,28 @@ export class WatchCommand {
       );
     };
 
-    watcher.on('change', debouncedReindex);
-    watcher.on('add', debouncedReindex);
-    watcher.on('unlink', (filePath) => {
-      const ext = extname(filePath).toLowerCase();
-      if (!SUPPORTED_EXTENSIONS.has(ext)) return;
+    watcher.start((event, filePath) => {
+      if (event === 'unlink') {
+        const ext = extname(filePath).toLowerCase();
+        if (!SUPPORTED_EXTENSIONS.has(ext)) return;
 
-      const relativePath = relative(this.projectRoot, filePath).replace(/\\/g, '/');
-
-      writer.delete(relativePath);
-      storage.deleteSymbolFile(relativePath);
-      console.error(`[ctxo] Removed from index: ${relativePath}`);
+        const relativePath = relative(this.projectRoot, filePath).replace(/\\/g, '/');
+        writer.delete(relativePath);
+        storage.deleteSymbolFile(relativePath);
+        console.error(`[ctxo] Removed from index: ${relativePath}`);
+      } else {
+        debouncedReindex(filePath);
+      }
     });
 
     console.error('[ctxo] Watching for file changes... (Ctrl+C to stop)');
 
-    // Graceful shutdown
     const cleanup = () => {
       console.error('\n[ctxo] Stopping watcher...');
       for (const timeout of pendingFiles.values()) {
         clearTimeout(timeout);
       }
-      watcher.close().then(() => {
+      watcher.stop().then(() => {
         storage.close();
         console.error('[ctxo] Watcher stopped');
         process.exit(0);
