@@ -37,20 +37,15 @@ export function handleGetChangeIntelligence(
 
       const filePath = symbolId.split('::')[0]!;
 
-      // Get churn data
-      const churnData = await git.getFileChurn(filePath);
-
-      // Get max churn across all indexed files for normalization
+      // Get churn data for all files in parallel
       const allFiles = storage.listIndexedFiles();
-      let maxChurn = 1;
-      for (const file of allFiles) {
-        const fileChurn = await git.getFileChurn(file);
-        if (fileChurn.commitCount > maxChurn) {
-          maxChurn = fileChurn.commitCount;
-        }
-      }
+      const churnResults = await Promise.all(allFiles.map((f) => git.getFileChurn(f)));
 
-      const normalizedChurn = churnAnalyzer.normalize(churnData.commitCount, maxChurn);
+      const maxChurn = Math.max(1, ...churnResults.map((c) => c.commitCount));
+      const targetChurn = churnResults.find((c) => c.filePath === filePath);
+      const commitCount = targetChurn?.commitCount ?? 0;
+
+      const normalizedChurn = churnAnalyzer.normalize(commitCount, maxChurn);
 
       // Use line count as a rough proxy for complexity (normalized 0-1)
       const lineCount = symbol.endLine - symbol.startLine + 1;

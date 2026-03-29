@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { readFileSync, existsSync, appendFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join, relative, extname } from 'node:path';
 import { TsMorphAdapter } from '../adapters/language/ts-morph-adapter.js';
 import { LanguageAdapterRegistry } from '../adapters/language/language-adapter-registry.js';
@@ -72,9 +72,9 @@ export class IndexCommand {
     // Write schema version
     schemaManager.writeVersion();
 
-    // Populate SQLite cache
+    // Populate SQLite cache (skip rebuildFromJson since we just wrote the JSON)
     const storage = new SqliteStorageAdapter(this.ctxoRoot);
-    await storage.init();
+    await storage.initEmpty();
     storage.bulkWrite(indices);
     storage.close();
 
@@ -113,13 +113,13 @@ export class IndexCommand {
   private ensureGitignore(): void {
     const gitignorePath = join(this.projectRoot, '.gitignore');
     const cachePattern = '.ctxo/.cache/';
+    const suffix = `\n# Ctxo local cache (never committed)\n${cachePattern}\n`;
 
-    if (existsSync(gitignorePath)) {
-      const content = readFileSync(gitignorePath, 'utf-8');
-      if (content.includes(cachePattern)) return;
-    }
+    // Read-modify-write atomically to avoid TOCTOU race
+    const existing = existsSync(gitignorePath) ? readFileSync(gitignorePath, 'utf-8') : '';
+    if (existing.includes(cachePattern)) return;
 
-    appendFileSync(gitignorePath, `\n# Ctxo local cache (never committed)\n${cachePattern}\n`, 'utf-8');
+    writeFileSync(gitignorePath, existing + suffix, 'utf-8');
     console.error('[ctxo] Added .ctxo/.cache/ to .gitignore');
   }
 }

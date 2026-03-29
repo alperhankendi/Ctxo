@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { BlastRadiusCalculator } from '../../core/blast-radius/blast-radius-calculator.js';
+import { SymbolGraph } from '../../core/graph/symbol-graph.js';
 import { buildGraphFromStorage } from './get-logic-slice.js';
 
 const InputSchema = z.object({
@@ -13,7 +14,14 @@ export function handleGetBlastRadius(
   masking: IMaskingPort,
 ) {
   const calculator = new BlastRadiusCalculator();
-  const cachedGraph = buildGraphFromStorage(storage);
+  let cachedGraph: SymbolGraph | undefined;
+
+  const getGraph = () => {
+    if (!cachedGraph) {
+      cachedGraph = buildGraphFromStorage(storage);
+    }
+    return cachedGraph;
+  };
 
   return (args: Record<string, unknown>) => {
     try {
@@ -25,14 +33,15 @@ export function handleGetBlastRadius(
       }
 
       const { symbolId } = parsed.data;
+      const graph = getGraph();
 
-      if (!cachedGraph.hasNode(symbolId)) {
+      if (!graph.hasNode(symbolId)) {
         return {
           content: [{ type: 'text' as const, text: JSON.stringify({ found: false, hint: 'Symbol not found. Run "ctxo index" to build the codebase index.' }) }],
         };
       }
 
-      const entries = calculator.calculate(cachedGraph, symbolId);
+      const entries = calculator.calculate(graph, symbolId);
       const payload = masking.mask(JSON.stringify({ symbolId, impactScore: entries.length, dependents: entries }));
 
       return {

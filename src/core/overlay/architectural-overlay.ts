@@ -21,7 +21,10 @@ export class ArchitecturalOverlay {
   private readonly rules: LayerRule[];
 
   constructor(customRules?: LayerRule[]) {
-    this.rules = customRules ?? DEFAULT_RULES;
+    this.rules = (customRules ?? DEFAULT_RULES).map(({ pattern, layer }) => ({
+      pattern: new RegExp(pattern.source, pattern.flags),
+      layer,
+    }));
   }
 
   classify(filePaths: readonly string[]): OverlayResult {

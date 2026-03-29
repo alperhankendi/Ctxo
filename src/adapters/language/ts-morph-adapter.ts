@@ -232,8 +232,10 @@ export class TsMorphAdapter implements ILanguageAdapter {
     filePath: string,
     edges: GraphEdge[],
   ): void {
-    // Use file-level symbol ID for import edges — imports are file-level declarations
+    // Compute once per file, not per import declaration
     const fileSymbolId = this.buildSymbolId(filePath, sourceFile.getBaseName().replace(/\.[^.]+$/, ''), 'variable');
+    const fromSymbols = this.findExportedSymbolsInFile(filePath);
+    const fromSymbol = fromSymbols.length > 0 ? fromSymbols[0]! : fileSymbolId;
 
     for (const imp of sourceFile.getImportDeclarations()) {
       const moduleSpecifier = imp.getModuleSpecifierValue();
@@ -250,13 +252,8 @@ export class TsMorphAdapter implements ILanguageAdapter {
       for (const named of imp.getNamedImports()) {
         const importedName = named.getName();
 
-        // Use the first exported symbol from THIS file, or fall back to file-level ID
-        const fromSymbols = this.findExportedSymbolsInFile(filePath);
-        const fromSymbol = fromSymbols.length > 0 ? fromSymbols[0]! : fileSymbolId;
-
         edges.push({
           from: fromSymbol,
-          // Don't guess the kind — leave it unresolved, will be matched by name in graph
           to: this.resolveImportTarget(normalizedTarget, importedName),
           kind: 'imports',
         });
@@ -264,8 +261,6 @@ export class TsMorphAdapter implements ILanguageAdapter {
 
       const defaultImport = imp.getDefaultImport();
       if (defaultImport) {
-        const fromSymbols = this.findExportedSymbolsInFile(filePath);
-        const fromSymbol = fromSymbols.length > 0 ? fromSymbols[0]! : fileSymbolId;
 
         edges.push({
           from: fromSymbol,

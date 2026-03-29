@@ -22,18 +22,28 @@ export class SqliteStorageAdapter implements IStoragePort {
       try {
         const buffer = readFileSync(this.dbPath);
         this.db = new SQL.Database(buffer);
+        this.db.run('PRAGMA foreign_keys = ON');
         this.verifyIntegrity();
       } catch {
         console.error('[ctxo:sqlite] Corrupt DB detected, rebuilding from JSON index');
         this.db = new SQL.Database();
+        this.db.run('PRAGMA foreign_keys = ON');
         this.createTables();
         this.rebuildFromJson();
       }
     } else {
       this.db = new SQL.Database();
+      this.db.run('PRAGMA foreign_keys = ON');
       this.createTables();
       this.rebuildFromJson();
     }
+  }
+
+  async initEmpty(): Promise<void> {
+    const SQL = await initSqlJs();
+    this.db = new SQL.Database();
+    this.db.run('PRAGMA foreign_keys = ON');
+    this.createTables();
   }
 
   private database(): Database {
@@ -85,8 +95,7 @@ export class SqliteStorageAdapter implements IStoragePort {
         from_symbol TEXT NOT NULL,
         to_symbol TEXT NOT NULL,
         kind TEXT NOT NULL,
-        FOREIGN KEY (from_symbol) REFERENCES symbols(symbol_id) ON DELETE CASCADE,
-        FOREIGN KEY (to_symbol) REFERENCES symbols(symbol_id) ON DELETE CASCADE
+        FOREIGN KEY (from_symbol) REFERENCES symbols(symbol_id) ON DELETE CASCADE
       )
     `);
     db.run('CREATE INDEX IF NOT EXISTS idx_symbols_file ON symbols(file_path)');
