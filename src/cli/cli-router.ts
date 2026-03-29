@@ -1,4 +1,9 @@
 import { IndexCommand } from './index-command.js';
+import { SyncCommand } from './sync-command.js';
+import { StatusCommand } from './status-command.js';
+import { VerifyCommand } from './verify-command.js';
+import { InitCommand } from './init-command.js';
+import { WatchCommand } from './watch-command.js';
 
 export class CliRouter {
   private readonly projectRoot: string;
@@ -21,12 +26,23 @@ export class CliRouter {
         break;
 
       case 'sync':
+        await new SyncCommand(this.projectRoot).run();
+        break;
+
       case 'watch':
+        await new WatchCommand(this.projectRoot).run();
+        break;
+
       case 'verify-index':
+        await new VerifyCommand(this.projectRoot).run();
+        break;
+
       case 'status':
+        new StatusCommand(this.projectRoot).run();
+        break;
+
       case 'init':
-        console.error(`[ctxo] Command "${command}" is not yet implemented`);
-        process.exit(1);
+        new InitCommand(this.projectRoot).run();
         break;
 
       default:
