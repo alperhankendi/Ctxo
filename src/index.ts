@@ -66,8 +66,9 @@ async function main(): Promise<void> {
     {
       description: 'Retrieve a Logic-Slice for a named symbol — the symbol plus all transitive dependencies',
       inputSchema: {
-        symbolId: z.string().min(1).describe('The symbol ID (format: file::name::kind)'),
-        level: z.number().min(1).max(4).optional().default(3).describe('Detail level (1=minimal, 4=full)'),
+        symbolId: z.string().optional().describe('Single symbol ID (format: file::name::kind)'),
+        symbolIds: z.array(z.string()).optional().describe('Batch: array of symbol IDs'),
+        level: z.number().min(1).max(4).optional().default(3).describe('Detail level (L1=signature, L2=direct deps, L3=full closure, L4=with token budget)'),
       },
     },
     (args) => logicSliceHandler(args),

@@ -142,6 +142,7 @@ export interface FormattedSlice {
   readonly dependencies: readonly SymbolNode[];
   readonly edges: readonly GraphEdge[];
   readonly level: DetailLevel;
+  readonly levelDescription?: string;
   readonly truncation?: TruncationInfo;
 }
 

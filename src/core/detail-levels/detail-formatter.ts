@@ -27,7 +27,6 @@ export class DetailFormatter {
     const root = slice.root;
     const lineCount = root.endLine - root.startLine + 1;
 
-    // Enforce ≤ 150 lines: clamp endLine if symbol is too large
     const clampedRoot: SymbolNode = lineCount > L1_MAX_LINES
       ? { ...root, endLine: root.startLine + L1_MAX_LINES - 1 }
       : root;
@@ -37,6 +36,7 @@ export class DetailFormatter {
       dependencies: [],
       edges: [],
       level: 1,
+      levelDescription: 'L1: Root symbol signature only (no dependencies)',
       ...(lineCount > L1_MAX_LINES ? { truncation: { truncated: true as const, reason: 'token_budget_exceeded' as const } } : {}),
     };
   }
@@ -52,16 +52,17 @@ export class DetailFormatter {
       dependencies: directDeps,
       edges: directEdges,
       level: 2,
+      levelDescription: 'L2: Root + direct dependencies (depth 1)',
     };
   }
 
   private formatL3(slice: LogicSliceResult): FormattedSlice {
-    // L3: full transitive closure
     return {
       root: slice.root,
       dependencies: slice.dependencies,
       edges: slice.edges,
       level: 3,
+      levelDescription: 'L3: Full transitive dependency closure',
     };
   }
 
@@ -75,6 +76,7 @@ export class DetailFormatter {
       return {
         ...truncated,
         level: 4,
+        levelDescription: 'L4: Full closure with 8K token budget (truncated)',
         truncation: {
           truncated: true,
           reason: 'token_budget_exceeded',
@@ -87,6 +89,7 @@ export class DetailFormatter {
       dependencies: slice.dependencies,
       edges: slice.edges,
       level: 4,
+      levelDescription: 'L4: Full closure with 8K token budget',
     };
   }
 

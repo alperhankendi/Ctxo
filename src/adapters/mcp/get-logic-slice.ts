@@ -8,9 +8,13 @@ import { DetailFormatter } from '../../core/detail-levels/detail-formatter.js';
 import { DetailLevelSchema } from '../../core/types.js';
 
 const InputSchema = z.object({
-  symbolId: z.string().min(1),
+  symbolId: z.string().min(1).optional(),
+  symbolIds: z.array(z.string().min(1)).optional(),
   level: DetailLevelSchema.optional().default(3),
-});
+}).refine(
+  (data) => data.symbolId || (data.symbolIds && data.symbolIds.length > 0),
+  { message: 'Either symbolId or symbolIds must be provided' },
+);
 
 export type GetLogicSliceInput = z.infer<typeof InputSchema>;
 
@@ -90,23 +94,27 @@ export function handleGetLogicSlice(
         };
       }
 
-      const { symbolId, level } = parsed.data;
+      const { symbolId, symbolIds, level } = parsed.data;
+      const ids = symbolIds ?? (symbolId ? [symbolId] : []);
 
       const graph = getGraph();
 
-      // Query logic slice
-      const slice = query.getLogicSlice(graph, symbolId);
-      if (!slice) {
-        return {
-          content: [{ type: 'text' as const, text: JSON.stringify({ found: false, hint: 'Symbol not found. Run "ctxo index" to build the codebase index.' }) }],
-        };
+      // Batch support: query multiple symbols
+      const results = [];
+      for (const id of ids) {
+        const slice = query.getLogicSlice(graph, id);
+        if (slice) {
+          results.push(formatter.format(slice, level));
+        } else {
+          results.push({ found: false, symbolId: id, hint: 'Symbol not found. Run "ctxo index".' });
+        }
       }
 
-      // Format to requested detail level
-      const formatted = formatter.format(slice, level);
+      // Single symbol: return directly. Batch: return array.
+      const responseData = ids.length === 1 ? results[0] : { batch: true, results };
 
       // Apply masking
-      const payload = masking.mask(JSON.stringify(formatted));
+      const payload = masking.mask(JSON.stringify(responseData));
 
       // Check staleness
       const content: Array<{ type: 'text'; text: string }> = [];
