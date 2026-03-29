@@ -10,7 +10,7 @@
   ],
   "file": "src/cli/__tests__/fixtures/sample-project/src/greet.ts",
   "intent": [],
-  "lastModified": 1774800545,
+  "lastModified": 1774800955,
   "symbols": [
     {
       "endLine": 4,

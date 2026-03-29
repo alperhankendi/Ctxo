@@ -135,10 +135,14 @@ export class SqliteStorageAdapter implements IStoragePort {
         );
       }
 
-      // Insert edges — FK on to_symbol may fail for cross-file references
-      // when the target file is not yet indexed. Skip those edges gracefully.
+      // Insert edges — resolve IDs and handle FK gracefully
       for (const edge of fileIndex.edges) {
-        this.tryInsertEdge(db, edge);
+        const resolvedEdge = {
+          from: this.resolveSymbolId(db, edge.from) ?? edge.from,
+          to: this.resolveSymbolId(db, edge.to) ?? edge.to,
+          kind: edge.kind,
+        };
+        this.tryInsertEdge(db, resolvedEdge);
       }
 
       db.run('COMMIT');
@@ -279,11 +283,16 @@ export class SqliteStorageAdapter implements IStoragePort {
         }
       }
 
-      // Phase 2: Insert edges — all symbols exist now, FK on to_symbol should pass.
-      // Still handle gracefully for edges referencing external/unindexed symbols.
+      // Phase 2: Insert edges — resolve IDs by file::name before insert
+      // (edge kind may not match actual symbol kind due to inference heuristics)
       for (const fileIndex of indices) {
         for (const edge of fileIndex.edges) {
-          this.tryInsertEdge(db, edge);
+          const resolvedEdge = {
+            from: this.resolveSymbolId(db, edge.from) ?? edge.from,
+            to: this.resolveSymbolId(db, edge.to) ?? edge.to,
+            kind: edge.kind,
+          };
+          this.tryInsertEdge(db, resolvedEdge);
         }
       }
 
@@ -309,6 +318,26 @@ export class SqliteStorageAdapter implements IStoragePort {
       this.db.close();
       this.db = undefined;
     }
+  }
+
+  private resolveSymbolId(db: Database, id: string): string | undefined {
+    // Exact match
+    const exact = db.exec('SELECT symbol_id FROM symbols WHERE symbol_id = ?', [id]);
+    if (exact[0] && exact[0].values.length > 0) {
+      return exact[0].values[0]![0] as string;
+    }
+
+    // Fuzzy match: same file::name, different kind
+    const parts = id.split('::');
+    if (parts.length >= 2) {
+      const fileAndName = `${parts[0]}::${parts[1]}::%`;
+      const fuzzy = db.exec('SELECT symbol_id FROM symbols WHERE symbol_id LIKE ?', [fileAndName]);
+      if (fuzzy[0] && fuzzy[0].values.length > 0) {
+        return fuzzy[0].values[0]![0] as string;
+      }
+    }
+
+    return undefined;
   }
 
   private persistIfNeeded(): void {
