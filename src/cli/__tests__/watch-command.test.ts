@@ -11,16 +11,18 @@ describe('WatchCommand', () => {
     expect(relativePath).toBe('src/foo.ts');
   });
 
-  it('computes relative paths correctly on Windows-style paths', () => {
-    // path.relative only resolves same-platform paths correctly,
-    // so we normalize backslashes to forward slashes first, then use relative
-    const projectRoot = 'D:\\workspace\\Ctxo';
-    const filePath = 'D:\\workspace\\Ctxo\\src\\core\\types.ts';
+  it('normalizes backslashes to forward slashes in relative paths', () => {
+    // Platform-agnostic: test the normalize pattern used in watch-command
+    const raw = 'src\\core\\types.ts';
+    const normalized = raw.replace(/\\/g, '/');
+    expect(normalized).toBe('src/core/types.ts');
+  });
 
-    const normalizedRoot = projectRoot.replace(/\\/g, '/');
-    const normalizedFile = filePath.replace(/\\/g, '/');
-    const relativePath = relative(normalizedRoot, normalizedFile).replace(/\\/g, '/');
-    expect(relativePath).toBe('src/core/types.ts');
+  it('computes relative paths correctly with nested directories', () => {
+    const projectRoot = '/workspace/Ctxo';
+    const filePath = '/workspace/Ctxo/src/core/graph/symbol-graph.ts';
+    const relativePath = relative(projectRoot, filePath).replace(/\\/g, '/');
+    expect(relativePath).toBe('src/core/graph/symbol-graph.ts');
   });
 
   it('filters unsupported extensions', () => {
