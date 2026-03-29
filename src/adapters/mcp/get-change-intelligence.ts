@@ -3,6 +3,7 @@ import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IGitPort } from '../../ports/i-git-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { ChurnAnalyzer } from '../../core/change-intelligence/churn-analyzer.js';
+import { JsonIndexReader } from '../storage/json-index-reader.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 import { HealthScorer } from '../../core/change-intelligence/health-scorer.js';
 
@@ -15,9 +16,11 @@ export function handleGetChangeIntelligence(
   git: IGitPort,
   masking: IMaskingPort,
   staleness?: StalenessCheck,
+  ctxoRoot = '.ctxo',
 ) {
   const churnAnalyzer = new ChurnAnalyzer();
   const healthScorer = new HealthScorer();
+  const indexReader = new JsonIndexReader(ctxoRoot);
 
   return async (args: Record<string, unknown>) => {
     try {
@@ -50,9 +53,13 @@ export function handleGetChangeIntelligence(
 
       const normalizedChurn = churnAnalyzer.normalize(commitCount, maxChurn);
 
-      // Use line count as a rough proxy for complexity (normalized 0-1)
-      const lineCount = symbol.endLine - symbol.startLine + 1;
-      const normalizedComplexity = Math.min(lineCount / 100, 1);
+      // Read cyclomatic complexity from committed index
+      const indices = indexReader.readAll();
+      const fileIndex = indices.find((i) => i.file === filePath);
+      const symbolComplexity = fileIndex?.complexity?.find((c) => c.symbolId === symbolId);
+      const cyclomatic = symbolComplexity?.cyclomatic ?? 1;
+      // Normalize: cyclomatic 1=0, 10+=1.0
+      const normalizedComplexity = Math.min((cyclomatic - 1) / 9, 1);
 
       const score = healthScorer.score(symbolId, normalizedComplexity, normalizedChurn);
 

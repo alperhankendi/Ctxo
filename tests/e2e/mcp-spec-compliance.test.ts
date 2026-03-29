@@ -109,7 +109,7 @@ describe('NFR15/NFR17: MCP Spec Compliance — All 5 Tools', () => {
       const payload = JSON.parse(result.content[result.content.length - 1]!.text);
       expect(payload).toHaveProperty('symbolId');
       expect(payload).toHaveProperty('impactScore');
-      expect(payload).toHaveProperty('dependents');
+      expect(payload).toHaveProperty('impactedSymbols');
     });
 
     it('miss response returns { found: false }', () => {

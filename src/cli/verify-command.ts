@@ -31,15 +31,19 @@ export class VerifyCommand {
       const committedIndices = committedReader.readAll();
       const freshIndices = freshReader.readAll();
 
-      const committedMap = new Map(committedIndices.map((i) => [i.file, JSON.stringify(i.symbols)]));
-      const freshMap = new Map(freshIndices.map((i) => [i.file, JSON.stringify(i.symbols)]));
+      // Compare full index: symbols + edges + intent + antiPatterns
+      const serialize = (i: { symbols: unknown; edges: unknown; intent: unknown; antiPatterns: unknown }) =>
+        JSON.stringify({ symbols: i.symbols, edges: i.edges, intent: i.intent, antiPatterns: i.antiPatterns });
+
+      const committedMap = new Map(committedIndices.map((i) => [i.file, serialize(i)]));
+      const freshMap = new Map(freshIndices.map((i) => [i.file, serialize(i)]));
 
       let stale = false;
 
       // Check for files that changed or were added
-      for (const [file, freshSymbols] of freshMap) {
+      for (const [file, freshData] of freshMap) {
         const committed = committedMap.get(file);
-        if (committed !== freshSymbols) {
+        if (committed !== freshData) {
           console.error(`[ctxo] STALE: ${file}`);
           stale = true;
         }

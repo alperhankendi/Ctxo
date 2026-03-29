@@ -60,8 +60,8 @@ describe('GetBlastRadiusHandler', () => {
 
     expect(payload.symbolId).toBe('src/c.ts::C::interface');
     expect(payload.impactScore).toBeGreaterThanOrEqual(1);
-    expect(payload.dependents.length).toBeGreaterThanOrEqual(1);
-    expect(payload.dependents[0].symbolId).toBe('src/b.ts::B::class');
+    expect(payload.impactedSymbols.length).toBeGreaterThanOrEqual(1);
+    expect(payload.impactedSymbols[0].symbolId).toBe('src/b.ts::B::class');
   });
 
   it('returns transitive blast radius', () => {
@@ -70,7 +70,7 @@ describe('GetBlastRadiusHandler', () => {
     const result = handler({ symbolId: 'src/c.ts::C::interface' });
     const payload = JSON.parse(result.content[0]!.text);
 
-    const depIds = payload.dependents.map((d: { symbolId: string }) => d.symbolId);
+    const depIds = payload.impactedSymbols.map((d: { symbolId: string }) => d.symbolId);
     expect(depIds).toContain('src/b.ts::B::class');
     expect(depIds).toContain('src/a.ts::A::function');
   });

@@ -6,7 +6,9 @@ import { JsonIndexWriter } from '../adapters/storage/json-index-writer.js';
 import { SqliteStorageAdapter } from '../adapters/storage/sqlite-storage-adapter.js';
 import { ChokidarWatcherAdapter } from '../adapters/watcher/chokidar-watcher-adapter.js';
 import { ContentHasher } from '../core/staleness/content-hasher.js';
-import type { FileIndex } from '../core/types.js';
+import { SimpleGitAdapter } from '../adapters/git/simple-git-adapter.js';
+import { RevertDetector } from '../core/why-context/revert-detector.js';
+import type { FileIndex, CommitIntent, AntiPattern } from '../core/types.js';
 
 const SUPPORTED_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx']);
 const DEBOUNCE_MS = 300;
@@ -31,10 +33,12 @@ export class WatchCommand {
     await storage.init();
     const hasher = new ContentHasher();
 
+    const gitAdapter = new SimpleGitAdapter(this.projectRoot);
+    const revertDetector = new RevertDetector();
     const watcher = new ChokidarWatcherAdapter(this.projectRoot);
     const pendingFiles = new Map<string, NodeJS.Timeout>();
 
-    const reindexFile = (filePath: string) => {
+    const reindexFile = async (filePath: string) => {
       const ext = extname(filePath).toLowerCase();
       if (!SUPPORTED_EXTENSIONS.has(ext)) return;
 
@@ -49,6 +53,14 @@ export class WatchCommand {
 
         const symbols = adapter.extractSymbols(relativePath, source);
         const edges = adapter.extractEdges(relativePath, source);
+        const complexity = adapter.extractComplexity(relativePath, source);
+
+        // Git history and anti-patterns
+        const commits = await gitAdapter.getCommitHistory(relativePath);
+        const intent: CommitIntent[] = commits.map((c) => ({
+          hash: c.hash, message: c.message, date: c.date, kind: 'commit' as const,
+        }));
+        const antiPatterns: AntiPattern[] = revertDetector.detect(commits);
 
         const fileIndex: FileIndex = {
           file: relativePath,
@@ -56,8 +68,9 @@ export class WatchCommand {
           contentHash: hasher.hash(source),
           symbols,
           edges,
-          intent: [],
-          antiPatterns: [],
+          complexity,
+          intent,
+          antiPatterns,
         };
 
         writer.write(fileIndex);

@@ -58,8 +58,8 @@ async function main(): Promise<void> {
 
   // Register tools
   const logicSliceHandler = handleGetLogicSlice(storage, masking, staleness, ctxoRoot);
-  const whyContextHandler = handleGetWhyContext(storage, git, masking, staleness);
-  const changeIntelligenceHandler = handleGetChangeIntelligence(storage, git, masking, staleness);
+  const whyContextHandler = handleGetWhyContext(storage, git, masking, staleness, ctxoRoot);
+  const changeIntelligenceHandler = handleGetChangeIntelligence(storage, git, masking, staleness, ctxoRoot);
 
   server.registerTool(
     'get_logic_slice',

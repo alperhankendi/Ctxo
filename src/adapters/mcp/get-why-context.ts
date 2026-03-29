@@ -4,7 +4,10 @@ import type { IGitPort } from '../../ports/i-git-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { RevertDetector } from '../../core/why-context/revert-detector.js';
 import { WhyContextAssembler } from '../../core/why-context/why-context-assembler.js';
-import type { CommitIntent } from '../../core/types.js';
+import { ChurnAnalyzer } from '../../core/change-intelligence/churn-analyzer.js';
+import { HealthScorer } from '../../core/change-intelligence/health-scorer.js';
+import { JsonIndexReader } from '../storage/json-index-reader.js';
+import type { CommitIntent, AntiPattern } from '../../core/types.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 
 const InputSchema = z.object({
@@ -16,9 +19,13 @@ export function handleGetWhyContext(
   git: IGitPort,
   masking: IMaskingPort,
   staleness?: StalenessCheck,
+  ctxoRoot = '.ctxo',
 ) {
   const revertDetector = new RevertDetector();
   const assembler = new WhyContextAssembler();
+  const churnAnalyzer = new ChurnAnalyzer();
+  const healthScorer = new HealthScorer();
+  const indexReader = new JsonIndexReader(ctxoRoot);
 
   return async (args: Record<string, unknown>) => {
     try {
@@ -31,7 +38,6 @@ export function handleGetWhyContext(
 
       const { symbolId } = parsed.data;
 
-      // Find which file this symbol belongs to
       const symbol = storage.getSymbolById(symbolId);
       if (!symbol) {
         return {
@@ -41,25 +47,53 @@ export function handleGetWhyContext(
 
       const filePath = symbolId.split('::')[0]!;
 
-      // Get commit history
-      const commits = await git.getCommitHistory(filePath);
+      // Try committed index first (FR16: anti-patterns persist in committed index)
+      const indices = indexReader.readAll();
+      const fileIndex = indices.find((i) => i.file === filePath);
 
-      // Convert to CommitIntent format
-      const commitHistory: CommitIntent[] = commits.map((c) => ({
-        hash: c.hash,
-        message: c.message,
-        date: c.date,
-        kind: 'commit' as const,
-      }));
+      let commitHistory: CommitIntent[];
+      let antiPatterns: AntiPattern[];
 
-      // Detect anti-patterns
-      const antiPatterns = revertDetector.detect(commits);
+      if (fileIndex && fileIndex.intent.length > 0) {
+        // Read from committed index — works even without git
+        commitHistory = fileIndex.intent;
+        antiPatterns = fileIndex.antiPatterns;
+      } else {
+        // Fallback: compute on-demand from git
+        const commits = await git.getCommitHistory(filePath);
+        commitHistory = commits.map((c) => ({
+          hash: c.hash,
+          message: c.message,
+          date: c.date,
+          kind: 'commit' as const,
+        }));
+        antiPatterns = revertDetector.detect(commits);
+      }
 
-      // Assemble result
-      const result = assembler.assemble(commitHistory, antiPatterns);
+      // Compute change intelligence score (#3)
+      const normalizePath = (p: string) => p.replace(/\\/g, '/');
+      const allFiles = storage.listIndexedFiles();
+      const churnResults = await Promise.all(allFiles.map((f) => git.getFileChurn(f)));
+      const maxChurn = Math.max(1, ...churnResults.map((c) => c.commitCount));
+      const targetChurn = churnResults.find((c) => normalizePath(c.filePath) === normalizePath(filePath));
+      const normalizedChurn = churnAnalyzer.normalize(targetChurn?.commitCount ?? 0, maxChurn);
 
-      // Apply masking
-      const payload = masking.mask(JSON.stringify(result));
+      const symbolComplexity = fileIndex?.complexity?.find((c) => c.symbolId === symbolId);
+      const cyclomatic = symbolComplexity?.cyclomatic ?? 1;
+      const normalizedComplexity = Math.min((cyclomatic - 1) / 9, 1);
+
+      const changeIntelligence = healthScorer.score(symbolId, normalizedComplexity, normalizedChurn);
+
+      // Assemble result with changeIntelligence (#3)
+      const result = assembler.assemble(commitHistory, antiPatterns, changeIntelligence);
+
+      // Add warningBadge when anti-patterns present (#4)
+      const responsePayload: Record<string, unknown> = { ...result };
+      if (antiPatterns.length > 0) {
+        responsePayload.warningBadge = '⚠ Anti-pattern detected';
+      }
+
+      const payload = masking.mask(JSON.stringify(responsePayload));
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {

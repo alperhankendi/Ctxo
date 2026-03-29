@@ -77,9 +77,10 @@ describe('GetChangeIntelligenceHandler', () => {
     const result = await handler({ symbolId: 'src/foo.ts::processPayment::function' });
     const payload = JSON.parse(result.content[0]!.text);
 
-    // foo.ts: 51 lines → complexity ~0.51, churn 100/100=1.0, composite ~0.51 → medium
+    // foo.ts: no complexity data in index → cyclomatic=1 → normalized=0
+    // churn 100/100=1.0, composite=0*1=0 → low (no complexity data = low risk)
     expect(payload.churn).toBe(1);
-    expect(['medium', 'high']).toContain(payload.band);
+    expect(payload.band).toBe('low');
   });
 
   it('returns { found: false } for non-existent symbol', async () => {

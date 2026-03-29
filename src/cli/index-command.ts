@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, statSync, readdirSync } from 'node:fs';
 import { join, relative, extname } from 'node:path';
 import { ContentHasher } from '../core/staleness/content-hasher.js';
 import { TsMorphAdapter } from '../adapters/language/ts-morph-adapter.js';
@@ -70,6 +70,7 @@ export class IndexCommand {
 
         const symbols = adapter.extractSymbols(relativePath, source);
         const edges = adapter.extractEdges(relativePath, source);
+        const complexity = adapter.extractComplexity(relativePath, source);
 
         // Extract git history and anti-patterns
         const commits = await gitAdapter.getCommitHistory(relativePath);
@@ -87,6 +88,7 @@ export class IndexCommand {
           contentHash: hasher.hash(source),
           symbols,
           edges,
+          complexity,
           intent,
           antiPatterns,
         };
@@ -155,12 +157,25 @@ export class IndexCommand {
 
       if (!workspaces || workspaces.length === 0) return [this.projectRoot];
 
-      // Resolve glob-like workspace patterns (simple: no ** support, just direct dirs)
+      // Resolve workspace patterns (supports simple globs like packages/*)
       const resolved: string[] = [];
       for (const ws of workspaces) {
-        const wsPath = join(this.projectRoot, ws);
-        if (existsSync(wsPath)) {
-          resolved.push(wsPath);
+        if (ws.endsWith('/*') || ws.endsWith('\\*')) {
+          // Glob: packages/* → list subdirectories of packages/
+          const parentDir = join(this.projectRoot, ws.slice(0, -2));
+          if (existsSync(parentDir)) {
+            for (const entry of readdirSync(parentDir, { withFileTypes: true })) {
+              if (entry.isDirectory()) {
+                resolved.push(join(parentDir, entry.name));
+              }
+            }
+          }
+        } else {
+          // Literal path
+          const wsPath = join(this.projectRoot, ws);
+          if (existsSync(wsPath)) {
+            resolved.push(wsPath);
+          }
         }
       }
 

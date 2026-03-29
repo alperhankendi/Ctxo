@@ -105,12 +105,18 @@ export type AntiPattern = z.infer<typeof AntiPatternSchema>;
 
 // ── File Index ──────────────────────────────────────────────────
 
+export const ComplexityMetricsSchema = z.object({
+  symbolId: z.string().min(1),
+  cyclomatic: z.number().nonnegative(),
+});
+
 export const FileIndexSchema = z.object({
   file: z.string().min(1),
   lastModified: z.number().nonnegative(),
   contentHash: z.string().optional(),
   symbols: z.array(SymbolNodeSchema),
   edges: z.array(GraphEdgeSchema),
+  complexity: z.array(ComplexityMetricsSchema).optional(),
   intent: z.array(CommitIntentSchema),
   antiPatterns: z.array(AntiPatternSchema),
 });

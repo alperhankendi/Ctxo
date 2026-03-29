@@ -6,6 +6,7 @@ import type {
   GraphEdge,
 } from '../types.js';
 
+const L1_MAX_LINES = 150;
 const L4_TOKEN_BUDGET = 8000;
 
 export class DetailFormatter {
@@ -23,12 +24,20 @@ export class DetailFormatter {
   }
 
   private formatL1(slice: LogicSliceResult): FormattedSlice {
-    // L1: root signature only, enforce ≤ 150 lines
+    const root = slice.root;
+    const lineCount = root.endLine - root.startLine + 1;
+
+    // Enforce ≤ 150 lines: clamp endLine if symbol is too large
+    const clampedRoot: SymbolNode = lineCount > L1_MAX_LINES
+      ? { ...root, endLine: root.startLine + L1_MAX_LINES - 1 }
+      : root;
+
     return {
-      root: slice.root,
+      root: clampedRoot,
       dependencies: [],
       edges: [],
       level: 1,
+      ...(lineCount > L1_MAX_LINES ? { truncation: { truncated: true as const, reason: 'token_budget_exceeded' as const } } : {}),
     };
   }
 

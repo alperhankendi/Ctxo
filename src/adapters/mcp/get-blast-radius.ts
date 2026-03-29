@@ -41,7 +41,7 @@ export function handleGetBlastRadius(
       }
 
       const entries = calculator.calculate(graph, symbolId);
-      const payload = masking.mask(JSON.stringify({ symbolId, impactScore: entries.length, dependents: entries }));
+      const payload = masking.mask(JSON.stringify({ symbolId, impactScore: entries.length, impactedSymbols: entries }));
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {
