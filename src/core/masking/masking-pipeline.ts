@@ -17,6 +17,12 @@ const DEFAULT_PATTERNS: Array<{ regex: RegExp; label: string }> = [
   { regex: /AccountKey=[A-Za-z0-9+/=]{20,}/g, label: 'AZURE_KEY' },
 ];
 
+export interface MaskingPatternConfig {
+  readonly pattern: string;
+  readonly flags?: string;
+  readonly label: string;
+}
+
 export class MaskingPipeline {
   private readonly patterns: Array<{ regex: RegExp; label: string }>;
 
@@ -26,6 +32,14 @@ export class MaskingPipeline {
       regex: new RegExp(regex.source, regex.flags),
       label,
     }));
+  }
+
+  static fromConfig(configPatterns: MaskingPatternConfig[]): MaskingPipeline {
+    const additional = configPatterns.map(({ pattern, flags, label }) => ({
+      regex: new RegExp(pattern, flags ?? 'g'),
+      label,
+    }));
+    return new MaskingPipeline(additional);
   }
 
   mask(text: string): string {

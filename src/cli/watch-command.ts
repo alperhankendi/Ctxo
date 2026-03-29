@@ -1,4 +1,4 @@
-import { join, extname } from 'node:path';
+import { join, extname, relative } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { watch } from 'chokidar';
 import { TsMorphAdapter } from '../adapters/language/ts-morph-adapter.js';
@@ -50,10 +50,7 @@ export class WatchCommand {
       const adapter = registry.getAdapter(filePath);
       if (!adapter) return;
 
-      const relativePath = filePath
-        .replace(this.projectRoot, '')
-        .replace(/\\/g, '/')
-        .replace(/^\//, '');
+      const relativePath = relative(this.projectRoot, filePath).replace(/\\/g, '/');
 
       try {
         const source = readFileSync(filePath, 'utf-8');
@@ -98,10 +95,7 @@ export class WatchCommand {
       const ext = extname(filePath).toLowerCase();
       if (!SUPPORTED_EXTENSIONS.has(ext)) return;
 
-      const relativePath = filePath
-        .replace(this.projectRoot, '')
-        .replace(/\\/g, '/')
-        .replace(/^\//, '');
+      const relativePath = relative(this.projectRoot, filePath).replace(/\\/g, '/');
 
       writer.delete(relativePath);
       storage.deleteSymbolFile(relativePath);

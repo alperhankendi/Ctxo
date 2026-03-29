@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
 import { join, relative, extname } from 'node:path';
 import { TsMorphAdapter } from '../adapters/language/ts-morph-adapter.js';
 import { LanguageAdapterRegistry } from '../adapters/language/language-adapter-registry.js';
@@ -10,15 +10,18 @@ import type { FileIndex } from '../core/types.js';
 
 export class IndexCommand {
   private readonly projectRoot: string;
-  private readonly ctxoRoot: string;
+  ctxoRoot: string;
 
-  constructor(projectRoot: string) {
+  constructor(projectRoot: string, ctxoRoot?: string) {
     this.projectRoot = projectRoot;
-    this.ctxoRoot = join(projectRoot, '.ctxo');
+    this.ctxoRoot = ctxoRoot ?? join(projectRoot, '.ctxo');
   }
 
-  async run(): Promise<void> {
-    console.error('[ctxo] Building codebase index...');
+  async run(options: { file?: string; check?: boolean } = {}): Promise<void> {
+    if (options.check) {
+      // Delegate to verify logic: hash-based freshness check
+      return this.runCheck();
+    }
 
     // Set up adapters
     const registry = new LanguageAdapterRegistry();
@@ -27,9 +30,22 @@ export class IndexCommand {
     const writer = new JsonIndexWriter(this.ctxoRoot);
     const schemaManager = new SchemaManager(this.ctxoRoot);
 
-    // Discover files
-    const files = this.discoverFiles();
-    console.error(`[ctxo] Found ${files.length} source files`);
+    // Discover files (single file, monorepo workspaces, or full project)
+    let files: string[];
+    if (options.file) {
+      const fullPath = join(this.projectRoot, options.file);
+      files = [fullPath];
+      console.error(`[ctxo] Incremental re-index: ${options.file}`);
+    } else {
+      // Check for monorepo workspaces — discover files across all roots
+      const workspaces = this.discoverWorkspaces();
+      files = [];
+      for (const ws of workspaces) {
+        const wsFiles = this.discoverFilesIn(ws);
+        files.push(...wsFiles);
+      }
+      console.error(`[ctxo] Building codebase index... Found ${files.length} source files`);
+    }
 
     // Extract symbols and edges for each file
     const indices: FileIndex[] = [];
@@ -74,9 +90,12 @@ export class IndexCommand {
 
     // Populate SQLite cache (skip rebuildFromJson since we just wrote the JSON)
     const storage = new SqliteStorageAdapter(this.ctxoRoot);
-    await storage.initEmpty();
-    storage.bulkWrite(indices);
-    storage.close();
+    try {
+      await storage.initEmpty();
+      storage.bulkWrite(indices);
+    } finally {
+      storage.close();
+    }
 
     // Ensure .ctxo/.cache/ is in .gitignore
     this.ensureGitignore();
@@ -84,11 +103,10 @@ export class IndexCommand {
     console.error(`[ctxo] Index complete: ${processed} files indexed`);
   }
 
-  private discoverFiles(): string[] {
+  private discoverFilesIn(root: string): string[] {
     try {
-      // Use git ls-files to discover tracked files (respects .gitignore)
       const output = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard'], {
-        cwd: this.projectRoot,
+        cwd: root,
         encoding: 'utf-8',
         maxBuffer: 10 * 1024 * 1024,
       });
@@ -98,16 +116,85 @@ export class IndexCommand {
         .map((line) => line.trim())
         .filter((line) => line.length > 0)
         .filter((line) => this.isSupportedExtension(line))
-        .map((line) => join(this.projectRoot, line));
+        .map((line) => join(root, line));
     } catch {
-      console.error('[ctxo] git ls-files failed, falling back to manual discovery');
+      console.error(`[ctxo] git ls-files failed for ${root}`);
       return [];
+    }
+  }
+
+  private discoverWorkspaces(): string[] {
+    const pkgPath = join(this.projectRoot, 'package.json');
+    if (!existsSync(pkgPath)) return [this.projectRoot];
+
+    try {
+      const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+      const workspaces: string[] | undefined = Array.isArray(pkg.workspaces)
+        ? pkg.workspaces
+        : pkg.workspaces?.packages;
+
+      if (!workspaces || workspaces.length === 0) return [this.projectRoot];
+
+      // Resolve glob-like workspace patterns (simple: no ** support, just direct dirs)
+      const resolved: string[] = [];
+      for (const ws of workspaces) {
+        const wsPath = join(this.projectRoot, ws);
+        if (existsSync(wsPath)) {
+          resolved.push(wsPath);
+        }
+      }
+
+      if (resolved.length === 0) return [this.projectRoot];
+
+      console.error(`[ctxo] Monorepo detected: ${resolved.length} workspace(s)`);
+      return resolved;
+    } catch {
+      return [this.projectRoot];
     }
   }
 
   private isSupportedExtension(filePath: string): boolean {
     const ext = extname(filePath).toLowerCase();
     return ['.ts', '.tsx', '.js', '.jsx'].includes(ext);
+  }
+
+  private async runCheck(): Promise<void> {
+    console.error('[ctxo] Checking index freshness...');
+
+    const files = this.discoverFilesIn(this.projectRoot);
+    const reader = new (await import('../adapters/storage/json-index-reader.js')).JsonIndexReader(this.ctxoRoot);
+    const indices = reader.readAll();
+    const indexedMap = new Map(indices.map((i) => [i.file, i]));
+
+    let staleCount = 0;
+
+    for (const filePath of files) {
+      const ext = extname(filePath).toLowerCase();
+      if (!['.ts', '.tsx', '.js', '.jsx'].includes(ext)) continue;
+
+      const relativePath = relative(this.projectRoot, filePath).replace(/\\/g, '/');
+      const indexed = indexedMap.get(relativePath);
+
+      if (!indexed) {
+        console.error(`[ctxo] NOT INDEXED: ${relativePath}`);
+        staleCount++;
+        continue;
+      }
+
+      // Compare source mtime vs index timestamp
+      const mtime = Math.floor(statSync(filePath).mtimeMs / 1000);
+      if (mtime > indexed.lastModified) {
+        console.error(`[ctxo] STALE: ${relativePath} (modified after index)`);
+        staleCount++;
+      }
+    }
+
+    if (staleCount > 0) {
+      console.error(`[ctxo] ${staleCount} file(s) need re-indexing. Run "ctxo index"`);
+      process.exit(1);
+    }
+
+    console.error('[ctxo] Index is up to date');
   }
 
   private ensureGitignore(): void {

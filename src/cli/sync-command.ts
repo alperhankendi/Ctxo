@@ -12,8 +12,11 @@ export class SyncCommand {
     console.error('[ctxo] Rebuilding SQLite cache from committed JSON index...');
 
     const storage = new SqliteStorageAdapter(this.ctxoRoot);
-    await storage.init(); // init() rebuilds from JSON automatically
-    storage.close();
+    try {
+      await storage.init();
+    } finally {
+      storage.close();
+    }
 
     console.error('[ctxo] Sync complete');
   }

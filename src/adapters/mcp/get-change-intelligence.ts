@@ -36,13 +36,14 @@ export function handleGetChangeIntelligence(
       }
 
       const filePath = symbolId.split('::')[0]!;
+      const normalizePath = (p: string) => p.replace(/\\/g, '/');
 
       // Get churn data for all files in parallel
       const allFiles = storage.listIndexedFiles();
       const churnResults = await Promise.all(allFiles.map((f) => git.getFileChurn(f)));
 
       const maxChurn = Math.max(1, ...churnResults.map((c) => c.commitCount));
-      const targetChurn = churnResults.find((c) => c.filePath === filePath);
+      const targetChurn = churnResults.find((c) => normalizePath(c.filePath) === normalizePath(filePath));
       const commitCount = targetChurn?.commitCount ?? 0;
 
       const normalizedChurn = churnAnalyzer.normalize(commitCount, maxChurn);

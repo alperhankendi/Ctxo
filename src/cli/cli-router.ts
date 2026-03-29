@@ -21,9 +21,12 @@ export class CliRouter {
     }
 
     switch (command) {
-      case 'index':
-        await new IndexCommand(this.projectRoot).run();
+      case 'index': {
+        const fileArg = args.indexOf('--file') !== -1 ? args[args.indexOf('--file') + 1] : undefined;
+        const checkArg = args.includes('--check');
+        await new IndexCommand(this.projectRoot).run({ file: fileArg, check: checkArg });
         break;
+      }
 
       case 'sync':
         await new SyncCommand(this.projectRoot).run();

@@ -1,14 +1,34 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { SqliteStorageAdapter } from './adapters/storage/sqlite-storage-adapter.js';
-import { MaskingPipeline } from './core/masking/masking-pipeline.js';
+import { MaskingPipeline, type MaskingPatternConfig } from './core/masking/masking-pipeline.js';
 import { handleGetLogicSlice } from './adapters/mcp/get-logic-slice.js';
 import { handleGetWhyContext } from './adapters/mcp/get-why-context.js';
 import { handleGetChangeIntelligence } from './adapters/mcp/get-change-intelligence.js';
 import { SimpleGitAdapter } from './adapters/git/simple-git-adapter.js';
 import { handleGetBlastRadius } from './adapters/mcp/get-blast-radius.js';
 import { handleGetArchitecturalOverlay } from './adapters/mcp/get-architectural-overlay.js';
+
+function loadMaskingConfig(ctxoRoot: string): MaskingPipeline {
+  const jsonConfigPath = join(ctxoRoot, 'masking.json');
+
+  // Try JSON masking config first
+  if (existsSync(jsonConfigPath)) {
+    try {
+      const raw = readFileSync(jsonConfigPath, 'utf-8');
+      const patterns: MaskingPatternConfig[] = JSON.parse(raw);
+      console.error(`[ctxo] Loaded ${patterns.length} custom masking pattern(s)`);
+      return MaskingPipeline.fromConfig(patterns);
+    } catch (err) {
+      console.error(`[ctxo] Failed to load masking config: ${(err as Error).message}`);
+    }
+  }
+
+  return new MaskingPipeline();
+}
 
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
@@ -26,14 +46,18 @@ async function main(): Promise<void> {
   const storage = new SqliteStorageAdapter(ctxoRoot);
   await storage.init();
 
-  const masking = new MaskingPipeline();
+  const masking = loadMaskingConfig(ctxoRoot);
   const git = new SimpleGitAdapter(process.cwd());
 
   // Create MCP server
   const server = new McpServer({ name: 'ctxo', version: '0.1.0' });
 
+  // Staleness detection
+  const { StalenessDetector } = await import('./core/staleness/staleness-detector.js');
+  const staleness = new StalenessDetector(process.cwd(), ctxoRoot);
+
   // Register tools
-  const logicSliceHandler = handleGetLogicSlice(storage, masking);
+  const logicSliceHandler = handleGetLogicSlice(storage, masking, staleness);
   const whyContextHandler = handleGetWhyContext(storage, git, masking);
   const changeIntelligenceHandler = handleGetChangeIntelligence(storage, git, masking);
 

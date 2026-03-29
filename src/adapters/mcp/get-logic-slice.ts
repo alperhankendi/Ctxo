@@ -35,9 +35,14 @@ export function buildGraphFromStorage(storage: IStoragePort): SymbolGraph {
   return graph;
 }
 
+export interface StalenessCheck {
+  check(indexedFiles: readonly string[]): { message: string } | undefined;
+}
+
 export function handleGetLogicSlice(
   storage: IStoragePort,
   masking: IMaskingPort,
+  staleness?: StalenessCheck,
 ) {
   const query = new LogicSliceQuery();
   const formatter = new DetailFormatter();
@@ -79,9 +84,17 @@ export function handleGetLogicSlice(
       // Apply masking
       const payload = masking.mask(JSON.stringify(formatted));
 
-      return {
-        content: [{ type: 'text' as const, text: payload }],
-      };
+      // Check staleness
+      const content: Array<{ type: 'text'; text: string }> = [];
+      if (staleness) {
+        const warning = staleness.check(storage.listIndexedFiles());
+        if (warning) {
+          content.push({ type: 'text', text: `⚠️ ${warning.message}` });
+        }
+      }
+      content.push({ type: 'text', text: payload });
+
+      return { content };
     } catch (err) {
       return {
         content: [{ type: 'text' as const, text: JSON.stringify({ error: true, message: (err as Error).message }) }],
