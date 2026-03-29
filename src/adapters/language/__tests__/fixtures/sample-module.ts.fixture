@@ -1,0 +1,37 @@
+import { TokenValidator } from './token-validator';
+
+export function processPayment(amount: number): boolean {
+  const validator = new TokenValidator();
+  if (amount <= 0) {
+    return false;
+  }
+  if (amount > 10000) {
+    return false;
+  }
+  return validator.validate(amount);
+}
+
+export class PaymentProcessor {
+  private total = 0;
+
+  process(amount: number): void {
+    this.total += amount;
+  }
+
+  getTotal(): number {
+    return this.total;
+  }
+}
+
+export interface PaymentResult {
+  success: boolean;
+  transactionId: string;
+}
+
+export type Currency = 'USD' | 'EUR' | 'GBP';
+
+export const MAX_AMOUNT = 10000;
+
+function internalHelper(): void {
+  // not exported — should be skipped
+}

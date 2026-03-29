@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { FileIndexSchema, type FileIndex } from '../../core/types.js';
 

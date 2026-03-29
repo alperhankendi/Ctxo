@@ -1,0 +1,16 @@
+import { BaseService } from './base-service';
+import { Loggable } from './loggable';
+
+export interface Configurable {
+  configure(options: Record<string, unknown>): void;
+}
+
+export class UserService extends BaseService implements Configurable {
+  configure(options: Record<string, unknown>): void {
+    // implementation
+  }
+
+  findUser(id: string): string {
+    return id;
+  }
+}
