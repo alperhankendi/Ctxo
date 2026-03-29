@@ -178,6 +178,30 @@ try {
 
 ## Documentation
 
+## TODO
+
+### Bugs (Open Issues)
+- [ ] **#2** Masking pipeline false negative — AWS secrets not redacted after `=` character
+- [ ] **#3** Git commit hashes falsely masked as `AWS_SECRET` in `get_why_context` output
+- [ ] **#4** RevertDetector only catches 2 patterns — misses undo, rollback, and indirect reverts
+- [ ] **#5** Missing test coverage for masking pipeline edge cases (git hashes, `=` prefix, index persistence)
+
+### Analysis Required
+- [ ] Investigate why `intent: []` and `antiPatterns: []` were hardcoded in `IndexCommand` from Phase 6 through V1 delivery — this was a core PRD feature (FR14-FR16) that should have been caught during implementation. Root cause: `IndexCommand` was built in Phase 6 before git adapter (Phase 7) existed, and the wiring was never added when Phase 7 landed. Review process gap: 4 code review rounds focused on runtime bugs but missed this feature completeness gap.
+
+### V1.1 Improvements
+- [ ] `get_why_context` should read intent/antiPatterns from committed index first, fall back to on-demand git query
+- [ ] Performance: batch `git log` calls during indexing (currently N sequential calls for N files)
+- [ ] Add `--skip-history` flag to `ctxo index` for fast re-indexing without git history
+- [ ] README.md content (quick start, feature overview, MCP config examples)
+
+### V1.5 Features
+- [ ] Epic 7: tree-sitter adapter for Go + C# (syntax-level parsing)
+- [ ] Epic 8: GitHub/GitLab webhook listener for auto-indexing on push events
+- [ ] npm publish via CI/CD pipeline (GitHub Actions release workflow)
+
+## Documentation
+
 - [Project Idea](docs/Project-Idea.md) — vision and feature overview
 - [Product Brief](docs/artifacts/product-brief-Ctxo.md) — detailed product brief
 - [PRD](docs/artifacts/prd.md) — full product requirements
