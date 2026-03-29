@@ -12,6 +12,11 @@
       "from": "tests/e2e/fixtures/credential-fixture/src/service.ts::PaymentService::class",
       "kind": "imports",
       "to": "tests/e2e/fixtures/credential-fixture/src/config.ts::getConfig::function"
+    },
+    {
+      "from": "tests/e2e/fixtures/credential-fixture/src/service.ts::PaymentService.process::method",
+      "kind": "calls",
+      "to": "tests/e2e/fixtures/credential-fixture/src/config.ts::getConfig::function"
     }
   ],
   "file": "tests/e2e/fixtures/credential-fixture/src/service.ts",
@@ -23,7 +28,7 @@
       "message": "Complete Phase 10: Release gate tests"
     }
   ],
-  "lastModified": 1774815131,
+  "lastModified": 1774815985,
   "symbols": [
     {
       "endLine": 9,

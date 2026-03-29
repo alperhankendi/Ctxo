@@ -54,6 +54,16 @@
       "from": "src/adapters/mcp/get-logic-slice.ts::getLogicSliceInputSchema::function",
       "kind": "imports",
       "to": "src/core/types.ts::DetailLevelSchema::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function",
+      "kind": "calls",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function",
+      "kind": "calls",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
     }
   ],
   "file": "src/adapters/mcp/get-logic-slice.ts",
@@ -83,7 +93,7 @@
       "message": "Add MCP server with get_logic_slice tool and privacy masking pipeline"
     }
   ],
-  "lastModified": 1774815127,
+  "lastModified": 1774815981,
   "symbols": [
     {
       "endLine": 25,

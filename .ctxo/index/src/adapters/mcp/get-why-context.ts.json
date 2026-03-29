@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 11,
+      "cyclomatic": 9,
       "symbolId": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
     }
   ],
-  "contentHash": "469d4997a21ba058aafdcc4a2f4a4db58f55b374e1f134a4d102a6d3b04eb404",
+  "contentHash": "f9e833d51d40097120f23fc659cd89ae4a92daf16741a320f6643a0d8c960345",
   "edges": [
     {
       "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
@@ -27,21 +27,6 @@
       "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "imports",
       "to": "src/core/why-context/revert-detector.ts::RevertDetector::class"
-    },
-    {
-      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
-      "kind": "imports",
-      "to": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler::class"
-    },
-    {
-      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
-      "kind": "imports",
-      "to": "src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer::class"
-    },
-    {
-      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
-      "kind": "imports",
-      "to": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class"
     },
     {
       "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
@@ -67,6 +52,12 @@
   "file": "src/adapters/mcp/get-why-context.ts",
   "intent": [
     {
+      "date": "2026-03-29T23:13:51+03:00",
+      "hash": "3b4825cb5fbc655ab782fad4b9b54d8a63d3b9f3",
+      "kind": "commit",
+      "message": "Fix complexity aggregation for class-level symbols"
+    },
+    {
       "date": "2026-03-29T22:49:58+03:00",
       "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
       "kind": "commit",
@@ -85,13 +76,13 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1774815127,
+  "lastModified": 1774815981,
   "symbols": [
     {
-      "endLine": 111,
+      "endLine": 92,
       "kind": "function",
       "name": "handleGetWhyContext",
-      "startLine": 16,
+      "startLine": 13,
       "symbolId": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
     }
   ]

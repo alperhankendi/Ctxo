@@ -6,7 +6,7 @@
       "symbolId": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
     }
   ],
-  "contentHash": "ca32fc17f0e20683d756bd1d9fc54a5de6fe2958435019fa95e2f684482e98a4",
+  "contentHash": "9c35ac230276ee72f83380a6edc1da8dc3dbb99ef2527dad3ed9cf2de88f1b7b",
   "edges": [
     {
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
@@ -37,10 +37,26 @@
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
       "kind": "imports",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "calls",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "calls",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
     }
   ],
   "file": "src/adapters/mcp/get-blast-radius.ts",
   "intent": [
+    {
+      "date": "2026-03-29T23:22:18+03:00",
+      "hash": "5b10b3af81a43dc075be17e7b61d428cd25d86ed",
+      "kind": "commit",
+      "message": "Add blast radius risk scoring (inspired by jCodeMunch)"
+    },
     {
       "date": "2026-03-29T22:49:58+03:00",
       "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
@@ -72,10 +88,10 @@
       "message": "Add blast radius calculator and architectural overlay"
     }
   ],
-  "lastModified": 1774815127,
+  "lastModified": 1774815981,
   "symbols": [
     {
-      "endLine": 59,
+      "endLine": 65,
       "kind": "function",
       "name": "handleGetBlastRadius",
       "startLine": 11,

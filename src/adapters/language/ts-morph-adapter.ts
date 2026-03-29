@@ -67,6 +67,7 @@ export class TsMorphAdapter implements ILanguageAdapter {
 
       this.extractImportEdges(sourceFile, filePath, edges);
       this.extractInheritanceEdges(sourceFile, filePath, edges);
+      this.extractCallEdges(sourceFile, filePath, edges);
 
       return edges;
     } catch (err) {
@@ -302,6 +303,85 @@ export class TsMorphAdapter implements ILanguageAdapter {
         });
       }
     }
+  }
+
+  private extractCallEdges(
+    sourceFile: SourceFile,
+    filePath: string,
+    edges: GraphEdge[],
+  ): void {
+    // Extract function call edges from exported functions and methods
+    for (const fn of sourceFile.getFunctions()) {
+      if (!this.isExported(fn)) continue;
+      const fnName = fn.getName();
+      if (!fnName) continue;
+
+      const fnSymbolId = this.buildSymbolId(filePath, fnName, 'function');
+
+      for (const call of fn.getDescendantsOfKind(SyntaxKind.CallExpression)) {
+        const calledName = call.getExpression().getText().split('.').pop();
+        if (!calledName || calledName === fnName) continue;
+
+        // Check if the called function is a local import
+        const resolved = this.resolveLocalCallTarget(sourceFile, filePath, calledName);
+        if (resolved) {
+          edges.push({ from: fnSymbolId, to: resolved, kind: 'calls' });
+        }
+      }
+    }
+
+    // Extract calls from class methods
+    for (const cls of sourceFile.getClasses()) {
+      const className = cls.getName();
+      if (!className || !this.isExported(cls)) continue;
+
+      for (const method of cls.getMethods()) {
+        const methodName = method.getName();
+        const methodSymbolId = this.buildSymbolId(filePath, `${className}.${methodName}`, 'method');
+
+        for (const call of method.getDescendantsOfKind(SyntaxKind.CallExpression)) {
+          const calledText = call.getExpression().getText();
+          const calledName = calledText.split('.').pop();
+          if (!calledName || calledName === methodName) continue;
+
+          // Skip this.xxx calls (internal method calls)
+          if (calledText.startsWith('this.')) continue;
+
+          const resolved = this.resolveLocalCallTarget(sourceFile, filePath, calledName);
+          if (resolved) {
+            edges.push({ from: methodSymbolId, to: resolved, kind: 'calls' });
+          }
+        }
+      }
+    }
+  }
+
+  private resolveLocalCallTarget(
+    sourceFile: SourceFile,
+    filePath: string,
+    calledName: string,
+  ): string | undefined {
+    // Check if the called name is imported from a local module
+    for (const imp of sourceFile.getImportDeclarations()) {
+      const moduleSpecifier = imp.getModuleSpecifierValue();
+      if (!moduleSpecifier.startsWith('.') && !moduleSpecifier.startsWith('/')) continue;
+
+      for (const named of imp.getNamedImports()) {
+        if (named.getName() === calledName) {
+          const targetFile = this.resolveRelativeImport(filePath, moduleSpecifier);
+          return this.resolveImportTarget(targetFile, calledName);
+        }
+      }
+    }
+
+    // Check if it's a locally defined function in the same file
+    for (const fn of sourceFile.getFunctions()) {
+      if (fn.getName() === calledName) {
+        return this.buildSymbolId(filePath, calledName, 'function');
+      }
+    }
+
+    return undefined;
   }
 
   // ── Helpers ─────────────────────────────────────────────────

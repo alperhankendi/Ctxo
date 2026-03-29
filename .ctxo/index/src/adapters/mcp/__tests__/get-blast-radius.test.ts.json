@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "30b73423ce0e9fbc467ec0b058828559efd1836ca9ac0fa063c15e9116336f61",
+  "contentHash": "01615efddd4c3133cc38d2878ff1633b12b7bb6fdb91fa920f2182e9bec850de",
   "edges": [
     {
       "from": "src/adapters/mcp/__tests__/get-blast-radius.test.ts::get-blast-radius.test::variable",
@@ -27,6 +27,12 @@
   "file": "src/adapters/mcp/__tests__/get-blast-radius.test.ts",
   "intent": [
     {
+      "date": "2026-03-29T23:22:18+03:00",
+      "hash": "5b10b3af81a43dc075be17e7b61d428cd25d86ed",
+      "kind": "commit",
+      "message": "Add blast radius risk scoring (inspired by jCodeMunch)"
+    },
+    {
       "date": "2026-03-29T22:49:58+03:00",
       "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
       "kind": "commit",
@@ -45,6 +51,6 @@
       "message": "Add missing MCP handler tests and edge case coverage"
     }
   ],
-  "lastModified": 1774815127,
+  "lastModified": 1774815981,
   "symbols": []
 }

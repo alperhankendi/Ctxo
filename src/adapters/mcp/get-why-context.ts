@@ -3,9 +3,6 @@ import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IGitPort } from '../../ports/i-git-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { RevertDetector } from '../../core/why-context/revert-detector.js';
-import { WhyContextAssembler } from '../../core/why-context/why-context-assembler.js';
-import { ChurnAnalyzer } from '../../core/change-intelligence/churn-analyzer.js';
-import { HealthScorer } from '../../core/change-intelligence/health-scorer.js';
 import { JsonIndexReader } from '../storage/json-index-reader.js';
 import type { CommitIntent, AntiPattern } from '../../core/types.js';
 import type { StalenessCheck } from './get-logic-slice.js';
@@ -22,9 +19,6 @@ export function handleGetWhyContext(
   ctxoRoot = '.ctxo',
 ) {
   const revertDetector = new RevertDetector();
-  const assembler = new WhyContextAssembler();
-  const churnAnalyzer = new ChurnAnalyzer();
-  const healthScorer = new HealthScorer();
   const indexReader = new JsonIndexReader(ctxoRoot);
 
   return async (args: Record<string, unknown>) => {
@@ -55,7 +49,6 @@ export function handleGetWhyContext(
       let antiPatterns: AntiPattern[];
 
       if (fileIndex && fileIndex.intent.length > 0) {
-        // Read from committed index — works even without git
         commitHistory = fileIndex.intent;
         antiPatterns = fileIndex.antiPatterns;
       } else {
@@ -70,34 +63,13 @@ export function handleGetWhyContext(
         antiPatterns = revertDetector.detect(commits);
       }
 
-      // Compute change intelligence score (#3)
-      const normalizePath = (p: string) => p.replace(/\\/g, '/');
-      const allFiles = storage.listIndexedFiles();
-      const churnResults = await Promise.all(allFiles.map((f) => git.getFileChurn(f)));
-      const maxChurn = Math.max(1, ...churnResults.map((c) => c.commitCount));
-      const targetChurn = churnResults.find((c) => normalizePath(c.filePath) === normalizePath(filePath));
-      const normalizedChurn = churnAnalyzer.normalize(targetChurn?.commitCount ?? 0, maxChurn);
+      // Assemble result — separation of concerns: no changeIntelligence here
+      // Use get_change_intelligence tool for complexity/churn scoring
+      const responsePayload: Record<string, unknown> = {
+        commitHistory,
+        antiPatternWarnings: antiPatterns,
+      };
 
-      const complexityEntries = fileIndex?.complexity ?? [];
-      let cyclomatic = complexityEntries.find((c) => c.symbolId === symbolId)?.cyclomatic;
-      if (cyclomatic === undefined) {
-        const symbolName = symbolId.split('::')[1] ?? '';
-        const relatedEntries = complexityEntries.filter((c) =>
-          c.symbolId.startsWith(`${filePath}::${symbolName}.`),
-        );
-        cyclomatic = relatedEntries.length > 0
-          ? Math.max(...relatedEntries.map((c) => c.cyclomatic))
-          : 1;
-      }
-      const normalizedComplexity = Math.min((cyclomatic - 1) / 9, 1);
-
-      const changeIntelligence = healthScorer.score(symbolId, normalizedComplexity, normalizedChurn);
-
-      // Assemble result with changeIntelligence (#3)
-      const result = assembler.assemble(commitHistory, antiPatterns, changeIntelligence);
-
-      // Add warningBadge when anti-patterns present (#4)
-      const responsePayload: Record<string, unknown> = { ...result };
       if (antiPatterns.length > 0) {
         responsePayload.warningBadge = '⚠ Anti-pattern detected';
       }

@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 8,
+      "cyclomatic": 11,
       "symbolId": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function"
     }
   ],
-  "contentHash": "16bc80a8481eb05459bf46103d1692c24666da47b9524be0cb32128ba3d89964",
+  "contentHash": "21bd97678a0e20cae8d54616e14d72c6956992c8b01934ff9a75c9cbe6bd0b89",
   "edges": [
     {
       "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
@@ -47,6 +47,12 @@
   "file": "src/adapters/mcp/get-change-intelligence.ts",
   "intent": [
     {
+      "date": "2026-03-29T23:13:51+03:00",
+      "hash": "3b4825cb5fbc655ab782fad4b9b54d8a63d3b9f3",
+      "kind": "commit",
+      "message": "Fix complexity aggregation for class-level symbols"
+    },
+    {
       "date": "2026-03-29T22:49:58+03:00",
       "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
       "kind": "commit",
@@ -77,10 +83,10 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1774815127,
+  "lastModified": 1774815981,
   "symbols": [
     {
-      "endLine": 81,
+      "endLine": 93,
       "kind": "function",
       "name": "handleGetChangeIntelligence",
       "startLine": 13,
