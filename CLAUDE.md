@@ -180,20 +180,28 @@ try {
 
 ## TODO
 
-### Bugs (Open Issues)
-- [ ] **#2** Masking pipeline false negative — AWS secrets not redacted after `=` character
-- [ ] **#3** Git commit hashes falsely masked as `AWS_SECRET` in `get_why_context` output
-- [ ] **#4** RevertDetector only catches 2 patterns — misses undo, rollback, and indirect reverts
-- [ ] **#5** Missing test coverage for masking pipeline edge cases (git hashes, `=` prefix, index persistence)
+### Bugs (All Closed)
+- [x] **#1** Anti-patterns and intent never persisted to committed index — fixed in `86b1e42`
+- [x] **#2** Masking pipeline false negative — AWS secrets after `=` — fixed in `f986712`
+- [x] **#3** Git commit hashes falsely masked as `AWS_SECRET` — fixed in `f986712`
+- [x] **#4** RevertDetector extended with undo, rollback, indirect patterns — fixed in `f986712`
+- [x] **#5** Masking pipeline edge case test coverage — fixed in `f986712`
 
 ### Analysis Required
 - [ ] Investigate why `intent: []` and `antiPatterns: []` were hardcoded in `IndexCommand` from Phase 6 through V1 delivery — this was a core PRD feature (FR14-FR16) that should have been caught during implementation. Root cause: `IndexCommand` was built in Phase 6 before git adapter (Phase 7) existed, and the wiring was never added when Phase 7 landed. Review process gap: 4 code review rounds focused on runtime bugs but missed this feature completeness gap.
 
 ### V1.1 Improvements
-- [ ] `get_why_context` should read intent/antiPatterns from committed index first, fall back to on-demand git query
+- [x] `get_why_context` reads intent/antiPatterns from committed index first, falls back to git — fixed in `e06c6d5`
 - [ ] Performance: batch `git log` calls during indexing (currently N sequential calls for N files)
 - [ ] Add `--skip-history` flag to `ctxo index` for fast re-indexing without git history
 - [ ] README.md content (quick start, feature overview, MCP config examples)
+
+### Learnings from jCodeMunch (competitive analysis)
+- [ ] **Blast radius risk score** — add `1/depth^0.7` weighted `overallRiskScore` (0.0–1.0) + split results into `confirmed` (import + symbol ref) vs `potential` (import only)
+- [ ] **PageRank centrality** — `get_symbol_importance` tool using PageRank on import graph (damping=0.85) for architectural centrality ranking
+- [ ] **Byte offset indexing** — store byte offsets per symbol for O(1) source retrieval via `seek()+read()` instead of full file reads
+- [ ] **Dead code detection** — `find_dead_code` tool: unreachable symbols and files via reverse import graph analysis
+- [ ] **Query-driven context assembly** — `get_ranked_context(query, token_budget)` with BM25 + PageRank combined scoring and greedy packing
 
 ### V1.5 Features
 - [ ] Epic 7: tree-sitter adapter for Go + C# (syntax-level parsing)

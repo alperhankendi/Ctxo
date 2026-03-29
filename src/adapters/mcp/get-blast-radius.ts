@@ -40,8 +40,14 @@ export function handleGetBlastRadius(
         };
       }
 
-      const entries = calculator.calculate(graph, symbolId);
-      const payload = masking.mask(JSON.stringify({ symbolId, impactScore: entries.length, impactedSymbols: entries }));
+      const result = calculator.calculate(graph, symbolId);
+      const payload = masking.mask(JSON.stringify({
+        symbolId,
+        impactScore: result.impactedSymbols.length,
+        directDependentsCount: result.directDependentsCount,
+        overallRiskScore: result.overallRiskScore,
+        impactedSymbols: result.impactedSymbols,
+      }));
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {

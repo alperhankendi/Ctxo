@@ -25,20 +25,20 @@ describe('BlastRadiusCalculator', () => {
 
   it('returns direct dependents for a symbol', () => {
     const graph = buildDiamondGraph();
-    const result = calc.calculate(graph, 'c::C::function');
+    const { impactedSymbols } = calc.calculate(graph, 'c::C::function');
 
-    expect(result).toHaveLength(2);
-    const ids = result.map((e) => e.symbolId);
+    expect(impactedSymbols).toHaveLength(2);
+    const ids = impactedSymbols.map((e) => e.symbolId);
     expect(ids).toContain('a::A::function');
     expect(ids).toContain('b::B::function');
   });
 
   it('returns transitive dependents (blast of D includes A, B, C)', () => {
     const graph = buildDiamondGraph();
-    const result = calc.calculate(graph, 'd::D::function');
+    const { impactedSymbols } = calc.calculate(graph, 'd::D::function');
 
-    expect(result).toHaveLength(3);
-    const ids = result.map((e) => e.symbolId);
+    expect(impactedSymbols).toHaveLength(3);
+    const ids = impactedSymbols.map((e) => e.symbolId);
     expect(ids).toContain('c::C::function');
     expect(ids).toContain('a::A::function');
     expect(ids).toContain('b::B::function');
@@ -46,18 +46,19 @@ describe('BlastRadiusCalculator', () => {
 
   it('ranks dependents by depth ascending', () => {
     const graph = buildDiamondGraph();
-    const result = calc.calculate(graph, 'd::D::function');
+    const { impactedSymbols } = calc.calculate(graph, 'd::D::function');
 
-    expect(result[0]?.depth).toBe(1);
-    // A and B are at depth 2
-    const depth2 = result.filter((e) => e.depth === 2);
+    expect(impactedSymbols[0]?.depth).toBe(1);
+    const depth2 = impactedSymbols.filter((e) => e.depth === 2);
     expect(depth2).toHaveLength(2);
   });
 
-  it('returns empty array for leaf symbol (no dependents)', () => {
+  it('returns empty result for leaf symbol (no dependents)', () => {
     const graph = buildDiamondGraph();
     const result = calc.calculate(graph, 'a::A::function');
-    expect(result).toEqual([]);
+    expect(result.impactedSymbols).toEqual([]);
+    expect(result.directDependentsCount).toBe(0);
+    expect(result.overallRiskScore).toBe(0);
   });
 
   it('terminates safely on circular dependency', () => {
@@ -69,23 +70,41 @@ describe('BlastRadiusCalculator', () => {
     graph.addEdge({ from: 'b::B::function', to: 'c::C::function', kind: 'calls' });
     graph.addEdge({ from: 'c::C::function', to: 'a::A::function', kind: 'calls' });
 
-    const result = calc.calculate(graph, 'a::A::function');
-    expect(result.length).toBeLessThanOrEqual(2);
+    const { impactedSymbols } = calc.calculate(graph, 'a::A::function');
+    expect(impactedSymbols.length).toBeLessThanOrEqual(2);
   });
 
-  it('returns correct dependentCount for each entry', () => {
+  it('includes riskScore per entry (1/depth^0.7)', () => {
+    const graph = buildDiamondGraph();
+    const { impactedSymbols } = calc.calculate(graph, 'd::D::function');
+
+    // Depth 1: riskScore = 1/1^0.7 = 1.0
+    const depth1 = impactedSymbols.find((e) => e.depth === 1);
+    expect(depth1?.riskScore).toBe(1);
+
+    // Depth 2: riskScore = 1/2^0.7 ≈ 0.616
+    const depth2 = impactedSymbols.find((e) => e.depth === 2);
+    expect(depth2?.riskScore).toBeGreaterThan(0.5);
+    expect(depth2?.riskScore).toBeLessThan(0.7);
+  });
+
+  it('returns directDependentsCount correctly', () => {
     const graph = buildDiamondGraph();
     const result = calc.calculate(graph, 'c::C::function');
-
-    // A and B each have 0 reverse edges (nobody depends on them in this graph)
-    // But dependentCount counts THEIR reverse edges, not the target's
-    for (const entry of result) {
-      expect(typeof entry.dependentCount).toBe('number');
-    }
+    expect(result.directDependentsCount).toBe(2);
   });
 
-  it('returns empty array for non-existent symbol', () => {
+  it('returns overallRiskScore between 0 and 1', () => {
     const graph = buildDiamondGraph();
-    expect(calc.calculate(graph, 'x::X::function')).toEqual([]);
+    const result = calc.calculate(graph, 'd::D::function');
+    expect(result.overallRiskScore).toBeGreaterThan(0);
+    expect(result.overallRiskScore).toBeLessThanOrEqual(1);
+  });
+
+  it('returns empty result for non-existent symbol', () => {
+    const graph = buildDiamondGraph();
+    const result = calc.calculate(graph, 'x::X::function');
+    expect(result.impactedSymbols).toEqual([]);
+    expect(result.overallRiskScore).toBe(0);
   });
 });

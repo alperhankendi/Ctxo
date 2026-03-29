@@ -60,8 +60,11 @@ describe('GetBlastRadiusHandler', () => {
 
     expect(payload.symbolId).toBe('src/c.ts::C::interface');
     expect(payload.impactScore).toBeGreaterThanOrEqual(1);
+    expect(payload.directDependentsCount).toBeGreaterThanOrEqual(1);
+    expect(payload.overallRiskScore).toBeGreaterThan(0);
     expect(payload.impactedSymbols.length).toBeGreaterThanOrEqual(1);
     expect(payload.impactedSymbols[0].symbolId).toBe('src/b.ts::B::class');
+    expect(payload.impactedSymbols[0].riskScore).toBeDefined();
   });
 
   it('returns transitive blast radius', () => {
