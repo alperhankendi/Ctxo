@@ -22,18 +22,15 @@ export class SqliteStorageAdapter implements IStoragePort {
       try {
         const buffer = readFileSync(this.dbPath);
         this.db = new SQL.Database(buffer);
-        this.db.run('PRAGMA foreign_keys = ON');
         this.verifyIntegrity();
       } catch {
         console.error('[ctxo:sqlite] Corrupt DB detected, rebuilding from JSON index');
         this.db = new SQL.Database();
-        this.db.run('PRAGMA foreign_keys = ON');
         this.createTables();
         this.rebuildFromJson();
       }
     } else {
       this.db = new SQL.Database();
-      this.db.run('PRAGMA foreign_keys = ON');
       this.createTables();
       this.rebuildFromJson();
     }
@@ -42,7 +39,6 @@ export class SqliteStorageAdapter implements IStoragePort {
   async initEmpty(): Promise<void> {
     const SQL = await initSqlJs();
     this.db = new SQL.Database();
-    this.db.run('PRAGMA foreign_keys = ON');
     this.createTables();
   }
 
@@ -61,7 +57,6 @@ export class SqliteStorageAdapter implements IStoragePort {
       throw new Error('SQLite integrity check failed');
     }
 
-    // Verify tables exist
     const tables = db.exec(
       "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('symbols', 'edges', 'files')",
     );
@@ -85,8 +80,7 @@ export class SqliteStorageAdapter implements IStoragePort {
         kind TEXT NOT NULL,
         file_path TEXT NOT NULL,
         start_line INTEGER NOT NULL,
-        end_line INTEGER NOT NULL,
-        FOREIGN KEY (file_path) REFERENCES files(file_path) ON DELETE CASCADE
+        end_line INTEGER NOT NULL
       )
     `);
     db.run(`
@@ -94,9 +88,7 @@ export class SqliteStorageAdapter implements IStoragePort {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         from_symbol TEXT NOT NULL,
         to_symbol TEXT NOT NULL,
-        kind TEXT NOT NULL,
-        FOREIGN KEY (from_symbol) REFERENCES symbols(symbol_id) ON DELETE CASCADE,
-        FOREIGN KEY (to_symbol) REFERENCES symbols(symbol_id) ON DELETE CASCADE
+        kind TEXT NOT NULL
       )
     `);
     db.run('CREATE INDEX IF NOT EXISTS idx_symbols_file ON symbols(file_path)');
@@ -118,16 +110,13 @@ export class SqliteStorageAdapter implements IStoragePort {
 
     db.run('BEGIN TRANSACTION');
     try {
-      // Remove old data for this file
       this.deleteFileData(db, fileIndex.file);
 
-      // Insert file record
       db.run(
         'INSERT INTO files (file_path, last_modified) VALUES (?, ?)',
         [fileIndex.file, fileIndex.lastModified],
       );
 
-      // Insert symbols
       for (const sym of fileIndex.symbols) {
         db.run(
           'INSERT INTO symbols (symbol_id, name, kind, file_path, start_line, end_line) VALUES (?, ?, ?, ?, ?, ?)',
@@ -135,14 +124,11 @@ export class SqliteStorageAdapter implements IStoragePort {
         );
       }
 
-      // Insert edges — resolve IDs and handle FK gracefully
       for (const edge of fileIndex.edges) {
-        const resolvedEdge = {
-          from: this.resolveSymbolId(db, edge.from) ?? edge.from,
-          to: this.resolveSymbolId(db, edge.to) ?? edge.to,
-          kind: edge.kind,
-        };
-        this.tryInsertEdge(db, resolvedEdge);
+        db.run(
+          'INSERT INTO edges (from_symbol, to_symbol, kind) VALUES (?, ?, ?)',
+          [edge.from, edge.to, edge.kind],
+        );
       }
 
       db.run('COMMIT');
@@ -266,7 +252,6 @@ export class SqliteStorageAdapter implements IStoragePort {
 
     db.run('BEGIN TRANSACTION');
     try {
-      // Phase 1: Insert all files and symbols first
       for (const fileIndex of indices) {
         this.deleteFileData(db, fileIndex.file);
 
@@ -281,18 +266,12 @@ export class SqliteStorageAdapter implements IStoragePort {
             [sym.symbolId, sym.name, sym.kind, fileIndex.file, sym.startLine, sym.endLine],
           );
         }
-      }
 
-      // Phase 2: Insert edges — resolve IDs by file::name before insert
-      // (edge kind may not match actual symbol kind due to inference heuristics)
-      for (const fileIndex of indices) {
         for (const edge of fileIndex.edges) {
-          const resolvedEdge = {
-            from: this.resolveSymbolId(db, edge.from) ?? edge.from,
-            to: this.resolveSymbolId(db, edge.to) ?? edge.to,
-            kind: edge.kind,
-          };
-          this.tryInsertEdge(db, resolvedEdge);
+          db.run(
+            'INSERT INTO edges (from_symbol, to_symbol, kind) VALUES (?, ?, ?)',
+            [edge.from, edge.to, edge.kind],
+          );
         }
       }
 
@@ -320,26 +299,6 @@ export class SqliteStorageAdapter implements IStoragePort {
     }
   }
 
-  private resolveSymbolId(db: Database, id: string): string | undefined {
-    // Exact match
-    const exact = db.exec('SELECT symbol_id FROM symbols WHERE symbol_id = ?', [id]);
-    if (exact[0] && exact[0].values.length > 0) {
-      return exact[0].values[0]![0] as string;
-    }
-
-    // Fuzzy match: same file::name, different kind
-    const parts = id.split('::');
-    if (parts.length >= 2) {
-      const fileAndName = `${parts[0]}::${parts[1]}::%`;
-      const fuzzy = db.exec('SELECT symbol_id FROM symbols WHERE symbol_id LIKE ?', [fileAndName]);
-      if (fuzzy[0] && fuzzy[0].values.length > 0) {
-        return fuzzy[0].values[0]![0] as string;
-      }
-    }
-
-    return undefined;
-  }
-
   private persistIfNeeded(): void {
     try {
       this.persist();
@@ -348,33 +307,15 @@ export class SqliteStorageAdapter implements IStoragePort {
     }
   }
 
-  private tryInsertEdge(db: Database, edge: GraphEdge): void {
-    try {
-      db.run(
-        'INSERT INTO edges (from_symbol, to_symbol, kind) VALUES (?, ?, ?)',
-        [edge.from, edge.to, edge.kind],
-      );
-    } catch (err) {
-      const message = (err as Error).message;
-      if (message.includes('FOREIGN KEY constraint failed')) {
-        // Cross-file edge referencing an unindexed symbol — skip gracefully
-        return;
-      }
-      throw err;
-    }
-  }
-
   private deleteFileData(db: Database, filePath: string): void {
+    // Delete edges originating from this file's symbols
     const symResult = db.exec(
       'SELECT symbol_id FROM symbols WHERE file_path = ?',
       [filePath],
     );
     if (symResult[0]) {
       for (const row of symResult[0].values) {
-        const sid = row[0];
-        // Only delete edges originating FROM this file's symbols.
-        // Edges pointing TO these symbols belong to other files and must be preserved.
-        db.run('DELETE FROM edges WHERE from_symbol = ?', [sid]);
+        db.run('DELETE FROM edges WHERE from_symbol = ?', [row[0]]);
       }
     }
     db.run('DELETE FROM symbols WHERE file_path = ?', [filePath]);

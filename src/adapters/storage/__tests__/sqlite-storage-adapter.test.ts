@@ -60,8 +60,6 @@ describe('SqliteStorageAdapter — IStoragePort contract', () => {
   });
 
   it('returns forward edges for a given symbol', () => {
-    // Insert both files so FK on to_symbol is satisfied
-    adapter.writeSymbolFile(buildSecondFileIndex());
     adapter.writeSymbolFile(buildFileIndex());
 
     const edges = adapter.getEdgesFrom('src/foo.ts::myFn::function');
@@ -74,7 +72,6 @@ describe('SqliteStorageAdapter — IStoragePort contract', () => {
   });
 
   it('returns reverse edges pointing to a given symbol', () => {
-    adapter.writeSymbolFile(buildSecondFileIndex());
     adapter.writeSymbolFile(buildFileIndex());
 
     const edges = adapter.getEdgesTo('src/bar.ts::TokenValidator::class');

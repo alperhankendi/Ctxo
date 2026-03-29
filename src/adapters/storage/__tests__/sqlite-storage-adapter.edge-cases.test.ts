@@ -10,17 +10,14 @@ describe('SqliteStorageAdapter — corrupt DB recovery', () => {
     const cacheDir = join(tempDir, '.cache');
     mkdirSync(cacheDir, { recursive: true });
 
-    // Write corrupt data as DB file
     writeFileSync(join(cacheDir, 'symbols.db'), 'this is not a valid SQLite file', 'utf-8');
 
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const adapter = new SqliteStorageAdapter(tempDir);
     await adapter.init();
 
-    // Should recover and have empty but functional DB
     expect(adapter.listIndexedFiles()).toEqual([]);
     expect(adapter.getAllSymbols()).toEqual([]);
-
     expect(spy).toHaveBeenCalledWith(expect.stringContaining('Corrupt DB'));
 
     adapter.close();
@@ -29,13 +26,12 @@ describe('SqliteStorageAdapter — corrupt DB recovery', () => {
   });
 });
 
-describe('SqliteStorageAdapter — FK constraint handling', () => {
-  it('skips edge insert gracefully when target symbol is not indexed', async () => {
-    const tempDir = mkdtempSync(join(tmpdir(), 'ctxo-fk-'));
+describe('SqliteStorageAdapter — no FK constraints', () => {
+  it('stores edges even when target symbol does not exist (dangling edge)', async () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'ctxo-nofk-'));
     const adapter = new SqliteStorageAdapter(tempDir);
     await adapter.initEmpty();
 
-    // Write file with edge to non-existent target
     adapter.writeSymbolFile({
       file: 'src/foo.ts',
       lastModified: 1,
@@ -45,11 +41,12 @@ describe('SqliteStorageAdapter — FK constraint handling', () => {
       antiPatterns: [],
     });
 
-    // Edge should be silently skipped
+    // Edge IS stored (no FK to block it)
     const edges = adapter.getEdgesFrom('src/foo.ts::fn::function');
-    expect(edges).toEqual([]);
+    expect(edges).toHaveLength(1);
+    expect(edges[0]?.to).toBe('src/missing.ts::X::class');
 
-    // Symbol should still be written
+    // Symbol also written
     const sym = adapter.getSymbolById('src/foo.ts::fn::function');
     expect(sym?.name).toBe('fn');
 
@@ -57,8 +54,8 @@ describe('SqliteStorageAdapter — FK constraint handling', () => {
     rmSync(tempDir, { recursive: true, force: true });
   });
 
-  it('inserts edge successfully when target symbol exists via bulkWrite', async () => {
-    const tempDir = mkdtempSync(join(tmpdir(), 'ctxo-fk2-'));
+  it('stores all edges in bulkWrite regardless of insert order', async () => {
+    const tempDir = mkdtempSync(join(tmpdir(), 'ctxo-nofk2-'));
     const adapter = new SqliteStorageAdapter(tempDir);
     await adapter.initEmpty();
 
@@ -81,7 +78,6 @@ describe('SqliteStorageAdapter — FK constraint handling', () => {
       },
     ]);
 
-    // Edge should exist because both symbols were inserted in symbols-first phase
     const edges = adapter.getEdgesFrom('src/a.ts::A::function');
     expect(edges).toHaveLength(1);
     expect(edges[0]?.to).toBe('src/b.ts::B::class');

@@ -199,6 +199,36 @@ Logic Slices + Blast Radius + Architectural Overlay + Why-Context + Change Intel
 
 ---
 
+## Anti-Pattern Memory: Mevcut Uyarilar ve Sorunlar
+
+Rekabet analizinde Ctxo'nun **1 numarali benzersiz farklilastirici ozelligi** olarak tanimlanan Anti-Pattern Memory sisteminde arastirma sirasinda 5 sorun tespit edildi. Bu sorunlar, ozelligin rekabette one cikma iddiasinı zayiflatma potansiyeline sahiptir.
+
+### Sorun 1: Anti-Pattern'ler Index'e Yazilmiyor (Kritik Mimari Acik)
+
+**Etki:** Rekabet analizinde "Committed, Git-Shareable Index" ve "Anti-Pattern Memory" birlikte Ctxo'nun en buyuk farklilastiricisi olarak sunuluyor. Ancak `index-command.ts:75-76`'da `intent: []` ve `antiPatterns: []` her zaman bos. Bu, committed index'teki anti-pattern vaadini tamamen gecersiz kiliyor — takim uyeleri `git pull` yaptiginda anti-pattern bilgisi **gelmiyor**.
+
+**Rekabet etkisi:** jCodeMunch ve Depwire'a karsi "team memory" avantaji kaginizda kaliyor.
+
+### Sorun 2: Masking False Negative — `=` Prefix Bugi (Guvenlik)
+
+**Etki:** `masking-pipeline.ts:5`'teki AWS_SECRET regex'inin negative lookbehind'i `=` karakterini iceriyor. `API_SECRET=wJalrXUtnFEMI/...` formatindaki gercek secret'lar maskelenmiyor. Privacy masking pipeline rekabet analizinde "hicbir rakipte yok" olarak vurgulaniyor — bu bug o farklilastiriciyi zayiflatiyor.
+
+### Sorun 3: Git Hash False Positive Maskeleme
+
+**Etki:** Test session'da git commit hash'leri `[REDACTED:AWS_SECRET]` olarak maskelendi. `get_why_context` output'unda hash'ler okunamaz hale geliyor. Commit tarihcesi takibi bozuluyor.
+
+### Sorun 4: Revert Detection Sinirliligi
+
+**Etki:** Sadece 2 pattern destekleniyor (`Revert "..."` ve `revert: ...`). `Undo`, `rollback`, force-push kayiplari, dolayili revert'ler yakalanmiyor. Greptile'in multi-hop investigation'ina karsi bu sinirlama fark edilebilir.
+
+### Sorun 5: Test Coverage Eksiklikleri
+
+**Etki:** Git hash false positive, `=` prefix false negative ve index'e anti-pattern yazimi icin test yok. Regression riski yuksek.
+
+> **Tum sorunlar icin detayli GitHub issue'lari acildi.** Bkz. alperhankendi/Ctxo repo Issues.
+
+---
+
 ## Pazar Segmentasyonu
 
 ```
