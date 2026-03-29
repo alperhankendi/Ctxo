@@ -4,6 +4,9 @@ import { z } from 'zod';
 import { SqliteStorageAdapter } from './adapters/storage/sqlite-storage-adapter.js';
 import { MaskingPipeline } from './core/masking/masking-pipeline.js';
 import { handleGetLogicSlice } from './adapters/mcp/get-logic-slice.js';
+import { handleGetWhyContext } from './adapters/mcp/get-why-context.js';
+import { handleGetChangeIntelligence } from './adapters/mcp/get-change-intelligence.js';
+import { SimpleGitAdapter } from './adapters/git/simple-git-adapter.js';
 
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
@@ -22,12 +25,15 @@ async function main(): Promise<void> {
   await storage.init();
 
   const masking = new MaskingPipeline();
+  const git = new SimpleGitAdapter(process.cwd());
 
   // Create MCP server
   const server = new McpServer({ name: 'ctxo', version: '0.1.0' });
 
   // Register tools
   const logicSliceHandler = handleGetLogicSlice(storage, masking);
+  const whyContextHandler = handleGetWhyContext(storage, git, masking);
+  const changeIntelligenceHandler = handleGetChangeIntelligence(storage, git, masking);
 
   server.registerTool(
     'get_logic_slice',
@@ -39,6 +45,28 @@ async function main(): Promise<void> {
       },
     },
     (args) => logicSliceHandler(args),
+  );
+
+  server.registerTool(
+    'get_why_context',
+    {
+      description: 'Retrieve git commit intent, anti-pattern warnings from revert history for a symbol',
+      inputSchema: {
+        symbolId: z.string().min(1).describe('The symbol ID (format: file::name::kind)'),
+      },
+    },
+    (args) => whyContextHandler(args),
+  );
+
+  server.registerTool(
+    'get_change_intelligence',
+    {
+      description: 'Retrieve complexity x churn composite score for a symbol',
+      inputSchema: {
+        symbolId: z.string().min(1).describe('The symbol ID (format: file::name::kind)'),
+      },
+    },
+    (args) => changeIntelligenceHandler(args),
   );
 
   // Start MCP server
