@@ -21,7 +21,7 @@ export class IndexCommand {
     this.ctxoRoot = ctxoRoot ?? join(projectRoot, '.ctxo');
   }
 
-  async run(options: { file?: string; check?: boolean; skipSideEffects?: boolean } = {}): Promise<void> {
+  async run(options: { file?: string; check?: boolean; skipSideEffects?: boolean; skipHistory?: boolean } = {}): Promise<void> {
     if (options.check) {
       // Delegate to verify logic: hash-based freshness check
       return this.runCheck();
@@ -72,15 +72,20 @@ export class IndexCommand {
         const edges = adapter.extractEdges(relativePath, source);
         const complexity = adapter.extractComplexity(relativePath, source);
 
-        // Extract git history and anti-patterns
-        const commits = await gitAdapter.getCommitHistory(relativePath);
-        const intent: CommitIntent[] = commits.map((c) => ({
-          hash: c.hash,
-          message: c.message,
-          date: c.date,
-          kind: 'commit' as const,
-        }));
-        const antiPatterns: AntiPattern[] = revertDetector.detect(commits);
+        // Extract git history and anti-patterns (skip if --skip-history)
+        let intent: CommitIntent[] = [];
+        let antiPatterns: AntiPattern[] = [];
+
+        if (!options.skipHistory) {
+          const commits = await gitAdapter.getCommitHistory(relativePath);
+          intent = commits.map((c) => ({
+            hash: c.hash,
+            message: c.message,
+            date: c.date,
+            kind: 'commit' as const,
+          }));
+          antiPatterns = revertDetector.detect(commits);
+        }
 
         const fileIndex: FileIndex = {
           file: relativePath,

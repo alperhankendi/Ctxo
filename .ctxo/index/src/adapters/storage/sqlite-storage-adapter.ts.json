@@ -124,57 +124,8 @@
     }
   ],
   "file": "src/adapters/storage/sqlite-storage-adapter.ts",
-  "intent": [
-    {
-      "date": "2026-03-29T23:00:48+03:00",
-      "hash": "25a19286036cb2f61ce9939556de29f472de5406",
-      "kind": "commit",
-      "message": "Document SQLite data boundary in readSymbolFile"
-    },
-    {
-      "date": "2026-03-29T19:22:39+03:00",
-      "hash": "c7389f822bc7c290fca4709cb71fb6beb9011a2e",
-      "kind": "commit",
-      "message": "Remove FK constraints from edges table — zero edge loss"
-    },
-    {
-      "date": "2026-03-29T19:16:28+03:00",
-      "hash": "d496a4d99452fd8c91660a64f26927d5a23a9885",
-      "kind": "commit",
-      "message": "Fix empty edges in MCP tools: resolve symbol IDs before SQLite insert"
-    },
-    {
-      "date": "2026-03-29T18:40:27+03:00",
-      "hash": "8f6be2d264ea742495afd6783ac22f6fd06e6945",
-      "kind": "commit",
-      "message": "Fix both V1 blockers: TypeScript strict mode and test coverage gate"
-    },
-    {
-      "date": "2026-03-29T16:52:30+03:00",
-      "hash": "d8f2f5cae3da8d4749427961bfbd9983cf18da22",
-      "kind": "commit",
-      "message": "Restore to_symbol FK with graceful error handling for cross-file edges"
-    },
-    {
-      "date": "2026-03-29T16:49:13+03:00",
-      "hash": "3d2a69146903edf71a1a4e6797c8f392620ba4b7",
-      "kind": "commit",
-      "message": "Fix 7 runtime bugs from second code review"
-    },
-    {
-      "date": "2026-03-29T16:17:42+03:00",
-      "hash": "7b96d982fdf4c6fd753beeb4129181f9ad91ddb8",
-      "kind": "commit",
-      "message": "Fix 10 runtime bugs found in code review"
-    },
-    {
-      "date": "2026-03-29T15:50:38+03:00",
-      "hash": "a55ee9addcea4a1b3da5a93e6acb2b979c5fb5c8",
-      "kind": "commit",
-      "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
-    }
-  ],
-  "lastModified": 1774815982,
+  "intent": [],
+  "lastModified": 1774816256,
   "symbols": [
     {
       "endLine": 360,

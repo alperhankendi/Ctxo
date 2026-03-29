@@ -51,9 +51,9 @@ describe('ArchitecturalOverlay', () => {
     expect(result.layers).toEqual({});
   });
 
-  it('handles flat project structure (all Unknown)', () => {
-    const result = overlay.classify(['main.ts', 'config.ts', 'server.ts']);
-    expect(result.layers['Unknown']).toHaveLength(3);
+  it('handles flat project structure (mostly Unknown)', () => {
+    const result = overlay.classify(['main.ts', 'server.ts']);
+    expect(result.layers['Unknown']).toHaveLength(2);
   });
 
   it('classifies cli/ files as "Adapter" layer', () => {
@@ -64,5 +64,20 @@ describe('ArchitecturalOverlay', () => {
   it('classifies ports/ files as "Domain" layer', () => {
     const result = overlay.classify(['src/ports/i-storage-port.ts']);
     expect(result.layers['Domain']).toContain('src/ports/i-storage-port.ts');
+  });
+
+  it('classifies src/index.ts as "Composition" layer', () => {
+    const result = overlay.classify(['src/index.ts']);
+    expect(result.layers['Composition']).toContain('src/index.ts');
+  });
+
+  it('classifies __tests__ files as "Test" layer', () => {
+    const result = overlay.classify(['src/core/__tests__/types.test.ts']);
+    expect(result.layers['Test']).toContain('src/core/__tests__/types.test.ts');
+  });
+
+  it('classifies config files as "Configuration" layer', () => {
+    const result = overlay.classify(['vitest.config.ts', 'eslint.config.js']);
+    expect(result.layers['Configuration']).toHaveLength(2);
   });
 });

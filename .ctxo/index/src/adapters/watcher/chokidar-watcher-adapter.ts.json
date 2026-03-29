@@ -29,21 +29,8 @@
     }
   ],
   "file": "src/adapters/watcher/chokidar-watcher-adapter.ts",
-  "intent": [
-    {
-      "date": "2026-03-29T18:04:41+03:00",
-      "hash": "14ae301297b9ed59b992950d4daeb25a526839b9",
-      "kind": "commit",
-      "message": "Fix 5 runtime bugs from round 4 review"
-    },
-    {
-      "date": "2026-03-29T17:58:07+03:00",
-      "hash": "b0f34073ee0bb04e55278df51db645921aa3ee16",
-      "kind": "commit",
-      "message": "Complete Phase 9: content hasher, watcher port/adapter extraction"
-    }
-  ],
-  "lastModified": 1774815982,
+  "intent": [],
+  "lastModified": 1774816256,
   "symbols": [
     {
       "endLine": 43,

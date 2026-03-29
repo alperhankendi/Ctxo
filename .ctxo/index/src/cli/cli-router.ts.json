@@ -10,7 +10,7 @@
       "symbolId": "src/cli/cli-router.ts::CliRouter.printHelp::method"
     }
   ],
-  "contentHash": "d9ec53c3cf23c343c2da029821a32647ad42eb607808bc7e9987f05996d22f67",
+  "contentHash": "4c993d2bffd429eefae939c52696b29c8a3ab992e5cc3dda033ca884de777163",
   "edges": [
     {
       "from": "src/cli/cli-router.ts::CliRouter::class",
@@ -44,53 +44,28 @@
     }
   ],
   "file": "src/cli/cli-router.ts",
-  "intent": [
-    {
-      "date": "2026-03-29T18:04:41+03:00",
-      "hash": "14ae301297b9ed59b992950d4daeb25a526839b9",
-      "kind": "commit",
-      "message": "Fix 5 runtime bugs from round 4 review"
-    },
-    {
-      "date": "2026-03-29T17:20:34+03:00",
-      "hash": "031d4b7cd1c78c1c839c3076b65bdc644d33d38f",
-      "kind": "commit",
-      "message": "Fix 5 bugs, implement missing FRs, add NFR benchmarks and staleness"
-    },
-    {
-      "date": "2026-03-29T17:04:40+03:00",
-      "hash": "eb20d2b2554911bbbd82c8d4ccc377b495fda13f",
-      "kind": "commit",
-      "message": "Implement all CLI commands and add comprehensive test coverage"
-    },
-    {
-      "date": "2026-03-29T16:23:42+03:00",
-      "hash": "98ebb212e830854e7c2a31edaba34847eb0cfbfd",
-      "kind": "commit",
-      "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
-    }
-  ],
-  "lastModified": 1774815982,
+  "intent": [],
+  "lastModified": 1774816257,
   "symbols": [
     {
-      "endLine": 76,
+      "endLine": 77,
       "kind": "class",
       "name": "CliRouter",
       "startLine": 7,
       "symbolId": "src/cli/cli-router.ts::CliRouter::class"
     },
     {
-      "endLine": 59,
+      "endLine": 60,
       "kind": "method",
       "name": "CliRouter.route",
       "startLine": 14,
       "symbolId": "src/cli/cli-router.ts::CliRouter.route::method"
     },
     {
-      "endLine": 75,
+      "endLine": 76,
       "kind": "method",
       "name": "CliRouter.printHelp",
-      "startLine": 61,
+      "startLine": 62,
       "symbolId": "src/cli/cli-router.ts::CliRouter.printHelp::method"
     }
   ]

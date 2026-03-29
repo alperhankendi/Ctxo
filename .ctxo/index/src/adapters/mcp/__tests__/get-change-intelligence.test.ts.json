@@ -35,20 +35,7 @@
     }
   ],
   "file": "src/adapters/mcp/__tests__/get-change-intelligence.test.ts",
-  "intent": [
-    {
-      "date": "2026-03-29T22:49:58+03:00",
-      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
-      "kind": "commit",
-      "message": "Fix 12 feature completeness gaps found in deep audit"
-    },
-    {
-      "date": "2026-03-29T17:01:15+03:00",
-      "hash": "847c9de113d6e3dee775691573768284c067c359",
-      "kind": "commit",
-      "message": "Add missing MCP handler tests and edge case coverage"
-    }
-  ],
-  "lastModified": 1774815981,
+  "intent": [],
+  "lastModified": 1774816256,
   "symbols": []
 }

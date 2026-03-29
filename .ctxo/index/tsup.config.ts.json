@@ -4,20 +4,7 @@
   "contentHash": "2cf124dd06d53d5981b099cecf32f0033d69f3fca4ff4206b52c75e1a46449d7",
   "edges": [],
   "file": "tsup.config.ts",
-  "intent": [
-    {
-      "date": "2026-03-29T15:50:38+03:00",
-      "hash": "a55ee9addcea4a1b3da5a93e6acb2b979c5fb5c8",
-      "kind": "commit",
-      "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
-    },
-    {
-      "date": "2026-03-29T15:43:28+03:00",
-      "hash": "f9bfea331e6ebdaf0733822d6f8d5b29a106d465",
-      "kind": "commit",
-      "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
-    }
-  ],
-  "lastModified": 1774815985,
+  "intent": [],
+  "lastModified": 1774816257,
   "symbols": []
 }

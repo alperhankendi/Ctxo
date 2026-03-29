@@ -67,33 +67,8 @@
     }
   ],
   "file": "src/adapters/mcp/get-logic-slice.ts",
-  "intent": [
-    {
-      "date": "2026-03-29T19:36:39+03:00",
-      "hash": "fe25908f1b52456c787f056d764a44307cfc32ba",
-      "kind": "commit",
-      "message": "Fix MCP tools reading stale data: build graph from JSON index, not SQLite"
-    },
-    {
-      "date": "2026-03-29T17:20:34+03:00",
-      "hash": "031d4b7cd1c78c1c839c3076b65bdc644d33d38f",
-      "kind": "commit",
-      "message": "Fix 5 bugs, implement missing FRs, add NFR benchmarks and staleness"
-    },
-    {
-      "date": "2026-03-29T16:17:42+03:00",
-      "hash": "7b96d982fdf4c6fd753beeb4129181f9ad91ddb8",
-      "kind": "commit",
-      "message": "Fix 10 runtime bugs found in code review"
-    },
-    {
-      "date": "2026-03-29T16:04:56+03:00",
-      "hash": "fa4701d71ac553fd4fb73614c21446fa5e1896c7",
-      "kind": "commit",
-      "message": "Add MCP server with get_logic_slice tool and privacy masking pipeline"
-    }
-  ],
-  "lastModified": 1774815981,
+  "intent": [],
+  "lastModified": 1774816256,
   "symbols": [
     {
       "endLine": 25,

@@ -50,68 +50,7 @@
     }
   ],
   "file": "src/index.ts",
-  "intent": [
-    {
-      "date": "2026-03-29T22:49:58+03:00",
-      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
-      "kind": "commit",
-      "message": "Fix 12 feature completeness gaps found in deep audit"
-    },
-    {
-      "date": "2026-03-29T19:36:39+03:00",
-      "hash": "fe25908f1b52456c787f056d764a44307cfc32ba",
-      "kind": "commit",
-      "message": "Fix MCP tools reading stale data: build graph from JSON index, not SQLite"
-    },
-    {
-      "date": "2026-03-29T17:30:08+03:00",
-      "hash": "a494f9d485aa9268a5e63ad0aad321caecc0e2d8",
-      "kind": "commit",
-      "message": "Add missing CLI tests, wire staleness into all 5 MCP tools, configure npm pack"
-    },
-    {
-      "date": "2026-03-29T17:20:34+03:00",
-      "hash": "031d4b7cd1c78c1c839c3076b65bdc644d33d38f",
-      "kind": "commit",
-      "message": "Fix 5 bugs, implement missing FRs, add NFR benchmarks and staleness"
-    },
-    {
-      "date": "2026-03-29T16:35:14+03:00",
-      "hash": "1b61fa7811ad1bc58a6c475de7b8b6582d17be7e",
-      "kind": "commit",
-      "message": "Add blast radius calculator and architectural overlay"
-    },
-    {
-      "date": "2026-03-29T16:31:14+03:00",
-      "hash": "a193b5f72cb6284291ba0e38fdc13017e0953816",
-      "kind": "commit",
-      "message": "Add git adapter, why-context, and change intelligence modules"
-    },
-    {
-      "date": "2026-03-29T16:23:42+03:00",
-      "hash": "98ebb212e830854e7c2a31edaba34847eb0cfbfd",
-      "kind": "commit",
-      "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
-    },
-    {
-      "date": "2026-03-29T16:04:56+03:00",
-      "hash": "fa4701d71ac553fd4fb73614c21446fa5e1896c7",
-      "kind": "commit",
-      "message": "Add MCP server with get_logic_slice tool and privacy masking pipeline"
-    },
-    {
-      "date": "2026-03-29T15:44:52+03:00",
-      "hash": "c808049d680a6d3e8b9cb47ed0f4586e16d623c1",
-      "kind": "commit",
-      "message": "Replace deprecated Server with McpServer from MCP SDK"
-    },
-    {
-      "date": "2026-03-29T15:43:28+03:00",
-      "hash": "f9bfea331e6ebdaf0733822d6f8d5b29a106d465",
-      "kind": "commit",
-      "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
-    }
-  ],
-  "lastModified": 1774815984,
+  "intent": [],
+  "lastModified": 1774816257,
   "symbols": []
 }

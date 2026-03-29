@@ -29,7 +29,8 @@ export class CliRouter {
           process.exit(1);
         }
         const checkArg = args.includes('--check');
-        await new IndexCommand(this.projectRoot).run({ file: fileArg, check: checkArg });
+        const skipHistory = args.includes('--skip-history');
+        await new IndexCommand(this.projectRoot).run({ file: fileArg, check: checkArg, skipHistory });
         break;
       }
 

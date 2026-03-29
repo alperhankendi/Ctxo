@@ -25,14 +25,7 @@
     }
   ],
   "file": "src/cli/__tests__/status-command.test.ts",
-  "intent": [
-    {
-      "date": "2026-03-29T17:04:40+03:00",
-      "hash": "eb20d2b2554911bbbd82c8d4ccc377b495fda13f",
-      "kind": "commit",
-      "message": "Implement all CLI commands and add comprehensive test coverage"
-    }
-  ],
-  "lastModified": 1774815982,
+  "intent": [],
+  "lastModified": 1774816257,
   "symbols": []
 }

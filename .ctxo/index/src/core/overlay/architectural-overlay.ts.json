@@ -10,44 +10,31 @@
       "symbolId": "src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay.matchLayer::method"
     }
   ],
-  "contentHash": "dbbc46b01d041e1c7dab72b68624e8a240f47abf16c774fc8eb0ca2b66d03334",
+  "contentHash": "3090d041a35e85305fb8895146bf0f452a5e7c1f07da33cc05e24a3ae48f72e7",
   "edges": [],
   "file": "src/core/overlay/architectural-overlay.ts",
-  "intent": [
-    {
-      "date": "2026-03-29T16:49:13+03:00",
-      "hash": "3d2a69146903edf71a1a4e6797c8f392620ba4b7",
-      "kind": "commit",
-      "message": "Fix 7 runtime bugs from second code review"
-    },
-    {
-      "date": "2026-03-29T16:35:14+03:00",
-      "hash": "1b61fa7811ad1bc58a6c475de7b8b6582d17be7e",
-      "kind": "commit",
-      "message": "Add blast radius calculator and architectural overlay"
-    }
-  ],
-  "lastModified": 1774815984,
+  "intent": [],
+  "lastModified": 1774816257,
   "symbols": [
     {
-      "endLine": 50,
+      "endLine": 62,
       "kind": "class",
       "name": "ArchitecturalOverlay",
-      "startLine": 19,
+      "startLine": 31,
       "symbolId": "src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class"
     },
     {
-      "endLine": 40,
+      "endLine": 52,
       "kind": "method",
       "name": "ArchitecturalOverlay.classify",
-      "startLine": 29,
+      "startLine": 41,
       "symbolId": "src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay.classify::method"
     },
     {
-      "endLine": 49,
+      "endLine": 61,
       "kind": "method",
       "name": "ArchitecturalOverlay.matchLayer",
-      "startLine": 42,
+      "startLine": 54,
       "symbolId": "src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay.matchLayer::method"
     },
     {

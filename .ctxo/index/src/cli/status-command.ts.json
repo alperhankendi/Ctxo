@@ -24,21 +24,8 @@
     }
   ],
   "file": "src/cli/status-command.ts",
-  "intent": [
-    {
-      "date": "2026-03-29T22:49:58+03:00",
-      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
-      "kind": "commit",
-      "message": "Fix 12 feature completeness gaps found in deep audit"
-    },
-    {
-      "date": "2026-03-29T17:04:40+03:00",
-      "hash": "eb20d2b2554911bbbd82c8d4ccc377b495fda13f",
-      "kind": "commit",
-      "message": "Implement all CLI commands and add comprehensive test coverage"
-    }
-  ],
-  "lastModified": 1774815983,
+  "intent": [],
+  "lastModified": 1774816257,
   "symbols": [
     {
       "endLine": 69,

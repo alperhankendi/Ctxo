@@ -2,7 +2,7 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 9,
+      "cyclomatic": 10,
       "symbolId": "src/cli/index-command.ts::IndexCommand.run::method"
     },
     {
@@ -26,7 +26,7 @@
       "symbolId": "src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
     }
   ],
-  "contentHash": "f9c88d117c160dfb7d7de0441fc4662627b27f7e6c1945ee27fb751f9dc57c5a",
+  "contentHash": "254b53e3c55d7b6abdd1e22d22a0c9ec915bcb92f13b942500c7391518ec8d32",
   "edges": [
     {
       "from": "src/cli/index-command.ts::IndexCommand::class",
@@ -85,99 +85,56 @@
     }
   ],
   "file": "src/cli/index-command.ts",
-  "intent": [
-    {
-      "date": "2026-03-29T22:49:58+03:00",
-      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
-      "kind": "commit",
-      "message": "Fix 12 feature completeness gaps found in deep audit"
-    },
-    {
-      "date": "2026-03-29T22:26:48+03:00",
-      "hash": "86b1e42ec06563ce4fbdb226678280895e2fc456",
-      "kind": "commit",
-      "message": "Populate intent and antiPatterns during indexing (fixes #1)"
-    },
-    {
-      "date": "2026-03-29T18:04:41+03:00",
-      "hash": "14ae301297b9ed59b992950d4daeb25a526839b9",
-      "kind": "commit",
-      "message": "Fix 5 runtime bugs from round 4 review"
-    },
-    {
-      "date": "2026-03-29T17:58:07+03:00",
-      "hash": "b0f34073ee0bb04e55278df51db645921aa3ee16",
-      "kind": "commit",
-      "message": "Complete Phase 9: content hasher, watcher port/adapter extraction"
-    },
-    {
-      "date": "2026-03-29T17:20:34+03:00",
-      "hash": "031d4b7cd1c78c1c839c3076b65bdc644d33d38f",
-      "kind": "commit",
-      "message": "Fix 5 bugs, implement missing FRs, add NFR benchmarks and staleness"
-    },
-    {
-      "date": "2026-03-29T16:49:13+03:00",
-      "hash": "3d2a69146903edf71a1a4e6797c8f392620ba4b7",
-      "kind": "commit",
-      "message": "Fix 7 runtime bugs from second code review"
-    },
-    {
-      "date": "2026-03-29T16:23:42+03:00",
-      "hash": "98ebb212e830854e7c2a31edaba34847eb0cfbfd",
-      "kind": "commit",
-      "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
-    }
-  ],
-  "lastModified": 1774815982,
+  "intent": [],
+  "lastModified": 1774816257,
   "symbols": [
     {
-      "endLine": 261,
+      "endLine": 266,
       "kind": "class",
       "name": "IndexCommand",
       "startLine": 14,
       "symbolId": "src/cli/index-command.ts::IndexCommand::class"
     },
     {
-      "endLine": 125,
+      "endLine": 130,
       "kind": "method",
       "name": "IndexCommand.run",
       "startLine": 23,
       "symbolId": "src/cli/index-command.ts::IndexCommand.run::method"
     },
     {
-      "endLine": 145,
+      "endLine": 150,
       "kind": "method",
       "name": "IndexCommand.discoverFilesIn",
-      "startLine": 127,
+      "startLine": 132,
       "symbolId": "src/cli/index-command.ts::IndexCommand.discoverFilesIn::method"
-    },
-    {
-      "endLine": 188,
-      "kind": "method",
-      "name": "IndexCommand.discoverWorkspaces",
-      "startLine": 147,
-      "symbolId": "src/cli/index-command.ts::IndexCommand.discoverWorkspaces::method"
     },
     {
       "endLine": 193,
       "kind": "method",
+      "name": "IndexCommand.discoverWorkspaces",
+      "startLine": 152,
+      "symbolId": "src/cli/index-command.ts::IndexCommand.discoverWorkspaces::method"
+    },
+    {
+      "endLine": 198,
+      "kind": "method",
       "name": "IndexCommand.isSupportedExtension",
-      "startLine": 190,
+      "startLine": 195,
       "symbolId": "src/cli/index-command.ts::IndexCommand.isSupportedExtension::method"
     },
     {
-      "endLine": 247,
+      "endLine": 252,
       "kind": "method",
       "name": "IndexCommand.runCheck",
-      "startLine": 195,
+      "startLine": 200,
       "symbolId": "src/cli/index-command.ts::IndexCommand.runCheck::method"
     },
     {
-      "endLine": 260,
+      "endLine": 265,
       "kind": "method",
       "name": "IndexCommand.ensureGitignore",
-      "startLine": 249,
+      "startLine": 254,
       "symbolId": "src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
     }
   ]

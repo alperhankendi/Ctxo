@@ -4,27 +4,8 @@
   "contentHash": "0dcb4c97f8389c5924ab33b3e45e571f6cc513fdbc380b0fb0d049043e599026",
   "edges": [],
   "file": "src/core/types.ts",
-  "intent": [
-    {
-      "date": "2026-03-29T22:49:58+03:00",
-      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
-      "kind": "commit",
-      "message": "Fix 12 feature completeness gaps found in deep audit"
-    },
-    {
-      "date": "2026-03-29T17:58:07+03:00",
-      "hash": "b0f34073ee0bb04e55278df51db645921aa3ee16",
-      "kind": "commit",
-      "message": "Complete Phase 9: content hasher, watcher port/adapter extraction"
-    },
-    {
-      "date": "2026-03-29T15:43:28+03:00",
-      "hash": "f9bfea331e6ebdaf0733822d6f8d5b29a106d465",
-      "kind": "commit",
-      "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
-    }
-  ],
-  "lastModified": 1774815984,
+  "intent": [],
+  "lastModified": 1774816257,
   "symbols": [
     {
       "endLine": 130,

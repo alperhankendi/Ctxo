@@ -4,14 +4,7 @@
   "contentHash": "7bbad02fa4bc8d6f16a5fa1003eb9fbb6182082327de6f9f203f11105146d72b",
   "edges": [],
   "file": "vitest.config.e2e.ts",
-  "intent": [
-    {
-      "date": "2026-03-29T21:22:56+03:00",
-      "hash": "12e098e603181fccac6132d88a0fce7ecf7d14f8",
-      "kind": "commit",
-      "message": "Add CI/CD pipelines with test reporting and npm publish"
-    }
-  ],
-  "lastModified": 1774815985,
+  "intent": [],
+  "lastModified": 1774816257,
   "symbols": []
 }

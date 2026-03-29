@@ -8,13 +8,25 @@ export interface OverlayResult {
 }
 
 const DEFAULT_RULES: LayerRule[] = [
+  // Test layer (matched first — __tests__, .test.ts, tests/, fixtures)
+  { pattern: /__tests__/, layer: 'Test' },
+  { pattern: /\.test\.ts$/, layer: 'Test' },
+  { pattern: /\btests\b/, layer: 'Test' },
+  { pattern: /\bfixtures?\b/, layer: 'Test' },
+  // Composition root
+  { pattern: /src\/index\.ts$/, layer: 'Composition' },
+  // Domain
   { pattern: /\bcore\b/, layer: 'Domain' },
   { pattern: /\bports?\b/, layer: 'Domain' },
+  // Adapter
   { pattern: /\badapters?\b/, layer: 'Adapter' },
+  { pattern: /\bcli\b/, layer: 'Adapter' },
+  // Infrastructure
   { pattern: /\binfra\b/, layer: 'Infrastructure' },
   { pattern: /\bdb\b/, layer: 'Infrastructure' },
   { pattern: /\bqueue\b/, layer: 'Infrastructure' },
-  { pattern: /\bcli\b/, layer: 'Adapter' },
+  // Config files
+  { pattern: /\.(config|rc)\.(ts|js|json)$/, layer: 'Configuration' },
 ];
 
 export class ArchitecturalOverlay {
