@@ -59,7 +59,27 @@ jobs:
           reporter: java-junit
           fail-on-error: true
 
-      - name: Coverage Summary on PR
+      - name: Coverage Summary
+        if: always() && matrix.node-version == 22
+        run: |
+          echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f coverage/coverage-summary.json ]; then
+            node -e "
+              const r = require('./coverage/coverage-summary.json').total;
+              const fmt = (m) => \`\${m.pct}% (\${m.covered}/\${m.total})\`;
+              const icon = (pct) => pct >= 90 ? '✅' : pct >= 70 ? '⚠️' : '❌';
+              console.log('| Metric | Coverage | Status |');
+              console.log('|--------|----------|--------|');
+              for (const [key, val] of Object.entries(r)) {
+                console.log(\`| \${key} | \${fmt(val)} | \${icon(val.pct)} |\`);
+              }
+            " >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ No coverage data found" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Coverage PR Comment
         if: matrix.node-version == 22 && github.event_name == 'pull_request'
         uses: davelosert/vitest-coverage-report-action@v2
         with:
@@ -102,6 +122,23 @@ jobs:
           path: test-results/junit-e2e.xml
           reporter: java-junit
           fail-on-error: true
+
+      - name: E2E Summary
+        if: always()
+        run: |
+          echo "## E2E Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f test-results/junit-e2e.xml ]; then
+            TESTS=$(grep -o 'tests="[0-9]*"' test-results/junit-e2e.xml | head -1 | grep -o '[0-9]*')
+            FAILURES=$(grep -o 'failures="[0-9]*"' test-results/junit-e2e.xml | head -1 | grep -o '[0-9]*')
+            if [ "$FAILURES" = "0" ]; then
+              echo "✅ All $TESTS E2E tests passed" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ $FAILURES/$TESTS E2E tests failed" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "⚠️ No E2E test results found" >> $GITHUB_STEP_SUMMARY
+          fi
 
   build:
     name: Build & Pack
