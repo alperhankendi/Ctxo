@@ -3,10 +3,10 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     globals: true,
-    include: ['src/**/__tests__/**/*.test.ts', 'tests/**/*.test.ts'],
+    include: ['src/**/__tests__/**/*.test.ts'],
     reporters: ['default', 'junit'],
     outputFile: {
-      junit: 'test-results/junit.xml',
+      junit: 'test-results/junit-unit.xml',
     },
     coverage: {
       provider: 'v8',
