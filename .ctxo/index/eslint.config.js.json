@@ -4,7 +4,14 @@
   "contentHash": "848f608af4c86c691da6069befdfe802ad3a7f3670506fe01bdde81ddae71332",
   "edges": [],
   "file": "eslint.config.js",
-  "intent": [],
-  "lastModified": 1774816256,
+  "intent": [
+    {
+      "date": "2026-03-29T15:43:28+03:00",
+      "hash": "f9bfea331e6ebdaf0733822d6f8d5b29a106d465",
+      "kind": "commit",
+      "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
+    }
+  ],
+  "lastModified": 1774817136,
   "symbols": []
 }

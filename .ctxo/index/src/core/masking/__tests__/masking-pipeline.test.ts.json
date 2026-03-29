@@ -10,7 +10,20 @@
     }
   ],
   "file": "src/core/masking/__tests__/masking-pipeline.test.ts",
-  "intent": [],
-  "lastModified": 1774816257,
+  "intent": [
+    {
+      "date": "2026-03-29T18:40:27+03:00",
+      "hash": "8f6be2d264ea742495afd6783ac22f6fd06e6945",
+      "kind": "commit",
+      "message": "Fix both V1 blockers: TypeScript strict mode and test coverage gate"
+    },
+    {
+      "date": "2026-03-29T16:04:56+03:00",
+      "hash": "fa4701d71ac553fd4fb73614c21446fa5e1896c7",
+      "kind": "commit",
+      "message": "Add MCP server with get_logic_slice tool and privacy masking pipeline"
+    }
+  ],
+  "lastModified": 1774817140,
   "symbols": []
 }

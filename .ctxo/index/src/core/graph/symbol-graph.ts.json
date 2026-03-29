@@ -56,8 +56,21 @@
     }
   ],
   "file": "src/core/graph/symbol-graph.ts",
-  "intent": [],
-  "lastModified": 1774816257,
+  "intent": [
+    {
+      "date": "2026-03-29T19:09:54+03:00",
+      "hash": "0e90f2bd51bb62190c9f24724b16ef058acca1c0",
+      "kind": "commit",
+      "message": "Fix 3 dogfooding bugs: masking false positive, edge paths, fuzzy matching"
+    },
+    {
+      "date": "2026-03-29T16:00:19+03:00",
+      "hash": "ea1b4eac08116b13d556ba9c194c115c5a4c1fd9",
+      "kind": "commit",
+      "message": "Add core graph, logic-slice query, and detail formatter"
+    }
+  ],
+  "lastModified": 1774817140,
   "symbols": [
     {
       "endLine": 91,

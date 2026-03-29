@@ -34,7 +34,7 @@
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.truncateToTokenBudget::method"
     }
   ],
-  "contentHash": "a64f302b89989170887f196356f56dd2d05bd3bdd8c65cb978793b458ca88ad9",
+  "contentHash": "87fa1f1923e497fc37ad7e6853db2d47b817a3d1a655e436ce13718ac0f1b3fb",
   "edges": [
     {
       "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
@@ -63,11 +63,30 @@
     }
   ],
   "file": "src/core/detail-levels/detail-formatter.ts",
-  "intent": [],
-  "lastModified": 1774816257,
+  "intent": [
+    {
+      "date": "2026-03-29T23:36:52+03:00",
+      "hash": "4172928b846a1f1bd60f0c82d30e1009b1aeaed5",
+      "kind": "commit",
+      "message": "Add level descriptions, batch query support, verify staleness (#9-#11)"
+    },
+    {
+      "date": "2026-03-29T22:49:58+03:00",
+      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
+      "kind": "commit",
+      "message": "Fix 12 feature completeness gaps found in deep audit"
+    },
+    {
+      "date": "2026-03-29T16:00:19+03:00",
+      "hash": "ea1b4eac08116b13d556ba9c194c115c5a4c1fd9",
+      "kind": "commit",
+      "message": "Add core graph, logic-slice query, and detail formatter"
+    }
+  ],
+  "lastModified": 1774817140,
   "symbols": [
     {
-      "endLine": 131,
+      "endLine": 134,
       "kind": "class",
       "name": "DetailFormatter",
       "startLine": 11,
@@ -88,45 +107,45 @@
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL1::method"
     },
     {
-      "endLine": 55,
+      "endLine": 56,
       "kind": "method",
       "name": "DetailFormatter.formatL2",
       "startLine": 43,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL2::method"
     },
     {
-      "endLine": 65,
+      "endLine": 66,
       "kind": "method",
       "name": "DetailFormatter.formatL3",
-      "startLine": 57,
+      "startLine": 58,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL3::method"
     },
     {
-      "endLine": 90,
+      "endLine": 93,
       "kind": "method",
       "name": "DetailFormatter.formatL4",
-      "startLine": 67,
+      "startLine": 68,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL4::method"
     },
     {
-      "endLine": 102,
+      "endLine": 105,
       "kind": "method",
       "name": "DetailFormatter.estimateTokens",
-      "startLine": 92,
+      "startLine": 95,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.estimateTokens::method"
     },
     {
-      "endLine": 107,
+      "endLine": 110,
       "kind": "method",
       "name": "DetailFormatter.symbolCharEstimate",
-      "startLine": 104,
+      "startLine": 107,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.symbolCharEstimate::method"
     },
     {
-      "endLine": 130,
+      "endLine": 133,
       "kind": "method",
       "name": "DetailFormatter.truncateToTokenBudget",
-      "startLine": 109,
+      "startLine": 112,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.truncateToTokenBudget::method"
     }
   ]

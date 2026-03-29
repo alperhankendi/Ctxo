@@ -4,7 +4,20 @@
   "contentHash": "b89045f95dcb98d041f4dca1d33a0304f66e5ee112cb91612f1326e80e29c749",
   "edges": [],
   "file": "vitest.config.unit.ts",
-  "intent": [],
-  "lastModified": 1774816257,
+  "intent": [
+    {
+      "date": "2026-03-29T21:22:56+03:00",
+      "hash": "12e098e603181fccac6132d88a0fce7ecf7d14f8",
+      "kind": "commit",
+      "message": "Add CI/CD pipelines with test reporting and npm publish"
+    },
+    {
+      "date": "2026-03-29T15:43:28+03:00",
+      "hash": "f9bfea331e6ebdaf0733822d6f8d5b29a106d465",
+      "kind": "commit",
+      "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
+    }
+  ],
+  "lastModified": 1774817141,
   "symbols": []
 }

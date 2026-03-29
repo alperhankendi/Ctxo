@@ -40,7 +40,14 @@
     }
   ],
   "file": "src/core/__tests__/types.test.ts",
-  "intent": [],
-  "lastModified": 1774816257,
+  "intent": [
+    {
+      "date": "2026-03-29T15:43:28+03:00",
+      "hash": "f9bfea331e6ebdaf0733822d6f8d5b29a106d465",
+      "kind": "commit",
+      "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
+    }
+  ],
+  "lastModified": 1774817139,
   "symbols": []
 }

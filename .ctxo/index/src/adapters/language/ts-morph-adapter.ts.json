@@ -132,8 +132,39 @@
     }
   ],
   "file": "src/adapters/language/ts-morph-adapter.ts",
-  "intent": [],
-  "lastModified": 1774816256,
+  "intent": [
+    {
+      "date": "2026-03-29T23:26:42+03:00",
+      "hash": "c174261c1f40756df2dd5dffd5fdf4f02a72e5b7",
+      "kind": "commit",
+      "message": "Add calls edge extraction + remove changeIntelligence overlap"
+    },
+    {
+      "date": "2026-03-29T19:09:54+03:00",
+      "hash": "0e90f2bd51bb62190c9f24724b16ef058acca1c0",
+      "kind": "commit",
+      "message": "Fix 3 dogfooding bugs: masking false positive, edge paths, fuzzy matching"
+    },
+    {
+      "date": "2026-03-29T16:49:13+03:00",
+      "hash": "3d2a69146903edf71a1a4e6797c8f392620ba4b7",
+      "kind": "commit",
+      "message": "Fix 7 runtime bugs from second code review"
+    },
+    {
+      "date": "2026-03-29T16:17:42+03:00",
+      "hash": "7b96d982fdf4c6fd753beeb4129181f9ad91ddb8",
+      "kind": "commit",
+      "message": "Fix 10 runtime bugs found in code review"
+    },
+    {
+      "date": "2026-03-29T15:55:40+03:00",
+      "hash": "07a8564dae8012725a823d0ac4171e1ea092921d",
+      "kind": "commit",
+      "message": "Add TypeScript language adapter with ts-morph symbol/edge/complexity extraction"
+    }
+  ],
+  "lastModified": 1774817137,
   "symbols": [
     {
       "endLine": 569,

@@ -14,11 +14,11 @@
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
     },
     {
-      "cyclomatic": 7,
+      "cyclomatic": 11,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function"
     }
   ],
-  "contentHash": "93c5f279680e1662b5e894a5554e0143b8f851698e63e9e81fb8786c3f9cf07d",
+  "contentHash": "17c1e16b7aea61ecb12cc4890d5107300c9720527eb11edf327f328e1438f38c",
   "edges": [
     {
       "from": "src/adapters/mcp/get-logic-slice.ts::getLogicSliceInputSchema::function",
@@ -67,49 +67,80 @@
     }
   ],
   "file": "src/adapters/mcp/get-logic-slice.ts",
-  "intent": [],
-  "lastModified": 1774816256,
+  "intent": [
+    {
+      "date": "2026-03-29T23:36:52+03:00",
+      "hash": "4172928b846a1f1bd60f0c82d30e1009b1aeaed5",
+      "kind": "commit",
+      "message": "Add level descriptions, batch query support, verify staleness (#9-#11)"
+    },
+    {
+      "date": "2026-03-29T19:36:39+03:00",
+      "hash": "fe25908f1b52456c787f056d764a44307cfc32ba",
+      "kind": "commit",
+      "message": "Fix MCP tools reading stale data: build graph from JSON index, not SQLite"
+    },
+    {
+      "date": "2026-03-29T17:20:34+03:00",
+      "hash": "031d4b7cd1c78c1c839c3076b65bdc644d33d38f",
+      "kind": "commit",
+      "message": "Fix 5 bugs, implement missing FRs, add NFR benchmarks and staleness"
+    },
+    {
+      "date": "2026-03-29T16:17:42+03:00",
+      "hash": "7b96d982fdf4c6fd753beeb4129181f9ad91ddb8",
+      "kind": "commit",
+      "message": "Fix 10 runtime bugs found in code review"
+    },
+    {
+      "date": "2026-03-29T16:04:56+03:00",
+      "hash": "fa4701d71ac553fd4fb73614c21446fa5e1896c7",
+      "kind": "commit",
+      "message": "Add MCP server with get_logic_slice tool and privacy masking pipeline"
+    }
+  ],
+  "lastModified": 1774817137,
   "symbols": [
     {
-      "endLine": 25,
+      "endLine": 29,
       "kind": "function",
       "name": "getLogicSliceInputSchema",
-      "startLine": 16,
+      "startLine": 20,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::getLogicSliceInputSchema::function"
     },
     {
-      "endLine": 36,
+      "endLine": 40,
       "kind": "function",
       "name": "buildGraphFromStorage",
-      "startLine": 27,
+      "startLine": 31,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
     },
     {
-      "endLine": 60,
+      "endLine": 64,
       "kind": "function",
       "name": "buildGraphFromJsonIndex",
-      "startLine": 42,
+      "startLine": 46,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
     },
     {
-      "endLine": 129,
+      "endLine": 137,
       "kind": "function",
       "name": "handleGetLogicSlice",
-      "startLine": 66,
+      "startLine": 70,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function"
     },
     {
-      "endLine": 64,
+      "endLine": 68,
       "kind": "interface",
       "name": "StalenessCheck",
-      "startLine": 62,
+      "startLine": 66,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
     },
     {
-      "endLine": 14,
+      "endLine": 18,
       "kind": "type",
       "name": "GetLogicSliceInput",
-      "startLine": 14,
+      "startLine": 18,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::GetLogicSliceInput::type"
     }
   ]

@@ -24,8 +24,15 @@
     }
   ],
   "file": "src/core/change-intelligence/health-scorer.ts",
-  "intent": [],
-  "lastModified": 1774816257,
+  "intent": [
+    {
+      "date": "2026-03-29T16:31:14+03:00",
+      "hash": "a193b5f72cb6284291ba0e38fdc13017e0953816",
+      "kind": "commit",
+      "message": "Add git adapter, why-context, and change intelligence modules"
+    }
+  ],
+  "lastModified": 1774817139,
   "symbols": [
     {
       "endLine": 15,

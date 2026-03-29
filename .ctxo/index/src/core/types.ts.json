@@ -1,11 +1,36 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "0dcb4c97f8389c5924ab33b3e45e571f6cc513fdbc380b0fb0d049043e599026",
+  "contentHash": "42b4f3a22bf58b42ab4867158005635eff86b89a86d5f7a8fc46f7b1fa11deeb",
   "edges": [],
   "file": "src/core/types.ts",
-  "intent": [],
-  "lastModified": 1774816257,
+  "intent": [
+    {
+      "date": "2026-03-29T23:36:52+03:00",
+      "hash": "4172928b846a1f1bd60f0c82d30e1009b1aeaed5",
+      "kind": "commit",
+      "message": "Add level descriptions, batch query support, verify staleness (#9-#11)"
+    },
+    {
+      "date": "2026-03-29T22:49:58+03:00",
+      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
+      "kind": "commit",
+      "message": "Fix 12 feature completeness gaps found in deep audit"
+    },
+    {
+      "date": "2026-03-29T17:58:07+03:00",
+      "hash": "b0f34073ee0bb04e55278df51db645921aa3ee16",
+      "kind": "commit",
+      "message": "Complete Phase 9: content hasher, watcher port/adapter extraction"
+    },
+    {
+      "date": "2026-03-29T15:43:28+03:00",
+      "hash": "f9bfea331e6ebdaf0733822d6f8d5b29a106d465",
+      "kind": "commit",
+      "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
+    }
+  ],
+  "lastModified": 1774817140,
   "symbols": [
     {
       "endLine": 130,
@@ -22,52 +47,52 @@
       "symbolId": "src/core/types.ts::TruncationInfo::interface"
     },
     {
-      "endLine": 145,
+      "endLine": 146,
       "kind": "interface",
       "name": "FormattedSlice",
       "startLine": 139,
       "symbolId": "src/core/types.ts::FormattedSlice::interface"
     },
     {
-      "endLine": 152,
+      "endLine": 153,
       "kind": "interface",
       "name": "ComplexityMetrics",
-      "startLine": 149,
+      "startLine": 150,
       "symbolId": "src/core/types.ts::ComplexityMetrics::interface"
     },
     {
-      "endLine": 157,
+      "endLine": 158,
       "kind": "interface",
       "name": "ChurnData",
-      "startLine": 154,
+      "startLine": 155,
       "symbolId": "src/core/types.ts::ChurnData::interface"
     },
     {
-      "endLine": 168,
+      "endLine": 169,
       "kind": "interface",
       "name": "ChangeIntelligenceScore",
-      "startLine": 162,
+      "startLine": 163,
       "symbolId": "src/core/types.ts::ChangeIntelligenceScore::interface"
     },
     {
-      "endLine": 176,
+      "endLine": 177,
       "kind": "interface",
       "name": "WhyContextResult",
-      "startLine": 172,
+      "startLine": 173,
       "symbolId": "src/core/types.ts::WhyContextResult::interface"
     },
     {
-      "endLine": 185,
+      "endLine": 186,
       "kind": "interface",
       "name": "CommitRecord",
-      "startLine": 180,
+      "startLine": 181,
       "symbolId": "src/core/types.ts::CommitRecord::interface"
     },
     {
-      "endLine": 194,
+      "endLine": 195,
       "kind": "interface",
       "name": "BlameLine",
-      "startLine": 189,
+      "startLine": 190,
       "symbolId": "src/core/types.ts::BlameLine::interface"
     },
     {
@@ -134,10 +159,10 @@
       "symbolId": "src/core/types.ts::FileIndex::type"
     },
     {
-      "endLine": 160,
+      "endLine": 161,
       "kind": "type",
       "name": "ScoreBand",
-      "startLine": 160,
+      "startLine": 161,
       "symbolId": "src/core/types.ts::ScoreBand::type"
     },
     {
@@ -232,10 +257,10 @@
       "symbolId": "src/core/types.ts::FileIndexSchema::variable"
     },
     {
-      "endLine": 159,
+      "endLine": 160,
       "kind": "variable",
       "name": "SCORE_BANDS",
-      "startLine": 159,
+      "startLine": 160,
       "symbolId": "src/core/types.ts::SCORE_BANDS::variable"
     }
   ]

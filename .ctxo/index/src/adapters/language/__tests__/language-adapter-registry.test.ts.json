@@ -15,7 +15,14 @@
     }
   ],
   "file": "src/adapters/language/__tests__/language-adapter-registry.test.ts",
-  "intent": [],
-  "lastModified": 1774816256,
+  "intent": [
+    {
+      "date": "2026-03-29T15:55:40+03:00",
+      "hash": "07a8564dae8012725a823d0ac4171e1ea092921d",
+      "kind": "commit",
+      "message": "Add TypeScript language adapter with ts-morph symbol/edge/complexity extraction"
+    }
+  ],
+  "lastModified": 1774817137,
   "symbols": []
 }
