@@ -7,7 +7,7 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   target: 'node20',
-  external: ['better-sqlite3', 'tree-sitter'],
+  external: ['tree-sitter'],
   banner: {
     js: '#!/usr/bin/env node',
   },
