@@ -106,20 +106,14 @@ jobs:
         run: |
           echo "## Package dry-run" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          npm publish --dry-run --provenance --access public 2>&1 | tee -a $GITHUB_STEP_SUMMARY
+          npm publish --dry-run --access public 2>&1 | tee -a $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
 
       - name: Publish to npm
         if: steps.check.outputs.exists == 'false'
-        run: npm publish --provenance --access public
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Attest build provenance
-        if: steps.check.outputs.exists == 'false'
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-path: '*.tgz'
 
       - name: Post-publish verification
         if: steps.check.outputs.exists == 'false'
