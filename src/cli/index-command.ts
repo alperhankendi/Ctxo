@@ -7,6 +7,9 @@ import { LanguageAdapterRegistry } from '../adapters/language/language-adapter-r
 import { JsonIndexWriter } from '../adapters/storage/json-index-writer.js';
 import { SqliteStorageAdapter } from '../adapters/storage/sqlite-storage-adapter.js';
 import { SchemaManager } from '../adapters/storage/schema-manager.js';
+import { SimpleGitAdapter } from '../adapters/git/simple-git-adapter.js';
+import { RevertDetector } from '../core/why-context/revert-detector.js';
+import type { CommitIntent, AntiPattern } from '../core/types.js';
 import type { FileIndex } from '../core/types.js';
 
 export class IndexCommand {
@@ -31,6 +34,8 @@ export class IndexCommand {
     const writer = new JsonIndexWriter(this.ctxoRoot);
     const schemaManager = new SchemaManager(this.ctxoRoot);
     const hasher = new ContentHasher();
+    const gitAdapter = new SimpleGitAdapter(this.projectRoot);
+    const revertDetector = new RevertDetector();
 
     // Discover files (single file, monorepo workspaces, or full project)
     let files: string[];
@@ -66,14 +71,24 @@ export class IndexCommand {
         const symbols = adapter.extractSymbols(relativePath, source);
         const edges = adapter.extractEdges(relativePath, source);
 
+        // Extract git history and anti-patterns
+        const commits = await gitAdapter.getCommitHistory(relativePath);
+        const intent: CommitIntent[] = commits.map((c) => ({
+          hash: c.hash,
+          message: c.message,
+          date: c.date,
+          kind: 'commit' as const,
+        }));
+        const antiPatterns: AntiPattern[] = revertDetector.detect(commits);
+
         const fileIndex: FileIndex = {
           file: relativePath,
           lastModified,
           contentHash: hasher.hash(source),
           symbols,
           edges,
-          intent: [],
-          antiPatterns: [],
+          intent,
+          antiPatterns,
         };
 
         writer.write(fileIndex);
