@@ -266,8 +266,6 @@ Ctxo Tool approach:
 
 ***
 
-
-
 # 5. Conclusion
 
 The Ctxo MCP server reduces the resources an AI assistant spends to obtain codebase context by an **average of 64x**. The most critical benefit is not raw token savings but **context window preservation** enabling the assistant to handle more queries, perform more work, and avoid context compression losses in long conversations.
