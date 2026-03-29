@@ -1,5 +1,15 @@
 {
   "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.register::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.getAdapter::method"
+    }
+  ],
   "contentHash": "18f6f6a976566bb264f726e81a4fec2fcc555a8c5705f333dba5b8a836cf28cb",
   "edges": [
     {
@@ -9,8 +19,15 @@
     }
   ],
   "file": "src/adapters/language/language-adapter-registry.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T15:55:40+03:00",
+      "hash": "07a8564dae8012725a823d0ac4171e1ea092921d",
+      "kind": "commit",
+      "message": "Add TypeScript language adapter with ts-morph symbol/edge/complexity extraction"
+    }
+  ],
+  "lastModified": 1774814620,
   "symbols": [
     {
       "endLine": 20,

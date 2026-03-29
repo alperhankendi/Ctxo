@@ -1,10 +1,35 @@
 {
   "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/storage/schema-manager.ts::SchemaManager.currentVersion::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/storage/schema-manager.ts::SchemaManager.readStoredVersion::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/storage/schema-manager.ts::SchemaManager.writeVersion::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/storage/schema-manager.ts::SchemaManager.isCompatible::method"
+    }
+  ],
   "contentHash": "c9a947a53ecbdadc340833aeb140f23e9c5cf51dfa80adddfd52e3a154aa464a",
   "edges": [],
   "file": "src/adapters/storage/schema-manager.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T15:50:38+03:00",
+      "hash": "a55ee9addcea4a1b3da5a93e6acb2b979c5fb5c8",
+      "kind": "commit",
+      "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
+    }
+  ],
+  "lastModified": 1774814621,
   "symbols": [
     {
       "endLine": 33,

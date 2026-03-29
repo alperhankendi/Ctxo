@@ -1,5 +1,6 @@
 {
   "antiPatterns": [],
+  "complexity": [],
   "contentHash": "ab69d780ecf7e218234cd223af3e6bf8a136f065549c73d1bfa3d877f73d3401",
   "edges": [
     {
@@ -14,7 +15,14 @@
     }
   ],
   "file": "src/core/why-context/__tests__/revert-detector.test.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T16:31:14+03:00",
+      "hash": "a193b5f72cb6284291ba0e38fdc13017e0953816",
+      "kind": "commit",
+      "message": "Add git adapter, why-context, and change intelligence modules"
+    }
+  ],
+  "lastModified": 1774814623,
   "symbols": []
 }

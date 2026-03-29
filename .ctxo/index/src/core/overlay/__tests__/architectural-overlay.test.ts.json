@@ -1,5 +1,6 @@
 {
   "antiPatterns": [],
+  "complexity": [],
   "contentHash": "d83a988eb50a2ba51dc078204a35b605321266bfa782c0cfd5f31c6421293583",
   "edges": [
     {
@@ -9,7 +10,14 @@
     }
   ],
   "file": "src/core/overlay/__tests__/architectural-overlay.test.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T16:35:14+03:00",
+      "hash": "1b61fa7811ad1bc58a6c475de7b8b6582d17be7e",
+      "kind": "commit",
+      "message": "Add blast radius calculator and architectural overlay"
+    }
+  ],
+  "lastModified": 1774814623,
   "symbols": []
 }

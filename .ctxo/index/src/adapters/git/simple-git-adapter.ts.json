@@ -1,5 +1,19 @@
 {
   "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.isAvailable::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getCommitHistory::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getFileChurn::method"
+    }
+  ],
   "contentHash": "e3f2253b6ea01f544f7b71291acb59b795af83898311b6385663e12638785685",
   "edges": [
     {
@@ -24,8 +38,21 @@
     }
   ],
   "file": "src/adapters/git/simple-git-adapter.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T18:40:27+03:00",
+      "hash": "8f6be2d264ea742495afd6783ac22f6fd06e6945",
+      "kind": "commit",
+      "message": "Fix both V1 blockers: TypeScript strict mode and test coverage gate"
+    },
+    {
+      "date": "2026-03-29T16:31:14+03:00",
+      "hash": "a193b5f72cb6284291ba0e38fdc13017e0953816",
+      "kind": "commit",
+      "message": "Add git adapter, why-context, and change intelligence modules"
+    }
+  ],
+  "lastModified": 1774814620,
   "symbols": [
     {
       "endLine": 49,

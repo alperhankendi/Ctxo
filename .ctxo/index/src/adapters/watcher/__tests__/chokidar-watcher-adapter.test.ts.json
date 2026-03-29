@@ -1,5 +1,6 @@
 {
   "antiPatterns": [],
+  "complexity": [],
   "contentHash": "50809369cc4d3334962a6cf6d366f70d9c5e6c3eb585545411398319d3e2928e",
   "edges": [
     {
@@ -14,7 +15,14 @@
     }
   ],
   "file": "src/adapters/watcher/__tests__/chokidar-watcher-adapter.test.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T17:58:07+03:00",
+      "hash": "b0f34073ee0bb04e55278df51db645921aa3ee16",
+      "kind": "commit",
+      "message": "Complete Phase 9: content hasher, watcher port/adapter extraction"
+    }
+  ],
+  "lastModified": 1774814621,
   "symbols": []
 }

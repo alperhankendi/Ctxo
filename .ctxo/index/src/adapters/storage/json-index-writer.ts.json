@@ -1,5 +1,23 @@
 {
   "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.write::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.delete::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.resolveIndexPath::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.sortKeys::method"
+    }
+  ],
   "contentHash": "a4303138ee153668d23dcd92fc6af752bdee1c6feec86929d16ccc2710c60115",
   "edges": [
     {
@@ -9,8 +27,21 @@
     }
   ],
   "file": "src/adapters/storage/json-index-writer.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T16:17:42+03:00",
+      "hash": "7b96d982fdf4c6fd753beeb4129181f9ad91ddb8",
+      "kind": "commit",
+      "message": "Fix 10 runtime bugs found in code review"
+    },
+    {
+      "date": "2026-03-29T15:50:38+03:00",
+      "hash": "a55ee9addcea4a1b3da5a93e6acb2b979c5fb5c8",
+      "kind": "commit",
+      "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
+    }
+  ],
+  "lastModified": 1774814621,
   "symbols": [
     {
       "endLine": 53,

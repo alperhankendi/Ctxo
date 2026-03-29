@@ -1,5 +1,47 @@
 {
   "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.addNode::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.addEdge::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.getNode::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.resolveNodeId::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.resolveNodeFuzzy::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.getForwardEdges::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.getReverseEdges::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.hasNode::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.allNodes::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.allEdges::method"
+    }
+  ],
   "contentHash": "da1af81d0259c2ea6d02d124347b9ad01d709470e99379058368a43fbf28ae48",
   "edges": [
     {
@@ -14,8 +56,21 @@
     }
   ],
   "file": "src/core/graph/symbol-graph.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T19:09:54+03:00",
+      "hash": "0e90f2bd51bb62190c9f24724b16ef058acca1c0",
+      "kind": "commit",
+      "message": "Fix 3 dogfooding bugs: masking false positive, edge paths, fuzzy matching"
+    },
+    {
+      "date": "2026-03-29T16:00:19+03:00",
+      "hash": "ea1b4eac08116b13d556ba9c194c115c5a4c1fd9",
+      "kind": "commit",
+      "message": "Add core graph, logic-slice query, and detail formatter"
+    }
+  ],
+  "lastModified": 1774814623,
   "symbols": [
     {
       "endLine": 91,

@@ -1,30 +1,53 @@
 {
   "antiPatterns": [],
-  "contentHash": "1cef9522d8402eda573cfd43f748b4213172e729e1f4562c451e3ba5227f4b1b",
-  "edges": [],
-  "file": "src/cli/init-command.ts",
-  "intent": [],
-  "lastModified": 1774805880,
-  "symbols": [
+  "complexity": [
     {
-      "endLine": 62,
-      "kind": "class",
-      "name": "InitCommand",
-      "startLine": 15,
-      "symbolId": "src/cli/init-command.ts::InitCommand::class"
-    },
-    {
-      "endLine": 36,
-      "kind": "method",
-      "name": "InitCommand.run",
-      "startLine": 22,
+      "cyclomatic": 2,
       "symbolId": "src/cli/init-command.ts::InitCommand.run::method"
     },
     {
-      "endLine": 61,
+      "cyclomatic": 4,
+      "symbolId": "src/cli/init-command.ts::InitCommand.installHook::method"
+    }
+  ],
+  "contentHash": "a020df15b2832c590115a0c312b30fb44d1c0d6995acd904c5bc022ccd6993a0",
+  "edges": [],
+  "file": "src/cli/init-command.ts",
+  "intent": [
+    {
+      "date": "2026-03-29T22:49:58+03:00",
+      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
+      "kind": "commit",
+      "message": "Fix 12 feature completeness gaps found in deep audit"
+    },
+    {
+      "date": "2026-03-29T17:04:40+03:00",
+      "hash": "eb20d2b2554911bbbd82c8d4ccc377b495fda13f",
+      "kind": "commit",
+      "message": "Implement all CLI commands and add comprehensive test coverage"
+    }
+  ],
+  "lastModified": 1774814622,
+  "symbols": [
+    {
+      "endLine": 73,
+      "kind": "class",
+      "name": "InitCommand",
+      "startLine": 26,
+      "symbolId": "src/cli/init-command.ts::InitCommand::class"
+    },
+    {
+      "endLine": 47,
+      "kind": "method",
+      "name": "InitCommand.run",
+      "startLine": 33,
+      "symbolId": "src/cli/init-command.ts::InitCommand.run::method"
+    },
+    {
+      "endLine": 72,
       "kind": "method",
       "name": "InitCommand.installHook",
-      "startLine": 38,
+      "startLine": 49,
       "symbolId": "src/cli/init-command.ts::InitCommand.installHook::method"
     }
   ]

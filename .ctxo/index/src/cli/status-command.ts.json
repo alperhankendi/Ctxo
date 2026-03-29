@@ -1,6 +1,16 @@
 {
   "antiPatterns": [],
-  "contentHash": "6ff9589f95604489375a2c05eca2bacfed6804acd84b4ff8300b39a0258d7fe2",
+  "complexity": [
+    {
+      "cyclomatic": 8,
+      "symbolId": "src/cli/status-command.ts::StatusCommand.run::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/cli/status-command.ts::StatusCommand.getSourceFiles::method"
+    }
+  ],
+  "contentHash": "abb60563b158e085666daa9bd5da0b63882eb0e75966ee77a7fa0e2ee8379f35",
   "edges": [
     {
       "from": "src/cli/status-command.ts::StatusCommand::class",
@@ -14,22 +24,42 @@
     }
   ],
   "file": "src/cli/status-command.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T22:49:58+03:00",
+      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
+      "kind": "commit",
+      "message": "Fix 12 feature completeness gaps found in deep audit"
+    },
+    {
+      "date": "2026-03-29T17:04:40+03:00",
+      "hash": "eb20d2b2554911bbbd82c8d4ccc377b495fda13f",
+      "kind": "commit",
+      "message": "Implement all CLI commands and add comprehensive test coverage"
+    }
+  ],
+  "lastModified": 1774814622,
   "symbols": [
     {
-      "endLine": 50,
+      "endLine": 69,
       "kind": "class",
       "name": "StatusCommand",
-      "startLine": 5,
+      "startLine": 6,
       "symbolId": "src/cli/status-command.ts::StatusCommand::class"
     },
     {
-      "endLine": 49,
+      "endLine": 56,
       "kind": "method",
       "name": "StatusCommand.run",
-      "startLine": 12,
+      "startLine": 15,
       "symbolId": "src/cli/status-command.ts::StatusCommand.run::method"
+    },
+    {
+      "endLine": 68,
+      "kind": "method",
+      "name": "StatusCommand.getSourceFiles",
+      "startLine": 58,
+      "symbolId": "src/cli/status-command.ts::StatusCommand.getSourceFiles::method"
     }
   ]
 }

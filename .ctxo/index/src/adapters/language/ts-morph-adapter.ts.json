@@ -1,5 +1,95 @@
 {
   "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.isSupported::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractSymbols::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractEdges::method"
+    },
+    {
+      "cyclomatic": 10,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractComplexity::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractFunctions::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractClasses::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractInterfaces::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractTypeAliases::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractVariables::method"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractImportEdges::method"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractInheritanceEdges::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.parseSource::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.cleanupSourceFile::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.resolveRelativeImport::method"
+    },
+    {
+      "cyclomatic": 14,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.resolveSymbolReference::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.inferSymbolKind::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.normalizeFilePath::method"
+    },
+    {
+      "cyclomatic": 15,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.findExportedSymbolsInFile::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "cyclomatic": 15,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.countCyclomaticComplexity::method"
+    }
+  ],
   "contentHash": "a52d07eca1a0a324393560800e4f79d643d46c258fc10b4013399c0a1c863ced",
   "edges": [
     {
@@ -34,8 +124,33 @@
     }
   ],
   "file": "src/adapters/language/ts-morph-adapter.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T19:09:54+03:00",
+      "hash": "0e90f2bd51bb62190c9f24724b16ef058acca1c0",
+      "kind": "commit",
+      "message": "Fix 3 dogfooding bugs: masking false positive, edge paths, fuzzy matching"
+    },
+    {
+      "date": "2026-03-29T16:49:13+03:00",
+      "hash": "3d2a69146903edf71a1a4e6797c8f392620ba4b7",
+      "kind": "commit",
+      "message": "Fix 7 runtime bugs from second code review"
+    },
+    {
+      "date": "2026-03-29T16:17:42+03:00",
+      "hash": "7b96d982fdf4c6fd753beeb4129181f9ad91ddb8",
+      "kind": "commit",
+      "message": "Fix 10 runtime bugs found in code review"
+    },
+    {
+      "date": "2026-03-29T15:55:40+03:00",
+      "hash": "07a8564dae8012725a823d0ac4171e1ea092921d",
+      "kind": "commit",
+      "message": "Add TypeScript language adapter with ts-morph symbol/edge/complexity extraction"
+    }
+  ],
+  "lastModified": 1774814620,
   "symbols": [
     {
       "endLine": 489,

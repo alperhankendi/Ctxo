@@ -1,5 +1,11 @@
 {
   "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler.assemble::method"
+    }
+  ],
   "contentHash": "cd1056c2251aa9a80ba38082d652efe8844a2e111cd0584da983248003424d63",
   "edges": [
     {
@@ -24,8 +30,15 @@
     }
   ],
   "file": "src/core/why-context/why-context-assembler.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T16:31:14+03:00",
+      "hash": "a193b5f72cb6284291ba0e38fdc13017e0953816",
+      "kind": "commit",
+      "message": "Add git adapter, why-context, and change intelligence modules"
+    }
+  ],
+  "lastModified": 1774814624,
   "symbols": [
     {
       "endLine": 14,

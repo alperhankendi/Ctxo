@@ -1,5 +1,6 @@
 {
   "antiPatterns": [],
+  "complexity": [],
   "contentHash": "d4500af98adbecbe9a084993f3626b664d8cbadf70b6e9577b266febc88f61ca",
   "edges": [
     {
@@ -19,7 +20,14 @@
     }
   ],
   "file": "src/core/detail-levels/__tests__/detail-formatter.edge-cases.test.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T17:01:15+03:00",
+      "hash": "847c9de113d6e3dee775691573768284c067c359",
+      "kind": "commit",
+      "message": "Add missing MCP handler tests and edge case coverage"
+    }
+  ],
+  "lastModified": 1774814623,
   "symbols": []
 }

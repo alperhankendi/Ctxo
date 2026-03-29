@@ -1,6 +1,7 @@
 {
   "antiPatterns": [],
-  "contentHash": "c63ec404b30dbbf4a441c5aa50e6e51dba30c2ca0f3144ec7547c563626981a1",
+  "complexity": [],
+  "contentHash": "b5be4e14939f5ba688f962e590b8808e789318c26f825910d22bb332e9948a9a",
   "edges": [
     {
       "from": "src/cli/__tests__/watch-command.test.ts::watch-command.test::variable",
@@ -9,7 +10,26 @@
     }
   ],
   "file": "src/cli/__tests__/watch-command.test.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T21:56:30+03:00",
+      "hash": "5f7c284759a478b5ca40fbf3bff006209ba6dd7e",
+      "kind": "commit",
+      "message": "Fix watch-command test to be platform-agnostic"
+    },
+    {
+      "date": "2026-03-29T21:54:47+03:00",
+      "hash": "ffa05cd0178decf444dd6ffaa232697e9759dd7a",
+      "kind": "commit",
+      "message": "Fix Windows path test failing on Linux CI"
+    },
+    {
+      "date": "2026-03-29T17:30:08+03:00",
+      "hash": "a494f9d485aa9268a5e63ad0aad321caecc0e2d8",
+      "kind": "commit",
+      "message": "Add missing CLI tests, wire staleness into all 5 MCP tools, configure npm pack"
+    }
+  ],
+  "lastModified": 1774814622,
   "symbols": []
 }

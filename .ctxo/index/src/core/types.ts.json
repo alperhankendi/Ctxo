@@ -1,72 +1,92 @@
 {
   "antiPatterns": [],
-  "contentHash": "c89b0103839e8284ced73f2ef68375cce8807d669050c6e98e7267adfc677f7e",
+  "complexity": [],
+  "contentHash": "0dcb4c97f8389c5924ab33b3e45e571f6cc513fdbc380b0fb0d049043e599026",
   "edges": [],
   "file": "src/core/types.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T22:49:58+03:00",
+      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
+      "kind": "commit",
+      "message": "Fix 12 feature completeness gaps found in deep audit"
+    },
+    {
+      "date": "2026-03-29T17:58:07+03:00",
+      "hash": "b0f34073ee0bb04e55278df51db645921aa3ee16",
+      "kind": "commit",
+      "message": "Complete Phase 9: content hasher, watcher port/adapter extraction"
+    },
+    {
+      "date": "2026-03-29T15:43:28+03:00",
+      "hash": "f9bfea331e6ebdaf0733822d6f8d5b29a106d465",
+      "kind": "commit",
+      "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
+    }
+  ],
+  "lastModified": 1774814623,
   "symbols": [
     {
-      "endLine": 124,
+      "endLine": 130,
       "kind": "interface",
       "name": "LogicSliceResult",
-      "startLine": 120,
+      "startLine": 126,
       "symbolId": "src/core/types.ts::LogicSliceResult::interface"
     },
     {
-      "endLine": 131,
+      "endLine": 137,
       "kind": "interface",
       "name": "TruncationInfo",
-      "startLine": 128,
+      "startLine": 134,
       "symbolId": "src/core/types.ts::TruncationInfo::interface"
     },
     {
-      "endLine": 139,
+      "endLine": 145,
       "kind": "interface",
       "name": "FormattedSlice",
-      "startLine": 133,
+      "startLine": 139,
       "symbolId": "src/core/types.ts::FormattedSlice::interface"
     },
     {
-      "endLine": 146,
+      "endLine": 152,
       "kind": "interface",
       "name": "ComplexityMetrics",
-      "startLine": 143,
+      "startLine": 149,
       "symbolId": "src/core/types.ts::ComplexityMetrics::interface"
     },
     {
-      "endLine": 151,
+      "endLine": 157,
       "kind": "interface",
       "name": "ChurnData",
-      "startLine": 148,
+      "startLine": 154,
       "symbolId": "src/core/types.ts::ChurnData::interface"
     },
     {
-      "endLine": 162,
+      "endLine": 168,
       "kind": "interface",
       "name": "ChangeIntelligenceScore",
-      "startLine": 156,
+      "startLine": 162,
       "symbolId": "src/core/types.ts::ChangeIntelligenceScore::interface"
     },
     {
-      "endLine": 170,
+      "endLine": 176,
       "kind": "interface",
       "name": "WhyContextResult",
-      "startLine": 166,
+      "startLine": 172,
       "symbolId": "src/core/types.ts::WhyContextResult::interface"
     },
     {
-      "endLine": 179,
+      "endLine": 185,
       "kind": "interface",
       "name": "CommitRecord",
-      "startLine": 174,
+      "startLine": 180,
       "symbolId": "src/core/types.ts::CommitRecord::interface"
     },
     {
-      "endLine": 188,
+      "endLine": 194,
       "kind": "interface",
       "name": "BlameLine",
-      "startLine": 183,
+      "startLine": 189,
       "symbolId": "src/core/types.ts::BlameLine::interface"
     },
     {
@@ -126,17 +146,17 @@
       "symbolId": "src/core/types.ts::AntiPattern::type"
     },
     {
-      "endLine": 116,
+      "endLine": 122,
       "kind": "type",
       "name": "FileIndex",
-      "startLine": 116,
+      "startLine": 122,
       "symbolId": "src/core/types.ts::FileIndex::type"
     },
     {
-      "endLine": 154,
+      "endLine": 160,
       "kind": "type",
       "name": "ScoreBand",
-      "startLine": 154,
+      "startLine": 160,
       "symbolId": "src/core/types.ts::ScoreBand::type"
     },
     {
@@ -217,17 +237,24 @@
       "symbolId": "src/core/types.ts::AntiPatternSchema::variable"
     },
     {
-      "endLine": 115,
+      "endLine": 110,
+      "kind": "variable",
+      "name": "ComplexityMetricsSchema",
+      "startLine": 107,
+      "symbolId": "src/core/types.ts::ComplexityMetricsSchema::variable"
+    },
+    {
+      "endLine": 121,
       "kind": "variable",
       "name": "FileIndexSchema",
-      "startLine": 107,
+      "startLine": 112,
       "symbolId": "src/core/types.ts::FileIndexSchema::variable"
     },
     {
-      "endLine": 153,
+      "endLine": 159,
       "kind": "variable",
       "name": "SCORE_BANDS",
-      "startLine": 153,
+      "startLine": 159,
       "symbolId": "src/core/types.ts::SCORE_BANDS::variable"
     }
   ]

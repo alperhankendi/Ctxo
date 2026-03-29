@@ -1,5 +1,6 @@
 {
   "antiPatterns": [],
+  "complexity": [],
   "contentHash": "15601de0069c277ad59fd290b34d1317e3cf3d1412e2f0498f412934157e9f53",
   "edges": [
     {
@@ -24,7 +25,14 @@
     }
   ],
   "file": "src/core/logic-slice/__tests__/logic-slice-query.test.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T16:00:19+03:00",
+      "hash": "ea1b4eac08116b13d556ba9c194c115c5a4c1fd9",
+      "kind": "commit",
+      "message": "Add core graph, logic-slice query, and detail formatter"
+    }
+  ],
+  "lastModified": 1774814623,
   "symbols": []
 }

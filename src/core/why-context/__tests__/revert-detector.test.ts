@@ -49,9 +49,10 @@ describe('RevertDetector', () => {
     expect(result[0]?.hash).toBe('abc123');
   });
 
-  it('handles commit message with only "revert" word (not a pattern match)', () => {
+  it('detects "revert" keyword in sentence context', () => {
     const commits = [buildCommit('This commit does not revert anything')];
-    expect(detector.detect(commits)).toEqual([]);
+    // With extended detection (#4), keyword "revert" in body IS flagged
+    expect(detector.detect(commits)).toHaveLength(1);
   });
 
   it('handles empty commit message', () => {
@@ -69,5 +70,46 @@ describe('RevertDetector', () => {
     const commits = [buildCommit('REVERT: undo migration')];
     const result = detector.detect(commits);
     expect(result).toHaveLength(1);
+  });
+
+  // Extended patterns (#4)
+  it('detects "undo:" prefix pattern', () => {
+    const commits = [buildCommit('undo: remove broken feature')];
+    expect(detector.detect(commits)).toHaveLength(1);
+  });
+
+  it('detects "rollback:" prefix pattern', () => {
+    const commits = [buildCommit('rollback: restore previous auth logic')];
+    expect(detector.detect(commits)).toHaveLength(1);
+  });
+
+  it('detects "reverted" keyword in commit message', () => {
+    const commits = [buildCommit('fix: reverted the caching change that caused deadlocks')];
+    expect(detector.detect(commits)).toHaveLength(1);
+  });
+
+  it('detects "rolled back" keyword in commit message', () => {
+    const commits = [buildCommit('chore: rolled back migration to fix prod')];
+    expect(detector.detect(commits)).toHaveLength(1);
+  });
+
+  it('detects "backed out" keyword in commit message', () => {
+    const commits = [buildCommit('backed out the SSO changes due to regression')];
+    expect(detector.detect(commits)).toHaveLength(1);
+  });
+
+  it('detects "remove broken" keyword in commit message', () => {
+    const commits = [buildCommit('fix: removing broken rate limiter implementation')];
+    expect(detector.detect(commits)).toHaveLength(1);
+  });
+
+  it('does NOT flag normal commits with "remove" without broken/buggy', () => {
+    const commits = [buildCommit('refactor: remove unused imports')];
+    expect(detector.detect(commits)).toEqual([]);
+  });
+
+  it('does NOT flag normal fix commits', () => {
+    const commits = [buildCommit('fix: correct typo in error message')];
+    expect(detector.detect(commits)).toEqual([]);
   });
 });

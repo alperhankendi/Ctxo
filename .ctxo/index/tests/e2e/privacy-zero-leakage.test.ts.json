@@ -1,5 +1,6 @@
 {
   "antiPatterns": [],
+  "complexity": [],
   "contentHash": "92158dfdd3543915988a11596debacf1243683cdca5e32b5986de1541117cd4b",
   "edges": [
     {
@@ -34,7 +35,20 @@
     }
   ],
   "file": "tests/e2e/privacy-zero-leakage.test.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T19:36:39+03:00",
+      "hash": "fe25908f1b52456c787f056d764a44307cfc32ba",
+      "kind": "commit",
+      "message": "Fix MCP tools reading stale data: build graph from JSON index, not SQLite"
+    },
+    {
+      "date": "2026-03-29T18:27:06+03:00",
+      "hash": "c7c06a44bc2764efc317c02df163d1a46f6d8c55",
+      "kind": "commit",
+      "message": "Complete Phase 10: Release gate tests"
+    }
+  ],
+  "lastModified": 1774814624,
   "symbols": []
 }

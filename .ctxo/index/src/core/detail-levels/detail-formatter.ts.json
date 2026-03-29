@@ -1,6 +1,40 @@
 {
   "antiPatterns": [],
-  "contentHash": "328cf29e35c7843b7847c350b09cd29c937e8288ccbd315ddd98509e22486ac5",
+  "complexity": [
+    {
+      "cyclomatic": 5,
+      "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.format::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL1::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL2::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL3::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL4::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.estimateTokens::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.symbolCharEstimate::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.truncateToTokenBudget::method"
+    }
+  ],
+  "contentHash": "a64f302b89989170887f196356f56dd2d05bd3bdd8c65cb978793b458ca88ad9",
   "edges": [
     {
       "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
@@ -29,70 +63,83 @@
     }
   ],
   "file": "src/core/detail-levels/detail-formatter.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T22:49:58+03:00",
+      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
+      "kind": "commit",
+      "message": "Fix 12 feature completeness gaps found in deep audit"
+    },
+    {
+      "date": "2026-03-29T16:00:19+03:00",
+      "hash": "ea1b4eac08116b13d556ba9c194c115c5a4c1fd9",
+      "kind": "commit",
+      "message": "Add core graph, logic-slice query, and detail formatter"
+    }
+  ],
+  "lastModified": 1774814623,
   "symbols": [
     {
-      "endLine": 122,
+      "endLine": 131,
       "kind": "class",
       "name": "DetailFormatter",
-      "startLine": 10,
+      "startLine": 11,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class"
     },
     {
-      "endLine": 22,
+      "endLine": 23,
       "kind": "method",
       "name": "DetailFormatter.format",
-      "startLine": 11,
+      "startLine": 12,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.format::method"
     },
     {
-      "endLine": 32,
+      "endLine": 41,
       "kind": "method",
       "name": "DetailFormatter.formatL1",
-      "startLine": 24,
+      "startLine": 25,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL1::method"
     },
     {
-      "endLine": 46,
+      "endLine": 55,
       "kind": "method",
       "name": "DetailFormatter.formatL2",
-      "startLine": 34,
+      "startLine": 43,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL2::method"
     },
     {
-      "endLine": 56,
+      "endLine": 65,
       "kind": "method",
       "name": "DetailFormatter.formatL3",
-      "startLine": 48,
+      "startLine": 57,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL3::method"
     },
     {
-      "endLine": 81,
+      "endLine": 90,
       "kind": "method",
       "name": "DetailFormatter.formatL4",
-      "startLine": 58,
+      "startLine": 67,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL4::method"
     },
     {
-      "endLine": 93,
+      "endLine": 102,
       "kind": "method",
       "name": "DetailFormatter.estimateTokens",
-      "startLine": 83,
+      "startLine": 92,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.estimateTokens::method"
     },
     {
-      "endLine": 98,
+      "endLine": 107,
       "kind": "method",
       "name": "DetailFormatter.symbolCharEstimate",
-      "startLine": 95,
+      "startLine": 104,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.symbolCharEstimate::method"
     },
     {
-      "endLine": 121,
+      "endLine": 130,
       "kind": "method",
       "name": "DetailFormatter.truncateToTokenBudget",
-      "startLine": 100,
+      "startLine": 109,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.truncateToTokenBudget::method"
     }
   ]

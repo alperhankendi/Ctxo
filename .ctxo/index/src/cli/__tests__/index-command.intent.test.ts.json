@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "76fc70911c28692cc5ca304e7a9f1ac2cea3eb311c4dc471aba8f782c0b308a7",
+  "edges": [
+    {
+      "from": "src/cli/__tests__/index-command.intent.test.ts::index-command.intent.test::variable",
+      "kind": "imports",
+      "to": "src/cli/index-command.ts::IndexCommand::class"
+    }
+  ],
+  "file": "src/cli/__tests__/index-command.intent.test.ts",
+  "intent": [
+    {
+      "date": "2026-03-29T22:26:48+03:00",
+      "hash": "86b1e42ec06563ce4fbdb226678280895e2fc456",
+      "kind": "commit",
+      "message": "Populate intent and antiPatterns during indexing (fixes #1)"
+    }
+  ],
+  "lastModified": 1774814621,
+  "symbols": []
+}

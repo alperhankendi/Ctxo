@@ -1,5 +1,11 @@
 {
   "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 7,
+      "symbolId": "src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
+    }
+  ],
   "contentHash": "97dedda1d008ccf5b1693e3d5424172284b5ad55b876ad95b8cf5a965b10f605",
   "edges": [
     {
@@ -24,8 +30,21 @@
     }
   ],
   "file": "src/adapters/mcp/get-architectural-overlay.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T17:30:08+03:00",
+      "hash": "a494f9d485aa9268a5e63ad0aad321caecc0e2d8",
+      "kind": "commit",
+      "message": "Add missing CLI tests, wire staleness into all 5 MCP tools, configure npm pack"
+    },
+    {
+      "date": "2026-03-29T16:35:14+03:00",
+      "hash": "1b61fa7811ad1bc58a6c475de7b8b6582d17be7e",
+      "kind": "commit",
+      "message": "Add blast radius calculator and architectural overlay"
+    }
+  ],
+  "lastModified": 1774814620,
   "symbols": [
     {
       "endLine": 54,

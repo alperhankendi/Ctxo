@@ -1,5 +1,11 @@
 {
   "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 7,
+      "symbolId": "src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery.getLogicSlice::method"
+    }
+  ],
   "contentHash": "ff042199f8a6c4d863264244fae3dbc5b425b71a980f7c165498dfa57683fd5d",
   "edges": [
     {
@@ -24,8 +30,21 @@
     }
   ],
   "file": "src/core/logic-slice/logic-slice-query.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T16:17:42+03:00",
+      "hash": "7b96d982fdf4c6fd753beeb4129181f9ad91ddb8",
+      "kind": "commit",
+      "message": "Fix 10 runtime bugs found in code review"
+    },
+    {
+      "date": "2026-03-29T16:00:19+03:00",
+      "hash": "ea1b4eac08116b13d556ba9c194c115c5a4c1fd9",
+      "kind": "commit",
+      "message": "Add core graph, logic-slice query, and detail formatter"
+    }
+  ],
+  "lastModified": 1774814623,
   "symbols": [
     {
       "endLine": 42,

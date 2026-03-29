@@ -1,5 +1,6 @@
 {
   "antiPatterns": [],
+  "complexity": [],
   "contentHash": "0cc4105417a5800bd2d3b895ba422850c58092af2a4730f2e570442d024cde01",
   "edges": [
     {
@@ -34,7 +35,14 @@
     }
   ],
   "file": "tests/e2e/performance-benchmark.test.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T17:20:34+03:00",
+      "hash": "031d4b7cd1c78c1c839c3076b65bdc644d33d38f",
+      "kind": "commit",
+      "message": "Fix 5 bugs, implement missing FRs, add NFR benchmarks and staleness"
+    }
+  ],
+  "lastModified": 1774814624,
   "symbols": []
 }

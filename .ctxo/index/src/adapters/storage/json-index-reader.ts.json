@@ -1,5 +1,19 @@
 {
   "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/adapters/storage/json-index-reader.ts::JsonIndexReader.readAll::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/adapters/storage/json-index-reader.ts::JsonIndexReader.readSingle::method"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "src/adapters/storage/json-index-reader.ts::JsonIndexReader.collectJsonFiles::method"
+    }
+  ],
   "contentHash": "2edfc580e85b8ba2777cd5e8610fcb86c02a5f92ad71ebb3e59ea66d6b58f8f8",
   "edges": [
     {
@@ -14,8 +28,27 @@
     }
   ],
   "file": "src/adapters/storage/json-index-reader.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T16:17:42+03:00",
+      "hash": "7b96d982fdf4c6fd753beeb4129181f9ad91ddb8",
+      "kind": "commit",
+      "message": "Fix 10 runtime bugs found in code review"
+    },
+    {
+      "date": "2026-03-29T15:55:40+03:00",
+      "hash": "07a8564dae8012725a823d0ac4171e1ea092921d",
+      "kind": "commit",
+      "message": "Add TypeScript language adapter with ts-morph symbol/edge/complexity extraction"
+    },
+    {
+      "date": "2026-03-29T15:50:38+03:00",
+      "hash": "a55ee9addcea4a1b3da5a93e6acb2b979c5fb5c8",
+      "kind": "commit",
+      "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
+    }
+  ],
+  "lastModified": 1774814621,
   "symbols": [
     {
       "endLine": 73,

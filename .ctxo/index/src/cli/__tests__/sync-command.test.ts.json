@@ -1,5 +1,6 @@
 {
   "antiPatterns": [],
+  "complexity": [],
   "contentHash": "9564ce39d2f085d8759b133abfcde3c40a5b3a41f12e8fc00c36bb0ea864e14a",
   "edges": [
     {
@@ -19,7 +20,14 @@
     }
   ],
   "file": "src/cli/__tests__/sync-command.test.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T17:04:40+03:00",
+      "hash": "eb20d2b2554911bbbd82c8d4ccc377b495fda13f",
+      "kind": "commit",
+      "message": "Implement all CLI commands and add comprehensive test coverage"
+    }
+  ],
+  "lastModified": 1774814622,
   "symbols": []
 }

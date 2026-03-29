@@ -1,6 +1,7 @@
 {
   "antiPatterns": [],
-  "contentHash": "e37e628f4f08000e600bed0771b72f7f9b489f283072b942e70a6273d7a6f245",
+  "complexity": [],
+  "contentHash": "56a64bf19450302236236119237143c8bb435af77ee38dc400929597a0d0db3b",
   "edges": [
     {
       "from": "src/adapters/mcp/__tests__/get-change-intelligence.test.ts::get-change-intelligence.test::variable",
@@ -34,7 +35,20 @@
     }
   ],
   "file": "src/adapters/mcp/__tests__/get-change-intelligence.test.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T22:49:58+03:00",
+      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
+      "kind": "commit",
+      "message": "Fix 12 feature completeness gaps found in deep audit"
+    },
+    {
+      "date": "2026-03-29T17:01:15+03:00",
+      "hash": "847c9de113d6e3dee775691573768284c067c359",
+      "kind": "commit",
+      "message": "Add missing MCP handler tests and edge case coverage"
+    }
+  ],
+  "lastModified": 1774814620,
   "symbols": []
 }

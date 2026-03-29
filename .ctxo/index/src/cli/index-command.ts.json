@@ -1,6 +1,32 @@
 {
   "antiPatterns": [],
-  "contentHash": "9cf735743527d25df4cc6fd1393d646f5180b51e0ff8bd21c158028834523d4c",
+  "complexity": [
+    {
+      "cyclomatic": 9,
+      "symbolId": "src/cli/index-command.ts::IndexCommand.run::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/cli/index-command.ts::IndexCommand.discoverFilesIn::method"
+    },
+    {
+      "cyclomatic": 14,
+      "symbolId": "src/cli/index-command.ts::IndexCommand.discoverWorkspaces::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/cli/index-command.ts::IndexCommand.isSupportedExtension::method"
+    },
+    {
+      "cyclomatic": 9,
+      "symbolId": "src/cli/index-command.ts::IndexCommand.runCheck::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
+    }
+  ],
+  "contentHash": "f9c88d117c160dfb7d7de0441fc4662627b27f7e6c1945ee27fb751f9dc57c5a",
   "edges": [
     {
       "from": "src/cli/index-command.ts::IndexCommand::class",
@@ -35,60 +61,123 @@
     {
       "from": "src/cli/index-command.ts::IndexCommand::class",
       "kind": "imports",
+      "to": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::CommitIntent::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::AntiPattern::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
       "to": "src/core/types.ts::FileIndex::class"
     }
   ],
   "file": "src/cli/index-command.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T22:49:58+03:00",
+      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
+      "kind": "commit",
+      "message": "Fix 12 feature completeness gaps found in deep audit"
+    },
+    {
+      "date": "2026-03-29T22:26:48+03:00",
+      "hash": "86b1e42ec06563ce4fbdb226678280895e2fc456",
+      "kind": "commit",
+      "message": "Populate intent and antiPatterns during indexing (fixes #1)"
+    },
+    {
+      "date": "2026-03-29T18:04:41+03:00",
+      "hash": "14ae301297b9ed59b992950d4daeb25a526839b9",
+      "kind": "commit",
+      "message": "Fix 5 runtime bugs from round 4 review"
+    },
+    {
+      "date": "2026-03-29T17:58:07+03:00",
+      "hash": "b0f34073ee0bb04e55278df51db645921aa3ee16",
+      "kind": "commit",
+      "message": "Complete Phase 9: content hasher, watcher port/adapter extraction"
+    },
+    {
+      "date": "2026-03-29T17:20:34+03:00",
+      "hash": "031d4b7cd1c78c1c839c3076b65bdc644d33d38f",
+      "kind": "commit",
+      "message": "Fix 5 bugs, implement missing FRs, add NFR benchmarks and staleness"
+    },
+    {
+      "date": "2026-03-29T16:49:13+03:00",
+      "hash": "3d2a69146903edf71a1a4e6797c8f392620ba4b7",
+      "kind": "commit",
+      "message": "Fix 7 runtime bugs from second code review"
+    },
+    {
+      "date": "2026-03-29T16:23:42+03:00",
+      "hash": "98ebb212e830854e7c2a31edaba34847eb0cfbfd",
+      "kind": "commit",
+      "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
+    }
+  ],
+  "lastModified": 1774814622,
   "symbols": [
     {
-      "endLine": 231,
+      "endLine": 261,
       "kind": "class",
       "name": "IndexCommand",
-      "startLine": 11,
+      "startLine": 14,
       "symbolId": "src/cli/index-command.ts::IndexCommand::class"
     },
     {
-      "endLine": 108,
+      "endLine": 125,
       "kind": "method",
       "name": "IndexCommand.run",
-      "startLine": 20,
+      "startLine": 23,
       "symbolId": "src/cli/index-command.ts::IndexCommand.run::method"
     },
     {
-      "endLine": 128,
+      "endLine": 145,
       "kind": "method",
       "name": "IndexCommand.discoverFilesIn",
-      "startLine": 110,
+      "startLine": 127,
       "symbolId": "src/cli/index-command.ts::IndexCommand.discoverFilesIn::method"
     },
     {
-      "endLine": 158,
+      "endLine": 188,
       "kind": "method",
       "name": "IndexCommand.discoverWorkspaces",
-      "startLine": 130,
+      "startLine": 147,
       "symbolId": "src/cli/index-command.ts::IndexCommand.discoverWorkspaces::method"
     },
     {
-      "endLine": 163,
+      "endLine": 193,
       "kind": "method",
       "name": "IndexCommand.isSupportedExtension",
-      "startLine": 160,
+      "startLine": 190,
       "symbolId": "src/cli/index-command.ts::IndexCommand.isSupportedExtension::method"
     },
     {
-      "endLine": 217,
+      "endLine": 247,
       "kind": "method",
       "name": "IndexCommand.runCheck",
-      "startLine": 165,
+      "startLine": 195,
       "symbolId": "src/cli/index-command.ts::IndexCommand.runCheck::method"
     },
     {
-      "endLine": 230,
+      "endLine": 260,
       "kind": "method",
       "name": "IndexCommand.ensureGitignore",
-      "startLine": 219,
+      "startLine": 249,
       "symbolId": "src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
     }
   ]

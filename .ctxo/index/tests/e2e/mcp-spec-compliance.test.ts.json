@@ -1,6 +1,7 @@
 {
   "antiPatterns": [],
-  "contentHash": "8dd7b9ff5bf6ec7ecc649d25aafc197534bad6b529b3777581aad286298b8734",
+  "complexity": [],
+  "contentHash": "03907e60b7af26c34f3094ed97118625642b70689853a539188fc18d7582600e",
   "edges": [
     {
       "from": "tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
@@ -49,7 +50,26 @@
     }
   ],
   "file": "tests/e2e/mcp-spec-compliance.test.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T22:49:58+03:00",
+      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
+      "kind": "commit",
+      "message": "Fix 12 feature completeness gaps found in deep audit"
+    },
+    {
+      "date": "2026-03-29T19:36:39+03:00",
+      "hash": "fe25908f1b52456c787f056d764a44307cfc32ba",
+      "kind": "commit",
+      "message": "Fix MCP tools reading stale data: build graph from JSON index, not SQLite"
+    },
+    {
+      "date": "2026-03-29T18:27:06+03:00",
+      "hash": "c7c06a44bc2764efc317c02df163d1a46f6d8c55",
+      "kind": "commit",
+      "message": "Complete Phase 10: Release gate tests"
+    }
+  ],
+  "lastModified": 1774814624,
   "symbols": []
 }

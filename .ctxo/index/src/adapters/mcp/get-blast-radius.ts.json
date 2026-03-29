@@ -1,6 +1,12 @@
 {
   "antiPatterns": [],
-  "contentHash": "6810bcd0b6881eb37eab44c67f57c8bde3f03a09df91edb9e2cdf5733167a89a",
+  "complexity": [
+    {
+      "cyclomatic": 7,
+      "symbolId": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
+    }
+  ],
+  "contentHash": "ca32fc17f0e20683d756bd1d9fc54a5de6fe2958435019fa95e2f684482e98a4",
   "edges": [
     {
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
@@ -34,8 +40,39 @@
     }
   ],
   "file": "src/adapters/mcp/get-blast-radius.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T22:49:58+03:00",
+      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
+      "kind": "commit",
+      "message": "Fix 12 feature completeness gaps found in deep audit"
+    },
+    {
+      "date": "2026-03-29T19:36:39+03:00",
+      "hash": "fe25908f1b52456c787f056d764a44307cfc32ba",
+      "kind": "commit",
+      "message": "Fix MCP tools reading stale data: build graph from JSON index, not SQLite"
+    },
+    {
+      "date": "2026-03-29T17:30:08+03:00",
+      "hash": "a494f9d485aa9268a5e63ad0aad321caecc0e2d8",
+      "kind": "commit",
+      "message": "Add missing CLI tests, wire staleness into all 5 MCP tools, configure npm pack"
+    },
+    {
+      "date": "2026-03-29T16:49:13+03:00",
+      "hash": "3d2a69146903edf71a1a4e6797c8f392620ba4b7",
+      "kind": "commit",
+      "message": "Fix 7 runtime bugs from second code review"
+    },
+    {
+      "date": "2026-03-29T16:35:14+03:00",
+      "hash": "1b61fa7811ad1bc58a6c475de7b8b6582d17be7e",
+      "kind": "commit",
+      "message": "Add blast radius calculator and architectural overlay"
+    }
+  ],
+  "lastModified": 1774814621,
   "symbols": [
     {
       "endLine": 59,

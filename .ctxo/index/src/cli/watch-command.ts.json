@@ -1,6 +1,12 @@
 {
   "antiPatterns": [],
-  "contentHash": "f588dc780ce20da6920a19eb70693c8f7c755f94f8a7906e9c26c44cde7f6b3a",
+  "complexity": [
+    {
+      "cyclomatic": 8,
+      "symbolId": "src/cli/watch-command.ts::WatchCommand.run::method"
+    }
+  ],
+  "contentHash": "528e1912d2cd242e42703e4ac3598d8cbc20e91a58f5862fcbc9d59cd1929a9c",
   "edges": [
     {
       "from": "src/cli/watch-command.ts::WatchCommand::class",
@@ -35,25 +41,70 @@
     {
       "from": "src/cli/watch-command.ts::WatchCommand::class",
       "kind": "imports",
+      "to": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
       "to": "src/core/types.ts::FileIndex::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::CommitIntent::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::AntiPattern::class"
     }
   ],
   "file": "src/cli/watch-command.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T22:49:58+03:00",
+      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
+      "kind": "commit",
+      "message": "Fix 12 feature completeness gaps found in deep audit"
+    },
+    {
+      "date": "2026-03-29T17:58:07+03:00",
+      "hash": "b0f34073ee0bb04e55278df51db645921aa3ee16",
+      "kind": "commit",
+      "message": "Complete Phase 9: content hasher, watcher port/adapter extraction"
+    },
+    {
+      "date": "2026-03-29T17:20:34+03:00",
+      "hash": "031d4b7cd1c78c1c839c3076b65bdc644d33d38f",
+      "kind": "commit",
+      "message": "Fix 5 bugs, implement missing FRs, add NFR benchmarks and staleness"
+    },
+    {
+      "date": "2026-03-29T17:04:40+03:00",
+      "hash": "eb20d2b2554911bbbd82c8d4ccc377b495fda13f",
+      "kind": "commit",
+      "message": "Implement all CLI commands and add comprehensive test coverage"
+    }
+  ],
+  "lastModified": 1774814622,
   "symbols": [
     {
-      "endLine": 114,
+      "endLine": 127,
       "kind": "class",
       "name": "WatchCommand",
-      "startLine": 13,
+      "startLine": 15,
       "symbolId": "src/cli/watch-command.ts::WatchCommand::class"
     },
     {
-      "endLine": 113,
+      "endLine": 126,
       "kind": "method",
       "name": "WatchCommand.run",
-      "startLine": 22,
+      "startLine": 24,
       "symbolId": "src/cli/watch-command.ts::WatchCommand.run::method"
     }
   ]

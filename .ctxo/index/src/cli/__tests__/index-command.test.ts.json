@@ -1,5 +1,6 @@
 {
   "antiPatterns": [],
+  "complexity": [],
   "contentHash": "deb18e7b1683b2a2236a69ba3c9d5ad0e0f09530b1af2607063a747d95127880",
   "edges": [
     {
@@ -9,7 +10,14 @@
     }
   ],
   "file": "src/cli/__tests__/index-command.test.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T16:23:42+03:00",
+      "hash": "98ebb212e830854e7c2a31edaba34847eb0cfbfd",
+      "kind": "commit",
+      "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
+    }
+  ],
+  "lastModified": 1774814622,
   "symbols": []
 }

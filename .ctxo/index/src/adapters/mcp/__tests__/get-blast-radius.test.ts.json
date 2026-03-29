@@ -1,6 +1,7 @@
 {
   "antiPatterns": [],
-  "contentHash": "23da89474dcef1e370165ebae878dfa5da11febb16a85535442cbb56f26ebb83",
+  "complexity": [],
+  "contentHash": "30b73423ce0e9fbc467ec0b058828559efd1836ca9ac0fa063c15e9116336f61",
   "edges": [
     {
       "from": "src/adapters/mcp/__tests__/get-blast-radius.test.ts::get-blast-radius.test::variable",
@@ -24,7 +25,26 @@
     }
   ],
   "file": "src/adapters/mcp/__tests__/get-blast-radius.test.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T22:49:58+03:00",
+      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
+      "kind": "commit",
+      "message": "Fix 12 feature completeness gaps found in deep audit"
+    },
+    {
+      "date": "2026-03-29T19:36:39+03:00",
+      "hash": "fe25908f1b52456c787f056d764a44307cfc32ba",
+      "kind": "commit",
+      "message": "Fix MCP tools reading stale data: build graph from JSON index, not SQLite"
+    },
+    {
+      "date": "2026-03-29T17:01:15+03:00",
+      "hash": "847c9de113d6e3dee775691573768284c067c359",
+      "kind": "commit",
+      "message": "Add missing MCP handler tests and edge case coverage"
+    }
+  ],
+  "lastModified": 1774814620,
   "symbols": []
 }

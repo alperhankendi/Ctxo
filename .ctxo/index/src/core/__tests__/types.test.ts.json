@@ -1,5 +1,6 @@
 {
   "antiPatterns": [],
+  "complexity": [],
   "contentHash": "6b7dc3864ef08d12fef8b3ce66f27efeef856cf0b4532b3c59ca518c58e41ec7",
   "edges": [
     {
@@ -39,7 +40,14 @@
     }
   ],
   "file": "src/core/__tests__/types.test.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T15:43:28+03:00",
+      "hash": "f9bfea331e6ebdaf0733822d6f8d5b29a106d465",
+      "kind": "commit",
+      "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
+    }
+  ],
+  "lastModified": 1774814622,
   "symbols": []
 }

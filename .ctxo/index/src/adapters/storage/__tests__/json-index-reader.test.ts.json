@@ -1,5 +1,6 @@
 {
   "antiPatterns": [],
+  "complexity": [],
   "contentHash": "8d36e35f151763fdc15ad3e59cb39c3d9e5c64b87a9c089dd4929b2d8a164c31",
   "edges": [
     {
@@ -24,7 +25,14 @@
     }
   ],
   "file": "src/adapters/storage/__tests__/json-index-reader.test.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T15:50:38+03:00",
+      "hash": "a55ee9addcea4a1b3da5a93e6acb2b979c5fb5c8",
+      "kind": "commit",
+      "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
+    }
+  ],
+  "lastModified": 1774814621,
   "symbols": []
 }

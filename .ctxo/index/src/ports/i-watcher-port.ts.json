@@ -1,10 +1,18 @@
 {
   "antiPatterns": [],
+  "complexity": [],
   "contentHash": "5df4291601f673907ad1a58354aaab8756d5c22614f860d979ded99a2b6b8230",
   "edges": [],
   "file": "src/ports/i-watcher-port.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T17:58:07+03:00",
+      "hash": "b0f34073ee0bb04e55278df51db645921aa3ee16",
+      "kind": "commit",
+      "message": "Complete Phase 9: content hasher, watcher port/adapter extraction"
+    }
+  ],
+  "lastModified": 1774814624,
   "symbols": [
     {
       "endLine": 7,

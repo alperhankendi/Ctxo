@@ -1,5 +1,6 @@
 {
   "antiPatterns": [],
+  "complexity": [],
   "contentHash": "a5b0df84d887db2e995bf5b0b64e25612492c35362e009b0ab979da9ad50f36b",
   "edges": [
     {
@@ -14,7 +15,14 @@
     }
   ],
   "file": "src/adapters/storage/__tests__/json-index-writer.edge-cases.test.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T17:01:15+03:00",
+      "hash": "847c9de113d6e3dee775691573768284c067c359",
+      "kind": "commit",
+      "message": "Add missing MCP handler tests and edge case coverage"
+    }
+  ],
+  "lastModified": 1774814621,
   "symbols": []
 }

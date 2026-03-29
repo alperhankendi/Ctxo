@@ -1,5 +1,11 @@
 {
   "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/service.ts::PaymentService.process::method"
+    }
+  ],
   "contentHash": "93867b530a61ed941b8ee85a6c0f0011116a9916f3db0222026d6246fca36853",
   "edges": [
     {
@@ -9,8 +15,15 @@
     }
   ],
   "file": "tests/e2e/fixtures/credential-fixture/src/service.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T18:27:06+03:00",
+      "hash": "c7c06a44bc2764efc317c02df163d1a46f6d8c55",
+      "kind": "commit",
+      "message": "Complete Phase 10: Release gate tests"
+    }
+  ],
+  "lastModified": 1774814624,
   "symbols": [
     {
       "endLine": 9,

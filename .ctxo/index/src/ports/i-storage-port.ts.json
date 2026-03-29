@@ -1,5 +1,6 @@
 {
   "antiPatterns": [],
+  "complexity": [],
   "contentHash": "0056509e3d084badd08561d964406ead87774a29d75f46dae2636192c69a9002",
   "edges": [
     {
@@ -19,8 +20,15 @@
     }
   ],
   "file": "src/ports/i-storage-port.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T15:50:38+03:00",
+      "hash": "a55ee9addcea4a1b3da5a93e6acb2b979c5fb5c8",
+      "kind": "commit",
+      "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
+    }
+  ],
+  "lastModified": 1774814624,
   "symbols": [
     {
       "endLine": 14,

@@ -1,10 +1,23 @@
 {
   "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/core/staleness/content-hasher.ts::ContentHasher.hash::method"
+    }
+  ],
   "contentHash": "0dd9781b5af490def708530cec539866c4525af6da4393db8dc1be5245a929b7",
   "edges": [],
   "file": "src/core/staleness/content-hasher.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T17:58:07+03:00",
+      "hash": "b0f34073ee0bb04e55278df51db645921aa3ee16",
+      "kind": "commit",
+      "message": "Complete Phase 9: content hasher, watcher port/adapter extraction"
+    }
+  ],
+  "lastModified": 1774814623,
   "symbols": [
     {
       "endLine": 6,

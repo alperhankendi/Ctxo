@@ -1,6 +1,12 @@
 {
   "antiPatterns": [],
-  "contentHash": "15baf8e081e7ef55443e0ecbd59315cfb2e7360471a36737f53d117ae88b8907",
+  "complexity": [
+    {
+      "cyclomatic": 11,
+      "symbolId": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
+    }
+  ],
+  "contentHash": "469d4997a21ba058aafdcc4a2f4a4db58f55b374e1f134a4d102a6d3b04eb404",
   "edges": [
     {
       "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
@@ -30,7 +36,27 @@
     {
       "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "imports",
+      "to": "src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
       "to": "src/core/types.ts::CommitIntent::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "src/core/types.ts::AntiPattern::class"
     },
     {
       "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
@@ -39,14 +65,33 @@
     }
   ],
   "file": "src/adapters/mcp/get-why-context.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T22:49:58+03:00",
+      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
+      "kind": "commit",
+      "message": "Fix 12 feature completeness gaps found in deep audit"
+    },
+    {
+      "date": "2026-03-29T17:30:08+03:00",
+      "hash": "a494f9d485aa9268a5e63ad0aad321caecc0e2d8",
+      "kind": "commit",
+      "message": "Add missing CLI tests, wire staleness into all 5 MCP tools, configure npm pack"
+    },
+    {
+      "date": "2026-03-29T16:31:14+03:00",
+      "hash": "a193b5f72cb6284291ba0e38fdc13017e0953816",
+      "kind": "commit",
+      "message": "Add git adapter, why-context, and change intelligence modules"
+    }
+  ],
+  "lastModified": 1774814621,
   "symbols": [
     {
-      "endLine": 77,
+      "endLine": 111,
       "kind": "function",
       "name": "handleGetWhyContext",
-      "startLine": 13,
+      "startLine": 16,
       "symbolId": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
     }
   ]

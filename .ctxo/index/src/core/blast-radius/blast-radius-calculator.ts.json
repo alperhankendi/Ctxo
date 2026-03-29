@@ -1,5 +1,11 @@
 {
   "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 6,
+      "symbolId": "src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator.calculate::method"
+    }
+  ],
   "contentHash": "3d307c33614bc0b840d662dc64f8835982b1a6a2c39ae2d6272048811cfdcf81",
   "edges": [
     {
@@ -9,8 +15,15 @@
     }
   ],
   "file": "src/core/blast-radius/blast-radius-calculator.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T16:35:14+03:00",
+      "hash": "1b61fa7811ad1bc58a6c475de7b8b6582d17be7e",
+      "kind": "commit",
+      "message": "Add blast radius calculator and architectural overlay"
+    }
+  ],
+  "lastModified": 1774814622,
   "symbols": [
     {
       "endLine": 44,

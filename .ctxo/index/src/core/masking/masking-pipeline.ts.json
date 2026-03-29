@@ -1,10 +1,51 @@
 {
   "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/core/masking/masking-pipeline.ts::MaskingPipeline.fromConfig::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/core/masking/masking-pipeline.ts::MaskingPipeline.mask::method"
+    }
+  ],
   "contentHash": "0264e3f4331d6ed805d2b84be5cb9287173573b703523e0ddf3639e9bfdf899f",
   "edges": [],
   "file": "src/core/masking/masking-pipeline.ts",
-  "intent": [],
-  "lastModified": 1774805880,
+  "intent": [
+    {
+      "date": "2026-03-29T19:09:54+03:00",
+      "hash": "0e90f2bd51bb62190c9f24724b16ef058acca1c0",
+      "kind": "commit",
+      "message": "Fix 3 dogfooding bugs: masking false positive, edge paths, fuzzy matching"
+    },
+    {
+      "date": "2026-03-29T18:04:41+03:00",
+      "hash": "14ae301297b9ed59b992950d4daeb25a526839b9",
+      "kind": "commit",
+      "message": "Fix 5 runtime bugs from round 4 review"
+    },
+    {
+      "date": "2026-03-29T17:20:34+03:00",
+      "hash": "031d4b7cd1c78c1c839c3076b65bdc644d33d38f",
+      "kind": "commit",
+      "message": "Fix 5 bugs, implement missing FRs, add NFR benchmarks and staleness"
+    },
+    {
+      "date": "2026-03-29T16:17:42+03:00",
+      "hash": "7b96d982fdf4c6fd753beeb4129181f9ad91ddb8",
+      "kind": "commit",
+      "message": "Fix 10 runtime bugs found in code review"
+    },
+    {
+      "date": "2026-03-29T16:04:56+03:00",
+      "hash": "fa4701d71ac553fd4fb73614c21446fa5e1896c7",
+      "kind": "commit",
+      "message": "Add MCP server with get_logic_slice tool and privacy masking pipeline"
+    }
+  ],
+  "lastModified": 1774814623,
   "symbols": [
     {
       "endLine": 59,
