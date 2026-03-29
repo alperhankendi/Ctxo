@@ -1,0 +1,38 @@
+{
+  "antiPatterns": [],
+  "contentHash": "97dedda1d008ccf5b1693e3d5424172284b5ad55b876ad95b8cf5a965b10f605",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "imports",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "imports",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "imports",
+      "to": "src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::class"
+    }
+  ],
+  "file": "src/adapters/mcp/get-architectural-overlay.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": [
+    {
+      "endLine": 54,
+      "kind": "function",
+      "name": "handleGetArchitecturalOverlay",
+      "startLine": 10,
+      "symbolId": "src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
+    }
+  ]
+}

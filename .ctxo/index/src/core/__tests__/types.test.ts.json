@@ -1,0 +1,45 @@
+{
+  "antiPatterns": [],
+  "contentHash": "6b7dc3864ef08d12fef8b3ce66f27efeef856cf0b4532b3c59ca518c58e41ec7",
+  "edges": [
+    {
+      "from": "src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolKindSchema::class"
+    },
+    {
+      "from": "src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNodeSchema::class"
+    },
+    {
+      "from": "src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::GraphEdgeSchema::class"
+    },
+    {
+      "from": "src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndexSchema::class"
+    },
+    {
+      "from": "src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolIdSchema::class"
+    },
+    {
+      "from": "src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::EdgeKindSchema::class"
+    },
+    {
+      "from": "src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::DetailLevelSchema::class"
+    }
+  ],
+  "file": "src/core/__tests__/types.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

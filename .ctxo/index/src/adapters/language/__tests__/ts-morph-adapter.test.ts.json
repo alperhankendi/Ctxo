@@ -1,0 +1,15 @@
+{
+  "antiPatterns": [],
+  "contentHash": "a7c4277c443e74a3d37c3a897e4059e91cd72538f8a9f0aa9042ffdb96cb809d",
+  "edges": [
+    {
+      "from": "src/adapters/language/__tests__/ts-morph-adapter.test.ts::ts-morph-adapter.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class"
+    }
+  ],
+  "file": "src/adapters/language/__tests__/ts-morph-adapter.test.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": []
+}

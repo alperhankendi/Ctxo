@@ -1,0 +1,234 @@
+{
+  "antiPatterns": [],
+  "contentHash": "c89b0103839e8284ced73f2ef68375cce8807d669050c6e98e7267adfc677f7e",
+  "edges": [],
+  "file": "src/core/types.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 124,
+      "kind": "interface",
+      "name": "LogicSliceResult",
+      "startLine": 120,
+      "symbolId": "src/core/types.ts::LogicSliceResult::interface"
+    },
+    {
+      "endLine": 131,
+      "kind": "interface",
+      "name": "TruncationInfo",
+      "startLine": 128,
+      "symbolId": "src/core/types.ts::TruncationInfo::interface"
+    },
+    {
+      "endLine": 139,
+      "kind": "interface",
+      "name": "FormattedSlice",
+      "startLine": 133,
+      "symbolId": "src/core/types.ts::FormattedSlice::interface"
+    },
+    {
+      "endLine": 146,
+      "kind": "interface",
+      "name": "ComplexityMetrics",
+      "startLine": 143,
+      "symbolId": "src/core/types.ts::ComplexityMetrics::interface"
+    },
+    {
+      "endLine": 151,
+      "kind": "interface",
+      "name": "ChurnData",
+      "startLine": 148,
+      "symbolId": "src/core/types.ts::ChurnData::interface"
+    },
+    {
+      "endLine": 162,
+      "kind": "interface",
+      "name": "ChangeIntelligenceScore",
+      "startLine": 156,
+      "symbolId": "src/core/types.ts::ChangeIntelligenceScore::interface"
+    },
+    {
+      "endLine": 170,
+      "kind": "interface",
+      "name": "WhyContextResult",
+      "startLine": 166,
+      "symbolId": "src/core/types.ts::WhyContextResult::interface"
+    },
+    {
+      "endLine": 179,
+      "kind": "interface",
+      "name": "CommitRecord",
+      "startLine": 174,
+      "symbolId": "src/core/types.ts::CommitRecord::interface"
+    },
+    {
+      "endLine": 188,
+      "kind": "interface",
+      "name": "BlameLine",
+      "startLine": 183,
+      "symbolId": "src/core/types.ts::BlameLine::interface"
+    },
+    {
+      "endLine": 14,
+      "kind": "type",
+      "name": "SymbolKind",
+      "startLine": 14,
+      "symbolId": "src/core/types.ts::SymbolKind::type"
+    },
+    {
+      "endLine": 27,
+      "kind": "type",
+      "name": "EdgeKind",
+      "startLine": 27,
+      "symbolId": "src/core/types.ts::EdgeKind::type"
+    },
+    {
+      "endLine": 39,
+      "kind": "type",
+      "name": "DetailLevel",
+      "startLine": 39,
+      "symbolId": "src/core/types.ts::DetailLevel::type"
+    },
+    {
+      "endLine": 60,
+      "kind": "type",
+      "name": "SymbolId",
+      "startLine": 60,
+      "symbolId": "src/core/types.ts::SymbolId::type"
+    },
+    {
+      "endLine": 75,
+      "kind": "type",
+      "name": "SymbolNode",
+      "startLine": 75,
+      "symbolId": "src/core/types.ts::SymbolNode::type"
+    },
+    {
+      "endLine": 84,
+      "kind": "type",
+      "name": "GraphEdge",
+      "startLine": 84,
+      "symbolId": "src/core/types.ts::GraphEdge::type"
+    },
+    {
+      "endLine": 94,
+      "kind": "type",
+      "name": "CommitIntent",
+      "startLine": 94,
+      "symbolId": "src/core/types.ts::CommitIntent::type"
+    },
+    {
+      "endLine": 103,
+      "kind": "type",
+      "name": "AntiPattern",
+      "startLine": 103,
+      "symbolId": "src/core/types.ts::AntiPattern::type"
+    },
+    {
+      "endLine": 116,
+      "kind": "type",
+      "name": "FileIndex",
+      "startLine": 116,
+      "symbolId": "src/core/types.ts::FileIndex::type"
+    },
+    {
+      "endLine": 154,
+      "kind": "type",
+      "name": "ScoreBand",
+      "startLine": 154,
+      "symbolId": "src/core/types.ts::ScoreBand::type"
+    },
+    {
+      "endLine": 11,
+      "kind": "variable",
+      "name": "SYMBOL_KINDS",
+      "startLine": 4,
+      "symbolId": "src/core/types.ts::SYMBOL_KINDS::variable"
+    },
+    {
+      "endLine": 13,
+      "kind": "variable",
+      "name": "SymbolKindSchema",
+      "startLine": 13,
+      "symbolId": "src/core/types.ts::SymbolKindSchema::variable"
+    },
+    {
+      "endLine": 24,
+      "kind": "variable",
+      "name": "EDGE_KINDS",
+      "startLine": 18,
+      "symbolId": "src/core/types.ts::EDGE_KINDS::variable"
+    },
+    {
+      "endLine": 26,
+      "kind": "variable",
+      "name": "EdgeKindSchema",
+      "startLine": 26,
+      "symbolId": "src/core/types.ts::EdgeKindSchema::variable"
+    },
+    {
+      "endLine": 31,
+      "kind": "variable",
+      "name": "DETAIL_LEVELS",
+      "startLine": 31,
+      "symbolId": "src/core/types.ts::DETAIL_LEVELS::variable"
+    },
+    {
+      "endLine": 38,
+      "kind": "variable",
+      "name": "DetailLevelSchema",
+      "startLine": 33,
+      "symbolId": "src/core/types.ts::DetailLevelSchema::variable"
+    },
+    {
+      "endLine": 59,
+      "kind": "variable",
+      "name": "SymbolIdSchema",
+      "startLine": 47,
+      "symbolId": "src/core/types.ts::SymbolIdSchema::variable"
+    },
+    {
+      "endLine": 74,
+      "kind": "variable",
+      "name": "SymbolNodeSchema",
+      "startLine": 64,
+      "symbolId": "src/core/types.ts::SymbolNodeSchema::variable"
+    },
+    {
+      "endLine": 83,
+      "kind": "variable",
+      "name": "GraphEdgeSchema",
+      "startLine": 79,
+      "symbolId": "src/core/types.ts::GraphEdgeSchema::variable"
+    },
+    {
+      "endLine": 93,
+      "kind": "variable",
+      "name": "CommitIntentSchema",
+      "startLine": 88,
+      "symbolId": "src/core/types.ts::CommitIntentSchema::variable"
+    },
+    {
+      "endLine": 102,
+      "kind": "variable",
+      "name": "AntiPatternSchema",
+      "startLine": 98,
+      "symbolId": "src/core/types.ts::AntiPatternSchema::variable"
+    },
+    {
+      "endLine": 115,
+      "kind": "variable",
+      "name": "FileIndexSchema",
+      "startLine": 107,
+      "symbolId": "src/core/types.ts::FileIndexSchema::variable"
+    },
+    {
+      "endLine": 153,
+      "kind": "variable",
+      "name": "SCORE_BANDS",
+      "startLine": 153,
+      "symbolId": "src/core/types.ts::SCORE_BANDS::variable"
+    }
+  ]
+}

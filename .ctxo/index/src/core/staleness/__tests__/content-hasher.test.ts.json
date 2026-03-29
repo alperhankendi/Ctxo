@@ -1,0 +1,15 @@
+{
+  "antiPatterns": [],
+  "contentHash": "1e7836b5add625dd4ca7572e36b8f0a09abd794b5782b1040d10a2f1cdaabcb4",
+  "edges": [
+    {
+      "from": "src/core/staleness/__tests__/content-hasher.test.ts::content-hasher.test::variable",
+      "kind": "imports",
+      "to": "src/core/staleness/content-hasher.ts::ContentHasher::class"
+    }
+  ],
+  "file": "src/core/staleness/__tests__/content-hasher.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

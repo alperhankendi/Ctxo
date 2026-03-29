@@ -1,0 +1,30 @@
+{
+  "antiPatterns": [],
+  "contentHash": "fe184d0a894f09944f5ea23874d7731b197a66ce696319e6cf5c8a3046b843f3",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/__tests__/get-blast-radius.test.ts::get-blast-radius.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-blast-radius.test.ts::get-blast-radius.test::variable",
+      "kind": "imports",
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-blast-radius.test.ts::get-blast-radius.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-blast-radius.test.ts::get-blast-radius.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::class"
+    }
+  ],
+  "file": "src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": []
+}

@@ -1,0 +1,95 @@
+{
+  "antiPatterns": [],
+  "contentHash": "9cf735743527d25df4cc6fd1393d646f5180b51e0ff8bd21c158028834523d4c",
+  "edges": [
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "src/core/staleness/content-hasher.ts::ContentHasher::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "src/adapters/storage/schema-manager.ts::SchemaManager::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::class"
+    }
+  ],
+  "file": "src/cli/index-command.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 231,
+      "kind": "class",
+      "name": "IndexCommand",
+      "startLine": 11,
+      "symbolId": "src/cli/index-command.ts::IndexCommand::class"
+    },
+    {
+      "endLine": 108,
+      "kind": "method",
+      "name": "IndexCommand.run",
+      "startLine": 20,
+      "symbolId": "src/cli/index-command.ts::IndexCommand.run::method"
+    },
+    {
+      "endLine": 128,
+      "kind": "method",
+      "name": "IndexCommand.discoverFilesIn",
+      "startLine": 110,
+      "symbolId": "src/cli/index-command.ts::IndexCommand.discoverFilesIn::method"
+    },
+    {
+      "endLine": 158,
+      "kind": "method",
+      "name": "IndexCommand.discoverWorkspaces",
+      "startLine": 130,
+      "symbolId": "src/cli/index-command.ts::IndexCommand.discoverWorkspaces::method"
+    },
+    {
+      "endLine": 163,
+      "kind": "method",
+      "name": "IndexCommand.isSupportedExtension",
+      "startLine": 160,
+      "symbolId": "src/cli/index-command.ts::IndexCommand.isSupportedExtension::method"
+    },
+    {
+      "endLine": 217,
+      "kind": "method",
+      "name": "IndexCommand.runCheck",
+      "startLine": 165,
+      "symbolId": "src/cli/index-command.ts::IndexCommand.runCheck::method"
+    },
+    {
+      "endLine": 230,
+      "kind": "method",
+      "name": "IndexCommand.ensureGitignore",
+      "startLine": 219,
+      "symbolId": "src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
+    }
+  ]
+}

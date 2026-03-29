@@ -1,0 +1,17 @@
+{
+  "antiPatterns": [],
+  "contentHash": "db92bc33f544a9406bd9191d44abb402b1c88dc6a00017ea776b05821618f5c5",
+  "edges": [],
+  "file": "src/ports/i-masking-port.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 2,
+      "kind": "interface",
+      "name": "IMaskingPort",
+      "startLine": 0,
+      "symbolId": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+    }
+  ]
+}

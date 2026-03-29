@@ -1,0 +1,59 @@
+{
+  "antiPatterns": [],
+  "contentHash": "e3f2253b6ea01f544f7b71291acb59b795af83898311b6385663e12638785685",
+  "edges": [
+    {
+      "from": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class",
+      "kind": "imports",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+    },
+    {
+      "from": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::CommitRecord::class"
+    },
+    {
+      "from": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::ChurnData::class"
+    },
+    {
+      "from": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class",
+      "kind": "implements",
+      "to": "../../ports/i-git-port.js::IGitPort::interface"
+    }
+  ],
+  "file": "src/adapters/git/simple-git-adapter.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": [
+    {
+      "endLine": 49,
+      "kind": "class",
+      "name": "SimpleGitAdapter",
+      "startLine": 4,
+      "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+    },
+    {
+      "endLine": 18,
+      "kind": "method",
+      "name": "SimpleGitAdapter.isAvailable",
+      "startLine": 11,
+      "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.isAvailable::method"
+    },
+    {
+      "endLine": 34,
+      "kind": "method",
+      "name": "SimpleGitAdapter.getCommitHistory",
+      "startLine": 20,
+      "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getCommitHistory::method"
+    },
+    {
+      "endLine": 48,
+      "kind": "method",
+      "name": "SimpleGitAdapter.getFileChurn",
+      "startLine": 36,
+      "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getFileChurn::method"
+    }
+  ]
+}

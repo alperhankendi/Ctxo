@@ -1,0 +1,38 @@
+{
+  "antiPatterns": [],
+  "contentHash": "0264e3f4331d6ed805d2b84be5cb9287173573b703523e0ddf3639e9bfdf899f",
+  "edges": [],
+  "file": "src/core/masking/masking-pipeline.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 59,
+      "kind": "class",
+      "name": "MaskingPipeline",
+      "startLine": 25,
+      "symbolId": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "endLine": 48,
+      "kind": "method",
+      "name": "MaskingPipeline.fromConfig",
+      "startLine": 36,
+      "symbolId": "src/core/masking/masking-pipeline.ts::MaskingPipeline.fromConfig::method"
+    },
+    {
+      "endLine": 58,
+      "kind": "method",
+      "name": "MaskingPipeline.mask",
+      "startLine": 50,
+      "symbolId": "src/core/masking/masking-pipeline.ts::MaskingPipeline.mask::method"
+    },
+    {
+      "endLine": 23,
+      "kind": "interface",
+      "name": "MaskingPatternConfig",
+      "startLine": 19,
+      "symbolId": "src/core/masking/masking-pipeline.ts::MaskingPatternConfig::interface"
+    }
+  ]
+}

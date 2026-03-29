@@ -1,0 +1,25 @@
+{
+  "antiPatterns": [],
+  "contentHash": "d4500af98adbecbe9a084993f3626b664d8cbadf70b6e9577b266febc88f61ca",
+  "edges": [
+    {
+      "from": "src/core/detail-levels/__tests__/detail-formatter.edge-cases.test.ts::detail-formatter.edge-cases.test::variable",
+      "kind": "imports",
+      "to": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class"
+    },
+    {
+      "from": "src/core/detail-levels/__tests__/detail-formatter.edge-cases.test.ts::detail-formatter.edge-cases.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::LogicSliceResult::class"
+    },
+    {
+      "from": "src/core/detail-levels/__tests__/detail-formatter.edge-cases.test.ts::detail-formatter.edge-cases.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::class"
+    }
+  ],
+  "file": "src/core/detail-levels/__tests__/detail-formatter.edge-cases.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

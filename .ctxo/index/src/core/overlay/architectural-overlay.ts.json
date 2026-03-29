@@ -1,0 +1,45 @@
+{
+  "antiPatterns": [],
+  "contentHash": "dbbc46b01d041e1c7dab72b68624e8a240f47abf16c774fc8eb0ca2b66d03334",
+  "edges": [],
+  "file": "src/core/overlay/architectural-overlay.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 50,
+      "kind": "class",
+      "name": "ArchitecturalOverlay",
+      "startLine": 19,
+      "symbolId": "src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class"
+    },
+    {
+      "endLine": 40,
+      "kind": "method",
+      "name": "ArchitecturalOverlay.classify",
+      "startLine": 29,
+      "symbolId": "src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay.classify::method"
+    },
+    {
+      "endLine": 49,
+      "kind": "method",
+      "name": "ArchitecturalOverlay.matchLayer",
+      "startLine": 42,
+      "symbolId": "src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay.matchLayer::method"
+    },
+    {
+      "endLine": 3,
+      "kind": "interface",
+      "name": "LayerRule",
+      "startLine": 0,
+      "symbolId": "src/core/overlay/architectural-overlay.ts::LayerRule::interface"
+    },
+    {
+      "endLine": 7,
+      "kind": "interface",
+      "name": "OverlayResult",
+      "startLine": 5,
+      "symbolId": "src/core/overlay/architectural-overlay.ts::OverlayResult::interface"
+    }
+  ]
+}

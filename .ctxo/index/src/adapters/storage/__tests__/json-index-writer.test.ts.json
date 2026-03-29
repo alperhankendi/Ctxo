@@ -1,0 +1,20 @@
+{
+  "antiPatterns": [],
+  "contentHash": "ea3d1249d17f6a26dca0106238be3759d4ff809c05c1ea3218fafb425db3e425",
+  "edges": [
+    {
+      "from": "src/adapters/storage/__tests__/json-index-writer.test.ts::json-index-writer.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "src/adapters/storage/__tests__/json-index-writer.test.ts::json-index-writer.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/__tests__/test-fixtures.ts::buildFileIndex::function"
+    }
+  ],
+  "file": "src/adapters/storage/__tests__/json-index-writer.test.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": []
+}

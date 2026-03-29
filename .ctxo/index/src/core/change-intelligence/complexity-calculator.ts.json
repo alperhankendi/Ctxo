@@ -1,0 +1,30 @@
+{
+  "antiPatterns": [],
+  "contentHash": "ad9c7ffa164594ed54a2f7f51afa88107ec653dfbcea89c71568ab5ccdaebecd",
+  "edges": [
+    {
+      "from": "src/core/change-intelligence/complexity-calculator.ts::ComplexityCalculator::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::ComplexityMetrics::class"
+    }
+  ],
+  "file": "src/core/change-intelligence/complexity-calculator.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 9,
+      "kind": "class",
+      "name": "ComplexityCalculator",
+      "startLine": 2,
+      "symbolId": "src/core/change-intelligence/complexity-calculator.ts::ComplexityCalculator::class"
+    },
+    {
+      "endLine": 8,
+      "kind": "method",
+      "name": "ComplexityCalculator.calculate",
+      "startLine": 3,
+      "symbolId": "src/core/change-intelligence/complexity-calculator.ts::ComplexityCalculator.calculate::method"
+    }
+  ]
+}

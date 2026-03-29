@@ -1,0 +1,20 @@
+{
+  "antiPatterns": [],
+  "contentHash": "348538bee3f7c4b46327358bad7e1c26d343cdf4994116b3f58677042c764b00",
+  "edges": [
+    {
+      "from": "src/adapters/language/__tests__/language-adapter-registry.test.ts::language-adapter-registry.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class"
+    },
+    {
+      "from": "src/adapters/language/__tests__/language-adapter-registry.test.ts::language-adapter-registry.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class"
+    }
+  ],
+  "file": "src/adapters/language/__tests__/language-adapter-registry.test.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": []
+}

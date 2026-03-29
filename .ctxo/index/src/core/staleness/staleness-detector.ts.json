@@ -1,0 +1,31 @@
+{
+  "antiPatterns": [],
+  "contentHash": "8ca909d40dfb2c9cd78da066e84b3351607c6402f943b2224ffc088e2cb8a1ed",
+  "edges": [],
+  "file": "src/core/staleness/staleness-detector.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 47,
+      "kind": "class",
+      "name": "StalenessDetector",
+      "startLine": 8,
+      "symbolId": "src/core/staleness/staleness-detector.ts::StalenessDetector::class"
+    },
+    {
+      "endLine": 46,
+      "kind": "method",
+      "name": "StalenessDetector.check",
+      "startLine": 17,
+      "symbolId": "src/core/staleness/staleness-detector.ts::StalenessDetector.check::method"
+    },
+    {
+      "endLine": 6,
+      "kind": "interface",
+      "name": "StalenessWarning",
+      "startLine": 3,
+      "symbolId": "src/core/staleness/staleness-detector.ts::StalenessWarning::interface"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "antiPatterns": [],
+  "contentHash": "c63ec404b30dbbf4a441c5aa50e6e51dba30c2ca0f3144ec7547c563626981a1",
+  "edges": [
+    {
+      "from": "src/cli/__tests__/watch-command.test.ts::watch-command.test::variable",
+      "kind": "imports",
+      "to": "src/cli/watch-command.ts::WatchCommand::class"
+    }
+  ],
+  "file": "src/cli/__tests__/watch-command.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

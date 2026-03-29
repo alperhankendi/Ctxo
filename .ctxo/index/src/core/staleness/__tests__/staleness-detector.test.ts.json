@@ -1,0 +1,15 @@
+{
+  "antiPatterns": [],
+  "contentHash": "33497e46240d84387d6a7b65f3e6040cd8cabc0e76bae0bcb36c07df48e8c50f",
+  "edges": [
+    {
+      "from": "src/core/staleness/__tests__/staleness-detector.test.ts::staleness-detector.test::variable",
+      "kind": "imports",
+      "to": "src/core/staleness/staleness-detector.ts::StalenessDetector::class"
+    }
+  ],
+  "file": "src/core/staleness/__tests__/staleness-detector.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

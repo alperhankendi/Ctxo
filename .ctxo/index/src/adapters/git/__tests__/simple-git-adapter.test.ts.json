@@ -1,0 +1,15 @@
+{
+  "antiPatterns": [],
+  "contentHash": "df6d868c03cc5db1de6f8830da0ace8c8992a7dfad7b993c197a60c8c724001d",
+  "edges": [
+    {
+      "from": "src/adapters/git/__tests__/simple-git-adapter.test.ts::simple-git-adapter.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+    }
+  ],
+  "file": "src/adapters/git/__tests__/simple-git-adapter.test.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": []
+}

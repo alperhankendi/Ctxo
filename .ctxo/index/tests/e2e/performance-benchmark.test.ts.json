@@ -1,0 +1,40 @@
+{
+  "antiPatterns": [],
+  "contentHash": "0cc4105417a5800bd2d3b895ba422850c58092af2a4730f2e570442d024cde01",
+  "edges": [
+    {
+      "from": "tests/e2e/performance-benchmark.test.ts::performance-benchmark.test::variable",
+      "kind": "imports",
+      "to": "src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "tests/e2e/performance-benchmark.test.ts::performance-benchmark.test::variable",
+      "kind": "imports",
+      "to": "src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class"
+    },
+    {
+      "from": "tests/e2e/performance-benchmark.test.ts::performance-benchmark.test::variable",
+      "kind": "imports",
+      "to": "src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "tests/e2e/performance-benchmark.test.ts::performance-benchmark.test::variable",
+      "kind": "imports",
+      "to": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class"
+    },
+    {
+      "from": "tests/e2e/performance-benchmark.test.ts::performance-benchmark.test::variable",
+      "kind": "imports",
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "tests/e2e/performance-benchmark.test.ts::performance-benchmark.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::class"
+    }
+  ],
+  "file": "tests/e2e/performance-benchmark.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

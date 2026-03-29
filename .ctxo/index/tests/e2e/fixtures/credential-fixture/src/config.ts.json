@@ -1,0 +1,66 @@
+{
+  "antiPatterns": [],
+  "contentHash": "d63fc3cf90b4428416a1067ea7a8029744416696b7cf937c120afa1665ed7ec8",
+  "edges": [],
+  "file": "tests/e2e/fixtures/credential-fixture/src/config.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 14,
+      "kind": "function",
+      "name": "getConfig",
+      "startLine": 9,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/config.ts::getConfig::function"
+    },
+    {
+      "endLine": 1,
+      "kind": "variable",
+      "name": "AWS_KEY",
+      "startLine": 1,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/config.ts::AWS_KEY::variable"
+    },
+    {
+      "endLine": 2,
+      "kind": "variable",
+      "name": "AWS_SECRET",
+      "startLine": 2,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/config.ts::AWS_SECRET::variable"
+    },
+    {
+      "endLine": 3,
+      "kind": "variable",
+      "name": "JWT_TOKEN",
+      "startLine": 3,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/config.ts::JWT_TOKEN::variable"
+    },
+    {
+      "endLine": 4,
+      "kind": "variable",
+      "name": "DB_PASSWORD",
+      "startLine": 4,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/config.ts::DB_PASSWORD::variable"
+    },
+    {
+      "endLine": 5,
+      "kind": "variable",
+      "name": "PRIVATE_IP",
+      "startLine": 5,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/config.ts::PRIVATE_IP::variable"
+    },
+    {
+      "endLine": 6,
+      "kind": "variable",
+      "name": "AZURE_KEY",
+      "startLine": 6,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/config.ts::AZURE_KEY::variable"
+    },
+    {
+      "endLine": 7,
+      "kind": "variable",
+      "name": "API_TOKEN",
+      "startLine": 7,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/config.ts::API_TOKEN::variable"
+    }
+  ]
+}

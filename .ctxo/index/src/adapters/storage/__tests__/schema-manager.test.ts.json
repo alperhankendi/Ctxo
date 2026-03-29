@@ -1,0 +1,15 @@
+{
+  "antiPatterns": [],
+  "contentHash": "2f507c2384af17748ff82a7cd36ef9b3ccd9926af5719a9a93a8e274440b739e",
+  "edges": [
+    {
+      "from": "src/adapters/storage/__tests__/schema-manager.test.ts::schema-manager.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/schema-manager.ts::SchemaManager::class"
+    }
+  ],
+  "file": "src/adapters/storage/__tests__/schema-manager.test.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": []
+}

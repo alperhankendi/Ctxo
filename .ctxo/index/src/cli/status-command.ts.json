@@ -1,0 +1,35 @@
+{
+  "antiPatterns": [],
+  "contentHash": "6ff9589f95604489375a2c05eca2bacfed6804acd84b4ff8300b39a0258d7fe2",
+  "edges": [
+    {
+      "from": "src/cli/status-command.ts::StatusCommand::class",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "src/cli/status-command.ts::StatusCommand::class",
+      "kind": "imports",
+      "to": "src/adapters/storage/schema-manager.ts::SchemaManager::class"
+    }
+  ],
+  "file": "src/cli/status-command.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 50,
+      "kind": "class",
+      "name": "StatusCommand",
+      "startLine": 5,
+      "symbolId": "src/cli/status-command.ts::StatusCommand::class"
+    },
+    {
+      "endLine": 49,
+      "kind": "method",
+      "name": "StatusCommand.run",
+      "startLine": 12,
+      "symbolId": "src/cli/status-command.ts::StatusCommand.run::method"
+    }
+  ]
+}

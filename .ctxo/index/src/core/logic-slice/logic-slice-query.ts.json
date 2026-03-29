@@ -1,0 +1,45 @@
+{
+  "antiPatterns": [],
+  "contentHash": "ff042199f8a6c4d863264244fae3dbc5b425b71a980f7c165498dfa57683fd5d",
+  "edges": [
+    {
+      "from": "src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::class"
+    },
+    {
+      "from": "src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::GraphEdge::class"
+    },
+    {
+      "from": "src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::LogicSliceResult::class"
+    },
+    {
+      "from": "src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class",
+      "kind": "imports",
+      "to": "src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    }
+  ],
+  "file": "src/core/logic-slice/logic-slice-query.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 42,
+      "kind": "class",
+      "name": "LogicSliceQuery",
+      "startLine": 3,
+      "symbolId": "src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class"
+    },
+    {
+      "endLine": 41,
+      "kind": "method",
+      "name": "LogicSliceQuery.getLogicSlice",
+      "startLine": 4,
+      "symbolId": "src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery.getLogicSlice::method"
+    }
+  ]
+}

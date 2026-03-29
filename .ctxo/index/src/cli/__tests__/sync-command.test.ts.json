@@ -1,0 +1,25 @@
+{
+  "antiPatterns": [],
+  "contentHash": "9564ce39d2f085d8759b133abfcde3c40a5b3a41f12e8fc00c36bb0ea864e14a",
+  "edges": [
+    {
+      "from": "src/cli/__tests__/sync-command.test.ts::sync-command.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "src/cli/__tests__/sync-command.test.ts::sync-command.test::variable",
+      "kind": "imports",
+      "to": "src/cli/sync-command.ts::SyncCommand::class"
+    },
+    {
+      "from": "src/cli/__tests__/sync-command.test.ts::sync-command.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::class"
+    }
+  ],
+  "file": "src/cli/__tests__/sync-command.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

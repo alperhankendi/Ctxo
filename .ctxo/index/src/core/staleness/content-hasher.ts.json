@@ -1,0 +1,24 @@
+{
+  "antiPatterns": [],
+  "contentHash": "0dd9781b5af490def708530cec539866c4525af6da4393db8dc1be5245a929b7",
+  "edges": [],
+  "file": "src/core/staleness/content-hasher.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 6,
+      "kind": "class",
+      "name": "ContentHasher",
+      "startLine": 2,
+      "symbolId": "src/core/staleness/content-hasher.ts::ContentHasher::class"
+    },
+    {
+      "endLine": 5,
+      "kind": "method",
+      "name": "ContentHasher.hash",
+      "startLine": 3,
+      "symbolId": "src/core/staleness/content-hasher.ts::ContentHasher.hash::method"
+    }
+  ]
+}

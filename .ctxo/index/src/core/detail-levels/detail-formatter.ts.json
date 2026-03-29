@@ -1,0 +1,99 @@
+{
+  "antiPatterns": [],
+  "contentHash": "328cf29e35c7843b7847c350b09cd29c937e8288ccbd315ddd98509e22486ac5",
+  "edges": [
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::LogicSliceResult::class"
+    },
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::FormattedSlice::class"
+    },
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::DetailLevel::class"
+    },
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::class"
+    },
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::GraphEdge::class"
+    }
+  ],
+  "file": "src/core/detail-levels/detail-formatter.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 122,
+      "kind": "class",
+      "name": "DetailFormatter",
+      "startLine": 10,
+      "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class"
+    },
+    {
+      "endLine": 22,
+      "kind": "method",
+      "name": "DetailFormatter.format",
+      "startLine": 11,
+      "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.format::method"
+    },
+    {
+      "endLine": 32,
+      "kind": "method",
+      "name": "DetailFormatter.formatL1",
+      "startLine": 24,
+      "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL1::method"
+    },
+    {
+      "endLine": 46,
+      "kind": "method",
+      "name": "DetailFormatter.formatL2",
+      "startLine": 34,
+      "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL2::method"
+    },
+    {
+      "endLine": 56,
+      "kind": "method",
+      "name": "DetailFormatter.formatL3",
+      "startLine": 48,
+      "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL3::method"
+    },
+    {
+      "endLine": 81,
+      "kind": "method",
+      "name": "DetailFormatter.formatL4",
+      "startLine": 58,
+      "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL4::method"
+    },
+    {
+      "endLine": 93,
+      "kind": "method",
+      "name": "DetailFormatter.estimateTokens",
+      "startLine": 83,
+      "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.estimateTokens::method"
+    },
+    {
+      "endLine": 98,
+      "kind": "method",
+      "name": "DetailFormatter.symbolCharEstimate",
+      "startLine": 95,
+      "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.symbolCharEstimate::method"
+    },
+    {
+      "endLine": 121,
+      "kind": "method",
+      "name": "DetailFormatter.truncateToTokenBudget",
+      "startLine": 100,
+      "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.truncateToTokenBudget::method"
+    }
+  ]
+}

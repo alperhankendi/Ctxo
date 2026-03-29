@@ -1,0 +1,55 @@
+{
+  "antiPatterns": [],
+  "contentHash": "7c2d785e39c33f044e87babacace60e043a56a605aab2afe812a3c5568b29f70",
+  "edges": [
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPatternConfig::class"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
+    }
+  ],
+  "file": "src/index.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

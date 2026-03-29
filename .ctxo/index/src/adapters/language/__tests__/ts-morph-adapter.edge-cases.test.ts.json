@@ -1,0 +1,15 @@
+{
+  "antiPatterns": [],
+  "contentHash": "f8905dbd1e36a1cca8930cd2a2b0df5e24132807461a5fa2fe6fe7b5ceee05cb",
+  "edges": [
+    {
+      "from": "src/adapters/language/__tests__/ts-morph-adapter.edge-cases.test.ts::ts-morph-adapter.edge-cases.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class"
+    }
+  ],
+  "file": "src/adapters/language/__tests__/ts-morph-adapter.edge-cases.test.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": []
+}

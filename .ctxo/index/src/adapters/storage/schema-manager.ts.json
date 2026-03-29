@@ -1,0 +1,45 @@
+{
+  "antiPatterns": [],
+  "contentHash": "c9a947a53ecbdadc340833aeb140f23e9c5cf51dfa80adddfd52e3a154aa464a",
+  "edges": [],
+  "file": "src/adapters/storage/schema-manager.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 33,
+      "kind": "class",
+      "name": "SchemaManager",
+      "startLine": 5,
+      "symbolId": "src/adapters/storage/schema-manager.ts::SchemaManager::class"
+    },
+    {
+      "endLine": 14,
+      "kind": "method",
+      "name": "SchemaManager.currentVersion",
+      "startLine": 12,
+      "symbolId": "src/adapters/storage/schema-manager.ts::SchemaManager.currentVersion::method"
+    },
+    {
+      "endLine": 21,
+      "kind": "method",
+      "name": "SchemaManager.readStoredVersion",
+      "startLine": 16,
+      "symbolId": "src/adapters/storage/schema-manager.ts::SchemaManager.readStoredVersion::method"
+    },
+    {
+      "endLine": 26,
+      "kind": "method",
+      "name": "SchemaManager.writeVersion",
+      "startLine": 23,
+      "symbolId": "src/adapters/storage/schema-manager.ts::SchemaManager.writeVersion::method"
+    },
+    {
+      "endLine": 32,
+      "kind": "method",
+      "name": "SchemaManager.isCompatible",
+      "startLine": 28,
+      "symbolId": "src/adapters/storage/schema-manager.ts::SchemaManager.isCompatible::method"
+    }
+  ]
+}

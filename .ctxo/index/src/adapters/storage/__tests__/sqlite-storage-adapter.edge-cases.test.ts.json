@@ -1,0 +1,15 @@
+{
+  "antiPatterns": [],
+  "contentHash": "9a18b6375389dc73a5d5c1433e5fcaa0a719a2c40ea720b749a5932368594a03",
+  "edges": [
+    {
+      "from": "src/adapters/storage/__tests__/sqlite-storage-adapter.edge-cases.test.ts::sqlite-storage-adapter.edge-cases.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    }
+  ],
+  "file": "src/adapters/storage/__tests__/sqlite-storage-adapter.edge-cases.test.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": []
+}

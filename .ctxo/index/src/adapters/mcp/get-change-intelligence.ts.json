@@ -1,0 +1,48 @@
+{
+  "antiPatterns": [],
+  "contentHash": "3de54b0733712f0d4c96d3a5691d5c86e7bbfc9762e7535366e2f499e16bcbfe",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class"
+    }
+  ],
+  "file": "src/adapters/mcp/get-change-intelligence.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": [
+    {
+      "endLine": 74,
+      "kind": "function",
+      "name": "handleGetChangeIntelligence",
+      "startLine": 12,
+      "symbolId": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function"
+    }
+  ]
+}

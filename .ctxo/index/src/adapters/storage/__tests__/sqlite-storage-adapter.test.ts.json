@@ -1,0 +1,30 @@
+{
+  "antiPatterns": [],
+  "contentHash": "c2de4338f448cc9f56aa8ed25fb878e9ade5f4f36429fd520a58bcd4d2794d4a",
+  "edges": [
+    {
+      "from": "src/adapters/storage/__tests__/sqlite-storage-adapter.test.ts::sqlite-storage-adapter.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/adapters/storage/__tests__/sqlite-storage-adapter.test.ts::sqlite-storage-adapter.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "src/adapters/storage/__tests__/sqlite-storage-adapter.test.ts::sqlite-storage-adapter.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/__tests__/test-fixtures.ts::buildFileIndex::function"
+    },
+    {
+      "from": "src/adapters/storage/__tests__/sqlite-storage-adapter.test.ts::sqlite-storage-adapter.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/__tests__/test-fixtures.ts::buildSecondFileIndex::function"
+    }
+  ],
+  "file": "src/adapters/storage/__tests__/sqlite-storage-adapter.test.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": []
+}

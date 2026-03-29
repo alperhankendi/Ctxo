@@ -1,0 +1,25 @@
+{
+  "antiPatterns": [],
+  "contentHash": "c262dfa5c02613b8f347867d219bc0206b1fa25ad632679aa79b0e57b4410816",
+  "edges": [
+    {
+      "from": "src/core/graph/__tests__/symbol-graph.test.ts::symbol-graph.test::variable",
+      "kind": "imports",
+      "to": "src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "src/core/graph/__tests__/symbol-graph.test.ts::symbol-graph.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::class"
+    },
+    {
+      "from": "src/core/graph/__tests__/symbol-graph.test.ts::symbol-graph.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::GraphEdge::class"
+    }
+  ],
+  "file": "src/core/graph/__tests__/symbol-graph.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

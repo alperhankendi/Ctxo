@@ -1,0 +1,30 @@
+{
+  "antiPatterns": [],
+  "contentHash": "cf4196af753ea75fb57a7e3d6a32030c42b9e16ca9287cec5509cedcade569fd",
+  "edges": [
+    {
+      "from": "src/adapters/storage/__tests__/test-fixtures.ts::buildFileIndex::function",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::class"
+    }
+  ],
+  "file": "src/adapters/storage/__tests__/test-fixtures.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": [
+    {
+      "endLine": 33,
+      "kind": "function",
+      "name": "buildFileIndex",
+      "startLine": 16,
+      "symbolId": "src/adapters/storage/__tests__/test-fixtures.ts::buildFileIndex::function"
+    },
+    {
+      "endLine": 52,
+      "kind": "function",
+      "name": "buildSecondFileIndex",
+      "startLine": 35,
+      "symbolId": "src/adapters/storage/__tests__/test-fixtures.ts::buildSecondFileIndex::function"
+    }
+  ]
+}

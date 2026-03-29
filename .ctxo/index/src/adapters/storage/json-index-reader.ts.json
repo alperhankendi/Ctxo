@@ -1,0 +1,49 @@
+{
+  "antiPatterns": [],
+  "contentHash": "2edfc580e85b8ba2777cd5e8610fcb86c02a5f92ad71ebb3e59ea66d6b58f8f8",
+  "edges": [
+    {
+      "from": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndexSchema::class"
+    },
+    {
+      "from": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::class"
+    }
+  ],
+  "file": "src/adapters/storage/json-index-reader.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 73,
+      "kind": "class",
+      "name": "JsonIndexReader",
+      "startLine": 4,
+      "symbolId": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "endLine": 27,
+      "kind": "method",
+      "name": "JsonIndexReader.readAll",
+      "startLine": 11,
+      "symbolId": "src/adapters/storage/json-index-reader.ts::JsonIndexReader.readAll::method"
+    },
+    {
+      "endLine": 51,
+      "kind": "method",
+      "name": "JsonIndexReader.readSingle",
+      "startLine": 29,
+      "symbolId": "src/adapters/storage/json-index-reader.ts::JsonIndexReader.readSingle::method"
+    },
+    {
+      "endLine": 72,
+      "kind": "method",
+      "name": "JsonIndexReader.collectJsonFiles",
+      "startLine": 53,
+      "symbolId": "src/adapters/storage/json-index-reader.ts::JsonIndexReader.collectJsonFiles::method"
+    }
+  ]
+}

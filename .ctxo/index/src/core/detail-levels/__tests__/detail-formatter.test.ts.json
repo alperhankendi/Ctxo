@@ -1,0 +1,30 @@
+{
+  "antiPatterns": [],
+  "contentHash": "0d0c8ddbe6207d12eed9ae6d22a36d26f35b761cb2d711abf9d7f09f00bc3ff0",
+  "edges": [
+    {
+      "from": "src/core/detail-levels/__tests__/detail-formatter.test.ts::detail-formatter.test::variable",
+      "kind": "imports",
+      "to": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class"
+    },
+    {
+      "from": "src/core/detail-levels/__tests__/detail-formatter.test.ts::detail-formatter.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::LogicSliceResult::class"
+    },
+    {
+      "from": "src/core/detail-levels/__tests__/detail-formatter.test.ts::detail-formatter.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::class"
+    },
+    {
+      "from": "src/core/detail-levels/__tests__/detail-formatter.test.ts::detail-formatter.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::GraphEdge::class"
+    }
+  ],
+  "file": "src/core/detail-levels/__tests__/detail-formatter.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

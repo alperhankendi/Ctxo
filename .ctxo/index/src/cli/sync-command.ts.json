@@ -1,0 +1,30 @@
+{
+  "antiPatterns": [],
+  "contentHash": "45b46f87b69501377a57aa8bfd22b366fee6a3f36bb111266a1114b1af53ef52",
+  "edges": [
+    {
+      "from": "src/cli/sync-command.ts::SyncCommand::class",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    }
+  ],
+  "file": "src/cli/sync-command.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 22,
+      "kind": "class",
+      "name": "SyncCommand",
+      "startLine": 3,
+      "symbolId": "src/cli/sync-command.ts::SyncCommand::class"
+    },
+    {
+      "endLine": 21,
+      "kind": "method",
+      "name": "SyncCommand.run",
+      "startLine": 10,
+      "symbolId": "src/cli/sync-command.ts::SyncCommand.run::method"
+    }
+  ]
+}

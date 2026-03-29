@@ -1,0 +1,15 @@
+{
+  "antiPatterns": [],
+  "contentHash": "e2b8a0693a62212395db06c7f1770e7ba6d7f7dc863fa494944c09a03ee74cca",
+  "edges": [
+    {
+      "from": "src/core/change-intelligence/__tests__/health-scorer.test.ts::health-scorer.test::variable",
+      "kind": "imports",
+      "to": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class"
+    }
+  ],
+  "file": "src/core/change-intelligence/__tests__/health-scorer.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

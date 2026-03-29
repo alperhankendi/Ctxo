@@ -1,0 +1,24 @@
+{
+  "antiPatterns": [],
+  "contentHash": "d3f420c929357df22eca1f58a745ba64827d9441cffa1ae79a681489079aea8f",
+  "edges": [],
+  "file": "src/cli/__tests__/fixtures/sample-project/src/utils.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 2,
+      "kind": "function",
+      "name": "formatName",
+      "startLine": 0,
+      "symbolId": "src/cli/__tests__/fixtures/sample-project/src/utils.ts::formatName::function"
+    },
+    {
+      "endLine": 4,
+      "kind": "variable",
+      "name": "VERSION",
+      "startLine": 4,
+      "symbolId": "src/cli/__tests__/fixtures/sample-project/src/utils.ts::VERSION::variable"
+    }
+  ]
+}

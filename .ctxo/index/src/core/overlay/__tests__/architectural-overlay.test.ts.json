@@ -1,0 +1,15 @@
+{
+  "antiPatterns": [],
+  "contentHash": "d83a988eb50a2ba51dc078204a35b605321266bfa782c0cfd5f31c6421293583",
+  "edges": [
+    {
+      "from": "src/core/overlay/__tests__/architectural-overlay.test.ts::architectural-overlay.test::variable",
+      "kind": "imports",
+      "to": "src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class"
+    }
+  ],
+  "file": "src/core/overlay/__tests__/architectural-overlay.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

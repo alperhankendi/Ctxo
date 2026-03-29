@@ -1,0 +1,35 @@
+{
+  "antiPatterns": [],
+  "contentHash": "a1fb1a84fb851ef16ba591fb072e90bb90c918a6b9e50279f2d0ea2c796f0fad",
+  "edges": [
+    {
+      "from": "src/cli/verify-command.ts::VerifyCommand::class",
+      "kind": "imports",
+      "to": "src/cli/index-command.ts::IndexCommand::class"
+    },
+    {
+      "from": "src/cli/verify-command.ts::VerifyCommand::class",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    }
+  ],
+  "file": "src/cli/verify-command.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 65,
+      "kind": "class",
+      "name": "VerifyCommand",
+      "startLine": 6,
+      "symbolId": "src/cli/verify-command.ts::VerifyCommand::class"
+    },
+    {
+      "endLine": 64,
+      "kind": "method",
+      "name": "VerifyCommand.run",
+      "startLine": 13,
+      "symbolId": "src/cli/verify-command.ts::VerifyCommand.run::method"
+    }
+  ]
+}

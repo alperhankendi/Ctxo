@@ -7,7 +7,7 @@ import {
   type MethodDeclaration,
   ScriptTarget,
 } from 'ts-morph';
-import { extname } from 'node:path';
+import { extname, dirname, join, normalize } from 'node:path';
 import type { SymbolNode, GraphEdge, ComplexityMetrics, SymbolKind } from '../../core/types.js';
 import type { ILanguageAdapter } from '../../ports/i-language-adapter.js';
 
@@ -245,9 +245,8 @@ export class TsMorphAdapter implements ILanguageAdapter {
         continue;
       }
 
-      const resolvedSourceFile = imp.getModuleSpecifierSourceFile();
-      const targetFile = resolvedSourceFile?.getFilePath() ?? moduleSpecifier;
-      const normalizedTarget = this.normalizeFilePath(targetFile);
+      // Resolve relative import to project-relative path
+      const normalizedTarget = this.resolveRelativeImport(filePath, moduleSpecifier);
 
       for (const named of imp.getNamedImports()) {
         const importedName = named.getName();
@@ -331,6 +330,23 @@ export class TsMorphAdapter implements ILanguageAdapter {
     return `${filePath}::${name}::${kind}`;
   }
 
+  private resolveRelativeImport(fromFile: string, moduleSpecifier: string): string {
+    // Convert relative import like '../types.js' to project-relative 'src/core/types.ts'
+    const fromDir = dirname(fromFile);
+    let resolved = normalize(join(fromDir, moduleSpecifier)).replace(/\\/g, '/');
+
+    // Strip .js extension (TypeScript imports use .js but source files are .ts)
+    if (resolved.endsWith('.js')) {
+      resolved = resolved.slice(0, -3) + '.ts';
+    } else if (resolved.endsWith('.jsx')) {
+      resolved = resolved.slice(0, -4) + '.tsx';
+    } else if (!extname(resolved)) {
+      resolved += '.ts';
+    }
+
+    return resolved;
+  }
+
   private resolveImportTarget(targetFile: string, name: string): string {
     // Try to find the symbol in the already-parsed project to get the correct kind
     const targetSourceFile = this.project.getSourceFile(targetFile);
@@ -356,8 +372,12 @@ export class TsMorphAdapter implements ILanguageAdapter {
         }
       }
     }
-    // Fallback: use function as default kind (most common for imports)
-    return `${targetFile}::${name}::function`;
+    // Fallback: infer kind from naming conventions
+    // PascalCase starting with I + PascalCase = interface (e.g., IStoragePort)
+    // PascalCase = class or type
+    // camelCase or UPPER_CASE = function or variable
+    const kind = this.inferSymbolKind(name);
+    return `${targetFile}::${name}::${kind}`;
   }
 
   private resolveSymbolReference(
@@ -380,6 +400,17 @@ export class TsMorphAdapter implements ILanguageAdapter {
 
     // Assume it's in the same file
     return `${sourceFile.getFilePath()}::${name}::${defaultKind}`;
+  }
+
+  private inferSymbolKind(name: string): SymbolKind {
+    // Interface: starts with I followed by uppercase (IStoragePort, IGitPort)
+    if (/^I[A-Z]/.test(name) && name.length > 2) return 'interface';
+    // All caps with underscores: variable/constant (MAX_AMOUNT, EDGE_KINDS)
+    if (/^[A-Z][A-Z_0-9]+$/.test(name)) return 'variable';
+    // PascalCase: could be class, interface, or type — default to class
+    if (/^[A-Z]/.test(name)) return 'class';
+    // camelCase: function
+    return 'function';
   }
 
   private normalizeFilePath(filePath: string): string {

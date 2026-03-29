@@ -1,0 +1,15 @@
+{
+  "antiPatterns": [],
+  "contentHash": "deb18e7b1683b2a2236a69ba3c9d5ad0e0f09530b1af2607063a747d95127880",
+  "edges": [
+    {
+      "from": "src/cli/__tests__/index-command.test.ts::index-command.test::variable",
+      "kind": "imports",
+      "to": "src/cli/index-command.ts::IndexCommand::class"
+    }
+  ],
+  "file": "src/cli/__tests__/index-command.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

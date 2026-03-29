@@ -1,0 +1,37 @@
+{
+  "antiPatterns": [],
+  "contentHash": "18f6f6a976566bb264f726e81a4fec2fcc555a8c5705f333dba5b8a836cf28cb",
+  "edges": [
+    {
+      "from": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class",
+      "kind": "imports",
+      "to": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface"
+    }
+  ],
+  "file": "src/adapters/language/language-adapter-registry.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": [
+    {
+      "endLine": 20,
+      "kind": "class",
+      "name": "LanguageAdapterRegistry",
+      "startLine": 3,
+      "symbolId": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class"
+    },
+    {
+      "endLine": 10,
+      "kind": "method",
+      "name": "LanguageAdapterRegistry.register",
+      "startLine": 6,
+      "symbolId": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.register::method"
+    },
+    {
+      "endLine": 19,
+      "kind": "method",
+      "name": "LanguageAdapterRegistry.getAdapter",
+      "startLine": 12,
+      "symbolId": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.getAdapter::method"
+    }
+  ]
+}

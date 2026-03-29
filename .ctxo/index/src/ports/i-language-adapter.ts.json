@@ -1,0 +1,33 @@
+{
+  "antiPatterns": [],
+  "contentHash": "e0f6c83bfc1d4fb893e4667ad65fda0ae7ae8ce02255609e813ecdf7f591adb9",
+  "edges": [
+    {
+      "from": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::class"
+    },
+    {
+      "from": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface",
+      "kind": "imports",
+      "to": "src/core/types.ts::GraphEdge::class"
+    },
+    {
+      "from": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface",
+      "kind": "imports",
+      "to": "src/core/types.ts::ComplexityMetrics::class"
+    }
+  ],
+  "file": "src/ports/i-language-adapter.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 9,
+      "kind": "interface",
+      "name": "ILanguageAdapter",
+      "startLine": 2,
+      "symbolId": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface"
+    }
+  ]
+}

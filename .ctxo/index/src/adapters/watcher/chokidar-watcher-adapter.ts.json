@@ -1,0 +1,47 @@
+{
+  "antiPatterns": [],
+  "contentHash": "330dad6e42ee385e3ddabde874ca1ab434c75b2e8c953062e74f281ce6fc36a3",
+  "edges": [
+    {
+      "from": "src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class",
+      "kind": "imports",
+      "to": "src/ports/i-watcher-port.ts::IWatcherPort::interface"
+    },
+    {
+      "from": "src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class",
+      "kind": "imports",
+      "to": "src/ports/i-watcher-port.ts::FileChangeHandler::class"
+    },
+    {
+      "from": "src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class",
+      "kind": "implements",
+      "to": "../../ports/i-watcher-port.js::IWatcherPort::interface"
+    }
+  ],
+  "file": "src/adapters/watcher/chokidar-watcher-adapter.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 43,
+      "kind": "class",
+      "name": "ChokidarWatcherAdapter",
+      "startLine": 11,
+      "symbolId": "src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class"
+    },
+    {
+      "endLine": 35,
+      "kind": "method",
+      "name": "ChokidarWatcherAdapter.start",
+      "startLine": 21,
+      "symbolId": "src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter.start::method"
+    },
+    {
+      "endLine": 42,
+      "kind": "method",
+      "name": "ChokidarWatcherAdapter.stop",
+      "startLine": 37,
+      "symbolId": "src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter.stop::method"
+    }
+  ]
+}

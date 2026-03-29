@@ -1,0 +1,98 @@
+{
+  "antiPatterns": [],
+  "contentHash": "da1af81d0259c2ea6d02d124347b9ad01d709470e99379058368a43fbf28ae48",
+  "edges": [
+    {
+      "from": "src/core/graph/symbol-graph.ts::SymbolGraph::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::class"
+    },
+    {
+      "from": "src/core/graph/symbol-graph.ts::SymbolGraph::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::GraphEdge::class"
+    }
+  ],
+  "file": "src/core/graph/symbol-graph.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 91,
+      "kind": "class",
+      "name": "SymbolGraph",
+      "startLine": 2,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "endLine": 16,
+      "kind": "method",
+      "name": "SymbolGraph.addNode",
+      "startLine": 9,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.addNode::method"
+    },
+    {
+      "endLine": 35,
+      "kind": "method",
+      "name": "SymbolGraph.addEdge",
+      "startLine": 18,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.addEdge::method"
+    },
+    {
+      "endLine": 39,
+      "kind": "method",
+      "name": "SymbolGraph.getNode",
+      "startLine": 37,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.getNode::method"
+    },
+    {
+      "endLine": 50,
+      "kind": "method",
+      "name": "SymbolGraph.resolveNodeId",
+      "startLine": 41,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.resolveNodeId::method"
+    },
+    {
+      "endLine": 58,
+      "kind": "method",
+      "name": "SymbolGraph.resolveNodeFuzzy",
+      "startLine": 52,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.resolveNodeFuzzy::method"
+    },
+    {
+      "endLine": 62,
+      "kind": "method",
+      "name": "SymbolGraph.getForwardEdges",
+      "startLine": 60,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.getForwardEdges::method"
+    },
+    {
+      "endLine": 66,
+      "kind": "method",
+      "name": "SymbolGraph.getReverseEdges",
+      "startLine": 64,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.getReverseEdges::method"
+    },
+    {
+      "endLine": 70,
+      "kind": "method",
+      "name": "SymbolGraph.hasNode",
+      "startLine": 68,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.hasNode::method"
+    },
+    {
+      "endLine": 82,
+      "kind": "method",
+      "name": "SymbolGraph.allNodes",
+      "startLine": 80,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.allNodes::method"
+    },
+    {
+      "endLine": 90,
+      "kind": "method",
+      "name": "SymbolGraph.allEdges",
+      "startLine": 84,
+      "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph.allEdges::method"
+    }
+  ]
+}

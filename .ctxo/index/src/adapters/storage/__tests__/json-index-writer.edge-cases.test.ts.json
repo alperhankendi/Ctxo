@@ -1,0 +1,20 @@
+{
+  "antiPatterns": [],
+  "contentHash": "a5b0df84d887db2e995bf5b0b64e25612492c35362e009b0ab979da9ad50f36b",
+  "edges": [
+    {
+      "from": "src/adapters/storage/__tests__/json-index-writer.edge-cases.test.ts::json-index-writer.edge-cases.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "src/adapters/storage/__tests__/json-index-writer.edge-cases.test.ts::json-index-writer.edge-cases.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/__tests__/test-fixtures.ts::buildFileIndex::function"
+    }
+  ],
+  "file": "src/adapters/storage/__tests__/json-index-writer.edge-cases.test.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": []
+}

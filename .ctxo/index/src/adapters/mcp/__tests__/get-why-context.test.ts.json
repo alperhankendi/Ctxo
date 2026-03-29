@@ -1,0 +1,45 @@
+{
+  "antiPatterns": [],
+  "contentHash": "0fe26cbac96a0471f3f61ff9d9aa9cfd9c9a0d47605c48e733adfa0d962f733d",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::CommitRecord::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::ChurnData::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+    }
+  ],
+  "file": "src/adapters/mcp/__tests__/get-why-context.test.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": []
+}

@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "contentHash": "b651a3edc015b8443f074bfd8b134a1f0af98506d805287868700d2613c4f52b",
+  "edges": [
+    {
+      "from": "src/cli/__tests__/fixtures/sample-project/src/greet.ts::greet::function",
+      "kind": "imports",
+      "to": "src/cli/__tests__/fixtures/sample-project/src/utils.ts::formatName::function"
+    }
+  ],
+  "file": "src/cli/__tests__/fixtures/sample-project/src/greet.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 4,
+      "kind": "function",
+      "name": "greet",
+      "startLine": 2,
+      "symbolId": "src/cli/__tests__/fixtures/sample-project/src/greet.ts::greet::function"
+    }
+  ]
+}

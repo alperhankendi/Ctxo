@@ -1,0 +1,40 @@
+{
+  "antiPatterns": [],
+  "contentHash": "e37e628f4f08000e600bed0771b72f7f9b489f283072b942e70a6273d7a6f245",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/__tests__/get-change-intelligence.test.ts::get-change-intelligence.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-change-intelligence.test.ts::get-change-intelligence.test::variable",
+      "kind": "imports",
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-change-intelligence.test.ts::get-change-intelligence.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-change-intelligence.test.ts::get-change-intelligence.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-change-intelligence.test.ts::get-change-intelligence.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::ChurnData::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-change-intelligence.test.ts::get-change-intelligence.test::variable",
+      "kind": "imports",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+    }
+  ],
+  "file": "src/adapters/mcp/__tests__/get-change-intelligence.test.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": []
+}

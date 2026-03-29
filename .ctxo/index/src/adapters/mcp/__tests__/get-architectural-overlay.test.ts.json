@@ -1,0 +1,30 @@
+{
+  "antiPatterns": [],
+  "contentHash": "6681a797dd362cf491161b42bfb09985565b70de1384113063d2c558fd2a1532",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/__tests__/get-architectural-overlay.test.ts::get-architectural-overlay.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-architectural-overlay.test.ts::get-architectural-overlay.test::variable",
+      "kind": "imports",
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-architectural-overlay.test.ts::get-architectural-overlay.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-architectural-overlay.test.ts::get-architectural-overlay.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::class"
+    }
+  ],
+  "file": "src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": []
+}

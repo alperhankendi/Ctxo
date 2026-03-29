@@ -1,0 +1,42 @@
+{
+  "antiPatterns": [],
+  "contentHash": "633ef2e695cfd075350023323bfbf2ff9ab80de2fffb196607ef432a466828e8",
+  "edges": [
+    {
+      "from": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::ChangeIntelligenceScore::class"
+    },
+    {
+      "from": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::ScoreBand::class"
+    }
+  ],
+  "file": "src/core/change-intelligence/health-scorer.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 15,
+      "kind": "class",
+      "name": "HealthScorer",
+      "startLine": 2,
+      "symbolId": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class"
+    },
+    {
+      "endLine": 8,
+      "kind": "method",
+      "name": "HealthScorer.score",
+      "startLine": 3,
+      "symbolId": "src/core/change-intelligence/health-scorer.ts::HealthScorer.score::method"
+    },
+    {
+      "endLine": 14,
+      "kind": "method",
+      "name": "HealthScorer.toBand",
+      "startLine": 10,
+      "symbolId": "src/core/change-intelligence/health-scorer.ts::HealthScorer.toBand::method"
+    }
+  ]
+}

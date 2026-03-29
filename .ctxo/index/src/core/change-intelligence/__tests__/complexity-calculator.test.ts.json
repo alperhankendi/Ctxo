@@ -1,0 +1,15 @@
+{
+  "antiPatterns": [],
+  "contentHash": "ebac7d5926d82fcb9b4b75553b8d15b5e3ae5eb0218f6aa3ef45e09fbbc66c3b",
+  "edges": [
+    {
+      "from": "src/core/change-intelligence/__tests__/complexity-calculator.test.ts::complexity-calculator.test::variable",
+      "kind": "imports",
+      "to": "src/core/change-intelligence/complexity-calculator.ts::ComplexityCalculator::class"
+    }
+  ],
+  "file": "src/core/change-intelligence/__tests__/complexity-calculator.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

@@ -1,0 +1,35 @@
+{
+  "antiPatterns": [],
+  "contentHash": "9377dfef730490a3dfed09c364cf8273f3815a6ee6bf5a860bbadf51cf1f5255",
+  "edges": [
+    {
+      "from": "src/core/why-context/revert-detector.ts::RevertDetector::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::CommitRecord::class"
+    },
+    {
+      "from": "src/core/why-context/revert-detector.ts::RevertDetector::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::AntiPattern::class"
+    }
+  ],
+  "file": "src/core/why-context/revert-detector.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 34,
+      "kind": "class",
+      "name": "RevertDetector",
+      "startLine": 5,
+      "symbolId": "src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "endLine": 33,
+      "kind": "method",
+      "name": "RevertDetector.detect",
+      "startLine": 6,
+      "symbolId": "src/core/why-context/revert-detector.ts::RevertDetector.detect::method"
+    }
+  ]
+}

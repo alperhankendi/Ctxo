@@ -1,0 +1,33 @@
+{
+  "antiPatterns": [],
+  "contentHash": "0056509e3d084badd08561d964406ead87774a29d75f46dae2636192c69a9002",
+  "edges": [
+    {
+      "from": "src/ports/i-storage-port.ts::IStoragePort::interface",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::class"
+    },
+    {
+      "from": "src/ports/i-storage-port.ts::IStoragePort::interface",
+      "kind": "imports",
+      "to": "src/core/types.ts::GraphEdge::class"
+    },
+    {
+      "from": "src/ports/i-storage-port.ts::IStoragePort::interface",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::class"
+    }
+  ],
+  "file": "src/ports/i-storage-port.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 14,
+      "kind": "interface",
+      "name": "IStoragePort",
+      "startLine": 2,
+      "symbolId": "src/ports/i-storage-port.ts::IStoragePort::interface"
+    }
+  ]
+}

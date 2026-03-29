@@ -1,0 +1,20 @@
+{
+  "antiPatterns": [],
+  "contentHash": "50809369cc4d3334962a6cf6d366f70d9c5e6c3eb585545411398319d3e2928e",
+  "edges": [
+    {
+      "from": "src/adapters/watcher/__tests__/chokidar-watcher-adapter.test.ts::chokidar-watcher-adapter.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class"
+    },
+    {
+      "from": "src/adapters/watcher/__tests__/chokidar-watcher-adapter.test.ts::chokidar-watcher-adapter.test::variable",
+      "kind": "imports",
+      "to": "src/ports/i-watcher-port.ts::FileChangeHandler::class"
+    }
+  ],
+  "file": "src/adapters/watcher/__tests__/chokidar-watcher-adapter.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

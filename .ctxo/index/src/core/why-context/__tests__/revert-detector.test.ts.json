@@ -1,0 +1,20 @@
+{
+  "antiPatterns": [],
+  "contentHash": "ab69d780ecf7e218234cd223af3e6bf8a136f065549c73d1bfa3d877f73d3401",
+  "edges": [
+    {
+      "from": "src/core/why-context/__tests__/revert-detector.test.ts::revert-detector.test::variable",
+      "kind": "imports",
+      "to": "src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "src/core/why-context/__tests__/revert-detector.test.ts::revert-detector.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::CommitRecord::class"
+    }
+  ],
+  "file": "src/core/why-context/__tests__/revert-detector.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

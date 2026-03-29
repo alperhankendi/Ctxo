@@ -1,0 +1,15 @@
+{
+  "antiPatterns": [],
+  "contentHash": "1a5f0231034fae7cbb9d557ea7073e1603f47e9b4e7cda89e5a9a8959f2b0c5b",
+  "edges": [
+    {
+      "from": "src/core/why-context/__tests__/why-context-assembler.test.ts::why-context-assembler.test::variable",
+      "kind": "imports",
+      "to": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler::class"
+    }
+  ],
+  "file": "src/core/why-context/__tests__/why-context-assembler.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

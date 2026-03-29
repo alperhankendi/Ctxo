@@ -1,0 +1,30 @@
+{
+  "antiPatterns": [],
+  "contentHash": "93867b530a61ed941b8ee85a6c0f0011116a9916f3db0222026d6246fca36853",
+  "edges": [
+    {
+      "from": "tests/e2e/fixtures/credential-fixture/src/service.ts::PaymentService::class",
+      "kind": "imports",
+      "to": "tests/e2e/fixtures/credential-fixture/src/config.ts::getConfig::function"
+    }
+  ],
+  "file": "tests/e2e/fixtures/credential-fixture/src/service.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 9,
+      "kind": "class",
+      "name": "PaymentService",
+      "startLine": 2,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/service.ts::PaymentService::class"
+    },
+    {
+      "endLine": 8,
+      "kind": "method",
+      "name": "PaymentService.process",
+      "startLine": 5,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/service.ts::PaymentService.process::method"
+    }
+  ]
+}

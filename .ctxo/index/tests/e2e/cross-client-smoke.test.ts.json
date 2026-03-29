@@ -1,0 +1,9 @@
+{
+  "antiPatterns": [],
+  "contentHash": "2ed77e8229802547a67a65de7b7bb4852b161ae31399cdb3b1547747b356e2c8",
+  "edges": [],
+  "file": "tests/e2e/cross-client-smoke.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

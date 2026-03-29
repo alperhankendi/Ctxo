@@ -1,0 +1,15 @@
+{
+  "antiPatterns": [],
+  "contentHash": "9a6fc4873b383e577b6cf1879199ea9e176762f0b75a080a26a926effde5065a",
+  "edges": [
+    {
+      "from": "src/core/change-intelligence/__tests__/churn-analyzer.test.ts::churn-analyzer.test::variable",
+      "kind": "imports",
+      "to": "src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer::class"
+    }
+  ],
+  "file": "src/core/change-intelligence/__tests__/churn-analyzer.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

@@ -1,0 +1,60 @@
+{
+  "antiPatterns": [],
+  "contentHash": "f588dc780ce20da6920a19eb70693c8f7c755f94f8a7906e9c26c44cde7f6b3a",
+  "edges": [
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "src/core/staleness/content-hasher.ts::ContentHasher::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::class"
+    }
+  ],
+  "file": "src/cli/watch-command.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 114,
+      "kind": "class",
+      "name": "WatchCommand",
+      "startLine": 13,
+      "symbolId": "src/cli/watch-command.ts::WatchCommand::class"
+    },
+    {
+      "endLine": 113,
+      "kind": "method",
+      "name": "WatchCommand.run",
+      "startLine": 22,
+      "symbolId": "src/cli/watch-command.ts::WatchCommand.run::method"
+    }
+  ]
+}

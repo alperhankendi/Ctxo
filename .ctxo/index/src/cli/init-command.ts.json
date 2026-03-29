@@ -1,0 +1,31 @@
+{
+  "antiPatterns": [],
+  "contentHash": "1cef9522d8402eda573cfd43f748b4213172e729e1f4562c451e3ba5227f4b1b",
+  "edges": [],
+  "file": "src/cli/init-command.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 62,
+      "kind": "class",
+      "name": "InitCommand",
+      "startLine": 15,
+      "symbolId": "src/cli/init-command.ts::InitCommand::class"
+    },
+    {
+      "endLine": 36,
+      "kind": "method",
+      "name": "InitCommand.run",
+      "startLine": 22,
+      "symbolId": "src/cli/init-command.ts::InitCommand.run::method"
+    },
+    {
+      "endLine": 61,
+      "kind": "method",
+      "name": "InitCommand.installHook",
+      "startLine": 38,
+      "symbolId": "src/cli/init-command.ts::InitCommand.installHook::method"
+    }
+  ]
+}

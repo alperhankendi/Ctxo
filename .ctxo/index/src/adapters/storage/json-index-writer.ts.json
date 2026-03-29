@@ -1,0 +1,51 @@
+{
+  "antiPatterns": [],
+  "contentHash": "a4303138ee153668d23dcd92fc6af752bdee1c6feec86929d16ccc2710c60115",
+  "edges": [
+    {
+      "from": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::class"
+    }
+  ],
+  "file": "src/adapters/storage/json-index-writer.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 53,
+      "kind": "class",
+      "name": "JsonIndexWriter",
+      "startLine": 4,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "endLine": 22,
+      "kind": "method",
+      "name": "JsonIndexWriter.write",
+      "startLine": 11,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.write::method"
+    },
+    {
+      "endLine": 29,
+      "kind": "method",
+      "name": "JsonIndexWriter.delete",
+      "startLine": 24,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.delete::method"
+    },
+    {
+      "endLine": 38,
+      "kind": "method",
+      "name": "JsonIndexWriter.resolveIndexPath",
+      "startLine": 31,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.resolveIndexPath::method"
+    },
+    {
+      "endLine": 52,
+      "kind": "method",
+      "name": "JsonIndexWriter.sortKeys",
+      "startLine": 40,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.sortKeys::method"
+    }
+  ]
+}

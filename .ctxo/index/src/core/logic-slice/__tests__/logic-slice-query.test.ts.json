@@ -1,0 +1,30 @@
+{
+  "antiPatterns": [],
+  "contentHash": "15601de0069c277ad59fd290b34d1317e3cf3d1412e2f0498f412934157e9f53",
+  "edges": [
+    {
+      "from": "src/core/logic-slice/__tests__/logic-slice-query.test.ts::logic-slice-query.test::variable",
+      "kind": "imports",
+      "to": "src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "src/core/logic-slice/__tests__/logic-slice-query.test.ts::logic-slice-query.test::variable",
+      "kind": "imports",
+      "to": "src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class"
+    },
+    {
+      "from": "src/core/logic-slice/__tests__/logic-slice-query.test.ts::logic-slice-query.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::class"
+    },
+    {
+      "from": "src/core/logic-slice/__tests__/logic-slice-query.test.ts::logic-slice-query.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::GraphEdge::class"
+    }
+  ],
+  "file": "src/core/logic-slice/__tests__/logic-slice-query.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

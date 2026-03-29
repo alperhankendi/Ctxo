@@ -1,0 +1,24 @@
+{
+  "antiPatterns": [],
+  "contentHash": "33ca3b10f4132ed1d4b070565e120e3f003efbfddc91325a2d08fb14c9de8f3b",
+  "edges": [],
+  "file": "src/core/change-intelligence/churn-analyzer.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 8,
+      "kind": "class",
+      "name": "ChurnAnalyzer",
+      "startLine": 0,
+      "symbolId": "src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer::class"
+    },
+    {
+      "endLine": 7,
+      "kind": "method",
+      "name": "ChurnAnalyzer.normalize",
+      "startLine": 1,
+      "symbolId": "src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer.normalize::method"
+    }
+  ]
+}

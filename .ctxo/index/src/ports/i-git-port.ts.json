@@ -1,0 +1,28 @@
+{
+  "antiPatterns": [],
+  "contentHash": "63e4d85f6ca1d0c5bc934605bec3fc8c085b8fc316a402aa43e9aac91fc5bdda",
+  "edges": [
+    {
+      "from": "src/ports/i-git-port.ts::IGitPort::interface",
+      "kind": "imports",
+      "to": "src/core/types.ts::CommitRecord::class"
+    },
+    {
+      "from": "src/ports/i-git-port.ts::IGitPort::interface",
+      "kind": "imports",
+      "to": "src/core/types.ts::ChurnData::class"
+    }
+  ],
+  "file": "src/ports/i-git-port.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 6,
+      "kind": "interface",
+      "name": "IGitPort",
+      "startLine": 2,
+      "symbolId": "src/ports/i-git-port.ts::IGitPort::interface"
+    }
+  ]
+}

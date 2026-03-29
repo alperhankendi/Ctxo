@@ -1,0 +1,15 @@
+{
+  "antiPatterns": [],
+  "contentHash": "0ee743367ecd050ab3ccccc2cd37f6eab977ce7fe62181d693c5b1d6f0b47862",
+  "edges": [
+    {
+      "from": "src/core/masking/__tests__/masking-pipeline.test.ts::masking-pipeline.test::variable",
+      "kind": "imports",
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    }
+  ],
+  "file": "src/core/masking/__tests__/masking-pipeline.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

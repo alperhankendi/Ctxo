@@ -1,0 +1,30 @@
+{
+  "antiPatterns": [],
+  "contentHash": "eb167044efd9cb386e64a1e55ec150846dcd2cbaa76a497c9238999196bc8891",
+  "edges": [
+    {
+      "from": "src/cli/__tests__/status-command.test.ts::status-command.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "src/cli/__tests__/status-command.test.ts::status-command.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/schema-manager.ts::SchemaManager::class"
+    },
+    {
+      "from": "src/cli/__tests__/status-command.test.ts::status-command.test::variable",
+      "kind": "imports",
+      "to": "src/cli/status-command.ts::StatusCommand::class"
+    },
+    {
+      "from": "src/cli/__tests__/status-command.test.ts::status-command.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::class"
+    }
+  ],
+  "file": "src/cli/__tests__/status-command.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

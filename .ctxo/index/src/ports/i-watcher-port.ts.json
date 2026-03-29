@@ -1,0 +1,31 @@
+{
+  "antiPatterns": [],
+  "contentHash": "5df4291601f673907ad1a58354aaab8756d5c22614f860d979ded99a2b6b8230",
+  "edges": [],
+  "file": "src/ports/i-watcher-port.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 7,
+      "kind": "interface",
+      "name": "IWatcherPort",
+      "startLine": 4,
+      "symbolId": "src/ports/i-watcher-port.ts::IWatcherPort::interface"
+    },
+    {
+      "endLine": 0,
+      "kind": "type",
+      "name": "FileChangeEvent",
+      "startLine": 0,
+      "symbolId": "src/ports/i-watcher-port.ts::FileChangeEvent::type"
+    },
+    {
+      "endLine": 2,
+      "kind": "type",
+      "name": "FileChangeHandler",
+      "startLine": 2,
+      "symbolId": "src/ports/i-watcher-port.ts::FileChangeHandler::type"
+    }
+  ]
+}

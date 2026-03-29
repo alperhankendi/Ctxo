@@ -1,0 +1,45 @@
+{
+  "antiPatterns": [],
+  "contentHash": "cd1056c2251aa9a80ba38082d652efe8844a2e111cd0584da983248003424d63",
+  "edges": [
+    {
+      "from": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::CommitIntent::class"
+    },
+    {
+      "from": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::AntiPattern::class"
+    },
+    {
+      "from": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::WhyContextResult::class"
+    },
+    {
+      "from": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::ChangeIntelligenceScore::class"
+    }
+  ],
+  "file": "src/core/why-context/why-context-assembler.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 14,
+      "kind": "class",
+      "name": "WhyContextAssembler",
+      "startLine": 2,
+      "symbolId": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler::class"
+    },
+    {
+      "endLine": 13,
+      "kind": "method",
+      "name": "WhyContextAssembler.assemble",
+      "startLine": 3,
+      "symbolId": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler.assemble::method"
+    }
+  ]
+}

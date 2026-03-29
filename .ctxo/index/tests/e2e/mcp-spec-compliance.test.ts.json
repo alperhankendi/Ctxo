@@ -1,0 +1,55 @@
+{
+  "antiPatterns": [],
+  "contentHash": "8f601b4b4c09261888107664de15a56427f7fd76a09c27a2ed9ac9b25d63ff85",
+  "edges": [
+    {
+      "from": "tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
+      "kind": "imports",
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function"
+    },
+    {
+      "from": "tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
+    },
+    {
+      "from": "tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
+    },
+    {
+      "from": "tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
+    },
+    {
+      "from": "tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function"
+    },
+    {
+      "from": "tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::class"
+    },
+    {
+      "from": "tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
+      "kind": "imports",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+    }
+  ],
+  "file": "tests/e2e/mcp-spec-compliance.test.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": []
+}

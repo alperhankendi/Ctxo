@@ -1,0 +1,62 @@
+{
+  "antiPatterns": [],
+  "contentHash": "d9ec53c3cf23c343c2da029821a32647ad42eb607808bc7e9987f05996d22f67",
+  "edges": [
+    {
+      "from": "src/cli/cli-router.ts::CliRouter::class",
+      "kind": "imports",
+      "to": "src/cli/index-command.ts::IndexCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter::class",
+      "kind": "imports",
+      "to": "src/cli/sync-command.ts::SyncCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter::class",
+      "kind": "imports",
+      "to": "src/cli/status-command.ts::StatusCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter::class",
+      "kind": "imports",
+      "to": "src/cli/verify-command.ts::VerifyCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter::class",
+      "kind": "imports",
+      "to": "src/cli/init-command.ts::InitCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter::class",
+      "kind": "imports",
+      "to": "src/cli/watch-command.ts::WatchCommand::class"
+    }
+  ],
+  "file": "src/cli/cli-router.ts",
+  "intent": [],
+  "lastModified": 1774800545,
+  "symbols": [
+    {
+      "endLine": 76,
+      "kind": "class",
+      "name": "CliRouter",
+      "startLine": 7,
+      "symbolId": "src/cli/cli-router.ts::CliRouter::class"
+    },
+    {
+      "endLine": 59,
+      "kind": "method",
+      "name": "CliRouter.route",
+      "startLine": 14,
+      "symbolId": "src/cli/cli-router.ts::CliRouter.route::method"
+    },
+    {
+      "endLine": 75,
+      "kind": "method",
+      "name": "CliRouter.printHelp",
+      "startLine": 61,
+      "symbolId": "src/cli/cli-router.ts::CliRouter.printHelp::method"
+    }
+  ]
+}

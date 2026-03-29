@@ -1,0 +1,53 @@
+{
+  "antiPatterns": [],
+  "contentHash": "15baf8e081e7ef55443e0ecbd59315cfb2e7360471a36737f53d117ae88b8907",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "src/core/types.ts::CommitIntent::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::class"
+    }
+  ],
+  "file": "src/adapters/mcp/get-why-context.ts",
+  "intent": [],
+  "lastModified": 1774800544,
+  "symbols": [
+    {
+      "endLine": 77,
+      "kind": "function",
+      "name": "handleGetWhyContext",
+      "startLine": 13,
+      "symbolId": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
+    }
+  ]
+}
