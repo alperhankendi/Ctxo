@@ -7,6 +7,8 @@ import { handleGetLogicSlice } from './adapters/mcp/get-logic-slice.js';
 import { handleGetWhyContext } from './adapters/mcp/get-why-context.js';
 import { handleGetChangeIntelligence } from './adapters/mcp/get-change-intelligence.js';
 import { SimpleGitAdapter } from './adapters/git/simple-git-adapter.js';
+import { handleGetBlastRadius } from './adapters/mcp/get-blast-radius.js';
+import { handleGetArchitecturalOverlay } from './adapters/mcp/get-architectural-overlay.js';
 
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
@@ -67,6 +69,32 @@ async function main(): Promise<void> {
       },
     },
     (args) => changeIntelligenceHandler(args),
+  );
+
+  const blastRadiusHandler = handleGetBlastRadius(storage, masking);
+
+  server.registerTool(
+    'get_blast_radius',
+    {
+      description: 'Retrieve the blast radius for a symbol — symbols that would break if it changed',
+      inputSchema: {
+        symbolId: z.string().min(1).describe('The symbol ID (format: file::name::kind)'),
+      },
+    },
+    (args) => blastRadiusHandler(args),
+  );
+
+  const overlayHandler = handleGetArchitecturalOverlay(storage, masking);
+
+  server.registerTool(
+    'get_architectural_overlay',
+    {
+      description: 'Retrieve an architectural overlay — layer map identifying Domain, Infrastructure, and Adapter boundaries',
+      inputSchema: {
+        layer: z.string().optional().describe('Filter by specific layer name'),
+      },
+    },
+    (args) => overlayHandler(args),
   );
 
   // Start MCP server
