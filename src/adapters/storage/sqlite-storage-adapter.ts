@@ -208,10 +208,10 @@ export class SqliteStorageAdapter implements IStoragePort {
       [symbolId],
     );
     if (!result[0]) return [];
-    return result[0].values.map(([from, to, kind]) => ({
-      from: from as string,
-      to: to as string,
-      kind: kind as GraphEdge['kind'],
+    return result[0].values.map((row) => ({
+      from: row[0] as string,
+      to: row[1] as string,
+      kind: row[2] as GraphEdge['kind'],
     }));
   }
 
@@ -222,10 +222,10 @@ export class SqliteStorageAdapter implements IStoragePort {
       [symbolId],
     );
     if (!result[0]) return [];
-    return result[0].values.map(([from, to, kind]) => ({
-      from: from as string,
-      to: to as string,
-      kind: kind as GraphEdge['kind'],
+    return result[0].values.map((row) => ({
+      from: row[0] as string,
+      to: row[1] as string,
+      kind: row[2] as GraphEdge['kind'],
     }));
   }
 
@@ -235,12 +235,12 @@ export class SqliteStorageAdapter implements IStoragePort {
       'SELECT symbol_id, name, kind, start_line, end_line FROM symbols',
     );
     if (!result[0]) return [];
-    return result[0].values.map(([sid, name, kind, startLine, endLine]) => ({
-      symbolId: sid as string,
-      name: name as string,
-      kind: kind as SymbolNode['kind'],
-      startLine: startLine as number,
-      endLine: endLine as number,
+    return result[0].values.map((row) => ({
+      symbolId: row[0] as string,
+      name: row[1] as string,
+      kind: row[2] as SymbolNode['kind'],
+      startLine: row[3] as number,
+      endLine: row[4] as number,
     }));
   }
 
@@ -250,10 +250,10 @@ export class SqliteStorageAdapter implements IStoragePort {
       'SELECT from_symbol, to_symbol, kind FROM edges',
     );
     if (!result[0]) return [];
-    return result[0].values.map(([from, to, kind]) => ({
-      from: from as string,
-      to: to as string,
-      kind: kind as GraphEdge['kind'],
+    return result[0].values.map((row) => ({
+      from: row[0] as string,
+      to: row[1] as string,
+      kind: row[2] as GraphEdge['kind'],
     }));
   }
 
@@ -341,7 +341,8 @@ export class SqliteStorageAdapter implements IStoragePort {
       [filePath],
     );
     if (symResult[0]) {
-      for (const [sid] of symResult[0].values) {
+      for (const row of symResult[0].values) {
+        const sid = row[0];
         // Only delete edges originating FROM this file's symbols.
         // Edges pointing TO these symbols belong to other files and must be preserved.
         db.run('DELETE FROM edges WHERE from_symbol = ?', [sid]);
@@ -357,12 +358,12 @@ export class SqliteStorageAdapter implements IStoragePort {
       [filePath],
     );
     if (!result[0]) return [];
-    return result[0].values.map(([sid, name, kind, startLine, endLine]) => ({
-      symbolId: sid as string,
-      name: name as string,
-      kind: kind as SymbolNode['kind'],
-      startLine: startLine as number,
-      endLine: endLine as number,
+    return result[0].values.map((row) => ({
+      symbolId: row[0] as string,
+      name: row[1] as string,
+      kind: row[2] as SymbolNode['kind'],
+      startLine: row[3] as number,
+      endLine: row[4] as number,
     }));
   }
 
@@ -374,10 +375,10 @@ export class SqliteStorageAdapter implements IStoragePort {
       [filePath],
     );
     if (!result[0]) return [];
-    return result[0].values.map(([from, to, kind]) => ({
-      from: from as string,
-      to: to as string,
-      kind: kind as GraphEdge['kind'],
+    return result[0].values.map((row) => ({
+      from: row[0] as string,
+      to: row[1] as string,
+      kind: row[2] as GraphEdge['kind'],
     }));
   }
 }

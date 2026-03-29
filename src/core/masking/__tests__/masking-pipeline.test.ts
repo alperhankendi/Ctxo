@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { MaskingPipeline } from '../masking-pipeline.js';
 
 describe('MaskingPipeline', () => {
@@ -97,5 +97,60 @@ describe('MaskingPipeline', () => {
     const second = pipeline.mask('host: 10.0.0.1');
     expect(first).toContain('[REDACTED:PRIVATE_IP]');
     expect(second).toContain('[REDACTED:PRIVATE_IP]');
+  });
+});
+
+describe('MaskingPipeline.fromConfig', () => {
+  it('creates pipeline with valid config patterns', () => {
+    const pipeline = MaskingPipeline.fromConfig([
+      { pattern: 'SECRET-[A-Z]+', label: 'CUSTOM_SECRET' },
+    ]);
+    const result = pipeline.mask('key: SECRET-ABCDEF');
+    expect(result).toContain('[REDACTED:CUSTOM_SECRET]');
+  });
+
+  it('creates pipeline with custom flags', () => {
+    const pipeline = MaskingPipeline.fromConfig([
+      { pattern: 'token_[a-z]+', flags: 'gi', label: 'TOKEN' },
+    ]);
+    const result = pipeline.mask('TOKEN_ABC');
+    expect(result).toContain('[REDACTED:TOKEN]');
+  });
+
+  it('skips invalid regex patterns and logs error', () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const pipeline = MaskingPipeline.fromConfig([
+      { pattern: '[invalid', label: 'BAD' },
+      { pattern: 'valid-[0-9]+', label: 'GOOD' },
+    ]);
+
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('Invalid regex'));
+    spy.mockRestore();
+
+    // Valid pattern should still work
+    const result = pipeline.mask('id: valid-123');
+    expect(result).toContain('[REDACTED:GOOD]');
+  });
+
+  it('returns pipeline with only default patterns when all configs are invalid', () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const pipeline = MaskingPipeline.fromConfig([
+      { pattern: '[bad1', label: 'X' },
+      { pattern: '(bad2', label: 'Y' },
+    ]);
+    spy.mockRestore();
+
+    // Default patterns still work
+    const result = pipeline.mask('AKIAIOSFODNN7EXAMPLE');
+    expect(result).toContain('[REDACTED:AWS_KEY]');
+  });
+
+  it('defaults flags to "g" when not specified', () => {
+    const pipeline = MaskingPipeline.fromConfig([
+      { pattern: 'test', label: 'TEST' },
+    ]);
+    const result = pipeline.mask('test test test');
+    // Should replace all occurrences (global flag)
+    expect(result).toBe('[REDACTED:TEST] [REDACTED:TEST] [REDACTED:TEST]');
   });
 });

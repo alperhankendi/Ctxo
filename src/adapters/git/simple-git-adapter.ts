@@ -1,4 +1,4 @@
-import simpleGit, { type SimpleGit } from 'simple-git';
+import { simpleGit, type SimpleGit } from 'simple-git';
 import type { IGitPort } from '../../ports/i-git-port.js';
 import type { CommitRecord, ChurnData } from '../../core/types.js';
 
