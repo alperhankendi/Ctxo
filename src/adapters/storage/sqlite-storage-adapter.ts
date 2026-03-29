@@ -139,6 +139,12 @@ export class SqliteStorageAdapter implements IStoragePort {
     }
   }
 
+  /**
+   * Read symbol file from SQLite cache.
+   * NOTE: SQLite only caches symbols + edges (graph topology).
+   * intent, antiPatterns, and complexity live in committed JSON index only.
+   * Use JsonIndexReader for full FileIndex data.
+   */
   readSymbolFile(relativePath: string): FileIndex | undefined {
     const db = this.database();
 
@@ -160,6 +166,7 @@ export class SqliteStorageAdapter implements IStoragePort {
       lastModified,
       symbols,
       edges,
+      // Not stored in SQLite — use JsonIndexReader for these fields
       intent: [],
       antiPatterns: [],
     };
