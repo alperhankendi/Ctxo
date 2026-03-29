@@ -1,6 +1,6 @@
 {
   "antiPatterns": [],
-  "contentHash": "0b8c0f0f4ab141db511b99b2b558b5df0df8dd48719ede8e7120f44b89b0c45c",
+  "contentHash": "1606f1a3992afd632a03129bd930075c2ed0022fe276188251ca5b20192020c0",
   "edges": [
     {
       "from": "src/adapters/mcp/__tests__/get-logic-slice.test.ts::get-logic-slice.test::variable",
@@ -25,6 +25,6 @@
   ],
   "file": "src/adapters/mcp/__tests__/get-logic-slice.test.ts",
   "intent": [],
-  "lastModified": 1774801329,
+  "lastModified": 1774802184,
   "symbols": []
 }

@@ -1,6 +1,6 @@
 {
   "antiPatterns": [],
-  "contentHash": "7c2d785e39c33f044e87babacace60e043a56a605aab2afe812a3c5568b29f70",
+  "contentHash": "5634bfd416ffd78167250438baa8d38a3b8cfbd958867f82260be34cd0bd5875",
   "edges": [
     {
       "from": "src/index.ts::index::variable",
@@ -50,6 +50,6 @@
   ],
   "file": "src/index.ts",
   "intent": [],
-  "lastModified": 1774801330,
+  "lastModified": 1774802185,
   "symbols": []
 }

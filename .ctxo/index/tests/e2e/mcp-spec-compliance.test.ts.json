@@ -1,6 +1,6 @@
 {
   "antiPatterns": [],
-  "contentHash": "8f601b4b4c09261888107664de15a56427f7fd76a09c27a2ed9ac9b25d63ff85",
+  "contentHash": "8dd7b9ff5bf6ec7ecc649d25aafc197534bad6b529b3777581aad286298b8734",
   "edges": [
     {
       "from": "tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
@@ -50,6 +50,6 @@
   ],
   "file": "tests/e2e/mcp-spec-compliance.test.ts",
   "intent": [],
-  "lastModified": 1774801330,
+  "lastModified": 1774802185,
   "symbols": []
 }

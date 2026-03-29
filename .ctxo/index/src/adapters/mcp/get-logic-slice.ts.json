@@ -1,6 +1,6 @@
 {
   "antiPatterns": [],
-  "contentHash": "68865c8272246dbd485bef3e191be767fd0715681293ab7a4c7b3cf0590407cf",
+  "contentHash": "93c5f279680e1662b5e894a5554e0143b8f851698e63e9e81fb8786c3f9cf07d",
   "edges": [
     {
       "from": "src/adapters/mcp/get-logic-slice.ts::getLogicSliceInputSchema::function",
@@ -20,6 +20,11 @@
     {
       "from": "src/adapters/mcp/get-logic-slice.ts::getLogicSliceInputSchema::function",
       "kind": "imports",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::getLogicSliceInputSchema::function",
+      "kind": "imports",
       "to": "src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class"
     },
     {
@@ -35,41 +40,48 @@
   ],
   "file": "src/adapters/mcp/get-logic-slice.ts",
   "intent": [],
-  "lastModified": 1774801329,
+  "lastModified": 1774802184,
   "symbols": [
     {
-      "endLine": 24,
+      "endLine": 25,
       "kind": "function",
       "name": "getLogicSliceInputSchema",
-      "startLine": 15,
+      "startLine": 16,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::getLogicSliceInputSchema::function"
     },
     {
-      "endLine": 35,
+      "endLine": 36,
       "kind": "function",
       "name": "buildGraphFromStorage",
-      "startLine": 26,
+      "startLine": 27,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
     },
     {
-      "endLine": 109,
+      "endLine": 60,
+      "kind": "function",
+      "name": "buildGraphFromJsonIndex",
+      "startLine": 42,
+      "symbolId": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
+    },
+    {
+      "endLine": 129,
       "kind": "function",
       "name": "handleGetLogicSlice",
-      "startLine": 41,
+      "startLine": 66,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function"
     },
     {
-      "endLine": 39,
+      "endLine": 64,
       "kind": "interface",
       "name": "StalenessCheck",
-      "startLine": 37,
+      "startLine": 62,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
     },
     {
-      "endLine": 13,
+      "endLine": 14,
       "kind": "type",
       "name": "GetLogicSliceInput",
-      "startLine": 13,
+      "startLine": 14,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::GetLogicSliceInput::type"
     }
   ]

@@ -68,7 +68,7 @@ describe('NFR15/NFR17: MCP Spec Compliance — All 5 Tools', () => {
 
   describe('get_logic_slice', () => {
     it('success response conforms to MCP content shape', () => {
-      const handler = handleGetLogicSlice(storage, masking);
+      const handler = handleGetLogicSlice(storage, masking, undefined, tempDir);
       const result = handler({ symbolId: 'src/app.ts::main::function' });
       assertMcpResponseShape(result);
 
@@ -80,7 +80,7 @@ describe('NFR15/NFR17: MCP Spec Compliance — All 5 Tools', () => {
     });
 
     it('miss response returns { found: false, hint }', () => {
-      const handler = handleGetLogicSlice(storage, masking);
+      const handler = handleGetLogicSlice(storage, masking, undefined, tempDir);
       const result = handler({ symbolId: 'src/missing.ts::x::function' });
       assertMcpResponseShape(result);
 
@@ -90,7 +90,7 @@ describe('NFR15/NFR17: MCP Spec Compliance — All 5 Tools', () => {
     });
 
     it('error response returns { error: true, message }', () => {
-      const handler = handleGetLogicSlice(storage, masking);
+      const handler = handleGetLogicSlice(storage, masking, undefined, tempDir);
       const result = handler({ symbolId: '' });
       assertMcpResponseShape(result);
 
@@ -102,7 +102,7 @@ describe('NFR15/NFR17: MCP Spec Compliance — All 5 Tools', () => {
 
   describe('get_blast_radius', () => {
     it('success response conforms to MCP content shape', () => {
-      const handler = handleGetBlastRadius(storage, masking);
+      const handler = handleGetBlastRadius(storage, masking, undefined, tempDir);
       const result = handler({ symbolId: 'src/app.ts::main::function' });
       assertMcpResponseShape(result);
 
@@ -113,7 +113,7 @@ describe('NFR15/NFR17: MCP Spec Compliance — All 5 Tools', () => {
     });
 
     it('miss response returns { found: false }', () => {
-      const handler = handleGetBlastRadius(storage, masking);
+      const handler = handleGetBlastRadius(storage, masking, undefined, tempDir);
       const result = handler({ symbolId: 'src/missing.ts::x::function' });
       assertMcpResponseShape(result);
 

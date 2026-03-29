@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { SymbolGraph } from '../../core/graph/symbol-graph.js';
+import { JsonIndexReader } from '../storage/json-index-reader.js';
 import { LogicSliceQuery } from '../../core/logic-slice/logic-slice-query.js';
 import { DetailFormatter } from '../../core/detail-levels/detail-formatter.js';
 import { DetailLevelSchema } from '../../core/types.js';
@@ -35,6 +36,30 @@ export function buildGraphFromStorage(storage: IStoragePort): SymbolGraph {
   return graph;
 }
 
+/**
+ * Build graph directly from JSON index files (bypasses SQLite cache).
+ * Always reads fresh data from disk — works even if ctxo index ran in another process.
+ */
+export function buildGraphFromJsonIndex(ctxoRoot: string): SymbolGraph {
+  const reader = new JsonIndexReader(ctxoRoot);
+  const indices = reader.readAll();
+
+  const graph = new SymbolGraph();
+  // Phase 1: all nodes
+  for (const fileIndex of indices) {
+    for (const sym of fileIndex.symbols) {
+      graph.addNode(sym);
+    }
+  }
+  // Phase 2: all edges (fuzzy resolution active since nodes are loaded)
+  for (const fileIndex of indices) {
+    for (const edge of fileIndex.edges) {
+      graph.addEdge(edge);
+    }
+  }
+  return graph;
+}
+
 export interface StalenessCheck {
   check(indexedFiles: readonly string[]): { message: string } | undefined;
 }
@@ -43,18 +68,17 @@ export function handleGetLogicSlice(
   storage: IStoragePort,
   masking: IMaskingPort,
   staleness?: StalenessCheck,
+  ctxoRoot = '.ctxo',
 ) {
   const query = new LogicSliceQuery();
   const formatter = new DetailFormatter();
 
-  // Cache graph — rebuilt only when invalidated
-  let cachedGraph: SymbolGraph | undefined;
-
+  // Build graph fresh on each call — try JSON index first (always up to date),
+  // fall back to SQLite storage (for tests and when JSON not available).
   const getGraph = () => {
-    if (!cachedGraph) {
-      cachedGraph = buildGraphFromStorage(storage);
-    }
-    return cachedGraph;
+    const jsonGraph = buildGraphFromJsonIndex(ctxoRoot);
+    if (jsonGraph.nodeCount > 0) return jsonGraph;
+    return buildGraphFromStorage(storage);
   };
 
   const handler = (args: Record<string, unknown>) => {
@@ -100,10 +124,6 @@ export function handleGetLogicSlice(
         content: [{ type: 'text' as const, text: JSON.stringify({ error: true, message: (err as Error).message }) }],
       };
     }
-  };
-
-  handler.invalidateCache = () => {
-    cachedGraph = undefined;
   };
 
   return handler;

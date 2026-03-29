@@ -57,7 +57,7 @@ async function main(): Promise<void> {
   const staleness = new StalenessDetector(process.cwd(), ctxoRoot);
 
   // Register tools
-  const logicSliceHandler = handleGetLogicSlice(storage, masking, staleness);
+  const logicSliceHandler = handleGetLogicSlice(storage, masking, staleness, ctxoRoot);
   const whyContextHandler = handleGetWhyContext(storage, git, masking, staleness);
   const changeIntelligenceHandler = handleGetChangeIntelligence(storage, git, masking, staleness);
 
@@ -95,7 +95,7 @@ async function main(): Promise<void> {
     (args) => changeIntelligenceHandler(args),
   );
 
-  const blastRadiusHandler = handleGetBlastRadius(storage, masking, staleness);
+  const blastRadiusHandler = handleGetBlastRadius(storage, masking, staleness, ctxoRoot);
 
   server.registerTool(
     'get_blast_radius',

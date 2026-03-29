@@ -53,7 +53,7 @@ describe('GetBlastRadiusHandler', () => {
   });
 
   it('returns MCP response with ranked dependents', () => {
-    const handler = handleGetBlastRadius(storage, new MaskingPipeline());
+    const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
 
     const result = handler({ symbolId: 'src/c.ts::C::interface' });
     const payload = JSON.parse(result.content[0]!.text);
@@ -65,7 +65,7 @@ describe('GetBlastRadiusHandler', () => {
   });
 
   it('returns transitive blast radius', () => {
-    const handler = handleGetBlastRadius(storage, new MaskingPipeline());
+    const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
 
     const result = handler({ symbolId: 'src/c.ts::C::interface' });
     const payload = JSON.parse(result.content[0]!.text);
@@ -76,7 +76,7 @@ describe('GetBlastRadiusHandler', () => {
   });
 
   it('returns { found: false } for missing symbol', () => {
-    const handler = handleGetBlastRadius(storage, new MaskingPipeline());
+    const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
 
     const result = handler({ symbolId: 'src/missing.ts::X::function' });
     const payload = JSON.parse(result.content[0]!.text);
@@ -96,14 +96,14 @@ describe('GetBlastRadiusHandler', () => {
     };
     storage.writeSymbolFile(sensitiveIndex);
 
-    const handler = handleGetBlastRadius(storage, new MaskingPipeline());
+    const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
     const result = handler({ symbolId: 'src/c.ts::C::interface' });
 
     expect(result.content[0]!.text).toContain('[REDACTED:AWS_KEY]');
   });
 
   it('returns error for empty symbolId', () => {
-    const handler = handleGetBlastRadius(storage, new MaskingPipeline());
+    const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
     const result = handler({ symbolId: '' });
     const payload = JSON.parse(result.content[0]!.text);
 

@@ -63,7 +63,7 @@ describe('GetLogicSliceHandler', () => {
     storage.bulkWrite([buildTestFileIndex(), buildDepFileIndex()]);
 
     const masking = new MaskingPipeline();
-    handler = handleGetLogicSlice(storage, masking);
+    handler = handleGetLogicSlice(storage, masking, undefined, tempDir);
   });
 
   afterEach(() => {

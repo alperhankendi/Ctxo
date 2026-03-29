@@ -2,9 +2,8 @@ import { z } from 'zod';
 import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { BlastRadiusCalculator } from '../../core/blast-radius/blast-radius-calculator.js';
-import { SymbolGraph } from '../../core/graph/symbol-graph.js';
 import type { StalenessCheck } from './get-logic-slice.js';
-import { buildGraphFromStorage } from './get-logic-slice.js';
+import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
 
 const InputSchema = z.object({
   symbolId: z.string().min(1),
@@ -14,15 +13,13 @@ export function handleGetBlastRadius(
   storage: IStoragePort,
   masking: IMaskingPort,
   staleness?: StalenessCheck,
+  ctxoRoot = '.ctxo',
 ) {
   const calculator = new BlastRadiusCalculator();
-  let cachedGraph: SymbolGraph | undefined;
-
   const getGraph = () => {
-    if (!cachedGraph) {
-      cachedGraph = buildGraphFromStorage(storage);
-    }
-    return cachedGraph;
+    const jsonGraph = buildGraphFromJsonIndex(ctxoRoot);
+    if (jsonGraph.nodeCount > 0) return jsonGraph;
+    return buildGraphFromStorage(storage);
   };
 
   return (args: Record<string, unknown>) => {

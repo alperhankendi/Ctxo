@@ -64,7 +64,7 @@ describe('NFR8: Privacy Zero-Leakage Gate', () => {
   });
 
   it('get_logic_slice response contains no unmasked credentials', () => {
-    const handler = handleGetLogicSlice(storage, masking);
+    const handler = handleGetLogicSlice(storage, masking, undefined, join(tempDir, '.ctxo'));
     const symbols = storage.getAllSymbols();
 
     for (const sym of symbols) {
@@ -78,7 +78,7 @@ describe('NFR8: Privacy Zero-Leakage Gate', () => {
   });
 
   it('get_blast_radius response contains no unmasked credentials', () => {
-    const handler = handleGetBlastRadius(storage, masking);
+    const handler = handleGetBlastRadius(storage, masking, undefined, join(tempDir, '.ctxo'));
     const symbols = storage.getAllSymbols();
 
     for (const sym of symbols) {
@@ -92,7 +92,7 @@ describe('NFR8: Privacy Zero-Leakage Gate', () => {
   });
 
   it('get_architectural_overlay response contains no unmasked credentials', () => {
-    const handler = handleGetArchitecturalOverlay(storage, masking);
+    const handler = handleGetArchitecturalOverlay(storage, masking, undefined);
     const result = handler({});
     const responseText = result.content.map((c) => c.text).join(' ');
 

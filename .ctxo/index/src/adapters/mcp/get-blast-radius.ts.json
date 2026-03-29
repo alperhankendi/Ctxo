@@ -1,6 +1,6 @@
 {
   "antiPatterns": [],
-  "contentHash": "62e0110801091ae596f900c36dbf541b06e0d6ee094bff546ffb9d8abf6f9dd7",
+  "contentHash": "6810bcd0b6881eb37eab44c67f57c8bde3f03a09df91edb9e2cdf5733167a89a",
   "edges": [
     {
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
@@ -20,12 +20,12 @@
     {
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
       "kind": "imports",
-      "to": "src/core/graph/symbol-graph.ts::SymbolGraph::class"
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::class"
     },
     {
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::class"
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
     },
     {
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
@@ -35,13 +35,13 @@
   ],
   "file": "src/adapters/mcp/get-blast-radius.ts",
   "intent": [],
-  "lastModified": 1774801329,
+  "lastModified": 1774802184,
   "symbols": [
     {
-      "endLine": 62,
+      "endLine": 59,
       "kind": "function",
       "name": "handleGetBlastRadius",
-      "startLine": 12,
+      "startLine": 11,
       "symbolId": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
     }
   ]
