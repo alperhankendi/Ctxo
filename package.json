@@ -42,7 +42,7 @@
     "simple-git": "^3.27.0",
     "sql.js": "^1.14.1",
     "ts-morph": "^25.0.0",
-    "zod": "^3.24.4"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^22.15.3",
