@@ -1,4 +1,13 @@
+---
+title: "Architecture Session Log"
+date: "2026-03-28"
+project: "Ctxo"
+workflow: "bmad-create-architecture (Steps 1-8)"
+status: "complete"
+---
+
 # Ctxo Architecture Session Log
+
 **Date:** 2026-03-28
 **User:** Alper Hankendi
 **Project:** Ctxo — Logic-Slice Based MCP Server
@@ -11,6 +20,7 @@
 This session completed the full architecture workflow for **Ctxo**, an MCP (Model Context Protocol) server that delivers dependency-aware, intent-enriched context to AI agents — reducing token costs and hallucinations in AI-assisted development.
 
 Three BMad workflows ran in sequence across this project:
+
 1. **bmad-brainstorming** — 111 ideas across First Principles, Cross-Pollination, SCAMPER
 2. **bmad-technical-research** — Full stack validation (tree-sitter, MCP SDK, AST graph)
 3. **bmad-create-architecture** — Complete architecture decision document (this session)
@@ -20,21 +30,51 @@ Three BMad workflows ran in sequence across this project:
 ## Key Decisions Made
 
 ### Storage Architecture (ADR-STORAGE-01)
+
 **Problem:** Committing a binary SQLite `.db` file causes unresolvable merge conflicts in GitHub/GitLab PRs.
 
 **Decision:** Split into two layers:
+
 - `.ctxo/index/` — committed, per-source-file JSON (text-based, diffable, mergeable)
 - `.ctxo/.cache/symbols.db` — gitignored, local SQLite cache rebuilt from JSON on startup
 
 **Per-file JSON format:**
+
 ```json
 {
   "file": "src/payment/processPayment.ts",
   "lastModified": 1711620000,
-  "symbols": [{ "symbolId": "src/payment/processPayment.ts::processPayment::function", "name": "processPayment", "kind": "function", "startLine": 12, "endLine": 45 }],
-  "edges": [{ "from": "src/payment/processPayment.ts::processPayment::function", "to": "src/auth/TokenValidator.ts::TokenValidator::class", "kind": "imports" }],
-  "intent": [{ "hash": "abc123", "message": "fix race condition under load", "date": "2024-03-15", "kind": "commit" }],
-  "antiPatterns": [{ "hash": "def456", "message": "revert: remove mutex — caused deadlock", "date": "2024-02-01" }],
+  "symbols": [
+    {
+      "symbolId": "src/payment/processPayment.ts::processPayment::function",
+      "name": "processPayment",
+      "kind": "function",
+      "startLine": 12,
+      "endLine": 45
+    }
+  ],
+  "edges": [
+    {
+      "from": "src/payment/processPayment.ts::processPayment::function",
+      "to": "src/auth/TokenValidator.ts::TokenValidator::class",
+      "kind": "imports"
+    }
+  ],
+  "intent": [
+    {
+      "hash": "abc123",
+      "message": "fix race condition under load",
+      "date": "2024-03-15",
+      "kind": "commit"
+    }
+  ],
+  "antiPatterns": [
+    {
+      "hash": "def456",
+      "message": "revert: remove mutex — caused deadlock",
+      "date": "2024-02-01"
+    }
+  ],
   "complexity": { "cyclomatic": 12, "cognitive": 8, "nestingDepth": 4, "paramCount": 5 },
   "churn": { "changeCount": 47, "lastChanged": "2024-03-15", "authors": 3 },
   "healthScore": 0.23
@@ -52,6 +92,7 @@ Three BMad workflows ran in sequence across this project:
 - Symbol ID: deterministic string `"file::name::kind"` — stable, human-readable, safe as FK
 
 **Party Mode consensus (Winston, Amelia, Barry):**
+
 > "Option C isn't even a tradeoff decision. It's just... correct." — Barry
 
 ---
@@ -95,12 +136,14 @@ The `IStoragePort` contract (5 methods) is the insurance policy. The committed J
 Yes — two patterns:
 
 **Pattern A (recommended):** CI runs `ctxo index`, commits updated JSON back to branch:
+
 ```yaml
 - run: npx ctxo index
 - run: git add .ctxo/index/ && git diff --staged --quiet || git commit -m "chore: update ctxo index [skip ci]" && git push
 ```
 
 **Pattern B (simpler):** CI gates on stale index:
+
 ```yaml
 - run: npx ctxo index
 - run: git diff --exit-code .ctxo/index/
@@ -113,6 +156,7 @@ Yes — two patterns:
 **User request:** "There is missing core functionality — I want to put change-log structure based module. The module can calculate code complexity, trace-changes, etc and give them a score."
 
 **Decision:** New `core/change-intelligence/` module:
+
 - `complexity-calculator.ts` — cyclomatic, cognitive, nesting depth, param count
 - `churn-analyzer.ts` — change frequency, coupling from git log
 - `health-scorer.ts` — composite score: `f(complexity, churn)` (formula TBD in story)
@@ -256,4 +300,4 @@ src/
 
 ---
 
-_Session completed 2026-03-28. Architecture workflow status: COMPLETE._
+*Session completed 2026-03-28. Architecture workflow status: COMPLETE.*
