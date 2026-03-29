@@ -18,7 +18,7 @@ export class IndexCommand {
     this.ctxoRoot = ctxoRoot ?? join(projectRoot, '.ctxo');
   }
 
-  async run(options: { file?: string; check?: boolean } = {}): Promise<void> {
+  async run(options: { file?: string; check?: boolean; skipSideEffects?: boolean } = {}): Promise<void> {
     if (options.check) {
       // Delegate to verify logic: hash-based freshness check
       return this.runCheck();
@@ -100,8 +100,10 @@ export class IndexCommand {
       storage.close();
     }
 
-    // Ensure .ctxo/.cache/ is in .gitignore
-    this.ensureGitignore();
+    // Ensure .ctxo/.cache/ is in .gitignore (skip during verify runs)
+    if (!options.skipSideEffects) {
+      this.ensureGitignore();
+    }
 
     console.error(`[ctxo] Index complete: ${processed} files indexed`);
   }
@@ -181,6 +183,13 @@ export class IndexCommand {
 
       if (!indexed) {
         console.error(`[ctxo] NOT INDEXED: ${relativePath}`);
+        staleCount++;
+        continue;
+      }
+
+      // Guard: file may be deleted from disk but still tracked by git
+      if (!existsSync(filePath)) {
+        console.error(`[ctxo] DELETED: ${relativePath}`);
         staleCount++;
         continue;
       }

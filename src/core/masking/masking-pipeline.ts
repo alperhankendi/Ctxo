@@ -35,10 +35,16 @@ export class MaskingPipeline {
   }
 
   static fromConfig(configPatterns: MaskingPatternConfig[]): MaskingPipeline {
-    const additional = configPatterns.map(({ pattern, flags, label }) => ({
-      regex: new RegExp(pattern, flags ?? 'g'),
-      label,
-    }));
+    const additional: Array<{ regex: RegExp; label: string }> = [];
+
+    for (const { pattern, flags, label } of configPatterns) {
+      try {
+        additional.push({ regex: new RegExp(pattern, flags ?? 'g'), label });
+      } catch (err) {
+        console.error(`[ctxo:masking] Invalid regex pattern "${pattern}": ${(err as Error).message}`);
+      }
+    }
+
     return new MaskingPipeline(additional);
   }
 

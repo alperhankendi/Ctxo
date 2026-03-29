@@ -22,7 +22,7 @@ export class VerifyCommand {
 
       // Run index into temp .ctxo (does not touch committed index)
       const indexCmd = new IndexCommand(this.projectRoot, tempCtxo);
-      await indexCmd.run();
+      await indexCmd.run({ skipSideEffects: true });
 
       // Compare temp index with committed index
       const committedReader = new JsonIndexReader(join(this.projectRoot, '.ctxo'));

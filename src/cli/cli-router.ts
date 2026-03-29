@@ -22,7 +22,12 @@ export class CliRouter {
 
     switch (command) {
       case 'index': {
-        const fileArg = args.indexOf('--file') !== -1 ? args[args.indexOf('--file') + 1] : undefined;
+        const fileIdx = args.indexOf('--file');
+        const fileArg = fileIdx !== -1 ? args[fileIdx + 1] : undefined;
+        if (fileIdx !== -1 && (!fileArg || fileArg.startsWith('--'))) {
+          console.error('[ctxo] --file requires a path argument');
+          process.exit(1);
+        }
         const checkArg = args.includes('--check');
         await new IndexCommand(this.projectRoot).run({ file: fileArg, check: checkArg });
         break;

@@ -20,6 +20,10 @@ export class ChokidarWatcherAdapter implements IWatcherPort {
   }
 
   start(handler: FileChangeHandler): void {
+    if (this.watcher) {
+      throw new Error('Watcher already started. Call stop() before starting again.');
+    }
+
     this.watcher = watch(this.projectRoot, {
       ignored: this.ignored,
       persistent: true,
