@@ -1,0 +1,77 @@
+import { z } from 'zod';
+import type { IStoragePort } from '../../ports/i-storage-port.js';
+import type { IMaskingPort } from '../../ports/i-masking-port.js';
+import { SymbolGraph } from '../../core/graph/symbol-graph.js';
+import { LogicSliceQuery } from '../../core/logic-slice/logic-slice-query.js';
+import { DetailFormatter } from '../../core/detail-levels/detail-formatter.js';
+import { DetailLevelSchema } from '../../core/types.js';
+
+const InputSchema = z.object({
+  symbolId: z.string().min(1),
+  level: DetailLevelSchema.optional().default(3),
+});
+
+export type GetLogicSliceInput = z.infer<typeof InputSchema>;
+
+export function getLogicSliceInputSchema() {
+  return {
+    type: 'object' as const,
+    properties: {
+      symbolId: { type: 'string' as const, description: 'The symbol ID to retrieve (format: file::name::kind)' },
+      level: { type: 'number' as const, enum: [1, 2, 3, 4], description: 'Detail level (1=minimal, 4=full)', default: 3 },
+    },
+    required: ['symbolId'] as const,
+  };
+}
+
+export function handleGetLogicSlice(
+  storage: IStoragePort,
+  masking: IMaskingPort,
+) {
+  const query = new LogicSliceQuery();
+  const formatter = new DetailFormatter();
+
+  return (args: Record<string, unknown>) => {
+    try {
+      const parsed = InputSchema.safeParse(args);
+      if (!parsed.success) {
+        return {
+          content: [{ type: 'text' as const, text: JSON.stringify({ error: true, message: parsed.error.message }) }],
+        };
+      }
+
+      const { symbolId, level } = parsed.data;
+
+      // Build graph from storage
+      const graph = new SymbolGraph();
+      for (const sym of storage.getAllSymbols()) {
+        graph.addNode(sym);
+      }
+      for (const edge of storage.getAllEdges()) {
+        graph.addEdge(edge);
+      }
+
+      // Query logic slice
+      const slice = query.getLogicSlice(graph, symbolId);
+      if (!slice) {
+        return {
+          content: [{ type: 'text' as const, text: JSON.stringify({ found: false, hint: 'Symbol not found. Run "ctxo index" to build the codebase index.' }) }],
+        };
+      }
+
+      // Format to requested detail level
+      const formatted = formatter.format(slice, level);
+
+      // Apply masking
+      const payload = masking.mask(JSON.stringify(formatted));
+
+      return {
+        content: [{ type: 'text' as const, text: payload }],
+      };
+    } catch (err) {
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify({ error: true, message: (err as Error).message }) }],
+      };
+    }
+  };
+}
