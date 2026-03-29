@@ -95,7 +95,8 @@ export class SqliteStorageAdapter implements IStoragePort {
         from_symbol TEXT NOT NULL,
         to_symbol TEXT NOT NULL,
         kind TEXT NOT NULL,
-        FOREIGN KEY (from_symbol) REFERENCES symbols(symbol_id) ON DELETE CASCADE
+        FOREIGN KEY (from_symbol) REFERENCES symbols(symbol_id) ON DELETE CASCADE,
+        FOREIGN KEY (to_symbol) REFERENCES symbols(symbol_id) ON DELETE CASCADE
       )
     `);
     db.run('CREATE INDEX IF NOT EXISTS idx_symbols_file ON symbols(file_path)');
@@ -134,12 +135,10 @@ export class SqliteStorageAdapter implements IStoragePort {
         );
       }
 
-      // Insert edges
+      // Insert edges — FK on to_symbol may fail for cross-file references
+      // when the target file is not yet indexed. Skip those edges gracefully.
       for (const edge of fileIndex.edges) {
-        db.run(
-          'INSERT INTO edges (from_symbol, to_symbol, kind) VALUES (?, ?, ?)',
-          [edge.from, edge.to, edge.kind],
-        );
+        this.tryInsertEdge(db, edge);
       }
 
       db.run('COMMIT');
@@ -263,6 +262,7 @@ export class SqliteStorageAdapter implements IStoragePort {
 
     db.run('BEGIN TRANSACTION');
     try {
+      // Phase 1: Insert all files and symbols first
       for (const fileIndex of indices) {
         this.deleteFileData(db, fileIndex.file);
 
@@ -277,12 +277,13 @@ export class SqliteStorageAdapter implements IStoragePort {
             [sym.symbolId, sym.name, sym.kind, fileIndex.file, sym.startLine, sym.endLine],
           );
         }
+      }
 
+      // Phase 2: Insert edges — all symbols exist now, FK on to_symbol should pass.
+      // Still handle gracefully for edges referencing external/unindexed symbols.
+      for (const fileIndex of indices) {
         for (const edge of fileIndex.edges) {
-          db.run(
-            'INSERT INTO edges (from_symbol, to_symbol, kind) VALUES (?, ?, ?)',
-            [edge.from, edge.to, edge.kind],
-          );
+          this.tryInsertEdge(db, edge);
         }
       }
 
@@ -315,6 +316,22 @@ export class SqliteStorageAdapter implements IStoragePort {
       this.persist();
     } catch (err) {
       console.error(`[ctxo:sqlite] Failed to persist DB: ${(err as Error).message}`);
+    }
+  }
+
+  private tryInsertEdge(db: Database, edge: GraphEdge): void {
+    try {
+      db.run(
+        'INSERT INTO edges (from_symbol, to_symbol, kind) VALUES (?, ?, ?)',
+        [edge.from, edge.to, edge.kind],
+      );
+    } catch (err) {
+      const message = (err as Error).message;
+      if (message.includes('FOREIGN KEY constraint failed')) {
+        // Cross-file edge referencing an unindexed symbol — skip gracefully
+        return;
+      }
+      throw err;
     }
   }
 
