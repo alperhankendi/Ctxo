@@ -117,7 +117,7 @@ jobs:
 
       - name: Attest build provenance
         if: steps.check.outputs.exists == 'false'
-        uses: actions/attest-build-provenance@ef244123eb79f2f7a7e75d99086184515e050ead # v2.3.0
+        uses: actions/attest-build-provenance@v2
         with:
           subject-path: '*.tgz'
 
