@@ -3,6 +3,7 @@ import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { BlastRadiusCalculator } from '../../core/blast-radius/blast-radius-calculator.js';
 import { SymbolGraph } from '../../core/graph/symbol-graph.js';
+import type { StalenessCheck } from './get-logic-slice.js';
 import { buildGraphFromStorage } from './get-logic-slice.js';
 
 const InputSchema = z.object({
@@ -12,6 +13,7 @@ const InputSchema = z.object({
 export function handleGetBlastRadius(
   storage: IStoragePort,
   masking: IMaskingPort,
+  staleness?: StalenessCheck,
 ) {
   const calculator = new BlastRadiusCalculator();
   let cachedGraph: SymbolGraph | undefined;
@@ -44,9 +46,14 @@ export function handleGetBlastRadius(
       const entries = calculator.calculate(graph, symbolId);
       const payload = masking.mask(JSON.stringify({ symbolId, impactScore: entries.length, dependents: entries }));
 
-      return {
-        content: [{ type: 'text' as const, text: payload }],
-      };
+      const content: Array<{ type: 'text'; text: string }> = [];
+      if (staleness) {
+        const warning = staleness.check(storage.listIndexedFiles());
+        if (warning) content.push({ type: 'text', text: `⚠️ ${warning.message}` });
+      }
+      content.push({ type: 'text', text: payload });
+
+      return { content };
     } catch (err) {
       return {
         content: [{ type: 'text' as const, text: JSON.stringify({ error: true, message: (err as Error).message }) }],

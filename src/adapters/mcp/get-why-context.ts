@@ -5,6 +5,7 @@ import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { RevertDetector } from '../../core/why-context/revert-detector.js';
 import { WhyContextAssembler } from '../../core/why-context/why-context-assembler.js';
 import type { CommitIntent } from '../../core/types.js';
+import type { StalenessCheck } from './get-logic-slice.js';
 
 const InputSchema = z.object({
   symbolId: z.string().min(1),
@@ -14,6 +15,7 @@ export function handleGetWhyContext(
   storage: IStoragePort,
   git: IGitPort,
   masking: IMaskingPort,
+  staleness?: StalenessCheck,
 ) {
   const revertDetector = new RevertDetector();
   const assembler = new WhyContextAssembler();
@@ -59,9 +61,14 @@ export function handleGetWhyContext(
       // Apply masking
       const payload = masking.mask(JSON.stringify(result));
 
-      return {
-        content: [{ type: 'text' as const, text: payload }],
-      };
+      const content: Array<{ type: 'text'; text: string }> = [];
+      if (staleness) {
+        const warning = staleness.check(storage.listIndexedFiles());
+        if (warning) content.push({ type: 'text', text: `⚠️ ${warning.message}` });
+      }
+      content.push({ type: 'text', text: payload });
+
+      return { content };
     } catch (err) {
       return {
         content: [{ type: 'text' as const, text: JSON.stringify({ error: true, message: (err as Error).message }) }],

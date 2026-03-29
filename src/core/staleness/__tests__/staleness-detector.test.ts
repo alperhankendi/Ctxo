@@ -43,7 +43,7 @@ describe('StalenessDetector', () => {
     writeFileSync(join(ctxoRoot, 'index', 'src', 'foo.ts.json'), '{}');
 
     // Wait a bit then create source (newer)
-    await new Promise((r) => setTimeout(r, 100));
+    await new Promise((r) => setTimeout(r, 1100));
     mkdirSync(join(projectRoot, 'src'), { recursive: true });
     writeFileSync(join(projectRoot, 'src', 'foo.ts'), 'export const x = 2;');
 

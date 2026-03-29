@@ -3,6 +3,7 @@ import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IGitPort } from '../../ports/i-git-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { ChurnAnalyzer } from '../../core/change-intelligence/churn-analyzer.js';
+import type { StalenessCheck } from './get-logic-slice.js';
 import { HealthScorer } from '../../core/change-intelligence/health-scorer.js';
 
 const InputSchema = z.object({
@@ -13,6 +14,7 @@ export function handleGetChangeIntelligence(
   storage: IStoragePort,
   git: IGitPort,
   masking: IMaskingPort,
+  staleness?: StalenessCheck,
 ) {
   const churnAnalyzer = new ChurnAnalyzer();
   const healthScorer = new HealthScorer();
@@ -56,9 +58,14 @@ export function handleGetChangeIntelligence(
 
       const payload = masking.mask(JSON.stringify(score));
 
-      return {
-        content: [{ type: 'text' as const, text: payload }],
-      };
+      const content: Array<{ type: 'text'; text: string }> = [];
+      if (staleness) {
+        const warning = staleness.check(storage.listIndexedFiles());
+        if (warning) content.push({ type: 'text', text: `⚠️ ${warning.message}` });
+      }
+      content.push({ type: 'text', text: payload });
+
+      return { content };
     } catch (err) {
       return {
         content: [{ type: 'text' as const, text: JSON.stringify({ error: true, message: (err as Error).message }) }],

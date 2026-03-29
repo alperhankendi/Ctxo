@@ -58,8 +58,8 @@ async function main(): Promise<void> {
 
   // Register tools
   const logicSliceHandler = handleGetLogicSlice(storage, masking, staleness);
-  const whyContextHandler = handleGetWhyContext(storage, git, masking);
-  const changeIntelligenceHandler = handleGetChangeIntelligence(storage, git, masking);
+  const whyContextHandler = handleGetWhyContext(storage, git, masking, staleness);
+  const changeIntelligenceHandler = handleGetChangeIntelligence(storage, git, masking, staleness);
 
   server.registerTool(
     'get_logic_slice',
@@ -95,7 +95,7 @@ async function main(): Promise<void> {
     (args) => changeIntelligenceHandler(args),
   );
 
-  const blastRadiusHandler = handleGetBlastRadius(storage, masking);
+  const blastRadiusHandler = handleGetBlastRadius(storage, masking, staleness);
 
   server.registerTool(
     'get_blast_radius',
@@ -108,7 +108,7 @@ async function main(): Promise<void> {
     (args) => blastRadiusHandler(args),
   );
 
-  const overlayHandler = handleGetArchitecturalOverlay(storage, masking);
+  const overlayHandler = handleGetArchitecturalOverlay(storage, masking, staleness);
 
   server.registerTool(
     'get_architectural_overlay',
