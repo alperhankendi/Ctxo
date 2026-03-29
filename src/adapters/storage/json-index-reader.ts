@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync, realpathSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { FileIndexSchema, type FileIndex } from '../../core/types.js';
 
@@ -51,13 +51,19 @@ export class JsonIndexReader {
     }
   }
 
-  private collectJsonFiles(dir: string): string[] {
+  private collectJsonFiles(dir: string, visited: Set<string> = new Set()): string[] {
+    const realDir = realpathSync(dir);
+    if (visited.has(realDir)) return []; // Guard against symlink loops
+    visited.add(realDir);
+
     const files: string[] = [];
 
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      if (entry.isSymbolicLink()) continue; // Skip symlinks entirely
+
       const fullPath = join(dir, entry.name);
       if (entry.isDirectory()) {
-        files.push(...this.collectJsonFiles(fullPath));
+        files.push(...this.collectJsonFiles(fullPath, visited));
       } else if (entry.name.endsWith('.json')) {
         files.push(fullPath);
       }

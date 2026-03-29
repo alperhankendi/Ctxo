@@ -134,6 +134,7 @@ export class SqliteStorageAdapter implements IStoragePort {
       }
 
       db.run('COMMIT');
+      this.persistIfNeeded();
     } catch (err) {
       db.run('ROLLBACK');
       throw err;
@@ -277,6 +278,7 @@ export class SqliteStorageAdapter implements IStoragePort {
       }
 
       db.run('COMMIT');
+      this.persistIfNeeded();
     } catch (err) {
       db.run('ROLLBACK');
       throw err;
@@ -299,6 +301,14 @@ export class SqliteStorageAdapter implements IStoragePort {
     }
   }
 
+  private persistIfNeeded(): void {
+    try {
+      this.persist();
+    } catch (err) {
+      console.error(`[ctxo:sqlite] Failed to persist DB: ${(err as Error).message}`);
+    }
+  }
+
   private deleteFileData(db: Database, filePath: string): void {
     const symResult = db.exec(
       'SELECT symbol_id FROM symbols WHERE file_path = ?',
@@ -306,7 +316,9 @@ export class SqliteStorageAdapter implements IStoragePort {
     );
     if (symResult[0]) {
       for (const [sid] of symResult[0].values) {
-        db.run('DELETE FROM edges WHERE from_symbol = ? OR to_symbol = ?', [sid, sid]);
+        // Only delete edges originating FROM this file's symbols.
+        // Edges pointing TO these symbols belong to other files and must be preserved.
+        db.run('DELETE FROM edges WHERE from_symbol = ?', [sid]);
       }
     }
     db.run('DELETE FROM symbols WHERE file_path = ?', [filePath]);

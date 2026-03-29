@@ -1,5 +1,5 @@
 import { writeFileSync, mkdirSync, unlinkSync, existsSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve, sep } from 'node:path';
 import type { FileIndex } from '../../core/types.js';
 
 export class JsonIndexWriter {
@@ -30,7 +30,12 @@ export class JsonIndexWriter {
   }
 
   private resolveIndexPath(relativePath: string): string {
-    return join(this.indexDir, `${relativePath}.json`);
+    const resolved = resolve(this.indexDir, `${relativePath}.json`);
+    const normalizedDir = resolve(this.indexDir) + sep;
+    if (!resolved.startsWith(normalizedDir)) {
+      throw new Error(`Path traversal detected: ${relativePath}`);
+    }
+    return resolved;
   }
 
   private sortKeys(obj: unknown): unknown {

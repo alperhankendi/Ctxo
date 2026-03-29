@@ -21,16 +21,18 @@ export class MaskingPipeline {
   private readonly patterns: Array<{ regex: RegExp; label: string }>;
 
   constructor(additionalPatterns: Array<{ regex: RegExp; label: string }> = []) {
-    this.patterns = [...DEFAULT_PATTERNS, ...additionalPatterns];
+    // Clone RegExp objects to avoid shared mutable lastIndex state
+    this.patterns = [...DEFAULT_PATTERNS, ...additionalPatterns].map(({ regex, label }) => ({
+      regex: new RegExp(regex.source, regex.flags),
+      label,
+    }));
   }
 
   mask(text: string): string {
-    if (!text) return text;
+    if (text.length === 0) return text;
 
     let result = text;
     for (const { regex, label } of this.patterns) {
-      // Reset regex lastIndex for global regexes
-      regex.lastIndex = 0;
       result = result.replace(regex, `[REDACTED:${label}]`);
     }
     return result;

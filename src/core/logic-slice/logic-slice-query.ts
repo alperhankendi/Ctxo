@@ -24,16 +24,17 @@ export class LogicSliceQuery {
 
       const edges = graph.getForwardEdges(current.id);
       for (const edge of edges) {
+        const depNode = graph.getNode(edge.to);
+        // Only include edges whose target node exists in the graph
+        if (!depNode) continue;
+
         collectedEdges.push(edge);
 
         if (visited.has(edge.to)) continue;
         visited.add(edge.to);
 
-        const depNode = graph.getNode(edge.to);
-        if (depNode) {
-          dependencies.push(depNode);
-          queue.push({ id: edge.to, depth: current.depth + 1 });
-        }
+        dependencies.push(depNode);
+        queue.push({ id: edge.to, depth: current.depth + 1 });
       }
     }
 

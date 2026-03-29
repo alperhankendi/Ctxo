@@ -24,6 +24,17 @@ export function getLogicSliceInputSchema() {
   };
 }
 
+export function buildGraphFromStorage(storage: IStoragePort): SymbolGraph {
+  const graph = new SymbolGraph();
+  for (const sym of storage.getAllSymbols()) {
+    graph.addNode(sym);
+  }
+  for (const edge of storage.getAllEdges()) {
+    graph.addEdge(edge);
+  }
+  return graph;
+}
+
 export function handleGetLogicSlice(
   storage: IStoragePort,
   masking: IMaskingPort,
@@ -31,7 +42,17 @@ export function handleGetLogicSlice(
   const query = new LogicSliceQuery();
   const formatter = new DetailFormatter();
 
-  return (args: Record<string, unknown>) => {
+  // Cache graph — rebuilt only when invalidated
+  let cachedGraph: SymbolGraph | undefined;
+
+  const getGraph = () => {
+    if (!cachedGraph) {
+      cachedGraph = buildGraphFromStorage(storage);
+    }
+    return cachedGraph;
+  };
+
+  const handler = (args: Record<string, unknown>) => {
     try {
       const parsed = InputSchema.safeParse(args);
       if (!parsed.success) {
@@ -42,14 +63,7 @@ export function handleGetLogicSlice(
 
       const { symbolId, level } = parsed.data;
 
-      // Build graph from storage
-      const graph = new SymbolGraph();
-      for (const sym of storage.getAllSymbols()) {
-        graph.addNode(sym);
-      }
-      for (const edge of storage.getAllEdges()) {
-        graph.addEdge(edge);
-      }
+      const graph = getGraph();
 
       // Query logic slice
       const slice = query.getLogicSlice(graph, symbolId);
@@ -74,4 +88,10 @@ export function handleGetLogicSlice(
       };
     }
   };
+
+  handler.invalidateCache = () => {
+    cachedGraph = undefined;
+  };
+
+  return handler;
 }

@@ -53,6 +53,8 @@ export class TsMorphAdapter implements ILanguageAdapter {
     } catch (err) {
       console.error(`[ctxo:ts-morph] Symbol extraction failed for ${filePath}: ${(err as Error).message}`);
       return [];
+    } finally {
+      this.cleanupSourceFile(filePath);
     }
   }
 
@@ -70,6 +72,8 @@ export class TsMorphAdapter implements ILanguageAdapter {
     } catch (err) {
       console.error(`[ctxo:ts-morph] Edge extraction failed for ${filePath}: ${(err as Error).message}`);
       return [];
+    } finally {
+      this.cleanupSourceFile(filePath);
     }
   }
 
@@ -103,6 +107,8 @@ export class TsMorphAdapter implements ILanguageAdapter {
     } catch (err) {
       console.error(`[ctxo:ts-morph] Complexity extraction failed for ${filePath}: ${(err as Error).message}`);
       return [];
+    } finally {
+      this.cleanupSourceFile(filePath);
     }
   }
 
@@ -226,6 +232,9 @@ export class TsMorphAdapter implements ILanguageAdapter {
     filePath: string,
     edges: GraphEdge[],
   ): void {
+    // Use file-level symbol ID for import edges — imports are file-level declarations
+    const fileSymbolId = this.buildSymbolId(filePath, sourceFile.getBaseName().replace(/\.[^.]+$/, ''), 'variable');
+
     for (const imp of sourceFile.getImportDeclarations()) {
       const moduleSpecifier = imp.getModuleSpecifierValue();
 
@@ -236,17 +245,19 @@ export class TsMorphAdapter implements ILanguageAdapter {
 
       const resolvedSourceFile = imp.getModuleSpecifierSourceFile();
       const targetFile = resolvedSourceFile?.getFilePath() ?? moduleSpecifier;
+      const normalizedTarget = this.normalizeFilePath(targetFile);
 
       for (const named of imp.getNamedImports()) {
         const importedName = named.getName();
-        // Find the first exported symbol that matches in source file
+
+        // Use the first exported symbol from THIS file, or fall back to file-level ID
         const fromSymbols = this.findExportedSymbolsInFile(filePath);
-        const fromSymbol = fromSymbols[0];
-        if (!fromSymbol) continue;
+        const fromSymbol = fromSymbols.length > 0 ? fromSymbols[0]! : fileSymbolId;
 
         edges.push({
           from: fromSymbol,
-          to: this.guessSymbolId(targetFile, importedName),
+          // Don't guess the kind — leave it unresolved, will be matched by name in graph
+          to: this.resolveImportTarget(normalizedTarget, importedName),
           kind: 'imports',
         });
       }
@@ -254,14 +265,13 @@ export class TsMorphAdapter implements ILanguageAdapter {
       const defaultImport = imp.getDefaultImport();
       if (defaultImport) {
         const fromSymbols = this.findExportedSymbolsInFile(filePath);
-        const fromSymbol = fromSymbols[0];
-        if (fromSymbol) {
-          edges.push({
-            from: fromSymbol,
-            to: this.guessSymbolId(targetFile, defaultImport.getText()),
-            kind: 'imports',
-          });
-        }
+        const fromSymbol = fromSymbols.length > 0 ? fromSymbols[0]! : fileSymbolId;
+
+        edges.push({
+          from: fromSymbol,
+          to: this.resolveImportTarget(normalizedTarget, defaultImport.getText()),
+          kind: 'imports',
+        });
       }
     }
   }
@@ -315,14 +325,44 @@ export class TsMorphAdapter implements ILanguageAdapter {
     }
   }
 
+  private cleanupSourceFile(filePath: string): void {
+    const existing = this.project.getSourceFile(filePath);
+    if (existing) {
+      this.project.removeSourceFile(existing);
+    }
+  }
+
   private buildSymbolId(filePath: string, name: string, kind: SymbolKind): string {
     return `${filePath}::${name}::${kind}`;
   }
 
-  private guessSymbolId(targetFile: string, name: string): string {
-    // Best-effort: we don't know the kind without parsing the target file
-    // Use a placeholder that will be resolved during graph building
-    return `${this.normalizeFilePath(targetFile)}::${name}::variable`;
+  private resolveImportTarget(targetFile: string, name: string): string {
+    // Try to find the symbol in the already-parsed project to get the correct kind
+    const targetSourceFile = this.project.getSourceFile(targetFile);
+    if (targetSourceFile) {
+      for (const fn of targetSourceFile.getFunctions()) {
+        if (fn.getName() === name && this.isExported(fn)) {
+          return this.buildSymbolId(targetFile, name, 'function');
+        }
+      }
+      for (const cls of targetSourceFile.getClasses()) {
+        if (cls.getName() === name && this.isExported(cls)) {
+          return this.buildSymbolId(targetFile, name, 'class');
+        }
+      }
+      for (const iface of targetSourceFile.getInterfaces()) {
+        if (iface.getName() === name && this.isExported(iface)) {
+          return this.buildSymbolId(targetFile, name, 'interface');
+        }
+      }
+      for (const t of targetSourceFile.getTypeAliases()) {
+        if (t.getName() === name && this.isExported(t)) {
+          return this.buildSymbolId(targetFile, name, 'type');
+        }
+      }
+    }
+    // Fallback: use function as default kind (most common for imports)
+    return `${targetFile}::${name}::function`;
   }
 
   private resolveSymbolReference(
