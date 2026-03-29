@@ -12,10 +12,14 @@ describe('WatchCommand', () => {
   });
 
   it('computes relative paths correctly on Windows-style paths', () => {
+    // path.relative only resolves same-platform paths correctly,
+    // so we normalize backslashes to forward slashes first, then use relative
     const projectRoot = 'D:\\workspace\\Ctxo';
     const filePath = 'D:\\workspace\\Ctxo\\src\\core\\types.ts';
 
-    const relativePath = relative(projectRoot, filePath).replace(/\\/g, '/');
+    const normalizedRoot = projectRoot.replace(/\\/g, '/');
+    const normalizedFile = filePath.replace(/\\/g, '/');
+    const relativePath = relative(normalizedRoot, normalizedFile).replace(/\\/g, '/');
     expect(relativePath).toBe('src/core/types.ts');
   });
 
