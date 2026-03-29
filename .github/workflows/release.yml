@@ -49,7 +49,7 @@ jobs:
     needs: [ci-check]
     environment:
       name: npm-production
-      url: https://www.npmjs.com/package/ctxo
+      url: https://www.npmjs.com/package/ctxo-mcp
     permissions:
       contents: write
       id-token: write
@@ -86,7 +86,7 @@ jobs:
         id: check
         run: |
           VERSION="${{ steps.version.outputs.pkg }}"
-          if npm view "ctxo@${VERSION}" version 2>/dev/null; then
+          if npm view "ctxo-mcp@${VERSION}" version 2>/dev/null; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
             echo "⚠️ Version ${VERSION} already published — skipping" >> $GITHUB_STEP_SUMMARY
           else
@@ -128,11 +128,11 @@ jobs:
           echo "Waiting for npm registry propagation..."
           sleep 15
 
-          PUBLISHED=$(npm view "ctxo@${VERSION}" version 2>/dev/null || echo "")
+          PUBLISHED=$(npm view "ctxo-mcp@${VERSION}" version 2>/dev/null || echo "")
           if [ "$PUBLISHED" = "$VERSION" ]; then
-            echo "✅ Verified: ctxo@${VERSION} is live on npm" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Verified: ctxo-mcp@${VERSION} is live on npm" >> $GITHUB_STEP_SUMMARY
           else
-            echo "⚠️ Could not verify ctxo@${VERSION} on npm (may still be propagating)" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ Could not verify ctxo-mcp@${VERSION} on npm (may still be propagating)" >> $GITHUB_STEP_SUMMARY
           fi
 
       - name: Create GitHub Release
@@ -148,6 +148,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Item | Link |" >> $GITHUB_STEP_SUMMARY
           echo "|------|------|" >> $GITHUB_STEP_SUMMARY
-          echo "| npm | https://www.npmjs.com/package/ctxo/v/${{ steps.version.outputs.pkg }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| npm | https://www.npmjs.com/package/ctxo-mcp/v/${{ steps.version.outputs.pkg }} |" >> $GITHUB_STEP_SUMMARY
           echo "| GitHub | ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Provenance | https://www.npmjs.com/package/ctxo/v/${{ steps.version.outputs.pkg }}?activeTab=provenance |" >> $GITHUB_STEP_SUMMARY
+          echo "| Provenance | https://www.npmjs.com/package/ctxo-mcp/v/${{ steps.version.outputs.pkg }}?activeTab=provenance |" >> $GITHUB_STEP_SUMMARY
