@@ -315,7 +315,127 @@ Call with `{ includeTests: true }`:
 
 ***
 
-## Step 10: Staleness Detection Check (was Step 9)
+## Step 10: Test `get_context_for_task`
+
+Test task-aware context assembly with different task types.
+
+**Symbol:** `src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class`
+
+### 10.1 Understand Task
+
+Call with `{ symbolId: "...", taskType: "understand" }`:
+
+**Verify:**
+
+* [ ] Response contains `target` with correct symbolId
+* [ ] `taskType` is `"understand"`
+* [ ] `context` array is non-empty
+* [ ] Each context entry has: `symbolId`, `name`, `kind`, `file`, `relevanceScore`, `reason`, `lines`, `tokens`
+* [ ] Direct dependencies score highest (IStoragePort, SymbolNode, GraphEdge, etc.)
+* [ ] Interface/type definitions included (relevanceScore > 0 for types)
+* [ ] `totalTokens` <= `tokenBudget`
+
+### 10.2 Fix Task
+
+Call with `{ symbolId: "...", taskType: "fix" }`:
+
+**Verify:**
+
+* [ ] Anti-pattern symbols score higher than in "understand" task
+* [ ] High-complexity symbols included (if any)
+* [ ] `warnings` array present (may contain anti-pattern warnings)
+
+### 10.3 Refactor Task
+
+Call with `{ symbolId: "...", taskType: "refactor" }`:
+
+**Verify:**
+
+* [ ] Blast radius dependents included (symbols that import/use this symbol)
+* [ ] Dependents have `reason` containing "blast radius"
+
+### 10.4 Extend Task
+
+Call with `{ symbolId: "...", taskType: "extend" }`:
+
+**Verify:**
+
+* [ ] Interfaces and type definitions score highest
+* [ ] `reason` contains "type/interface" for relevant entries
+
+### 10.5 Token Budget
+
+Call with `{ symbolId: "...", taskType: "understand", tokenBudget: 200 }`:
+
+* [ ] `totalTokens` <= 200
+* [ ] Fewer context entries than default (4000) budget
+
+### 10.6 Edge Cases
+
+* [ ] Non-existent symbol returns `{ found: false }`
+* [ ] Empty symbolId returns `{ error: true }`
+
+**Record:**
+
+| Task Type  | Context Entries | Total Tokens | Top Reason           |
+| ---------- | --------------- | ------------ | -------------------- |
+| understand | \_\_\_          | \_\_\_       | \_\_\_               |
+| fix        | \_\_\_          | \_\_\_       | \_\_\_               |
+| refactor   | \_\_\_          | \_\_\_       | \_\_\_               |
+| extend     | \_\_\_          | \_\_\_       | \_\_\_               |
+
+***
+
+## Step 11: Test `get_ranked_context`
+
+Test query-based context ranking with different strategies.
+
+### 11.1 Combined Strategy (default)
+
+Call with `{ query: "masking" }`:
+
+**Verify:**
+
+* [ ] Results array is non-empty
+* [ ] `MaskingPipeline` appears near top (exact/partial match)
+* [ ] Each result has: `symbolId`, `name`, `kind`, `file`, `relevanceScore`, `importanceScore`, `combinedScore`, `tokens`
+* [ ] Results sorted by `combinedScore` descending
+* [ ] `totalTokens` <= `tokenBudget` (default 4000)
+
+### 11.2 Importance Strategy
+
+Call with `{ query: "", strategy: "importance" }`:
+
+**Verify:**
+
+* [ ] Results ranked by `importanceScore` (reverse edge count)
+* [ ] Most-depended-on symbols appear first (e.g., SymbolNode, GraphEdge)
+* [ ] `relevanceScore` may be 0 (no text match)
+
+### 11.3 Custom Token Budget
+
+Call with `{ query: "adapter", tokenBudget: 500 }`:
+
+* [ ] `totalTokens` <= 500
+* [ ] Fewer results than default budget
+
+### 11.4 Edge Cases
+
+* [ ] Empty query with `strategy: "importance"` returns importance-ranked symbols
+* [ ] Very long query returns empty or low-relevance results
+* [ ] Empty symbolId returns `{ error: true }`
+
+**Record:**
+
+| Query     | Strategy   | Results Count | Top Symbol         | Top Score |
+| --------- | ---------- | ------------- | ------------------ | --------- |
+| "masking" | combined   | \_\_\_        | \_\_\_             | \_\_\_    |
+| ""        | importance | \_\_\_        | \_\_\_             | \_\_\_    |
+| "adapter" | combined   | \_\_\_        | \_\_\_             | \_\_\_    |
+
+***
+
+## Step 12: Staleness Detection Check
 
 Run any tool immediately after a fresh index build.
 
@@ -498,7 +618,9 @@ Fill in after completing both MCP and manual runs:
 | `get_why_context`           | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
 | `get_change_intelligence`   | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
 | `find_dead_code`            | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
-| **TOTAL**                   | **\_\_\_** | **6**     | **\_\_\_**    | **\_\_\_**   | **\_\_\_x**   | **\_\_\_x**  |
+| `get_context_for_task`      | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
+| `get_ranked_context`        | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
+| **TOTAL**                   | **\_\_\_** | **8**     | **\_\_\_**    | **\_\_\_**   | **\_\_\_x**   | **\_\_\_x**  |
 
 ### 12.8 Context Window Budget
 
@@ -536,14 +658,22 @@ After completing all steps, fill in:
 | 10a| `find_dead_code` — deadFiles lists fully-dead files                 |           |
 | 10b| `find_dead_code` — circular islands detected as dead                |           |
 | 10c| `find_dead_code` — test/config files excluded by default            |           |
-| 11 | Staleness detection — no false positive on fresh index              |           |
-| 12 | Unit tests pass                                                     |           |
-| 13 | Git hash masking — visible or redacted (log status)                 |           |
-| 14 | Manual vs MCP comparison table filled with measured data            |           |
-| 15 | Token savings > 10x for aggregate                                   |           |
-| 16 | Context budget chart shows MCP uses < 1% of 1M window               |           |
+| 11 | `get_context_for_task` — context entries with relevanceScore        |           |
+| 11a| `get_context_for_task` — taskType affects ranking (fix vs extend)   |           |
+| 11b| `get_context_for_task` — tokenBudget respected                      |           |
+| 11c| `get_context_for_task` — warnings for anti-patterns                 |           |
+| 12 | `get_ranked_context` — results ranked by combinedScore              |           |
+| 12a| `get_ranked_context` — exact name match scores 1.0                  |           |
+| 12b| `get_ranked_context` — importance strategy works                    |           |
+| 12c| `get_ranked_context` — tokenBudget respected                        |           |
+| 13 | Staleness detection — no false positive on fresh index              |           |
+| 14 | Unit tests pass                                                     |           |
+| 15 | Git hash masking — visible or redacted (log status)                 |           |
+| 16 | Manual vs MCP comparison table filled with measured data            |           |
+| 17 | Token savings > 10x for aggregate                                   |           |
+| 18 | Context budget chart shows MCP uses < 1% of 1M window               |           |
 
-**Result:** \_\_\_/19 checks passed
+**Result:** \_\_\_/27 checks passed
 
 ***
 
@@ -559,7 +689,7 @@ rm -rf .ctxo/.cache/ .ctxo/index/ && npx tsx src/index.ts index
 npx vitest run
 ```
 
-Then invoke these 6 MCP calls:
+Then invoke these 8 MCP calls:
 
 * `get_logic_slice` — `src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class`, level 3
 * `get_blast_radius` — `src/core/types.ts::SymbolNode::type`
@@ -567,5 +697,7 @@ Then invoke these 6 MCP calls:
 * `get_why_context` — `src/core/masking/masking-pipeline.ts::MaskingPipeline::class`
 * `get_change_intelligence` — `src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class`
 * `find_dead_code` — no params (default: exclude tests)
+* `get_context_for_task` — `src/core/graph/symbol-graph.ts::SymbolGraph::class`, taskType: "understand"
+* `get_ranked_context` — query: "masking", tokenBudget: 2000
 
-**Quick pass criteria:** All 6 return data (not errors), dependencies/dependents non-empty, 6 layers present, dead code analysis has totalSymbols > 0.
+**Quick pass criteria:** All 8 return data (not errors), dependencies/dependents non-empty, 6 layers present, dead code has totalSymbols > 0, context has entries with scores.
