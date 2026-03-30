@@ -45,6 +45,8 @@ export function handleGetBlastRadius(
         symbolId,
         impactScore: result.impactedSymbols.length,
         directDependentsCount: result.directDependentsCount,
+        confirmedCount: result.confirmedCount,
+        potentialCount: result.potentialCount,
         overallRiskScore: result.overallRiskScore,
         impactedSymbols: result.impactedSymbols,
       }));

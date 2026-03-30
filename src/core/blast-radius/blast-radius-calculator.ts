@@ -1,22 +1,29 @@
 import type { SymbolGraph } from '../graph/symbol-graph.js';
 
+export type ImpactConfidence = 'confirmed' | 'potential';
+
 export interface BlastRadiusEntry {
   readonly symbolId: string;
   readonly depth: number;
   readonly dependentCount: number;
   readonly riskScore: number;
+  readonly confidence: ImpactConfidence;
 }
 
 export interface BlastRadiusResult {
   readonly impactedSymbols: BlastRadiusEntry[];
   readonly directDependentsCount: number;
+  readonly confirmedCount: number;
+  readonly potentialCount: number;
   readonly overallRiskScore: number;
 }
+
+const CONFIRMED_KINDS = new Set(['calls', 'extends', 'implements', 'uses']);
 
 export class BlastRadiusCalculator {
   calculate(graph: SymbolGraph, symbolId: string): BlastRadiusResult {
     if (!graph.hasNode(symbolId)) {
-      return { impactedSymbols: [], directDependentsCount: 0, overallRiskScore: 0 };
+      return { impactedSymbols: [], directDependentsCount: 0, confirmedCount: 0, potentialCount: 0, overallRiskScore: 0 };
     }
 
     const visited = new Set<string>([symbolId]);
@@ -37,14 +44,15 @@ export class BlastRadiusCalculator {
 
         const depth = current.depth + 1;
 
-        // Risk score: 1/depth^0.7 — closer dependents = higher risk
         const riskScore = 1 / Math.pow(depth, 0.7);
+        const confidence: ImpactConfidence = CONFIRMED_KINDS.has(edge.kind) ? 'confirmed' : 'potential';
 
         entries.push({
           symbolId: edge.from,
           depth,
           dependentCount: graph.getReverseEdges(edge.from).length,
           riskScore: Math.round(riskScore * 1000) / 1000,
+          confidence,
         });
 
         queue.push({ id: edge.from, depth });
@@ -61,6 +69,9 @@ export class BlastRadiusCalculator {
     const maxPossibleRisk = entries.length > 0 ? entries.length : 1;
     const overallRiskScore = Math.round(Math.min(totalRisk / maxPossibleRisk, 1) * 1000) / 1000;
 
-    return { impactedSymbols: entries, directDependentsCount, overallRiskScore };
+    const confirmedCount = entries.filter((e) => e.confidence === 'confirmed').length;
+    const potentialCount = entries.filter((e) => e.confidence === 'potential').length;
+
+    return { impactedSymbols: entries, directDependentsCount, confirmedCount, potentialCount, overallRiskScore };
   }
 }

@@ -107,4 +107,23 @@ describe('BlastRadiusCalculator', () => {
     expect(result.impactedSymbols).toEqual([]);
     expect(result.overallRiskScore).toBe(0);
   });
+
+  it('classifies imports edges as potential and calls/extends as confirmed', () => {
+    const graph = new SymbolGraph();
+    for (const id of ['a::A::function', 'b::B::class', 'c::C::class']) {
+      graph.addNode(makeNode(id));
+    }
+    graph.addEdge({ from: 'a::A::function', to: 'c::C::class', kind: 'imports' });
+    graph.addEdge({ from: 'b::B::class', to: 'c::C::class', kind: 'extends' });
+
+    const result = calc.calculate(graph, 'c::C::class');
+    expect(result.confirmedCount).toBe(1); // extends
+    expect(result.potentialCount).toBe(1); // imports
+
+    const confirmed = result.impactedSymbols.find((e) => e.confidence === 'confirmed');
+    expect(confirmed?.symbolId).toBe('b::B::class');
+
+    const potential = result.impactedSymbols.find((e) => e.confidence === 'potential');
+    expect(potential?.symbolId).toBe('a::A::function');
+  });
 });

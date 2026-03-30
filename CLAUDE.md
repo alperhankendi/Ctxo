@@ -187,26 +187,27 @@ try {
 - [x] **#4** RevertDetector extended with undo, rollback, indirect patterns — fixed in `f986712`
 - [x] **#5** Masking pipeline edge case test coverage — fixed in `f986712`
 
-### Analysis Required
-- [ ] Investigate why `intent: []` and `antiPatterns: []` were hardcoded in `IndexCommand` from Phase 6 through V1 delivery — this was a core PRD feature (FR14-FR16) that should have been caught during implementation. Root cause: `IndexCommand` was built in Phase 6 before git adapter (Phase 7) existed, and the wiring was never added when Phase 7 landed. Review process gap: 4 code review rounds focused on runtime bugs but missed this feature completeness gap.
+### Analysis (Completed)
+- [x] Root cause: `intent: []` hardcoded because IndexCommand (Phase 6) predated git adapter (Phase 7). Wiring never added. Fixed in `86b1e42`.
 
-### V1.1 Improvements
-- [x] `get_why_context` reads intent/antiPatterns from committed index first, falls back to git — fixed in `e06c6d5`
+### V1.1 Improvements (Remaining)
+- [x] `get_why_context` reads from committed index first — fixed in `e06c6d5`
+- [x] `--skip-history` flag for fast re-indexing — fixed in `d7f880e`
+- [x] Blast radius risk score (`1/depth^0.7`) — fixed in `5b10b3a`
+- [x] npm publish via CI/CD — `ctxo-mcp@0.2.0` live on npm
 - [ ] Performance: batch `git log` calls during indexing (currently N sequential calls for N files)
-- [ ] Add `--skip-history` flag to `ctxo index` for fast re-indexing without git history
 - [ ] README.md content (quick start, feature overview, MCP config examples)
+- [ ] Confirmed vs potential blast radius split (import + symbol ref vs import only)
 
-### Learnings from jCodeMunch (competitive analysis)
-- [ ] **Blast radius risk score** — add `1/depth^0.7` weighted `overallRiskScore` (0.0–1.0) + split results into `confirmed` (import + symbol ref) vs `potential` (import only)
-- [ ] **PageRank centrality** — `get_symbol_importance` tool using PageRank on import graph (damping=0.85) for architectural centrality ranking
-- [ ] **Byte offset indexing** — store byte offsets per symbol for O(1) source retrieval via `seek()+read()` instead of full file reads
-- [ ] **Dead code detection** — `find_dead_code` tool: unreachable symbols and files via reverse import graph analysis
-- [ ] **Query-driven context assembly** — `get_ranked_context(query, token_budget)` with BM25 + PageRank combined scoring and greedy packing
+### Learnings from jCodeMunch (Future)
+- [ ] **PageRank centrality** — `get_symbol_importance` tool using PageRank on import graph (damping=0.85)
+- [ ] **Byte offset indexing** — store byte offsets per symbol for O(1) source retrieval
+- [ ] **Dead code detection** — `find_dead_code` tool: unreachable symbols via reverse import graph
+- [ ] **Query-driven context assembly** — `get_ranked_context(query, token_budget)` with BM25 + PageRank
 
 ### V1.5 Features
 - [ ] Epic 7: tree-sitter adapter for Go + C# (syntax-level parsing)
 - [ ] Epic 8: GitHub/GitLab webhook listener for auto-indexing on push events
-- [ ] npm publish via CI/CD pipeline (GitHub Actions release workflow)
 
 ## Documentation
 
