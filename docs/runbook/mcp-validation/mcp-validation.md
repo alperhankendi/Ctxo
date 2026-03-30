@@ -464,7 +464,29 @@ Replicate `get_change_intelligence` result manually:
 
 ***
 
-### 12.6 Comparison Table
+### 12.6 Manual: Dead Code Detection
+
+Replicate `find_dead_code` result manually:
+
+1. **Glob** `src/**/*.ts` to list all non-test source files
+2. For each file, **Grep** for its exports (functions, classes, interfaces, types)
+3. For each exported symbol, **Grep** across all other files to check if it's imported/referenced
+4. Symbols with zero external references → dead candidates
+5. For files where ALL symbols are dead → dead files
+6. Classify confidence: zero importers (1.0), test-only importers (0.9), cascading (0.7)
+
+**Record:**
+
+| Metric                    | Value  |
+| ------------------------- | ------ |
+| Tool calls used           | \_\_\_ |
+| Files read                | \_\_\_ |
+| Total lines read          | \_\_\_ |
+| Estimated tokens consumed | \_\_\_ |
+
+***
+
+### 12.7 Comparison Table
 
 Fill in after completing both MCP and manual runs:
 
@@ -475,9 +497,10 @@ Fill in after completing both MCP and manual runs:
 | `get_architectural_overlay` | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
 | `get_why_context`           | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
 | `get_change_intelligence`   | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
-| **TOTAL**                   | **\_\_\_** | **5**     | **\_\_\_**    | **\_\_\_**   | **\_\_\_x**   | **\_\_\_x**  |
+| `find_dead_code`            | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
+| **TOTAL**                   | **\_\_\_** | **6**     | **\_\_\_**    | **\_\_\_**   | **\_\_\_x**   | **\_\_\_x**  |
 
-### 12.7 Context Window Budget
+### 12.8 Context Window Budget
 
 ```
 Manual approach:

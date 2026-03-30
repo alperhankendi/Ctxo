@@ -12,6 +12,8 @@ import { SimpleGitAdapter } from './adapters/git/simple-git-adapter.js';
 import { handleGetBlastRadius } from './adapters/mcp/get-blast-radius.js';
 import { handleGetArchitecturalOverlay } from './adapters/mcp/get-architectural-overlay.js';
 import { handleFindDeadCode } from './adapters/mcp/get-dead-code.js';
+import { handleGetContextForTask } from './adapters/mcp/get-context-for-task.js';
+import { handleGetRankedContext } from './adapters/mcp/get-ranked-context.js';
 
 function loadMaskingConfig(ctxoRoot: string): MaskingPipeline {
   const jsonConfigPath = join(ctxoRoot, 'masking.json');
@@ -134,6 +136,36 @@ async function main(): Promise<void> {
       },
     },
     (args) => deadCodeHandler(args),
+  );
+
+  const contextForTaskHandler = handleGetContextForTask(storage, masking, staleness, ctxoRoot);
+
+  server.registerTool(
+    'get_context_for_task',
+    {
+      description: 'Get task-aware context for a symbol — optimized for fix, extend, refactor, or understand workflows',
+      inputSchema: {
+        symbolId: z.string().min(1).describe('The symbol ID (format: file::name::kind)'),
+        taskType: z.enum(['fix', 'extend', 'refactor', 'understand']).describe('Task type determines which context is most relevant'),
+        tokenBudget: z.number().optional().default(4000).describe('Max tokens for context (default 4000)'),
+      },
+    },
+    (args) => contextForTaskHandler(args),
+  );
+
+  const rankedContextHandler = handleGetRankedContext(storage, masking, staleness, ctxoRoot);
+
+  server.registerTool(
+    'get_ranked_context',
+    {
+      description: 'Search and rank symbols by relevance to a query, packed within a token budget',
+      inputSchema: {
+        query: z.string().min(1).describe('Search query (matches symbol names)'),
+        tokenBudget: z.number().optional().default(4000).describe('Max tokens for results (default 4000)'),
+        strategy: z.enum(['combined', 'dependency', 'importance']).optional().default('combined').describe('Ranking strategy'),
+      },
+    },
+    (args) => rankedContextHandler(args),
   );
 
   // Start MCP server

@@ -1,0 +1,102 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 25,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeConfidence::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.describeReason::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
+    }
+  ],
+  "contentHash": "12e643eaf686dc68dd259d027a947745025627be711be300329c850690e7dda9",
+  "edges": [
+    {
+      "from": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class",
+      "kind": "imports",
+      "to": "src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolKind::class"
+    }
+  ],
+  "file": "src/core/dead-code/dead-code-detector.ts",
+  "intent": [
+    {
+      "date": "2026-03-30T22:51:29+03:00",
+      "hash": "07e1bbcfca5863df7267e0f450bc6aee1f69216d",
+      "kind": "commit",
+      "message": "Add find_dead_code MCP tool — unreachable symbol and file detection"
+    }
+  ],
+  "lastModified": 1774901354,
+  "symbols": [
+    {
+      "endLine": 181,
+      "kind": "class",
+      "name": "DeadCodeDetector",
+      "startLine": 26,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class"
+    },
+    {
+      "endLine": 134,
+      "kind": "method",
+      "name": "DeadCodeDetector.detect",
+      "startLine": 27,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method"
+    },
+    {
+      "endLine": 165,
+      "kind": "method",
+      "name": "DeadCodeDetector.computeConfidence",
+      "startLine": 136,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeConfidence::method"
+    },
+    {
+      "endLine": 176,
+      "kind": "method",
+      "name": "DeadCodeDetector.describeReason",
+      "startLine": 167,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.describeReason::method"
+    },
+    {
+      "endLine": 180,
+      "kind": "method",
+      "name": "DeadCodeDetector.matchesAny",
+      "startLine": 178,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
+    },
+    {
+      "endLine": 12,
+      "kind": "interface",
+      "name": "DeadSymbolEntry",
+      "startLine": 5,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadSymbolEntry::interface"
+    },
+    {
+      "endLine": 20,
+      "kind": "interface",
+      "name": "DeadCodeResult",
+      "startLine": 14,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeResult::interface"
+    },
+    {
+      "endLine": 3,
+      "kind": "type",
+      "name": "DeadCodeConfidence",
+      "startLine": 3,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeConfidence::type"
+    }
+  ]
+}

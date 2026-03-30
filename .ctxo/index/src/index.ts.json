@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "5c8bc4d325321391250fdd5e3a031bf17e8a5ae14447c18bfa926d1265f9a5f4",
+  "contentHash": "2e6ca8bfab0ff37319d91df4e3c57028519ffa2e28fd97ef887b47863fa108f2",
   "edges": [
     {
       "from": "src/index.ts::index::variable",
@@ -47,10 +47,21 @@
       "from": "src/index.ts::index::variable",
       "kind": "imports",
       "to": "src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function"
     }
   ],
   "file": "src/index.ts",
   "intent": [
+    {
+      "date": "2026-03-30T22:51:29+03:00",
+      "hash": "07e1bbcfca5863df7267e0f450bc6aee1f69216d",
+      "kind": "commit",
+      "message": "Add find_dead_code MCP tool — unreachable symbol and file detection"
+    },
     {
       "date": "2026-03-29T23:36:52+03:00",
       "hash": "4172928b846a1f1bd60f0c82d30e1009b1aeaed5",
@@ -118,6 +129,6 @@
       "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
     }
   ],
-  "lastModified": 1774898009,
+  "lastModified": 1774901355,
   "symbols": []
 }

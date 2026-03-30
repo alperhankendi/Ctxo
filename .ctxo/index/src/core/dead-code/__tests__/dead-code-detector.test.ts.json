@@ -1,0 +1,33 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "e64cb95b4f55ab1d64ab119109322c7194bfb4d0e4a37c1779ae618c4db782c1",
+  "edges": [
+    {
+      "from": "src/core/dead-code/__tests__/dead-code-detector.test.ts::dead-code-detector.test::variable",
+      "kind": "imports",
+      "to": "src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "src/core/dead-code/__tests__/dead-code-detector.test.ts::dead-code-detector.test::variable",
+      "kind": "imports",
+      "to": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class"
+    },
+    {
+      "from": "src/core/dead-code/__tests__/dead-code-detector.test.ts::dead-code-detector.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::class"
+    }
+  ],
+  "file": "src/core/dead-code/__tests__/dead-code-detector.test.ts",
+  "intent": [
+    {
+      "date": "2026-03-30T22:51:29+03:00",
+      "hash": "07e1bbcfca5863df7267e0f450bc6aee1f69216d",
+      "kind": "commit",
+      "message": "Add find_dead_code MCP tool — unreachable symbol and file detection"
+    }
+  ],
+  "lastModified": 1774901354,
+  "symbols": []
+}
