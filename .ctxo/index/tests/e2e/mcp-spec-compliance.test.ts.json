@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "cb270f62eede3847b1e080cce458d6df3155512450323c8ba5d79f51cf9578fb",
+  "contentHash": "5fc4cccfca24559ba1f8b923b76fa288c627d9487ca102598d8dc8ba53174e01",
   "edges": [
     {
       "from": "tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
@@ -52,6 +52,12 @@
   "file": "tests/e2e/mcp-spec-compliance.test.ts",
   "intent": [
     {
+      "date": "2026-03-30T22:12:59+03:00",
+      "hash": "cc333b52b6784d2ce086f7cf3198fb7fe990f42c",
+      "kind": "commit",
+      "message": "Add blast radius integration tests + update validation runbook"
+    },
+    {
       "date": "2026-03-29T23:22:18+03:00",
       "hash": "5b10b3af81a43dc075be17e7b61d428cd25d86ed",
       "kind": "commit",
@@ -76,6 +82,6 @@
       "message": "Complete Phase 10: Release gate tests"
     }
   ],
-  "lastModified": 1774821743,
+  "lastModified": 1774898009,
   "symbols": []
 }

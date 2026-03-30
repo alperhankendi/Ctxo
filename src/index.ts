@@ -11,6 +11,7 @@ import { handleGetChangeIntelligence } from './adapters/mcp/get-change-intellige
 import { SimpleGitAdapter } from './adapters/git/simple-git-adapter.js';
 import { handleGetBlastRadius } from './adapters/mcp/get-blast-radius.js';
 import { handleGetArchitecturalOverlay } from './adapters/mcp/get-architectural-overlay.js';
+import { handleFindDeadCode } from './adapters/mcp/get-dead-code.js';
 
 function loadMaskingConfig(ctxoRoot: string): MaskingPipeline {
   const jsonConfigPath = join(ctxoRoot, 'masking.json');
@@ -120,6 +121,19 @@ async function main(): Promise<void> {
       },
     },
     (args) => overlayHandler(args),
+  );
+
+  const deadCodeHandler = handleFindDeadCode(storage, masking, staleness, ctxoRoot);
+
+  server.registerTool(
+    'find_dead_code',
+    {
+      description: 'Find unreachable symbols and files — dead code that is never imported or called',
+      inputSchema: {
+        includeTests: z.boolean().optional().default(false).describe('Include test files in analysis (default: exclude)'),
+      },
+    },
+    (args) => deadCodeHandler(args),
   );
 
   // Start MCP server

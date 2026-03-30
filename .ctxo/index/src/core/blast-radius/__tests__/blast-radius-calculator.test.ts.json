@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "7bff61b0627e456df950c25120bfc788c7aca58a288605585095a2fc1c677c50",
+  "contentHash": "39c9165cdfafb2fc5b401041e3cf50b260cc5face1ffaa9413afcd728e8a8291",
   "edges": [
     {
       "from": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts::blast-radius-calculator.test::variable",
@@ -22,6 +22,12 @@
   "file": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
   "intent": [
     {
+      "date": "2026-03-30T22:05:34+03:00",
+      "hash": "d38d5ef97f3147209420aff58fcb46b3e30991b4",
+      "kind": "commit",
+      "message": "Add confirmed/potential blast radius split + remove self-dependency"
+    },
+    {
       "date": "2026-03-29T23:22:18+03:00",
       "hash": "5b10b3af81a43dc075be17e7b61d428cd25d86ed",
       "kind": "commit",
@@ -34,6 +40,6 @@
       "message": "Add blast radius calculator and architectural overlay"
     }
   ],
-  "lastModified": 1774821741,
+  "lastModified": 1774898007,
   "symbols": []
 }

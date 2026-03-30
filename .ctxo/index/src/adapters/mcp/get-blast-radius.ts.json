@@ -6,7 +6,7 @@
       "symbolId": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
     }
   ],
-  "contentHash": "9c35ac230276ee72f83380a6edc1da8dc3dbb99ef2527dad3ed9cf2de88f1b7b",
+  "contentHash": "7e254f08f7ea2c6aed5122719eb0d072c24d3993c53535a398eb3213e7ce468a",
   "edges": [
     {
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
@@ -52,6 +52,12 @@
   "file": "src/adapters/mcp/get-blast-radius.ts",
   "intent": [
     {
+      "date": "2026-03-30T22:05:34+03:00",
+      "hash": "d38d5ef97f3147209420aff58fcb46b3e30991b4",
+      "kind": "commit",
+      "message": "Add confirmed/potential blast radius split + remove self-dependency"
+    },
+    {
       "date": "2026-03-29T23:22:18+03:00",
       "hash": "5b10b3af81a43dc075be17e7b61d428cd25d86ed",
       "kind": "commit",
@@ -88,10 +94,10 @@
       "message": "Add blast radius calculator and architectural overlay"
     }
   ],
-  "lastModified": 1774821739,
+  "lastModified": 1774898005,
   "symbols": [
     {
-      "endLine": 65,
+      "endLine": 67,
       "kind": "function",
       "name": "handleGetBlastRadius",
       "startLine": 11,
