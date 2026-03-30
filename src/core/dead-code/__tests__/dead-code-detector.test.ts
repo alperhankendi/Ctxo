@@ -159,7 +159,58 @@ describe('DeadCodeDetector', () => {
 
     expect(result.totalSymbols).toBe(0);
     expect(result.deadSymbols).toEqual([]);
+    expect(result.unusedExports).toEqual([]);
     expect(result.deadFiles).toEqual([]);
     expect(result.deadCodePercentage).toBe(0);
+  });
+
+  it('detects unused exports (exported, reachable, but never imported)', () => {
+    const graph = new SymbolGraph();
+    // A → B (A is entry point, B is used)
+    graph.addNode(makeNode('src/a.ts::A::function'));
+    graph.addNode(makeNode('src/b.ts::B::function'));
+    graph.addEdge({ from: 'src/a.ts::A::function', to: 'src/b.ts::B::function', kind: 'calls' });
+    // C → D (C is entry point, D is used) — separate cluster
+    graph.addNode(makeNode('src/c.ts::C::function'));
+    graph.addNode(makeNode('src/d.ts::D::function'));
+    graph.addEdge({ from: 'src/c.ts::C::function', to: 'src/d.ts::D::function', kind: 'imports' });
+
+    const result = detector.detect(graph);
+
+    // A and C are entry points with no importers — they are "unused exports"
+    // (reachable because they're entry points, but nobody imports them)
+    const unusedNames = result.unusedExports.map((e) => e.name);
+    expect(unusedNames).toContain('A');
+    expect(unusedNames).toContain('C');
+    // B and D are imported — NOT unused exports
+    expect(unusedNames).not.toContain('B');
+    expect(unusedNames).not.toContain('D');
+  });
+
+  it('does not list dead symbols as unused exports', () => {
+    const graph = new SymbolGraph();
+    graph.addNode(makeNode('src/a.ts::A::function'));
+    graph.addNode(makeNode('src/b.ts::B::function'));
+    graph.addEdge({ from: 'src/a.ts::A::function', to: 'src/b.ts::B::function', kind: 'calls' });
+    // Isolated dead symbol
+    graph.addNode(makeNode('src/dead.ts::dead::function'));
+
+    const result = detector.detect(graph);
+
+    // dead is in deadSymbols, NOT in unusedExports
+    expect(result.deadSymbols.map((s) => s.name)).toContain('dead');
+    expect(result.unusedExports.map((e) => e.name)).not.toContain('dead');
+  });
+
+  it('symbol imported by others is NOT an unused export', () => {
+    const graph = new SymbolGraph();
+    graph.addNode(makeNode('src/a.ts::A::function'));
+    graph.addNode(makeNode('src/b.ts::B::function'));
+    graph.addEdge({ from: 'src/a.ts::A::function', to: 'src/b.ts::B::function', kind: 'imports' });
+
+    const result = detector.detect(graph);
+
+    // B is imported by A — NOT unused
+    expect(result.unusedExports.map((e) => e.name)).not.toContain('B');
   });
 });

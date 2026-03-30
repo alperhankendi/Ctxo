@@ -12,10 +12,18 @@ export interface DeadSymbolEntry {
   readonly reason: string;
 }
 
+export interface UnusedExportEntry {
+  readonly symbolId: string;
+  readonly file: string;
+  readonly name: string;
+  readonly kind: SymbolKind;
+}
+
 export interface DeadCodeResult {
   readonly totalSymbols: number;
   readonly reachableSymbols: number;
   readonly deadSymbols: DeadSymbolEntry[];
+  readonly unusedExports: UnusedExportEntry[];
   readonly deadFiles: string[];
   readonly deadCodePercentage: number;
 }
@@ -40,7 +48,7 @@ export class DeadCodeDetector {
         });
 
     if (candidates.length === 0) {
-      return { totalSymbols: 0, reachableSymbols: 0, deadSymbols: [], deadFiles: [], deadCodePercentage: 0 };
+      return { totalSymbols: 0, reachableSymbols: 0, deadSymbols: [], unusedExports: [], deadFiles: [], deadCodePercentage: 0 };
     }
 
     // Dynamic entry point detection: symbols with zero reverse edges (no one imports them)
@@ -123,12 +131,34 @@ export class DeadCodeDetector {
       .filter(([, s]) => s.total > 0 && s.dead === s.total)
       .map(([file]) => file);
 
+    // Unused exports: symbols with zero reverse edges from other candidates
+    // Different from dead code: an unused export may be an entry point (reachable)
+    // but still never imported by anyone
+    const unusedExports: UnusedExportEntry[] = [];
+    for (const node of candidates) {
+      const reverseEdges = graph.getReverseEdges(node.symbolId);
+      const externalImporters = reverseEdges.filter((e) =>
+        candidateIds.has(e.from) && e.from !== node.symbolId,
+      );
+
+      if (externalImporters.length === 0 && !deadIds.has(node.symbolId)) {
+        // Exported, reachable (entry point), but nobody imports it
+        unusedExports.push({
+          symbolId: node.symbolId,
+          file: node.symbolId.split('::')[0] ?? '',
+          name: node.name,
+          kind: node.kind,
+        });
+      }
+    }
+
     const deadCodePercentage = Math.round((deadSymbols.length / candidates.length) * 100 * 10) / 10;
 
     return {
       totalSymbols: candidates.length,
       reachableSymbols: reachable.size,
       deadSymbols,
+      unusedExports,
       deadFiles,
       deadCodePercentage,
     };

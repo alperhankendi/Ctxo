@@ -300,6 +300,14 @@ Call with `{ includeTests: true }`:
 * [ ] No manual configuration required
 * [ ] Language-agnostic — works for any language adapter
 
+### 9.7 Unused Exports Detection
+
+* [ ] `unusedExports` array is present in response
+* [ ] Unused exports are symbols that are exported, reachable (entry points), but never imported by any other file
+* [ ] Dead symbols do NOT appear in `unusedExports` (mutually exclusive)
+* [ ] Symbols that ARE imported by other files do NOT appear in `unusedExports`
+* [ ] Composition root symbols may appear (they export but nobody imports them)
+
 **Record:**
 
 | Metric             | Value  |
@@ -309,6 +317,7 @@ Call with `{ includeTests: true }`:
 | Dead symbols       | \_\_\_ |
 | Dead files         | \_\_\_ |
 | Dead code %        | \_\_\_ |
+| Unused exports     | \_\_\_ |
 | Confidence 1.0     | \_\_\_ |
 | Confidence 0.9     | \_\_\_ |
 | Confidence 0.7     | \_\_\_ |
@@ -663,6 +672,7 @@ After completing all steps, fill in:
 | 10a| `find_dead_code` — deadFiles lists fully-dead files                 |           |
 | 10b| `find_dead_code` — circular islands detected as dead                |           |
 | 10c| `find_dead_code` — test/config files excluded by default            |           |
+| 10d| `find_dead_code` — unusedExports detected (exported but never imported) |        |
 | 11 | `get_context_for_task` — context entries with relevanceScore        |           |
 | 11a| `get_context_for_task` — taskType affects ranking (fix vs extend)   |           |
 | 11b| `get_context_for_task` — tokenBudget respected                      |           |
@@ -678,7 +688,7 @@ After completing all steps, fill in:
 | 17 | Token savings > 10x for aggregate                                   |           |
 | 18 | Context budget chart shows MCP uses < 1% of 1M window               |           |
 
-**Result:** \_\_\_/27 checks passed
+**Result:** \_\_\_/28 checks passed
 
 ***
 
