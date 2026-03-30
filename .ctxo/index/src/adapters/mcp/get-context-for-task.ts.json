@@ -3,54 +3,65 @@
   "complexity": [
     {
       "cyclomatic": 7,
-      "symbolId": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
+      "symbolId": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function"
     }
   ],
-  "contentHash": "7e254f08f7ea2c6aed5122719eb0d072c24d3993c53535a398eb3213e7ce468a",
+  "contentHash": "3c2b0828d532c35e21ed0bbc1538d2bc486923912f99c9e3279cdba83c8036ec",
   "edges": [
     {
-      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
       "kind": "imports",
       "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
     },
     {
-      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
       "kind": "imports",
       "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
     },
     {
-      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
       "kind": "imports",
-      "to": "src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+      "to": "src/core/context-assembly/context-assembler.ts::ContextAssembler::class"
     },
     {
-      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
       "kind": "imports",
       "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::class"
     },
     {
-      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
-      "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
-      "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
     },
     {
-      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
     }
   ],
-  "file": "src/adapters/mcp/get-blast-radius.ts",
+  "file": "src/adapters/mcp/get-context-for-task.ts",
   "intent": [
+    {
+      "date": "2026-03-30T23:21:57+03:00",
+      "hash": "1dcd724d46790be519a60d8aeb2c9688e8cb8a90",
+      "kind": "commit",
+      "message": "Add context assembly: get_context_for_task + get_ranked_context"
+    },
     {
       "date": "2026-03-30T22:05:34+03:00",
       "hash": "d38d5ef97f3147209420aff58fcb46b3e30991b4",
@@ -97,11 +108,11 @@
   "lastModified": 1774905297,
   "symbols": [
     {
-      "endLine": 67,
+      "endLine": 68,
       "kind": "function",
-      "name": "handleGetBlastRadius",
-      "startLine": 11,
-      "symbolId": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
+      "name": "handleGetContextForTask",
+      "startLine": 16,
+      "symbolId": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function"
     }
   ]
 }

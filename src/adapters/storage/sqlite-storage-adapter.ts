@@ -23,6 +23,9 @@ export class SqliteStorageAdapter implements IStoragePort {
         const buffer = readFileSync(this.dbPath);
         this.db = new SQL.Database(buffer);
         this.verifyIntegrity();
+        if (this.isJsonIndexNewer()) {
+          this.rebuildFromJson();
+        }
       } catch {
         console.error('[ctxo:sqlite] Corrupt DB detected, rebuilding from JSON index');
         this.db = new SQL.Database();
@@ -33,6 +36,21 @@ export class SqliteStorageAdapter implements IStoragePort {
       this.db = new SQL.Database();
       this.createTables();
       this.rebuildFromJson();
+    }
+  }
+
+  private isJsonIndexNewer(): boolean {
+    try {
+      const indexDir = join(this.ctxoRoot, 'index');
+      if (!existsSync(indexDir)) return false;
+      const db = this.database();
+      const result = db.exec('SELECT count(*) FROM files');
+      const dbFileCount = result[0] ? (result[0].values[0]?.[0] as number) : 0;
+      const reader = new JsonIndexReader(this.ctxoRoot);
+      const jsonCount = reader.readAll().length;
+      return jsonCount !== dbFileCount;
+    } catch {
+      return false;
     }
   }
 

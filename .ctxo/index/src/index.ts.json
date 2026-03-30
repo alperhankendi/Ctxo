@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "2e6ca8bfab0ff37319d91df4e3c57028519ffa2e28fd97ef887b47863fa108f2",
+  "contentHash": "a0b80c55394ed63494cd90eb31e0e299bec5114b0f17b77be4f4c8612fe8b65d",
   "edges": [
     {
       "from": "src/index.ts::index::variable",
@@ -52,10 +52,26 @@
       "from": "src/index.ts::index::variable",
       "kind": "imports",
       "to": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function"
     }
   ],
   "file": "src/index.ts",
   "intent": [
+    {
+      "date": "2026-03-30T23:21:57+03:00",
+      "hash": "1dcd724d46790be519a60d8aeb2c9688e8cb8a90",
+      "kind": "commit",
+      "message": "Add context assembly: get_context_for_task + get_ranked_context"
+    },
     {
       "date": "2026-03-30T22:51:29+03:00",
       "hash": "07e1bbcfca5863df7267e0f450bc6aee1f69216d",
@@ -129,6 +145,6 @@
       "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
     }
   ],
-  "lastModified": 1774901355,
+  "lastModified": 1774905301,
   "symbols": []
 }

@@ -341,9 +341,14 @@ Call with `{ symbolId: "...", taskType: "fix" }`:
 
 **Verify:**
 
-* [ ] Anti-pattern symbols score higher than in "understand" task
-* [ ] High-complexity symbols included (if any)
-* [ ] `warnings` array present (may contain anti-pattern warnings)
+* [ ] `context` array is non-empty
+* [ ] Direct dependency scores differ from "understand" (fix uses lower base, boosted by anti-patterns)
+* [ ] `warnings` array present (may contain anti-pattern warnings if symbol has reverts in history)
+
+**Anti-pattern verification** — use a symbol with known anti-patterns (e.g., `MaskingPipeline`):
+
+* [ ] Call `get_context_for_task` with `MaskingPipeline` + `taskType: "fix"`
+* [ ] `warnings` array contains anti-pattern warning message
 
 ### 10.3 Refactor Task
 
@@ -408,9 +413,9 @@ Call with `{ query: "", strategy: "importance" }`:
 
 **Verify:**
 
-* [ ] Results ranked by `importanceScore` (reverse edge count)
-* [ ] Most-depended-on symbols appear first (e.g., SymbolNode, GraphEdge)
-* [ ] `relevanceScore` may be 0 (no text match)
+* [ ] Results ranked by `importanceScore` (reverse edge count / normalized)
+* [ ] Most-depended-on symbols appear first (e.g., FileIndex, SymbolNode — actual ranking depends on import graph)
+* [ ] `relevanceScore` may be 0 (no text match when query is empty)
 
 ### 11.3 Custom Token Budget
 

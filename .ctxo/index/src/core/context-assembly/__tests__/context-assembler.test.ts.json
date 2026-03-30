@@ -1,0 +1,38 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "6b5613e28c345f8becbbeff2714ccc29b05a8b5266f72bb80ac0d81fe3516638",
+  "edges": [
+    {
+      "from": "src/core/context-assembly/__tests__/context-assembler.test.ts::context-assembler.test::variable",
+      "kind": "imports",
+      "to": "src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "src/core/context-assembly/__tests__/context-assembler.test.ts::context-assembler.test::variable",
+      "kind": "imports",
+      "to": "src/core/context-assembly/context-assembler.ts::ContextAssembler::class"
+    },
+    {
+      "from": "src/core/context-assembly/__tests__/context-assembler.test.ts::context-assembler.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::class"
+    },
+    {
+      "from": "src/core/context-assembly/__tests__/context-assembler.test.ts::context-assembler.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::class"
+    }
+  ],
+  "file": "src/core/context-assembly/__tests__/context-assembler.test.ts",
+  "intent": [
+    {
+      "date": "2026-03-30T23:21:57+03:00",
+      "hash": "1dcd724d46790be519a60d8aeb2c9688e8cb8a90",
+      "kind": "commit",
+      "message": "Add context assembly: get_context_for_task + get_ranked_context"
+    }
+  ],
+  "lastModified": 1774905300,
+  "symbols": []
+}
