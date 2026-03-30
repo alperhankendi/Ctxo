@@ -110,6 +110,8 @@ describe('NFR15/NFR17: MCP Spec Compliance — All 5 Tools', () => {
       expect(payload).toHaveProperty('symbolId');
       expect(payload).toHaveProperty('impactScore');
       expect(payload).toHaveProperty('directDependentsCount');
+      expect(payload).toHaveProperty('confirmedCount');
+      expect(payload).toHaveProperty('potentialCount');
       expect(payload).toHaveProperty('overallRiskScore');
       expect(payload).toHaveProperty('impactedSymbols');
     });

@@ -112,4 +112,53 @@ describe('GetBlastRadiusHandler', () => {
 
     expect(payload.error).toBe(true);
   });
+
+  it('returns confirmedCount and potentialCount in response', () => {
+    const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = handler({ symbolId: 'src/c.ts::C::interface' });
+    const payload = JSON.parse(result.content[0]!.text);
+
+    expect(typeof payload.confirmedCount).toBe('number');
+    expect(typeof payload.potentialCount).toBe('number');
+    expect(payload.confirmedCount + payload.potentialCount).toBe(payload.impactScore);
+  });
+
+  it('classifies implements edge as confirmed and imports edge as potential', () => {
+    const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = handler({ symbolId: 'src/c.ts::C::interface' });
+    const payload = JSON.parse(result.content[0]!.text);
+
+    // B implements C → confirmed (depth 1)
+    const bEntry = payload.impactedSymbols.find((e: { symbolId: string }) => e.symbolId === 'src/b.ts::B::class');
+    expect(bEntry.confidence).toBe('confirmed');
+
+    // A imports B → potential (depth 2, transitive via imports)
+    const aEntry = payload.impactedSymbols.find((e: { symbolId: string }) => e.symbolId === 'src/a.ts::A::function');
+    expect(aEntry.confidence).toBe('potential');
+  });
+
+  it('returns riskScore per entry with depth-weighted decay', () => {
+    const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = handler({ symbolId: 'src/c.ts::C::interface' });
+    const payload = JSON.parse(result.content[0]!.text);
+
+    // Depth 1 should have higher riskScore than depth 2
+    const depth1 = payload.impactedSymbols.filter((e: { depth: number }) => e.depth === 1);
+    const depth2 = payload.impactedSymbols.filter((e: { depth: number }) => e.depth === 2);
+
+    if (depth1.length > 0 && depth2.length > 0) {
+      expect(depth1[0].riskScore).toBeGreaterThan(depth2[0].riskScore);
+    }
+  });
+
+  it('returns zero counts for leaf symbol with no dependents', () => {
+    const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = handler({ symbolId: 'src/a.ts::A::function' });
+    const payload = JSON.parse(result.content[0]!.text);
+
+    expect(payload.impactScore).toBe(0);
+    expect(payload.confirmedCount).toBe(0);
+    expect(payload.potentialCount).toBe(0);
+    expect(payload.overallRiskScore).toBe(0);
+  });
 });

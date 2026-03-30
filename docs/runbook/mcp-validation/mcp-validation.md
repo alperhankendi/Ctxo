@@ -110,9 +110,11 @@ LogicSliceQuery
 
 ## Step 5: Test `get_blast_radius`
 
-Test with a high-impact core type to verify multi-depth traversal.
+Test with a high-impact core type to verify multi-depth traversal, risk scoring, and confirmed/potential split.
 
 **Symbol:** `src/core/types.ts::SymbolNode::type`
+
+### 5.1 Basic Blast Radius
 
 **Verify:**
 
@@ -121,17 +123,45 @@ Test with a high-impact core type to verify multi-depth traversal.
 * [ ] Depth 1 dependents include: TsMorphAdapter, SqliteStorageAdapter, SymbolGraph, LogicSliceQuery, IStoragePort, ILanguageAdapter, DetailFormatter
 * [ ] Depth 2 dependents include: IndexCommand, BlastRadiusCalculator, handleGetBlastRadius, handleGetWhyContext, etc.
 * [ ] Depth 3 dependents include: CliRouter, VerifyCommand
-* [ ] Each dependent has `symbolId`, `depth`, `dependentCount` fields
+
+### 5.2 Risk Scoring
+
+**Verify:**
+
+* [ ] `overallRiskScore` is between 0.0 and 1.0
+* [ ] `directDependentsCount` matches count of depth-1 entries
+* [ ] Each entry has `riskScore` field (number > 0)
+* [ ] Depth 1 entries have `riskScore` = 1.000 (1/1^0.7)
+* [ ] Depth 2 entries have `riskScore` ≈ 0.616 (1/2^0.7)
+* [ ] Deeper entries have progressively lower `riskScore`
+
+### 5.3 Confirmed vs Potential Split
+
+**Verify:**
+
+* [ ] `confirmedCount` + `potentialCount` = `impactScore`
+* [ ] Each entry has `confidence` field: either `"confirmed"` or `"potential"`
+* [ ] Entries with edge kind `calls`, `extends`, `implements`, `uses` → `"confirmed"`
+* [ ] Entries with edge kind `imports` → `"potential"`
+* [ ] `confirmedCount` >= 0 (may be 0 if all edges are imports)
+
+### 5.4 Edge Cases
+
+* [ ] Leaf symbol (no dependents) returns `impactScore: 0`, `confirmedCount: 0`, `potentialCount: 0`
+* [ ] Non-existent symbol returns `{ found: false }`
+* [ ] Circular dependency does not cause infinite loop
 
 **Record:**
 
-| Metric           | Value  |
-| ---------------- | ------ |
-| Impact score     | \_\_\_ |
-| Depth 1 count    | \_\_\_ |
-| Depth 2 count    | \_\_\_ |
-| Depth 3 count    | \_\_\_ |
-| Total dependents | \_\_\_ |
+| Metric             | Value  |
+| ------------------ | ------ |
+| Impact score       | \_\_\_ |
+| Confirmed count    | \_\_\_ |
+| Potential count    | \_\_\_ |
+| Overall risk score | \_\_\_ |
+| Depth 1 count      | \_\_\_ |
+| Depth 2 count      | \_\_\_ |
+| Depth 3 count      | \_\_\_ |
 
 ***
 
@@ -141,22 +171,28 @@ Call with no parameters for full project scan.
 
 **Verify:**
 
-* [ ] Response contains `layers` object with 3 keys: `Domain`, `Adapter`, `Unknown`
+* [ ] Response contains `layers` object with up to 6 keys: `Domain`, `Adapter`, `Test`, `Composition`, `Configuration`, `Unknown`
 * [ ] `Domain` includes: `src/core/`, `src/ports/` files
 * [ ] `Adapter` includes: `src/adapters/`, `src/cli/` files
-* [ ] `Unknown` includes: config files (`eslint.config.js`, `tsup.config.ts`, etc.), `src/index.ts`, `tests/e2e/`
+* [ ] `Test` includes: `__tests__/`, `.test.ts`, `tests/`, `fixtures/` files
+* [ ] `Composition` includes: `src/index.ts`
+* [ ] `Configuration` includes: `*.config.ts`, `*.config.js` files
+* [ ] `Unknown` includes: remaining unclassified files
 * [ ] Total file count across all layers matches Step 2 indexed count
 * [ ] No `src/core/` file appears in Adapter layer (hexagonal architecture rule)
 * [ ] No `src/adapters/` file appears in Domain layer
 
 **Record:**
 
-| Layer   | File Count |
-| ------- | ---------- |
-| Domain  | \_\_\_     |
-| Adapter | \_\_\_     |
-| Unknown | \_\_\_     |
-| Total   | \_\_\_     |
+| Layer         | File Count |
+| ------------- | ---------- |
+| Domain        | \_\_\_     |
+| Adapter       | \_\_\_     |
+| Test          | \_\_\_     |
+| Composition   | \_\_\_     |
+| Configuration | \_\_\_     |
+| Unknown       | \_\_\_     |
+| Total         | \_\_\_     |
 
 ***
 
@@ -402,7 +438,9 @@ After completing all steps, fill in:
 | 4  | `get_logic_slice` — progressive detail L1 < L2 < L3                 |           |
 | 5  | `get_logic_slice` — transitive dependencies resolved                |           |
 | 6  | `get_blast_radius` — impactScore > 0, multi-depth dependents        |           |
-| 7  | `get_architectural_overlay` — 3 layers, correct classification      |           |
+| 6a | `get_blast_radius` — riskScore per entry, overallRiskScore 0-1      |           |
+| 6b | `get_blast_radius` — confirmedCount + potentialCount = impactScore   |           |
+| 7  | `get_architectural_overlay` — 6 layers, correct classification      |           |
 | 8  | `get_why_context` — commits returned, no changeIntelligence overlap |           |
 | 9  | `get_change_intelligence` — complexity > 0, valid band              |           |
 | 10 | Staleness detection — no false positive on fresh index              |           |
