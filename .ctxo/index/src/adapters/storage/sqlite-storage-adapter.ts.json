@@ -126,6 +126,12 @@
   "file": "src/adapters/storage/sqlite-storage-adapter.ts",
   "intent": [
     {
+      "date": "2026-03-31T02:26:20+03:00",
+      "hash": "88dcc914d2f67c3ee240451419f8ab50e2c9abda",
+      "kind": "commit",
+      "message": "Add cascading dead code, framework awareness, scaffolding detection"
+    },
+    {
       "date": "2026-03-31T00:18:59+03:00",
       "hash": "2e1bb318ad907f1a22ed0c748489cc44690767fc",
       "kind": "commit",
@@ -180,7 +186,7 @@
       "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
     }
   ],
-  "lastModified": 1774912637,
+  "lastModified": 1774913860,
   "symbols": [
     {
       "endLine": 361,

@@ -2,7 +2,7 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 10,
+      "cyclomatic": 14,
       "symbolId": "src/cli/index-command.ts::IndexCommand.run::method"
     },
     {
@@ -26,7 +26,7 @@
       "symbolId": "src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
     }
   ],
-  "contentHash": "254b53e3c55d7b6abdd1e22d22a0c9ec915bcb92f13b942500c7391518ec8d32",
+  "contentHash": "9385689670380049446393fbf33c5af5c7c07b5c027ad420da4fcec451fd36a2",
   "edges": [
     {
       "from": "src/cli/index-command.ts::IndexCommand::class",
@@ -67,16 +67,6 @@
       "from": "src/cli/index-command.ts::IndexCommand::class",
       "kind": "imports",
       "to": "src/core/why-context/revert-detector.ts::RevertDetector::class"
-    },
-    {
-      "from": "src/cli/index-command.ts::IndexCommand::class",
-      "kind": "imports",
-      "to": "src/core/types.ts::CommitIntent::class"
-    },
-    {
-      "from": "src/cli/index-command.ts::IndexCommand::class",
-      "kind": "imports",
-      "to": "src/core/types.ts::AntiPattern::class"
     },
     {
       "from": "src/cli/index-command.ts::IndexCommand::class",
@@ -135,55 +125,55 @@
       "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
     }
   ],
-  "lastModified": 1774912638,
+  "lastModified": 1774913861,
   "symbols": [
     {
-      "endLine": 266,
+      "endLine": 284,
       "kind": "class",
       "name": "IndexCommand",
-      "startLine": 14,
+      "startLine": 13,
       "symbolId": "src/cli/index-command.ts::IndexCommand::class"
     },
     {
-      "endLine": 130,
+      "endLine": 148,
       "kind": "method",
       "name": "IndexCommand.run",
-      "startLine": 23,
+      "startLine": 22,
       "symbolId": "src/cli/index-command.ts::IndexCommand.run::method"
     },
     {
-      "endLine": 150,
+      "endLine": 168,
       "kind": "method",
       "name": "IndexCommand.discoverFilesIn",
-      "startLine": 132,
+      "startLine": 150,
       "symbolId": "src/cli/index-command.ts::IndexCommand.discoverFilesIn::method"
     },
     {
-      "endLine": 193,
+      "endLine": 211,
       "kind": "method",
       "name": "IndexCommand.discoverWorkspaces",
-      "startLine": 152,
+      "startLine": 170,
       "symbolId": "src/cli/index-command.ts::IndexCommand.discoverWorkspaces::method"
     },
     {
-      "endLine": 198,
+      "endLine": 216,
       "kind": "method",
       "name": "IndexCommand.isSupportedExtension",
-      "startLine": 195,
+      "startLine": 213,
       "symbolId": "src/cli/index-command.ts::IndexCommand.isSupportedExtension::method"
     },
     {
-      "endLine": 252,
+      "endLine": 270,
       "kind": "method",
       "name": "IndexCommand.runCheck",
-      "startLine": 200,
+      "startLine": 218,
       "symbolId": "src/cli/index-command.ts::IndexCommand.runCheck::method"
     },
     {
-      "endLine": 265,
+      "endLine": 283,
       "kind": "method",
       "name": "IndexCommand.ensureGitignore",
-      "startLine": 254,
+      "startLine": 272,
       "symbolId": "src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
     }
   ]

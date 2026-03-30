@@ -2,7 +2,7 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 30,
+      "cyclomatic": 33,
       "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method"
     },
     {
@@ -15,10 +15,22 @@
     },
     {
       "cyclomatic": 1,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.isFrameworkSymbol::method"
+    },
+    {
+      "cyclomatic": 9,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeCascadeDepths::method"
+    },
+    {
+      "cyclomatic": 9,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detectScaffolding::method"
+    },
+    {
+      "cyclomatic": 1,
       "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
     }
   ],
-  "contentHash": "90f13c35231974c7120bf81e3c2c49426dfb62248e793c6f3c6503c9e6394522",
+  "contentHash": "5f8ca8c511ef257a20856ee87ee3c50f992d8881a93c34e8ecfd54a927a33392",
   "edges": [
     {
       "from": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class",
@@ -34,6 +46,12 @@
   "file": "src/core/dead-code/dead-code-detector.ts",
   "intent": [
     {
+      "date": "2026-03-31T02:26:20+03:00",
+      "hash": "88dcc914d2f67c3ee240451419f8ab50e2c9abda",
+      "kind": "commit",
+      "message": "Add cascading dead code, framework awareness, scaffolding detection"
+    },
+    {
       "date": "2026-03-31T01:24:34+03:00",
       "hash": "a7326a4e2f9c5291a76e356901fa8568b4d58629",
       "kind": "commit",
@@ -46,62 +64,90 @@
       "message": "Add find_dead_code MCP tool — unreachable symbol and file detection"
     }
   ],
-  "lastModified": 1774912639,
+  "lastModified": 1774913861,
   "symbols": [
     {
-      "endLine": 211,
+      "endLine": 325,
       "kind": "class",
       "name": "DeadCodeDetector",
-      "startLine": 34,
+      "startLine": 67,
       "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class"
     },
     {
-      "endLine": 164,
+      "endLine": 208,
       "kind": "method",
       "name": "DeadCodeDetector.detect",
-      "startLine": 35,
+      "startLine": 68,
       "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method"
     },
     {
-      "endLine": 195,
+      "endLine": 239,
       "kind": "method",
       "name": "DeadCodeDetector.computeConfidence",
-      "startLine": 166,
+      "startLine": 210,
       "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeConfidence::method"
     },
     {
-      "endLine": 206,
+      "endLine": 250,
       "kind": "method",
       "name": "DeadCodeDetector.describeReason",
-      "startLine": 197,
+      "startLine": 241,
       "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.describeReason::method"
     },
     {
-      "endLine": 210,
+      "endLine": 254,
+      "kind": "method",
+      "name": "DeadCodeDetector.isFrameworkSymbol",
+      "startLine": 252,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.isFrameworkSymbol::method"
+    },
+    {
+      "endLine": 291,
+      "kind": "method",
+      "name": "DeadCodeDetector.computeCascadeDepths",
+      "startLine": 256,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeCascadeDepths::method"
+    },
+    {
+      "endLine": 320,
+      "kind": "method",
+      "name": "DeadCodeDetector.detectScaffolding",
+      "startLine": 293,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detectScaffolding::method"
+    },
+    {
+      "endLine": 324,
       "kind": "method",
       "name": "DeadCodeDetector.matchesAny",
-      "startLine": 208,
+      "startLine": 322,
       "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
     },
     {
-      "endLine": 12,
+      "endLine": 13,
       "kind": "interface",
       "name": "DeadSymbolEntry",
       "startLine": 5,
       "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadSymbolEntry::interface"
     },
     {
-      "endLine": 19,
+      "endLine": 20,
       "kind": "interface",
       "name": "UnusedExportEntry",
-      "startLine": 14,
+      "startLine": 15,
       "symbolId": "src/core/dead-code/dead-code-detector.ts::UnusedExportEntry::interface"
     },
     {
-      "endLine": 28,
+      "endLine": 27,
+      "kind": "interface",
+      "name": "ScaffoldingEntry",
+      "startLine": 22,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::ScaffoldingEntry::interface"
+    },
+    {
+      "endLine": 37,
       "kind": "interface",
       "name": "DeadCodeResult",
-      "startLine": 21,
+      "startLine": 29,
       "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeResult::interface"
     },
     {

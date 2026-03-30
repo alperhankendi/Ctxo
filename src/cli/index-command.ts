@@ -9,7 +9,6 @@ import { SqliteStorageAdapter } from '../adapters/storage/sqlite-storage-adapter
 import { SchemaManager } from '../adapters/storage/schema-manager.js';
 import { SimpleGitAdapter } from '../adapters/git/simple-git-adapter.js';
 import { RevertDetector } from '../core/why-context/revert-detector.js';
-import type { CommitIntent, AntiPattern } from '../core/types.js';
 import type { FileIndex } from '../core/types.js';
 
 export class IndexCommand {
@@ -54,8 +53,11 @@ export class IndexCommand {
       console.error(`[ctxo] Building codebase index... Found ${files.length} source files`);
     }
 
-    // Extract symbols and edges for each file
-    const indices: FileIndex[] = [];
+    // Phase 1: Extract symbols and edges (CPU-bound, synchronous)
+    const pendingIndices: Array<{
+      relativePath: string;
+      fileIndex: FileIndex;
+    }> = [];
     let processed = 0;
 
     for (const filePath of files) {
@@ -72,42 +74,58 @@ export class IndexCommand {
         const edges = adapter.extractEdges(relativePath, source);
         const complexity = adapter.extractComplexity(relativePath, source);
 
-        // Extract git history and anti-patterns (skip if --skip-history)
-        let intent: CommitIntent[] = [];
-        let antiPatterns: AntiPattern[] = [];
+        pendingIndices.push({
+          relativePath,
+          fileIndex: {
+            file: relativePath,
+            lastModified,
+            contentHash: hasher.hash(source),
+            symbols,
+            edges,
+            complexity,
+            intent: [],
+            antiPatterns: [],
+          },
+        });
 
-        if (!options.skipHistory) {
-          const commits = await gitAdapter.getCommitHistory(relativePath);
-          intent = commits.map((c) => ({
-            hash: c.hash,
-            message: c.message,
-            date: c.date,
-            kind: 'commit' as const,
-          }));
-          antiPatterns = revertDetector.detect(commits);
-        }
-
-        const fileIndex: FileIndex = {
-          file: relativePath,
-          lastModified,
-          contentHash: hasher.hash(source),
-          symbols,
-          edges,
-          complexity,
-          intent,
-          antiPatterns,
-        };
-
-        writer.write(fileIndex);
-        indices.push(fileIndex);
         processed++;
-
         if (processed % 50 === 0) {
           console.error(`[ctxo] Processed ${processed}/${files.length} files`);
         }
       } catch (err) {
         console.error(`[ctxo] Skipped ${relativePath}: ${(err as Error).message}`);
       }
+    }
+
+    // Phase 2: Batch git history (IO-bound, parallel with concurrency limit)
+    if (!options.skipHistory && pendingIndices.length > 0) {
+      const CONCURRENCY = 10;
+      for (let i = 0; i < pendingIndices.length; i += CONCURRENCY) {
+        const batch = pendingIndices.slice(i, i + CONCURRENCY);
+        await Promise.all(
+          batch.map(async ({ relativePath, fileIndex }) => {
+            try {
+              const commits = await gitAdapter.getCommitHistory(relativePath);
+              fileIndex.intent = commits.map((c) => ({
+                hash: c.hash,
+                message: c.message,
+                date: c.date,
+                kind: 'commit' as const,
+              }));
+              fileIndex.antiPatterns = revertDetector.detect(commits);
+            } catch {
+              // Warn-and-continue: git history is optional
+            }
+          }),
+        );
+      }
+    }
+
+    // Phase 3: Write all indices
+    const indices: FileIndex[] = [];
+    for (const { fileIndex } of pendingIndices) {
+      writer.write(fileIndex);
+      indices.push(fileIndex);
     }
 
     // Write schema version

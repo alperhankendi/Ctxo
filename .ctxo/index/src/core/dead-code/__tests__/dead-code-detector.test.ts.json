@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "58d60dba87394af25e3c0cc77e7529eb368aae6fb37f9152a1c35192b5f099e0",
+  "contentHash": "50c5c32a8fdf7dab03866970ccddf71b741e79cfc6d7a3b30fea58717bdd3bf6",
   "edges": [
     {
       "from": "src/core/dead-code/__tests__/dead-code-detector.test.ts::dead-code-detector.test::variable",
@@ -22,6 +22,12 @@
   "file": "src/core/dead-code/__tests__/dead-code-detector.test.ts",
   "intent": [
     {
+      "date": "2026-03-31T02:26:20+03:00",
+      "hash": "88dcc914d2f67c3ee240451419f8ab50e2c9abda",
+      "kind": "commit",
+      "message": "Add cascading dead code, framework awareness, scaffolding detection"
+    },
+    {
       "date": "2026-03-31T01:24:34+03:00",
       "hash": "a7326a4e2f9c5291a76e356901fa8568b4d58629",
       "kind": "commit",
@@ -34,6 +40,6 @@
       "message": "Add find_dead_code MCP tool — unreachable symbol and file detection"
     }
   ],
-  "lastModified": 1774912639,
+  "lastModified": 1774913861,
   "symbols": []
 }
