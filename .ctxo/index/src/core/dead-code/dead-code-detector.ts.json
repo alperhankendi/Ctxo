@@ -2,7 +2,7 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 25,
+      "cyclomatic": 30,
       "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method"
     },
     {
@@ -18,7 +18,7 @@
       "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
     }
   ],
-  "contentHash": "12e643eaf686dc68dd259d027a947745025627be711be300329c850690e7dda9",
+  "contentHash": "90f13c35231974c7120bf81e3c2c49426dfb62248e793c6f3c6503c9e6394522",
   "edges": [
     {
       "from": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class",
@@ -34,47 +34,53 @@
   "file": "src/core/dead-code/dead-code-detector.ts",
   "intent": [
     {
+      "date": "2026-03-31T01:24:34+03:00",
+      "hash": "a7326a4e2f9c5291a76e356901fa8568b4d58629",
+      "kind": "commit",
+      "message": "Add unused exports detection to find_dead_code"
+    },
+    {
       "date": "2026-03-30T22:51:29+03:00",
       "hash": "07e1bbcfca5863df7267e0f450bc6aee1f69216d",
       "kind": "commit",
       "message": "Add find_dead_code MCP tool — unreachable symbol and file detection"
     }
   ],
-  "lastModified": 1774905300,
+  "lastModified": 1774910318,
   "symbols": [
     {
-      "endLine": 181,
+      "endLine": 211,
       "kind": "class",
       "name": "DeadCodeDetector",
-      "startLine": 26,
+      "startLine": 34,
       "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class"
     },
     {
-      "endLine": 134,
+      "endLine": 164,
       "kind": "method",
       "name": "DeadCodeDetector.detect",
-      "startLine": 27,
+      "startLine": 35,
       "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method"
     },
     {
-      "endLine": 165,
+      "endLine": 195,
       "kind": "method",
       "name": "DeadCodeDetector.computeConfidence",
-      "startLine": 136,
+      "startLine": 166,
       "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeConfidence::method"
     },
     {
-      "endLine": 176,
+      "endLine": 206,
       "kind": "method",
       "name": "DeadCodeDetector.describeReason",
-      "startLine": 167,
+      "startLine": 197,
       "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.describeReason::method"
     },
     {
-      "endLine": 180,
+      "endLine": 210,
       "kind": "method",
       "name": "DeadCodeDetector.matchesAny",
-      "startLine": 178,
+      "startLine": 208,
       "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
     },
     {
@@ -85,10 +91,17 @@
       "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadSymbolEntry::interface"
     },
     {
-      "endLine": 20,
+      "endLine": 19,
+      "kind": "interface",
+      "name": "UnusedExportEntry",
+      "startLine": 14,
+      "symbolId": "src/core/dead-code/dead-code-detector.ts::UnusedExportEntry::interface"
+    },
+    {
+      "endLine": 28,
       "kind": "interface",
       "name": "DeadCodeResult",
-      "startLine": 14,
+      "startLine": 21,
       "symbolId": "src/core/dead-code/dead-code-detector.ts::DeadCodeResult::interface"
     },
     {

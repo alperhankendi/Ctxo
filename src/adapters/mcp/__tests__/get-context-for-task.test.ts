@@ -166,4 +166,21 @@ describe('GetContextForTaskHandler', () => {
 
     expect(result.content[result.content.length - 1]!.text).toContain('[REDACTED:AWS_KEY]');
   });
+
+  it('works with staleness check', () => {
+    const mockStaleness = { check: () => ({ message: 'Index stale for 3 file(s)' }) };
+    const handler = handleGetContextForTask(storage, new MaskingPipeline(), mockStaleness as never, tempDir);
+    const result = handler({ symbolId: 'src/main.ts::main::function', taskType: 'understand' });
+
+    expect(result.content.length).toBeGreaterThanOrEqual(2);
+    expect(result.content[0]!.text).toContain('stale');
+  });
+
+  it('returns error for missing symbolId', () => {
+    const handler = handleGetContextForTask(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = handler({ taskType: 'understand' });
+    const payload = JSON.parse(result.content[result.content.length - 1]!.text);
+
+    expect(payload.error).toBe(true);
+  });
 });

@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "6ccdada912e14091cfd03206a04ee6448358ffef347add847008726e1b87b743",
+  "contentHash": "7c26242af4ba9245cc39561d7962b337299dababcbffc44b0db76d1dd03fb473",
   "edges": [
     {
       "from": "src/adapters/mcp/__tests__/get-dead-code.test.ts::get-dead-code.test::variable",
@@ -38,6 +38,6 @@
       "message": "Add find_dead_code MCP tool — unreachable symbol and file detection"
     }
   ],
-  "lastModified": 1774905297,
+  "lastModified": 1774910312,
   "symbols": []
 }

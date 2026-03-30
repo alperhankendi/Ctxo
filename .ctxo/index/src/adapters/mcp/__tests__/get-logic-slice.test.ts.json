@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "1606f1a3992afd632a03129bd930075c2ed0022fe276188251ca5b20192020c0",
+  "contentHash": "f7256934dc3b233ab3279ead2dd7ea4a336825614948443a961a64f49b48831d",
   "edges": [
     {
       "from": "src/adapters/mcp/__tests__/get-logic-slice.test.ts::get-logic-slice.test::variable",
@@ -39,6 +39,6 @@
       "message": "Add MCP server with get_logic_slice tool and privacy masking pipeline"
     }
   ],
-  "lastModified": 1774905297,
+  "lastModified": 1774910312,
   "symbols": []
 }

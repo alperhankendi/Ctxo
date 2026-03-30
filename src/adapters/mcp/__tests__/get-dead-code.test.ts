@@ -133,4 +133,38 @@ describe('FindDeadCodeHandler', () => {
 
     expect(payload.deadFiles).toContain('src/orphan.ts');
   });
+
+  it('supports includeTests parameter', () => {
+    const handler = handleFindDeadCode(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = handler({ includeTests: true });
+    const payload = JSON.parse(result.content[result.content.length - 1]!.text);
+
+    expect(payload.totalSymbols).toBeGreaterThanOrEqual(0);
+  });
+
+  it('returns error for invalid input type', () => {
+    const handler = handleFindDeadCode(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = handler({ includeTests: 'not-boolean' });
+    const payload = JSON.parse(result.content[result.content.length - 1]!.text);
+
+    expect(payload.error).toBe(true);
+  });
+
+  it('includes unusedExports in response', () => {
+    const handler = handleFindDeadCode(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = handler({});
+    const payload = JSON.parse(result.content[result.content.length - 1]!.text);
+
+    expect(Array.isArray(payload.unusedExports)).toBe(true);
+  });
+
+  it('works with staleness check (no crash)', () => {
+    const mockStaleness = { check: () => ({ message: 'Index is stale for 1 file(s)' }) };
+    const handler = handleFindDeadCode(storage, new MaskingPipeline(), mockStaleness as never, tempDir);
+    const result = handler({});
+
+    // Should have staleness warning prepended
+    expect(result.content.length).toBeGreaterThanOrEqual(2);
+    expect(result.content[0]!.text).toContain('stale');
+  });
 });

@@ -153,4 +153,30 @@ describe('GetLogicSliceHandler', () => {
     const payload = JSON.parse(result.content[0]!.text);
     expect(payload.error).toBe(true);
   });
+
+  it('supports batch query with symbolIds array', () => {
+    const result = handler({
+      symbolIds: ['src/foo.ts::processPayment::function', 'src/bar.ts::TokenValidator::class'],
+    });
+    const payload = JSON.parse(result.content[result.content.length - 1]!.text);
+
+    expect(payload.batch).toBe(true);
+    expect(payload.results.length).toBe(2);
+  });
+
+  it('includes levelDescription in response', () => {
+    const result = handler({ symbolId: 'src/foo.ts::processPayment::function', level: 1 });
+    const payload = JSON.parse(result.content[result.content.length - 1]!.text);
+
+    expect(payload.levelDescription).toContain('L1');
+  });
+
+  it('works with staleness check', () => {
+    const mockStaleness = { check: () => ({ message: 'Index stale' }) };
+    const stalenessHandler = handleGetLogicSlice(storage, new MaskingPipeline(), mockStaleness as never, tempDir);
+    const result = stalenessHandler({ symbolId: 'src/foo.ts::processPayment::function' });
+
+    expect(result.content.length).toBeGreaterThanOrEqual(2);
+    expect(result.content[0]!.text).toContain('stale');
+  });
 });

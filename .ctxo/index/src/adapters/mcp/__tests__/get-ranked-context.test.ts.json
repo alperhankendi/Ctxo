@@ -1,0 +1,43 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "6b0d3e5cbac275ee455fe299e168555b3d988fff1e526cc9581231e5b89f7456",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/__tests__/get-ranked-context.test.ts::get-ranked-context.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-ranked-context.test.ts::get-ranked-context.test::variable",
+      "kind": "imports",
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-ranked-context.test.ts::get-ranked-context.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-ranked-context.test.ts::get-ranked-context.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-ranked-context.test.ts::get-ranked-context.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::class"
+    }
+  ],
+  "file": "src/adapters/mcp/__tests__/get-ranked-context.test.ts",
+  "intent": [
+    {
+      "date": "2026-03-31T01:32:15+03:00",
+      "hash": "c593cdf3b7719d26882afbc575cbfe71e85bc4d0",
+      "kind": "commit",
+      "message": "Add handler tests for get_context_for_task and get_ranked_context"
+    }
+  ],
+  "lastModified": 1774910312,
+  "symbols": []
+}

@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "e64cb95b4f55ab1d64ab119109322c7194bfb4d0e4a37c1779ae618c4db782c1",
+  "contentHash": "58d60dba87394af25e3c0cc77e7529eb368aae6fb37f9152a1c35192b5f099e0",
   "edges": [
     {
       "from": "src/core/dead-code/__tests__/dead-code-detector.test.ts::dead-code-detector.test::variable",
@@ -22,12 +22,18 @@
   "file": "src/core/dead-code/__tests__/dead-code-detector.test.ts",
   "intent": [
     {
+      "date": "2026-03-31T01:24:34+03:00",
+      "hash": "a7326a4e2f9c5291a76e356901fa8568b4d58629",
+      "kind": "commit",
+      "message": "Add unused exports detection to find_dead_code"
+    },
+    {
       "date": "2026-03-30T22:51:29+03:00",
       "hash": "07e1bbcfca5863df7267e0f450bc6aee1f69216d",
       "kind": "commit",
       "message": "Add find_dead_code MCP tool — unreachable symbol and file detection"
     }
   ],
-  "lastModified": 1774905300,
+  "lastModified": 1774910317,
   "symbols": []
 }

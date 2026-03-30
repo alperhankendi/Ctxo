@@ -162,4 +162,22 @@ describe('GetRankedContextHandler', () => {
 
     expect(result.content[result.content.length - 1]!.text).toContain('[REDACTED:AWS_KEY]');
   });
+
+  it('works with staleness check', () => {
+    const mockStaleness = { check: () => ({ message: 'Index stale for 2 file(s)' }) };
+    const handler = handleGetRankedContext(storage, new MaskingPipeline(), mockStaleness as never, tempDir);
+    const result = handler({ query: 'Symbol' });
+
+    expect(result.content.length).toBeGreaterThanOrEqual(2);
+    expect(result.content[0]!.text).toContain('stale');
+  });
+
+  it('dependency strategy uses relevance only', () => {
+    const handler = handleGetRankedContext(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = handler({ query: 'Masking', strategy: 'dependency' });
+    const payload = JSON.parse(result.content[result.content.length - 1]!.text);
+
+    expect(payload.strategy).toBe('dependency');
+    expect(payload.results.length).toBeGreaterThan(0);
+  });
 });
