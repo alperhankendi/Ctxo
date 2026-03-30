@@ -32,12 +32,18 @@
   "file": "src/adapters/mcp/__tests__/get-ranked-context.test.ts",
   "intent": [
     {
+      "date": "2026-03-31T01:39:15+03:00",
+      "hash": "926b1be8bc73588a2d8c3baba01fec510df1ed45",
+      "kind": "commit",
+      "message": "Improve MCP handler test coverage: 65% → 87%"
+    },
+    {
       "date": "2026-03-31T01:32:15+03:00",
       "hash": "c593cdf3b7719d26882afbc575cbfe71e85bc4d0",
       "kind": "commit",
       "message": "Add handler tests for get_context_for_task and get_ranked_context"
     }
   ],
-  "lastModified": 1774910312,
+  "lastModified": 1774912635,
   "symbols": []
 }

@@ -308,6 +308,30 @@ Call with `{ includeTests: true }`:
 * [ ] Symbols that ARE imported by other files do NOT appear in `unusedExports`
 * [ ] Composition root symbols may appear (they export but nobody imports them)
 
+### 9.8 Cascading Dead Code
+
+* [ ] Dead symbols have optional `cascadeDepth` field (0 = root dead, 1+ = cascading)
+* [ ] Symbols in circular dead islands all get cascadeDepth
+* [ ] Confidence 0.7 assigned to symbols whose ALL importers are dead
+
+### 9.9 Framework Awareness
+
+* [ ] `main` function is NOT flagged as dead (framework lifecycle symbol)
+* [ ] Symbols ending with `Schema` are NOT flagged (Zod convention)
+* [ ] `registerTool`, `connect`, `close` are NOT flagged (MCP SDK lifecycle)
+* [ ] `describe`, `it`, `expect` are NOT flagged (vitest lifecycle)
+
+### 9.10 Scaffolding Detection
+
+* [ ] `scaffolding` array is present in response
+* [ ] TODO/FIXME/HACK/PLACEHOLDER/XXX markers detected in source files
+* [ ] "not yet implemented" patterns detected
+* [ ] "temporary" / "temp fix" patterns detected
+* [ ] Test files excluded from scaffolding scan
+* [ ] Each entry has: `file`, `line`, `pattern`, `text`
+
+**Note:** Scaffolding detection requires `sourceContents` to be passed. The MCP handler reads source files from disk when available.
+
 **Record:**
 
 | Metric             | Value  |
@@ -673,6 +697,9 @@ After completing all steps, fill in:
 | 10b| `find_dead_code` — circular islands detected as dead                |           |
 | 10c| `find_dead_code` — test/config files excluded by default            |           |
 | 10d| `find_dead_code` — unusedExports detected (exported but never imported) |        |
+| 10e| `find_dead_code` — cascadeDepth tracked for dead chains              |           |
+| 10f| `find_dead_code` — framework symbols (main, Schema) NOT flagged      |           |
+| 10g| `find_dead_code` — scaffolding markers detected (TODO/FIXME/HACK)    |           |
 | 11 | `get_context_for_task` — context entries with relevanceScore        |           |
 | 11a| `get_context_for_task` — taskType affects ranking (fix vs extend)   |           |
 | 11b| `get_context_for_task` — tokenBudget respected                      |           |
@@ -688,7 +715,7 @@ After completing all steps, fill in:
 | 17 | Token savings > 10x for aggregate                                   |           |
 | 18 | Context budget chart shows MCP uses < 1% of 1M window               |           |
 
-**Result:** \_\_\_/28 checks passed
+**Result:** \_\_\_/31 checks passed
 
 ***
 

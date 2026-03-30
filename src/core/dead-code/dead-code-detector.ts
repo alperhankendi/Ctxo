@@ -10,6 +10,7 @@ export interface DeadSymbolEntry {
   readonly kind: SymbolKind;
   readonly confidence: DeadCodeConfidence;
   readonly reason: string;
+  readonly cascadeDepth?: number;
 }
 
 export interface UnusedExportEntry {
@@ -19,12 +20,20 @@ export interface UnusedExportEntry {
   readonly kind: SymbolKind;
 }
 
+export interface ScaffoldingEntry {
+  readonly file: string;
+  readonly line: number;
+  readonly pattern: string;
+  readonly text: string;
+}
+
 export interface DeadCodeResult {
   readonly totalSymbols: number;
   readonly reachableSymbols: number;
   readonly deadSymbols: DeadSymbolEntry[];
   readonly unusedExports: UnusedExportEntry[];
   readonly deadFiles: string[];
+  readonly scaffolding: ScaffoldingEntry[];
   readonly deadCodePercentage: number;
 }
 
@@ -32,10 +41,34 @@ export interface DeadCodeResult {
 const TEST_PATTERNS = [/__tests__/, /\.test\.ts$/, /\.spec\.ts$/, /\btests\//, /\bfixtures?\//];
 const CONFIG_PATTERNS = [/\.(config|rc)\.(ts|js|json)$/, /tsconfig/, /eslint/, /\.d\.ts$/];
 
+// Framework lifecycle symbols — should never be flagged as dead
+const FRAMEWORK_PATTERNS = [
+  // Vitest
+  /^(describe|it|expect|beforeAll|beforeEach|afterAll|afterEach|vi)$/,
+  // MCP SDK
+  /^(registerTool|registerPrompt|connect|close)$/,
+  // Zod schemas (conventionally exported for validation)
+  /Schema$/,
+  // Node.js lifecycle
+  /^main$/,
+];
+
+// Scaffolding / AI artifact patterns
+const SCAFFOLDING_PATTERNS = [
+  { regex: /\bTODO\b/i, pattern: 'TODO' },
+  { regex: /\bFIXME\b/i, pattern: 'FIXME' },
+  { regex: /\bHACK\b/i, pattern: 'HACK' },
+  { regex: /\bPLACEHOLDER\b/i, pattern: 'PLACEHOLDER' },
+  { regex: /\bXXX\b/, pattern: 'XXX' },
+  { regex: /Phase\s+\d|Step\s+\d/i, pattern: 'PHASE/STEP' },
+  { regex: /not\s+(?:yet\s+)?implement/i, pattern: 'NOT_IMPLEMENTED' },
+  { regex: /temporary|temp\s+fix/i, pattern: 'TEMPORARY' },
+];
+
 export class DeadCodeDetector {
   detect(
     graph: SymbolGraph,
-    options: { includeTests?: boolean } = {},
+    options: { includeTests?: boolean; sourceContents?: Map<string, string> } = {},
   ): DeadCodeResult {
     const allNodes = graph.allNodes();
 
@@ -48,7 +81,7 @@ export class DeadCodeDetector {
         });
 
     if (candidates.length === 0) {
-      return { totalSymbols: 0, reachableSymbols: 0, deadSymbols: [], unusedExports: [], deadFiles: [], deadCodePercentage: 0 };
+      return { totalSymbols: 0, reachableSymbols: 0, deadSymbols: [], unusedExports: [], deadFiles: [], scaffolding: this.detectScaffolding(options.sourceContents), deadCodePercentage: 0 };
     }
 
     // Dynamic entry point detection: symbols with zero reverse edges (no one imports them)
@@ -56,6 +89,12 @@ export class DeadCodeDetector {
     const entryPoints = new Set<string>();
 
     for (const node of candidates) {
+      // Framework lifecycle symbols are always entry points (never dead)
+      if (this.isFrameworkSymbol(node.name)) {
+        entryPoints.add(node.symbolId);
+        continue;
+      }
+
       const reverseEdges = graph.getReverseEdges(node.symbolId);
       const forwardEdges = graph.getForwardEdges(node.symbolId);
 
@@ -63,14 +102,10 @@ export class DeadCodeDetector {
       const incomingFromCandidates = reverseEdges.filter((e) => candidateIds.has(e.from) && e.from !== node.symbolId);
 
       if (incomingFromCandidates.length === 0) {
-        // Isolated symbols (zero forward AND zero reverse) are dead, not entry points
         const hasOutgoing = forwardEdges.some((e) => candidateIds.has(e.to));
         if (hasOutgoing || reverseEdges.length > 0) {
-          // Has outgoing deps → entry point (composition root, CLI command)
-          // Has reverse from excluded files → still an entry point
           entryPoints.add(node.symbolId);
         }
-        // else: truly isolated → stays out of entry points → will be marked dead
       }
     }
 
@@ -99,6 +134,9 @@ export class DeadCodeDetector {
       }
     }
 
+    // Compute cascade depth: how deep in the dead chain is this symbol?
+    const cascadeDepthMap = this.computeCascadeDepths(graph, deadIds, candidateIds);
+
     // Compute confidence per dead symbol
     const deadSymbols: DeadSymbolEntry[] = [];
     for (const node of candidates) {
@@ -106,6 +144,7 @@ export class DeadCodeDetector {
 
       const file = node.symbolId.split('::')[0] ?? '';
       const confidence = this.computeConfidence(graph, node.symbolId, deadIds);
+      const cascadeDepth = cascadeDepthMap.get(node.symbolId);
 
       deadSymbols.push({
         symbolId: node.symbolId,
@@ -114,6 +153,7 @@ export class DeadCodeDetector {
         kind: node.kind,
         confidence,
         reason: this.describeReason(confidence),
+        ...(cascadeDepth !== undefined && cascadeDepth > 0 ? { cascadeDepth } : {}),
       });
     }
 
@@ -152,6 +192,9 @@ export class DeadCodeDetector {
       }
     }
 
+    // Scaffolding detection: scan source contents for TODO/FIXME/HACK patterns
+    const scaffolding = this.detectScaffolding(options.sourceContents);
+
     const deadCodePercentage = Math.round((deadSymbols.length / candidates.length) * 100 * 10) / 10;
 
     return {
@@ -160,6 +203,7 @@ export class DeadCodeDetector {
       deadSymbols,
       unusedExports,
       deadFiles,
+      scaffolding,
       deadCodePercentage,
     };
   }
@@ -204,6 +248,76 @@ export class DeadCodeDetector {
       case 0.7:
         return 'All importers are themselves dead (cascading)';
     }
+  }
+
+  private isFrameworkSymbol(name: string): boolean {
+    return FRAMEWORK_PATTERNS.some((p) => p.test(name));
+  }
+
+  private computeCascadeDepths(
+    graph: SymbolGraph,
+    deadIds: Set<string>,
+    candidateIds: Set<string>,
+  ): Map<string, number> {
+    const depths = new Map<string, number>();
+
+    // Find root dead symbols (zero reverse edges from other dead symbols)
+    const rootDead = new Set<string>();
+    for (const id of deadIds) {
+      const reverseEdges = graph.getReverseEdges(id);
+      const deadImporters = reverseEdges.filter((e) => deadIds.has(e.from) && e.from !== id);
+      if (deadImporters.length === 0) {
+        rootDead.add(id);
+        depths.set(id, 0);
+      }
+    }
+
+    // BFS from root dead symbols to compute cascade depth
+    const queue = [...rootDead].map((id) => ({ id, depth: 0 }));
+    const visited = new Set(rootDead);
+
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      for (const edge of graph.getForwardEdges(current.id)) {
+        if (deadIds.has(edge.to) && !visited.has(edge.to) && candidateIds.has(edge.to)) {
+          const newDepth = current.depth + 1;
+          depths.set(edge.to, newDepth);
+          visited.add(edge.to);
+          queue.push({ id: edge.to, depth: newDepth });
+        }
+      }
+    }
+
+    return depths;
+  }
+
+  private detectScaffolding(sourceContents?: Map<string, string>): ScaffoldingEntry[] {
+    if (!sourceContents || sourceContents.size === 0) return [];
+
+    const results: ScaffoldingEntry[] = [];
+
+    for (const [file, content] of sourceContents) {
+      // Skip test/config files
+      if (this.matchesAny(file, TEST_PATTERNS) || this.matchesAny(file, CONFIG_PATTERNS)) continue;
+
+      const lines = content.split('\n');
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i]!;
+        for (const { regex, pattern } of SCAFFOLDING_PATTERNS) {
+          if (regex.test(line)) {
+            results.push({
+              file,
+              line: i + 1,
+              pattern,
+              text: line.trim().slice(0, 120),
+            });
+            break; // One match per line
+          }
+        }
+      }
+    }
+
+    return results;
   }
 
   private matchesAny(value: string, patterns: RegExp[]): boolean {

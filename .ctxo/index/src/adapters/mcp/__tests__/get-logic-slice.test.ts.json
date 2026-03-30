@@ -27,6 +27,12 @@
   "file": "src/adapters/mcp/__tests__/get-logic-slice.test.ts",
   "intent": [
     {
+      "date": "2026-03-31T01:39:15+03:00",
+      "hash": "926b1be8bc73588a2d8c3baba01fec510df1ed45",
+      "kind": "commit",
+      "message": "Improve MCP handler test coverage: 65% → 87%"
+    },
+    {
       "date": "2026-03-29T19:36:39+03:00",
       "hash": "fe25908f1b52456c787f056d764a44307cfc32ba",
       "kind": "commit",
@@ -39,6 +45,6 @@
       "message": "Add MCP server with get_logic_slice tool and privacy masking pipeline"
     }
   ],
-  "lastModified": 1774910312,
+  "lastModified": 1774912635,
   "symbols": []
 }

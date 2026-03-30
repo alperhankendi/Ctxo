@@ -213,4 +213,130 @@ describe('DeadCodeDetector', () => {
     // B is imported by A — NOT unused
     expect(result.unusedExports.map((e) => e.name)).not.toContain('B');
   });
+
+  // ── Cascading Dead Code ───────────────────────────────────
+
+  it('computes cascadeDepth for chained dead symbols', () => {
+    const graph = new SymbolGraph();
+    // Live: main → app
+    graph.addNode(makeNode('src/main.ts::main::function'));
+    graph.addNode(makeNode('src/app.ts::app::function'));
+    graph.addEdge({ from: 'src/main.ts::main::function', to: 'src/app.ts::app::function', kind: 'calls' });
+    // Dead chain: deadA → deadB → deadC (all circular, unreachable)
+    graph.addNode(makeNode('src/da.ts::deadA::function'));
+    graph.addNode(makeNode('src/db.ts::deadB::function'));
+    graph.addNode(makeNode('src/dc.ts::deadC::function'));
+    graph.addEdge({ from: 'src/da.ts::deadA::function', to: 'src/db.ts::deadB::function', kind: 'calls' });
+    graph.addEdge({ from: 'src/db.ts::deadB::function', to: 'src/dc.ts::deadC::function', kind: 'calls' });
+    // Make it a circular island
+    graph.addEdge({ from: 'src/dc.ts::deadC::function', to: 'src/da.ts::deadA::function', kind: 'calls' });
+
+    const result = detector.detect(graph);
+
+    // All 3 dead symbols should have cascadeDepth
+    const deadA = result.deadSymbols.find((s) => s.name === 'deadA');
+    const deadB = result.deadSymbols.find((s) => s.name === 'deadB');
+    const deadC = result.deadSymbols.find((s) => s.name === 'deadC');
+
+    expect(deadA).toBeDefined();
+    expect(deadB).toBeDefined();
+    expect(deadC).toBeDefined();
+  });
+
+  // ── Framework Awareness ───────────────────────────────────
+
+  it('does not flag framework lifecycle symbols as dead', () => {
+    const graph = new SymbolGraph();
+    // main is a framework symbol — should be entry point
+    graph.addNode(makeNode('src/index.ts::main::function'));
+    // Schema exports (Zod convention) — should be entry point
+    graph.addNode(makeNode('src/types.ts::UserSchema::variable'));
+
+    const result = detector.detect(graph);
+
+    const deadNames = result.deadSymbols.map((s) => s.name);
+    expect(deadNames).not.toContain('main');
+    expect(deadNames).not.toContain('UserSchema');
+  });
+
+  it('does not flag registerTool as dead', () => {
+    const graph = new SymbolGraph();
+    graph.addNode(makeNode('src/server.ts::registerTool::function'));
+
+    const result = detector.detect(graph);
+
+    expect(result.deadSymbols.map((s) => s.name)).not.toContain('registerTool');
+  });
+
+  // ── Scaffolding Detection ─────────────────────────────────
+
+  it('detects TODO markers in source content', () => {
+    const sourceContents = new Map([
+      ['src/foo.ts', '// TODO: implement this\nfunction foo() {}'],
+    ]);
+
+    const graph = new SymbolGraph();
+    graph.addNode(makeNode('src/foo.ts::foo::function'));
+
+    const result = detector.detect(graph, { sourceContents });
+
+    expect(result.scaffolding.length).toBeGreaterThan(0);
+    expect(result.scaffolding[0]?.pattern).toBe('TODO');
+    expect(result.scaffolding[0]?.file).toBe('src/foo.ts');
+    expect(result.scaffolding[0]?.line).toBe(1);
+  });
+
+  it('detects FIXME and HACK markers', () => {
+    const sourceContents = new Map([
+      ['src/bar.ts', 'function bar() {\n  // FIXME: broken logic\n  // HACK: workaround\n}'],
+    ]);
+
+    const graph = new SymbolGraph();
+    graph.addNode(makeNode('src/bar.ts::bar::function'));
+
+    const result = detector.detect(graph, { sourceContents });
+
+    const patterns = result.scaffolding.map((s) => s.pattern);
+    expect(patterns).toContain('FIXME');
+    expect(patterns).toContain('HACK');
+  });
+
+  it('detects "not yet implemented" placeholder', () => {
+    const sourceContents = new Map([
+      ['src/stub.ts', 'function stub() { throw new Error("not yet implemented"); }'],
+    ]);
+
+    const graph = new SymbolGraph();
+    graph.addNode(makeNode('src/stub.ts::stub::function'));
+
+    const result = detector.detect(graph, { sourceContents });
+
+    expect(result.scaffolding.length).toBeGreaterThan(0);
+    expect(result.scaffolding[0]?.pattern).toBe('NOT_IMPLEMENTED');
+  });
+
+  it('excludes test files from scaffolding scan', () => {
+    const sourceContents = new Map([
+      ['src/__tests__/foo.test.ts', '// TODO: add more tests'],
+      ['src/real.ts', '// TODO: implement'],
+    ]);
+
+    const graph = new SymbolGraph();
+    graph.addNode(makeNode('src/real.ts::real::function'));
+
+    const result = detector.detect(graph, { sourceContents });
+
+    // Only src/real.ts should appear (test file excluded)
+    expect(result.scaffolding).toHaveLength(1);
+    expect(result.scaffolding[0]?.file).toBe('src/real.ts');
+  });
+
+  it('returns empty scaffolding when no source contents provided', () => {
+    const graph = new SymbolGraph();
+    graph.addNode(makeNode('src/a.ts::A::function'));
+
+    const result = detector.detect(graph);
+
+    expect(result.scaffolding).toEqual([]);
+  });
 });

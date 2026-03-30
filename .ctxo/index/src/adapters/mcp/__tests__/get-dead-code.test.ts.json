@@ -32,12 +32,18 @@
   "file": "src/adapters/mcp/__tests__/get-dead-code.test.ts",
   "intent": [
     {
+      "date": "2026-03-31T01:39:15+03:00",
+      "hash": "926b1be8bc73588a2d8c3baba01fec510df1ed45",
+      "kind": "commit",
+      "message": "Improve MCP handler test coverage: 65% → 87%"
+    },
+    {
       "date": "2026-03-30T22:51:29+03:00",
       "hash": "07e1bbcfca5863df7267e0f450bc6aee1f69216d",
       "kind": "commit",
       "message": "Add find_dead_code MCP tool — unreachable symbol and file detection"
     }
   ],
-  "lastModified": 1774910312,
+  "lastModified": 1774912635,
   "symbols": []
 }
