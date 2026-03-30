@@ -249,7 +249,73 @@ Call with no parameters for full project scan.
 
 ***
 
-## Step 9: Staleness Detection Check
+## Step 9: Test `find_dead_code`
+
+Call with default parameters (excludes test/config files).
+
+### 9.1 Basic Dead Code Detection
+
+**Verify:**
+
+* [ ] `totalSymbols` > 0 (candidate symbols analyzed)
+* [ ] `reachableSymbols` > 0 (entry points + their transitive deps)
+* [ ] `deadCodePercentage` is between 0 and 100
+* [ ] Response contains `deadSymbols` array and `deadFiles` array
+
+### 9.2 Dead Symbol Details
+
+**Verify:**
+
+* [ ] Each dead symbol has `symbolId`, `file`, `name`, `kind` fields
+* [ ] Each dead symbol has `confidence` field: 1.0, 0.9, or 0.7
+* [ ] Each dead symbol has `reason` field (human-readable explanation)
+* [ ] Confidence 1.0 symbols have reason containing "Zero importers"
+* [ ] Confidence 0.7 symbols have reason containing "cascading"
+
+### 9.3 Dead Files
+
+**Verify:**
+
+* [ ] `deadFiles` lists files where ALL symbols are dead
+* [ ] No actively-used source file appears in `deadFiles`
+* [ ] Test files (`__tests__/`, `.test.ts`) are NOT in `deadFiles` (excluded by default)
+* [ ] Config files (`*.config.ts`) are NOT in `deadFiles` (excluded by default)
+
+### 9.4 Include Tests Mode
+
+Call with `{ includeTests: true }`:
+
+* [ ] `totalSymbols` increases (test files now counted)
+* [ ] Test file symbols may appear in `deadSymbols` if truly isolated
+
+### 9.5 Edge Cases
+
+* [ ] Circular dependency islands (A→B→C→A, all unreachable from entry points) are detected as dead
+* [ ] Composition root (`src/index.ts`) symbols are NOT dead (they are entry points)
+* [ ] CLI command symbols are NOT dead (they have outgoing deps)
+
+### 9.6 Dynamic Entry Point Detection
+
+* [ ] Entry points are auto-detected (symbols with zero reverse edges + outgoing deps)
+* [ ] No manual configuration required
+* [ ] Language-agnostic — works for any language adapter
+
+**Record:**
+
+| Metric             | Value  |
+| ------------------ | ------ |
+| Total symbols      | \_\_\_ |
+| Reachable symbols  | \_\_\_ |
+| Dead symbols       | \_\_\_ |
+| Dead files         | \_\_\_ |
+| Dead code %        | \_\_\_ |
+| Confidence 1.0     | \_\_\_ |
+| Confidence 0.9     | \_\_\_ |
+| Confidence 0.7     | \_\_\_ |
+
+***
+
+## Step 10: Staleness Detection Check (was Step 9)
 
 Run any tool immediately after a fresh index build.
 
@@ -443,14 +509,18 @@ After completing all steps, fill in:
 | 7  | `get_architectural_overlay` — 6 layers, correct classification      |           |
 | 8  | `get_why_context` — commits returned, no changeIntelligence overlap |           |
 | 9  | `get_change_intelligence` — complexity > 0, valid band              |           |
-| 10 | Staleness detection — no false positive on fresh index              |           |
-| 11 | Unit tests pass                                                     |           |
-| 12 | Git hash masking — visible or redacted (log status)                 |           |
-| 13 | Manual vs MCP comparison table filled with measured data            |           |
-| 14 | Token savings > 10x for aggregate                                   |           |
-| 15 | Context budget chart shows MCP uses < 1% of 1M window               |           |
+| 10 | `find_dead_code` — deadSymbols detected, confidence scoring works   |           |
+| 10a| `find_dead_code` — deadFiles lists fully-dead files                 |           |
+| 10b| `find_dead_code` — circular islands detected as dead                |           |
+| 10c| `find_dead_code` — test/config files excluded by default            |           |
+| 11 | Staleness detection — no false positive on fresh index              |           |
+| 12 | Unit tests pass                                                     |           |
+| 13 | Git hash masking — visible or redacted (log status)                 |           |
+| 14 | Manual vs MCP comparison table filled with measured data            |           |
+| 15 | Token savings > 10x for aggregate                                   |           |
+| 16 | Context budget chart shows MCP uses < 1% of 1M window               |           |
 
-**Result:** \_\_\_/15 checks passed
+**Result:** \_\_\_/19 checks passed
 
 ***
 
@@ -466,12 +536,13 @@ rm -rf .ctxo/.cache/ .ctxo/index/ && npx tsx src/index.ts index
 npx vitest run
 ```
 
-Then invoke these 5 MCP calls in parallel:
+Then invoke these 6 MCP calls:
 
 * `get_logic_slice` — `src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class`, level 3
 * `get_blast_radius` — `src/core/types.ts::SymbolNode::type`
 * `get_architectural_overlay` — no params
 * `get_why_context` — `src/core/masking/masking-pipeline.ts::MaskingPipeline::class`
 * `get_change_intelligence` — `src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class`
+* `find_dead_code` — no params (default: exclude tests)
 
-**Quick pass criteria:** All 5 return data (not errors), dependencies/dependents non-empty, 3 layers present.
+**Quick pass criteria:** All 6 return data (not errors), dependencies/dependents non-empty, 6 layers present, dead code analysis has totalSymbols > 0.
