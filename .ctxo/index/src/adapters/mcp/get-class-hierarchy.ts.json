@@ -45,8 +45,15 @@
     }
   ],
   "file": "src/adapters/mcp/get-class-hierarchy.ts",
-  "intent": [],
-  "lastModified": 1774916054,
+  "intent": [
+    {
+      "date": "2026-03-31T03:15:55+03:00",
+      "hash": "dcae17802c9cc167416a9a55e325e5da1a595639",
+      "kind": "commit",
+      "message": "Add 4 new MCP tools, --max-history limit, and improve test coverage"
+    }
+  ],
+  "lastModified": 1774916779,
   "symbols": [
     {
       "endLine": 213,

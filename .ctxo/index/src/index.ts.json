@@ -87,6 +87,12 @@
   "file": "src/index.ts",
   "intent": [
     {
+      "date": "2026-03-31T03:15:55+03:00",
+      "hash": "dcae17802c9cc167416a9a55e325e5da1a595639",
+      "kind": "commit",
+      "message": "Add 4 new MCP tools, --max-history limit, and improve test coverage"
+    },
+    {
       "date": "2026-03-30T23:21:57+03:00",
       "hash": "1dcd724d46790be519a60d8aeb2c9688e8cb8a90",
       "kind": "commit",
@@ -165,6 +171,6 @@
       "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
     }
   ],
-  "lastModified": 1774916055,
+  "lastModified": 1774916780,
   "symbols": []
 }

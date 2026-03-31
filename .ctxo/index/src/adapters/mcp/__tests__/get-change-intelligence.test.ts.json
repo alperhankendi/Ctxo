@@ -37,6 +37,12 @@
   "file": "src/adapters/mcp/__tests__/get-change-intelligence.test.ts",
   "intent": [
     {
+      "date": "2026-03-31T03:15:55+03:00",
+      "hash": "dcae17802c9cc167416a9a55e325e5da1a595639",
+      "kind": "commit",
+      "message": "Add 4 new MCP tools, --max-history limit, and improve test coverage"
+    },
+    {
       "date": "2026-03-29T22:49:58+03:00",
       "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
       "kind": "commit",
@@ -49,6 +55,6 @@
       "message": "Add missing MCP handler tests and edge case coverage"
     }
   ],
-  "lastModified": 1774916054,
+  "lastModified": 1774916779,
   "symbols": []
 }
