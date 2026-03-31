@@ -246,18 +246,19 @@ To quantify the value of Ctxo MCP tools post-fix, each tool's output was compare
 
 #### `get_logic_slice` — LogicSliceQuery (4 deps, 6 edges)
 
-| Metric            | Manual                                               | MCP Tool  |
-| ----------------- | ---------------------------------------------------- | --------- |
-| Tool calls        | 3 (Read logic-slice-query.ts + types.ts + symbol-graph.ts) | **1** |
-| Files read        | 3 files (326 lines)                                  | 0         |
-| Token consumption | ~1,755                                               | **~350**  |
-| Dependencies found | 4 symbols, 6 edges                                  | Same      |
+| Metric             | Manual                                                     | MCP Tool  |
+| ------------------ | ---------------------------------------------------------- | --------- |
+| Tool calls         | 3 (Read logic-slice-query.ts + types.ts + symbol-graph.ts) | **1**     |
+| Files read         | 3 files (326 lines)                                        | 0         |
+| Token consumption  | \~1,755                                                    | **\~350** |
+| Dependencies found | 4 symbols, 6 edges                                         | Same      |
 
-**Savings: ~5x tokens, 3x tool calls**
+**Savings: \~5x tokens, 3x tool calls**
 
 Manual process: Read the source file, follow each import to its definition file, then follow transitive imports from SymbolGraph back to types.ts. Required reading 326 lines across 3 files.
 
 Dependency tree discovered:
+
 ```
 LogicSliceQuery
 ├── SymbolNode (types.ts:75)          — direct import
@@ -268,22 +269,23 @@ LogicSliceQuery
     └── GraphEdge (types.ts:84)       — transitive
 ```
 
----
+***
 
 #### `get_blast_radius` — SymbolGraph (impactScore=4, 4 dependents)
 
-| Metric            | Manual                                                     | MCP Tool  |
-| ----------------- | ---------------------------------------------------------- | --------- |
-| Tool calls        | 10 (1 Grep + 5 Read + 3 Grep for transitives + 1 Bash)    | **1**     |
-| Files read        | 9 files (713 lines)                                        | 0         |
-| Token consumption | ~5,150                                                     | **~300**  |
-| Dependents found  | 4 symbols (2 depth levels) + test files                    | Same 4    |
+| Metric            | Manual                                                 | MCP Tool  |
+| ----------------- | ------------------------------------------------------ | --------- |
+| Tool calls        | 10 (1 Grep + 5 Read + 3 Grep for transitives + 1 Bash) | **1**     |
+| Files read        | 9 files (713 lines)                                    | 0         |
+| Token consumption | \~5,150                                                | **\~300** |
+| Dependents found  | 4 symbols (2 depth levels) + test files                | Same 4    |
 
-**Savings: ~17x tokens, 10x tool calls**
+**Savings: \~17x tokens, 10x tool calls**
 
 Manual process: Grep for all files importing "SymbolGraph", read each one, then grep for files importing those depth-1 dependents to find depth-2 impacts. Required reading 713 lines across 9 files.
 
 Blast radius discovered:
+
 ```
 SymbolGraph (depth 0)
 ├── getLogicSliceInputSchema (depth 1) — MCP adapter, builds graph
@@ -292,78 +294,79 @@ SymbolGraph (depth 0)
 └── handleGetBlastRadius (depth 2)     — imports BlastRadiusCalculator
 ```
 
----
+***
 
 #### `get_architectural_overlay` — Full Project (93 files, 3 layers)
 
-| Metric            | Manual                                       | MCP Tool    |
-| ----------------- | -------------------------------------------- | ----------- |
-| Tool calls        | 15-20 (Glob + ~30 Read for import analysis)  | **1**       |
-| Files read        | ~80 files, import direction analysis          | 0           |
-| Token consumption | ~115,000                                      | **~1,500**  |
-| Result            | Layer classification                          | Same 3-layer map |
+| Metric            | Manual                                       | MCP Tool         |
+| ----------------- | -------------------------------------------- | ---------------- |
+| Tool calls        | 15-20 (Glob + \~30 Read for import analysis) | **1**            |
+| Files read        | \~80 files, import direction analysis        | 0                |
+| Token consumption | \~115,000                                    | **\~1,500**      |
+| Result            | Layer classification                         | Same 3-layer map |
 
-**Savings: ~77x tokens, 15-20x tool calls**
+**Savings: \~77x tokens, 15-20x tool calls**
 
-Manual process: Glob all `.ts` files, read each to determine import directions, classify into Domain (no adapter imports), Adapter (implements ports), or Unknown. Requires scanning ~80 files and analyzing their import graphs.
+Manual process: Glob all `.ts` files, read each to determine import directions, classify into Domain (no adapter imports), Adapter (implements ports), or Unknown. Requires scanning \~80 files and analyzing their import graphs.
 
----
+***
 
 #### `get_why_context` — MaskingPipeline (5 commits)
 
-| Metric            | Manual                                                 | MCP Tool  |
-| ----------------- | ------------------------------------------------------ | --------- |
-| Tool calls        | 7 (1 git log + 5x git show + 1 revert search)         | **1**     |
-| Git diff output   | ~4,260 tokens raw diff                                 | 0         |
-| Token consumption | ~4,260 + ~1,500 analysis = **~5,760**                  | **~400**  |
-| Commits found     | 5 commits, 4 anti-patterns identified                  | Same 5 commits |
+| Metric            | Manual                                        | MCP Tool       |
+| ----------------- | --------------------------------------------- | -------------- |
+| Tool calls        | 7 (1 git log + 5x git show + 1 revert search) | **1**          |
+| Git diff output   | \~4,260 tokens raw diff                       | 0              |
+| Token consumption | \~4,260 + \~1,500 analysis = **\~5,760**      | **\~400**      |
+| Commits found     | 5 commits, 4 anti-patterns identified         | Same 5 commits |
 
-**Savings: ~14x tokens, 7x tool calls**
+**Savings: \~14x tokens, 7x tool calls**
 
 Manual process: Run `git log` to find commits, `git show` each commit to see diffs, grep for reverts. Each `git show` returns the full diff for that file across the commit — 5 commits means 5 separate diff outputs.
 
 Commits discovered (with manual anti-pattern analysis):
+
 1. `fa4701d` — Initial MaskingPipeline creation (8 default patterns)
 2. `7b96d98` — Fix: shared mutable RegExp state, falsy string check
 3. `031d4b7` — Added `fromConfig()` and `MaskingPatternConfig` interface
 4. `14ae301` — Fix: silent regex compilation failure in `fromConfig`
-5. `0e90f2b` — Fix: AWS_SECRET false positive on git SHA-1 hashes
+5. `0e90f2b` — Fix: AWS\_SECRET false positive on git SHA-1 hashes
 
----
+***
 
 #### `get_change_intelligence` — SqliteStorageAdapter (churn=0.778, band=high)
 
-| Metric            | Manual                                              | MCP Tool  |
-| ----------------- | --------------------------------------------------- | --------- |
-| Tool calls        | 3 (1 Read + 2 Bash)                                 | **1**     |
-| Files read        | 355 lines + git history (7 commits)                  | 0         |
-| Token consumption | ~2,000 (1,420 file + 80 git + 500 analysis)         | **~150**  |
-| Computation       | Manual cyclomatic complexity counting required       | Pre-computed |
+| Metric            | Manual                                         | MCP Tool     |
+| ----------------- | ---------------------------------------------- | ------------ |
+| Tool calls        | 3 (1 Read + 2 Bash)                            | **1**        |
+| Files read        | 355 lines + git history (7 commits)            | 0            |
+| Token consumption | \~2,000 (1,420 file + 80 git + 500 analysis)   | **\~150**    |
+| Computation       | Manual cyclomatic complexity counting required | Pre-computed |
 
-**Savings: ~13x tokens, 3x tool calls**
+**Savings: \~13x tokens, 3x tool calls**
 
-Manual process: Read entire 355-line file, manually count all control flow branches (13 if-statements, 2 catch blocks, 4 logical operators = CC of ~20). Then query git log for commit count and date range to compute churn. Normalize and classify into risk band.
+Manual process: Read entire 355-line file, manually count all control flow branches (13 if-statements, 2 catch blocks, 4 logical operators = CC of \~20). Then query git log for commit count and date range to compute churn. Normalize and classify into risk band.
 
-| Manual Calculation       | Value                               |
-| ------------------------ | ----------------------------------- |
-| Cyclomatic complexity    | ~20 (13 if + 2 catch + 4 logical)   |
-| Commits                  | 7 in ~3.5 hours                      |
-| Churn rate               | ~42 commits/day equivalent           |
-| Assessment               | Low complexity, high churn           |
+| Manual Calculation    | Value                              |
+| --------------------- | ---------------------------------- |
+| Cyclomatic complexity | \~20 (13 if + 2 catch + 4 logical) |
+| Commits               | 7 in \~3.5 hours                   |
+| Churn rate            | \~42 commits/day equivalent        |
+| Assessment            | Low complexity, high churn         |
 
----
+***
 
 ### 5.2 Aggregate Comparison
 
-| Metric                     | Manual (5 queries) | MCP Tools (5 queries) | Savings          |
-| -------------------------- | ------------------ | --------------------- | ---------------- |
-| **Total tokens**           | **~129,665**       | **~2,700**            | **~48x less**    |
-| **Tool calls**             | **38-43**          | **5**                 | **~8x less**     |
-| **Context window usage**   | **13.0%** of 1M    | **0.27%** of 1M       | **~48x less**    |
-| **Files read**             | 95+ files          | 0 files               | **100% reduction** |
-| **Estimated time**         | 2-4 minutes        | **<2.5 sec** (5x 500ms) | **~60-100x faster** |
+| Metric                   | Manual (5 queries) | MCP Tools (5 queries)   | Savings              |
+| ------------------------ | ------------------ | ----------------------- | -------------------- |
+| **Total tokens**         | **\~129,665**      | **\~2,700**             | **\~48x less**       |
+| **Tool calls**           | **38-43**          | **5**                   | **\~8x less**        |
+| **Context window usage** | **13.0%** of 1M    | **0.27%** of 1M         | **\~48x less**       |
+| **Files read**           | 95+ files          | 0 files                 | **100% reduction**   |
+| **Estimated time**       | 2-4 minutes        | **<2.5 sec** (5x 500ms) | **\~60-100x faster** |
 
----
+***
 
 ### 5.3 Context Window Budget Impact (1M tokens)
 
@@ -379,30 +382,30 @@ MCP Tool approach:
    → ~1,850 similar queries possible (theoretical)
 ```
 
----
+***
 
 ### 5.4 Efficiency Ranking by Tool
 
-| Rank | Tool                        | Token Savings | Why Most Efficient?                                      |
-| ---- | --------------------------- | ------------- | -------------------------------------------------------- |
-| 1    | `get_architectural_overlay` | **77x**       | Compresses 80+ file scan into one layer map              |
-| 2    | `get_blast_radius`          | **17x**       | Pre-computes transitive reverse dependency traversal     |
-| 3    | `get_why_context`           | **14x**       | Eliminates multiple `git show` diff outputs              |
-| 4    | `get_change_intelligence`   | **13x**       | Avoids reading 355-line file + manual CC counting        |
-| 5    | `get_logic_slice`           | **5x**        | Efficient even for shallow trees; compounds for deeper   |
+| Rank | Tool                        | Token Savings | Why Most Efficient?                                    |
+| ---- | --------------------------- | ------------- | ------------------------------------------------------ |
+| 1    | `get_architectural_overlay` | **77x**       | Compresses 80+ file scan into one layer map            |
+| 2    | `get_blast_radius`          | **17x**       | Pre-computes transitive reverse dependency traversal   |
+| 3    | `get_why_context`           | **14x**       | Eliminates multiple `git show` diff outputs            |
+| 4    | `get_change_intelligence`   | **13x**       | Avoids reading 355-line file + manual CC counting      |
+| 5    | `get_logic_slice`           | **5x**        | Efficient even for shallow trees; compounds for deeper |
 
----
+***
 
 ### 5.5 Session 1 vs Session 2 — Savings Comparison
 
-| Tool                        | Session 1 Savings | Session 2 Savings | Notes                                                     |
-| --------------------------- | ----------------- | ----------------- | --------------------------------------------------------- |
-| `get_logic_slice`           | 11x               | **5x**            | Tool now returns 350 tokens (was ~180 with empty data)    |
-| `get_blast_radius`          | 43x               | **17x**           | Tool now returns 300 tokens (was ~200 with empty data)    |
-| `get_architectural_overlay` | 77x               | **77x**           | Unchanged — already working                               |
-| `get_why_context`           | 46x               | **14x**           | Manual cost recalculated more conservatively              |
+| Tool                        | Session 1 Savings | Session 2 Savings | Notes                                                      |
+| --------------------------- | ----------------- | ----------------- | ---------------------------------------------------------- |
+| `get_logic_slice`           | 11x               | **5x**            | Tool now returns 350 tokens (was \~180 with empty data)    |
+| `get_blast_radius`          | 43x               | **17x**           | Tool now returns 300 tokens (was \~200 with empty data)    |
+| `get_architectural_overlay` | 77x               | **77x**           | Unchanged — already working                                |
+| `get_why_context`           | 46x               | **14x**           | Manual cost recalculated more conservatively               |
 | `get_change_intelligence`   | 89x               | **13x**           | Manual cost recalculated with actual file size (355 lines) |
-| **Aggregate**               | **64x**           | **48x**           | Richer responses = more tokens, but still massive savings |
+| **Aggregate**               | **64x**           | **48x**           | Richer responses = more tokens, but still massive savings  |
 
 > **Why are Session 2 savings lower?** Two reasons: (1) Tool responses now contain real data (dependencies, dependents, edges) which increases their token cost. (2) Manual cost estimates in Session 1 were more generous — Session 2 uses actual measured values from agent exploration. The real-world savings of **48x** is more accurate and still represents a dramatic reduction in resource usage.
 

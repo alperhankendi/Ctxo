@@ -44,6 +44,12 @@
   "file": "src/adapters/git/simple-git-adapter.ts",
   "intent": [
     {
+      "date": "2026-03-31T03:15:55+03:00",
+      "hash": "dcae17802c9cc167416a9a55e325e5da1a595639",
+      "kind": "commit",
+      "message": "Add 4 new MCP tools, --max-history limit, and improve test coverage"
+    },
+    {
       "date": "2026-03-29T18:40:27+03:00",
       "hash": "8f6be2d264ea742495afd6783ac22f6fd06e6945",
       "kind": "commit",
@@ -56,7 +62,7 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1774916054,
+  "lastModified": 1774916779,
   "symbols": [
     {
       "endLine": 63,
