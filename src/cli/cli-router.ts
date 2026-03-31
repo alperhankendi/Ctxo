@@ -27,6 +27,7 @@ export class CliRouter {
         if (fileIdx !== -1 && (!fileArg || fileArg.startsWith('--'))) {
           console.error('[ctxo] --file requires a path argument');
           process.exit(1);
+          return;
         }
         const checkArg = args.includes('--check');
         const skipHistory = args.includes('--skip-history');
@@ -35,6 +36,7 @@ export class CliRouter {
         if (maxHistoryIdx !== -1 && (!maxHistoryArg || isNaN(maxHistoryArg) || maxHistoryArg < 1)) {
           console.error('[ctxo] --max-history requires a positive integer');
           process.exit(1);
+          return;
         }
         await new IndexCommand(this.projectRoot).run({ file: fileArg, check: checkArg, skipHistory, maxHistory: maxHistoryArg });
         break;
@@ -63,6 +65,7 @@ export class CliRouter {
       default:
         console.error(`[ctxo] Unknown command: "${command}". Run "ctxo --help" for usage.`);
         process.exit(1);
+        return;
     }
   }
 
