@@ -521,7 +521,244 @@ Call with `{ query: "adapter", tokenBudget: 500 }`:
 
 ***
 
-## Step 12: Staleness Detection Check
+## Step 12: Test `search_symbols`
+
+Test symbol search by name, regex, kind filter, and file filter.
+
+**Symbol index must be built (Step 2).**
+
+### 12.1 Exact Name Search
+
+Call with `{ pattern: "SymbolGraph" }`:
+
+**Verify:**
+
+* [ ] `totalMatches` >= 1
+* [ ] First result has `name: "SymbolGraph"`, `kind: "class"`
+* [ ] Each result has: `symbolId`, `name`, `kind`, `file`, `startLine`, `endLine`
+
+### 12.2 Regex Pattern Search
+
+Call with `{ pattern: "^handle" }`:
+
+**Verify:**
+
+* [ ] Results include all MCP handler functions (handleGetLogicSlice, handleGetBlastRadius, etc.)
+* [ ] `totalMatches` > 5
+
+### 12.3 Kind Filter
+
+Call with `{ pattern: ".*", kind: "interface" }`:
+
+**Verify:**
+
+* [ ] All results have `kind: "interface"`
+* [ ] Results include IStoragePort, ILanguageAdapter, IGitPort, IMaskingPort, IWatcherPort
+
+### 12.4 File Pattern Filter
+
+Call with `{ pattern: ".*", filePattern: "core/graph" }`:
+
+* [ ] All results have `file` containing `core/graph`
+* [ ] Results include SymbolGraph and its methods
+
+### 12.5 Limit Enforcement
+
+Call with `{ pattern: ".*", limit: 3 }`:
+
+* [ ] `results` array has at most 3 entries
+* [ ] `totalMatches` is greater than 3 (showing total available)
+
+### 12.6 Edge Cases
+
+* [ ] Invalid regex (e.g. `[invalid`) does not crash — falls back to literal substring
+* [ ] Empty pattern returns `{ error: true }`
+* [ ] Pattern with no matches returns `{ totalMatches: 0, results: [] }`
+
+**Record:**
+
+| Query              | Kind Filter | Results | Top Match          |
+| ------------------ | ----------- | ------- | ------------------ |
+| "SymbolGraph"      | —           | \_\_\_  | \_\_\_             |
+| "^handle"          | —           | \_\_\_  | \_\_\_             |
+| ".*"               | interface   | \_\_\_  | \_\_\_             |
+| ".*"               | class       | \_\_\_  | \_\_\_             |
+
+***
+
+## Step 13: Test `get_changed_symbols`
+
+Test git-diff-based symbol discovery.
+
+### 13.1 Default (HEAD~1)
+
+Call with `{}` (defaults to `since: "HEAD~1"`):
+
+**Verify:**
+
+* [ ] `since` is `"HEAD~1"`
+* [ ] `changedFiles` >= 0 (depends on last commit)
+* [ ] `changedSymbols` >= 0
+* [ ] `files` is an array, each entry has `file` and `symbols` array
+* [ ] Each symbol has: `symbolId`, `name`, `kind`, `startLine`, `endLine`
+
+### 13.2 Custom Git Ref
+
+Call with `{ since: "HEAD~5" }`:
+
+**Verify:**
+
+* [ ] `since` is `"HEAD~5"`
+* [ ] `changedFiles` >= result from 13.1 (more commits = more changes)
+* [ ] Changed files map to indexed symbols only (unindexed files omitted)
+
+### 13.3 maxFiles Limit
+
+Call with `{ since: "HEAD~10", maxFiles: 2 }`:
+
+* [ ] `changedFiles` <= 2
+* [ ] Only first 2 files from git diff are processed
+
+### 13.4 Edge Cases
+
+* [ ] Invalid git ref (e.g. `"nonexistent-branch"`) returns graceful error, not crash
+* [ ] No changes since ref returns `{ changedFiles: 0, changedSymbols: 0, files: [] }`
+
+**Record:**
+
+| Since     | Changed Files | Changed Symbols | Top File           |
+| --------- | ------------- | --------------- | ------------------ |
+| HEAD\~1   | \_\_\_        | \_\_\_          | \_\_\_             |
+| HEAD\~5   | \_\_\_        | \_\_\_          | \_\_\_             |
+| HEAD\~10  | \_\_\_        | \_\_\_          | \_\_\_             |
+
+***
+
+## Step 14: Test `find_importers`
+
+Test reverse dependency lookup (who imports a given symbol).
+
+**Symbol:** `src/core/types.ts::SymbolNode::type` (widely used across the codebase)
+
+### 14.1 Direct Importers
+
+Call with `{ symbolId: "src/core/types.ts::SymbolNode::type" }`:
+
+**Verify:**
+
+* [ ] `importerCount` > 5 (SymbolNode is used across every layer)
+* [ ] Each importer has: `symbolId`, `name`, `kind`, `file`, `edgeKind`, `depth`
+* [ ] All entries have `depth: 1` (direct only)
+* [ ] `edgeKind` is one of: `imports`, `calls`, `extends`, `implements`, `uses`
+
+### 14.2 Transitive Importers
+
+Call with `{ symbolId: "src/core/types.ts::SymbolNode::type", transitive: true }`:
+
+**Verify:**
+
+* [ ] `importerCount` > direct count from 14.1 (transitive adds more)
+* [ ] Entries at depth 2+ exist (e.g., CLI commands importing adapters that import types)
+* [ ] Results sorted by depth ascending
+* [ ] No duplicate symbolIds in the result
+
+### 14.3 Edge Kind Filter
+
+Call with `{ symbolId: "src/core/types.ts::SymbolNode::type", edgeKinds: ["implements"] }`:
+
+* [ ] Only importers connected via `implements` edge are returned
+* [ ] `importerCount` <= count from 14.1
+
+### 14.4 Max Depth Limit
+
+Call with `{ symbolId: "src/core/types.ts::SymbolNode::type", transitive: true, maxDepth: 1 }`:
+
+* [ ] All entries have `depth: 1` only
+* [ ] Count matches direct-only result from 14.1
+
+### 14.5 Edge Cases
+
+* [ ] Non-existent symbol returns `{ found: false }`
+* [ ] Symbol with no importers returns `{ importerCount: 0, importers: [] }`
+* [ ] Empty symbolId returns `{ error: true }`
+* [ ] Circular dependencies do not cause infinite loop
+
+**Record:**
+
+| Mode                  | Importer Count | Max Depth | Top Importer       |
+| --------------------- | -------------- | --------- | ------------------ |
+| Direct                | \_\_\_         | 1         | \_\_\_             |
+| Transitive            | \_\_\_         | \_\_\_    | \_\_\_             |
+| edgeKinds=implements  | \_\_\_         | 1         | \_\_\_             |
+
+***
+
+## Step 15: Test `get_class_hierarchy`
+
+Test class/interface inheritance tree traversal.
+
+### 15.1 Full Project Hierarchy
+
+Call with `{}` (no symbolId — returns all extends/implements trees):
+
+**Verify:**
+
+* [ ] `hierarchies` is a non-empty array
+* [ ] `totalClasses` > 0 (nodes involved in extends/implements)
+* [ ] `totalEdges` > 0
+* [ ] Each hierarchy root has: `symbolId`, `name`, `kind`, `file`, `children`
+* [ ] Children have `edgeKind` field (`"extends"` or `"implements"`)
+
+### 15.2 Rooted — Ancestors (extends/implements chain upward)
+
+Find a class that implements an interface (e.g., `SqliteStorageAdapter implements IStoragePort`).
+
+Call with `{ symbolId: "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class", direction: "ancestors" }`:
+
+**Verify:**
+
+* [ ] `ancestors` is non-empty
+* [ ] At least one ancestor has `edgeKind: "implements"` and is an interface
+* [ ] `descendants` is NOT present in response (direction=ancestors)
+* [ ] Each ancestor has `depth` field (1 = direct parent)
+
+### 15.3 Rooted — Descendants (who extends/implements this)
+
+Call with `{ symbolId: "<interface-symbolId>", direction: "descendants" }`:
+
+Use an interface like `IStoragePort` that is implemented by adapters.
+
+**Verify:**
+
+* [ ] `descendants` includes implementing classes
+* [ ] `ancestors` is NOT present in response (direction=descendants)
+* [ ] `edgeKind` is `"implements"` for each descendant
+
+### 15.4 Rooted — Both Directions
+
+Call with `{ symbolId: "...", direction: "both" }`:
+
+* [ ] Both `ancestors` and `descendants` arrays are present
+* [ ] Counts match sum of 15.2 + 15.3 individual calls
+
+### 15.5 Edge Cases
+
+* [ ] Non-existent symbol returns `{ found: false }`
+* [ ] Symbol with no extends/implements returns empty `ancestors` and `descendants`
+* [ ] Only `extends` and `implements` edges are traversed — `imports`, `calls`, `uses` are excluded
+
+**Record:**
+
+| Mode          | Symbol              | Ancestors | Descendants | Total Edges |
+| ------------- | ------------------- | --------- | ----------- | ----------- |
+| Full          | (all)               | —         | —           | \_\_\_      |
+| ancestors     | SqliteStorageAdapter| \_\_\_    | —           | \_\_\_      |
+| descendants   | IStoragePort        | —         | \_\_\_      | \_\_\_      |
+| both          | \_\_\_              | \_\_\_    | \_\_\_      | \_\_\_      |
+
+***
+
+## Step 16: Staleness Detection Check
 
 Run any tool immediately after a fresh index build.
 
@@ -532,7 +769,7 @@ Run any tool immediately after a fresh index build.
 
 ***
 
-## Step 10: Edge Kind Coverage Check
+## Step 17: Edge Kind Coverage Check
 
 From Step 3 metrics, verify edge kind diversity.
 
@@ -555,7 +792,7 @@ From Step 3 metrics, verify edge kind diversity.
 
 ***
 
-## Step 11: Run Unit Tests
+## Step 18: Run Unit Tests
 
 ```Shell
 npx vitest run 2>&1 | tail -10
@@ -568,11 +805,11 @@ npx vitest run 2>&1 | tail -10
 
 ***
 
-## Step 12: Manual vs MCP Tool Comparison
+## Step 19: Manual vs MCP Tool Comparison
 
 For each tool, manually replicate the same result using standard AI assistant tools (Read, Grep, Glob, Bash). Measure the cost and compare.
 
-### 12.1 Manual: Logic Slice — LogicSliceQuery
+### 19.1 Manual: Logic Slice — LogicSliceQuery
 
 Replicate `get_logic_slice` L3 result manually:
 
@@ -592,7 +829,7 @@ Replicate `get_logic_slice` L3 result manually:
 
 ***
 
-### 12.2 Manual: Blast Radius — SymbolNode
+### 19.2 Manual: Blast Radius — SymbolNode
 
 Replicate `get_blast_radius` result manually:
 
@@ -613,7 +850,7 @@ Replicate `get_blast_radius` result manually:
 
 ***
 
-### 12.3 Manual: Architectural Overlay
+### 19.3 Manual: Architectural Overlay
 
 Replicate `get_architectural_overlay` result manually:
 
@@ -632,7 +869,7 @@ Replicate `get_architectural_overlay` result manually:
 
 ***
 
-### 12.4 Manual: Why Context — MaskingPipeline
+### 19.4 Manual: Why Context — MaskingPipeline
 
 Replicate `get_why_context` result manually:
 
@@ -650,7 +887,7 @@ Replicate `get_why_context` result manually:
 
 ***
 
-### 12.5 Manual: Change Intelligence — SqliteStorageAdapter
+### 19.5 Manual: Change Intelligence — SqliteStorageAdapter
 
 Replicate `get_change_intelligence` result manually:
 
@@ -670,7 +907,7 @@ Replicate `get_change_intelligence` result manually:
 
 ***
 
-### 12.6 Manual: Dead Code Detection
+### 19.6 Manual: Dead Code Detection
 
 Replicate `find_dead_code` result manually:
 
@@ -692,7 +929,86 @@ Replicate `find_dead_code` result manually:
 
 ***
 
-### 12.7 Comparison Table
+### 19.7 Manual: Search Symbols
+
+Replicate `search_symbols` result manually:
+
+1. **Grep** `"^export (function|class|interface|type)"` across all `.ts` files
+2. Filter results by name pattern
+3. For kind filter, parse the matched export keyword
+4. Collect file, name, kind for each match
+
+**Record:**
+
+| Metric                    | Value  |
+| ------------------------- | ------ |
+| Tool calls used           | \_\_\_ |
+| Files read                | \_\_\_ |
+| Total lines read          | \_\_\_ |
+| Estimated tokens consumed | \_\_\_ |
+
+***
+
+### 19.8 Manual: Changed Symbols
+
+Replicate `get_changed_symbols` result manually:
+
+1. **Bash** `git diff --name-only HEAD~3` to list changed files
+2. For each changed `.ts` file, **Read** the file to identify exported symbols
+3. Parse export statements to extract symbol names, kinds, line numbers
+
+**Record:**
+
+| Metric                    | Value  |
+| ------------------------- | ------ |
+| Tool calls used           | \_\_\_ |
+| Files read                | \_\_\_ |
+| Total lines read          | \_\_\_ |
+| Estimated tokens consumed | \_\_\_ |
+
+***
+
+### 19.9 Manual: Find Importers
+
+Replicate `find_importers` result manually:
+
+1. **Grep** all files for imports referencing the target symbol's file
+2. **Read** each importing file to confirm symbol usage (not just file import)
+3. For transitive: repeat steps 1-2 for each depth-1 importer
+4. Track depth per result, deduplicate
+
+**Record:**
+
+| Metric                    | Value  |
+| ------------------------- | ------ |
+| Tool calls used           | \_\_\_ |
+| Files read                | \_\_\_ |
+| Total lines read          | \_\_\_ |
+| Estimated tokens consumed | \_\_\_ |
+
+***
+
+### 19.10 Manual: Class Hierarchy
+
+Replicate `get_class_hierarchy` result manually:
+
+1. **Grep** `"extends|implements"` across all `.ts` files
+2. **Read** each matched file to confirm class/interface relationships
+3. Build parent-child tree manually from grep results
+4. Traverse upward/downward from a given class
+
+**Record:**
+
+| Metric                    | Value  |
+| ------------------------- | ------ |
+| Tool calls used           | \_\_\_ |
+| Files read                | \_\_\_ |
+| Total lines read          | \_\_\_ |
+| Estimated tokens consumed | \_\_\_ |
+
+***
+
+### 19.11 Comparison Table
 
 Fill in after completing both MCP and manual runs:
 
@@ -706,9 +1022,13 @@ Fill in after completing both MCP and manual runs:
 | `find_dead_code`            | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
 | `get_context_for_task`      | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
 | `get_ranked_context`        | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
-| **TOTAL**                   | **\_\_\_** | **8**     | **\_\_\_**    | **\_\_\_**   | **\_\_\_x**   | **\_\_\_x**  |
+| `search_symbols`            | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
+| `get_changed_symbols`       | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
+| `find_importers`            | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
+| `get_class_hierarchy`       | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
+| **TOTAL**                   | **\_\_\_** | **12**    | **\_\_\_**    | **\_\_\_**   | **\_\_\_x**   | **\_\_\_x**  |
 
-### 12.8 Context Window Budget
+### 19.12 Context Window Budget
 
 ```
 Manual approach:
@@ -758,14 +1078,31 @@ After completing all steps, fill in:
 | 12a| `get_ranked_context` — exact name match scores 1.0                  |           |
 | 12b| `get_ranked_context` — importance strategy works                    |           |
 | 12c| `get_ranked_context` — tokenBudget respected                        |           |
-| 13 | Staleness detection — no false positive on fresh index              |           |
-| 14 | Unit tests pass                                                     |           |
-| 15 | Git hash masking — visible or redacted (log status)                 |           |
-| 16 | Manual vs MCP comparison table filled with measured data            |           |
-| 17 | Token savings > 10x for aggregate                                   |           |
-| 18 | Context budget chart shows MCP uses < 1% of 1M window               |           |
+| 13 | `search_symbols` — exact, regex, substring all return results       |           |
+| 13a| `search_symbols` — kind and filePattern filters work               |           |
+| 13b| `search_symbols` — limit caps results, totalMatches shows full count|           |
+| 13c| `search_symbols` — invalid regex falls back to literal (no crash)  |           |
+| 14 | `get_changed_symbols` — returns symbols grouped by changed file     |           |
+| 14a| `get_changed_symbols` — custom since ref returns more changes      |           |
+| 14b| `get_changed_symbols` — maxFiles limits processed files            |           |
+| 14c| `get_changed_symbols` — invalid git ref returns graceful error     |           |
+| 15 | `find_importers` — direct importers returned with depth=1          |           |
+| 15a| `find_importers` — transitive mode returns multi-depth BFS         |           |
+| 15b| `find_importers` — edgeKinds filter restricts edge types           |           |
+| 15c| `find_importers` — maxDepth caps transitive traversal              |           |
+| 15d| `find_importers` — circular deps do not cause infinite loop        |           |
+| 16 | `get_class_hierarchy` — full project returns hierarchy trees        |           |
+| 16a| `get_class_hierarchy` — ancestors returns extends/implements chain |           |
+| 16b| `get_class_hierarchy` — descendants returns implementing classes   |           |
+| 16c| `get_class_hierarchy` — only extends/implements edges traversed    |           |
+| 17 | Staleness detection — no false positive on fresh index              |           |
+| 18 | Unit tests pass (512+)                                              |           |
+| 19 | Git hash masking — visible or redacted (log status)                 |           |
+| 20 | Manual vs MCP comparison table filled with measured data            |           |
+| 21 | Token savings > 10x for aggregate                                   |           |
+| 22 | Context budget chart shows MCP uses < 1% of 1M window               |           |
 
-**Result:** \_\_\_/33 checks passed
+**Result:** \_\_\_/47 checks passed
 
 ***
 
@@ -781,7 +1118,7 @@ rm -rf .ctxo/.cache/ .ctxo/index/ && npx tsx src/index.ts index
 npx vitest run
 ```
 
-Then invoke these 8 MCP calls:
+Then invoke these 12 MCP calls:
 
 * `get_logic_slice` — `src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class`, level 3
 * `get_blast_radius` — `src/core/types.ts::SymbolNode::type`
@@ -791,5 +1128,9 @@ Then invoke these 8 MCP calls:
 * `find_dead_code` — no params (default: exclude tests)
 * `get_context_for_task` — `src/core/graph/symbol-graph.ts::SymbolGraph::class`, taskType: "understand"
 * `get_ranked_context` — query: "masking", tokenBudget: 2000
+* `search_symbols` — pattern: "^handle", kind: "function"
+* `get_changed_symbols` — since: "HEAD~3"
+* `find_importers` — `src/core/types.ts::SymbolNode::type`, transitive: true
+* `get_class_hierarchy` — no params (full project hierarchy)
 
-**Quick pass criteria:** All 8 return data (not errors), dependencies/dependents non-empty, 6 layers present, dead code has totalSymbols > 0, context has entries with scores.
+**Quick pass criteria:** All 12 return data (not errors), dependencies/dependents non-empty, 6 layers present, dead code has totalSymbols > 0, context has entries with scores, search returns matches, importers non-empty, hierarchy has trees.
