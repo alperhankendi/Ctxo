@@ -1,0 +1,59 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 43,
+      "symbolId": "src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function"
+    }
+  ],
+  "contentHash": "339be84fad3859ee4670091800e9ef4d2620d3df1297cc21f9cab7a0ef806313",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "imports",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "imports",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "calls",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "calls",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    }
+  ],
+  "file": "src/adapters/mcp/get-class-hierarchy.ts",
+  "intent": [],
+  "lastModified": 1774916054,
+  "symbols": [
+    {
+      "endLine": 213,
+      "kind": "function",
+      "name": "handleGetClassHierarchy",
+      "startLine": 11,
+      "symbolId": "src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function"
+    }
+  ]
+}

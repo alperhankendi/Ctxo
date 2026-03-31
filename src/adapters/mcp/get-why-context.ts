@@ -9,6 +9,7 @@ import type { StalenessCheck } from './get-logic-slice.js';
 
 const InputSchema = z.object({
   symbolId: z.string().min(1),
+  maxCommits: z.number().int().min(1).optional(),
 });
 
 export function handleGetWhyContext(
@@ -30,7 +31,7 @@ export function handleGetWhyContext(
         };
       }
 
-      const { symbolId } = parsed.data;
+      const { symbolId, maxCommits } = parsed.data;
 
       const symbol = storage.getSymbolById(symbolId);
       if (!symbol) {
@@ -63,10 +64,13 @@ export function handleGetWhyContext(
         antiPatterns = revertDetector.detect(commits);
       }
 
+      // Query-time limit: slice to maxCommits if provided
+      const limitedHistory = maxCommits ? commitHistory.slice(0, maxCommits) : commitHistory;
+
       // Assemble result — separation of concerns: no changeIntelligence here
       // Use get_change_intelligence tool for complexity/churn scoring
       const responsePayload: Record<string, unknown> = {
-        commitHistory,
+        commitHistory: limitedHistory,
         antiPatternWarnings: antiPatterns,
       };
 

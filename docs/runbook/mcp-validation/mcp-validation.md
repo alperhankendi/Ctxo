@@ -30,6 +30,7 @@ time npx tsx src/index.ts index
 * [ ] Output shows `[ctxo] Index complete: N files indexed`
 * [ ] No errors on stderr
 * [ ] Build time under 10 seconds
+* [ ] Default `--max-history 20` applied (each file stores at most 20 commits)
 
 **Record metrics:**
 
@@ -37,6 +38,31 @@ time npx tsx src/index.ts index
 | ------------- | -------------- |
 | Files indexed | \_\_\_         |
 | Build time    | \_\_\_ seconds |
+
+### 2.1 Custom `--max-history` Override
+
+```Shell
+rm -rf .ctxo/.cache/ .ctxo/index/
+time npx tsx src/index.ts index --max-history 5
+```
+
+**Verify:**
+
+* [ ] Index builds successfully
+* [ ] No file in `.ctxo/index/` has more than 5 entries in its `intent` array
+
+```Shell
+node -e "
+const fs = require('fs'); const path = require('path');
+function walk(dir) { let f=[]; for (const e of fs.readdirSync(dir,{withFileTypes:true})) { const p=path.join(dir,e.name); if(e.isDirectory()) f.push(...walk(p)); else if(e.name.endsWith('.json')) f.push(p); } return f; }
+const files=walk('.ctxo/index'); let maxIntent=0;
+for(const f of files){const d=JSON.parse(fs.readFileSync(f,'utf8'));if((d.intent||[]).length>maxIntent)maxIntent=(d.intent||[]).length;}
+console.log('Max intent entries per file:', maxIntent);
+console.log(maxIntent <= 5 ? 'PASS: --max-history 5 respected' : 'FAIL: intent exceeds 5');
+"
+```
+
+* [ ] Max intent entries per file <= 5
 
 ***
 
@@ -215,13 +241,35 @@ Call with no parameters for full project scan.
 * [ ] Check if `hash` values are actual hex strings or `[REDACTED:AWS_SECRET]`
 * If redacted: masking false positive still present — log as known issue
 
+### 7.1 `maxCommits` Query-Time Limit
+
+Call `get_why_context` with `{ symbolId: "src/core/masking/masking-pipeline.ts::MaskingPipeline::class", maxCommits: 3 }`:
+
+**Verify:**
+
+* [ ] `commitHistory` array has at most 3 entries
+* [ ] Entries are the 3 most recent commits (newest first)
+* [ ] `antiPatternWarnings` still includes all detected anti-patterns (not sliced)
+
+Call again WITHOUT `maxCommits`:
+
+* [ ] `commitHistory` returns all indexed commits (up to build-time `--max-history` default of 20)
+* [ ] Count is >= the `maxCommits: 3` result above
+
+### 7.2 `maxCommits` Edge Cases
+
+* [ ] `maxCommits: 1` returns exactly 1 commit
+* [ ] `maxCommits` larger than total commits returns all commits (no error)
+* [ ] Omitting `maxCommits` returns full history (default behavior)
+
 **Record:**
 
-| Metric                | Value              |
-| --------------------- | ------------------ |
-| Commits returned      | \_\_\_             |
-| Anti-pattern warnings | \_\_\_             |
-| Hash masking status   | Redacted / Visible |
+| Metric                          | Value              |
+| ------------------------------- | ------------------ |
+| Commits returned (no limit)     | \_\_\_             |
+| Commits returned (maxCommits=3) | \_\_\_             |
+| Anti-pattern warnings           | \_\_\_             |
+| Hash masking status             | Redacted / Visible |
 
 ***
 
@@ -691,6 +739,8 @@ After completing all steps, fill in:
 | 6b | `get_blast_radius` — confirmedCount + potentialCount = impactScore   |           |
 | 7  | `get_architectural_overlay` — 6 layers, correct classification      |           |
 | 8  | `get_why_context` — commits returned, no changeIntelligence overlap |           |
+| 8a | `get_why_context` — `maxCommits` slices commitHistory correctly     |           |
+| 8b | `--max-history` limits intent entries per file during indexing       |           |
 | 9  | `get_change_intelligence` — complexity > 0, valid band              |           |
 | 10 | `find_dead_code` — deadSymbols detected, confidence scoring works   |           |
 | 10a| `find_dead_code` — deadFiles lists fully-dead files                 |           |
@@ -715,7 +765,7 @@ After completing all steps, fill in:
 | 17 | Token savings > 10x for aggregate                                   |           |
 | 18 | Context budget chart shows MCP uses < 1% of 1M window               |           |
 
-**Result:** \_\_\_/31 checks passed
+**Result:** \_\_\_/33 checks passed
 
 ***
 
@@ -736,7 +786,7 @@ Then invoke these 8 MCP calls:
 * `get_logic_slice` — `src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class`, level 3
 * `get_blast_radius` — `src/core/types.ts::SymbolNode::type`
 * `get_architectural_overlay` — no params
-* `get_why_context` — `src/core/masking/masking-pipeline.ts::MaskingPipeline::class`
+* `get_why_context` — `src/core/masking/masking-pipeline.ts::MaskingPipeline::class` (also test with `maxCommits: 3`)
 * `get_change_intelligence` — `src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class`
 * `find_dead_code` — no params (default: exclude tests)
 * `get_context_for_task` — `src/core/graph/symbol-graph.ts::SymbolGraph::class`, taskType: "understand"

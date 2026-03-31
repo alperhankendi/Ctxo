@@ -30,7 +30,13 @@ export class CliRouter {
         }
         const checkArg = args.includes('--check');
         const skipHistory = args.includes('--skip-history');
-        await new IndexCommand(this.projectRoot).run({ file: fileArg, check: checkArg, skipHistory });
+        const maxHistoryIdx = args.indexOf('--max-history');
+        const maxHistoryArg = maxHistoryIdx !== -1 ? Number(args[maxHistoryIdx + 1]) : undefined;
+        if (maxHistoryIdx !== -1 && (!maxHistoryArg || isNaN(maxHistoryArg) || maxHistoryArg < 1)) {
+          console.error('[ctxo] --max-history requires a positive integer');
+          process.exit(1);
+        }
+        await new IndexCommand(this.projectRoot).run({ file: fileArg, check: checkArg, skipHistory, maxHistory: maxHistoryArg });
         break;
       }
 
@@ -66,7 +72,7 @@ ctxo — MCP server for dependency-aware codebase context
 
 Usage:
   ctxo                      Start MCP server (stdio transport)
-  ctxo index                Build full codebase index
+  ctxo index                Build full codebase index (--max-history N, default 20)
   ctxo sync                 Rebuild SQLite cache from committed JSON index
   ctxo watch                Start file watcher for incremental re-indexing
   ctxo verify-index         CI gate: fail if index is stale

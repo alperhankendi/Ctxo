@@ -1,0 +1,41 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "cfafee422e0a2df6b57080a1582ea9c4d1fe47bbb414bdc9c08ccd09c2df9641",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/__tests__/get-changed-symbols.test.ts::get-changed-symbols.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-changed-symbols.test.ts::get-changed-symbols.test::variable",
+      "kind": "imports",
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-changed-symbols.test.ts::get-changed-symbols.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-changed-symbols.test.ts::get-changed-symbols.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-changed-symbols.test.ts::get-changed-symbols.test::variable",
+      "kind": "imports",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-changed-symbols.test.ts::get-changed-symbols.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::class"
+    }
+  ],
+  "file": "src/adapters/mcp/__tests__/get-changed-symbols.test.ts",
+  "intent": [],
+  "lastModified": 1774916054,
+  "symbols": []
+}

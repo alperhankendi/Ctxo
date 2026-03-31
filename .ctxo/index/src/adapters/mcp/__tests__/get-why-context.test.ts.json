@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "0fe26cbac96a0471f3f61ff9d9aa9cfd9c9a0d47605c48e733adfa0d962f733d",
+  "contentHash": "93cd6b312e3848ba8cbcede99fd164f49168495f514cf0ffbda324a903bb402f",
   "edges": [
     {
       "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
@@ -48,6 +48,6 @@
       "message": "Add missing MCP handler tests and edge case coverage"
     }
   ],
-  "lastModified": 1774913860,
+  "lastModified": 1774916054,
   "symbols": []
 }

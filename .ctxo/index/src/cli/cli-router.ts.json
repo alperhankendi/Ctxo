@@ -2,7 +2,7 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 14,
+      "cyclomatic": 19,
       "symbolId": "src/cli/cli-router.ts::CliRouter.route::method"
     },
     {
@@ -10,7 +10,7 @@
       "symbolId": "src/cli/cli-router.ts::CliRouter.printHelp::method"
     }
   ],
-  "contentHash": "4c993d2bffd429eefae939c52696b29c8a3ab992e5cc3dda033ca884de777163",
+  "contentHash": "19fc471d1ceeb6d42df5672de5fa45ad730dfaecda34d2c5c0ba1e4eadf233e4",
   "edges": [
     {
       "from": "src/cli/cli-router.ts::CliRouter::class",
@@ -76,27 +76,27 @@
       "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
     }
   ],
-  "lastModified": 1774913861,
+  "lastModified": 1774916055,
   "symbols": [
     {
-      "endLine": 77,
+      "endLine": 83,
       "kind": "class",
       "name": "CliRouter",
       "startLine": 7,
       "symbolId": "src/cli/cli-router.ts::CliRouter::class"
     },
     {
-      "endLine": 60,
+      "endLine": 66,
       "kind": "method",
       "name": "CliRouter.route",
       "startLine": 14,
       "symbolId": "src/cli/cli-router.ts::CliRouter.route::method"
     },
     {
-      "endLine": 76,
+      "endLine": 82,
       "kind": "method",
       "name": "CliRouter.printHelp",
-      "startLine": 62,
+      "startLine": 68,
       "symbolId": "src/cli/cli-router.ts::CliRouter.printHelp::method"
     }
   ]

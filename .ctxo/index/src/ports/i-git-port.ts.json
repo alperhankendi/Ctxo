@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "63e4d85f6ca1d0c5bc934605bec3fc8c085b8fc316a402aa43e9aac91fc5bdda",
+  "contentHash": "df2771853dbfe319db43bb3269f49ef829527f8055d65923657729b5b5e0a8c1",
   "edges": [
     {
       "from": "src/ports/i-git-port.ts::IGitPort::interface",
@@ -23,10 +23,10 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1774913861,
+  "lastModified": 1774916055,
   "symbols": [
     {
-      "endLine": 6,
+      "endLine": 7,
       "kind": "interface",
       "name": "IGitPort",
       "startLine": 2,

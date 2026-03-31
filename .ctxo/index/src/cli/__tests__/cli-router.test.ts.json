@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "d660fa265ef4446cf21a96f8b09dfe3fec1bf03dd84e79dee82cbb68d28c1e9c",
+  "contentHash": "32845a09258367299c775a405c882b6d69de778b4e4cbb78b93c02e126e8e6fa",
   "edges": [
     {
       "from": "src/cli/__tests__/cli-router.test.ts::cli-router.test::variable",
@@ -18,6 +18,6 @@
       "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
     }
   ],
-  "lastModified": 1774913860,
+  "lastModified": 1774916055,
   "symbols": []
 }

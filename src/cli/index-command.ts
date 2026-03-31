@@ -20,7 +20,7 @@ export class IndexCommand {
     this.ctxoRoot = ctxoRoot ?? join(projectRoot, '.ctxo');
   }
 
-  async run(options: { file?: string; check?: boolean; skipSideEffects?: boolean; skipHistory?: boolean } = {}): Promise<void> {
+  async run(options: { file?: string; check?: boolean; skipSideEffects?: boolean; skipHistory?: boolean; maxHistory?: number } = {}): Promise<void> {
     if (options.check) {
       // Delegate to verify logic: hash-based freshness check
       return this.runCheck();
@@ -105,7 +105,7 @@ export class IndexCommand {
         await Promise.all(
           batch.map(async ({ relativePath, fileIndex }) => {
             try {
-              const commits = await gitAdapter.getCommitHistory(relativePath);
+              const commits = await gitAdapter.getCommitHistory(relativePath, options.maxHistory ?? 20);
               fileIndex.intent = commits.map((c) => ({
                 hash: c.hash,
                 message: c.message,

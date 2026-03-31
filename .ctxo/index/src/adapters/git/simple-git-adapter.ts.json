@@ -6,15 +6,19 @@
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.isAvailable::method"
     },
     {
-      "cyclomatic": 2,
+      "cyclomatic": 3,
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getCommitHistory::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getChangedFiles::method"
     },
     {
       "cyclomatic": 2,
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getFileChurn::method"
     }
   ],
-  "contentHash": "e3f2253b6ea01f544f7b71291acb59b795af83898311b6385663e12638785685",
+  "contentHash": "860103522955ffe4b14d8d8b78f85c9a7d109f2b83eb6b7869ba30daf2dcb93d",
   "edges": [
     {
       "from": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class",
@@ -52,10 +56,10 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1774913860,
+  "lastModified": 1774916054,
   "symbols": [
     {
-      "endLine": 49,
+      "endLine": 63,
       "kind": "class",
       "name": "SimpleGitAdapter",
       "startLine": 4,
@@ -69,7 +73,7 @@
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.isAvailable::method"
     },
     {
-      "endLine": 34,
+      "endLine": 38,
       "kind": "method",
       "name": "SimpleGitAdapter.getCommitHistory",
       "startLine": 20,
@@ -78,8 +82,15 @@
     {
       "endLine": 48,
       "kind": "method",
+      "name": "SimpleGitAdapter.getChangedFiles",
+      "startLine": 40,
+      "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getChangedFiles::method"
+    },
+    {
+      "endLine": 62,
+      "kind": "method",
       "name": "SimpleGitAdapter.getFileChurn",
-      "startLine": 36,
+      "startLine": 50,
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getFileChurn::method"
     }
   ]

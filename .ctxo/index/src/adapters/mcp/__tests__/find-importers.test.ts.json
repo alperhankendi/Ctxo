@@ -1,0 +1,31 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "e7f98882f518dc0c20cb3ff006485c72746675c5faabf6042d66f935777e28cb",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/__tests__/find-importers.test.ts::find-importers.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/find-importers.test.ts::find-importers.test::variable",
+      "kind": "imports",
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/find-importers.test.ts::find-importers.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/find-importers.ts::handleFindImporters::function"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/find-importers.test.ts::find-importers.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::class"
+    }
+  ],
+  "file": "src/adapters/mcp/__tests__/find-importers.test.ts",
+  "intent": [],
+  "lastModified": 1774916053,
+  "symbols": []
+}

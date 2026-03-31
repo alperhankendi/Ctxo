@@ -1,0 +1,64 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 12,
+      "symbolId": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function"
+    }
+  ],
+  "contentHash": "1f13249448bfa41cc950d320b22814fb0f315617cce707989f0650a16f72aea5",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "calls",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "calls",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    }
+  ],
+  "file": "src/adapters/mcp/get-changed-symbols.ts",
+  "intent": [],
+  "lastModified": 1774916054,
+  "symbols": [
+    {
+      "endLine": 79,
+      "kind": "function",
+      "name": "handleGetChangedSymbols",
+      "startLine": 12,
+      "symbolId": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function"
+    }
+  ]
+}

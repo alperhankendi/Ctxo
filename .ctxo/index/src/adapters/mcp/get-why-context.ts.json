@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 9,
+      "cyclomatic": 10,
       "symbolId": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
     }
   ],
-  "contentHash": "f9e833d51d40097120f23fc659cd89ae4a92daf16741a320f6643a0d8c960345",
+  "contentHash": "47c5e4ef25fb80bf6cff5b33c55c2e9beafff5c79501e7b896a8652a918a0711",
   "edges": [
     {
       "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
@@ -82,13 +82,13 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1774913860,
+  "lastModified": 1774916054,
   "symbols": [
     {
-      "endLine": 92,
+      "endLine": 96,
       "kind": "function",
       "name": "handleGetWhyContext",
-      "startLine": 13,
+      "startLine": 14,
       "symbolId": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
     }
   ]

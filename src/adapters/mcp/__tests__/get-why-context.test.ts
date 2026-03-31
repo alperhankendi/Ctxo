@@ -23,6 +23,7 @@ function createMockGit(commits: CommitRecord[]): IGitPort {
   return {
     getCommitHistory: async () => commits,
     getFileChurn: async (filePath: string) => ({ filePath, commitCount: commits.length }),
+    getChangedFiles: async () => [],
     isAvailable: async () => true,
   };
 }
@@ -103,6 +104,61 @@ describe('GetWhyContextHandler', () => {
     const payload = JSON.parse(result.content[0]!.text);
 
     expect(payload.error).toBe(true);
+  });
+
+  it('slices commitHistory when maxCommits is provided', async () => {
+    const git = createMockGit([
+      { hash: 'aaa', message: 'commit 1', date: '2024-01-03', author: 'dev' },
+      { hash: 'bbb', message: 'commit 2', date: '2024-01-02', author: 'dev' },
+      { hash: 'ccc', message: 'commit 3', date: '2024-01-01', author: 'dev' },
+    ]);
+    const handler = handleGetWhyContext(storage, git, new MaskingPipeline());
+
+    const result = await handler({ symbolId: 'src/foo.ts::processPayment::function', maxCommits: 2 });
+    const payload = JSON.parse(result.content[0]!.text);
+
+    expect(payload.commitHistory).toHaveLength(2);
+    expect(payload.commitHistory[0].hash).toBe('aaa');
+    expect(payload.commitHistory[1].hash).toBe('bbb');
+  });
+
+  it('returns all commits when maxCommits exceeds total', async () => {
+    const git = createMockGit([
+      { hash: 'aaa', message: 'commit 1', date: '2024-01-01', author: 'dev' },
+    ]);
+    const handler = handleGetWhyContext(storage, git, new MaskingPipeline());
+
+    const result = await handler({ symbolId: 'src/foo.ts::processPayment::function', maxCommits: 100 });
+    const payload = JSON.parse(result.content[0]!.text);
+
+    expect(payload.commitHistory).toHaveLength(1);
+  });
+
+  it('returns full history when maxCommits is omitted', async () => {
+    const git = createMockGit([
+      { hash: 'aaa', message: 'commit 1', date: '2024-01-03', author: 'dev' },
+      { hash: 'bbb', message: 'commit 2', date: '2024-01-02', author: 'dev' },
+      { hash: 'ccc', message: 'commit 3', date: '2024-01-01', author: 'dev' },
+    ]);
+    const handler = handleGetWhyContext(storage, git, new MaskingPipeline());
+
+    const result = await handler({ symbolId: 'src/foo.ts::processPayment::function' });
+    const payload = JSON.parse(result.content[0]!.text);
+
+    expect(payload.commitHistory).toHaveLength(3);
+  });
+
+  it('maxCommits=1 returns exactly one commit', async () => {
+    const git = createMockGit([
+      { hash: 'aaa', message: 'commit 1', date: '2024-01-02', author: 'dev' },
+      { hash: 'bbb', message: 'commit 2', date: '2024-01-01', author: 'dev' },
+    ]);
+    const handler = handleGetWhyContext(storage, git, new MaskingPipeline());
+
+    const result = await handler({ symbolId: 'src/foo.ts::processPayment::function', maxCommits: 1 });
+    const payload = JSON.parse(result.content[0]!.text);
+
+    expect(payload.commitHistory).toHaveLength(1);
   });
 
   it('returns empty history when git has no commits for file', async () => {

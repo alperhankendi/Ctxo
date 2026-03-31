@@ -36,6 +36,7 @@ function createMockGit(churnMap: Record<string, number>): IGitPort {
       filePath,
       commitCount: churnMap[filePath] ?? 0,
     }),
+    getChangedFiles: async () => [],
     isAvailable: async () => true,
   };
 }

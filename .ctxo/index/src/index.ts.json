@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "a0b80c55394ed63494cd90eb31e0e299bec5114b0f17b77be4f4c8612fe8b65d",
+  "contentHash": "ccaa430c34e111b8e0e4d0adc2a040833a836c85322245e1f4ede660c06560e4",
   "edges": [
     {
       "from": "src/index.ts::index::variable",
@@ -62,6 +62,26 @@
       "from": "src/index.ts::index::variable",
       "kind": "imports",
       "to": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/find-importers.ts::handleFindImporters::function"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function"
     }
   ],
   "file": "src/index.ts",
@@ -145,6 +165,6 @@
       "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
     }
   ],
-  "lastModified": 1774913861,
+  "lastModified": 1774916055,
   "symbols": []
 }

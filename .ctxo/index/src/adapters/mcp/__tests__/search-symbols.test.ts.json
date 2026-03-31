@@ -1,0 +1,31 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "723861119e6792137210767a949c5aa2591c76377861ca200ee653a65be39f9f",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/__tests__/search-symbols.test.ts::search-symbols.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/search-symbols.test.ts::search-symbols.test::variable",
+      "kind": "imports",
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/search-symbols.test.ts::search-symbols.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/search-symbols.test.ts::search-symbols.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::class"
+    }
+  ],
+  "file": "src/adapters/mcp/__tests__/search-symbols.test.ts",
+  "intent": [],
+  "lastModified": 1774916054,
+  "symbols": []
+}

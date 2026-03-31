@@ -33,6 +33,76 @@ describe('CliRouter', () => {
     spy.mockRestore();
   });
 
+  it('exits with error for --max-history without value', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+
+    const router = new CliRouter(process.cwd());
+    await router.route(['index', '--max-history']);
+
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('--max-history requires a positive integer'));
+    expect(exitSpy).toHaveBeenCalledWith(1);
+
+    spy.mockRestore();
+    exitSpy.mockRestore();
+  });
+
+  it('exits with error for --max-history with non-numeric value', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+
+    const router = new CliRouter(process.cwd());
+    await router.route(['index', '--max-history', 'abc']);
+
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('--max-history requires a positive integer'));
+    expect(exitSpy).toHaveBeenCalledWith(1);
+
+    spy.mockRestore();
+    exitSpy.mockRestore();
+  });
+
+  it('exits with error for --max-history with zero', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+
+    const router = new CliRouter(process.cwd());
+    await router.route(['index', '--max-history', '0']);
+
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('--max-history requires a positive integer'));
+    expect(exitSpy).toHaveBeenCalledWith(1);
+
+    spy.mockRestore();
+    exitSpy.mockRestore();
+  });
+
+  it('exits with error for --file without path', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+
+    const router = new CliRouter(process.cwd());
+    await router.route(['index', '--file']);
+
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('--file requires a path argument'));
+    expect(exitSpy).toHaveBeenCalledWith(1);
+
+    spy.mockRestore();
+    exitSpy.mockRestore();
+  });
+
+  it('exits with error for --file followed by another flag', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+
+    const router = new CliRouter(process.cwd());
+    await router.route(['index', '--file', '--check']);
+
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('--file requires a path argument'));
+    expect(exitSpy).toHaveBeenCalledWith(1);
+
+    spy.mockRestore();
+    exitSpy.mockRestore();
+  });
+
   it('exits with error for unknown subcommand', async () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);

@@ -1,0 +1,59 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 21,
+      "symbolId": "src/adapters/mcp/find-importers.ts::handleFindImporters::function"
+    }
+  ],
+  "contentHash": "231d7759650b0c0af6449379f8a23a38dc696c635e1a96f23d5873c1a65d24ef",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "imports",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "imports",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::class"
+    },
+    {
+      "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
+    },
+    {
+      "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "calls",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
+    },
+    {
+      "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "calls",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    }
+  ],
+  "file": "src/adapters/mcp/find-importers.ts",
+  "intent": [],
+  "lastModified": 1774916054,
+  "symbols": [
+    {
+      "endLine": 124,
+      "kind": "function",
+      "name": "handleFindImporters",
+      "startLine": 13,
+      "symbolId": "src/adapters/mcp/find-importers.ts::handleFindImporters::function"
+    }
+  ]
+}

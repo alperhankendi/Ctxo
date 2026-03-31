@@ -18,9 +18,13 @@ export class SimpleGitAdapter implements IGitPort {
     }
   }
 
-  async getCommitHistory(filePath: string): Promise<CommitRecord[]> {
+  async getCommitHistory(filePath: string, maxCount?: number): Promise<CommitRecord[]> {
     try {
-      const log = await this.git.log({ file: filePath, '--follow': null });
+      const log = await this.git.log({
+        file: filePath,
+        '--follow': null,
+        ...(maxCount ? { maxCount } : {}),
+      });
 
       return log.all.map((entry) => ({
         hash: entry.hash,
@@ -30,6 +34,16 @@ export class SimpleGitAdapter implements IGitPort {
       }));
     } catch (err) {
       console.error(`[ctxo:git] Failed to get history for ${filePath}: ${(err as Error).message}`);
+      return [];
+    }
+  }
+
+  async getChangedFiles(since: string): Promise<string[]> {
+    try {
+      const diff = await this.git.diffSummary([since]);
+      return diff.files.map((f) => f.file.replace(/\\/g, '/'));
+    } catch (err) {
+      console.error(`[ctxo:git] Failed to get changed files since ${since}: ${(err as Error).message}`);
       return [];
     }
   }

@@ -14,6 +14,10 @@ import { handleGetArchitecturalOverlay } from './adapters/mcp/get-architectural-
 import { handleFindDeadCode } from './adapters/mcp/get-dead-code.js';
 import { handleGetContextForTask } from './adapters/mcp/get-context-for-task.js';
 import { handleGetRankedContext } from './adapters/mcp/get-ranked-context.js';
+import { handleSearchSymbols } from './adapters/mcp/search-symbols.js';
+import { handleGetChangedSymbols } from './adapters/mcp/get-changed-symbols.js';
+import { handleFindImporters } from './adapters/mcp/find-importers.js';
+import { handleGetClassHierarchy } from './adapters/mcp/get-class-hierarchy.js';
 
 function loadMaskingConfig(ctxoRoot: string): MaskingPipeline {
   const jsonConfigPath = join(ctxoRoot, 'masking.json');
@@ -83,6 +87,7 @@ async function main(): Promise<void> {
       description: 'Retrieve git commit intent, anti-pattern warnings from revert history for a symbol',
       inputSchema: {
         symbolId: z.string().min(1).describe('The symbol ID (format: file::name::kind)'),
+        maxCommits: z.number().int().min(1).optional().describe('Limit commit history to N most recent commits'),
       },
     },
     (args) => whyContextHandler(args),
@@ -166,6 +171,66 @@ async function main(): Promise<void> {
       },
     },
     (args) => rankedContextHandler(args),
+  );
+
+  const searchSymbolsHandler = handleSearchSymbols(storage, masking, staleness, ctxoRoot);
+
+  server.registerTool(
+    'search_symbols',
+    {
+      description: 'Search symbols by name or regex pattern across the codebase index',
+      inputSchema: {
+        pattern: z.string().min(1).describe('Search pattern (substring or regex)'),
+        kind: z.enum(['function', 'class', 'interface', 'method', 'variable', 'type']).optional().describe('Filter by symbol kind'),
+        filePattern: z.string().optional().describe('Filter by file path substring'),
+        limit: z.number().int().min(1).max(100).optional().default(25).describe('Max results (default 25)'),
+      },
+    },
+    (args) => searchSymbolsHandler(args),
+  );
+
+  const changedSymbolsHandler = handleGetChangedSymbols(storage, git, masking, staleness, ctxoRoot);
+
+  server.registerTool(
+    'get_changed_symbols',
+    {
+      description: 'Get symbols in recently changed files (git diff based)',
+      inputSchema: {
+        since: z.string().optional().default('HEAD~1').describe('Git ref to diff against (default HEAD~1)'),
+        maxFiles: z.number().int().min(1).optional().default(50).describe('Max changed files to process (default 50)'),
+      },
+    },
+    (args) => changedSymbolsHandler(args),
+  );
+
+  const findImportersHandler = handleFindImporters(storage, masking, staleness, ctxoRoot);
+
+  server.registerTool(
+    'find_importers',
+    {
+      description: 'Find all symbols that import or depend on a given symbol (reverse dependency lookup)',
+      inputSchema: {
+        symbolId: z.string().min(1).describe('The symbol ID (format: file::name::kind)'),
+        edgeKinds: z.array(z.enum(['imports', 'calls', 'extends', 'implements', 'uses'])).optional().describe('Filter by edge kinds'),
+        transitive: z.boolean().optional().default(false).describe('Follow transitive reverse edges (default false)'),
+        maxDepth: z.number().int().min(1).max(10).optional().default(5).describe('Max BFS depth for transitive mode (default 5)'),
+      },
+    },
+    (args) => findImportersHandler(args),
+  );
+
+  const classHierarchyHandler = handleGetClassHierarchy(storage, masking, staleness, ctxoRoot);
+
+  server.registerTool(
+    'get_class_hierarchy',
+    {
+      description: 'Get class inheritance hierarchy — ancestors (extends/implements) and descendants',
+      inputSchema: {
+        symbolId: z.string().min(1).optional().describe('Root symbol ID (omit for full project hierarchy)'),
+        direction: z.enum(['ancestors', 'descendants', 'both']).optional().default('both').describe('Traversal direction (default both)'),
+      },
+    },
+    (args) => classHierarchyHandler(args),
   );
 
   // Start MCP server
