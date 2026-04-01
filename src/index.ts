@@ -18,6 +18,7 @@ import { handleSearchSymbols } from './adapters/mcp/search-symbols.js';
 import { handleGetChangedSymbols } from './adapters/mcp/get-changed-symbols.js';
 import { handleFindImporters } from './adapters/mcp/find-importers.js';
 import { handleGetClassHierarchy } from './adapters/mcp/get-class-hierarchy.js';
+import { handleGetSymbolImportance } from './adapters/mcp/get-symbol-importance.js';
 
 function loadMaskingConfig(ctxoRoot: string): MaskingPipeline {
   const jsonConfigPath = join(ctxoRoot, 'masking.json');
@@ -231,6 +232,22 @@ async function main(): Promise<void> {
       },
     },
     (args) => classHierarchyHandler(args),
+  );
+
+  const symbolImportanceHandler = handleGetSymbolImportance(storage, masking, staleness, ctxoRoot);
+
+  server.registerTool(
+    'get_symbol_importance',
+    {
+      description: 'Rank symbols by importance using PageRank centrality on the dependency graph',
+      inputSchema: {
+        limit: z.number().int().min(1).max(200).optional().default(25).describe('Max results (default 25)'),
+        kind: z.enum(['function', 'class', 'interface', 'method', 'variable', 'type']).optional().describe('Filter by symbol kind'),
+        filePattern: z.string().optional().describe('Filter by file path substring'),
+        damping: z.number().min(0).max(1).optional().default(0.85).describe('PageRank damping factor (default 0.85)'),
+      },
+    },
+    (args) => symbolImportanceHandler(args),
   );
 
   // Start MCP server
