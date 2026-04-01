@@ -193,6 +193,86 @@ describe('TsMorphAdapter — complexity extraction', () => {
   });
 });
 
+describe('TsMorphAdapter — byte offset indexing', () => {
+  let adapter: TsMorphAdapter;
+
+  beforeAll(() => {
+    adapter = new TsMorphAdapter();
+  });
+
+  it('extracts startOffset and endOffset for functions', () => {
+    const source = 'export function hello(): void {}\n';
+    const symbols = adapter.extractSymbols('src/fn.ts', source);
+    const fn = symbols.find(s => s.name === 'hello');
+
+    expect(fn).toBeDefined();
+    expect(fn!.startOffset).toBeDefined();
+    expect(fn!.endOffset).toBeDefined();
+    expect(fn!.startOffset).toBe(0);
+    expect(fn!.endOffset).toBeGreaterThan(fn!.startOffset!);
+    // Verify O(1) substring retrieval
+    expect(source.substring(fn!.startOffset!, fn!.endOffset!)).toContain('function hello');
+  });
+
+  it('extracts byte offsets for classes and methods', () => {
+    const source = `export class MyClass {\n  greet(): void {}\n}\n`;
+    const symbols = adapter.extractSymbols('src/cls.ts', source);
+
+    const cls = symbols.find(s => s.kind === 'class');
+    expect(cls!.startOffset).toBeDefined();
+    expect(cls!.endOffset).toBeDefined();
+    expect(source.substring(cls!.startOffset!, cls!.endOffset!)).toContain('class MyClass');
+
+    const method = symbols.find(s => s.kind === 'method');
+    expect(method!.startOffset).toBeDefined();
+    expect(method!.endOffset).toBeDefined();
+    expect(source.substring(method!.startOffset!, method!.endOffset!)).toContain('greet');
+  });
+
+  it('extracts byte offsets for interfaces', () => {
+    const source = `export interface IFoo {\n  bar(): void;\n}\n`;
+    const symbols = adapter.extractSymbols('src/iface.ts', source);
+    const iface = symbols.find(s => s.kind === 'interface');
+
+    expect(iface!.startOffset).toBeDefined();
+    expect(source.substring(iface!.startOffset!, iface!.endOffset!)).toContain('interface IFoo');
+  });
+
+  it('extracts byte offsets for type aliases', () => {
+    const source = `export type ID = string;\n`;
+    const symbols = adapter.extractSymbols('src/alias.ts', source);
+    const t = symbols.find(s => s.kind === 'type');
+
+    expect(t!.startOffset).toBeDefined();
+    expect(source.substring(t!.startOffset!, t!.endOffset!)).toContain('type ID');
+  });
+
+  it('extracts byte offsets for variables', () => {
+    const source = `export const MAX = 100;\n`;
+    const symbols = adapter.extractSymbols('src/var.ts', source);
+    const v = symbols.find(s => s.kind === 'variable');
+
+    expect(v!.startOffset).toBeDefined();
+    expect(source.substring(v!.startOffset!, v!.endOffset!)).toContain('MAX');
+  });
+
+  it('byte offsets are precise for multi-symbol files', () => {
+    const source = `// comment\nexport function a(): void {}\nexport function b(): void {}\n`;
+    const symbols = adapter.extractSymbols('src/multi.ts', source);
+
+    const a = symbols.find(s => s.name === 'a')!;
+    const b = symbols.find(s => s.name === 'b')!;
+
+    // a starts before b
+    expect(a.startOffset).toBeLessThan(b.startOffset!);
+    // Each substring is precisely the symbol source
+    expect(source.substring(a.startOffset!, a.endOffset!)).toContain('function a');
+    expect(source.substring(b.startOffset!, b.endOffset!)).toContain('function b');
+    // No overlap
+    expect(a.endOffset).toBeLessThanOrEqual(b.startOffset!);
+  });
+});
+
 describe('TsMorphAdapter — edge cases', () => {
   let adapter: TsMorphAdapter;
 

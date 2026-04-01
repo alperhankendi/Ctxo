@@ -46,6 +46,14 @@ export class SymbolGraph {
       const fuzzyKey = `${parts[0]}::${parts[1]}`;
       const match = this.nodesByFileAndName.get(fuzzyKey);
       if (match) return match.symbolId;
+
+      // Try .js → .ts extension swap (handles unresolved module specifiers)
+      const jsToTs = parts[0].replace(/\.js$/, '.ts');
+      if (jsToTs !== parts[0]) {
+        const altKey = `${jsToTs}::${parts[1]}`;
+        const altMatch = this.nodesByFileAndName.get(altKey);
+        if (altMatch) return altMatch.symbolId;
+      }
     }
     return id;
   }

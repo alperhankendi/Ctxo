@@ -69,6 +69,8 @@ export const SymbolNodeSchema = z
     kind: SymbolKindSchema,
     startLine: z.number().int().nonnegative(),
     endLine: z.number().int().nonnegative(),
+    startOffset: z.number().int().nonnegative().optional(),
+    endOffset: z.number().int().nonnegative().optional(),
   })
   .refine((node) => node.endLine >= node.startLine, {
     message: 'endLine must be >= startLine',

@@ -106,7 +106,10 @@ export class DetailFormatter {
   }
 
   private symbolCharEstimate(node: SymbolNode): number {
-    // Estimate based on line count (average ~40 chars per line)
+    // Use byte offsets for exact size when available, otherwise estimate from line count
+    if (node.startOffset !== undefined && node.endOffset !== undefined) {
+      return node.endOffset - node.startOffset;
+    }
     return (node.endLine - node.startLine + 1) * 40;
   }
 

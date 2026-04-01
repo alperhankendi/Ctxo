@@ -242,6 +242,10 @@ export class ContextAssembler {
   }
 
   private estimateTokens(node: SymbolNode): number {
+    // Use byte offsets for accurate estimation when available (~4 chars per token)
+    if (node.startOffset !== undefined && node.endOffset !== undefined) {
+      return Math.ceil((node.endOffset - node.startOffset) / 4);
+    }
     return (node.endLine - node.startLine + 1) * 10;
   }
 }

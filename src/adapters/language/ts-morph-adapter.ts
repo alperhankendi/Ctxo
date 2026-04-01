@@ -137,6 +137,8 @@ export class TsMorphAdapter implements ILanguageAdapter {
         kind: 'function',
         startLine: fn.getStartLineNumber() - 1,
         endLine: fn.getEndLineNumber() - 1,
+        startOffset: fn.getStart(),
+        endOffset: fn.getEnd(),
       });
     }
   }
@@ -156,6 +158,8 @@ export class TsMorphAdapter implements ILanguageAdapter {
         kind: 'class',
         startLine: cls.getStartLineNumber() - 1,
         endLine: cls.getEndLineNumber() - 1,
+        startOffset: cls.getStart(),
+        endOffset: cls.getEnd(),
       });
 
       // Extract methods
@@ -167,6 +171,8 @@ export class TsMorphAdapter implements ILanguageAdapter {
           kind: 'method',
           startLine: method.getStartLineNumber() - 1,
           endLine: method.getEndLineNumber() - 1,
+          startOffset: method.getStart(),
+          endOffset: method.getEnd(),
         });
       }
     }
@@ -187,6 +193,8 @@ export class TsMorphAdapter implements ILanguageAdapter {
         kind: 'interface',
         startLine: iface.getStartLineNumber() - 1,
         endLine: iface.getEndLineNumber() - 1,
+        startOffset: iface.getStart(),
+        endOffset: iface.getEnd(),
       });
     }
   }
@@ -206,6 +214,8 @@ export class TsMorphAdapter implements ILanguageAdapter {
         kind: 'type',
         startLine: typeAlias.getStartLineNumber() - 1,
         endLine: typeAlias.getEndLineNumber() - 1,
+        startOffset: typeAlias.getStart(),
+        endOffset: typeAlias.getEnd(),
       });
     }
   }
@@ -227,6 +237,8 @@ export class TsMorphAdapter implements ILanguageAdapter {
           kind: 'variable',
           startLine: stmt.getStartLineNumber() - 1,
           endLine: stmt.getEndLineNumber() - 1,
+          startOffset: decl.getStart(),
+          endOffset: decl.getEnd(),
         });
       }
     }
@@ -584,8 +596,16 @@ export class TsMorphAdapter implements ILanguageAdapter {
 
       for (const named of imp.getNamedImports()) {
         if (named.getName() === name) {
-          const targetFile = imp.getModuleSpecifierSourceFile()?.getFilePath() ?? moduleSpecifier;
-          return `${this.normalizeFilePath(targetFile)}::${name}::${defaultKind}`;
+          const resolved = imp.getModuleSpecifierSourceFile()?.getFilePath();
+          if (resolved) {
+            return `${this.normalizeFilePath(resolved)}::${name}::${defaultKind}`;
+          }
+          // Fallback: resolve relative module specifier manually
+          const sourceDir = dirname(this.normalizeFilePath(sourceFile.getFilePath()));
+          const resolvedPath = normalize(join(sourceDir, moduleSpecifier))
+            .replace(/\\/g, '/')
+            .replace(/\.js$/, '.ts');
+          return `${resolvedPath}::${name}::${defaultKind}`;
         }
       }
     }
