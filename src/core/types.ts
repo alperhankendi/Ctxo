@@ -81,6 +81,7 @@ export const GraphEdgeSchema = z.object({
   from: SymbolIdSchema,
   to: SymbolIdSchema,
   kind: EdgeKindSchema,
+  typeOnly: z.boolean().optional(),
 });
 export type GraphEdge = z.infer<typeof GraphEdgeSchema>;
 

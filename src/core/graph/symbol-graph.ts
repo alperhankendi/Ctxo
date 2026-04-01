@@ -67,7 +67,7 @@ export class SymbolGraph {
   }
 
   hasNode(symbolId: string): boolean {
-    return this.nodes.has(symbolId);
+    return this.nodes.has(symbolId) || this.resolveNodeFuzzy(symbolId) !== undefined;
   }
 
   get nodeCount(): number {

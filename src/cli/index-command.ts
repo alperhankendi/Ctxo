@@ -9,7 +9,7 @@ import { SqliteStorageAdapter } from '../adapters/storage/sqlite-storage-adapter
 import { SchemaManager } from '../adapters/storage/schema-manager.js';
 import { SimpleGitAdapter } from '../adapters/git/simple-git-adapter.js';
 import { RevertDetector } from '../core/why-context/revert-detector.js';
-import type { FileIndex } from '../core/types.js';
+import type { FileIndex, SymbolKind } from '../core/types.js';
 
 export class IndexCommand {
   private readonly projectRoot: string;
@@ -53,9 +53,11 @@ export class IndexCommand {
       console.error(`[ctxo] Building codebase index... Found ${files.length} source files`);
     }
 
-    // Phase 1: Extract symbols and edges (CPU-bound, synchronous)
+    // Phase 1a: Extract symbols (CPU-bound, builds symbol registry for edge resolution)
+    const symbolRegistry = new Map<string, SymbolKind>();
     const pendingIndices: Array<{
       relativePath: string;
+      source: string;
       fileIndex: FileIndex;
     }> = [];
     let processed = 0;
@@ -71,17 +73,22 @@ export class IndexCommand {
         const lastModified = Math.floor(Date.now() / 1000);
 
         const symbols = adapter.extractSymbols(relativePath, source);
-        const edges = adapter.extractEdges(relativePath, source);
         const complexity = adapter.extractComplexity(relativePath, source);
+
+        // Build symbol registry for accurate edge resolution
+        for (const sym of symbols) {
+          symbolRegistry.set(sym.symbolId, sym.kind);
+        }
 
         pendingIndices.push({
           relativePath,
+          source,
           fileIndex: {
             file: relativePath,
             lastModified,
             contentHash: hasher.hash(source),
             symbols,
-            edges,
+            edges: [],
             complexity,
             intent: [],
             antiPatterns: [],
@@ -90,10 +97,23 @@ export class IndexCommand {
 
         processed++;
         if (processed % 50 === 0) {
-          console.error(`[ctxo] Processed ${processed}/${files.length} files`);
+          console.error(`[ctxo] Processed ${processed}/${files.length} files (symbols)`);
         }
       } catch (err) {
         console.error(`[ctxo] Skipped ${relativePath}: ${(err as Error).message}`);
+      }
+    }
+
+    // Phase 1b: Extract edges (uses symbol registry for correct kind resolution)
+    for (const entry of pendingIndices) {
+      const adapter = registry.getAdapter(entry.relativePath);
+      if (!adapter) continue;
+
+      try {
+        adapter.setSymbolRegistry?.(symbolRegistry);
+        entry.fileIndex.edges = adapter.extractEdges(entry.relativePath, entry.source);
+      } catch (err) {
+        console.error(`[ctxo] Edge extraction failed for ${entry.relativePath}: ${(err as Error).message}`);
       }
     }
 

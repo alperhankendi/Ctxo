@@ -27,7 +27,7 @@ export class BlastRadiusCalculator {
     }
 
     const visited = new Set<string>([symbolId]);
-    const entries: BlastRadiusEntry[] = [];
+    const rawEntries: Array<{ symbolId: string; depth: number; riskScore: number; confidence: ImpactConfidence }> = [];
 
     // BFS via reverse edges (who depends on this symbol?)
     const queue: Array<{ id: string; depth: number }> = [{ id: symbolId, depth: 0 }];
@@ -36,38 +36,54 @@ export class BlastRadiusCalculator {
       const current = queue.shift()!;
 
       const reverseEdges = graph.getReverseEdges(current.id);
+
+      // BUG-26 FIX: group edges by source node, pick strongest confidence per node
+      // (confirmed > potential — if A both imports and calls B, A is confirmed)
+      const bestByNode = new Map<string, boolean>();
       for (const edge of reverseEdges) {
         if (visited.has(edge.from)) continue;
-        visited.add(edge.from);
+        const isConfirmed = CONFIRMED_KINDS.has(edge.kind);
+        const existing = bestByNode.get(edge.from);
+        if (existing === undefined || (isConfirmed && !existing)) {
+          bestByNode.set(edge.from, isConfirmed);
+        }
+      }
 
-        if (!graph.hasNode(edge.from)) continue;
+      for (const [nodeId, confirmed] of bestByNode) {
+        visited.add(nodeId);
+        if (!graph.hasNode(nodeId)) continue;
 
         const depth = current.depth + 1;
-
         const riskScore = 1 / Math.pow(depth, 0.7);
-        const confidence: ImpactConfidence = CONFIRMED_KINDS.has(edge.kind) ? 'confirmed' : 'potential';
 
-        entries.push({
-          symbolId: edge.from,
+        rawEntries.push({
+          symbolId: nodeId,
           depth,
-          dependentCount: graph.getReverseEdges(edge.from).length,
           riskScore: Math.round(riskScore * 1000) / 1000,
-          confidence,
+          confidence: confirmed ? 'confirmed' : 'potential',
         });
 
-        queue.push({ id: edge.from, depth });
+        queue.push({ id: nodeId, depth });
       }
     }
+
+    // GAP-30 FIX: compute dependentCount as blast-scope in-degree (not global)
+    const blastSet = new Set(rawEntries.map((e) => e.symbolId));
+    blastSet.add(symbolId);
+
+    const entries: BlastRadiusEntry[] = rawEntries.map((e) => ({
+      ...e,
+      dependentCount: graph.getReverseEdges(e.symbolId).filter((re) => blastSet.has(re.from)).length,
+    }));
 
     // Sort by depth ascending
     entries.sort((a, b) => a.depth - b.depth);
 
     const directDependentsCount = entries.filter((e) => e.depth === 1).length;
 
-    // Overall risk: sum of all risk scores, normalized to 0.0–1.0
+    // GAP-29 FIX: depth-weighted risk — direct dependents dominate
     const totalRisk = entries.reduce((sum, e) => sum + e.riskScore, 0);
-    const maxPossibleRisk = entries.length > 0 ? entries.length : 1;
-    const overallRiskScore = Math.round(Math.min(totalRisk / maxPossibleRisk, 1) * 1000) / 1000;
+    const overallRiskScore = Math.round(Math.min(totalRisk / Math.max(directDependentsCount, 1), 1) * 1000) / 1000;
 
     const confirmedCount = entries.filter((e) => e.confidence === 'confirmed').length;
     const potentialCount = entries.filter((e) => e.confidence === 'potential').length;

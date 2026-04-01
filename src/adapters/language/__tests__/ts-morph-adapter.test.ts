@@ -232,6 +232,351 @@ describe('TsMorphAdapter — edge cases', () => {
   });
 });
 
+describe('TsMorphAdapter — Faz 1 fixes', () => {
+  let adapter: TsMorphAdapter;
+
+  beforeAll(() => {
+    adapter = new TsMorphAdapter();
+  });
+
+  it('import edges have valid from symbolId (not phantom) when file has exports (BUG-1 fix)', () => {
+    const source = `
+      export function myFunc(): void {}
+      import { Helper } from './helper.js';
+    `;
+    const symbols = adapter.extractSymbols('src/caller.ts', source);
+    const edges = adapter.extractEdges('src/caller.ts', source);
+
+    const importEdge = edges.find(e => e.kind === 'imports');
+    expect(importEdge).toBeDefined();
+    // from should be the exported function, not a phantom fileSymbolId
+    expect(importEdge!.from).toBe('src/caller.ts::myFunc::function');
+    // Verify the from actually exists in the symbol list
+    expect(symbols.some(s => s.symbolId === importEdge!.from)).toBe(true);
+  });
+
+  it('strips generic type arguments from extends (BUG-17 fix)', () => {
+    const source = `
+      export class Base {}
+      export class Child extends Base {}
+    `;
+    // First index the symbols to build context
+    const edges = adapter.extractEdges('src/generic.ts', source);
+    const extendsEdge = edges.find(e => e.kind === 'extends');
+    expect(extendsEdge).toBeDefined();
+    expect(extendsEdge!.to).not.toContain('<');
+  });
+
+  it('strips generic type arguments from extends with generics', () => {
+    const source = `
+      import { Base } from './base.js';
+      export class Child extends Base<string> {}
+    `;
+    const edges = adapter.extractEdges('src/child.ts', source);
+    const extendsEdge = edges.find(e => e.kind === 'extends');
+    expect(extendsEdge).toBeDefined();
+    // Should be Base, not Base<string>
+    expect(extendsEdge!.to).toContain('::Base::');
+    expect(extendsEdge!.to).not.toContain('<');
+    expect(extendsEdge!.to).not.toContain('>');
+  });
+
+  it('strips generic type arguments from implements', () => {
+    const source = `
+      import { IRepo } from './repo.js';
+      export class UserRepo implements IRepo<User> {}
+    `;
+    const edges = adapter.extractEdges('src/user-repo.ts', source);
+    const implEdge = edges.find(e => e.kind === 'implements');
+    expect(implEdge).toBeDefined();
+    expect(implEdge!.to).toContain('::IRepo::');
+    expect(implEdge!.to).not.toContain('<');
+  });
+
+  it('uses symbolRegistry for correct kind resolution (BUG-8/9 fix)', () => {
+    const registry = new Map<string, import('../../../core/types.js').SymbolKind>();
+    registry.set('src/types.ts::Handler::type', 'type');
+
+    adapter.setSymbolRegistry(registry);
+
+    const source = `
+      import { Handler } from './types.js';
+      export function process(h: Handler): void {}
+    `;
+    const edges = adapter.extractEdges('src/processor.ts', source);
+    const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('Handler'));
+    expect(importEdge).toBeDefined();
+    // Should resolve to ::type not ::class (heuristic would say class for PascalCase)
+    expect(importEdge!.to).toBe('src/types.ts::Handler::type');
+
+    // Clean up registry
+    adapter.setSymbolRegistry(new Map());
+  });
+
+  it('falls back to heuristic when symbolRegistry has no match', () => {
+    adapter.setSymbolRegistry(new Map()); // empty registry
+
+    const source = `
+      import { SomeClass } from './mod.js';
+      export function use(): void {}
+    `;
+    const edges = adapter.extractEdges('src/user.ts', source);
+    const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('SomeClass'));
+    expect(importEdge).toBeDefined();
+    // PascalCase → heuristic says 'class'
+    expect(importEdge!.to).toBe('src/mod.ts::SomeClass::class');
+  });
+});
+
+describe('TsMorphAdapter — uses edge extraction (Faz 3)', () => {
+  let adapter: TsMorphAdapter;
+
+  beforeAll(() => {
+    adapter = new TsMorphAdapter();
+  });
+
+  it('emits uses edge when exported function references an import in its body', () => {
+    const source = `
+      import { validate } from './validator.js';
+      export function process(data: string): boolean {
+        return validate(data);
+      }
+    `;
+    const edges = adapter.extractEdges('src/processor.ts', source);
+    const usesEdge = edges.find(e => e.kind === 'uses' && e.to.includes('validate'));
+    expect(usesEdge).toBeDefined();
+    expect(usesEdge!.from).toBe('src/processor.ts::process::function');
+    expect(usesEdge!.to).toContain('::validate::');
+  });
+
+  it('emits uses edge when exported class references an import', () => {
+    const source = `
+      import { Logger } from './logger.js';
+      export class Service {
+        run(): void {
+          Logger.info('running');
+        }
+      }
+    `;
+    const edges = adapter.extractEdges('src/service.ts', source);
+    const usesEdge = edges.find(e => e.kind === 'uses' && e.to.includes('Logger'));
+    expect(usesEdge).toBeDefined();
+    expect(usesEdge!.from).toBe('src/service.ts::Service::class');
+  });
+
+  it('does not emit uses edge for imports not referenced in body', () => {
+    const source = `
+      import { unusedHelper } from './helper.js';
+      export function doWork(): void {
+        console.log('hello');
+      }
+    `;
+    const edges = adapter.extractEdges('src/worker.ts', source);
+    const usesEdge = edges.find(e => e.kind === 'uses' && e.to.includes('unusedHelper'));
+    expect(usesEdge).toBeUndefined();
+  });
+
+  it('emits one uses edge per unique import reference (deduplicates)', () => {
+    const source = `
+      import { helper } from './utils.js';
+      export function process(): void {
+        helper();
+        helper();
+        helper();
+      }
+    `;
+    const edges = adapter.extractEdges('src/caller.ts', source);
+    const usesEdges = edges.filter(e => e.kind === 'uses' && e.to.includes('helper'));
+    expect(usesEdges).toHaveLength(1);
+  });
+
+  it('emits uses edges for multiple distinct imports', () => {
+    const source = `
+      import { foo } from './a.js';
+      import { bar } from './b.js';
+      export function baz(): void {
+        foo();
+        bar();
+      }
+    `;
+    const edges = adapter.extractEdges('src/multi.ts', source);
+    const usesEdges = edges.filter(e => e.kind === 'uses');
+    expect(usesEdges).toHaveLength(2);
+    expect(usesEdges.map(e => e.to)).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('::foo::'),
+        expect.stringContaining('::bar::'),
+      ]),
+    );
+  });
+
+  it('does not emit uses edge for non-exported functions', () => {
+    const source = `
+      import { helper } from './utils.js';
+      function internal(): void {
+        helper();
+      }
+      export function pub(): void {}
+    `;
+    const edges = adapter.extractEdges('src/internal.ts', source);
+    const usesEdges = edges.filter(e => e.kind === 'uses');
+    // Only pub is exported, and it doesn't reference helper
+    expect(usesEdges).toHaveLength(0);
+  });
+
+  it('does not emit uses edge for external (non-relative) imports', () => {
+    const source = `
+      import { z } from 'zod';
+      export function validate(input: unknown): boolean {
+        return z.string().safeParse(input).success;
+      }
+    `;
+    const edges = adapter.extractEdges('src/val.ts', source);
+    const usesEdges = edges.filter(e => e.kind === 'uses');
+    // zod is external, should not produce uses edge
+    expect(usesEdges).toHaveLength(0);
+  });
+});
+
+describe('TsMorphAdapter — uses edge + blast radius integration', () => {
+  it('uses edge is classified as confirmed in blast radius', async () => {
+    const { SymbolGraph } = await import('../../../core/graph/symbol-graph.js');
+    const { BlastRadiusCalculator } = await import('../../../core/blast-radius/blast-radius-calculator.js');
+
+    const graph = new SymbolGraph();
+    graph.addNode({ symbolId: 'src/a.ts::A::function', name: 'A', kind: 'function', startLine: 0, endLine: 10 });
+    graph.addNode({ symbolId: 'src/b.ts::B::class', name: 'B', kind: 'class', startLine: 0, endLine: 20 });
+    graph.addEdge({ from: 'src/a.ts::A::function', to: 'src/b.ts::B::class', kind: 'uses' });
+
+    const calc = new BlastRadiusCalculator();
+    const result = calc.calculate(graph, 'src/b.ts::B::class');
+
+    expect(result.confirmedCount).toBe(1);
+    expect(result.potentialCount).toBe(0);
+    expect(result.impactedSymbols[0]!.confidence).toBe('confirmed');
+  });
+});
+
+describe('TsMorphAdapter — namespace imports (GAP-3 fix)', () => {
+  let adapter: TsMorphAdapter;
+
+  beforeAll(() => {
+    adapter = new TsMorphAdapter();
+  });
+
+  it('creates import edge for namespace import (import * as X)', () => {
+    const source = `
+      import * as utils from './utils.js';
+      export function run(): void { utils.doStuff(); }
+    `;
+    const edges = adapter.extractEdges('src/runner.ts', source);
+    const nsEdge = edges.find(e => e.kind === 'imports' && e.to.includes('utils'));
+    expect(nsEdge).toBeDefined();
+    expect(nsEdge!.to).toBe('src/utils.ts::utils::variable');
+  });
+
+  it('does not create namespace edge for external modules', () => {
+    const source = `
+      import * as path from 'node:path';
+      export function resolve(): string { return path.join('.'); }
+    `;
+    const edges = adapter.extractEdges('src/paths.ts', source);
+    const nsEdge = edges.find(e => e.kind === 'imports' && e.to.includes('path'));
+    expect(nsEdge).toBeUndefined();
+  });
+});
+
+describe('TsMorphAdapter — constructor calls (GAP-11 fix)', () => {
+  let adapter: TsMorphAdapter;
+
+  beforeAll(() => {
+    adapter = new TsMorphAdapter();
+  });
+
+  it('creates calls edge for new Foo() in exported function', () => {
+    const source = `
+      import { Service } from './service.js';
+      export function createService(): Service {
+        return new Service();
+      }
+    `;
+    const edges = adapter.extractEdges('src/factory.ts', source);
+    const callEdge = edges.find(e => e.kind === 'calls' && e.to.includes('Service'));
+    expect(callEdge).toBeDefined();
+    expect(callEdge!.from).toBe('src/factory.ts::createService::function');
+  });
+
+  it('creates calls edge for new Foo() in class method', () => {
+    const source = `
+      import { Logger } from './logger.js';
+      export class App {
+        init(): void {
+          const log = new Logger();
+        }
+      }
+    `;
+    const edges = adapter.extractEdges('src/app.ts', source);
+    const callEdge = edges.find(e => e.kind === 'calls' && e.to.includes('Logger'));
+    expect(callEdge).toBeDefined();
+    expect(callEdge!.from).toContain('App.init');
+  });
+
+  it('does not create constructor edge for non-imported class', () => {
+    const source = `
+      export function make(): void {
+        const x = new Map();
+      }
+    `;
+    const edges = adapter.extractEdges('src/map.ts', source);
+    const callEdge = edges.find(e => e.kind === 'calls');
+    expect(callEdge).toBeUndefined();
+  });
+});
+
+describe('TsMorphAdapter — typeOnly flag (SCHEMA-40 fix)', () => {
+  let adapter: TsMorphAdapter;
+
+  beforeAll(() => {
+    adapter = new TsMorphAdapter();
+  });
+
+  it('marks import type edges as typeOnly: true', () => {
+    const source = `
+      import type { Foo } from './foo.js';
+      export function useFoo(f: Foo): void {}
+    `;
+    const edges = adapter.extractEdges('src/consumer.ts', source);
+    const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('Foo'));
+    expect(importEdge).toBeDefined();
+    expect(importEdge!.typeOnly).toBe(true);
+  });
+
+  it('marks per-specifier type imports as typeOnly', () => {
+    const source = `
+      import { type Bar, baz } from './mod.js';
+      export function use(): void { baz(); }
+    `;
+    const edges = adapter.extractEdges('src/mixed.ts', source);
+    const barEdge = edges.find(e => e.kind === 'imports' && e.to.includes('Bar'));
+    const bazEdge = edges.find(e => e.kind === 'imports' && e.to.includes('baz'));
+    expect(barEdge).toBeDefined();
+    expect(barEdge!.typeOnly).toBe(true);
+    expect(bazEdge).toBeDefined();
+    expect(bazEdge!.typeOnly).toBeUndefined(); // value import — no typeOnly flag
+  });
+
+  it('does not set typeOnly for regular value imports', () => {
+    const source = `
+      import { helper } from './utils.js';
+      export function run(): void { helper(); }
+    `;
+    const edges = adapter.extractEdges('src/user.ts', source);
+    const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('helper'));
+    expect(importEdge).toBeDefined();
+    expect(importEdge!.typeOnly).toBeUndefined();
+  });
+});
+
 describe('TsMorphAdapter — isSupported', () => {
   let adapter: TsMorphAdapter;
 

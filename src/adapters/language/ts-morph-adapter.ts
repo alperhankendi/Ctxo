@@ -8,7 +8,7 @@ import {
   ScriptTarget,
 } from 'ts-morph';
 import { extname, dirname, join, normalize } from 'node:path';
-import type { SymbolNode, GraphEdge, ComplexityMetrics, SymbolKind } from '../../core/types.js';
+import { type SymbolNode, type GraphEdge, type ComplexityMetrics, type SymbolKind, SYMBOL_KINDS } from '../../core/types.js';
 import type { ILanguageAdapter } from '../../ports/i-language-adapter.js';
 
 const SUPPORTED_EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx'] as const;
@@ -18,6 +18,7 @@ export class TsMorphAdapter implements ILanguageAdapter {
   readonly tier = 'full' as const;
 
   private readonly project: Project;
+  private symbolRegistry = new Map<string, SymbolKind>();
 
   constructor() {
     this.project = new Project({
@@ -34,6 +35,10 @@ export class TsMorphAdapter implements ILanguageAdapter {
   isSupported(filePath: string): boolean {
     const ext = extname(filePath).toLowerCase();
     return (SUPPORTED_EXTENSIONS as readonly string[]).includes(ext);
+  }
+
+  setSymbolRegistry(registry: Map<string, SymbolKind>): void {
+    this.symbolRegistry = registry;
   }
 
   extractSymbols(filePath: string, source: string): SymbolNode[] {
@@ -68,6 +73,7 @@ export class TsMorphAdapter implements ILanguageAdapter {
       this.extractImportEdges(sourceFile, filePath, edges);
       this.extractInheritanceEdges(sourceFile, filePath, edges);
       this.extractCallEdges(sourceFile, filePath, edges);
+      this.extractReferenceEdges(sourceFile, filePath, edges);
 
       return edges;
     } catch (err) {
@@ -233,9 +239,9 @@ export class TsMorphAdapter implements ILanguageAdapter {
     filePath: string,
     edges: GraphEdge[],
   ): void {
-    // Compute once per file, not per import declaration
+    // BUG-1 FIX: use sourceFile directly instead of project lookup (file may be cleaned up)
     const fileSymbolId = this.buildSymbolId(filePath, sourceFile.getBaseName().replace(/\.[^.]+$/, ''), 'variable');
-    const fromSymbols = this.findExportedSymbolsInFile(filePath);
+    const fromSymbols = this.getExportedSymbolIds(sourceFile, filePath);
     const fromSymbol = fromSymbols.length > 0 ? fromSymbols[0]! : fileSymbolId;
 
     for (const imp of sourceFile.getImportDeclarations()) {
@@ -249,24 +255,41 @@ export class TsMorphAdapter implements ILanguageAdapter {
       // Resolve relative import to project-relative path
       const normalizedTarget = this.resolveRelativeImport(filePath, moduleSpecifier);
 
+      // SCHEMA-40 FIX: detect type-only imports
+      const isTypeOnly = imp.isTypeOnly();
+
       for (const named of imp.getNamedImports()) {
         const importedName = named.getName();
-
-        edges.push({
+        const edge: GraphEdge = {
           from: fromSymbol,
           to: this.resolveImportTarget(normalizedTarget, importedName),
           kind: 'imports',
-        });
+        };
+        if (isTypeOnly || named.isTypeOnly()) edge.typeOnly = true;
+        edges.push(edge);
       }
 
       const defaultImport = imp.getDefaultImport();
       if (defaultImport) {
-
-        edges.push({
+        const edge: GraphEdge = {
           from: fromSymbol,
           to: this.resolveImportTarget(normalizedTarget, defaultImport.getText()),
           kind: 'imports',
-        });
+        };
+        if (isTypeOnly) edge.typeOnly = true;
+        edges.push(edge);
+      }
+
+      // GAP-3 FIX: namespace imports (import * as X from './mod')
+      const nsImport = imp.getNamespaceImport();
+      if (nsImport) {
+        const edge: GraphEdge = {
+          from: fromSymbol,
+          to: this.buildSymbolId(normalizedTarget, nsImport.getText(), 'variable'),
+          kind: 'imports',
+        };
+        if (isTypeOnly) edge.typeOnly = true;
+        edges.push(edge);
       }
     }
   }
@@ -285,7 +308,8 @@ export class TsMorphAdapter implements ILanguageAdapter {
       // extends
       const baseClass = cls.getExtends();
       if (baseClass) {
-        const baseName = baseClass.getExpression().getText();
+        // BUG-17 FIX: strip generic type arguments (Base<string> → Base)
+        const baseName = baseClass.getExpression().getText().replace(/<.*>$/, '');
         edges.push({
           from: classSymbolId,
           to: this.resolveSymbolReference(sourceFile, baseName, 'class'),
@@ -295,7 +319,8 @@ export class TsMorphAdapter implements ILanguageAdapter {
 
       // implements
       for (const impl of cls.getImplements()) {
-        const ifaceName = impl.getExpression().getText();
+        // BUG-18 FIX: strip generic type arguments (IRepo<User> → IRepo)
+        const ifaceName = impl.getExpression().getText().replace(/<.*>$/, '');
         edges.push({
           from: classSymbolId,
           to: this.resolveSymbolReference(sourceFile, ifaceName, 'interface'),
@@ -322,7 +347,17 @@ export class TsMorphAdapter implements ILanguageAdapter {
         const calledName = call.getExpression().getText().split('.').pop();
         if (!calledName || calledName === fnName) continue;
 
-        // Check if the called function is a local import
+        const resolved = this.resolveLocalCallTarget(sourceFile, filePath, calledName);
+        if (resolved) {
+          edges.push({ from: fnSymbolId, to: resolved, kind: 'calls' });
+        }
+      }
+
+      // GAP-11 FIX: constructor calls (new Foo())
+      for (const newExpr of fn.getDescendantsOfKind(SyntaxKind.NewExpression)) {
+        const calledName = newExpr.getExpression().getText().split('.').pop();
+        if (!calledName) continue;
+
         const resolved = this.resolveLocalCallTarget(sourceFile, filePath, calledName);
         if (resolved) {
           edges.push({ from: fnSymbolId, to: resolved, kind: 'calls' });
@@ -352,6 +387,78 @@ export class TsMorphAdapter implements ILanguageAdapter {
             edges.push({ from: methodSymbolId, to: resolved, kind: 'calls' });
           }
         }
+
+        // GAP-11 FIX: constructor calls from methods (new Foo())
+        for (const newExpr of method.getDescendantsOfKind(SyntaxKind.NewExpression)) {
+          const calledText = newExpr.getExpression().getText();
+          const calledName = calledText.split('.').pop();
+          if (!calledName) continue;
+          if (calledText.startsWith('this.')) continue;
+
+          const resolved = this.resolveLocalCallTarget(sourceFile, filePath, calledName);
+          if (resolved) {
+            edges.push({ from: methodSymbolId, to: resolved, kind: 'calls' });
+          }
+        }
+      }
+    }
+  }
+
+  private extractReferenceEdges(
+    sourceFile: SourceFile,
+    filePath: string,
+    edges: GraphEdge[],
+  ): void {
+    // Build map of all named imports from local modules: importedName → resolved symbolId
+    const importMap = new Map<string, string>();
+    for (const imp of sourceFile.getImportDeclarations()) {
+      const mod = imp.getModuleSpecifierValue();
+      if (!mod.startsWith('.') && !mod.startsWith('/')) continue;
+      const targetFile = this.resolveRelativeImport(filePath, mod);
+      for (const named of imp.getNamedImports()) {
+        importMap.set(named.getName(), this.resolveImportTarget(targetFile, named.getName()));
+      }
+      const defaultImport = imp.getDefaultImport();
+      if (defaultImport) {
+        importMap.set(defaultImport.getText(), this.resolveImportTarget(targetFile, defaultImport.getText()));
+      }
+    }
+    if (importMap.size === 0) return;
+
+    // Scan each exported symbol's body for identifier references to imports
+    for (const fn of sourceFile.getFunctions()) {
+      if (!this.isExported(fn)) continue;
+      const fnName = fn.getName();
+      if (!fnName) continue;
+      const fromId = this.buildSymbolId(filePath, fnName, 'function');
+      this.emitUsesEdges(fn, fromId, importMap, edges);
+    }
+
+    for (const cls of sourceFile.getClasses()) {
+      if (!this.isExported(cls)) continue;
+      const className = cls.getName();
+      if (!className) continue;
+
+      // Class-level references (property types, constructor params)
+      const classId = this.buildSymbolId(filePath, className, 'class');
+      this.emitUsesEdges(cls, classId, importMap, edges);
+    }
+  }
+
+  private emitUsesEdges(
+    node: Node,
+    fromId: string,
+    importMap: Map<string, string>,
+    edges: GraphEdge[],
+  ): void {
+    const seen = new Set<string>();
+    for (const id of node.getDescendantsOfKind(SyntaxKind.Identifier)) {
+      const name = id.getText();
+      if (seen.has(name)) continue;
+      const target = importMap.get(name);
+      if (target) {
+        seen.add(name);
+        edges.push({ from: fromId, to: target, kind: 'uses' });
       }
     }
   }
@@ -428,6 +535,14 @@ export class TsMorphAdapter implements ILanguageAdapter {
   }
 
   private resolveImportTarget(targetFile: string, name: string): string {
+    // BUG-8/9 FIX: check symbol registry first (populated from Phase 1 of indexing)
+    const prefix = `${targetFile}::${name}::`;
+    for (const kind of SYMBOL_KINDS) {
+      if (this.symbolRegistry.has(`${prefix}${kind}`)) {
+        return `${prefix}${kind}`;
+      }
+    }
+
     // Try to find the symbol in the already-parsed project to get the correct kind
     const targetSourceFile = this.project.getSourceFile(targetFile);
     if (targetSourceFile) {
@@ -453,9 +568,6 @@ export class TsMorphAdapter implements ILanguageAdapter {
       }
     }
     // Fallback: infer kind from naming conventions
-    // PascalCase starting with I + PascalCase = interface (e.g., IStoragePort)
-    // PascalCase = class or type
-    // camelCase or UPPER_CASE = function or variable
     const kind = this.inferSymbolKind(name);
     return `${targetFile}::${name}::${kind}`;
   }
@@ -498,10 +610,7 @@ export class TsMorphAdapter implements ILanguageAdapter {
     return filePath.replace(/^\//, '');
   }
 
-  private findExportedSymbolsInFile(filePath: string): string[] {
-    const sourceFile = this.project.getSourceFile(filePath);
-    if (!sourceFile) return [];
-
+  private getExportedSymbolIds(sourceFile: SourceFile, filePath: string): string[] {
     const ids: string[] = [];
     for (const fn of sourceFile.getFunctions()) {
       if (!this.isExported(fn)) continue;

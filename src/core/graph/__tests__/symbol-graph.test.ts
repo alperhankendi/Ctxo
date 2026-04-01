@@ -107,4 +107,25 @@ describe('SymbolGraph', () => {
     expect(graph.edgeCount).toBe(2);
     expect(graph.getForwardEdges('src/a.ts::A::class')).toHaveLength(2);
   });
+
+  it('hasNode resolves fuzzy match by file::name when kind differs (BUG-39 fix)', () => {
+    const graph = new SymbolGraph();
+    graph.addNode(makeNode('src/port.ts::IStoragePort::interface'));
+
+    // Exact match
+    expect(graph.hasNode('src/port.ts::IStoragePort::interface')).toBe(true);
+
+    // Fuzzy match — wrong kind but same file::name
+    expect(graph.hasNode('src/port.ts::IStoragePort::class')).toBe(true);
+
+    // No match at all
+    expect(graph.hasNode('src/port.ts::NonExistent::class')).toBe(false);
+  });
+
+  it('hasNode returns false for completely unknown symbol', () => {
+    const graph = new SymbolGraph();
+    graph.addNode(makeNode('src/a.ts::A::function'));
+
+    expect(graph.hasNode('src/b.ts::B::function')).toBe(false);
+  });
 });
