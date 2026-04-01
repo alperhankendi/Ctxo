@@ -758,7 +758,72 @@ Call with `{ symbolId: "...", direction: "both" }`:
 
 ***
 
-## Step 16: Staleness Detection Check
+## Step 16: Test `get_symbol_importance`
+
+Test PageRank centrality ranking on the dependency graph.
+
+### 16.1 Default Rankings
+
+Call with `{}` (defaults: damping=0.85, limit=25):
+
+**Verify:**
+
+* [ ] `totalSymbols` > 0
+* [ ] `converged` is `true`
+* [ ] `iterations` > 0 and <= 100
+* [ ] `damping` is `0.85`
+* [ ] `rankings` is non-empty array sorted by `score` descending
+* [ ] Each entry has: `symbolId`, `name`, `kind`, `file`, `score`, `inDegree`, `outDegree`
+* [ ] Top-ranked symbol is a widely-depended-on type (e.g., `SymbolNode`, `GraphEdge`, `FileIndex`)
+* [ ] All scores are between 0 and 1
+
+### 16.2 Kind Filter
+
+Call with `{ kind: "interface" }`:
+
+* [ ] All results have `kind: "interface"`
+* [ ] Port interfaces (IStoragePort, IGitPort, etc.) appear in results
+
+### 16.3 File Pattern Filter
+
+Call with `{ filePattern: "core/" }`:
+
+* [ ] All results have `file` containing `core/`
+* [ ] Core types rank higher than adapter types
+
+### 16.4 Custom Damping Factor
+
+Call with `{ damping: 0.5 }`:
+
+* [ ] `damping` is `0.5` in response
+* [ ] Rankings differ from default (0.85) — lower damping reduces link-following weight
+
+### 16.5 Limit
+
+Call with `{ limit: 5 }`:
+
+* [ ] `rankings` has at most 5 entries
+* [ ] `totalSymbols` shows full count (greater than 5)
+
+### 16.6 Edge Cases
+
+* [ ] Single-node graph returns score of 1.0
+* [ ] Circular dependency does not cause infinite loop — converges normally
+* [ ] Dangling nodes (no outgoing edges) still have score > 0
+
+**Record:**
+
+| Rank | Symbol             | Score  | InDegree | OutDegree |
+| ---- | ------------------ | ------ | -------- | --------- |
+| 1    | \_\_\_             | \_\_\_ | \_\_\_   | \_\_\_    |
+| 2    | \_\_\_             | \_\_\_ | \_\_\_   | \_\_\_    |
+| 3    | \_\_\_             | \_\_\_ | \_\_\_   | \_\_\_    |
+| 4    | \_\_\_             | \_\_\_ | \_\_\_   | \_\_\_    |
+| 5    | \_\_\_             | \_\_\_ | \_\_\_   | \_\_\_    |
+
+***
+
+## Step 17: Staleness Detection Check
 
 Run any tool immediately after a fresh index build.
 
@@ -769,7 +834,7 @@ Run any tool immediately after a fresh index build.
 
 ***
 
-## Step 17: Edge Kind Coverage Check
+## Step 18: Edge Kind Coverage Check
 
 From Step 3 metrics, verify edge kind diversity.
 
@@ -788,11 +853,11 @@ From Step 3 metrics, verify edge kind diversity.
 | `calls`      | 1+      | Required                       |
 | `implements` | 1+      | Required                       |
 | `extends`    | 0       | Optional (depends on codebase) |
-| `uses`       | 0       | Optional (V1.5)                |
+| `uses`       | 1+      | Required (Faz 3 — confirmed blast radius) |
 
 ***
 
-## Step 18: Run Unit Tests
+## Step 19: Run Unit Tests
 
 ```Shell
 npx vitest run 2>&1 | tail -10
@@ -805,11 +870,11 @@ npx vitest run 2>&1 | tail -10
 
 ***
 
-## Step 19: Manual vs MCP Tool Comparison
+## Step 20: Manual vs MCP Tool Comparison
 
 For each tool, manually replicate the same result using standard AI assistant tools (Read, Grep, Glob, Bash). Measure the cost and compare.
 
-### 19.1 Manual: Logic Slice — LogicSliceQuery
+### 20.1 Manual: Logic Slice — LogicSliceQuery
 
 Replicate `get_logic_slice` L3 result manually:
 
@@ -829,7 +894,7 @@ Replicate `get_logic_slice` L3 result manually:
 
 ***
 
-### 19.2 Manual: Blast Radius — SymbolNode
+### 20.2 Manual: Blast Radius — SymbolNode
 
 Replicate `get_blast_radius` result manually:
 
@@ -850,7 +915,7 @@ Replicate `get_blast_radius` result manually:
 
 ***
 
-### 19.3 Manual: Architectural Overlay
+### 20.3 Manual: Architectural Overlay
 
 Replicate `get_architectural_overlay` result manually:
 
@@ -869,7 +934,7 @@ Replicate `get_architectural_overlay` result manually:
 
 ***
 
-### 19.4 Manual: Why Context — MaskingPipeline
+### 20.4 Manual: Why Context — MaskingPipeline
 
 Replicate `get_why_context` result manually:
 
@@ -887,7 +952,7 @@ Replicate `get_why_context` result manually:
 
 ***
 
-### 19.5 Manual: Change Intelligence — SqliteStorageAdapter
+### 20.5 Manual: Change Intelligence — SqliteStorageAdapter
 
 Replicate `get_change_intelligence` result manually:
 
@@ -907,7 +972,7 @@ Replicate `get_change_intelligence` result manually:
 
 ***
 
-### 19.6 Manual: Dead Code Detection
+### 20.6 Manual: Dead Code Detection
 
 Replicate `find_dead_code` result manually:
 
@@ -929,7 +994,7 @@ Replicate `find_dead_code` result manually:
 
 ***
 
-### 19.7 Manual: Search Symbols
+### 20.7 Manual: Search Symbols
 
 Replicate `search_symbols` result manually:
 
@@ -949,7 +1014,7 @@ Replicate `search_symbols` result manually:
 
 ***
 
-### 19.8 Manual: Changed Symbols
+### 20.8 Manual: Changed Symbols
 
 Replicate `get_changed_symbols` result manually:
 
@@ -968,7 +1033,7 @@ Replicate `get_changed_symbols` result manually:
 
 ***
 
-### 19.9 Manual: Find Importers
+### 20.9 Manual: Find Importers
 
 Replicate `find_importers` result manually:
 
@@ -988,7 +1053,7 @@ Replicate `find_importers` result manually:
 
 ***
 
-### 19.10 Manual: Class Hierarchy
+### 20.10 Manual: Class Hierarchy
 
 Replicate `get_class_hierarchy` result manually:
 
@@ -1008,7 +1073,7 @@ Replicate `get_class_hierarchy` result manually:
 
 ***
 
-### 19.11 Comparison Table
+### 20.11 Comparison Table
 
 Fill in after completing both MCP and manual runs:
 
@@ -1026,9 +1091,32 @@ Fill in after completing both MCP and manual runs:
 | `get_changed_symbols`       | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
 | `find_importers`            | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
 | `get_class_hierarchy`       | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
-| **TOTAL**                   | **\_\_\_** | **12**    | **\_\_\_**    | **\_\_\_**   | **\_\_\_x**   | **\_\_\_x**  |
+| `get_symbol_importance`     | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
+| **TOTAL**                   | **\_\_\_** | **13**    | **\_\_\_**    | **\_\_\_**   | **\_\_\_x**   | **\_\_\_x**  |
 
-### 19.12 Context Window Budget
+### 20.13 Manual: Symbol Importance
+
+Replicate `get_symbol_importance` result manually:
+
+1. **Grep** all `import` statements across `src/**/*.ts` files
+2. Count how many files import each symbol (in-degree)
+3. For each symbol, count its own imports (out-degree)
+4. Manually compute iterative PageRank: score = (1-0.85)/N + 0.85 * sum(score(importer)/outDegree(importer))
+5. Repeat until convergence (~20 iterations)
+6. Sort by score descending
+
+**Record:**
+
+| Metric                    | Value  |
+| ------------------------- | ------ |
+| Tool calls used           | \_\_\_ |
+| Files read                | \_\_\_ |
+| Total lines read          | \_\_\_ |
+| Estimated tokens consumed | \_\_\_ |
+
+***
+
+### 20.14 Context Window Budget
 
 ```
 Manual approach:
@@ -1095,14 +1183,19 @@ After completing all steps, fill in:
 | 16a| `get_class_hierarchy` — ancestors returns extends/implements chain |           |
 | 16b| `get_class_hierarchy` — descendants returns implementing classes   |           |
 | 16c| `get_class_hierarchy` — only extends/implements edges traversed    |           |
-| 17 | Staleness detection — no false positive on fresh index              |           |
-| 18 | Unit tests pass (512+)                                              |           |
-| 19 | Git hash masking — visible or redacted (log status)                 |           |
-| 20 | Manual vs MCP comparison table filled with measured data            |           |
-| 21 | Token savings > 10x for aggregate                                   |           |
-| 22 | Context budget chart shows MCP uses < 1% of 1M window               |           |
+| 17 | `get_symbol_importance` — rankings sorted by PageRank score desc   |           |
+| 17a| `get_symbol_importance` — top symbol is widely-depended-on type    |           |
+| 17b| `get_symbol_importance` — kind and filePattern filters work        |           |
+| 17c| `get_symbol_importance` — converged=true, iterations reasonable    |           |
+| 17d| `get_symbol_importance` — limit caps results count                 |           |
+| 18 | Staleness detection — no false positive on fresh index              |           |
+| 19 | Unit tests pass (562+)                                              |           |
+| 20 | Git hash masking — visible or redacted (log status)                 |           |
+| 21 | Manual vs MCP comparison table filled with measured data            |           |
+| 22 | Token savings > 10x for aggregate                                   |           |
+| 23 | Context budget chart shows MCP uses < 1% of 1M window               |           |
 
-**Result:** \_\_\_/47 checks passed
+**Result:** \_\_\_/52 checks passed
 
 ***
 
@@ -1118,7 +1211,7 @@ rm -rf .ctxo/.cache/ .ctxo/index/ && npx tsx src/index.ts index
 npx vitest run
 ```
 
-Then invoke these 12 MCP calls:
+Then invoke these 13 MCP calls:
 
 * `get_logic_slice` — `src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class`, level 3
 * `get_blast_radius` — `src/core/types.ts::SymbolNode::type`
@@ -1132,5 +1225,6 @@ Then invoke these 12 MCP calls:
 * `get_changed_symbols` — since: "HEAD~3"
 * `find_importers` — `src/core/types.ts::SymbolNode::type`, transitive: true
 * `get_class_hierarchy` — no params (full project hierarchy)
+* `get_symbol_importance` — limit: 10
 
-**Quick pass criteria:** All 12 return data (not errors), dependencies/dependents non-empty, 6 layers present, dead code has totalSymbols > 0, context has entries with scores, search returns matches, importers non-empty, hierarchy has trees.
+**Quick pass criteria:** All 13 return data (not errors), dependencies/dependents non-empty, 6 layers present, dead code has totalSymbols > 0, context has entries with scores, search returns matches, importers non-empty, hierarchy has trees, importance rankings sorted by score descending with converged=true.
