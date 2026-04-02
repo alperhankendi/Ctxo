@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ctxo Index Visualizer</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1117; --bg2: #1a1d27; --bg3: #242734; --bg4: #2e3244;
+    --text: #e1e4ed; --text2: #9ca3b8; --text3: #6b7280;
+    --accent: #6366f1; --accent2: #818cf8;
+    --green: #22c55e; --yellow: #eab308; --orange: #f97316; --red: #ef4444;
+    --blue: #3b82f6; --purple: #a855f7; --teal: #14b8a6; --gray: #6b7280;
+    --border: #2e3244; --radius: 8px;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; }
+  .app { display: flex; height: 100vh; }
+  .sidebar { width: 300px; min-width: 300px; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .sidebar-header { padding: 16px; border-bottom: 1px solid var(--border); }
+  .sidebar-header h1 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .sidebar-header p { font-size: 11px; color: var(--text2); }
+  .sidebar-section { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .sidebar-section h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); margin-bottom: 8px; }
+  .sidebar-scroll { flex: 1; overflow-y: auto; }
+  .drop-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s; }
+  .drop-zone:hover, .drop-zone.dragover { border-color: var(--accent); background: rgba(99,102,241,0.08); }
+  .drop-zone p { font-size: 13px; color: var(--text2); }
+  .drop-zone .icon { font-size: 24px; margin-bottom: 6px; }
+  .drop-zone input { display: none; }
+  .file-count { font-size: 12px; color: var(--accent2); margin-top: 8px; }
+  .tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--bg2); }
+  .tab { padding: 10px 20px; font-size: 13px; font-weight: 500; color: var(--text2); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; background: none; border-top: none; border-left: none; border-right: none; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent2); border-bottom-color: var(--accent); }
+  .tab .badge { background: var(--bg4); color: var(--text2); font-size: 10px; padding: 1px 6px; border-radius: 10px; margin-left: 6px; }
+  .filter-group { display: flex; flex-wrap: wrap; gap: 4px; }
+  .filter-chip { font-size: 11px; padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg); color: var(--text2); cursor: pointer; transition: all 0.15s; }
+  .filter-chip.active { border-color: var(--accent); background: rgba(99,102,241,0.15); color: var(--accent2); }
+  .filter-chip .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+  .search-input { width: 100%; padding: 7px 10px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 12px; outline: none; }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--text3); }
+  .slider-row { display: flex; align-items: center; gap: 8px; }
+  .slider-row input[type=range] { flex: 1; accent-color: var(--accent); }
+  .slider-val { font-size: 12px; color: var(--accent2); min-width: 20px; text-align: right; }
+  .panel { flex: 1; overflow: hidden; display: none; }
+  .panel.active { display: flex; flex-direction: column; }
+  .file-tree { flex: 1; overflow-y: auto; padding: 8px; font-size: 12px; font-family: 'Cascadia Code', 'Fira Code', monospace; }
+  .tree-node { user-select: none; }
+  .tree-dir { padding: 3px 6px; cursor: pointer; display: flex; align-items: center; gap: 4px; border-radius: 4px; color: var(--text2); }
+  .tree-dir:hover { background: var(--bg3); }
+  .tree-dir .arrow { font-size: 10px; width: 14px; transition: transform 0.15s; display: inline-block; }
+  .tree-dir .arrow.open { transform: rotate(90deg); }
+  .tree-children { margin-left: 16px; }
+  .tree-children.collapsed { display: none; }
+  .tree-file { padding: 3px 6px; cursor: pointer; display: flex; align-items: center; gap: 6px; border-radius: 4px; }
+  .tree-file:hover { background: var(--bg3); }
+  .tree-file.selected { background: var(--bg4); color: var(--accent2); }
+  .tree-file .stats { margin-left: auto; display: flex; gap: 6px; font-size: 10px; color: var(--text3); }
+  .tree-file .stats span { display: flex; align-items: center; gap: 2px; }
+  .file-detail { background: var(--bg2); border-top: 1px solid var(--border); max-height: 40%; overflow-y: auto; padding: 12px; font-size: 12px; }
+  .file-detail h4 { font-size: 13px; margin-bottom: 8px; color: var(--accent2); font-family: monospace; }
+  .detail-section { margin-bottom: 10px; }
+  .detail-section h5 { font-size: 11px; text-transform: uppercase; color: var(--text3); margin-bottom: 4px; }
+  .detail-item { padding: 3px 0; color: var(--text2); display: flex; align-items: center; gap: 6px; }
+  .kind-badge { font-size: 9px; padding: 1px 5px; border-radius: 3px; font-weight: 600; text-transform: uppercase; }
+  .kind-function { background: rgba(59,130,246,0.2); color: var(--blue); }
+  .kind-class { background: rgba(168,85,247,0.2); color: var(--purple); }
+  .kind-interface { background: rgba(20,184,166,0.2); color: var(--teal); }
+  .kind-method { background: rgba(249,115,22,0.2); color: var(--orange); }
+  .kind-variable { background: rgba(107,114,128,0.2); color: var(--gray); }
+  .kind-type { background: rgba(20,184,166,0.15); color: #5eead4; }
+  .graph-container { flex: 1; position: relative; overflow: hidden; }
+  .graph-container canvas { display: block; width: 100%; height: 100%; }
+  .graph-tooltip { position: absolute; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; font-size: 11px; pointer-events: none; display: none; z-index: 10; max-width: 350px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+  .graph-legend { position: absolute; bottom: 12px; left: 12px; background: rgba(15,17,23,0.85); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; font-size: 10px; display: flex; flex-direction: column; gap: 3px; }
+  .graph-legend .leg-item { display: flex; align-items: center; gap: 6px; color: var(--text2); }
+  .graph-legend .leg-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .graph-legend .leg-line { width: 20px; height: 2px; }
+  .graph-controls { position: absolute; top: 12px; right: 12px; display: flex; flex-direction: column; gap: 4px; z-index: 5; }
+  .graph-controls button { width: 32px; height: 32px; background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .graph-controls button:hover { background: var(--bg3); border-color: var(--accent); }
+  .graph-info { position: absolute; top: 12px; left: 12px; background: rgba(15,17,23,0.9); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; font-size: 11px; z-index: 5; max-width: 280px; display: none; }
+  .graph-info h4 { font-size: 13px; color: var(--accent2); margin-bottom: 6px; }
+  .graph-info .gi-row { display: flex; align-items: center; gap: 6px; padding: 2px 0; color: var(--text2); }
+  .graph-info .gi-close { position: absolute; top: 6px; right: 8px; cursor: pointer; color: var(--text3); background: none; border: none; font-size: 14px; }
+  .heatmap-container { flex: 1; overflow-y: auto; padding: 16px; }
+  .heatmap-grid { display: flex; flex-wrap: wrap; gap: 4px; align-content: flex-start; }
+  .heatmap-cell { border-radius: 4px; cursor: pointer; position: relative; min-width: 30px; min-height: 30px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-family: monospace; color: rgba(0,0,0,0.7); font-weight: 600; transition: transform 0.1s, box-shadow 0.1s; }
+  .heatmap-cell:hover { transform: scale(1.05); box-shadow: 0 0 0 2px var(--accent); z-index: 1; }
+  .heatmap-tooltip { position: fixed; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; font-size: 11px; pointer-events: none; display: none; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+  .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text3); gap: 8px; }
+  .empty-state .es-icon { font-size: 40px; opacity: 0.3; }
+  .empty-state p { font-size: 13px; }
+  .prompt-bar { background: var(--bg2); border-top: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; gap: 10px; }
+  .prompt-text { flex: 1; font-size: 11px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: monospace; }
+  .copy-btn { padding: 5px 12px; background: var(--accent); color: white; border: none; border-radius: 4px; font-size: 11px; cursor: pointer; white-space: nowrap; }
+  .copy-btn:hover { background: var(--accent2); }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h1>Ctxo Visualizer</h1>
+      <p>Drag &amp; drop .ctxo/index JSON files</p>
+    </div>
+    <div class="sidebar-section">
+      <div class="drop-zone" id="dropZone">
+        <div class="icon">&#128194;</div>
+        <p>Drop a folder or JSON files<br>or click to browse</p>
+        <input type="file" id="fileInput" multiple accept=".json" webkitdirectory />
+      </div>
+      <div class="file-count" id="fileCount"></div>
+    </div>
+    <div class="sidebar-scroll">
+      <div class="sidebar-section">
+        <h3>Search</h3>
+        <input class="search-input" id="searchInput" placeholder="Filter symbols, files..." />
+      </div>
+      <div class="sidebar-section">
+        <h3>Symbol Kinds</h3>
+        <div class="filter-group" id="kindFilters"></div>
+      </div>
+      <div class="sidebar-section" id="edgeFilterSection" style="display:none">
+        <h3>Edge Kinds</h3>
+        <div class="filter-group" id="edgeFilters"></div>
+      </div>
+      <div class="sidebar-section" id="complexitySection" style="display:none">
+        <h3>Min Complexity</h3>
+        <div class="slider-row">
+          <input type="range" id="complexitySlider" min="0" max="50" value="0" />
+          <span class="slider-val" id="complexityVal">0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="tabs">
+      <button class="tab active" data-tab="tree">File Tree<span class="badge" id="treeBadge">0</span></button>
+      <button class="tab" data-tab="graph">Dependency Graph<span class="badge" id="graphBadge">0</span></button>
+      <button class="tab" data-tab="heatmap">Complexity Heatmap<span class="badge" id="heatmapBadge">0</span></button>
+    </div>
+    <div class="panel active" id="panel-tree">
+      <div class="file-tree" id="fileTree">
+        <div class="empty-state"><div class="es-icon">&#127794;</div><p>Load JSON files to see the file tree</p></div>
+      </div>
+      <div class="file-detail" id="fileDetail" style="display:none"></div>
+    </div>
+    <div class="panel" id="panel-graph">
+      <div class="graph-container" id="graphContainer">
+        <canvas id="graphCanvas"></canvas>
+        <div class="graph-tooltip" id="graphTooltip"></div>
+        <div class="graph-controls" id="graphControls" style="display:none">
+          <button id="zoomIn" title="Zoom In">+</button>
+          <button id="zoomOut" title="Zoom Out">&minus;</button>
+          <button id="zoomFit" title="Fit All">&#8214;</button>
+          <button id="zoomReset" title="Reset View">&#8634;</button>
+        </div>
+        <div class="graph-info" id="graphInfo"></div>
+        <div class="graph-legend" id="graphLegend" style="display:none"></div>
+        <div class="empty-state" id="graphEmpty"><div class="es-icon">&#128279;</div><p>Load JSON files to see the dependency graph</p></div>
+      </div>
+    </div>
+    <div class="panel" id="panel-heatmap">
+      <div class="heatmap-container" id="heatmapContainer">
+        <div class="empty-state"><div class="es-icon">&#128293;</div><p>Load JSON files to see the complexity heatmap</p></div>
+      </div>
+      <div class="heatmap-tooltip" id="heatmapTooltip"></div>
+    </div>
+    <div class="prompt-bar">
+      <span class="prompt-text" id="promptText">Load .ctxo/index JSON files to generate a codebase summary.</span>
+      <button class="copy-btn" id="copyBtn">Copy</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── HTML Escaping ───
+function esc(str) {
+  if (typeof str !== 'string') return '';
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+// ─── Safe DOM Helpers ───
+function el(tag, attrs, children) {
+  const e = document.createElement(tag);
+  if (attrs) {
+    Object.entries(attrs).forEach(([k, v]) => {
+      if (k === 'className') e.className = v;
+      else if (k === 'textContent') e.textContent = v;
+      else if (k.startsWith('on')) e.addEventListener(k.slice(2).toLowerCase(), v);
+      else if (k === 'style' && typeof v === 'object') Object.assign(e.style, v);
+      else e.setAttribute(k, v);
+    });
+  }
+  if (children) {
+    (Array.isArray(children) ? children : [children]).forEach(c => {
+      if (typeof c === 'string') e.appendChild(document.createTextNode(c));
+      else if (c) e.appendChild(c);
+    });
+  }
+  return e;
+}
+
+// ─── State ───
+const state = {
+  files: [],
+  activeTab: 'tree',
+  search: '',
+  kindFilter: { function: true, class: true, interface: true, method: true, variable: true, type: true },
+  edgeFilter: { imports: true, calls: true, extends: true, implements: true, uses: true },
+  minComplexity: 0,
+  selectedFile: null,
+};
+
+const KIND_COLORS = { function: '#3b82f6', class: '#a855f7', interface: '#14b8a6', method: '#f97316', variable: '#6b7280', type: '#5eead4' };
+const EDGE_STYLES = {
+  imports: { color: '#6b7280', dash: [], width: 1.5 },
+  calls:   { color: '#3b82f6', dash: [6,3], width: 1.5 },
+  extends: { color: '#ef4444', dash: [], width: 2.5 },
+  implements: { color: '#22c55e', dash: [3,3], width: 1.5 },
+  uses:    { color: '#9ca3b8', dash: [2,2], width: 1 },
+};
+
+// ─── Helpers ───
+function getAllSymbols() {
+  const syms = [];
+  const complexityMap = {};
+  state.files.forEach(f => {
+    (f.complexity || []).forEach(c => { complexityMap[c.symbolId] = c.cyclomatic; });
+    (f.symbols || []).forEach(s => {
+      syms.push({ ...s, file: f.file, cyclomatic: complexityMap[s.symbolId] ?? null });
+    });
+  });
+  return syms;
+}
+function getAllEdges() {
+  const edges = [];
+  state.files.forEach(f => (f.edges || []).forEach(e => edges.push(e)));
+  return edges;
+}
+function filterSymbols(syms) {
+  return syms.filter(s => {
+    if (!state.kindFilter[s.kind]) return false;
+    if (state.search && !s.name.toLowerCase().includes(state.search) && !s.file.toLowerCase().includes(state.search) && !s.symbolId.toLowerCase().includes(state.search)) return false;
+    return true;
+  });
+}
+
+// ─── File Drop ───
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', async e => {
+  e.preventDefault(); e.stopPropagation(); dropZone.classList.remove('dragover');
+  dropZone.querySelector('p').textContent = 'Loading...';
+  try {
+    const files = await collectDroppedFiles(e.dataTransfer);
+    await loadJsonFiles(files);
+  } catch (err) {
+    console.error('Drop error:', err);
+  }
+  dropZone.querySelector('p').textContent = 'Drop a folder or JSON files\nor click to browse';
+});
+fileInput.addEventListener('change', async e => {
+  await loadJsonFiles(Array.from(e.target.files));
+});
+
+// Collect files from drop — supports both folders and individual files
+async function collectDroppedFiles(dataTransfer) {
+  // Try modern File System Access API first
+  if (dataTransfer.items && dataTransfer.items[0] && typeof dataTransfer.items[0].webkitGetAsEntry === 'function') {
+    const entries = [];
+    for (let i = 0; i < dataTransfer.items.length; i++) {
+      const entry = dataTransfer.items[i].webkitGetAsEntry();
+      if (entry) entries.push(entry);
+    }
+    if (entries.length > 0) {
+      const files = [];
+      await Promise.all(entries.map(entry => traverseEntry(entry, files)));
+      return files;
+    }
+  }
+  // Fallback: plain file list
+  return Array.from(dataTransfer.files);
+}
+
+// Recursively traverse a FileSystemEntry
+function traverseEntry(entry, fileList) {
+  return new Promise(resolve => {
+    if (entry.isFile) {
+      entry.file(f => { fileList.push(f); resolve(); }, () => resolve());
+    } else if (entry.isDirectory) {
+      const reader = entry.createReader();
+      const allEntries = [];
+      const readChunk = () => {
+        reader.readEntries(batch => {
+          if (batch.length === 0) {
+            // Done reading this dir, now traverse children
+            Promise.all(allEntries.map(e => traverseEntry(e, fileList))).then(resolve);
+          } else {
+            allEntries.push(...batch);
+            readChunk(); // readEntries returns max 100, must loop
+          }
+        }, () => resolve());
+      };
+      readChunk();
+    } else {
+      resolve();
+    }
+  });
+}
+
+async function loadJsonFiles(fileList) {
+  const promises = [];
+  for (const f of fileList) {
+    if (!f.name.endsWith('.json')) continue;
+    promises.push(f.text().then(t => { try { return JSON.parse(t); } catch { return null; } }));
+  }
+  const results = await Promise.all(promises);
+  results.forEach(r => { if (r && r.file && typeof r.file === 'string') state.files.push(r); });
+  const seen = new Set();
+  state.files = state.files.filter(f => { if (seen.has(f.file)) return false; seen.add(f.file); return true; });
+  document.getElementById('fileCount').textContent = state.files.length + ' file(s) loaded';
+  updateAll();
+}
+
+// ─── Tabs ───
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    state.activeTab = tab.dataset.tab;
+    document.getElementById('panel-' + state.activeTab).classList.add('active');
+    document.getElementById('edgeFilterSection').style.display = state.activeTab === 'graph' ? '' : 'none';
+    document.getElementById('complexitySection').style.display = state.activeTab === 'heatmap' ? '' : 'none';
+    updateAll();
+  });
+});
+
+// ─── Filters ───
+function initFilters() {
+  const kindDiv = document.getElementById('kindFilters');
+  Object.keys(KIND_COLORS).forEach(k => {
+    const dot = el('span', { className: 'dot', style: { background: KIND_COLORS[k] } });
+    const chip = el('button', { className: 'filter-chip active', onClick: () => { state.kindFilter[k] = !state.kindFilter[k]; chip.classList.toggle('active'); updateAll(); } }, [dot, k]);
+    kindDiv.appendChild(chip);
+  });
+  const edgeDiv = document.getElementById('edgeFilters');
+  Object.keys(EDGE_STYLES).forEach(k => {
+    const dot = el('span', { className: 'dot', style: { background: EDGE_STYLES[k].color } });
+    const chip = el('button', { className: 'filter-chip active', onClick: () => { state.edgeFilter[k] = !state.edgeFilter[k]; chip.classList.toggle('active'); updateAll(); } }, [dot, k]);
+    edgeDiv.appendChild(chip);
+  });
+}
+initFilters();
+
+document.getElementById('searchInput').addEventListener('input', e => { state.search = e.target.value.toLowerCase(); updateAll(); });
+document.getElementById('complexitySlider').addEventListener('input', e => {
+  state.minComplexity = parseInt(e.target.value);
+  document.getElementById('complexityVal').textContent = state.minComplexity;
+  updateAll();
+});
+
+// ─── Update All ───
+function updateAll() {
+  const syms = getAllSymbols();
+  const edges = getAllEdges();
+  document.getElementById('treeBadge').textContent = state.files.length;
+  document.getElementById('graphBadge').textContent = edges.length;
+  document.getElementById('heatmapBadge').textContent = syms.filter(s => s.cyclomatic != null).length;
+
+  if (state.activeTab === 'tree') renderFileTree();
+  else if (state.activeTab === 'graph') renderGraph();
+  else if (state.activeTab === 'heatmap') renderHeatmap();
+  updatePrompt();
+}
+
+// ═══════════════════════════════════════
+// FILE TREE
+// ═══════════════════════════════════════
+function renderFileTree() {
+  const container = document.getElementById('fileTree');
+  container.textContent = '';
+  if (!state.files.length) {
+    container.appendChild(el('div', { className: 'empty-state' }, [
+      el('div', { className: 'es-icon', textContent: '\u{1F332}' }),
+      el('p', { textContent: 'Load JSON files to see the file tree' })
+    ]));
+    return;
+  }
+
+  const root = {};
+  const filtered = state.files.filter(f => {
+    if (!state.search) return true;
+    return f.file.toLowerCase().includes(state.search) || (f.symbols || []).some(s => s.name.toLowerCase().includes(state.search));
+  });
+  filtered.forEach(f => {
+    const parts = f.file.split('/');
+    let node = root;
+    parts.forEach((p, i) => {
+      if (i === parts.length - 1) { node[p] = { __file: f }; }
+      else { if (!node[p]) node[p] = {}; node = node[p]; }
+    });
+  });
+  buildTreeDOM(root, container);
+}
+
+function buildTreeDOM(node, parent) {
+  const dirs = [], files = [];
+  Object.keys(node).sort().forEach(key => {
+    if (key === '__file') return;
+    if (node[key].__file) files.push({ key, data: node[key].__file });
+    else dirs.push({ key, children: node[key] });
+  });
+
+  dirs.forEach(d => {
+    const children = el('div', { className: 'tree-children' });
+    const arrow = el('span', { className: 'arrow open', textContent: '\u25B6' });
+    const dir = el('div', { className: 'tree-dir', onClick: () => {
+      children.classList.toggle('collapsed');
+      arrow.classList.toggle('open');
+    }}, [arrow, el('span', { textContent: '\u{1F4C1}', style: { color: '#eab308' } }), d.key]);
+    const wrapper = el('div', { className: 'tree-node' }, [dir, children]);
+    parent.appendChild(wrapper);
+    buildTreeDOM(d.children, children);
+  });
+
+  files.forEach(f => {
+    const d = f.data;
+    const symCount = (d.symbols || []).length;
+    const edgeCount = (d.edges || []).length;
+    const commitCount = (d.intent || []).length;
+    const hasAnti = (d.antiPatterns || []).length > 0;
+
+    const stats = el('span', { className: 'stats' }, [
+      el('span', { title: 'symbols', textContent: '\u25C6 ' + symCount }),
+      el('span', { title: 'edges', textContent: '\u2192 ' + edgeCount }),
+      el('span', { title: 'commits', textContent: '\u25CF ' + commitCount }),
+    ]);
+    const items = [
+      el('span', { textContent: '\u{1F4C4}', style: { color: '#3b82f6', fontSize: '11px' } }),
+      el('span', { textContent: f.key }),
+    ];
+    if (hasAnti) items.push(el('span', { textContent: '\u26A0\uFE0F', style: { color: '#f97316' } }));
+    items.push(stats);
+
+    const fileEl = el('div', { className: 'tree-file', onClick: () => {
+      document.querySelectorAll('.tree-file').forEach(x => x.classList.remove('selected'));
+      fileEl.classList.add('selected');
+      state.selectedFile = d;
+      showFileDetail(d);
+    }}, items);
+    parent.appendChild(fileEl);
+  });
+}
+
+function showFileDetail(f) {
+  const detail = document.getElementById('fileDetail');
+  detail.style.display = '';
+  detail.textContent = '';
+
+  detail.appendChild(el('h4', { textContent: f.file }));
+
+  if (f.symbols && f.symbols.length) {
+    const section = el('div', { className: 'detail-section' }, [
+      el('h5', { textContent: 'Symbols (' + f.symbols.length + ')' })
+    ]);
+    f.symbols.forEach(s => {
+      const cx = (f.complexity || []).find(c => c.symbolId === s.symbolId);
+      const badge = el('span', { className: 'kind-badge kind-' + s.kind, textContent: s.kind });
+      const name = el('span', { textContent: s.name });
+      const loc = el('span', { textContent: 'L' + s.startLine + '-' + s.endLine + (cx ? ' \u00B7 C:' + cx.cyclomatic : ''), style: { color: 'var(--text3)', marginLeft: 'auto' } });
+      section.appendChild(el('div', { className: 'detail-item' }, [badge, name, loc]));
+    });
+    detail.appendChild(section);
+  }
+
+  if (f.edges && f.edges.length) {
+    const section = el('div', { className: 'detail-section' }, [
+      el('h5', { textContent: 'Edges (' + f.edges.length + ')' })
+    ]);
+    f.edges.slice(0, 15).forEach(e => {
+      const fromName = e.from.split('::')[1] || e.from;
+      const toName = e.to.split('::')[1] || e.to;
+      const kindSpan = el('span', { textContent: e.kind, style: { color: (EDGE_STYLES[e.kind] || {}).color || '#888' } });
+      const text = el('span', { textContent: ' ' + fromName + ' \u2192 ' + toName });
+      section.appendChild(el('div', { className: 'detail-item', style: { fontSize: '11px' } }, [kindSpan, text]));
+    });
+    if (f.edges.length > 15) section.appendChild(el('div', { className: 'detail-item', style: { color: 'var(--text3)' } }, ['...and ' + (f.edges.length - 15) + ' more']));
+    detail.appendChild(section);
+  }
+
+  if (f.intent && f.intent.length) {
+    const section = el('div', { className: 'detail-section' }, [
+      el('h5', { textContent: 'Commits (' + f.intent.length + ')' })
+    ]);
+    f.intent.slice(0, 8).forEach(c => {
+      const d = c.date ? c.date.substring(0, 10) : '';
+      const dateSpan = el('span', { textContent: d, style: { color: 'var(--text3)' } });
+      const msgSpan = el('span', { textContent: ' ' + c.message.substring(0, 60), style: { color: 'var(--text2)' } });
+      section.appendChild(el('div', { className: 'detail-item', style: { fontSize: '11px' } }, [dateSpan, msgSpan]));
+    });
+    detail.appendChild(section);
+  }
+
+  if (f.antiPatterns && f.antiPatterns.length) {
+    const section = el('div', { className: 'detail-section' }, [
+      el('h5', { textContent: '\u26A0\uFE0F Anti-Patterns (' + f.antiPatterns.length + ')' })
+    ]);
+    f.antiPatterns.forEach(a => {
+      section.appendChild(el('div', { className: 'detail-item', style: { fontSize: '11px', color: 'var(--orange)' } }, [a.message.substring(0, 60)]));
+    });
+    detail.appendChild(section);
+  }
+}
+
+// ═══════════════════════════════════════
+// DEPENDENCY GRAPH (Canvas force-directed)
+// ═══════════════════════════════════════
+let graphNodes = [], graphEdgesArr = [], graphAnim = null, graphNodeMap = {};
+let graphZoom = 1, graphPanX = 0, graphPanY = 0;
+let dragNode = null, dragOffX = 0, dragOffY = 0, didDrag = false;
+let isPanning = false, panStartX = 0, panStartY = 0;
+let selectedNode = null; // currently selected node
+let graphW = 0, graphH = 0;
+let graphStabilized = false, graphFrameCount = 0;
+
+function renderGraph() {
+  const canvas = document.getElementById('graphCanvas');
+  const emptyEl = document.getElementById('graphEmpty');
+  const legendEl = document.getElementById('graphLegend');
+  const controlsEl = document.getElementById('graphControls');
+  const tooltip = document.getElementById('graphTooltip');
+
+  const allSyms = filterSymbols(getAllSymbols());
+  const allEdges = getAllEdges().filter(e => state.edgeFilter[e.kind]);
+
+  if (!allSyms.length) {
+    emptyEl.style.display = ''; legendEl.style.display = 'none'; controlsEl.style.display = 'none';
+    if (graphAnim) { cancelAnimationFrame(graphAnim); graphAnim = null; }
+    return;
+  }
+  emptyEl.style.display = 'none'; legendEl.style.display = ''; controlsEl.style.display = '';
+
+  // Build legend with DOM
+  legendEl.textContent = '';
+  legendEl.appendChild(el('div', { textContent: 'Nodes', style: { fontWeight: '600', marginBottom: '2px', color: 'var(--text)' } }));
+  Object.entries(KIND_COLORS).forEach(([k, c]) => {
+    legendEl.appendChild(el('div', { className: 'leg-item' }, [
+      el('span', { className: 'leg-dot', style: { background: c } }), k
+    ]));
+  });
+  legendEl.appendChild(el('div', { textContent: 'Edges', style: { fontWeight: '600', marginTop: '4px', marginBottom: '2px', color: 'var(--text)' } }));
+  Object.entries(EDGE_STYLES).forEach(([k, s]) => {
+    const lineStyle = s.dash.length
+      ? { width: '20px', height: '0', borderTop: '2px dashed ' + s.color, background: 'none' }
+      : { background: s.color };
+    legendEl.appendChild(el('div', { className: 'leg-item' }, [
+      el('span', { className: 'leg-line', style: lineStyle }), k
+    ]));
+  });
+
+  // Build nodes — reuse positions
+  const existingMap = {};
+  graphNodes.forEach(n => { existingMap[n.id] = n; });
+
+  graphW = canvas.parentElement.clientWidth;
+  graphH = canvas.parentElement.clientHeight;
+
+  graphNodes = allSyms.map(s => {
+    if (existingMap[s.symbolId]) {
+      const ex = existingMap[s.symbolId];
+      return { ...ex, ...s, id: s.symbolId };
+    }
+    return {
+      ...s, id: s.symbolId,
+      x: graphW/2 + (Math.random() - 0.5) * graphW * 0.6,
+      y: graphH/2 + (Math.random() - 0.5) * graphH * 0.6,
+      vx: 0, vy: 0,
+      radius: Math.min(6 + (s.cyclomatic || 1) * 0.5, 18),
+      pinned: false,
+    };
+  });
+
+  graphNodeMap = {};
+  graphNodes.forEach(n => { graphNodeMap[n.id] = n; });
+  graphEdgesArr = allEdges.filter(e => graphNodeMap[e.from] && graphNodeMap[e.to]);
+
+  canvas.width = graphW * devicePixelRatio;
+  canvas.height = graphH * devicePixelRatio;
+  canvas.style.width = graphW + 'px';
+  canvas.style.height = graphH + 'px';
+
+  if (Object.keys(existingMap).length === 0) { graphZoom = 1; graphPanX = 0; graphPanY = 0; }
+
+  if (graphAnim) cancelAnimationFrame(graphAnim);
+
+  graphFrameCount = 0;
+  graphStabilized = false;
+  startGraphLoop();
+  setupGraphInteractions();
+}
+
+function startGraphLoop() {
+  const canvas = document.getElementById('graphCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+
+  function simulate() {
+    graphAnim = requestAnimationFrame(simulate);
+    graphFrameCount++;
+
+    // Physics — fast cooling, stops after stabilization
+    if (!graphStabilized) {
+      const alpha = Math.max(0, 1 - graphFrameCount / 200); // stabilize in ~200 frames
+      if (alpha < 0.005) graphStabilized = true;
+
+      // Repulsion (Barnes-Hut would be better for large graphs, but N^2 is fine for <500 nodes)
+      for (let i = 0; i < graphNodes.length; i++) {
+        for (let j = i + 1; j < graphNodes.length; j++) {
+          const a = graphNodes[i], b = graphNodes[j];
+          let dx = b.x - a.x, dy = b.y - a.y;
+          let dist = Math.sqrt(dx*dx + dy*dy) || 1;
+          let force = Math.min(1200 / (dist * dist), 4) * alpha;
+          const fx = dx/dist * force, fy = dy/dist * force;
+          if (!a.pinned) { a.vx -= fx; a.vy -= fy; }
+          if (!b.pinned) { b.vx += fx; b.vy += fy; }
+        }
+      }
+
+      // Attraction along edges
+      graphEdgesArr.forEach(e => {
+        const a = graphNodeMap[e.from], b = graphNodeMap[e.to];
+        if (!a || !b) return;
+        let dx = b.x - a.x, dy = b.y - a.y;
+        let dist = Math.sqrt(dx*dx + dy*dy) || 1;
+        let force = (dist - 150) * 0.004 * alpha;
+        const fx = dx/dist * force, fy = dy/dist * force;
+        if (!a.pinned) { a.vx += fx; a.vy += fy; }
+        if (!b.pinned) { b.vx -= fx; b.vy -= fy; }
+      });
+
+      // Center gravity
+      graphNodes.forEach(n => {
+        if (n.pinned) return;
+        n.vx += (graphW/2 - n.x) * 0.0003 * alpha;
+        n.vy += (graphH/2 - n.y) * 0.0003 * alpha;
+      });
+
+      // Apply velocity with strong damping
+      graphNodes.forEach(n => {
+        if (n === dragNode || n.pinned) return;
+        n.vx *= 0.7; n.vy *= 0.7;
+        n.x += n.vx; n.y += n.vy;
+      });
+    }
+
+    // Dragged node follows mouse (even after stabilization)
+    drawGraph(ctx);
+  }
+  simulate();
+}
+
+function drawGraph(ctx) {
+  const w = graphW, h = graphH;
+  // Connected node IDs for selection highlighting
+  const connectedIds = new Set();
+  const connectedEdges = new Set();
+  if (selectedNode) {
+    connectedIds.add(selectedNode.id);
+    graphEdgesArr.forEach((e, i) => {
+      if (e.from === selectedNode.id || e.to === selectedNode.id) {
+        connectedIds.add(e.from); connectedIds.add(e.to);
+        connectedEdges.add(i);
+      }
+    });
+  }
+
+  ctx.save();
+  ctx.clearRect(0, 0, w, h);
+  ctx.translate(graphPanX, graphPanY);
+  ctx.scale(graphZoom, graphZoom);
+
+  // Edges
+  graphEdgesArr.forEach((e, idx) => {
+    const a = graphNodeMap[e.from], b = graphNodeMap[e.to];
+    if (!a || !b) return;
+    const style = EDGE_STYLES[e.kind] || EDGE_STYLES.uses;
+    const dimmed = selectedNode && !connectedEdges.has(idx);
+
+    ctx.beginPath();
+    ctx.setLineDash(style.dash);
+    ctx.lineWidth = dimmed ? style.width * 0.5 : (connectedEdges.has(idx) ? style.width * 2 : style.width);
+    ctx.strokeStyle = style.color;
+    ctx.globalAlpha = dimmed ? 0.1 : (connectedEdges.has(idx) ? 1 : 0.6);
+    ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+
+    // Arrowhead
+    if (!dimmed) {
+      const angle = Math.atan2(b.y - a.y, b.x - a.x);
+      const ad = b.radius + 5;
+      const ax = b.x - Math.cos(angle) * ad, ay = b.y - Math.sin(angle) * ad;
+      ctx.beginPath(); ctx.setLineDash([]);
+      ctx.fillStyle = style.color;
+      ctx.moveTo(ax, ay);
+      ctx.lineTo(ax - 7*Math.cos(angle - 0.35), ay - 7*Math.sin(angle - 0.35));
+      ctx.lineTo(ax - 7*Math.cos(angle + 0.35), ay - 7*Math.sin(angle + 0.35));
+      ctx.fill();
+    }
+  });
+  ctx.setLineDash([]);
+  ctx.globalAlpha = 1;
+
+  // Nodes
+  graphNodes.forEach(n => {
+    const isSelected = selectedNode && selectedNode.id === n.id;
+    const isConnected = selectedNode && connectedIds.has(n.id);
+    const dimmed = selectedNode && !isConnected;
+
+    ctx.globalAlpha = dimmed ? 0.15 : 1;
+
+    // Glow for selected
+    if (isSelected) {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.radius + 6, 0, Math.PI*2);
+      ctx.fillStyle = KIND_COLORS[n.kind] || '#888';
+      ctx.globalAlpha = 0.25;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    // Node circle
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.radius, 0, Math.PI*2);
+    ctx.fillStyle = KIND_COLORS[n.kind] || '#888';
+    ctx.fill();
+
+    // Border
+    ctx.strokeStyle = isSelected ? '#fff' : (isConnected ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.1)');
+    ctx.lineWidth = isSelected ? 2.5 : 1;
+    ctx.stroke();
+
+    // Pinned indicator
+    if (n.pinned) {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y - n.radius - 4, 2.5, 0, Math.PI*2);
+      ctx.fillStyle = '#ef4444';
+      ctx.fill();
+    }
+
+    // Label
+    if (graphZoom > 0.35 && !dimmed) {
+      ctx.fillStyle = isSelected ? '#fff' : '#c8ccd8';
+      ctx.font = (isSelected ? 'bold ' : '') + Math.max(9, 11/graphZoom) + 'px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      const label = n.name.length > 24 ? n.name.substring(0, 22) + '\u2026' : n.name;
+      ctx.fillText(label, n.x, n.y + n.radius + 14);
+    }
+  });
+
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+function showNodeInfo(n) {
+  const info = document.getElementById('graphInfo');
+  info.style.display = 'block';
+  info.textContent = '';
+
+  const closeBtn = el('button', { className: 'gi-close', textContent: '\u2715', onClick: () => { selectedNode = null; info.style.display = 'none'; }});
+  info.appendChild(closeBtn);
+  info.appendChild(el('h4', { textContent: n.name }));
+
+  const rows = [
+    ['Kind', n.kind],
+    ['File', n.file],
+    ['Lines', n.startLine + ' - ' + n.endLine],
+  ];
+  if (n.cyclomatic != null) rows.push(['Complexity', String(n.cyclomatic)]);
+
+  rows.forEach(([label, value]) => {
+    info.appendChild(el('div', { className: 'gi-row' }, [
+      el('span', { textContent: label + ':', style: { color: 'var(--text3)', minWidth: '70px' } }),
+      el('span', { textContent: value })
+    ]));
+  });
+
+  // Connections
+  const incoming = graphEdgesArr.filter(e => e.to === n.id);
+  const outgoing = graphEdgesArr.filter(e => e.from === n.id);
+
+  if (outgoing.length) {
+    info.appendChild(el('div', { textContent: 'Depends on (' + outgoing.length + '):', style: { color: 'var(--text3)', marginTop: '6px', fontSize: '10px', textTransform: 'uppercase' } }));
+    outgoing.slice(0, 8).forEach(e => {
+      const targetName = e.to.split('::')[1] || e.to;
+      info.appendChild(el('div', { className: 'gi-row' }, [
+        el('span', { textContent: e.kind, style: { color: (EDGE_STYLES[e.kind] || {}).color || '#888', fontSize: '10px', minWidth: '70px' } }),
+        el('span', { textContent: targetName, style: { fontSize: '11px' } })
+      ]));
+    });
+    if (outgoing.length > 8) info.appendChild(el('div', { className: 'gi-row', style: { color: 'var(--text3)' } }, ['...' + (outgoing.length - 8) + ' more']));
+  }
+  if (incoming.length) {
+    info.appendChild(el('div', { textContent: 'Used by (' + incoming.length + '):', style: { color: 'var(--text3)', marginTop: '6px', fontSize: '10px', textTransform: 'uppercase' } }));
+    incoming.slice(0, 8).forEach(e => {
+      const srcName = e.from.split('::')[1] || e.from;
+      info.appendChild(el('div', { className: 'gi-row' }, [
+        el('span', { textContent: e.kind, style: { color: (EDGE_STYLES[e.kind] || {}).color || '#888', fontSize: '10px', minWidth: '70px' } }),
+        el('span', { textContent: srcName, style: { fontSize: '11px' } })
+      ]));
+    });
+    if (incoming.length > 8) info.appendChild(el('div', { className: 'gi-row', style: { color: 'var(--text3)' } }, ['...' + (incoming.length - 8) + ' more']));
+  }
+}
+
+function setupGraphInteractions() {
+  const canvas = document.getElementById('graphCanvas');
+  const tooltip = document.getElementById('graphTooltip');
+
+  function canvasXY(e) {
+    const rect = canvas.getBoundingClientRect();
+    return { x: (e.clientX - rect.left - graphPanX) / graphZoom, y: (e.clientY - rect.top - graphPanY) / graphZoom };
+  }
+  function findNode(mx, my) {
+    for (let i = graphNodes.length - 1; i >= 0; i--) {
+      const n = graphNodes[i];
+      const dx = n.x - mx, dy = n.y - my;
+      if (dx*dx + dy*dy < (n.radius + 6) * (n.radius + 6)) return n;
+    }
+    return null;
+  }
+
+  function applyZoom(factor, cx, cy) {
+    if (cx === undefined) { cx = graphW / 2; cy = graphH / 2; }
+    graphPanX = cx - (cx - graphPanX) * factor;
+    graphPanY = cy - (cy - graphPanY) * factor;
+    graphZoom = Math.max(0.05, Math.min(8, graphZoom * factor));
+  }
+
+  function fitAll() {
+    if (!graphNodes.length) return;
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    graphNodes.forEach(n => {
+      minX = Math.min(minX, n.x - n.radius); maxX = Math.max(maxX, n.x + n.radius);
+      minY = Math.min(minY, n.y - n.radius); maxY = Math.max(maxY, n.y + n.radius);
+    });
+    const pad = 60;
+    const rangeX = maxX - minX + pad * 2, rangeY = maxY - minY + pad * 2;
+    graphZoom = Math.min(graphW / rangeX, graphH / rangeY, 2);
+    graphPanX = graphW / 2 - (minX + maxX) / 2 * graphZoom;
+    graphPanY = graphH / 2 - (minY + maxY) / 2 * graphZoom;
+  }
+
+  // Zoom controls
+  document.getElementById('zoomIn').onclick = () => applyZoom(1.3);
+  document.getElementById('zoomOut').onclick = () => applyZoom(0.7);
+  document.getElementById('zoomFit').onclick = fitAll;
+  document.getElementById('zoomReset').onclick = () => { graphZoom = 1; graphPanX = 0; graphPanY = 0; };
+
+  canvas.onmousedown = e => {
+    const { x, y } = canvasXY(e);
+    const n = findNode(x, y);
+    if (n) {
+      dragNode = n; dragOffX = n.x - x; dragOffY = n.y - y;
+      didDrag = false;
+    } else {
+      isPanning = true; panStartX = e.clientX - graphPanX; panStartY = e.clientY - graphPanY;
+    }
+  };
+
+  canvas.onmousemove = e => {
+    const { x, y } = canvasXY(e);
+    if (dragNode) {
+      const dx = (x + dragOffX) - dragNode.x, dy = (y + dragOffY) - dragNode.y;
+      if (dx*dx + dy*dy > 4) didDrag = true;
+      dragNode.x = x + dragOffX; dragNode.y = y + dragOffY;
+      dragNode.vx = 0; dragNode.vy = 0;
+    } else if (isPanning) {
+      graphPanX = e.clientX - panStartX; graphPanY = e.clientY - panStartY;
+    } else {
+      const n = findNode(x, y);
+      if (n) {
+        tooltip.style.display = 'block';
+        tooltip.style.left = (e.clientX + 14) + 'px';
+        tooltip.style.top = (e.clientY - 8) + 'px';
+        tooltip.textContent = '';
+        tooltip.appendChild(el('div', { className: 'tt-name', textContent: n.name }));
+        tooltip.appendChild(el('div', { className: 'tt-detail', textContent: n.kind + ' \u00B7 ' + n.file + ':' + n.startLine + '-' + n.endLine + (n.cyclomatic != null ? ' | C:' + n.cyclomatic : '') }));
+        canvas.style.cursor = 'pointer';
+      } else {
+        tooltip.style.display = 'none';
+        canvas.style.cursor = isPanning ? 'grabbing' : 'grab';
+      }
+    }
+  };
+
+  canvas.onmouseup = e => {
+    if (dragNode && !didDrag) {
+      // Click without drag = select/deselect
+      if (selectedNode && selectedNode.id === dragNode.id) {
+        selectedNode = null;
+        document.getElementById('graphInfo').style.display = 'none';
+      } else {
+        selectedNode = dragNode;
+        showNodeInfo(dragNode);
+      }
+    } else if (dragNode && didDrag) {
+      // Pin node after drag
+      dragNode.pinned = true;
+    } else if (!isPanning) {
+      // Click on empty space = deselect
+      selectedNode = null;
+      document.getElementById('graphInfo').style.display = 'none';
+    }
+    dragNode = null; isPanning = false; didDrag = false;
+  };
+
+  canvas.onmouseleave = () => { dragNode = null; isPanning = false; tooltip.style.display = 'none'; };
+
+  canvas.onwheel = e => {
+    e.preventDefault();
+    const factor = e.deltaY > 0 ? 0.88 : 1.14;
+    const rect = canvas.getBoundingClientRect();
+    applyZoom(factor, e.clientX - rect.left, e.clientY - rect.top);
+  };
+
+  // Double-click to unpin
+  canvas.ondblclick = e => {
+    const { x, y } = canvasXY(e);
+    const n = findNode(x, y);
+    if (n) {
+      n.pinned = false;
+      graphStabilized = false;
+      graphFrameCount = Math.max(graphFrameCount, 150); // gentle reheat
+    }
+  };
+}
+
+// ═══════════════════════════════════════
+// COMPLEXITY HEATMAP
+// ═══════════════════════════════════════
+function renderHeatmap() {
+  const container = document.getElementById('heatmapContainer');
+  const tooltipEl = document.getElementById('heatmapTooltip');
+  container.textContent = '';
+
+  const allSyms = filterSymbols(getAllSymbols());
+  if (!allSyms.length) {
+    container.appendChild(el('div', { className: 'empty-state' }, [
+      el('div', { className: 'es-icon', textContent: '\u{1F525}' }),
+      el('p', { textContent: 'Load JSON files to see the complexity heatmap' })
+    ]));
+    return;
+  }
+
+  const symsWithSize = allSyms.map(s => ({ ...s, lines: Math.max(1, (s.endLine || 0) - (s.startLine || 0)) }))
+    .filter(s => (s.cyclomatic ?? 0) >= state.minComplexity)
+    .sort((a, b) => (b.cyclomatic ?? 0) - (a.cyclomatic ?? 0));
+
+  function getColor(c) {
+    if (c == null) return '#2e3244';
+    if (c <= 5) return '#22c55e';
+    if (c <= 10) return '#eab308';
+    if (c <= 20) return '#f97316';
+    return '#ef4444';
+  }
+
+  const maxLines = Math.max(...symsWithSize.map(s => s.lines), 1);
+  const grid = el('div', { className: 'heatmap-grid' });
+
+  symsWithSize.forEach(s => {
+    const size = Math.max(35, Math.min(120, 35 + (s.lines / maxLines) * 85));
+    const cell = el('div', {
+      className: 'heatmap-cell',
+      textContent: s.cyclomatic != null ? String(s.cyclomatic) : '?',
+      style: { width: size + 'px', height: size + 'px', background: getColor(s.cyclomatic) },
+      onMouseenter: () => {
+        tooltipEl.style.display = 'block';
+        tooltipEl.textContent = '';
+        tooltipEl.appendChild(el('div', { className: 'tt-name', textContent: s.name }));
+        tooltipEl.appendChild(el('div', { className: 'tt-detail', textContent: s.kind + ' \u00B7 ' + s.file + ':' + s.startLine + '-' + s.endLine + ' | Cyclomatic: ' + (s.cyclomatic ?? 'N/A') + ' \u00B7 Lines: ' + s.lines }));
+      },
+      onMousemove: e => { tooltipEl.style.left = (e.clientX + 12) + 'px'; tooltipEl.style.top = (e.clientY - 10) + 'px'; },
+      onMouseleave: () => { tooltipEl.style.display = 'none'; },
+    });
+    grid.appendChild(cell);
+  });
+  container.appendChild(grid);
+}
+
+// ─── Prompt Output ───
+function updatePrompt() {
+  const syms = getAllSymbols();
+  const files = state.files;
+  const promptEl = document.getElementById('promptText');
+  if (!files.length) { promptEl.textContent = 'Load .ctxo/index JSON files to generate a codebase summary.'; return; }
+
+  const edges = getAllEdges();
+  const totalCx = syms.filter(s => s.cyclomatic != null);
+  const avgCx = totalCx.length ? (totalCx.reduce((sum, x) => sum + x.cyclomatic, 0) / totalCx.length).toFixed(1) : 'N/A';
+  const highCx = totalCx.filter(s => s.cyclomatic > 10);
+  const antiFiles = files.filter(f => (f.antiPatterns || []).length > 0);
+  const kindCounts = {};
+  syms.forEach(s => { kindCounts[s.kind] = (kindCounts[s.kind] || 0) + 1; });
+  const kindStr = Object.entries(kindCounts).map(([k, v]) => v + ' ' + k + 's').join(', ');
+
+  let prompt = 'Codebase: ' + files.length + ' files, ' + syms.length + ' symbols (' + kindStr + '), ' + edges.length + ' edges. Avg complexity: ' + avgCx + '.';
+  if (highCx.length) prompt += ' ' + highCx.length + ' high-complexity symbols (>10): ' + highCx.slice(0, 5).map(s => s.name + '=' + s.cyclomatic).join(', ') + (highCx.length > 5 ? '...' : '') + '.';
+  if (antiFiles.length) prompt += ' ' + antiFiles.length + ' file(s) with anti-patterns: ' + antiFiles.map(f => f.file.split('/').pop()).join(', ') + '.';
+
+  promptEl.textContent = prompt;
+}
+
+// ─── Copy ───
+document.getElementById('copyBtn').addEventListener('click', () => {
+  navigator.clipboard.writeText(document.getElementById('promptText').textContent);
+  const btn = document.getElementById('copyBtn');
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+});
+
+updateAll();
+</script>
+</body>
+</html>
