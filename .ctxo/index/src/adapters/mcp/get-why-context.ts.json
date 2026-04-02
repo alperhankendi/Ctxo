@@ -11,17 +11,20 @@
     {
       "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "imports",
-      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "imports",
-      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+      "to": "src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "imports",
-      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
@@ -36,17 +39,70 @@
     {
       "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "imports",
-      "to": "src/core/types.ts::CommitIntent::class"
+      "to": "src/core/types.ts::CommitIntent::type",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "imports",
-      "to": "src/core/types.ts::AntiPattern::class"
+      "to": "src/core/types.ts::AntiPattern::type",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::class"
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "calls",
+      "to": "src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "calls",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
+      "to": "src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
+      "to": "src/core/types.ts::CommitIntent::type"
+    },
+    {
+      "from": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
+      "to": "src/core/types.ts::AntiPattern::type"
     }
   ],
   "file": "src/adapters/mcp/get-why-context.ts",
@@ -88,13 +144,15 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 96,
+      "endOffset": 3556,
       "kind": "function",
       "name": "handleGetWhyContext",
       "startLine": 14,
+      "startOffset": 623,
       "symbolId": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
     }
   ]

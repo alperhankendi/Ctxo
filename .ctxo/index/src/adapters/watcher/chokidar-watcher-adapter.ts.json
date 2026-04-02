@@ -15,17 +15,29 @@
     {
       "from": "src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class",
       "kind": "imports",
-      "to": "src/ports/i-watcher-port.ts::IWatcherPort::interface"
+      "to": "src/ports/i-watcher-port.ts::IWatcherPort::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class",
       "kind": "imports",
-      "to": "src/ports/i-watcher-port.ts::FileChangeHandler::class"
+      "to": "src/ports/i-watcher-port.ts::FileChangeHandler::type",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class",
       "kind": "implements",
-      "to": "../../ports/i-watcher-port.js::IWatcherPort::interface"
+      "to": "src/ports/i-watcher-port.ts::IWatcherPort::interface"
+    },
+    {
+      "from": "src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class",
+      "kind": "uses",
+      "to": "src/ports/i-watcher-port.ts::IWatcherPort::interface"
+    },
+    {
+      "from": "src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class",
+      "kind": "uses",
+      "to": "src/ports/i-watcher-port.ts::FileChangeHandler::type"
     }
   ],
   "file": "src/adapters/watcher/chokidar-watcher-adapter.ts",
@@ -43,27 +55,33 @@
       "message": "Complete Phase 9: content hasher, watcher port/adapter extraction"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 43,
+      "endOffset": 1213,
       "kind": "class",
       "name": "ChokidarWatcherAdapter",
       "startLine": 11,
+      "startOffset": 260,
       "symbolId": "src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class"
     },
     {
       "endLine": 35,
+      "endOffset": 1078,
       "kind": "method",
       "name": "ChokidarWatcherAdapter.start",
       "startLine": 21,
+      "startOffset": 590,
       "symbolId": "src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter.start::method"
     },
     {
       "endLine": 42,
+      "endOffset": 1211,
       "kind": "method",
       "name": "ChokidarWatcherAdapter.stop",
       "startLine": 37,
+      "startOffset": 1082,
       "symbolId": "src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter.stop::method"
     }
   ]

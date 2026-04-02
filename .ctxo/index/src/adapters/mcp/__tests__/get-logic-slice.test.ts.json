@@ -21,7 +21,8 @@
     {
       "from": "src/adapters/mcp/__tests__/get-logic-slice.test.ts::get-logic-slice.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::FileIndex::class"
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
     }
   ],
   "file": "src/adapters/mcp/__tests__/get-logic-slice.test.ts",
@@ -45,6 +46,6 @@
       "message": "Add MCP server with get_logic_slice tool and privacy masking pipeline"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": []
 }

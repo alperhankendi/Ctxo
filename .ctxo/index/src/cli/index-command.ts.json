@@ -2,7 +2,7 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 15,
+      "cyclomatic": 19,
       "symbolId": "src/cli/index-command.ts::IndexCommand.run::method"
     },
     {
@@ -26,7 +26,7 @@
       "symbolId": "src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
     }
   ],
-  "contentHash": "f70f7f6fbfb669d0f488a988270043589a66b28d5e938fd6154f81d9fbd8605c",
+  "contentHash": "1243e284434779d1da53cbde7d659b114eab42011bed03a901ef27b12a7dd941",
   "edges": [
     {
       "from": "src/cli/index-command.ts::IndexCommand::class",
@@ -71,11 +71,119 @@
     {
       "from": "src/cli/index-command.ts::IndexCommand::class",
       "kind": "imports",
-      "to": "src/core/types.ts::FileIndex::class"
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolKind::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "src/adapters/storage/schema-manager.ts::SchemaManager::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "src/core/staleness/content-hasher.ts::ContentHasher::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand.runCheck::method",
+      "kind": "calls",
+      "to": "src/core/staleness/content-hasher.ts::ContentHasher::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "src/adapters/storage/schema-manager.ts::SchemaManager::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "src/core/staleness/content-hasher.ts::ContentHasher::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::SymbolKind::type"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::FileIndex::type"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
     }
   ],
   "file": "src/cli/index-command.ts",
   "intent": [
+    {
+      "date": "2026-04-02T02:23:24+03:00",
+      "hash": "01f901c3e0ce8dba7c0281a8a75ae984a07773bf",
+      "kind": "commit",
+      "message": "Implement confirmed vs potential blast radius split (4-phase fix)"
+    },
     {
       "date": "2026-03-31T03:15:55+03:00",
       "hash": "dcae17802c9cc167416a9a55e325e5da1a595639",
@@ -137,55 +245,69 @@
       "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
-      "endLine": 284,
+      "endLine": 304,
+      "endOffset": 11120,
       "kind": "class",
       "name": "IndexCommand",
       "startLine": 13,
+      "startOffset": 888,
       "symbolId": "src/cli/index-command.ts::IndexCommand::class"
     },
     {
-      "endLine": 148,
+      "endLine": 168,
+      "endOffset": 6366,
       "kind": "method",
       "name": "IndexCommand.run",
       "startLine": 22,
+      "startOffset": 1145,
       "symbolId": "src/cli/index-command.ts::IndexCommand.run::method"
     },
     {
-      "endLine": 168,
+      "endLine": 188,
+      "endOffset": 6971,
       "kind": "method",
       "name": "IndexCommand.discoverFilesIn",
-      "startLine": 150,
+      "startLine": 170,
+      "startOffset": 6372,
       "symbolId": "src/cli/index-command.ts::IndexCommand.discoverFilesIn::method"
     },
     {
-      "endLine": 211,
+      "endLine": 231,
+      "endOffset": 8490,
       "kind": "method",
       "name": "IndexCommand.discoverWorkspaces",
-      "startLine": 170,
+      "startLine": 190,
+      "startOffset": 6977,
       "symbolId": "src/cli/index-command.ts::IndexCommand.discoverWorkspaces::method"
     },
     {
-      "endLine": 216,
+      "endLine": 236,
+      "endOffset": 8666,
       "kind": "method",
       "name": "IndexCommand.isSupportedExtension",
-      "startLine": 213,
+      "startLine": 233,
+      "startOffset": 8496,
       "symbolId": "src/cli/index-command.ts::IndexCommand.isSupportedExtension::method"
     },
     {
-      "endLine": 270,
+      "endLine": 290,
+      "endOffset": 10552,
       "kind": "method",
       "name": "IndexCommand.runCheck",
-      "startLine": 218,
+      "startLine": 238,
+      "startOffset": 8672,
       "symbolId": "src/cli/index-command.ts::IndexCommand.runCheck::method"
     },
     {
-      "endLine": 283,
+      "endLine": 303,
+      "endOffset": 11117,
       "kind": "method",
       "name": "IndexCommand.ensureGitignore",
-      "startLine": 272,
+      "startLine": 292,
+      "startOffset": 10558,
       "symbolId": "src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
     }
   ]

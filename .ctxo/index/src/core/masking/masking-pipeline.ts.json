@@ -57,34 +57,42 @@
       "message": "Add MCP server with get_logic_slice tool and privacy masking pipeline"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 59,
+      "endOffset": 2451,
       "kind": "class",
       "name": "MaskingPipeline",
       "startLine": 25,
+      "startOffset": 1299,
       "symbolId": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
     },
     {
       "endLine": 48,
+      "endOffset": 2211,
       "kind": "method",
       "name": "MaskingPipeline.fromConfig",
       "startLine": 36,
+      "startOffset": 1726,
       "symbolId": "src/core/masking/masking-pipeline.ts::MaskingPipeline.fromConfig::method"
     },
     {
       "endLine": 58,
+      "endOffset": 2449,
       "kind": "method",
       "name": "MaskingPipeline.mask",
       "startLine": 50,
+      "startOffset": 2215,
       "symbolId": "src/core/masking/masking-pipeline.ts::MaskingPipeline.mask::method"
     },
     {
       "endLine": 23,
+      "endOffset": 1297,
       "kind": "interface",
       "name": "MaskingPatternConfig",
       "startLine": 19,
+      "startOffset": 1175,
       "symbolId": "src/core/masking/masking-pipeline.ts::MaskingPatternConfig::interface"
     }
   ]

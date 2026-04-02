@@ -17,27 +17,33 @@
       "message": "Fix 5 bugs, implement missing FRs, add NFR benchmarks and staleness"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 47,
+      "endOffset": 1371,
       "kind": "class",
       "name": "StalenessDetector",
       "startLine": 8,
+      "startOffset": 183,
       "symbolId": "src/core/staleness/staleness-detector.ts::StalenessDetector::class"
     },
     {
       "endLine": 46,
+      "endOffset": 1369,
       "kind": "method",
       "name": "StalenessDetector.check",
       "startLine": 17,
+      "startOffset": 437,
       "symbolId": "src/core/staleness/staleness-detector.ts::StalenessDetector.check::method"
     },
     {
       "endLine": 6,
+      "endOffset": 181,
       "kind": "interface",
       "name": "StalenessWarning",
       "startLine": 3,
+      "startOffset": 83,
       "symbolId": "src/core/staleness/staleness-detector.ts::StalenessWarning::interface"
     }
   ]

@@ -16,12 +16,14 @@
     {
       "from": "src/core/logic-slice/__tests__/logic-slice-query.test.ts::logic-slice-query.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::SymbolNode::class"
+      "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
     },
     {
       "from": "src/core/logic-slice/__tests__/logic-slice-query.test.ts::logic-slice-query.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::GraphEdge::class"
+      "to": "src/core/types.ts::GraphEdge::type",
+      "typeOnly": true
     }
   ],
   "file": "src/core/logic-slice/__tests__/logic-slice-query.test.ts",
@@ -33,6 +35,6 @@
       "message": "Add core graph, logic-slice query, and detail formatter"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": []
 }

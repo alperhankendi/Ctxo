@@ -26,7 +26,8 @@
     {
       "from": "src/adapters/mcp/__tests__/get-context-for-task.test.ts::get-context-for-task.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::FileIndex::class"
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
     }
   ],
   "file": "src/adapters/mcp/__tests__/get-context-for-task.test.ts",
@@ -44,6 +45,6 @@
       "message": "Add handler tests for get_context_for_task and get_ranked_context"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": []
 }

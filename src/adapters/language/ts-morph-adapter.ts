@@ -604,6 +604,7 @@ export class TsMorphAdapter implements ILanguageAdapter {
           const sourceDir = dirname(this.normalizeFilePath(sourceFile.getFilePath()));
           const resolvedPath = normalize(join(sourceDir, moduleSpecifier))
             .replace(/\\/g, '/')
+            .replace(/\.jsx$/, '.tsx')
             .replace(/\.js$/, '.ts');
           return `${resolvedPath}::${name}::${defaultKind}`;
         }

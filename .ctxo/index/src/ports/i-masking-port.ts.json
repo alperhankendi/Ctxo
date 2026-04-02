@@ -12,13 +12,15 @@
       "message": "Add MCP server with get_logic_slice tool and privacy masking pipeline"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 2,
+      "endOffset": 63,
       "kind": "interface",
       "name": "IMaskingPort",
       "startLine": 0,
+      "startOffset": 0,
       "symbolId": "src/ports/i-masking-port.ts::IMaskingPort::interface"
     }
   ]

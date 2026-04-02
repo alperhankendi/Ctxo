@@ -23,12 +23,14 @@
     {
       "from": "src/adapters/mcp/get-logic-slice.ts::getLogicSliceInputSchema::function",
       "kind": "imports",
-      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/mcp/get-logic-slice.ts::getLogicSliceInputSchema::function",
       "kind": "imports",
-      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/mcp/get-logic-slice.ts::getLogicSliceInputSchema::function",
@@ -53,7 +55,22 @@
     {
       "from": "src/adapters/mcp/get-logic-slice.ts::getLogicSliceInputSchema::function",
       "kind": "imports",
-      "to": "src/core/types.ts::DetailLevelSchema::class"
+      "to": "src/core/types.ts::DetailLevelSchema::variable"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function",
+      "kind": "calls",
+      "to": "src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function",
+      "kind": "calls",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function",
+      "kind": "calls",
+      "to": "src/core/graph/symbol-graph.ts::SymbolGraph::class"
     },
     {
       "from": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function",
@@ -64,6 +81,56 @@
       "from": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function",
+      "kind": "calls",
+      "to": "src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function",
+      "kind": "calls",
+      "to": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function",
+      "kind": "uses",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function",
+      "kind": "uses",
+      "to": "src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function",
+      "kind": "uses",
+      "to": "src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function",
+      "kind": "uses",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function",
+      "kind": "uses",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function",
+      "kind": "uses",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function",
+      "kind": "uses",
+      "to": "src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function",
+      "kind": "uses",
+      "to": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class"
     }
   ],
   "file": "src/adapters/mcp/get-logic-slice.ts",
@@ -99,48 +166,60 @@
       "message": "Add MCP server with get_logic_slice tool and privacy masking pipeline"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 29,
+      "endOffset": 1290,
       "kind": "function",
       "name": "getLogicSliceInputSchema",
       "startLine": 20,
+      "startOffset": 900,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::getLogicSliceInputSchema::function"
     },
     {
       "endLine": 40,
+      "endOffset": 1570,
       "kind": "function",
       "name": "buildGraphFromStorage",
       "startLine": 31,
+      "startOffset": 1292,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
     },
     {
       "endLine": 64,
+      "endOffset": 2278,
       "kind": "function",
       "name": "buildGraphFromJsonIndex",
       "startLine": 46,
+      "startOffset": 1739,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
     },
     {
       "endLine": 137,
+      "endOffset": 4586,
       "kind": "function",
       "name": "handleGetLogicSlice",
       "startLine": 70,
+      "startOffset": 2392,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function"
     },
     {
       "endLine": 68,
+      "endOffset": 2390,
       "kind": "interface",
       "name": "StalenessCheck",
       "startLine": 66,
+      "startOffset": 2280,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
     },
     {
       "endLine": 18,
+      "endOffset": 898,
       "kind": "type",
       "name": "GetLogicSliceInput",
       "startLine": 18,
+      "startOffset": 837,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::GetLogicSliceInput::type"
     }
   ]

@@ -29,41 +29,51 @@
       "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 33,
+      "endOffset": 928,
       "kind": "class",
       "name": "SchemaManager",
       "startLine": 5,
+      "startOffset": 163,
       "symbolId": "src/adapters/storage/schema-manager.ts::SchemaManager::class"
     },
     {
       "endLine": 14,
+      "endOffset": 413,
       "kind": "method",
       "name": "SchemaManager.currentVersion",
       "startLine": 12,
+      "startOffset": 348,
       "symbolId": "src/adapters/storage/schema-manager.ts::SchemaManager.currentVersion::method"
     },
     {
       "endLine": 21,
+      "endOffset": 600,
       "kind": "method",
       "name": "SchemaManager.readStoredVersion",
       "startLine": 16,
+      "startOffset": 417,
       "symbolId": "src/adapters/storage/schema-manager.ts::SchemaManager.readStoredVersion::method"
     },
     {
       "endLine": 26,
+      "endOffset": 771,
       "kind": "method",
       "name": "SchemaManager.writeVersion",
       "startLine": 23,
+      "startOffset": 604,
       "symbolId": "src/adapters/storage/schema-manager.ts::SchemaManager.writeVersion::method"
     },
     {
       "endLine": 32,
+      "endOffset": 926,
       "kind": "method",
       "name": "SchemaManager.isCompatible",
       "startLine": 28,
+      "startOffset": 775,
       "symbolId": "src/adapters/storage/schema-manager.ts::SchemaManager.isCompatible::method"
     }
   ]

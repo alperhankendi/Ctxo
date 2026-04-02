@@ -26,12 +26,14 @@
     {
       "from": "src/adapters/mcp/__tests__/get-changed-symbols.test.ts::get-changed-symbols.test::variable",
       "kind": "imports",
-      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+      "to": "src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/mcp/__tests__/get-changed-symbols.test.ts::get-changed-symbols.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::FileIndex::class"
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
     }
   ],
   "file": "src/adapters/mcp/__tests__/get-changed-symbols.test.ts",
@@ -43,6 +45,6 @@
       "message": "Add 4 new MCP tools, --max-history limit, and improve test coverage"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": []
 }

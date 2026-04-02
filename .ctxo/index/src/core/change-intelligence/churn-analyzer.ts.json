@@ -17,20 +17,24 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 8,
+      "endOffset": 290,
       "kind": "class",
       "name": "ChurnAnalyzer",
       "startLine": 0,
+      "startOffset": 0,
       "symbolId": "src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer::class"
     },
     {
       "endLine": 7,
+      "endOffset": 288,
       "kind": "method",
       "name": "ChurnAnalyzer.normalize",
       "startLine": 1,
+      "startOffset": 31,
       "symbolId": "src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer.normalize::method"
     }
   ]

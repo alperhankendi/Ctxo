@@ -6,6 +6,10 @@
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.isSupported::method"
     },
     {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.setSymbolRegistry::method"
+    },
+    {
       "cyclomatic": 3,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractSymbols::method"
     },
@@ -38,7 +42,7 @@
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractVariables::method"
     },
     {
-      "cyclomatic": 7,
+      "cyclomatic": 12,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractImportEdges::method"
     },
     {
@@ -46,8 +50,16 @@
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractInheritanceEdges::method"
     },
     {
-      "cyclomatic": 17,
+      "cyclomatic": 24,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractCallEdges::method"
+    },
+    {
+      "cyclomatic": 13,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractReferenceEdges::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.emitUsesEdges::method"
     },
     {
       "cyclomatic": 8,
@@ -70,7 +82,7 @@
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.resolveRelativeImport::method"
     },
     {
-      "cyclomatic": 14,
+      "cyclomatic": 16,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method"
     },
     {
@@ -86,8 +98,8 @@
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.normalizeFilePath::method"
     },
     {
-      "cyclomatic": 15,
-      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.findExportedSymbolsInFile::method"
+      "cyclomatic": 14,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.getExportedSymbolIds::method"
     },
     {
       "cyclomatic": 2,
@@ -98,41 +110,93 @@
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.countCyclomaticComplexity::method"
     }
   ],
-  "contentHash": "cceac224602ff7bccdb217f7d0b3b180f8037efdc6fd3bd96f986bbdecc0e7aa",
+  "contentHash": "1ca650d12c026f09731c786ff567efe10a31e43eaf96e35bdec6fa9d509273fd",
   "edges": [
     {
       "from": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class",
       "kind": "imports",
-      "to": "src/core/types.ts::SymbolNode::class"
+      "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class",
       "kind": "imports",
-      "to": "src/core/types.ts::GraphEdge::class"
+      "to": "src/core/types.ts::GraphEdge::type",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class",
       "kind": "imports",
-      "to": "src/core/types.ts::ComplexityMetrics::class"
+      "to": "src/core/types.ts::ComplexityMetrics::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class",
       "kind": "imports",
-      "to": "src/core/types.ts::SymbolKind::class"
+      "to": "src/core/types.ts::SymbolKind::type",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class",
       "kind": "imports",
-      "to": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface"
+      "to": "src/core/types.ts::SYMBOL_KINDS::variable"
+    },
+    {
+      "from": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class",
+      "kind": "imports",
+      "to": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class",
       "kind": "implements",
-      "to": "../../ports/i-language-adapter.js::ILanguageAdapter::interface"
+      "to": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface"
+    },
+    {
+      "from": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class",
+      "kind": "uses",
+      "to": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface"
+    },
+    {
+      "from": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::SymbolKind::type"
+    },
+    {
+      "from": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::SymbolNode::type"
+    },
+    {
+      "from": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::GraphEdge::type"
+    },
+    {
+      "from": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::ComplexityMetrics::interface"
+    },
+    {
+      "from": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::SYMBOL_KINDS::variable"
     }
   ],
   "file": "src/adapters/language/ts-morph-adapter.ts",
   "intent": [
+    {
+      "date": "2026-04-02T02:58:40+03:00",
+      "hash": "e68a490d8a37b5e6a485e4693de0fcdaf9bc552b",
+      "kind": "commit",
+      "message": "Add byte offset indexing for O(1) source retrieval per symbol"
+    },
+    {
+      "date": "2026-04-02T02:23:24+03:00",
+      "hash": "01f901c3e0ce8dba7c0281a8a75ae984a07773bf",
+      "kind": "commit",
+      "message": "Implement confirmed vs potential blast radius split (4-phase fix)"
+    },
     {
       "date": "2026-03-29T23:26:42+03:00",
       "hash": "c174261c1f40756df2dd5dffd5fdf4f02a72e5b7",
@@ -164,181 +228,258 @@
       "message": "Add TypeScript language adapter with ts-morph symbol/edge/complexity extraction"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
-      "endLine": 569,
+      "endLine": 699,
+      "endOffset": 23853,
       "kind": "class",
       "name": "TsMorphAdapter",
       "startLine": 15,
+      "startOffset": 486,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class"
     },
     {
-      "endLine": 36,
+      "endLine": 37,
+      "endOffset": 1133,
       "kind": "method",
       "name": "TsMorphAdapter.isSupported",
-      "startLine": 33,
+      "startLine": 34,
+      "startOffset": 970,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.isSupported::method"
     },
     {
-      "endLine": 58,
+      "endLine": 41,
+      "endOffset": 1237,
+      "kind": "method",
+      "name": "TsMorphAdapter.setSymbolRegistry",
+      "startLine": 39,
+      "startOffset": 1137,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.setSymbolRegistry::method"
+    },
+    {
+      "endLine": 63,
+      "endOffset": 1983,
       "kind": "method",
       "name": "TsMorphAdapter.extractSymbols",
-      "startLine": 38,
+      "startLine": 43,
+      "startOffset": 1241,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractSymbols::method"
     },
     {
-      "endLine": 78,
+      "endLine": 84,
+      "endOffset": 2664,
       "kind": "method",
       "name": "TsMorphAdapter.extractEdges",
-      "startLine": 60,
+      "startLine": 65,
+      "startOffset": 1987,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractEdges::method"
     },
     {
-      "endLine": 113,
+      "endLine": 119,
+      "endOffset": 3909,
       "kind": "method",
       "name": "TsMorphAdapter.extractComplexity",
-      "startLine": 80,
+      "startLine": 86,
+      "startOffset": 2668,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractComplexity::method"
     },
     {
-      "endLine": 135,
+      "endLine": 143,
+      "endOffset": 4554,
       "kind": "method",
       "name": "TsMorphAdapter.extractFunctions",
-      "startLine": 117,
+      "startLine": 123,
+      "startOffset": 3980,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractFunctions::method"
     },
     {
-      "endLine": 166,
+      "endLine": 178,
+      "endOffset": 5608,
       "kind": "method",
       "name": "TsMorphAdapter.extractClasses",
-      "startLine": 137,
+      "startLine": 145,
+      "startOffset": 4558,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractClasses::method"
     },
     {
-      "endLine": 185,
+      "endLine": 199,
+      "endOffset": 6184,
       "kind": "method",
       "name": "TsMorphAdapter.extractInterfaces",
-      "startLine": 168,
+      "startLine": 180,
+      "startOffset": 5612,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractInterfaces::method"
     },
     {
-      "endLine": 204,
+      "endLine": 220,
+      "endOffset": 6780,
       "kind": "method",
       "name": "TsMorphAdapter.extractTypeAliases",
-      "startLine": 187,
+      "startLine": 201,
+      "startOffset": 6188,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractTypeAliases::method"
     },
     {
-      "endLine": 226,
+      "endLine": 244,
+      "endOffset": 7434,
       "kind": "method",
       "name": "TsMorphAdapter.extractVariables",
-      "startLine": 206,
+      "startLine": 222,
+      "startOffset": 6784,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractVariables::method"
     },
     {
-      "endLine": 271,
+      "endLine": 306,
+      "endOffset": 9629,
       "kind": "method",
       "name": "TsMorphAdapter.extractImportEdges",
-      "startLine": 230,
+      "startLine": 248,
+      "startOffset": 7505,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractImportEdges::method"
     },
     {
-      "endLine": 305,
+      "endLine": 342,
+      "endOffset": 10801,
       "kind": "method",
       "name": "TsMorphAdapter.extractInheritanceEdges",
-      "startLine": 273,
+      "startLine": 308,
+      "startOffset": 9633,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractInheritanceEdges::method"
     },
     {
-      "endLine": 356,
+      "endLine": 416,
+      "endOffset": 13684,
       "kind": "method",
       "name": "TsMorphAdapter.extractCallEdges",
-      "startLine": 307,
+      "startLine": 344,
+      "startOffset": 10805,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractCallEdges::method"
     },
     {
-      "endLine": 384,
+      "endLine": 457,
+      "endOffset": 15324,
+      "kind": "method",
+      "name": "TsMorphAdapter.extractReferenceEdges",
+      "startLine": 418,
+      "startOffset": 13688,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.extractReferenceEdges::method"
+    },
+    {
+      "endLine": 475,
+      "endOffset": 15804,
+      "kind": "method",
+      "name": "TsMorphAdapter.emitUsesEdges",
+      "startLine": 459,
+      "startOffset": 15328,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.emitUsesEdges::method"
+    },
+    {
+      "endLine": 503,
+      "endOffset": 16754,
       "kind": "method",
       "name": "TsMorphAdapter.resolveLocalCallTarget",
-      "startLine": 358,
+      "startLine": 477,
+      "startOffset": 15808,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.resolveLocalCallTarget::method"
     },
     {
-      "endLine": 399,
+      "endLine": 518,
+      "endOffset": 17287,
       "kind": "method",
       "name": "TsMorphAdapter.parseSource",
-      "startLine": 388,
+      "startLine": 507,
+      "startOffset": 16825,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.parseSource::method"
     },
     {
-      "endLine": 406,
+      "endLine": 525,
+      "endOffset": 17478,
       "kind": "method",
       "name": "TsMorphAdapter.cleanupSourceFile",
-      "startLine": 401,
+      "startLine": 520,
+      "startOffset": 17291,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.cleanupSourceFile::method"
     },
     {
-      "endLine": 410,
+      "endLine": 529,
+      "endOffset": 17611,
       "kind": "method",
       "name": "TsMorphAdapter.buildSymbolId",
-      "startLine": 408,
+      "startLine": 527,
+      "startOffset": 17482,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
     },
     {
-      "endLine": 427,
+      "endLine": 546,
+      "endOffset": 18261,
       "kind": "method",
       "name": "TsMorphAdapter.resolveRelativeImport",
-      "startLine": 412,
+      "startLine": 531,
+      "startOffset": 17615,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.resolveRelativeImport::method"
     },
     {
-      "endLine": 460,
+      "endLine": 584,
+      "endOffset": 19764,
       "kind": "method",
       "name": "TsMorphAdapter.resolveImportTarget",
-      "startLine": 429,
+      "startLine": 548,
+      "startOffset": 18265,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method"
     },
     {
-      "endLine": 482,
+      "endLine": 615,
+      "endOffset": 20958,
       "kind": "method",
       "name": "TsMorphAdapter.resolveSymbolReference",
-      "startLine": 462,
+      "startLine": 586,
+      "startOffset": 19768,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.resolveSymbolReference::method"
     },
     {
-      "endLine": 493,
+      "endLine": 626,
+      "endOffset": 21469,
       "kind": "method",
       "name": "TsMorphAdapter.inferSymbolKind",
-      "startLine": 484,
+      "startLine": 617,
+      "startOffset": 20962,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.inferSymbolKind::method"
     },
     {
-      "endLine": 498,
+      "endLine": 631,
+      "endOffset": 21627,
       "kind": "method",
       "name": "TsMorphAdapter.normalizeFilePath",
-      "startLine": 495,
+      "startLine": 628,
+      "startOffset": 21473,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.normalizeFilePath::method"
     },
     {
-      "endLine": 530,
+      "endLine": 660,
+      "endOffset": 22763,
       "kind": "method",
-      "name": "TsMorphAdapter.findExportedSymbolsInFile",
-      "startLine": 500,
-      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.findExportedSymbolsInFile::method"
+      "name": "TsMorphAdapter.getExportedSymbolIds",
+      "startLine": 633,
+      "startOffset": 21631,
+      "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.getExportedSymbolIds::method"
     },
     {
-      "endLine": 537,
+      "endLine": 667,
+      "endOffset": 22903,
       "kind": "method",
       "name": "TsMorphAdapter.isExported",
-      "startLine": 532,
+      "startLine": 662,
+      "startOffset": 22767,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
     },
     {
-      "endLine": 568,
+      "endLine": 698,
+      "endOffset": 23851,
       "kind": "method",
       "name": "TsMorphAdapter.countCyclomaticComplexity",
-      "startLine": 539,
+      "startLine": 669,
+      "startOffset": 22907,
       "symbolId": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter.countCyclomaticComplexity::method"
     }
   ]

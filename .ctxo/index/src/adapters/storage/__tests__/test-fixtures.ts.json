@@ -15,7 +15,18 @@
     {
       "from": "src/adapters/storage/__tests__/test-fixtures.ts::buildFileIndex::function",
       "kind": "imports",
-      "to": "src/core/types.ts::FileIndex::class"
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/storage/__tests__/test-fixtures.ts::buildFileIndex::function",
+      "kind": "uses",
+      "to": "src/core/types.ts::FileIndex::type"
+    },
+    {
+      "from": "src/adapters/storage/__tests__/test-fixtures.ts::buildSecondFileIndex::function",
+      "kind": "uses",
+      "to": "src/core/types.ts::FileIndex::type"
     }
   ],
   "file": "src/adapters/storage/__tests__/test-fixtures.ts",
@@ -27,20 +38,24 @@
       "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 33,
+      "endOffset": 762,
       "kind": "function",
       "name": "buildFileIndex",
       "startLine": 16,
+      "startOffset": 344,
       "symbolId": "src/adapters/storage/__tests__/test-fixtures.ts::buildFileIndex::function"
     },
     {
       "endLine": 52,
+      "endOffset": 1132,
       "kind": "function",
       "name": "buildSecondFileIndex",
       "startLine": 35,
+      "startOffset": 764,
       "symbolId": "src/adapters/storage/__tests__/test-fixtures.ts::buildSecondFileIndex::function"
     }
   ]

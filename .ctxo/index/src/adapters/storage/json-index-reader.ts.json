@@ -19,12 +19,23 @@
     {
       "from": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
       "kind": "imports",
-      "to": "src/core/types.ts::FileIndexSchema::class"
+      "to": "src/core/types.ts::FileIndexSchema::variable"
     },
     {
       "from": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
       "kind": "imports",
-      "to": "src/core/types.ts::FileIndex::class"
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::FileIndex::type"
+    },
+    {
+      "from": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::FileIndexSchema::variable"
     }
   ],
   "file": "src/adapters/storage/json-index-reader.ts",
@@ -48,34 +59,42 @@
       "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 73,
+      "endOffset": 2082,
       "kind": "class",
       "name": "JsonIndexReader",
       "startLine": 4,
+      "startOffset": 195,
       "symbolId": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
     },
     {
       "endLine": 27,
+      "endOffset": 711,
       "kind": "method",
       "name": "JsonIndexReader.readAll",
       "startLine": 11,
+      "startOffset": 350,
       "symbolId": "src/adapters/storage/json-index-reader.ts::JsonIndexReader.readAll::method"
     },
     {
       "endLine": 51,
+      "endOffset": 1422,
       "kind": "method",
       "name": "JsonIndexReader.readSingle",
       "startLine": 29,
+      "startOffset": 715,
       "symbolId": "src/adapters/storage/json-index-reader.ts::JsonIndexReader.readSingle::method"
     },
     {
       "endLine": 72,
+      "endOffset": 2080,
       "kind": "method",
       "name": "JsonIndexReader.collectJsonFiles",
       "startLine": 53,
+      "startOffset": 1426,
       "symbolId": "src/adapters/storage/json-index-reader.ts::JsonIndexReader.collectJsonFiles::method"
     }
   ]

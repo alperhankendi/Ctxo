@@ -11,7 +11,8 @@
     {
       "from": "src/adapters/watcher/__tests__/chokidar-watcher-adapter.test.ts::chokidar-watcher-adapter.test::variable",
       "kind": "imports",
-      "to": "src/ports/i-watcher-port.ts::FileChangeHandler::class"
+      "to": "src/ports/i-watcher-port.ts::FileChangeHandler::type",
+      "typeOnly": true
     }
   ],
   "file": "src/adapters/watcher/__tests__/chokidar-watcher-adapter.test.ts",
@@ -23,6 +24,6 @@
       "message": "Complete Phase 9: content hasher, watcher port/adapter extraction"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": []
 }

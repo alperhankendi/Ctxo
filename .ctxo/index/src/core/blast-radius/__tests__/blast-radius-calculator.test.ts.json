@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "39c9165cdfafb2fc5b401041e3cf50b260cc5face1ffaa9413afcd728e8a8291",
+  "contentHash": "cb9ac4ff7e050322831744d1403e562c2a054cd8cca1b0e924d0272553b1e6bd",
   "edges": [
     {
       "from": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts::blast-radius-calculator.test::variable",
@@ -16,11 +16,18 @@
     {
       "from": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts::blast-radius-calculator.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::SymbolNode::class"
+      "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
     }
   ],
   "file": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
   "intent": [
+    {
+      "date": "2026-04-02T02:23:24+03:00",
+      "hash": "01f901c3e0ce8dba7c0281a8a75ae984a07773bf",
+      "kind": "commit",
+      "message": "Implement confirmed vs potential blast radius split (4-phase fix)"
+    },
     {
       "date": "2026-03-30T22:05:34+03:00",
       "hash": "d38d5ef97f3147209420aff58fcb46b3e30991b4",
@@ -40,6 +47,6 @@
       "message": "Add blast radius calculator and architectural overlay"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": []
 }

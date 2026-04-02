@@ -11,7 +11,13 @@
     {
       "from": "src/core/change-intelligence/complexity-calculator.ts::ComplexityCalculator::class",
       "kind": "imports",
-      "to": "src/core/types.ts::ComplexityMetrics::class"
+      "to": "src/core/types.ts::ComplexityMetrics::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/core/change-intelligence/complexity-calculator.ts::ComplexityCalculator::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::ComplexityMetrics::interface"
     }
   ],
   "file": "src/core/change-intelligence/complexity-calculator.ts",
@@ -23,20 +29,24 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 9,
+      "endOffset": 362,
       "kind": "class",
       "name": "ComplexityCalculator",
       "startLine": 2,
+      "startOffset": 55,
       "symbolId": "src/core/change-intelligence/complexity-calculator.ts::ComplexityCalculator::class"
     },
     {
       "endLine": 8,
+      "endOffset": 360,
       "kind": "method",
       "name": "ComplexityCalculator.calculate",
       "startLine": 3,
+      "startOffset": 93,
       "symbolId": "src/core/change-intelligence/complexity-calculator.ts::ComplexityCalculator.calculate::method"
     }
   ]

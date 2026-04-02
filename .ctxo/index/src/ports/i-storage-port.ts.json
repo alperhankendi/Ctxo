@@ -6,17 +6,20 @@
     {
       "from": "src/ports/i-storage-port.ts::IStoragePort::interface",
       "kind": "imports",
-      "to": "src/core/types.ts::FileIndex::class"
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
     },
     {
       "from": "src/ports/i-storage-port.ts::IStoragePort::interface",
       "kind": "imports",
-      "to": "src/core/types.ts::GraphEdge::class"
+      "to": "src/core/types.ts::GraphEdge::type",
+      "typeOnly": true
     },
     {
       "from": "src/ports/i-storage-port.ts::IStoragePort::interface",
       "kind": "imports",
-      "to": "src/core/types.ts::SymbolNode::class"
+      "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
     }
   ],
   "file": "src/ports/i-storage-port.ts",
@@ -28,13 +31,15 @@
       "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 14,
+      "endOffset": 570,
       "kind": "interface",
       "name": "IStoragePort",
       "startLine": 2,
+      "startOffset": 75,
       "symbolId": "src/ports/i-storage-port.ts::IStoragePort::interface"
     }
   ]

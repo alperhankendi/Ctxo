@@ -10,7 +10,7 @@
       "symbolId": "src/cli/cli-router.ts::CliRouter.printHelp::method"
     }
   ],
-  "contentHash": "19fc471d1ceeb6d42df5672de5fa45ad730dfaecda34d2c5c0ba1e4eadf233e4",
+  "contentHash": "28000b89b5e054319e1588e1557743978a727f21d72695687eefa659cdb35b2e",
   "edges": [
     {
       "from": "src/cli/cli-router.ts::CliRouter::class",
@@ -41,10 +41,76 @@
       "from": "src/cli/cli-router.ts::CliRouter::class",
       "kind": "imports",
       "to": "src/cli/watch-command.ts::WatchCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "src/cli/index-command.ts::IndexCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "src/cli/sync-command.ts::SyncCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "src/cli/watch-command.ts::WatchCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "src/cli/verify-command.ts::VerifyCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "src/cli/status-command.ts::StatusCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "src/cli/init-command.ts::InitCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "src/cli/index-command.ts::IndexCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "src/cli/sync-command.ts::SyncCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "src/cli/watch-command.ts::WatchCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "src/cli/verify-command.ts::VerifyCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "src/cli/status-command.ts::StatusCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "src/cli/init-command.ts::InitCommand::class"
     }
   ],
   "file": "src/cli/cli-router.ts",
   "intent": [
+    {
+      "date": "2026-03-31T03:56:35+03:00",
+      "hash": "716ad0185df988c826fac022737e66012117506a",
+      "kind": "commit",
+      "message": "Fix CLI router test timeouts in CI by adding return after process.exit"
+    },
     {
       "date": "2026-03-31T03:15:55+03:00",
       "hash": "dcae17802c9cc167416a9a55e325e5da1a595639",
@@ -82,27 +148,33 @@
       "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
-      "endLine": 83,
+      "endLine": 86,
+      "endOffset": 2986,
       "kind": "class",
       "name": "CliRouter",
       "startLine": 7,
+      "startOffset": 314,
       "symbolId": "src/cli/cli-router.ts::CliRouter::class"
     },
     {
-      "endLine": 66,
+      "endLine": 69,
+      "endOffset": 2335,
       "kind": "method",
       "name": "CliRouter.route",
       "startLine": 14,
+      "startOffset": 467,
       "symbolId": "src/cli/cli-router.ts::CliRouter.route::method"
     },
     {
-      "endLine": 82,
+      "endLine": 85,
+      "endOffset": 2983,
       "kind": "method",
       "name": "CliRouter.printHelp",
-      "startLine": 68,
+      "startLine": 71,
+      "startOffset": 2341,
       "symbolId": "src/cli/cli-router.ts::CliRouter.printHelp::method"
     }
   ]

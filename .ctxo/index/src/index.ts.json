@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "ccaa430c34e111b8e0e4d0adc2a040833a836c85322245e1f4ede660c06560e4",
+  "contentHash": "152a8779ff9f845a40972c38e7c31d16ca2d9449997373499d0b5acc46dff117",
   "edges": [
     {
       "from": "src/index.ts::index::variable",
@@ -16,7 +16,8 @@
     {
       "from": "src/index.ts::index::variable",
       "kind": "imports",
-      "to": "src/core/masking/masking-pipeline.ts::MaskingPatternConfig::class"
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPatternConfig::interface",
+      "typeOnly": true
     },
     {
       "from": "src/index.ts::index::variable",
@@ -82,10 +83,21 @@
       "from": "src/index.ts::index::variable",
       "kind": "imports",
       "to": "src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function"
     }
   ],
   "file": "src/index.ts",
   "intent": [
+    {
+      "date": "2026-04-02T02:39:37+03:00",
+      "hash": "b8a4e40d0b8ab9ab9066d93ba48d4a2bf0c012f1",
+      "kind": "commit",
+      "message": "Add get_symbol_importance MCP tool — PageRank centrality on dependency graph"
+    },
     {
       "date": "2026-03-31T03:15:55+03:00",
       "hash": "dcae17802c9cc167416a9a55e325e5da1a595639",
@@ -171,6 +183,6 @@
       "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": []
 }

@@ -12,6 +12,16 @@
       "from": "src/cli/sync-command.ts::SyncCommand::class",
       "kind": "imports",
       "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/cli/sync-command.ts::SyncCommand.run::method",
+      "kind": "calls",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/cli/sync-command.ts::SyncCommand::class",
+      "kind": "uses",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
     }
   ],
   "file": "src/cli/sync-command.ts",
@@ -29,20 +39,24 @@
       "message": "Implement all CLI commands and add comprehensive test coverage"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 22,
+      "endOffset": 583,
       "kind": "class",
       "name": "SyncCommand",
       "startLine": 3,
+      "startOffset": 121,
       "symbolId": "src/cli/sync-command.ts::SyncCommand::class"
     },
     {
       "endLine": 21,
+      "endOffset": 581,
       "kind": "method",
       "name": "SyncCommand.run",
       "startLine": 10,
+      "startOffset": 278,
       "symbolId": "src/cli/sync-command.ts::SyncCommand.run::method"
     }
   ]

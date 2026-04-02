@@ -12,27 +12,33 @@
       "message": "Complete Phase 9: content hasher, watcher port/adapter extraction"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 7,
+      "endOffset": 246,
       "kind": "interface",
       "name": "IWatcherPort",
       "startLine": 4,
+      "startOffset": 145,
       "symbolId": "src/ports/i-watcher-port.ts::IWatcherPort::interface"
     },
     {
       "endLine": 0,
+      "endOffset": 58,
       "kind": "type",
       "name": "FileChangeEvent",
       "startLine": 0,
+      "startOffset": 0,
       "symbolId": "src/ports/i-watcher-port.ts::FileChangeEvent::type"
     },
     {
       "endLine": 2,
+      "endOffset": 143,
       "kind": "type",
       "name": "FileChangeHandler",
       "startLine": 2,
+      "startOffset": 60,
       "symbolId": "src/ports/i-watcher-port.ts::FileChangeHandler::type"
     }
   ]

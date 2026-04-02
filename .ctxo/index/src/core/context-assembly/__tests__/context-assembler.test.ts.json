@@ -16,12 +16,14 @@
     {
       "from": "src/core/context-assembly/__tests__/context-assembler.test.ts::context-assembler.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::SymbolNode::class"
+      "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
     },
     {
       "from": "src/core/context-assembly/__tests__/context-assembler.test.ts::context-assembler.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::FileIndex::class"
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
     }
   ],
   "file": "src/core/context-assembly/__tests__/context-assembler.test.ts",
@@ -33,6 +35,6 @@
       "message": "Add context assembly: get_context_for_task + get_ranked_context"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": []
 }

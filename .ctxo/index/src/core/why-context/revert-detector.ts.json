@@ -21,12 +21,24 @@
     {
       "from": "src/core/why-context/revert-detector.ts::RevertDetector::class",
       "kind": "imports",
-      "to": "src/core/types.ts::CommitRecord::class"
+      "to": "src/core/types.ts::CommitRecord::interface",
+      "typeOnly": true
     },
     {
       "from": "src/core/why-context/revert-detector.ts::RevertDetector::class",
       "kind": "imports",
-      "to": "src/core/types.ts::AntiPattern::class"
+      "to": "src/core/types.ts::AntiPattern::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/core/why-context/revert-detector.ts::RevertDetector::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::CommitRecord::interface"
+    },
+    {
+      "from": "src/core/why-context/revert-detector.ts::RevertDetector::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::AntiPattern::type"
     }
   ],
   "file": "src/core/why-context/revert-detector.ts",
@@ -44,27 +56,33 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 52,
+      "endOffset": 1492,
       "kind": "class",
       "name": "RevertDetector",
       "startLine": 19,
+      "startOffset": 570,
       "symbolId": "src/core/why-context/revert-detector.ts::RevertDetector::class"
     },
     {
       "endLine": 36,
+      "endOffset": 998,
       "kind": "method",
       "name": "RevertDetector.detect",
       "startLine": 20,
+      "startOffset": 602,
       "symbolId": "src/core/why-context/revert-detector.ts::RevertDetector.detect::method"
     },
     {
       "endLine": 51,
+      "endOffset": 1490,
       "kind": "method",
       "name": "RevertDetector.isRevert",
       "startLine": 38,
+      "startOffset": 1002,
       "symbolId": "src/core/why-context/revert-detector.ts::RevertDetector.isRevert::method"
     }
   ]

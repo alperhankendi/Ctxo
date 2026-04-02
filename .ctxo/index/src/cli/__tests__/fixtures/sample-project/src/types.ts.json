@@ -12,20 +12,24 @@
       "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 3,
+      "endOffset": 55,
       "kind": "interface",
       "name": "User",
       "startLine": 0,
+      "startOffset": 0,
       "symbolId": "src/cli/__tests__/fixtures/sample-project/src/types.ts::User::interface"
     },
     {
       "endLine": 5,
+      "endOffset": 103,
       "kind": "type",
       "name": "Role",
       "startLine": 5,
+      "startOffset": 57,
       "symbolId": "src/cli/__tests__/fixtures/sample-project/src/types.ts::Role::type"
     }
   ]

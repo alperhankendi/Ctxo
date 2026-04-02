@@ -147,6 +147,32 @@ describe('TsMorphAdapter — edge extraction', () => {
     expect(implEdge?.to).toContain('Configurable');
   });
 
+  it('resolves cross-file implements edge to normalized path (BUG-19)', () => {
+    const source = `
+import { IStoragePort } from '../../ports/i-storage-port.js';
+export class MyAdapter implements IStoragePort {
+  save(): void {}
+}
+`;
+    const edges = adapter.extractEdges('src/adapters/storage/my-adapter.ts', source);
+    const implEdge = edges.find((e) => e.kind === 'implements');
+    expect(implEdge).toBeDefined();
+    expect(implEdge?.to).toBe('src/ports/i-storage-port.ts::IStoragePort::interface');
+  });
+
+  it('resolves cross-file implements edge with .jsx → .tsx (BUG-19)', () => {
+    const source = `
+import { IRenderer } from '../ports/i-renderer.jsx';
+export class MyRenderer implements IRenderer {
+  render(): void {}
+}
+`;
+    const edges = adapter.extractEdges('src/adapters/my-renderer.ts', source);
+    const implEdge = edges.find((e) => e.kind === 'implements');
+    expect(implEdge).toBeDefined();
+    expect(implEdge?.to).toBe('src/ports/i-renderer.tsx::IRenderer::interface');
+  });
+
   it('returns empty edges for file with no imports or references', () => {
     const source = 'export function standalone(): void {}';
     const edges = adapter.extractEdges('src/standalone.ts', source);

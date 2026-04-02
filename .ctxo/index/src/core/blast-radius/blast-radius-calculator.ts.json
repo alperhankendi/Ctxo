@@ -2,20 +2,32 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 8,
+      "cyclomatic": 11,
       "symbolId": "src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator.calculate::method"
     }
   ],
-  "contentHash": "cf82481e2a676905d677fa4c01dc1706df6a24c50851e3064f254869bd630d7e",
+  "contentHash": "c3102a8958e3a0632eefb375d08563f743f3cfea4703e06b497df226e77469cb",
   "edges": [
     {
       "from": "src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class",
       "kind": "imports",
+      "to": "src/core/graph/symbol-graph.ts::SymbolGraph::class",
+      "typeOnly": true
+    },
+    {
+      "from": "src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class",
+      "kind": "uses",
       "to": "src/core/graph/symbol-graph.ts::SymbolGraph::class"
     }
   ],
   "file": "src/core/blast-radius/blast-radius-calculator.ts",
   "intent": [
+    {
+      "date": "2026-04-02T02:23:24+03:00",
+      "hash": "01f901c3e0ce8dba7c0281a8a75ae984a07773bf",
+      "kind": "commit",
+      "message": "Implement confirmed vs potential blast radius split (4-phase fix)"
+    },
     {
       "date": "2026-03-30T22:05:34+03:00",
       "hash": "d38d5ef97f3147209420aff58fcb46b3e30991b4",
@@ -35,41 +47,51 @@
       "message": "Add blast radius calculator and architectural overlay"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
-      "endLine": 76,
+      "endLine": 92,
+      "endOffset": 3471,
       "kind": "class",
       "name": "BlastRadiusCalculator",
       "startLine": 22,
+      "startOffset": 636,
       "symbolId": "src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
     },
     {
-      "endLine": 75,
+      "endLine": 91,
+      "endOffset": 3469,
       "kind": "method",
       "name": "BlastRadiusCalculator.calculate",
       "startLine": 23,
+      "startOffset": 675,
       "symbolId": "src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator.calculate::method"
     },
     {
       "endLine": 10,
+      "endOffset": 319,
       "kind": "interface",
       "name": "BlastRadiusEntry",
       "startLine": 4,
+      "startOffset": 121,
       "symbolId": "src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusEntry::interface"
     },
     {
       "endLine": 18,
+      "endOffset": 556,
       "kind": "interface",
       "name": "BlastRadiusResult",
       "startLine": 12,
+      "startOffset": 321,
       "symbolId": "src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusResult::interface"
     },
     {
       "endLine": 2,
+      "endOffset": 119,
       "kind": "type",
       "name": "ImpactConfidence",
       "startLine": 2,
+      "startOffset": 62,
       "symbolId": "src/core/blast-radius/blast-radius-calculator.ts::ImpactConfidence::type"
     }
   ]

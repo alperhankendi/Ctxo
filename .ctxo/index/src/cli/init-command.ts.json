@@ -27,27 +27,33 @@
       "message": "Implement all CLI commands and add comprehensive test coverage"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 73,
+      "endOffset": 2063,
       "kind": "class",
       "name": "InitCommand",
       "startLine": 26,
+      "startOffset": 685,
       "symbolId": "src/cli/init-command.ts::InitCommand::class"
     },
     {
       "endLine": 47,
+      "endOffset": 1330,
       "kind": "method",
       "name": "InitCommand.run",
       "startLine": 33,
+      "startOffset": 833,
       "symbolId": "src/cli/init-command.ts::InitCommand.run::method"
     },
     {
       "endLine": 72,
+      "endOffset": 2061,
       "kind": "method",
       "name": "InitCommand.installHook",
       "startLine": 49,
+      "startOffset": 1334,
       "symbolId": "src/cli/init-command.ts::InitCommand.installHook::method"
     }
   ]

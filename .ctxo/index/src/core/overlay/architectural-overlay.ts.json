@@ -33,41 +33,51 @@
       "message": "Add blast radius calculator and architectural overlay"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 62,
+      "endOffset": 1813,
       "kind": "class",
       "name": "ArchitecturalOverlay",
       "startLine": 31,
+      "startOffset": 1010,
       "symbolId": "src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class"
     },
     {
       "endLine": 52,
+      "endOffset": 1616,
       "kind": "method",
       "name": "ArchitecturalOverlay.classify",
       "startLine": 41,
+      "startOffset": 1295,
       "symbolId": "src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay.classify::method"
     },
     {
       "endLine": 61,
+      "endOffset": 1811,
       "kind": "method",
       "name": "ArchitecturalOverlay.matchLayer",
       "startLine": 54,
+      "startOffset": 1620,
       "symbolId": "src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay.matchLayer::method"
     },
     {
       "endLine": 3,
+      "endOffset": 84,
       "kind": "interface",
       "name": "LayerRule",
       "startLine": 0,
+      "startOffset": 0,
       "symbolId": "src/core/overlay/architectural-overlay.ts::LayerRule::interface"
     },
     {
       "endLine": 7,
+      "endOffset": 165,
       "kind": "interface",
       "name": "OverlayResult",
       "startLine": 5,
+      "startOffset": 86,
       "symbolId": "src/core/overlay/architectural-overlay.ts::OverlayResult::interface"
     }
   ]

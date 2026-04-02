@@ -1,0 +1,96 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "ae38f43d7469ac56c1f94d6a4adfd29bbf0515df6dac9552d752e90c0011da44",
+  "edges": [
+    {
+      "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
+      "kind": "imports",
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
+      "kind": "imports",
+      "to": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+    },
+    {
+      "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function"
+    },
+    {
+      "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
+    },
+    {
+      "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function"
+    },
+    {
+      "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
+    },
+    {
+      "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
+    },
+    {
+      "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function"
+    },
+    {
+      "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function"
+    },
+    {
+      "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function"
+    },
+    {
+      "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function"
+    },
+    {
+      "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function"
+    },
+    {
+      "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/find-importers.ts::handleFindImporters::function"
+    },
+    {
+      "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function"
+    },
+    {
+      "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function"
+    },
+    {
+      "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
+      "kind": "imports",
+      "to": "src/core/staleness/staleness-detector.ts::StalenessDetector::class"
+    }
+  ],
+  "file": "docs/runbook/mcp-validation/mcp-validation-test.ts",
+  "intent": [],
+  "lastModified": 1775091860,
+  "symbols": []
+}

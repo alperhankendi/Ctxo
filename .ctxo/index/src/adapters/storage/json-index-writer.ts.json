@@ -23,7 +23,13 @@
     {
       "from": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class",
       "kind": "imports",
-      "to": "src/core/types.ts::FileIndex::class"
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::FileIndex::type"
     }
   ],
   "file": "src/adapters/storage/json-index-writer.ts",
@@ -41,41 +47,51 @@
       "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 53,
+      "endOffset": 1659,
       "kind": "class",
       "name": "JsonIndexWriter",
       "startLine": 4,
+      "startOffset": 188,
       "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
     },
     {
       "endLine": 22,
+      "endOffset": 736,
       "kind": "method",
       "name": "JsonIndexWriter.write",
       "startLine": 11,
+      "startOffset": 343,
       "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.write::method"
     },
     {
       "endLine": 29,
+      "endOffset": 910,
       "kind": "method",
       "name": "JsonIndexWriter.delete",
       "startLine": 24,
+      "startOffset": 740,
       "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.delete::method"
     },
     {
       "endLine": 38,
+      "endOffset": 1240,
       "kind": "method",
       "name": "JsonIndexWriter.resolveIndexPath",
       "startLine": 31,
+      "startOffset": 914,
       "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.resolveIndexPath::method"
     },
     {
       "endLine": 52,
+      "endOffset": 1657,
       "kind": "method",
       "name": "JsonIndexWriter.sortKeys",
       "startLine": 40,
+      "startOffset": 1244,
       "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.sortKeys::method"
     }
   ]

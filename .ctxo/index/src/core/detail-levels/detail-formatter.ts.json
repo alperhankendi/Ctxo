@@ -26,7 +26,7 @@
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.estimateTokens::method"
     },
     {
-      "cyclomatic": 1,
+      "cyclomatic": 3,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.symbolCharEstimate::method"
     },
     {
@@ -34,36 +34,72 @@
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.truncateToTokenBudget::method"
     }
   ],
-  "contentHash": "87fa1f1923e497fc37ad7e6853db2d47b817a3d1a655e436ce13718ac0f1b3fb",
+  "contentHash": "3e4b0a85e6658fd8c6fc39ed5dc83dbeb8eed01efb193249f5273019c7181192",
   "edges": [
     {
       "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
       "kind": "imports",
-      "to": "src/core/types.ts::LogicSliceResult::class"
+      "to": "src/core/types.ts::LogicSliceResult::interface",
+      "typeOnly": true
     },
     {
       "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
       "kind": "imports",
-      "to": "src/core/types.ts::FormattedSlice::class"
+      "to": "src/core/types.ts::FormattedSlice::interface",
+      "typeOnly": true
     },
     {
       "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
       "kind": "imports",
-      "to": "src/core/types.ts::DetailLevel::class"
+      "to": "src/core/types.ts::DetailLevel::type",
+      "typeOnly": true
     },
     {
       "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
       "kind": "imports",
-      "to": "src/core/types.ts::SymbolNode::class"
+      "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
     },
     {
       "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
       "kind": "imports",
-      "to": "src/core/types.ts::GraphEdge::class"
+      "to": "src/core/types.ts::GraphEdge::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::LogicSliceResult::interface"
+    },
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::DetailLevel::type"
+    },
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::FormattedSlice::interface"
+    },
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::SymbolNode::type"
+    },
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::GraphEdge::type"
     }
   ],
   "file": "src/core/detail-levels/detail-formatter.ts",
   "intent": [
+    {
+      "date": "2026-04-02T02:58:40+03:00",
+      "hash": "e68a490d8a37b5e6a485e4693de0fcdaf9bc552b",
+      "kind": "commit",
+      "message": "Add byte offset indexing for O(1) source retrieval per symbol"
+    },
     {
       "date": "2026-03-29T23:36:52+03:00",
       "hash": "4172928b846a1f1bd60f0c82d30e1009b1aeaed5",
@@ -83,69 +119,87 @@
       "message": "Add core graph, logic-slice query, and detail formatter"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": [
     {
-      "endLine": 134,
+      "endLine": 137,
+      "endOffset": 4190,
       "kind": "class",
       "name": "DetailFormatter",
       "startLine": 11,
+      "startOffset": 174,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class"
     },
     {
       "endLine": 23,
+      "endOffset": 511,
       "kind": "method",
       "name": "DetailFormatter.format",
       "startLine": 12,
+      "startOffset": 207,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.format::method"
     },
     {
       "endLine": 41,
+      "endOffset": 1114,
       "kind": "method",
       "name": "DetailFormatter.formatL1",
       "startLine": 25,
+      "startOffset": 515,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL1::method"
     },
     {
       "endLine": 56,
+      "endOffset": 1648,
       "kind": "method",
       "name": "DetailFormatter.formatL2",
       "startLine": 43,
+      "startOffset": 1118,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL2::method"
     },
     {
       "endLine": 66,
+      "endOffset": 1907,
       "kind": "method",
       "name": "DetailFormatter.formatL3",
       "startLine": 58,
+      "startOffset": 1652,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL3::method"
     },
     {
       "endLine": 93,
+      "endOffset": 2695,
       "kind": "method",
       "name": "DetailFormatter.formatL4",
       "startLine": 68,
+      "startOffset": 1911,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL4::method"
     },
     {
       "endLine": 105,
+      "endOffset": 3103,
       "kind": "method",
       "name": "DetailFormatter.estimateTokens",
       "startLine": 95,
+      "startOffset": 2699,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.estimateTokens::method"
     },
     {
-      "endLine": 110,
+      "endLine": 113,
+      "endOffset": 3436,
       "kind": "method",
       "name": "DetailFormatter.symbolCharEstimate",
       "startLine": 107,
+      "startOffset": 3107,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.symbolCharEstimate::method"
     },
     {
-      "endLine": 133,
+      "endLine": 136,
+      "endOffset": 4188,
       "kind": "method",
       "name": "DetailFormatter.truncateToTokenBudget",
-      "startLine": 112,
+      "startLine": 115,
+      "startOffset": 3440,
       "symbolId": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.truncateToTokenBudget::method"
     }
   ]

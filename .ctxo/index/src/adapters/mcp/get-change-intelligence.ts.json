@@ -11,17 +11,20 @@
     {
       "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
       "kind": "imports",
-      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
       "kind": "imports",
-      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+      "to": "src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
       "kind": "imports",
-      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
@@ -36,12 +39,63 @@
     {
       "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::class"
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
       "kind": "imports",
       "to": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "calls",
+      "to": "src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "calls",
+      "to": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "calls",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
     }
   ],
   "file": "src/adapters/mcp/get-change-intelligence.ts",
@@ -83,13 +137,15 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 93,
+      "endOffset": 3740,
       "kind": "function",
       "name": "handleGetChangeIntelligence",
       "startLine": 13,
+      "startOffset": 575,
       "symbolId": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function"
     }
   ]

@@ -1,26 +1,41 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "e0f6c83bfc1d4fb893e4667ad65fda0ae7ae8ce02255609e813ecdf7f591adb9",
+  "contentHash": "f637d0cdeb3a4248a67938cb430ad5045294ebfe9ad86f0dd986251b72acce48",
   "edges": [
     {
       "from": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface",
       "kind": "imports",
-      "to": "src/core/types.ts::SymbolNode::class"
+      "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
     },
     {
       "from": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface",
       "kind": "imports",
-      "to": "src/core/types.ts::GraphEdge::class"
+      "to": "src/core/types.ts::GraphEdge::type",
+      "typeOnly": true
     },
     {
       "from": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface",
       "kind": "imports",
-      "to": "src/core/types.ts::ComplexityMetrics::class"
+      "to": "src/core/types.ts::ComplexityMetrics::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolKind::type",
+      "typeOnly": true
     }
   ],
   "file": "src/ports/i-language-adapter.ts",
   "intent": [
+    {
+      "date": "2026-04-02T02:23:24+03:00",
+      "hash": "01f901c3e0ce8dba7c0281a8a75ae984a07773bf",
+      "kind": "commit",
+      "message": "Implement confirmed vs potential blast radius split (4-phase fix)"
+    },
     {
       "date": "2026-03-29T15:55:40+03:00",
       "hash": "07a8564dae8012725a823d0ac4171e1ea092921d",
@@ -28,13 +43,15 @@
       "message": "Add TypeScript language adapter with ts-morph symbol/edge/complexity extraction"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": [
     {
-      "endLine": 9,
+      "endLine": 10,
+      "endOffset": 520,
       "kind": "interface",
       "name": "ILanguageAdapter",
       "startLine": 2,
+      "startOffset": 95,
       "symbolId": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface"
     }
   ]

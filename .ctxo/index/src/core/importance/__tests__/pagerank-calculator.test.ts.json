@@ -1,0 +1,34 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "fca18b525e90e16d5867381f18fbef82d1473f9f8bc54b7abcc06bb7b55802de",
+  "edges": [
+    {
+      "from": "src/core/importance/__tests__/pagerank-calculator.test.ts::pagerank-calculator.test::variable",
+      "kind": "imports",
+      "to": "src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "src/core/importance/__tests__/pagerank-calculator.test.ts::pagerank-calculator.test::variable",
+      "kind": "imports",
+      "to": "src/core/importance/pagerank-calculator.ts::PageRankCalculator::class"
+    },
+    {
+      "from": "src/core/importance/__tests__/pagerank-calculator.test.ts::pagerank-calculator.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "src/core/importance/__tests__/pagerank-calculator.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-02T02:39:37+03:00",
+      "hash": "b8a4e40d0b8ab9ab9066d93ba48d4a2bf0c012f1",
+      "kind": "commit",
+      "message": "Add get_symbol_importance MCP tool — PageRank centrality on dependency graph"
+    }
+  ],
+  "lastModified": 1775091860,
+  "symbols": []
+}

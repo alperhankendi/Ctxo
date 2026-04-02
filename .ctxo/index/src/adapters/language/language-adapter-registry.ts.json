@@ -15,6 +15,12 @@
     {
       "from": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class",
       "kind": "imports",
+      "to": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class",
+      "kind": "uses",
       "to": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface"
     }
   ],
@@ -27,27 +33,33 @@
       "message": "Add TypeScript language adapter with ts-morph symbol/edge/complexity extraction"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 20,
+      "endOffset": 630,
       "kind": "class",
       "name": "LanguageAdapterRegistry",
       "startLine": 3,
+      "startOffset": 113,
       "symbolId": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class"
     },
     {
       "endLine": 10,
+      "endOffset": 394,
       "kind": "method",
       "name": "LanguageAdapterRegistry.register",
       "startLine": 6,
+      "startOffset": 233,
       "symbolId": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.register::method"
     },
     {
       "endLine": 19,
+      "endOffset": 628,
       "kind": "method",
       "name": "LanguageAdapterRegistry.getAdapter",
       "startLine": 12,
+      "startOffset": 398,
       "symbolId": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.getAdapter::method"
     }
   ]

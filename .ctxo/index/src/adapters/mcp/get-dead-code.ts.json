@@ -11,12 +11,14 @@
     {
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
       "kind": "imports",
-      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
       "kind": "imports",
-      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
@@ -36,7 +38,8 @@
     {
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::class"
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
@@ -46,6 +49,41 @@
     {
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
       "kind": "calls",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "calls",
+      "to": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "uses",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "uses",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "uses",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "uses",
+      "to": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "uses",
+      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "uses",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
     }
   ],
@@ -100,13 +138,15 @@
       "message": "Add blast radius calculator and architectural overlay"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 53,
+      "endOffset": 1823,
       "kind": "function",
       "name": "handleFindDeadCode",
       "startLine": 11,
+      "startOffset": 477,
       "symbolId": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function"
     }
   ]

@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "a7c4277c443e74a3d37c3a897e4059e91cd72538f8a9f0aa9042ffdb96cb809d",
+  "contentHash": "b057d42434651f933693c32a161dde1b3cdb75fb79125b2a2ce976123424aba6",
   "edges": [
     {
       "from": "src/adapters/language/__tests__/ts-morph-adapter.test.ts::ts-morph-adapter.test::variable",
@@ -12,12 +12,24 @@
   "file": "src/adapters/language/__tests__/ts-morph-adapter.test.ts",
   "intent": [
     {
+      "date": "2026-04-02T02:58:40+03:00",
+      "hash": "e68a490d8a37b5e6a485e4693de0fcdaf9bc552b",
+      "kind": "commit",
+      "message": "Add byte offset indexing for O(1) source retrieval per symbol"
+    },
+    {
+      "date": "2026-04-02T02:23:24+03:00",
+      "hash": "01f901c3e0ce8dba7c0281a8a75ae984a07773bf",
+      "kind": "commit",
+      "message": "Implement confirmed vs potential blast radius split (4-phase fix)"
+    },
+    {
       "date": "2026-03-29T15:55:40+03:00",
       "hash": "07a8564dae8012725a823d0ac4171e1ea092921d",
       "kind": "commit",
       "message": "Add TypeScript language adapter with ts-morph symbol/edge/complexity extraction"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": []
 }

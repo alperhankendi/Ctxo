@@ -21,7 +21,8 @@
     {
       "from": "src/adapters/mcp/__tests__/get-architectural-overlay.test.ts::get-architectural-overlay.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::FileIndex::class"
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
     }
   ],
   "file": "src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
@@ -33,6 +34,6 @@
       "message": "Add missing MCP handler tests and edge case coverage"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": []
 }

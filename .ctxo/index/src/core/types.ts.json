@@ -1,10 +1,22 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "42b4f3a22bf58b42ab4867158005635eff86b89a86d5f7a8fc46f7b1fa11deeb",
+  "contentHash": "c698fb54adad51d4a5a9cfb76f1d64d80ec13b67286ef76e5c6418a049e64d21",
   "edges": [],
   "file": "src/core/types.ts",
   "intent": [
+    {
+      "date": "2026-04-02T02:58:40+03:00",
+      "hash": "e68a490d8a37b5e6a485e4693de0fcdaf9bc552b",
+      "kind": "commit",
+      "message": "Add byte offset indexing for O(1) source retrieval per symbol"
+    },
+    {
+      "date": "2026-04-02T02:23:24+03:00",
+      "hash": "01f901c3e0ce8dba7c0281a8a75ae984a07773bf",
+      "kind": "commit",
+      "message": "Implement confirmed vs potential blast radius split (4-phase fix)"
+    },
     {
       "date": "2026-03-29T23:36:52+03:00",
       "hash": "4172928b846a1f1bd60f0c82d30e1009b1aeaed5",
@@ -30,237 +42,303 @@
       "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": [
     {
-      "endLine": 130,
+      "endLine": 133,
+      "endOffset": 3763,
       "kind": "interface",
       "name": "LogicSliceResult",
-      "startLine": 126,
+      "startLine": 129,
+      "startOffset": 3609,
       "symbolId": "src/core/types.ts::LogicSliceResult::interface"
     },
     {
-      "endLine": 137,
+      "endLine": 140,
+      "endOffset": 3941,
       "kind": "interface",
       "name": "TruncationInfo",
-      "startLine": 134,
+      "startLine": 137,
+      "startOffset": 3834,
       "symbolId": "src/core/types.ts::TruncationInfo::interface"
     },
     {
-      "endLine": 146,
+      "endLine": 149,
+      "endOffset": 4204,
       "kind": "interface",
       "name": "FormattedSlice",
-      "startLine": 139,
+      "startLine": 142,
+      "startOffset": 3943,
       "symbolId": "src/core/types.ts::FormattedSlice::interface"
     },
     {
-      "endLine": 153,
+      "endLine": 156,
+      "endOffset": 4373,
       "kind": "interface",
       "name": "ComplexityMetrics",
-      "startLine": 150,
+      "startLine": 153,
+      "startOffset": 4275,
       "symbolId": "src/core/types.ts::ComplexityMetrics::interface"
     },
     {
-      "endLine": 158,
+      "endLine": 161,
+      "endOffset": 4466,
       "kind": "interface",
       "name": "ChurnData",
-      "startLine": 155,
+      "startLine": 158,
+      "startOffset": 4375,
       "symbolId": "src/core/types.ts::ChurnData::interface"
     },
     {
-      "endLine": 169,
+      "endLine": 172,
+      "endOffset": 4774,
       "kind": "interface",
       "name": "ChangeIntelligenceScore",
-      "startLine": 163,
+      "startLine": 166,
+      "startOffset": 4586,
       "symbolId": "src/core/types.ts::ChangeIntelligenceScore::interface"
     },
     {
-      "endLine": 177,
+      "endLine": 180,
+      "endOffset": 5046,
       "kind": "interface",
       "name": "WhyContextResult",
-      "startLine": 173,
+      "startLine": 176,
+      "startOffset": 4845,
       "symbolId": "src/core/types.ts::WhyContextResult::interface"
     },
     {
-      "endLine": 186,
+      "endLine": 189,
+      "endOffset": 5255,
       "kind": "interface",
       "name": "CommitRecord",
-      "startLine": 181,
+      "startLine": 184,
+      "startOffset": 5117,
       "symbolId": "src/core/types.ts::CommitRecord::interface"
     },
     {
-      "endLine": 195,
+      "endLine": 198,
+      "endOffset": 5464,
       "kind": "interface",
       "name": "BlameLine",
-      "startLine": 190,
+      "startLine": 193,
+      "startOffset": 5326,
       "symbolId": "src/core/types.ts::BlameLine::interface"
     },
     {
       "endLine": 14,
+      "endOffset": 326,
       "kind": "type",
       "name": "SymbolKind",
       "startLine": 14,
+      "startOffset": 268,
       "symbolId": "src/core/types.ts::SymbolKind::type"
     },
     {
       "endLine": 27,
+      "endOffset": 605,
       "kind": "type",
       "name": "EdgeKind",
       "startLine": 27,
+      "startOffset": 551,
       "symbolId": "src/core/types.ts::EdgeKind::type"
     },
     {
       "endLine": 39,
+      "endOffset": 900,
       "kind": "type",
       "name": "DetailLevel",
       "startLine": 39,
+      "startOffset": 840,
       "symbolId": "src/core/types.ts::DetailLevel::type"
     },
     {
       "endLine": 60,
+      "endOffset": 1512,
       "kind": "type",
       "name": "SymbolId",
       "startLine": 60,
+      "startOffset": 1458,
       "symbolId": "src/core/types.ts::SymbolId::type"
     },
     {
-      "endLine": 75,
+      "endLine": 77,
+      "endOffset": 2094,
       "kind": "type",
       "name": "SymbolNode",
-      "startLine": 75,
+      "startLine": 77,
+      "startOffset": 2036,
       "symbolId": "src/core/types.ts::SymbolNode::type"
     },
     {
-      "endLine": 84,
+      "endLine": 87,
+      "endOffset": 2373,
       "kind": "type",
       "name": "GraphEdge",
-      "startLine": 84,
+      "startLine": 87,
+      "startOffset": 2317,
       "symbolId": "src/core/types.ts::GraphEdge::type"
     },
     {
-      "endLine": 94,
+      "endLine": 97,
+      "endOffset": 2661,
       "kind": "type",
       "name": "CommitIntent",
-      "startLine": 94,
+      "startLine": 97,
+      "startOffset": 2599,
       "symbolId": "src/core/types.ts::CommitIntent::type"
     },
     {
-      "endLine": 103,
+      "endLine": 106,
+      "endOffset": 2917,
       "kind": "type",
       "name": "AntiPattern",
-      "startLine": 103,
+      "startLine": 106,
+      "startOffset": 2857,
       "symbolId": "src/core/types.ts::AntiPattern::type"
     },
     {
-      "endLine": 122,
+      "endLine": 125,
+      "endOffset": 3538,
       "kind": "type",
       "name": "FileIndex",
-      "startLine": 122,
+      "startLine": 125,
+      "startOffset": 3482,
       "symbolId": "src/core/types.ts::FileIndex::type"
     },
     {
-      "endLine": 161,
+      "endLine": 164,
+      "endOffset": 4584,
       "kind": "type",
       "name": "ScoreBand",
-      "startLine": 161,
+      "startLine": 164,
+      "startOffset": 4531,
       "symbolId": "src/core/types.ts::ScoreBand::type"
     },
     {
       "endLine": 11,
+      "endOffset": 211,
       "kind": "variable",
       "name": "SYMBOL_KINDS",
       "startLine": 4,
+      "startOffset": 108,
       "symbolId": "src/core/types.ts::SYMBOL_KINDS::variable"
     },
     {
       "endLine": 13,
+      "endOffset": 266,
       "kind": "variable",
       "name": "SymbolKindSchema",
       "startLine": 13,
+      "startOffset": 227,
       "symbolId": "src/core/types.ts::SymbolKindSchema::variable"
     },
     {
       "endLine": 24,
+      "endOffset": 498,
       "kind": "variable",
       "name": "EDGE_KINDS",
       "startLine": 18,
+      "startOffset": 410,
       "symbolId": "src/core/types.ts::EDGE_KINDS::variable"
     },
     {
       "endLine": 26,
+      "endOffset": 549,
       "kind": "variable",
       "name": "EdgeKindSchema",
       "startLine": 26,
+      "startOffset": 514,
       "symbolId": "src/core/types.ts::EdgeKindSchema::variable"
     },
     {
       "endLine": 31,
+      "endOffset": 726,
       "kind": "variable",
       "name": "DETAIL_LEVELS",
       "startLine": 31,
+      "startOffset": 689,
       "symbolId": "src/core/types.ts::DETAIL_LEVELS::variable"
     },
     {
       "endLine": 38,
+      "endOffset": 838,
       "kind": "variable",
       "name": "DetailLevelSchema",
       "startLine": 33,
+      "startOffset": 742,
       "symbolId": "src/core/types.ts::DetailLevelSchema::variable"
     },
     {
       "endLine": 59,
+      "endOffset": 1456,
       "kind": "variable",
       "name": "SymbolIdSchema",
       "startLine": 47,
+      "startOffset": 1077,
       "symbolId": "src/core/types.ts::SymbolIdSchema::variable"
     },
     {
-      "endLine": 74,
+      "endLine": 76,
+      "endOffset": 2034,
       "kind": "variable",
       "name": "SymbolNodeSchema",
       "startLine": 64,
+      "startOffset": 1596,
       "symbolId": "src/core/types.ts::SymbolNodeSchema::variable"
     },
     {
-      "endLine": 83,
+      "endLine": 86,
+      "endOffset": 2315,
       "kind": "variable",
       "name": "GraphEdgeSchema",
-      "startLine": 79,
+      "startLine": 81,
+      "startOffset": 2178,
       "symbolId": "src/core/types.ts::GraphEdgeSchema::variable"
     },
     {
-      "endLine": 93,
+      "endLine": 96,
+      "endOffset": 2597,
       "kind": "variable",
       "name": "CommitIntentSchema",
-      "startLine": 88,
+      "startLine": 91,
+      "startOffset": 2457,
       "symbolId": "src/core/types.ts::CommitIntentSchema::variable"
     },
     {
-      "endLine": 102,
+      "endLine": 105,
+      "endOffset": 2855,
       "kind": "variable",
       "name": "AntiPatternSchema",
-      "startLine": 98,
+      "startLine": 101,
+      "startOffset": 2745,
       "symbolId": "src/core/types.ts::AntiPatternSchema::variable"
     },
     {
-      "endLine": 110,
+      "endLine": 113,
+      "endOffset": 3111,
       "kind": "variable",
       "name": "ComplexityMetricsSchema",
-      "startLine": 107,
+      "startLine": 110,
+      "startOffset": 3001,
       "symbolId": "src/core/types.ts::ComplexityMetricsSchema::variable"
     },
     {
-      "endLine": 121,
+      "endLine": 124,
+      "endOffset": 3480,
       "kind": "variable",
       "name": "FileIndexSchema",
-      "startLine": 112,
+      "startLine": 115,
+      "startOffset": 3127,
       "symbolId": "src/core/types.ts::FileIndexSchema::variable"
     },
     {
-      "endLine": 160,
+      "endLine": 163,
+      "endOffset": 4529,
       "kind": "variable",
       "name": "SCORE_BANDS",
-      "startLine": 160,
+      "startLine": 163,
+      "startOffset": 4481,
       "symbolId": "src/core/types.ts::SCORE_BANDS::variable"
     }
   ]

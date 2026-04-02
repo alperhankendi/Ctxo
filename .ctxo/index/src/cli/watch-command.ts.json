@@ -51,17 +51,115 @@
     {
       "from": "src/cli/watch-command.ts::WatchCommand::class",
       "kind": "imports",
-      "to": "src/core/types.ts::FileIndex::class"
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
     },
     {
       "from": "src/cli/watch-command.ts::WatchCommand::class",
       "kind": "imports",
-      "to": "src/core/types.ts::CommitIntent::class"
+      "to": "src/core/types.ts::CommitIntent::type",
+      "typeOnly": true
     },
     {
       "from": "src/cli/watch-command.ts::WatchCommand::class",
       "kind": "imports",
-      "to": "src/core/types.ts::AntiPattern::class"
+      "to": "src/core/types.ts::AntiPattern::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "src/core/staleness/content-hasher.ts::ContentHasher::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "src/core/staleness/content-hasher.ts::ContentHasher::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::CommitIntent::type"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::AntiPattern::type"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::FileIndex::type"
     }
   ],
   "file": "src/cli/watch-command.ts",
@@ -91,20 +189,24 @@
       "message": "Implement all CLI commands and add comprehensive test coverage"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 127,
+      "endOffset": 4574,
       "kind": "class",
       "name": "WatchCommand",
       "startLine": 15,
+      "startOffset": 904,
       "symbolId": "src/cli/watch-command.ts::WatchCommand::class"
     },
     {
       "endLine": 126,
+      "endOffset": 4572,
       "kind": "method",
       "name": "WatchCommand.run",
       "startLine": 24,
+      "startOffset": 1138,
       "symbolId": "src/cli/watch-command.ts::WatchCommand.run::method"
     }
   ]

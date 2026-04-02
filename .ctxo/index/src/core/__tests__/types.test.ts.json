@@ -6,37 +6,37 @@
     {
       "from": "src/core/__tests__/types.test.ts::types.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::SymbolKindSchema::class"
+      "to": "src/core/types.ts::SymbolKindSchema::variable"
     },
     {
       "from": "src/core/__tests__/types.test.ts::types.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::SymbolNodeSchema::class"
+      "to": "src/core/types.ts::SymbolNodeSchema::variable"
     },
     {
       "from": "src/core/__tests__/types.test.ts::types.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::GraphEdgeSchema::class"
+      "to": "src/core/types.ts::GraphEdgeSchema::variable"
     },
     {
       "from": "src/core/__tests__/types.test.ts::types.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::FileIndexSchema::class"
+      "to": "src/core/types.ts::FileIndexSchema::variable"
     },
     {
       "from": "src/core/__tests__/types.test.ts::types.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::SymbolIdSchema::class"
+      "to": "src/core/types.ts::SymbolIdSchema::variable"
     },
     {
       "from": "src/core/__tests__/types.test.ts::types.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::EdgeKindSchema::class"
+      "to": "src/core/types.ts::EdgeKindSchema::variable"
     },
     {
       "from": "src/core/__tests__/types.test.ts::types.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::DetailLevelSchema::class"
+      "to": "src/core/types.ts::DetailLevelSchema::variable"
     }
   ],
   "file": "src/core/__tests__/types.test.ts",
@@ -48,6 +48,6 @@
       "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": []
 }

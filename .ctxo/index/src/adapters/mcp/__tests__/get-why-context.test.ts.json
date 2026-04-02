@@ -21,22 +21,26 @@
     {
       "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::FileIndex::class"
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::CommitRecord::class"
+      "to": "src/core/types.ts::CommitRecord::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::ChurnData::class"
+      "to": "src/core/types.ts::ChurnData::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
       "kind": "imports",
-      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+      "to": "src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
     }
   ],
   "file": "src/adapters/mcp/__tests__/get-why-context.test.ts",
@@ -54,6 +58,6 @@
       "message": "Add missing MCP handler tests and edge case coverage"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": []
 }

@@ -17,7 +17,8 @@
     {
       "from": "src/core/why-context/__tests__/revert-detector.test.ts::revert-detector.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::CommitRecord::class"
+      "to": "src/core/types.ts::CommitRecord::interface",
+      "typeOnly": true
     }
   ],
   "file": "src/core/why-context/__tests__/revert-detector.test.ts",
@@ -35,6 +36,6 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": []
 }

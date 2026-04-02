@@ -11,22 +11,46 @@
     {
       "from": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler::class",
       "kind": "imports",
-      "to": "src/core/types.ts::CommitIntent::class"
+      "to": "src/core/types.ts::CommitIntent::type",
+      "typeOnly": true
     },
     {
       "from": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler::class",
       "kind": "imports",
-      "to": "src/core/types.ts::AntiPattern::class"
+      "to": "src/core/types.ts::AntiPattern::type",
+      "typeOnly": true
     },
     {
       "from": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler::class",
       "kind": "imports",
-      "to": "src/core/types.ts::WhyContextResult::class"
+      "to": "src/core/types.ts::WhyContextResult::interface",
+      "typeOnly": true
     },
     {
       "from": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler::class",
       "kind": "imports",
-      "to": "src/core/types.ts::ChangeIntelligenceScore::class"
+      "to": "src/core/types.ts::ChangeIntelligenceScore::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::CommitIntent::type"
+    },
+    {
+      "from": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::AntiPattern::type"
+    },
+    {
+      "from": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::ChangeIntelligenceScore::interface"
+    },
+    {
+      "from": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::WhyContextResult::interface"
     }
   ],
   "file": "src/core/why-context/why-context-assembler.ts",
@@ -38,20 +62,24 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 14,
+      "endOffset": 419,
       "kind": "class",
       "name": "WhyContextAssembler",
       "startLine": 2,
+      "startOffset": 106,
       "symbolId": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler::class"
     },
     {
       "endLine": 13,
+      "endOffset": 417,
       "kind": "method",
       "name": "WhyContextAssembler.assemble",
       "startLine": 3,
+      "startOffset": 143,
       "symbolId": "src/core/why-context/why-context-assembler.ts::WhyContextAssembler.assemble::method"
     }
   ]

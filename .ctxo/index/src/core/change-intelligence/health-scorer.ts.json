@@ -15,12 +15,24 @@
     {
       "from": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class",
       "kind": "imports",
-      "to": "src/core/types.ts::ChangeIntelligenceScore::class"
+      "to": "src/core/types.ts::ChangeIntelligenceScore::interface",
+      "typeOnly": true
     },
     {
       "from": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class",
       "kind": "imports",
-      "to": "src/core/types.ts::ScoreBand::class"
+      "to": "src/core/types.ts::ScoreBand::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::ChangeIntelligenceScore::interface"
+    },
+    {
+      "from": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::ScoreBand::type"
     }
   ],
   "file": "src/core/change-intelligence/health-scorer.ts",
@@ -32,27 +44,33 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 15,
+      "endOffset": 492,
       "kind": "class",
       "name": "HealthScorer",
       "startLine": 2,
+      "startOffset": 72,
       "symbolId": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class"
     },
     {
       "endLine": 8,
+      "endOffset": 336,
       "kind": "method",
       "name": "HealthScorer.score",
       "startLine": 3,
+      "startOffset": 102,
       "symbolId": "src/core/change-intelligence/health-scorer.ts::HealthScorer.score::method"
     },
     {
       "endLine": 14,
+      "endOffset": 490,
       "kind": "method",
       "name": "HealthScorer.toBand",
       "startLine": 10,
+      "startOffset": 340,
       "symbolId": "src/core/change-intelligence/health-scorer.ts::HealthScorer.toBand::method"
     }
   ]

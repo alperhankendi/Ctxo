@@ -17,20 +17,24 @@
       "message": "Complete Phase 9: content hasher, watcher port/adapter extraction"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 6,
+      "endOffset": 183,
       "kind": "class",
       "name": "ContentHasher",
       "startLine": 2,
+      "startOffset": 43,
       "symbolId": "src/core/staleness/content-hasher.ts::ContentHasher::class"
     },
     {
       "endLine": 5,
+      "endOffset": 181,
       "kind": "method",
       "name": "ContentHasher.hash",
       "startLine": 3,
+      "startOffset": 74,
       "symbolId": "src/core/staleness/content-hasher.ts::ContentHasher.hash::method"
     }
   ]

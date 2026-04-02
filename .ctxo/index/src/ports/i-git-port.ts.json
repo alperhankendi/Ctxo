@@ -6,12 +6,14 @@
     {
       "from": "src/ports/i-git-port.ts::IGitPort::interface",
       "kind": "imports",
-      "to": "src/core/types.ts::CommitRecord::class"
+      "to": "src/core/types.ts::CommitRecord::interface",
+      "typeOnly": true
     },
     {
       "from": "src/ports/i-git-port.ts::IGitPort::interface",
       "kind": "imports",
-      "to": "src/core/types.ts::ChurnData::class"
+      "to": "src/core/types.ts::ChurnData::interface",
+      "typeOnly": true
     }
   ],
   "file": "src/ports/i-git-port.ts",
@@ -29,13 +31,15 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 7,
+      "endOffset": 326,
       "kind": "interface",
       "name": "IGitPort",
       "startLine": 2,
+      "startOffset": 68,
       "symbolId": "src/ports/i-git-port.ts::IGitPort::interface"
     }
   ]

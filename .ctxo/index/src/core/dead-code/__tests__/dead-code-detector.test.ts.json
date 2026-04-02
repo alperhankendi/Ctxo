@@ -16,7 +16,8 @@
     {
       "from": "src/core/dead-code/__tests__/dead-code-detector.test.ts::dead-code-detector.test::variable",
       "kind": "imports",
-      "to": "src/core/types.ts::SymbolNode::class"
+      "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
     }
   ],
   "file": "src/core/dead-code/__tests__/dead-code-detector.test.ts",
@@ -40,6 +41,6 @@
       "message": "Add find_dead_code MCP tool — unreachable symbol and file detection"
     }
   ],
-  "lastModified": 1774916780,
+  "lastModified": 1775091860,
   "symbols": []
 }

@@ -23,22 +23,40 @@
     {
       "from": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class",
       "kind": "imports",
-      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+      "to": "src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class",
       "kind": "imports",
-      "to": "src/core/types.ts::CommitRecord::class"
+      "to": "src/core/types.ts::CommitRecord::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class",
       "kind": "imports",
-      "to": "src/core/types.ts::ChurnData::class"
+      "to": "src/core/types.ts::ChurnData::interface",
+      "typeOnly": true
     },
     {
       "from": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class",
       "kind": "implements",
-      "to": "../../ports/i-git-port.js::IGitPort::interface"
+      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+    },
+    {
+      "from": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class",
+      "kind": "uses",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+    },
+    {
+      "from": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::CommitRecord::interface"
+    },
+    {
+      "from": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::ChurnData::interface"
     }
   ],
   "file": "src/adapters/git/simple-git-adapter.ts",
@@ -62,41 +80,51 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1774916779,
+  "lastModified": 1775091860,
   "symbols": [
     {
       "endLine": 63,
+      "endOffset": 1860,
       "kind": "class",
       "name": "SimpleGitAdapter",
       "startLine": 4,
+      "startOffset": 188,
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
     },
     {
       "endLine": 18,
+      "endOffset": 517,
       "kind": "method",
       "name": "SimpleGitAdapter.isAvailable",
       "startLine": 11,
+      "startOffset": 366,
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.isAvailable::method"
     },
     {
       "endLine": 38,
+      "endOffset": 1096,
       "kind": "method",
       "name": "SimpleGitAdapter.getCommitHistory",
       "startLine": 20,
+      "startOffset": 523,
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getCommitHistory::method"
     },
     {
       "endLine": 48,
+      "endOffset": 1449,
       "kind": "method",
       "name": "SimpleGitAdapter.getChangedFiles",
       "startLine": 40,
+      "startOffset": 1102,
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getChangedFiles::method"
     },
     {
       "endLine": 62,
+      "endOffset": 1857,
       "kind": "method",
       "name": "SimpleGitAdapter.getFileChurn",
       "startLine": 50,
+      "startOffset": 1455,
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getFileChurn::method"
     }
   ]

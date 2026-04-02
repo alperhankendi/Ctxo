@@ -128,4 +128,30 @@ describe('SymbolGraph', () => {
 
     expect(graph.hasNode('src/b.ts::B::function')).toBe(false);
   });
+
+  it('resolves .js extension to .ts in edge targets (BUG-19)', () => {
+    const graph = new SymbolGraph();
+    graph.addNode(makeNode('src/ports/i-storage-port.ts::IStoragePort::interface'));
+    graph.addNode(makeNode('src/adapters/storage/adapter.ts::MyAdapter::class'));
+
+    graph.addEdge(makeEdge(
+      'src/adapters/storage/adapter.ts::MyAdapter::class',
+      'src/ports/i-storage-port.js::IStoragePort::interface',
+      'implements',
+    ));
+
+    const forward = graph.getForwardEdges('src/adapters/storage/adapter.ts::MyAdapter::class');
+    expect(forward).toHaveLength(1);
+    expect(forward[0]?.to).toBe('src/ports/i-storage-port.ts::IStoragePort::interface');
+  });
+
+  it('getNode and hasNode resolve .js → .ts via fuzzy lookup (BUG-19)', () => {
+    const graph = new SymbolGraph();
+    graph.addNode(makeNode('src/ports/i-storage-port.ts::IStoragePort::interface'));
+
+    // Direct lookup with .js should resolve via fuzzy
+    expect(graph.hasNode('src/ports/i-storage-port.js::IStoragePort::interface')).toBe(true);
+    expect(graph.getNode('src/ports/i-storage-port.js::IStoragePort::interface')?.symbolId)
+      .toBe('src/ports/i-storage-port.ts::IStoragePort::interface');
+  });
 });
