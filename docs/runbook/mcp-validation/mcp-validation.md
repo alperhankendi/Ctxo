@@ -31,6 +31,7 @@ time npx tsx src/index.ts index
 * [ ] No errors on stderr
 * [ ] Build time under 10 seconds
 * [ ] Default `--max-history 20` applied (each file stores at most 20 commits)
+* [ ] Two-pass indexing: Phase 1a (symbols + registry), Phase 1b (edges with registry)
 
 **Record metrics:**
 
@@ -72,9 +73,9 @@ console.log(maxIntent <= 5 ? 'PASS: --max-history 5 respected' : 'FAIL: intent e
 node -e "
 const fs = require('fs'); const path = require('path');
 function walk(dir) { let f=[]; for (const e of fs.readdirSync(dir,{withFileTypes:true})) { const p=path.join(dir,e.name); if(e.isDirectory()) f.push(...walk(p)); else if(e.name.endsWith('.json')) f.push(p); } return f; }
-const files=walk('.ctxo/index'); let s=0,ed=0,i=0,a=0,ek={};
-for(const f of files){const d=JSON.parse(fs.readFileSync(f,'utf8'));s+=(d.symbols||[]).length;ed+=(d.edges||[]).length;i+=(d.intent||[]).length;a+=(d.antiPatterns||[]).length;for(const e of(d.edges||[]))ek[e.kind]=(ek[e.kind]||0)+1;}
-console.log(JSON.stringify({files:files.length,symbols:s,edges:ed,intents:i,antiPatterns:a,edgeKinds:ek},null,2));
+const files=walk('.ctxo/index'); let s=0,ed=0,i=0,a=0,bo=0,ek={},to=0;
+for(const f of files){const d=JSON.parse(fs.readFileSync(f,'utf8'));s+=(d.symbols||[]).length;ed+=(d.edges||[]).length;i+=(d.intent||[]).length;a+=(d.antiPatterns||[]).length;for(const e of(d.edges||[]))ek[e.kind]=(ek[e.kind]||0)+1;for(const sym of(d.symbols||[]))if(sym.startOffset!==undefined)bo++;for(const e of(d.edges||[]))if(e.typeOnly)to++;}
+console.log(JSON.stringify({files:files.length,symbols:s,edges:ed,intents:i,antiPatterns:a,symbolsWithByteOffset:bo,typeOnlyEdges:to,edgeKinds:ek},null,2));
 "
 ```
 
@@ -85,17 +86,22 @@ console.log(JSON.stringify({files:files.length,symbols:s,edges:ed,intents:i,anti
 * [ ] `edges` > 0
 * [ ] `intents` > 0 (git intent is indexed)
 * [ ] `antiPatterns` >= 0 (may be 0 if no reverts detected)
-* [ ] `edgeKinds` contains `imports`, `calls`, `implements`
+* [ ] `edgeKinds` contains `imports`, `calls`, `implements`, `uses`
+* [ ] `symbolsWithByteOffset` > 0 (byte offset indexing active)
+* [ ] `symbolsWithByteOffset` equals `symbols` count (all symbols have offsets)
+* [ ] `typeOnlyEdges` >= 0 (`import type` edges flagged)
 
 **Record metrics:**
 
-| Metric       | Value                                         |
-| ------------ | --------------------------------------------- |
-| Symbols      | \_\_\_                                        |
-| Edges        | \_\_\_                                        |
-| Intents      | \_\_\_                                        |
-| AntiPatterns | \_\_\_                                        |
-| Edge kinds   | imports=\_\_\_ calls=\_\_\_ implements=\_\_\_ |
+| Metric                 | Value                                                  |
+| ---------------------- | ------------------------------------------------------ |
+| Symbols                | \_\_\_                                                 |
+| Edges                  | \_\_\_                                                 |
+| Intents                | \_\_\_                                                 |
+| AntiPatterns           | \_\_\_                                                 |
+| Symbols w/ byte offset | \_\_\_                                                 |
+| typeOnly edges         | \_\_\_                                                 |
+| Edge kinds             | imports=\_\_\_ calls=\_\_\_ implements=\_\_\_ uses=\_\_\_ |
 
 ***
 
@@ -1139,7 +1145,10 @@ After completing all steps, fill in:
 | -- | ------------------------------------------------------------------- | --------- |
 | 1  | Index builds from zero without errors                               |           |
 | 2  | Index metrics: symbols > 0, edges > 0, intents > 0                  |           |
-| 3  | Edge kinds include imports + calls + implements                     |           |
+| 2a | All symbols have byte offsets (startOffset/endOffset)                |           |
+| 2b | `typeOnly` edges flagged for `import type` statements               |           |
+| 2c | `uses` edges present (confirmed blast radius)                       |           |
+| 3  | Edge kinds include imports + calls + implements + uses              |           |
 | 4  | `get_logic_slice` — progressive detail L1 < L2 < L3                 |           |
 | 5  | `get_logic_slice` — transitive dependencies resolved                |           |
 | 6  | `get_blast_radius` — impactScore > 0, multi-depth dependents        |           |
@@ -1195,7 +1204,7 @@ After completing all steps, fill in:
 | 22 | Token savings > 10x for aggregate                                   |           |
 | 23 | Context budget chart shows MCP uses < 1% of 1M window               |           |
 
-**Result:** \_\_\_/52 checks passed
+**Result:** \_\_\_/55 checks passed
 
 ***
 
