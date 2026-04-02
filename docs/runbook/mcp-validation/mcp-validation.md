@@ -1208,9 +1208,55 @@ After completing all steps, fill in:
 
 ***
 
-## Appendix: Quick One-Liner Smoke Test
+## Appendix A: Automated Smoke Test
 
-For fast validation without filling the full checklist:
+Run all 13 MCP tool calls automatically via InMemoryTransport:
+
+```Shell
+# 1. Clean + rebuild index
+rm -rf .ctxo/.cache/ .ctxo/index/ && npx tsx src/index.ts index
+
+# 2. Run unit tests
+npx vitest run
+
+# 3. Run MCP validation (13 tool calls, expects 13/13 PASS)
+npx tsx docs/runbook/mcp-validation/mcp-validation-test.ts
+```
+
+**What it does:**
+- Boots the full MCP server in-process using `InMemoryTransport` (no stdio)
+- Registers all 13 tools with the same wiring as `src/index.ts`
+- Calls each tool with representative arguments and parses the response
+- Prints `PASS | <key metrics>` or `FAIL` per tool
+- Exits with code 0 if 13/13 pass, code 1 otherwise
+
+**Expected output (all green):**
+
+```
+get_logic_slice:          PASS | root=LogicSliceQuery deps=4 edges=12
+get_blast_radius:         PASS | impact=38 conf=35 pot=3 risk=1.000
+get_architectural_overlay:PASS | Configuration=3 Test=62 Adapter=28 Domain=23 ...
+get_why_context:          PASS | commits=6 anti=1
+get_change_intelligence:  PASS | cx=0.44 churn=0.67 comp=0.30 band=low
+find_dead_code:           PASS | total=241 reach=93 dead=148 pct=61.4% ...
+get_context_for_task:     PASS | ctx=8 tok=3970
+get_ranked_context:       PASS | res=22 tok=1999 top=IMaskingPort
+search_symbols:           PASS | match=13 top=handleFindImporters
+get_changed_symbols:      PASS | files=0 syms=0
+find_importers:           PASS | imp=38 maxD=3
+get_class_hierarchy:      PASS | hier=4 cls=8 edges=4
+get_symbol_importance:    PASS | syms=258 conv=true iter=30 top=FileIndex
+
+=== RESULT: 13/13 passed, 0 failed ===
+```
+
+**Source:** [`mcp-validation-test.ts`](mcp-validation-test.ts)
+
+***
+
+## Appendix B: Manual Smoke Test
+
+For manual validation without the automated script:
 
 ```Shell
 # 1. Clean + rebuild
