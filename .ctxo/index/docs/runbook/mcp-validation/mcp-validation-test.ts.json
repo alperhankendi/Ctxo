@@ -90,7 +90,14 @@
     }
   ],
   "file": "docs/runbook/mcp-validation/mcp-validation-test.ts",
-  "intent": [],
-  "lastModified": 1775091860,
+  "intent": [
+    {
+      "date": "2026-04-02T04:06:19+03:00",
+      "hash": "73d411c2421e334b1db466c32cd6a854f9d90c7a",
+      "kind": "commit",
+      "message": "Add automated MCP validation test script to runbook"
+    }
+  ],
+  "lastModified": 1775092414,
   "symbols": []
 }

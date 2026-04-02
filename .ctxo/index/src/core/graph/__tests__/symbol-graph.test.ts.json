@@ -24,6 +24,12 @@
   "file": "src/core/graph/__tests__/symbol-graph.test.ts",
   "intent": [
     {
+      "date": "2026-04-02T04:07:33+03:00",
+      "hash": "6adc1f76e5c15b0b31dcd371aab6b680ed930577",
+      "kind": "commit",
+      "message": "Fix class hierarchy implements edge resolution — relative .js paths not matching graph nodes"
+    },
+    {
       "date": "2026-04-02T02:23:24+03:00",
       "hash": "01f901c3e0ce8dba7c0281a8a75ae984a07773bf",
       "kind": "commit",
@@ -36,6 +42,6 @@
       "message": "Add core graph, logic-slice query, and detail formatter"
     }
   ],
-  "lastModified": 1775091860,
+  "lastModified": 1775092414,
   "symbols": []
 }
