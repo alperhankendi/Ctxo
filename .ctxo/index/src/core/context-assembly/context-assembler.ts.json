@@ -89,6 +89,46 @@
       "to": "src/core/context-assembly/task-context-strategy.ts::getWeightsForTask::function"
     },
     {
+      "from": "src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleForTask::method",
+      "kind": "calls",
+      "to": "src/core/context-assembly/context-assembler.ts::ContextAssembler.isInterfaceOrType::method"
+    },
+    {
+      "from": "src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleForTask::method",
+      "kind": "calls",
+      "to": "src/core/context-assembly/context-assembler.ts::ContextAssembler.isInterfaceOrType::method"
+    },
+    {
+      "from": "src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleForTask::method",
+      "kind": "calls",
+      "to": "src/core/context-assembly/context-assembler.ts::ContextAssembler.buildContextEntry::method"
+    },
+    {
+      "from": "src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleForTask::method",
+      "kind": "calls",
+      "to": "src/core/context-assembly/context-assembler.ts::ContextAssembler.computeScore::method"
+    },
+    {
+      "from": "src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleRanked::method",
+      "kind": "calls",
+      "to": "src/core/context-assembly/context-assembler.ts::ContextAssembler.computeTextRelevance::method"
+    },
+    {
+      "from": "src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleRanked::method",
+      "kind": "calls",
+      "to": "src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokens::method"
+    },
+    {
+      "from": "src/core/context-assembly/context-assembler.ts::ContextAssembler.buildContextEntry::method",
+      "kind": "calls",
+      "to": "src/core/context-assembly/context-assembler.ts::ContextAssembler.computeScore::method"
+    },
+    {
+      "from": "src/core/context-assembly/context-assembler.ts::ContextAssembler.buildContextEntry::method",
+      "kind": "calls",
+      "to": "src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokens::method"
+    },
+    {
       "from": "src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
       "kind": "uses",
       "to": "src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class"
@@ -149,7 +189,7 @@
       "message": "Add context assembly: get_context_for_task + get_ranked_context"
     }
   ],
-  "lastModified": 1775092414,
+  "lastModified": 1775598888,
   "symbols": [
     {
       "endLine": 250,

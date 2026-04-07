@@ -11,7 +11,13 @@
     }
   ],
   "contentHash": "3090d041a35e85305fb8895146bf0f452a5e7c1f07da33cc05e24a3ae48f72e7",
-  "edges": [],
+  "edges": [
+    {
+      "from": "src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay.classify::method",
+      "kind": "calls",
+      "to": "src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay.matchLayer::method"
+    }
+  ],
   "file": "src/core/overlay/architectural-overlay.ts",
   "intent": [
     {
@@ -33,7 +39,7 @@
       "message": "Add blast radius calculator and architectural overlay"
     }
   ],
-  "lastModified": 1775092414,
+  "lastModified": 1775598888,
   "symbols": [
     {
       "endLine": 62,

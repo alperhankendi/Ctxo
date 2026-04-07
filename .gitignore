@@ -33,3 +33,6 @@ test-results/
 npm-debug.log*
 
 _bmad/*
+
+# Session notes
+todo.md

@@ -67,6 +67,56 @@
       "typeOnly": true
     },
     {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.format::method",
+      "kind": "calls",
+      "to": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL1::method"
+    },
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.format::method",
+      "kind": "calls",
+      "to": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL2::method"
+    },
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.format::method",
+      "kind": "calls",
+      "to": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL3::method"
+    },
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.format::method",
+      "kind": "calls",
+      "to": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL4::method"
+    },
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL4::method",
+      "kind": "calls",
+      "to": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.estimateTokens::method"
+    },
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL4::method",
+      "kind": "calls",
+      "to": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.truncateToTokenBudget::method"
+    },
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.estimateTokens::method",
+      "kind": "calls",
+      "to": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.symbolCharEstimate::method"
+    },
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.estimateTokens::method",
+      "kind": "calls",
+      "to": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.symbolCharEstimate::method"
+    },
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.truncateToTokenBudget::method",
+      "kind": "calls",
+      "to": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.symbolCharEstimate::method"
+    },
+    {
+      "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.truncateToTokenBudget::method",
+      "kind": "calls",
+      "to": "src/core/detail-levels/detail-formatter.ts::DetailFormatter.symbolCharEstimate::method"
+    },
+    {
       "from": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
       "kind": "uses",
       "to": "src/core/types.ts::LogicSliceResult::interface"
@@ -119,7 +169,7 @@
       "message": "Add core graph, logic-slice query, and detail formatter"
     }
   ],
-  "lastModified": 1775092414,
+  "lastModified": 1775598888,
   "symbols": [
     {
       "endLine": 137,

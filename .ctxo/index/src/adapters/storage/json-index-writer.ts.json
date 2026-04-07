@@ -27,6 +27,21 @@
       "typeOnly": true
     },
     {
+      "from": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.write::method",
+      "kind": "calls",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.resolveIndexPath::method"
+    },
+    {
+      "from": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.write::method",
+      "kind": "calls",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.sortKeys::method"
+    },
+    {
+      "from": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.delete::method",
+      "kind": "calls",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.resolveIndexPath::method"
+    },
+    {
       "from": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class",
       "kind": "uses",
       "to": "src/core/types.ts::FileIndex::type"
@@ -47,7 +62,7 @@
       "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
     }
   ],
-  "lastModified": 1775092414,
+  "lastModified": 1775598887,
   "symbols": [
     {
       "endLine": 53,

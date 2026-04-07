@@ -683,6 +683,344 @@ describe('TsMorphAdapter — typeOnly flag (SCHEMA-40 fix)', () => {
   });
 });
 
+describe('TsMorphAdapter — multi-file project resolution', () => {
+  it('resolves import target kind from pre-loaded project instead of heuristic', () => {
+    const adapter = new TsMorphAdapter();
+
+    const sources = new Map<string, string>();
+    sources.set('src/types.ts', 'export type Handler = () => void;');
+    sources.set('src/consumer.ts', `
+      import { Handler } from './types.js';
+      export function consume(h: Handler): void {}
+    `);
+    adapter.loadProjectSources(sources);
+
+    const edges = adapter.extractEdges('src/consumer.ts', sources.get('src/consumer.ts')!);
+    const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('Handler'));
+
+    expect(importEdge).toBeDefined();
+    // Without preloading, heuristic would say 'class' (PascalCase). With preloading, resolves to 'type'.
+    expect(importEdge!.to).toBe('src/types.ts::Handler::type');
+
+    adapter.clearProjectSources();
+  });
+
+  it('resolves interface kind from pre-loaded project instead of PascalCase heuristic', () => {
+    const adapter = new TsMorphAdapter();
+
+    const sources = new Map<string, string>();
+    sources.set('src/port.ts', 'export interface ServiceConfig { host: string; }');
+    sources.set('src/app.ts', `
+      import { ServiceConfig } from './port.js';
+      export function configure(cfg: ServiceConfig): void {}
+    `);
+    adapter.loadProjectSources(sources);
+
+    const edges = adapter.extractEdges('src/app.ts', sources.get('src/app.ts')!);
+    const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('ServiceConfig'));
+
+    expect(importEdge).toBeDefined();
+    // Heuristic would say 'class', but project resolves to 'interface'
+    expect(importEdge!.to).toBe('src/port.ts::ServiceConfig::interface');
+
+    adapter.clearProjectSources();
+  });
+
+  it('falls back to heuristic when file is not in pre-loaded project', () => {
+    const adapter = new TsMorphAdapter();
+
+    const sources = new Map<string, string>();
+    // Only pre-load consumer, NOT the target file
+    sources.set('src/consumer.ts', `
+      import { SomeClass } from './unknown.js';
+      export function use(): void {}
+    `);
+    adapter.loadProjectSources(sources);
+
+    const edges = adapter.extractEdges('src/consumer.ts', sources.get('src/consumer.ts')!);
+    const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('SomeClass'));
+
+    expect(importEdge).toBeDefined();
+    // Target file not loaded — falls back to heuristic (PascalCase → class)
+    expect(importEdge!.to).toBe('src/unknown.ts::SomeClass::class');
+
+    adapter.clearProjectSources();
+  });
+
+  it('handles empty map passed to loadProjectSources without crashing', () => {
+    const adapter = new TsMorphAdapter();
+    adapter.loadProjectSources(new Map());
+
+    // Should still work in single-file mode after loading empty map
+    const source = 'export function hello(): void {}';
+    const symbols = adapter.extractSymbols('src/empty.ts', source);
+    expect(symbols).toHaveLength(1);
+
+    adapter.clearProjectSources();
+  });
+
+  it('handles clearProjectSources without prior load', () => {
+    const adapter = new TsMorphAdapter();
+    // Should not crash
+    adapter.clearProjectSources();
+
+    // Should still work normally after no-op clear
+    const source = 'export function hello(): void {}';
+    const edges = adapter.extractEdges('src/test.ts', source);
+    expect(edges).toEqual([]);
+  });
+
+  it('second loadProjectSources overwrites previous load', () => {
+    const adapter = new TsMorphAdapter();
+
+    // First load: Handler is a type
+    const sources1 = new Map<string, string>();
+    sources1.set('src/types.ts', 'export type Handler = () => void;');
+    adapter.loadProjectSources(sources1);
+
+    // Second load: Handler is now a class
+    const sources2 = new Map<string, string>();
+    sources2.set('src/types.ts', 'export class Handler {}');
+    sources2.set('src/consumer.ts', `
+      import { Handler } from './types.js';
+      export function use(h: Handler): void {}
+    `);
+    adapter.loadProjectSources(sources2);
+
+    const edges = adapter.extractEdges('src/consumer.ts', sources2.get('src/consumer.ts')!);
+    const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('Handler'));
+    expect(importEdge).toBeDefined();
+    // Should resolve to class (second load), not type (first load)
+    expect(importEdge!.to).toBe('src/types.ts::Handler::class');
+
+    adapter.clearProjectSources();
+  });
+
+  it('resolves circular imports between preloaded files without crashing', () => {
+    const adapter = new TsMorphAdapter();
+
+    const sources = new Map<string, string>();
+    sources.set('src/a.ts', `
+      import { B } from './b.js';
+      export function A(): void { B(); }
+    `);
+    sources.set('src/b.ts', `
+      import { A } from './a.js';
+      export function B(): void { A(); }
+    `);
+    adapter.loadProjectSources(sources);
+
+    const edgesA = adapter.extractEdges('src/a.ts', sources.get('src/a.ts')!);
+    const edgesB = adapter.extractEdges('src/b.ts', sources.get('src/b.ts')!);
+
+    expect(edgesA.find(e => e.kind === 'imports' && e.to.includes('B'))).toBeDefined();
+    expect(edgesB.find(e => e.kind === 'imports' && e.to.includes('A'))).toBeDefined();
+
+    adapter.clearProjectSources();
+  });
+
+  it('resolves function kind from pre-loaded project (camelCase would match heuristic)', () => {
+    const adapter = new TsMorphAdapter();
+
+    const sources = new Map<string, string>();
+    sources.set('src/utils.ts', 'export function formatName(n: string): string { return n; }');
+    sources.set('src/app.ts', `
+      import { formatName } from './utils.js';
+      export function greet(): string { return formatName('x'); }
+    `);
+    adapter.loadProjectSources(sources);
+
+    const edges = adapter.extractEdges('src/app.ts', sources.get('src/app.ts')!);
+    const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('formatName'));
+    expect(importEdge).toBeDefined();
+    expect(importEdge!.to).toBe('src/utils.ts::formatName::function');
+
+    adapter.clearProjectSources();
+  });
+
+  it('symbolRegistry takes precedence over project lookup', () => {
+    const adapter = new TsMorphAdapter();
+
+    // Pre-load: Handler is a class in the file
+    const sources = new Map<string, string>();
+    sources.set('src/types.ts', 'export class Handler {}');
+    sources.set('src/consumer.ts', `
+      import { Handler } from './types.js';
+      export function use(h: Handler): void {}
+    `);
+    adapter.loadProjectSources(sources);
+
+    // But registry says it's a type (registry wins)
+    const registry = new Map<string, import('../../../core/types.js').SymbolKind>();
+    registry.set('src/types.ts::Handler::type', 'type');
+    adapter.setSymbolRegistry(registry);
+
+    const edges = adapter.extractEdges('src/consumer.ts', sources.get('src/consumer.ts')!);
+    const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('Handler'));
+    expect(importEdge).toBeDefined();
+    expect(importEdge!.to).toBe('src/types.ts::Handler::type');
+
+    adapter.setSymbolRegistry(new Map());
+    adapter.clearProjectSources();
+  });
+});
+
+describe('TsMorphAdapter — this.method() call edges', () => {
+  it('emits calls edge for this.method() within a class', () => {
+    const adapter = new TsMorphAdapter();
+    const source = `
+      export class PaymentProcessor {
+        process(amount: number): void {
+          this.validate(amount);
+        }
+        validate(amount: number): boolean {
+          return amount > 0;
+        }
+      }
+    `;
+    const edges = adapter.extractEdges('src/payment.ts', source);
+    const callEdge = edges.find(
+      e => e.kind === 'calls' && e.from.includes('PaymentProcessor.process')
+    );
+    expect(callEdge).toBeDefined();
+    expect(callEdge!.to).toBe('src/payment.ts::PaymentProcessor.validate::method');
+  });
+
+  it('does not emit calls edge when target method does not exist on class', () => {
+    const adapter = new TsMorphAdapter();
+    const source = `
+      export class Svc {
+        run(): void {
+          this.inheritedMethod();
+        }
+      }
+    `;
+    const edges = adapter.extractEdges('src/svc.ts', source);
+    const callEdge = edges.find(e => e.kind === 'calls' && e.to.includes('inheritedMethod'));
+    expect(callEdge).toBeUndefined();
+  });
+
+  it('does not emit self-referential calls edge', () => {
+    const adapter = new TsMorphAdapter();
+    const source = `
+      export class Recursive {
+        run(): void {
+          this.run();
+        }
+      }
+    `;
+    const edges = adapter.extractEdges('src/rec.ts', source);
+    const selfCall = edges.find(
+      e => e.kind === 'calls' && e.from.includes('Recursive.run') && e.to.includes('Recursive.run')
+    );
+    expect(selfCall).toBeUndefined();
+  });
+
+  it('emits multiple this.method() edges from one method', () => {
+    const adapter = new TsMorphAdapter();
+    const source = `
+      export class Pipeline {
+        run(): void {
+          this.validate();
+          this.transform();
+          this.save();
+        }
+        validate(): void {}
+        transform(): void {}
+        save(): void {}
+      }
+    `;
+    const edges = adapter.extractEdges('src/pipeline.ts', source);
+    const callEdges = edges.filter(
+      e => e.kind === 'calls' && e.from.includes('Pipeline.run')
+    );
+    expect(callEdges).toHaveLength(3);
+    expect(callEdges.map(e => e.to)).toEqual(expect.arrayContaining([
+      'src/pipeline.ts::Pipeline.validate::method',
+      'src/pipeline.ts::Pipeline.transform::method',
+      'src/pipeline.ts::Pipeline.save::method',
+    ]));
+  });
+
+  it('resolves this.method() to class method, not shadowed import', () => {
+    const adapter = new TsMorphAdapter();
+    const source = `
+      import { validate } from './utils.js';
+      export class Processor {
+        validate(): boolean { return true; }
+        process(): void {
+          this.validate();
+        }
+      }
+    `;
+    const edges = adapter.extractEdges('src/processor.ts', source);
+    const callEdge = edges.find(
+      e => e.kind === 'calls' && e.from.includes('Processor.process')
+    );
+    expect(callEdge).toBeDefined();
+    // Should resolve to class method, not imported function
+    expect(callEdge!.to).toBe('src/processor.ts::Processor.validate::method');
+  });
+
+  it('emits this.method() edge for private methods', () => {
+    const adapter = new TsMorphAdapter();
+    const source = `
+      export class Service {
+        public run(): void {
+          this.doWork();
+        }
+        private doWork(): void {}
+      }
+    `;
+    const edges = adapter.extractEdges('src/service.ts', source);
+    const callEdge = edges.find(
+      e => e.kind === 'calls' && e.from.includes('Service.run')
+    );
+    expect(callEdge).toBeDefined();
+    expect(callEdge!.to).toBe('src/service.ts::Service.doWork::method');
+  });
+
+  it('emits this.method() edges in conditional expressions', () => {
+    const adapter = new TsMorphAdapter();
+    const source = `
+      export class Guard {
+        check(flag: boolean): void {
+          const result = flag ? this.approve() : this.deny();
+        }
+        approve(): boolean { return true; }
+        deny(): boolean { return false; }
+      }
+    `;
+    const edges = adapter.extractEdges('src/guard.ts', source);
+    const callEdges = edges.filter(
+      e => e.kind === 'calls' && e.from.includes('Guard.check')
+    );
+    expect(callEdges).toHaveLength(2);
+    expect(callEdges.map(e => e.to)).toEqual(expect.arrayContaining([
+      'src/guard.ts::Guard.approve::method',
+      'src/guard.ts::Guard.deny::method',
+    ]));
+  });
+
+  it('emits this.method() edge for async method calls', () => {
+    const adapter = new TsMorphAdapter();
+    const source = `
+      export class AsyncService {
+        async run(): Promise<void> {
+          await this.fetch();
+        }
+        async fetch(): Promise<void> {}
+      }
+    `;
+    const edges = adapter.extractEdges('src/async.ts', source);
+    const callEdge = edges.find(
+      e => e.kind === 'calls' && e.from.includes('AsyncService.run')
+    );
+    expect(callEdge).toBeDefined();
+    expect(callEdge!.to).toBe('src/async.ts::AsyncService.fetch::method');
+  });
+});
+
 describe('TsMorphAdapter — isSupported', () => {
   let adapter: TsMorphAdapter;
 

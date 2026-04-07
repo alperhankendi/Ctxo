@@ -25,6 +25,11 @@
       "typeOnly": true
     },
     {
+      "from": "src/core/change-intelligence/health-scorer.ts::HealthScorer.score::method",
+      "kind": "calls",
+      "to": "src/core/change-intelligence/health-scorer.ts::HealthScorer.toBand::method"
+    },
+    {
       "from": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class",
       "kind": "uses",
       "to": "src/core/types.ts::ChangeIntelligenceScore::interface"
@@ -44,7 +49,7 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1775092414,
+  "lastModified": 1775598888,
   "symbols": [
     {
       "endLine": 15,

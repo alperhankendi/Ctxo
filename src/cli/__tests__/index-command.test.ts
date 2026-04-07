@@ -113,6 +113,21 @@ describe('IndexCommand', () => {
     expect(symbolNames).toContain('VERSION');
   });
 
+  it('resolves cross-file import edge kinds correctly via multi-file project', async () => {
+    const cmd = new IndexCommand(tempDir);
+    await cmd.run();
+
+    const greetIndex = join(tempDir, '.ctxo', 'index', 'src', 'greet.ts.json');
+    const content = JSON.parse(readFileSync(greetIndex, 'utf-8'));
+
+    const importEdge = content.edges.find(
+      (e: { kind: string; to: string }) => e.kind === 'imports' && e.to.includes('formatName')
+    );
+    expect(importEdge).toBeDefined();
+    // formatName is a function in utils.ts — should resolve to ::function, not ::class (heuristic)
+    expect(importEdge.to).toBe('src/utils.ts::formatName::function');
+  });
+
   it('extracts interfaces and type aliases from fixture files', async () => {
     const cmd = new IndexCommand(tempDir);
     await cmd.run();

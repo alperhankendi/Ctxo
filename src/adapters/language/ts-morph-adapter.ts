@@ -19,6 +19,7 @@ export class TsMorphAdapter implements ILanguageAdapter {
 
   private readonly project: Project;
   private symbolRegistry = new Map<string, SymbolKind>();
+  private projectPreloaded = false;
 
   constructor() {
     this.project = new Project({
@@ -39,6 +40,26 @@ export class TsMorphAdapter implements ILanguageAdapter {
 
   setSymbolRegistry(registry: Map<string, SymbolKind>): void {
     this.symbolRegistry = registry;
+  }
+
+  loadProjectSources(files: Map<string, string>): void {
+    for (const [filePath, source] of files) {
+      try {
+        const existing = this.project.getSourceFile(filePath);
+        if (existing) this.project.removeSourceFile(existing);
+        this.project.createSourceFile(filePath, source, { overwrite: true });
+      } catch (err) {
+        console.error(`[ctxo:ts-morph] Failed to preload ${filePath}: ${(err as Error).message}`);
+      }
+    }
+    this.projectPreloaded = true;
+  }
+
+  clearProjectSources(): void {
+    for (const sf of this.project.getSourceFiles()) {
+      this.project.removeSourceFile(sf);
+    }
+    this.projectPreloaded = false;
   }
 
   extractSymbols(filePath: string, source: string): SymbolNode[] {
@@ -80,7 +101,9 @@ export class TsMorphAdapter implements ILanguageAdapter {
       console.error(`[ctxo:ts-morph] Edge extraction failed for ${filePath}: ${(err as Error).message}`);
       return [];
     } finally {
-      this.cleanupSourceFile(filePath);
+      if (!this.projectPreloaded) {
+        this.cleanupSourceFile(filePath);
+      }
     }
   }
 
@@ -391,10 +414,12 @@ export class TsMorphAdapter implements ILanguageAdapter {
           const calledName = calledText.split('.').pop();
           if (!calledName || calledName === methodName) continue;
 
-          // Skip this.xxx calls (internal method calls)
-          if (calledText.startsWith('this.')) continue;
-
-          const resolved = this.resolveLocalCallTarget(sourceFile, filePath, calledName);
+          let resolved: string | undefined;
+          if (calledText.startsWith('this.')) {
+            resolved = this.resolveThisMethodCall(sourceFile, filePath, className, calledName);
+          } else {
+            resolved = this.resolveLocalCallTarget(sourceFile, filePath, calledName);
+          }
           if (resolved) {
             edges.push({ from: methodSymbolId, to: resolved, kind: 'calls' });
           }
@@ -405,9 +430,13 @@ export class TsMorphAdapter implements ILanguageAdapter {
           const calledText = newExpr.getExpression().getText();
           const calledName = calledText.split('.').pop();
           if (!calledName) continue;
-          if (calledText.startsWith('this.')) continue;
 
-          const resolved = this.resolveLocalCallTarget(sourceFile, filePath, calledName);
+          let resolved: string | undefined;
+          if (calledText.startsWith('this.')) {
+            resolved = this.resolveThisMethodCall(sourceFile, filePath, className, calledName);
+          } else {
+            resolved = this.resolveLocalCallTarget(sourceFile, filePath, calledName);
+          }
           if (resolved) {
             edges.push({ from: methodSymbolId, to: resolved, kind: 'calls' });
           }
@@ -503,11 +532,31 @@ export class TsMorphAdapter implements ILanguageAdapter {
     return undefined;
   }
 
+  private resolveThisMethodCall(
+    sourceFile: SourceFile,
+    filePath: string,
+    className: string,
+    calledName: string,
+  ): string | undefined {
+    for (const cls of sourceFile.getClasses()) {
+      if (cls.getName() !== className) continue;
+      for (const method of cls.getMethods()) {
+        if (method.getName() === calledName) {
+          return this.buildSymbolId(filePath, `${className}.${calledName}`, 'method');
+        }
+      }
+    }
+    return undefined;
+  }
+
   // ── Helpers ─────────────────────────────────────────────────
 
   private parseSource(filePath: string, source: string): SourceFile | undefined {
     try {
       const existing = this.project.getSourceFile(filePath);
+      if (existing && this.projectPreloaded) {
+        return existing;
+      }
       if (existing) {
         this.project.removeSourceFile(existing);
       }

@@ -32,6 +32,8 @@ time npx tsx src/index.ts index
 * [ ] Build time under 10 seconds
 * [ ] Default `--max-history 20` applied (each file stores at most 20 commits)
 * [ ] Two-pass indexing: Phase 1a (symbols + registry), Phase 1b (edges with registry)
+* [ ] Multi-file project preloading: all sources loaded before Phase 1b for cross-file resolution
+* [ ] Sources cleared after Phase 1b (memory released)
 
 **Record metrics:**
 
@@ -847,7 +849,7 @@ From Step 3 metrics, verify edge kind diversity.
 **Verify:**
 
 * [ ] `imports` > 0 (primary edge kind)
-* [ ] `calls` > 0 (function call edges)
+* [ ] `calls` > 0 (function call edges — includes `this.method()` intra-class calls)
 * [ ] `implements` > 0 (interface implementation edges)
 * [ ] Optional: `extends` and `uses` (may be 0 depending on codebase patterns)
 
@@ -856,10 +858,51 @@ From Step 3 metrics, verify edge kind diversity.
 | Edge Kind    | Minimum | Spec Status                    |
 | ------------ | ------- | ------------------------------ |
 | `imports`    | 200+    | Required                       |
-| `calls`      | 1+      | Required                       |
+| `calls`      | 1+      | Required (includes `this.method()` intra-class calls) |
 | `implements` | 1+      | Required                       |
 | `extends`    | 0       | Optional (depends on codebase) |
 | `uses`       | 1+      | Required (Faz 3 — confirmed blast radius) |
+
+### 18.1 Cross-File Edge Resolution Accuracy
+
+Verify that import edge targets use real type lookups (not heuristic fallback).
+
+```Shell
+node -e "
+const fs = require('fs'); const path = require('path');
+function walk(dir) { let f=[]; for (const e of fs.readdirSync(dir,{withFileTypes:true})) { const p=path.join(dir,e.name); if(e.isDirectory()) f.push(...walk(p)); else if(e.name.endsWith('.json')) f.push(p); } return f; }
+const files=walk('.ctxo/index'); let typeEdges=0, classEdges=0, ifaceEdges=0, fnEdges=0;
+for(const f of files){const d=JSON.parse(fs.readFileSync(f,'utf8'));for(const e of(d.edges||[])){if(e.kind!=='imports')continue;if(e.to.endsWith('::type'))typeEdges++;else if(e.to.endsWith('::class'))classEdges++;else if(e.to.endsWith('::interface'))ifaceEdges++;else if(e.to.endsWith('::function'))fnEdges++;}}
+console.log(JSON.stringify({importEdgesByTargetKind:{type:typeEdges,class:classEdges,interface:ifaceEdges,function:fnEdges}},null,2));
+"
+```
+
+**Verify:**
+
+* [ ] `type` > 0 (types resolved via multi-file project, not heuristic)
+* [ ] `interface` > 0 (interfaces resolved via multi-file project)
+* [ ] `function` > 0 (functions resolved via multi-file project)
+* [ ] Heuristic misclassifications reduced (e.g., `ServiceConfig` correctly resolves to `::interface`, not `::class`)
+
+### 18.2 this.method() Intra-Class Call Edges
+
+Verify that `this.method()` calls within classes produce `calls` edges.
+
+```Shell
+node -e "
+const fs = require('fs'); const path = require('path');
+function walk(dir) { let f=[]; for (const e of fs.readdirSync(dir,{withFileTypes:true})) { const p=path.join(dir,e.name); if(e.isDirectory()) f.push(...walk(p)); else if(e.name.endsWith('.json')) f.push(p); } return f; }
+const files=walk('.ctxo/index'); let intraClassCalls=0;
+for(const f of files){const d=JSON.parse(fs.readFileSync(f,'utf8'));for(const e of(d.edges||[])){if(e.kind==='calls'&&e.from.includes('::method')&&e.to.includes('::method')){const fromCls=e.from.split('::')[1].split('.')[0];const toCls=e.to.split('::')[1].split('.')[0];if(fromCls===toCls)intraClassCalls++;}}}
+console.log('Intra-class this.method() call edges:', intraClassCalls);
+console.log(intraClassCalls > 0 ? 'PASS: this.method() edges detected' : 'INFO: no intra-class calls in codebase (expected if classes use external calls only)');
+"
+```
+
+**Verify:**
+
+* [ ] Intra-class call edges >= 0 (depends on codebase class patterns)
+* [ ] No false edges to non-existent methods (spot-check a few edges manually)
 
 ***
 
@@ -1148,6 +1191,9 @@ After completing all steps, fill in:
 | 2a | All symbols have byte offsets (startOffset/endOffset)                |           |
 | 2b | `typeOnly` edges flagged for `import type` statements               |           |
 | 2c | `uses` edges present (confirmed blast radius)                       |           |
+| 2d | Multi-file project preloading active during indexing                 |           |
+| 2e | Import edge target kinds resolved via cross-file lookup              |           |
+| 2f | `this.method()` intra-class call edges extracted                     |           |
 | 3  | Edge kinds include imports + calls + implements + uses              |           |
 | 4  | `get_logic_slice` — progressive detail L1 < L2 < L3                 |           |
 | 5  | `get_logic_slice` — transitive dependencies resolved                |           |
@@ -1198,13 +1244,13 @@ After completing all steps, fill in:
 | 17c| `get_symbol_importance` — converged=true, iterations reasonable    |           |
 | 17d| `get_symbol_importance` — limit caps results count                 |           |
 | 18 | Staleness detection — no false positive on fresh index              |           |
-| 19 | Unit tests pass (562+)                                              |           |
+| 19 | Unit tests pass (595+)                                              |           |
 | 20 | Git hash masking — visible or redacted (log status)                 |           |
 | 21 | Manual vs MCP comparison table filled with measured data            |           |
 | 22 | Token savings > 10x for aggregate                                   |           |
 | 23 | Context budget chart shows MCP uses < 1% of 1M window               |           |
 
-**Result:** \_\_\_/55 checks passed
+**Result:** \_\_\_/58 checks passed
 
 ***
 

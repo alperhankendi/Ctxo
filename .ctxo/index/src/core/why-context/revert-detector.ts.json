@@ -31,6 +31,11 @@
       "typeOnly": true
     },
     {
+      "from": "src/core/why-context/revert-detector.ts::RevertDetector.detect::method",
+      "kind": "calls",
+      "to": "src/core/why-context/revert-detector.ts::RevertDetector.isRevert::method"
+    },
+    {
       "from": "src/core/why-context/revert-detector.ts::RevertDetector::class",
       "kind": "uses",
       "to": "src/core/types.ts::CommitRecord::interface"
@@ -56,7 +61,7 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1775092414,
+  "lastModified": 1775598888,
   "symbols": [
     {
       "endLine": 52,

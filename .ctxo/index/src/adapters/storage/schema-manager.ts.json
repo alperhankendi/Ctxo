@@ -19,7 +19,13 @@
     }
   ],
   "contentHash": "c9a947a53ecbdadc340833aeb140f23e9c5cf51dfa80adddfd52e3a154aa464a",
-  "edges": [],
+  "edges": [
+    {
+      "from": "src/adapters/storage/schema-manager.ts::SchemaManager.isCompatible::method",
+      "kind": "calls",
+      "to": "src/adapters/storage/schema-manager.ts::SchemaManager.readStoredVersion::method"
+    }
+  ],
   "file": "src/adapters/storage/schema-manager.ts",
   "intent": [
     {
@@ -29,7 +35,7 @@
       "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
     }
   ],
-  "lastModified": 1775092414,
+  "lastModified": 1775598887,
   "symbols": [
     {
       "endLine": 33,

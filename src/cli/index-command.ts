@@ -28,7 +28,8 @@ export class IndexCommand {
 
     // Set up adapters
     const registry = new LanguageAdapterRegistry();
-    registry.register(new TsMorphAdapter());
+    const tsMorphAdapter = new TsMorphAdapter();
+    registry.register(tsMorphAdapter);
 
     const writer = new JsonIndexWriter(this.ctxoRoot);
     const schemaManager = new SchemaManager(this.ctxoRoot);
@@ -104,6 +105,13 @@ export class IndexCommand {
       }
     }
 
+    // Pre-load all sources into ts-morph for cross-file resolution
+    const allSources = new Map<string, string>();
+    for (const entry of pendingIndices) {
+      allSources.set(entry.relativePath, entry.source);
+    }
+    tsMorphAdapter.loadProjectSources(allSources);
+
     // Phase 1b: Extract edges (uses symbol registry for correct kind resolution)
     for (const entry of pendingIndices) {
       const adapter = registry.getAdapter(entry.relativePath);
@@ -116,6 +124,9 @@ export class IndexCommand {
         console.error(`[ctxo] Edge extraction failed for ${entry.relativePath}: ${(err as Error).message}`);
       }
     }
+
+    // Clean up pre-loaded sources
+    tsMorphAdapter.clearProjectSources();
 
     // Phase 2: Batch git history (IO-bound, parallel with concurrency limit)
     if (!options.skipHistory && pendingIndices.length > 0) {

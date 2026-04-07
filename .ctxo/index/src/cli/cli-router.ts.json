@@ -45,6 +45,11 @@
     {
       "from": "src/cli/cli-router.ts::CliRouter.route::method",
       "kind": "calls",
+      "to": "src/cli/cli-router.ts::CliRouter.printHelp::method"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
       "to": "src/cli/index-command.ts::IndexCommand::class"
     },
     {
@@ -148,7 +153,7 @@
       "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
     }
   ],
-  "lastModified": 1775092414,
+  "lastModified": 1775598887,
   "symbols": [
     {
       "endLine": 86,

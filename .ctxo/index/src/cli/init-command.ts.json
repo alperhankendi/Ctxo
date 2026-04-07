@@ -11,7 +11,18 @@
     }
   ],
   "contentHash": "a020df15b2832c590115a0c312b30fb44d1c0d6995acd904c5bc022ccd6993a0",
-  "edges": [],
+  "edges": [
+    {
+      "from": "src/cli/init-command.ts::InitCommand.run::method",
+      "kind": "calls",
+      "to": "src/cli/init-command.ts::InitCommand.installHook::method"
+    },
+    {
+      "from": "src/cli/init-command.ts::InitCommand.run::method",
+      "kind": "calls",
+      "to": "src/cli/init-command.ts::InitCommand.installHook::method"
+    }
+  ],
   "file": "src/cli/init-command.ts",
   "intent": [
     {
@@ -27,7 +38,7 @@
       "message": "Implement all CLI commands and add comprehensive test coverage"
     }
   ],
-  "lastModified": 1775092414,
+  "lastModified": 1775598887,
   "symbols": [
     {
       "endLine": 73,

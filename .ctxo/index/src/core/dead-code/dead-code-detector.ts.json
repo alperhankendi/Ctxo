@@ -45,6 +45,66 @@
       "typeOnly": true
     },
     {
+      "from": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method",
+      "kind": "calls",
+      "to": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
+    },
+    {
+      "from": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method",
+      "kind": "calls",
+      "to": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
+    },
+    {
+      "from": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method",
+      "kind": "calls",
+      "to": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detectScaffolding::method"
+    },
+    {
+      "from": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method",
+      "kind": "calls",
+      "to": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.isFrameworkSymbol::method"
+    },
+    {
+      "from": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method",
+      "kind": "calls",
+      "to": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeCascadeDepths::method"
+    },
+    {
+      "from": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method",
+      "kind": "calls",
+      "to": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeConfidence::method"
+    },
+    {
+      "from": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method",
+      "kind": "calls",
+      "to": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.describeReason::method"
+    },
+    {
+      "from": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method",
+      "kind": "calls",
+      "to": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detectScaffolding::method"
+    },
+    {
+      "from": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeConfidence::method",
+      "kind": "calls",
+      "to": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
+    },
+    {
+      "from": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeConfidence::method",
+      "kind": "calls",
+      "to": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
+    },
+    {
+      "from": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detectScaffolding::method",
+      "kind": "calls",
+      "to": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
+    },
+    {
+      "from": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detectScaffolding::method",
+      "kind": "calls",
+      "to": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
+    },
+    {
       "from": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class",
       "kind": "uses",
       "to": "src/core/graph/symbol-graph.ts::SymbolGraph::class"
@@ -71,7 +131,7 @@
       "message": "Add find_dead_code MCP tool — unreachable symbol and file detection"
     }
   ],
-  "lastModified": 1775092414,
+  "lastModified": 1775598888,
   "symbols": [
     {
       "endLine": 325,
