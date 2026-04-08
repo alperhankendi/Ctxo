@@ -253,6 +253,12 @@
   "file": "src/cli/index-command.ts",
   "intent": [
     {
+      "date": "2026-04-08T04:31:58+03:00",
+      "hash": "f2fd79d92382071661c21f86fb84aa88feeb7e1f",
+      "kind": "commit",
+      "message": "Add co-change analysis and get_pr_impact MCP tool (14th tool)"
+    },
+    {
       "date": "2026-04-08T03:09:19+03:00",
       "hash": "e43db17e512a8ab500108767c0914c857b5707b3",
       "kind": "commit",
@@ -331,7 +337,7 @@
       "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
     }
   ],
-  "lastModified": 1775610908,
+  "lastModified": 1775611990,
   "symbols": [
     {
       "endLine": 348,

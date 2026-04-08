@@ -37,7 +37,14 @@
     }
   ],
   "file": "src/adapters/mcp/__tests__/get-pr-impact.test.ts",
-  "intent": [],
-  "lastModified": 1775610907,
+  "intent": [
+    {
+      "date": "2026-04-08T04:31:58+03:00",
+      "hash": "f2fd79d92382071661c21f86fb84aa88feeb7e1f",
+      "kind": "commit",
+      "message": "Add co-change analysis and get_pr_impact MCP tool (14th tool)"
+    }
+  ],
+  "lastModified": 1775611990,
   "symbols": []
 }

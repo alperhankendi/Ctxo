@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "timestamp": 1775610911,
+  "timestamp": 1775611993,
   "entries": [
     {
       "file1": "src/adapters/mcp/get-changed-symbols.ts",
@@ -35,12 +35,18 @@
     {
       "file1": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
       "file2": "src/core/blast-radius/blast-radius-calculator.ts",
-      "sharedCommits": 5,
+      "sharedCommits": 6,
       "frequency": 1
     },
     {
       "file1": "src/core/graph/__tests__/symbol-graph.test.ts",
       "file2": "src/core/graph/symbol-graph.ts",
+      "sharedCommits": 3,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/storage/json-index-reader.ts",
+      "file2": "src/adapters/storage/json-index-writer.ts",
       "sharedCommits": 3,
       "frequency": 1
     },
@@ -125,18 +131,6 @@
     {
       "file1": "src/cli/__tests__/index-command.test.ts",
       "file2": "src/cli/index-command.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
-      "file1": "src/adapters/storage/json-index-reader.ts",
-      "file2": "src/adapters/storage/json-index-writer.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
-      "file1": "src/adapters/storage/json-index-writer.ts",
-      "file2": "src/adapters/storage/sqlite-storage-adapter.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
@@ -375,18 +369,6 @@
       "frequency": 0.8
     },
     {
-      "file1": "src/adapters/mcp/get-blast-radius.ts",
-      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
-      "sharedCommits": 4,
-      "frequency": 0.8
-    },
-    {
-      "file1": "src/adapters/mcp/get-blast-radius.ts",
-      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
-      "sharedCommits": 4,
-      "frequency": 0.8
-    },
-    {
       "file1": "src/adapters/language/ts-morph-adapter.ts",
       "file2": "src/core/graph/symbol-graph.ts",
       "sharedCommits": 4,
@@ -477,6 +459,18 @@
       "frequency": 0.667
     },
     {
+      "file1": "src/adapters/mcp/get-blast-radius.ts",
+      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
+      "sharedCommits": 4,
+      "frequency": 0.667
+    },
+    {
+      "file1": "src/adapters/mcp/get-blast-radius.ts",
+      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
+      "sharedCommits": 4,
+      "frequency": 0.667
+    },
+    {
       "file1": "src/adapters/git/simple-git-adapter.ts",
       "file2": "src/adapters/mcp/get-why-context.ts",
       "sharedCommits": 2,
@@ -521,12 +515,6 @@
     {
       "file1": "src/adapters/mcp/__tests__/get-change-intelligence.test.ts",
       "file2": "src/index.ts",
-      "sharedCommits": 2,
-      "frequency": 0.667
-    },
-    {
-      "file1": "src/adapters/language/ts-morph-adapter.ts",
-      "file2": "src/adapters/storage/json-index-reader.ts",
       "sharedCommits": 2,
       "frequency": 0.667
     },
@@ -597,7 +585,7 @@
       "frequency": 0.667
     },
     {
-      "file1": "src/adapters/storage/json-index-reader.ts",
+      "file1": "src/adapters/storage/json-index-writer.ts",
       "file2": "src/adapters/storage/sqlite-storage-adapter.ts",
       "sharedCommits": 2,
       "frequency": 0.667
@@ -658,31 +646,7 @@
     },
     {
       "file1": "src/adapters/mcp/get-changed-symbols.ts",
-      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
-      "sharedCommits": 3,
-      "frequency": 0.6
-    },
-    {
-      "file1": "src/adapters/mcp/get-changed-symbols.ts",
-      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
-      "sharedCommits": 3,
-      "frequency": 0.6
-    },
-    {
-      "file1": "src/adapters/mcp/get-changed-symbols.ts",
       "file2": "tests/e2e/mcp-spec-compliance.test.ts",
-      "sharedCommits": 3,
-      "frequency": 0.6
-    },
-    {
-      "file1": "src/adapters/mcp/get-context-for-task.ts",
-      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
-      "sharedCommits": 3,
-      "frequency": 0.6
-    },
-    {
-      "file1": "src/adapters/mcp/get-context-for-task.ts",
-      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
       "sharedCommits": 3,
       "frequency": 0.6
     },
@@ -694,31 +658,7 @@
     },
     {
       "file1": "src/adapters/mcp/get-dead-code.ts",
-      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
-      "sharedCommits": 3,
-      "frequency": 0.6
-    },
-    {
-      "file1": "src/adapters/mcp/get-dead-code.ts",
-      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
-      "sharedCommits": 3,
-      "frequency": 0.6
-    },
-    {
-      "file1": "src/adapters/mcp/get-dead-code.ts",
       "file2": "tests/e2e/mcp-spec-compliance.test.ts",
-      "sharedCommits": 3,
-      "frequency": 0.6
-    },
-    {
-      "file1": "src/adapters/mcp/get-ranked-context.ts",
-      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
-      "sharedCommits": 3,
-      "frequency": 0.6
-    },
-    {
-      "file1": "src/adapters/mcp/get-ranked-context.ts",
-      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
       "sharedCommits": 3,
       "frequency": 0.6
     },
@@ -730,31 +670,7 @@
     },
     {
       "file1": "src/adapters/mcp/get-symbol-importance.ts",
-      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
-      "sharedCommits": 3,
-      "frequency": 0.6
-    },
-    {
-      "file1": "src/adapters/mcp/get-symbol-importance.ts",
-      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
-      "sharedCommits": 3,
-      "frequency": 0.6
-    },
-    {
-      "file1": "src/adapters/mcp/get-symbol-importance.ts",
       "file2": "tests/e2e/mcp-spec-compliance.test.ts",
-      "sharedCommits": 3,
-      "frequency": 0.6
-    },
-    {
-      "file1": "src/adapters/mcp/search-symbols.ts",
-      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
-      "sharedCommits": 3,
-      "frequency": 0.6
-    },
-    {
-      "file1": "src/adapters/mcp/search-symbols.ts",
-      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
       "sharedCommits": 3,
       "frequency": 0.6
     },
@@ -763,17 +679,23 @@
       "file2": "tests/e2e/mcp-spec-compliance.test.ts",
       "sharedCommits": 3,
       "frequency": 0.6
+    },
+    {
+      "file1": "src/core/types.ts",
+      "file2": "src/index.ts",
+      "sharedCommits": 4,
+      "frequency": 0.571
+    },
+    {
+      "file1": "src/cli/index-command.ts",
+      "file2": "src/core/types.ts",
+      "sharedCommits": 4,
+      "frequency": 0.571
     },
     {
       "file1": "src/adapters/mcp/get-blast-radius.ts",
       "file2": "src/index.ts",
       "sharedCommits": 4,
-      "frequency": 0.5
-    },
-    {
-      "file1": "src/core/types.ts",
-      "file2": "src/index.ts",
-      "sharedCommits": 3,
       "frequency": 0.5
     },
     {
@@ -791,12 +713,6 @@
     {
       "file1": "src/adapters/mcp/get-why-context.ts",
       "file2": "src/adapters/mcp/search-symbols.ts",
-      "sharedCommits": 3,
-      "frequency": 0.5
-    },
-    {
-      "file1": "src/cli/index-command.ts",
-      "file2": "src/core/types.ts",
       "sharedCommits": 3,
       "frequency": 0.5
     },
@@ -885,8 +801,92 @@
       "frequency": 0.5
     },
     {
+      "file1": "src/adapters/mcp/get-changed-symbols.ts",
+      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
+      "sharedCommits": 3,
+      "frequency": 0.5
+    },
+    {
+      "file1": "src/adapters/mcp/get-changed-symbols.ts",
+      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
+      "sharedCommits": 3,
+      "frequency": 0.5
+    },
+    {
+      "file1": "src/adapters/mcp/get-context-for-task.ts",
+      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
+      "sharedCommits": 3,
+      "frequency": 0.5
+    },
+    {
+      "file1": "src/adapters/mcp/get-context-for-task.ts",
+      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
+      "sharedCommits": 3,
+      "frequency": 0.5
+    },
+    {
+      "file1": "src/adapters/mcp/get-dead-code.ts",
+      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
+      "sharedCommits": 3,
+      "frequency": 0.5
+    },
+    {
+      "file1": "src/adapters/mcp/get-dead-code.ts",
+      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
+      "sharedCommits": 3,
+      "frequency": 0.5
+    },
+    {
+      "file1": "src/adapters/mcp/get-ranked-context.ts",
+      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
+      "sharedCommits": 3,
+      "frequency": 0.5
+    },
+    {
+      "file1": "src/adapters/mcp/get-ranked-context.ts",
+      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
+      "sharedCommits": 3,
+      "frequency": 0.5
+    },
+    {
+      "file1": "src/adapters/mcp/get-symbol-importance.ts",
+      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
+      "sharedCommits": 3,
+      "frequency": 0.5
+    },
+    {
+      "file1": "src/adapters/mcp/get-symbol-importance.ts",
+      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
+      "sharedCommits": 3,
+      "frequency": 0.5
+    },
+    {
+      "file1": "src/adapters/mcp/search-symbols.ts",
+      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
+      "sharedCommits": 3,
+      "frequency": 0.5
+    },
+    {
+      "file1": "src/adapters/mcp/search-symbols.ts",
+      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
+      "sharedCommits": 3,
+      "frequency": 0.5
+    },
+    {
+      "file1": "src/adapters/language/ts-morph-adapter.ts",
+      "file2": "src/adapters/storage/json-index-reader.ts",
+      "sharedCommits": 2,
+      "frequency": 0.5
+    },
+    {
       "file1": "src/core/detail-levels/detail-formatter.ts",
       "file2": "src/core/graph/symbol-graph.ts",
+      "sharedCommits": 2,
+      "frequency": 0.5
+    },
+    {
+      "file1": "src/adapters/storage/json-index-reader.ts",
+      "file2": "src/adapters/storage/sqlite-storage-adapter.ts",
       "sharedCommits": 2,
       "frequency": 0.5
     },
@@ -919,30 +919,6 @@
       "file2": "src/index.ts",
       "sharedCommits": 3,
       "frequency": 0.429
-    },
-    {
-      "file1": "src/adapters/language/__tests__/ts-morph-adapter.test.ts",
-      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
-      "sharedCommits": 2,
-      "frequency": 0.4
-    },
-    {
-      "file1": "src/adapters/language/__tests__/ts-morph-adapter.test.ts",
-      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
-      "sharedCommits": 2,
-      "frequency": 0.4
-    },
-    {
-      "file1": "src/adapters/mcp/__tests__/get-blast-radius.test.ts",
-      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
-      "sharedCommits": 2,
-      "frequency": 0.4
-    },
-    {
-      "file1": "src/adapters/mcp/__tests__/get-blast-radius.test.ts",
-      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
-      "sharedCommits": 2,
-      "frequency": 0.4
     },
     {
       "file1": "src/core/graph/symbol-graph.ts",
@@ -993,6 +969,12 @@
       "frequency": 0.375
     },
     {
+      "file1": "src/cli/index-command.ts",
+      "file2": "src/index.ts",
+      "sharedCommits": 5,
+      "frequency": 0.357
+    },
+    {
       "file1": "src/adapters/mcp/get-symbol-importance.ts",
       "file2": "src/cli/index-command.ts",
       "sharedCommits": 3,
@@ -1018,12 +1000,54 @@
     },
     {
       "file1": "src/adapters/language/__tests__/ts-morph-adapter.test.ts",
+      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
+      "sharedCommits": 2,
+      "frequency": 0.333
+    },
+    {
+      "file1": "src/adapters/language/__tests__/ts-morph-adapter.test.ts",
+      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
+      "sharedCommits": 2,
+      "frequency": 0.333
+    },
+    {
+      "file1": "src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
+      "sharedCommits": 2,
+      "frequency": 0.333
+    },
+    {
+      "file1": "src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
+      "sharedCommits": 2,
+      "frequency": 0.333
+    },
+    {
+      "file1": "src/adapters/language/__tests__/ts-morph-adapter.test.ts",
       "file2": "src/core/types.ts",
       "sharedCommits": 2,
       "frequency": 0.333
     },
     {
-      "file1": "src/adapters/language/ts-morph-adapter.ts",
+      "file1": "src/cli/index-command.ts",
+      "file2": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
+      "sharedCommits": 2,
+      "frequency": 0.333
+    },
+    {
+      "file1": "src/cli/index-command.ts",
+      "file2": "src/core/blast-radius/blast-radius-calculator.ts",
+      "sharedCommits": 2,
+      "frequency": 0.333
+    },
+    {
+      "file1": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
+      "file2": "src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 0.333
+    },
+    {
+      "file1": "src/core/blast-radius/blast-radius-calculator.ts",
       "file2": "src/core/types.ts",
       "sharedCommits": 2,
       "frequency": 0.333
@@ -1071,6 +1095,18 @@
       "frequency": 0.333
     },
     {
+      "file1": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
+      "file2": "src/index.ts",
+      "sharedCommits": 2,
+      "frequency": 0.333
+    },
+    {
+      "file1": "src/core/blast-radius/blast-radius-calculator.ts",
+      "file2": "src/index.ts",
+      "sharedCommits": 2,
+      "frequency": 0.333
+    },
+    {
       "file1": "src/cli/cli-router.ts",
       "file2": "src/core/masking/masking-pipeline.ts",
       "sharedCommits": 2,
@@ -1083,10 +1119,10 @@
       "frequency": 0.333
     },
     {
-      "file1": "src/cli/index-command.ts",
-      "file2": "src/index.ts",
-      "sharedCommits": 4,
-      "frequency": 0.308
+      "file1": "src/adapters/language/ts-morph-adapter.ts",
+      "file2": "src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 0.286
     },
     {
       "file1": "src/adapters/mcp/get-blast-radius.ts",
