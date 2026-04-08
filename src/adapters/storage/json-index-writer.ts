@@ -1,4 +1,4 @@
-import { writeFileSync, mkdirSync, unlinkSync, existsSync } from 'node:fs';
+import { writeFileSync, renameSync, mkdirSync, unlinkSync, existsSync } from 'node:fs';
 import { dirname, join, resolve, sep } from 'node:path';
 import type { FileIndex, CoChangeMatrix } from '../../core/types.js';
 
@@ -19,13 +19,19 @@ export class JsonIndexWriter {
 
     const sorted = this.sortKeys(fileIndex);
     const json = JSON.stringify(sorted, null, 2);
-    writeFileSync(targetPath, json, 'utf-8');
+    this.atomicWrite(targetPath, json);
   }
 
   writeCoChanges(matrix: CoChangeMatrix): void {
     mkdirSync(this.indexDir, { recursive: true });
     const targetPath = join(this.indexDir, 'co-changes.json');
-    writeFileSync(targetPath, JSON.stringify(matrix, null, 2), 'utf-8');
+    this.atomicWrite(targetPath, JSON.stringify(matrix, null, 2));
+  }
+
+  private atomicWrite(targetPath: string, content: string): void {
+    const tmpPath = `${targetPath}.${process.pid}.tmp`;
+    writeFileSync(tmpPath, content, 'utf-8');
+    renameSync(tmpPath, targetPath);
   }
 
   delete(relativePath: string): void {
