@@ -3,7 +3,9 @@ name: Deploy Visualizer to GitHub Pages
 on:
   push:
     branches: [master]
-    paths: [tools/ctxo-visualizer.html]
+    paths:
+      - tools/ctxo-visualizer.html
+      - .ctxo/index/**
 
 permissions:
   contents: read
@@ -22,12 +24,18 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Prepare site
+        run: |
+          mkdir -p _site/ctxo-index
+          cp tools/ctxo-visualizer.html _site/
+          cp -r .ctxo/index/* _site/ctxo-index/
+          touch _site/.nojekyll
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: tools
+          path: _site
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
