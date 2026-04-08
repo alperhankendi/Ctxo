@@ -174,7 +174,7 @@ Ctxo ships with an interactive visualizer that renders your codebase index as a 
 
 ## How It Works
 
-![Ctxo MCP Server Architecture](docs/img/mcp-server.png)
+<img src="docs/img/mcp-server.png" alt="Ctxo MCP Server Architecture" width="600">
 
 Ctxo builds a **committed JSON index** (`.ctxo/index/`) that captures symbols, dependency edges, git history, and co-change data. The MCP server reads this index to answer queries — no runtime parsing, no external services.
 
