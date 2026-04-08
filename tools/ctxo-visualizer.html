@@ -188,9 +188,11 @@
   .url-status { font-size: 10px; color: var(--text3); margin-top: 4px; }
 
   /* 3D Graph */
-  .graph3d-container { flex: 1; position: relative; overflow: hidden; background: #0a0c10; }
+  .graph3d-container { flex: 1; position: relative; overflow: hidden; background: #0a0c10; min-height: 0; }
+  .graph3d-container canvas { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; }
   .graph3d-info { position: absolute; top: 12px; left: 12px; background: rgba(15,17,23,0.9); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; font-size: 11px; color: var(--text2); z-index: 5; }
   [data-theme="light"] .graph3d-info { background: rgba(255,255,255,0.95); }
+  #panel-graph3d .empty-state { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
 
   /* Diff View */
   .diff-container { flex: 1; overflow-y: auto; padding: 16px; }
@@ -1357,40 +1359,47 @@ async function renderGraph3D() {
   if (!allSyms.length) { emptyEl.style.display = ''; infoEl.style.display = 'none'; return; }
   emptyEl.style.display = 'none'; infoEl.style.display = '';
 
+  // Wait a frame for layout to settle so container has dimensions
   if (!graph3dInitialized) {
+    await new Promise(r => requestAnimationFrame(r));
     try {
       const THREE = await import('three');
       const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
 
-      const w = container.clientWidth, h = container.clientHeight;
+      let w = container.clientWidth || 800, h = container.clientHeight || 600;
+
       scene3d = new THREE.Scene();
       scene3d.background = new THREE.Color(0x0a0c10);
-      scene3d.fog = new THREE.FogExp2(0x0a0c10, 0.0015);
 
-      camera3d = new THREE.PerspectiveCamera(60, w / h, 1, 5000);
-      camera3d.position.set(0, 0, 400);
+      camera3d = new THREE.PerspectiveCamera(60, w / h, 0.1, 10000);
+      camera3d.position.set(0, 0, 500);
 
-      renderer3d = new THREE.WebGLRenderer({ antialias: true });
+      renderer3d = new THREE.WebGLRenderer({ antialias: true, alpha: false });
       renderer3d.setSize(w, h);
-      renderer3d.setPixelRatio(devicePixelRatio);
+      renderer3d.setPixelRatio(Math.min(devicePixelRatio, 2));
 
-      const existingCanvas = container.querySelector('canvas');
-      if (existingCanvas) existingCanvas.remove();
-      container.insertBefore(renderer3d.domElement, container.firstChild);
+      // Remove any existing canvas
+      container.querySelectorAll('canvas').forEach(c => c.remove());
+      container.appendChild(renderer3d.domElement);
 
       controls3d = new OrbitControls(camera3d, renderer3d.domElement);
       controls3d.enableDamping = true;
       controls3d.dampingFactor = 0.08;
 
-      scene3d.add(new THREE.AmbientLight(0x444466, 1.5));
-      const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-      dirLight.position.set(200, 300, 200);
+      scene3d.add(new THREE.AmbientLight(0xffffff, 0.6));
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+      dirLight.position.set(300, 400, 300);
       scene3d.add(dirLight);
+      const dirLight2 = new THREE.DirectionalLight(0x8888ff, 0.4);
+      dirLight2.position.set(-200, -100, -200);
+      scene3d.add(dirLight2);
 
       const ro = new ResizeObserver(() => {
         const w2 = container.clientWidth, h2 = container.clientHeight;
-        camera3d.aspect = w2 / h2; camera3d.updateProjectionMatrix();
-        renderer3d.setSize(w2, h2);
+        if (w2 > 0 && h2 > 0) {
+          camera3d.aspect = w2 / h2; camera3d.updateProjectionMatrix();
+          renderer3d.setSize(w2, h2);
+        }
       });
       ro.observe(container);
 
@@ -1405,7 +1414,8 @@ async function renderGraph3D() {
       animate();
     } catch (err) {
       emptyEl.style.display = '';
-      emptyEl.querySelector('p').textContent = 'Failed to load Three.js: ' + err.message;
+      emptyEl.querySelector('p').textContent = 'Three.js error: ' + err.message;
+      console.error('3D Graph error:', err);
       return;
     }
   }
@@ -1420,7 +1430,7 @@ async function renderGraph3D() {
 
   // Create nodes
   const nodeMap = {};
-  const spread = Math.min(300, allSyms.length * 2);
+  const spread = Math.max(100, Math.min(500, allSyms.length * 3));
   allSyms.forEach((s, i) => {
     const phi = Math.acos(-1 + (2 * i) / allSyms.length);
     const theta = Math.sqrt(allSyms.length * Math.PI) * phi;
@@ -1489,7 +1499,7 @@ async function renderGraph3D() {
   nodes3d.forEach(n => box.expandByPoint(new THREE.Vector3(n.x,n.y,n.z)));
   const center = box.getCenter(new THREE.Vector3());
   const size = box.getSize(new THREE.Vector3()).length();
-  camera3d.position.set(center.x, center.y, center.z + size * 0.9);
+  camera3d.position.set(center.x + size * 0.3, center.y + size * 0.2, center.z + size * 1.2);
   controls3d.target.copy(center);
   controls3d.update();
 
