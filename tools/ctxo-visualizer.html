@@ -1998,6 +1998,14 @@ document.getElementById('mcpToolSelect').addEventListener('change', e => {
 });
 
 updateAll();
+
+// Auto-fetch on page load if URL has a value
+window.addEventListener('load', () => {
+  const urlInput = document.getElementById('urlInput');
+  if (urlInput.value.trim()) {
+    document.getElementById('urlLoadBtn').click();
+  }
+});
 </script>
 </body>
 </html>
