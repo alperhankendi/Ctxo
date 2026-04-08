@@ -1886,30 +1886,20 @@ document.getElementById('mcpConnectBtn').addEventListener('click', async () => {
       });
     }
 
-    // 4. Change intelligence (complexity)
-    statusEl.textContent = '4/7 Loading complexity (' + totalSyms + ' symbols)...';
-    const ciData = extractJson(await mcpCall(url, 'tools/call', { name: 'get_change_intelligence', arguments: { limit: 100 } }));
-    if (ciData?.results) {
-      ciData.results.forEach(r => {
-        const fp = r.file || (r.symbolId && r.symbolId.split('::')[0]);
-        if (fp) {
-          const f = ensureFile(fp);
-          if (r.cyclomatic != null) f.complexity.push({ symbolId: r.symbolId || fp, cyclomatic: r.cyclomatic });
-        }
-      });
-    }
-
-    // 5. Symbol importance (PageRank)
-    statusEl.textContent = '5/7 Loading symbol importance...';
+    // 4. Symbol importance (PageRank)
+    statusEl.textContent = '4/6 Loading symbol importance...';
     const impData = extractJson(await mcpCall(url, 'tools/call', { name: 'get_symbol_importance', arguments: { limit: 50 } }));
+    console.log('[MCP] Importance:', impData ? (impData.rankings?.length || 0) + ' ranked' : 'empty');
 
-    // 6. Dead code
-    statusEl.textContent = '6/7 Detecting dead code...';
+    // 5. Dead code
+    statusEl.textContent = '5/6 Detecting dead code...';
     const deadData = extractJson(await mcpCall(url, 'tools/call', { name: 'find_dead_code', arguments: {} }));
+    console.log('[MCP] Dead code:', deadData ? (deadData.deadSymbols?.length || 0) + ' found' : 'empty');
 
-    // 7. Changed symbols (recent activity)
-    statusEl.textContent = '7/7 Loading recent changes...';
+    // 6. Changed symbols (recent activity)
+    statusEl.textContent = '6/6 Loading recent changes...';
     const changedData = extractJson(await mcpCall(url, 'tools/call', { name: 'get_changed_symbols', arguments: {} }));
+    console.log('[MCP] Changed:', changedData ? (changedData.changedFiles?.length || 0) + ' files' : 'empty');
 
     // Load into state
     state.files = []; // clear previous
