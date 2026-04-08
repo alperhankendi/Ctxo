@@ -177,7 +177,7 @@ export function handleGetPrImpact(
 
       const payload = masking.mask(JSON.stringify({
         since,
-        changedFiles: limitedPaths.length,
+        changedFiles: files.length,
         changedSymbols,
         totalImpact,
         riskLevel,

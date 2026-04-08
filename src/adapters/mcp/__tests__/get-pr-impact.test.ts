@@ -163,6 +163,18 @@ describe('handleGetPrImpact', () => {
     }
   });
 
+  it('changedFiles counts only indexed source files, not raw git paths', async () => {
+    const git = createMockGit(['src/a.ts', 'tests/a.test.ts', '.eslintrc.js', 'README.md']);
+    const handler = handleGetPrImpact(storage, git, new MaskingPipeline(), undefined, tempDir);
+    const result = await handler({ since: 'HEAD~1' });
+    const payload = JSON.parse(result.content[0]!.text);
+
+    // Only src/a.ts is in the index — others should not inflate changedFiles
+    expect(payload.changedFiles).toBe(1);
+    expect(payload.files).toHaveLength(1);
+    expect(payload.files[0].file).toBe('src/a.ts');
+  });
+
   it('returns error for invalid input', async () => {
     const git = createMockGit([]);
     const handler = handleGetPrImpact(storage, git, new MaskingPipeline(), undefined, tempDir);
