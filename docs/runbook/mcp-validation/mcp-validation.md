@@ -1135,6 +1135,60 @@ Set `CTXO_RESPONSE_LIMIT=500` environment variable and call `get_blast_radius` w
 
 ***
 
+## Step 19c: Intent-Based Result Filtering
+
+Verify that `intent` parameter filters results across 4 tools.
+
+### 19c.1 `get_blast_radius` with Intent
+
+Call with `{ symbolId: "src/core/types.ts::SymbolNode::type", intent: "adapter" }`:
+
+* [ ] Only impacted symbols with "adapter" in symbolId/file/name/kind are returned
+* [ ] `impactScore` reflects filtered count
+* [ ] Without intent parameter, all impacted symbols are returned (backward compat)
+
+### 19c.2 `find_importers` with Intent
+
+Call with `{ symbolId: "src/core/types.ts::SymbolNode::type", intent: "storage" }`:
+
+* [ ] Only importers with "storage" in symbolId/file/name are returned
+* [ ] `importerCount` reflects filtered count
+* [ ] Without intent, all importers returned
+
+### 19c.3 `find_dead_code` with Intent
+
+Call with `{ intent: "function" }`:
+
+* [ ] Only dead symbols with kind "function" or "function" in name/file are returned
+* [ ] Without intent, all dead symbols returned
+
+### 19c.4 `get_logic_slice` with Intent
+
+Call with `{ symbolId: "src/core/graph/symbol-graph.ts::SymbolGraph::class", level: 3, intent: "type" }`:
+
+* [ ] `dependencies` array filtered to only entries matching "type"
+* [ ] Root symbol always included (not filtered)
+* [ ] Without intent, all dependencies returned
+
+### 19c.5 Intent Edge Cases
+
+* [ ] Empty intent string → all results returned
+* [ ] Single-character intent → ignored (too short), all results returned
+* [ ] Multiple keywords → OR logic (any keyword matches)
+* [ ] Case-insensitive matching
+* [ ] No matches → empty results array
+
+**Record:**
+
+| Tool | Intent | Unfiltered Count | Filtered Count |
+|---|---|---|---|
+| `get_blast_radius` | "adapter" | \_\_\_ | \_\_\_ |
+| `find_importers` | "storage" | \_\_\_ | \_\_\_ |
+| `find_dead_code` | "function" | \_\_\_ | \_\_\_ |
+| `get_logic_slice` | "type" | \_\_\_ | \_\_\_ |
+
+***
+
 ## Step 20: Staleness Detection Check
 
 Run any tool immediately after a fresh index build.
@@ -1571,6 +1625,11 @@ After completing all steps, fill in:
 | 19b| Response envelope — `_meta` field present in all tool responses     |           |
 | 19c| Response envelope — truncation works when over threshold            |           |
 | 19d| Response envelope — `CTXO_RESPONSE_LIMIT` configurable             |           |
+| 19e| Intent filter — `get_blast_radius` filters by intent keywords       |           |
+| 19f| Intent filter — `find_importers` filters by intent keywords         |           |
+| 19g| Intent filter — `find_dead_code` filters by intent keywords         |           |
+| 19h| Intent filter — `get_logic_slice` filters dependencies by intent    |           |
+| 19i| Intent filter — backward compatible (no intent = full results)      |           |
 | 20 | Staleness detection — no false positive on fresh index              |           |
 | 21 | Unit tests pass (675+)                                              |           |
 | 22 | Git hash masking — visible or redacted (log status)                 |           |
@@ -1578,7 +1637,7 @@ After completing all steps, fill in:
 | 24 | Token savings > 10x for aggregate                                   |           |
 | 25 | Context budget chart shows MCP uses < 1% of 1M window               |           |
 
-**Result:** \_\_\_/86 checks passed
+**Result:** \_\_\_/91 checks passed
 
 ***
 

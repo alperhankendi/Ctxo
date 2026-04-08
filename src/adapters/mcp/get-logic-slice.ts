@@ -7,11 +7,13 @@ import { LogicSliceQuery } from '../../core/logic-slice/logic-slice-query.js';
 import { DetailFormatter } from '../../core/detail-levels/detail-formatter.js';
 import { DetailLevelSchema } from '../../core/types.js';
 import { wrapResponse } from '../../core/response-envelope.js';
+import { filterByIntent } from '../../core/intent-filter.js';
 
 const InputSchema = z.object({
   symbolId: z.string().min(1).optional(),
   symbolIds: z.array(z.string().min(1)).optional(),
   level: DetailLevelSchema.optional().default(3),
+  intent: z.string().optional().describe('Filter dependencies by intent keywords (e.g., "core", "adapter", "storage")'),
 }).refine(
   (data) => data.symbolId || (data.symbolIds && data.symbolIds.length > 0),
   { message: 'Either symbolId or symbolIds must be provided' },
@@ -95,7 +97,7 @@ export function handleGetLogicSlice(
         };
       }
 
-      const { symbolId, symbolIds, level } = parsed.data;
+      const { symbolId, symbolIds, level, intent } = parsed.data;
       const ids = symbolIds ?? (symbolId ? [symbolId] : []);
 
       const graph = getGraph();
@@ -105,7 +107,15 @@ export function handleGetLogicSlice(
       for (const id of ids) {
         const slice = query.getLogicSlice(graph, id);
         if (slice) {
-          results.push(formatter.format(slice, level));
+          const formatted = formatter.format(slice, level) as Record<string, unknown>;
+          // Apply intent filter to dependencies if present
+          if (intent && Array.isArray(formatted['dependencies'])) {
+            formatted['dependencies'] = filterByIntent(
+              formatted['dependencies'] as Record<string, unknown>[],
+              intent,
+            );
+          }
+          results.push(formatted);
         } else {
           results.push({ found: false, symbolId: id, hint: 'Symbol not found. Run "ctxo index".' });
         }

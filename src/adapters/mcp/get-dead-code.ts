@@ -4,10 +4,12 @@ import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { DeadCodeDetector } from '../../core/dead-code/dead-code-detector.js';
 import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
 import { wrapResponse } from '../../core/response-envelope.js';
+import { filterByIntent } from '../../core/intent-filter.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 
 const InputSchema = z.object({
   includeTests: z.boolean().optional().default(false),
+  intent: z.string().optional().describe('Filter dead code results by intent keywords (e.g., "adapter", "core", "function")'),
 });
 
 export function handleFindDeadCode(
@@ -36,7 +38,13 @@ export function handleFindDeadCode(
       const graph = getGraph();
       const result = detector.detect(graph, { includeTests: parsed.data.includeTests });
 
-      const payload = masking.mask(JSON.stringify(wrapResponse(result as unknown as Record<string, unknown>)));
+      // Apply intent filter to deadSymbols if requested
+      const filtered = {
+        ...result,
+        deadSymbols: filterByIntent(result.deadSymbols as unknown as Record<string, unknown>[], parsed.data.intent) as typeof result.deadSymbols,
+      };
+
+      const payload = masking.mask(JSON.stringify(wrapResponse(filtered as unknown as Record<string, unknown>)));
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {

@@ -78,6 +78,7 @@ async function main(): Promise<void> {
         symbolId: z.string().optional().describe('Single symbol ID (format: file::name::kind)'),
         symbolIds: z.array(z.string()).optional().describe('Batch: array of symbol IDs'),
         level: z.number().min(1).max(4).optional().default(3).describe('Detail level (L1=signature, L2=direct deps, L3=full closure, L4=with token budget)'),
+        intent: z.string().optional().describe('Filter dependencies by intent keywords (e.g., "core", "adapter")'),
       },
     },
     (args) => logicSliceHandler(args),
@@ -114,6 +115,7 @@ async function main(): Promise<void> {
       description: 'BEFORE modifying any function or class, call this to understand impact. Returns all symbols that would break if the target changes, split into confirmed (direct importers), likely (co-changed), and potential (transitive) tiers with risk scores. For what a symbol DEPENDS ON (downstream), use get_logic_slice instead. For full PR-level analysis, use get_pr_impact.',
       inputSchema: {
         symbolId: z.string().min(1).describe('The symbol ID (format: file::name::kind)'),
+        intent: z.string().optional().describe('Filter impacted symbols by intent keywords (e.g., "test", "adapter")'),
       },
     },
     (args) => blastRadiusHandler(args),
@@ -140,6 +142,7 @@ async function main(): Promise<void> {
       description: 'Find unreachable symbols and files that are never imported or called anywhere. Use this during cleanup, refactoring, or before deleting code to confirm it is truly unused. For reverse dependency lookup of a specific symbol, use find_importers instead.',
       inputSchema: {
         includeTests: z.boolean().optional().default(false).describe('Include test files in analysis (default: exclude)'),
+        intent: z.string().optional().describe('Filter dead code results by intent keywords (e.g., "adapter", "function")'),
       },
     },
     (args) => deadCodeHandler(args),
@@ -216,6 +219,7 @@ async function main(): Promise<void> {
         edgeKinds: z.array(z.enum(['imports', 'calls', 'extends', 'implements', 'uses'])).optional().describe('Filter by edge kinds'),
         transitive: z.boolean().optional().default(false).describe('Follow transitive reverse edges (default false)'),
         maxDepth: z.number().int().min(1).max(10).optional().default(5).describe('Max BFS depth for transitive mode (default 5)'),
+        intent: z.string().optional().describe('Filter importers by intent keywords (e.g., "test", "core", "adapter")'),
       },
     },
     (args) => findImportersHandler(args),

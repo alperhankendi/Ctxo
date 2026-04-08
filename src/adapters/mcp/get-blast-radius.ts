@@ -3,12 +3,14 @@ import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { BlastRadiusCalculator } from '../../core/blast-radius/blast-radius-calculator.js';
 import { wrapResponse } from '../../core/response-envelope.js';
+import { filterByIntent } from '../../core/intent-filter.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
 
 const InputSchema = z.object({
   symbolId: z.string().min(1),
   confidence: z.enum(['confirmed', 'likely', 'potential']).optional(),
+  intent: z.string().optional().describe('Filter results by intent keywords (e.g., "test", "adapter", "security")'),
 });
 
 export function handleGetBlastRadius(
@@ -49,6 +51,9 @@ export function handleGetBlastRadius(
       if (parsed.data.confidence) {
         symbols = symbols.filter(s => s.confidence === parsed.data.confidence);
       }
+
+      // Apply intent filter if requested
+      symbols = filterByIntent(symbols as unknown as Record<string, unknown>[], parsed.data.intent) as typeof symbols;
 
       const confirmedCount = symbols.filter(s => s.confidence === 'confirmed').length;
       const likelyCount = symbols.filter(s => s.confidence === 'likely').length;

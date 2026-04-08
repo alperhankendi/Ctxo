@@ -4,12 +4,14 @@ import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
 import { wrapResponse } from '../../core/response-envelope.js';
+import { filterByIntent } from '../../core/intent-filter.js';
 
 const InputSchema = z.object({
   symbolId: z.string().min(1),
   edgeKinds: z.array(z.enum(['imports', 'calls', 'extends', 'implements', 'uses'])).optional(),
   transitive: z.boolean().optional().default(false),
   maxDepth: z.number().int().min(1).max(10).optional().default(5),
+  intent: z.string().optional().describe('Filter results by intent keywords (e.g., "test", "adapter", "core")'),
 });
 
 export function handleFindImporters(
@@ -103,10 +105,13 @@ export function handleFindImporters(
       // Sort by depth ascending
       importers.sort((a, b) => a.depth - b.depth);
 
+      // Apply intent filter if requested
+      const filtered = filterByIntent(importers, parsed.data.intent);
+
       const payload = masking.mask(JSON.stringify(wrapResponse({
         symbolId,
-        importerCount: importers.length,
-        importers,
+        importerCount: filtered.length,
+        importers: filtered,
       })));
 
       const content: Array<{ type: 'text'; text: string }> = [];
