@@ -41,7 +41,7 @@ export function handleFindDeadCode(
       // Apply intent filter to deadSymbols if requested
       const filtered = {
         ...result,
-        deadSymbols: filterByIntent(result.deadSymbols as unknown as Record<string, unknown>[], parsed.data.intent) as typeof result.deadSymbols,
+        deadSymbols: filterByIntent(result.deadSymbols as unknown as Record<string, unknown>[], parsed.data.intent) as unknown as typeof result.deadSymbols,
       };
 
       const payload = masking.mask(JSON.stringify(wrapResponse(filtered as unknown as Record<string, unknown>)));

@@ -53,7 +53,7 @@ export function handleGetBlastRadius(
       }
 
       // Apply intent filter if requested
-      symbols = filterByIntent(symbols as unknown as Record<string, unknown>[], parsed.data.intent) as typeof symbols;
+      symbols = filterByIntent(symbols as unknown as Record<string, unknown>[], parsed.data.intent) as unknown as typeof symbols;
 
       const confirmedCount = symbols.filter(s => s.confidence === 'confirmed').length;
       const likelyCount = symbols.filter(s => s.confidence === 'likely').length;

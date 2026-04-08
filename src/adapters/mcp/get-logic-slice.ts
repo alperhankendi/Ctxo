@@ -107,7 +107,7 @@ export function handleGetLogicSlice(
       for (const id of ids) {
         const slice = query.getLogicSlice(graph, id);
         if (slice) {
-          const formatted = formatter.format(slice, level) as Record<string, unknown>;
+          const formatted = formatter.format(slice, level) as unknown as Record<string, unknown>;
           // Apply intent filter to dependencies if present
           if (intent && Array.isArray(formatted['dependencies'])) {
             formatted['dependencies'] = filterByIntent(
