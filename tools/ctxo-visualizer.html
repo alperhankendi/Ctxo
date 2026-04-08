@@ -342,6 +342,12 @@
     <div class="panel" id="panel-graph3d">
       <div class="graph3d-container" id="graph3dContainer">
         <div class="graph3d-info" id="graph3dInfo" style="display:none">Scroll to zoom, drag to rotate, right-drag to pan. Click node for details.</div>
+        <div class="graph-controls" id="graph3dControls" style="display:none">
+          <button id="zoom3dIn" title="Zoom In">+</button>
+          <button id="zoom3dOut" title="Zoom Out">&minus;</button>
+          <button id="zoom3dFit" title="Fit All">&#8214;</button>
+          <button id="zoom3dReset" title="Reset View">&#8634;</button>
+        </div>
         <div class="empty-state" id="graph3dEmpty"><div class="es-icon">&#127760;</div><p>Load JSON files to see the 3D dependency graph</p></div>
       </div>
     </div>
@@ -1356,8 +1362,10 @@ async function renderGraph3D() {
   const allSyms = filterSymbols(getAllSymbols());
   const allEdges = getAllEdges().filter(e => state.edgeFilter[e.kind]);
 
-  if (!allSyms.length) { emptyEl.style.display = ''; infoEl.style.display = 'none'; return; }
-  emptyEl.style.display = 'none'; infoEl.style.display = '';
+  const ctrlsEl = document.getElementById('graph3dControls');
+
+  if (!allSyms.length) { emptyEl.style.display = ''; infoEl.style.display = 'none'; ctrlsEl.style.display = 'none'; return; }
+  emptyEl.style.display = 'none'; infoEl.style.display = ''; ctrlsEl.style.display = '';
 
   // Wait a frame for layout to settle so container has dimensions
   if (!graph3dInitialized) {
@@ -1385,6 +1393,14 @@ async function renderGraph3D() {
       controls3d = new OrbitControls(camera3d, renderer3d.domElement);
       controls3d.enableDamping = true;
       controls3d.dampingFactor = 0.08;
+      controls3d.enableZoom = true;
+      controls3d.zoomSpeed = 1.2;
+      controls3d.enablePan = true;
+      controls3d.panSpeed = 0.8;
+      controls3d.enableRotate = true;
+      controls3d.rotateSpeed = 0.6;
+      controls3d.minDistance = 10;
+      controls3d.maxDistance = 5000;
 
       scene3d.add(new THREE.AmbientLight(0xffffff, 0.6));
       const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
@@ -1502,6 +1518,32 @@ async function renderGraph3D() {
   camera3d.position.set(center.x + size * 0.3, center.y + size * 0.2, center.z + size * 1.2);
   controls3d.target.copy(center);
   controls3d.update();
+
+  // Store for button handlers
+  window._graph3dFitData = { center, size };
+
+  // Zoom buttons
+  document.getElementById('zoom3dIn').onclick = () => {
+    camera3d.position.lerp(controls3d.target, 0.3);
+    controls3d.update();
+  };
+  document.getElementById('zoom3dOut').onclick = () => {
+    const dir = camera3d.position.clone().sub(controls3d.target).normalize();
+    camera3d.position.add(dir.multiplyScalar(50));
+    controls3d.update();
+  };
+  document.getElementById('zoom3dFit').onclick = () => {
+    const d = window._graph3dFitData;
+    if (!d) return;
+    camera3d.position.set(d.center.x + d.size * 0.3, d.center.y + d.size * 0.2, d.center.z + d.size * 1.2);
+    controls3d.target.copy(d.center);
+    controls3d.update();
+  };
+  document.getElementById('zoom3dReset').onclick = () => {
+    camera3d.position.set(0, 0, 500);
+    controls3d.target.set(0, 0, 0);
+    controls3d.update();
+  };
 
   // Click handler
   const raycaster = new THREE.Raycaster();
