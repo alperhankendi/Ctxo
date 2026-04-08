@@ -99,4 +99,13 @@ describe('JsonIndexWriter', () => {
   it('does not throw when deleting non-existent file', () => {
     expect(() => writer.delete('src/nonexistent.ts')).not.toThrow();
   });
+
+  it('does not leave .tmp files after write', () => {
+    writer.write(buildFileIndex());
+
+    const indexDir = join(tempDir, 'index', 'src');
+    const files = require('node:fs').readdirSync(indexDir) as string[];
+    const tmpFiles = files.filter((f: string) => f.endsWith('.tmp'));
+    expect(tmpFiles).toHaveLength(0);
+  });
 });

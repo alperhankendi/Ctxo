@@ -29,7 +29,7 @@ export class JsonIndexWriter {
   }
 
   private atomicWrite(targetPath: string, content: string): void {
-    const tmpPath = `${targetPath}.tmp`;
+    const tmpPath = `${targetPath}.${process.pid}.tmp`;
     writeFileSync(tmpPath, content, 'utf-8');
     renameSync(tmpPath, targetPath);
   }
