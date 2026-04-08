@@ -1221,7 +1221,7 @@ From Step 3 metrics, verify edge kind diversity.
 | `extends`    | 0       | Optional (depends on codebase) |
 | `uses`       | 1+      | Required (likely-tier blast radius) |
 
-### 18.1 Cross-File Edge Resolution Accuracy
+### 21.1 Cross-File Edge Resolution Accuracy
 
 Verify that import edge targets use real type lookups (not heuristic fallback).
 
@@ -1242,7 +1242,7 @@ console.log(JSON.stringify({importEdgesByTargetKind:{type:typeEdges,class:classE
 * [ ] `function` > 0 (functions resolved via multi-file project)
 * [ ] Heuristic misclassifications reduced (e.g., `ServiceConfig` correctly resolves to `::interface`, not `::class`)
 
-### 18.2 this.method() Intra-Class Call Edges
+### 21.2 this.method() Intra-Class Call Edges
 
 Verify that `this.method()` calls within classes produce `calls` edges.
 
@@ -1543,101 +1543,104 @@ Queries before context pressure: Manual=___ vs MCP=___
 
 After completing all steps, fill in:
 
-| #  | Check                                                               | Pass/Fail |
-| -- | ------------------------------------------------------------------- | --------- |
-| 1  | Index builds from zero without errors                               |           |
-| 2  | Index metrics: symbols > 0, edges > 0, intents > 0                  |           |
-| 2a | All symbols have byte offsets (startOffset/endOffset)                |           |
-| 2b | `typeOnly` edges flagged for `import type` statements               |           |
-| 2c | `uses` edges present (likely-tier blast radius)                      |           |
-| 2d | Multi-file project preloading active during indexing                 |           |
-| 2e | Import edge target kinds resolved via cross-file lookup              |           |
-| 2f | `this.method()` intra-class call edges extracted                     |           |
-| 3  | Edge kinds include imports + calls + implements + uses              |           |
-| 4  | `get_logic_slice` — progressive detail L1 < L2 < L3                 |           |
-| 5  | `get_logic_slice` — transitive dependencies resolved                |           |
-| 6  | `get_blast_radius` — impactScore > 0, multi-depth dependents        |           |
-| 6a | `get_blast_radius` — riskScore per entry, overallRiskScore 0-1      |           |
-| 6b | `get_blast_radius` — 3-tier: confirmed + likely + potential = impactScore |      |
-| 6c | `get_blast_radius` — edgeKinds array per entry (non-empty)           |           |
-| 6d | `get_blast_radius` — confidence filter returns only matching tier    |           |
-| 7  | `get_architectural_overlay` — 6 layers, correct classification      |           |
-| 8  | `get_why_context` — commits returned, no changeIntelligence overlap |           |
-| 8a | `get_why_context` — `maxCommits` slices commitHistory correctly     |           |
-| 8b | `--max-history` limits intent entries per file during indexing       |           |
-| 9  | `get_change_intelligence` — complexity > 0, valid band              |           |
-| 10 | `find_dead_code` — deadSymbols detected, confidence scoring works   |           |
-| 10a| `find_dead_code` — deadFiles lists fully-dead files                 |           |
-| 10b| `find_dead_code` — circular islands detected as dead                |           |
-| 10c| `find_dead_code` — test/config files excluded by default            |           |
-| 10d| `find_dead_code` — unusedExports detected (exported but never imported) |        |
-| 10e| `find_dead_code` — cascadeDepth tracked for dead chains              |           |
-| 10f| `find_dead_code` — framework symbols (main, Schema) NOT flagged      |           |
-| 10g| `find_dead_code` — scaffolding markers detected (TODO/FIXME/HACK)    |           |
-| 11 | `get_context_for_task` — context entries with relevanceScore        |           |
-| 11a| `get_context_for_task` — taskType affects ranking (fix vs extend)   |           |
-| 11b| `get_context_for_task` — tokenBudget respected                      |           |
-| 11c| `get_context_for_task` — warnings for anti-patterns                 |           |
-| 12 | `get_ranked_context` — results ranked by combinedScore              |           |
-| 12a| `get_ranked_context` — exact name match scores 1.0                  |           |
-| 12b| `get_ranked_context` — importance strategy works                    |           |
-| 12c| `get_ranked_context` — tokenBudget respected                        |           |
-| 13 | `search_symbols` — exact, regex, substring all return results       |           |
-| 13a| `search_symbols` — kind and filePattern filters work               |           |
-| 13b| `search_symbols` — limit caps results, totalMatches shows full count|           |
-| 13c| `search_symbols` — invalid regex falls back to literal (no crash)  |           |
-| 14 | `get_changed_symbols` — returns symbols grouped by changed file     |           |
-| 14a| `get_changed_symbols` — custom since ref returns more changes      |           |
-| 14b| `get_changed_symbols` — maxFiles limits processed files            |           |
-| 14c| `get_changed_symbols` — invalid git ref returns graceful error     |           |
-| 15 | `find_importers` — direct importers returned with depth=1          |           |
-| 15a| `find_importers` — transitive mode returns multi-depth BFS         |           |
-| 15b| `find_importers` — edgeKinds filter restricts edge types           |           |
-| 15c| `find_importers` — maxDepth caps transitive traversal              |           |
-| 15d| `find_importers` — circular deps do not cause infinite loop        |           |
-| 16 | `get_class_hierarchy` — full project returns hierarchy trees        |           |
-| 16a| `get_class_hierarchy` — ancestors returns extends/implements chain |           |
-| 16b| `get_class_hierarchy` — descendants returns implementing classes   |           |
-| 16c| `get_class_hierarchy` — only extends/implements edges traversed    |           |
-| 17 | `get_symbol_importance` — rankings sorted by PageRank score desc   |           |
-| 17a| `get_symbol_importance` — top symbol is widely-depended-on type    |           |
-| 17b| `get_symbol_importance` — kind and filePattern filters work        |           |
-| 17c| `get_symbol_importance` — converged=true, iterations reasonable    |           |
-| 17d| `get_symbol_importance` — limit caps results count                 |           |
-| 17 | Go adapter: struct→class, interface, function, method extracted      |           |
-| 17a| Go adapter: unexported (lowercase) symbols skipped                   |           |
-| 17b| Go adapter: import edges extracted from `import` declarations        |           |
-| 17c| C# adapter: class, interface, method, enum, constructor extracted    |           |
-| 17d| C# adapter: private methods skipped, namespace qualification correct |           |
-| 17e| C# adapter: using→imports, base_list→extends/implements edges        |           |
-| 17f| Registry: `.go`→syntax, `.cs`→syntax, `.ts`→full, `.py`→none        |           |
-| 17g| Dynamic extension filter: `getSupportedExtensions()` includes all    |           |
-| 17h| Graceful degradation: TS indexing works without tree-sitter installed |           |
-| 17i| `runCheck()` uses registry + dynamic extensions (not hardcoded)       |           |
-| 17j| Watch command uses local scoped extensions (no mutable global)        |           |
-| 18 | Co-change matrix generated during indexing                           |           |
-| 18a| Co-change entries filtered (freq >= 0.1, shared >= 2)               |           |
-| 18b| Co-change boost: potential → likely when frequency > 0.5            |           |
-| 19 | `get_pr_impact` — returns risk assessment for changed files         |           |
-| 19a| `get_pr_impact` — riskLevel low/medium/high                         |           |
-| 19b| `get_pr_impact` — coChangedWith array per file                      |           |
-| 19c| `get_pr_impact` — confidence filter works                           |           |
-| 19b| Response envelope — `_meta` field present in all tool responses     |           |
-| 19c| Response envelope — truncation works when over threshold            |           |
-| 19d| Response envelope — `CTXO_RESPONSE_LIMIT` configurable             |           |
-| 19e| Intent filter — `get_blast_radius` filters by intent keywords       |           |
-| 19f| Intent filter — `find_importers` filters by intent keywords         |           |
-| 19g| Intent filter — `find_dead_code` filters by intent keywords         |           |
-| 19h| Intent filter — `get_logic_slice` filters dependencies by intent    |           |
-| 19i| Intent filter — backward compatible (no intent = full results)      |           |
-| 20 | Staleness detection — no false positive on fresh index              |           |
-| 21 | Unit tests pass (675+)                                              |           |
-| 22 | Git hash masking — visible or redacted (log status)                 |           |
-| 23 | Manual vs MCP comparison table filled with measured data            |           |
-| 24 | Token savings > 10x for aggregate                                   |           |
-| 25 | Context budget chart shows MCP uses < 1% of 1M window               |           |
+| #   | Check                                                               | Pass/Fail |
+| --- | ------------------------------------------------------------------- | --------- |
+| **Indexing (Steps 1-3)** | | |
+| 1   | Index builds from zero without errors                               |           |
+| 2   | Index metrics: symbols > 0, edges > 0, intents > 0                  |           |
+| 2a  | All symbols have byte offsets (startOffset/endOffset)                |           |
+| 2b  | `typeOnly` edges flagged for `import type` statements               |           |
+| 2c  | `uses` edges present (likely-tier blast radius)                      |           |
+| 2d  | Multi-file project preloading active during indexing                 |           |
+| 2e  | Import edge target kinds resolved via cross-file lookup              |           |
+| 2f  | `this.method()` intra-class call edges extracted                     |           |
+| 3   | Edge kinds include imports + calls + implements + uses              |           |
+| **Core Tools (Steps 4-16)** | | |
+| 4   | `get_logic_slice` — progressive detail L1 < L2 < L3                 |           |
+| 5   | `get_logic_slice` — transitive dependencies resolved                |           |
+| 6   | `get_blast_radius` — impactScore > 0, multi-depth dependents        |           |
+| 6a  | `get_blast_radius` — riskScore per entry, overallRiskScore 0-1      |           |
+| 6b  | `get_blast_radius` — 3-tier: confirmed + likely + potential = impactScore |      |
+| 6c  | `get_blast_radius` — edgeKinds array per entry (non-empty)           |           |
+| 6d  | `get_blast_radius` — confidence filter returns only matching tier    |           |
+| 7   | `get_architectural_overlay` — 6 layers, correct classification      |           |
+| 8   | `get_why_context` — commits returned, no changeIntelligence overlap |           |
+| 8a  | `get_why_context` — `maxCommits` slices commitHistory correctly     |           |
+| 8b  | `--max-history` limits intent entries per file during indexing       |           |
+| 9   | `get_change_intelligence` — complexity > 0, valid band              |           |
+| 10  | `find_dead_code` — deadSymbols detected, confidence scoring works   |           |
+| 10a | `find_dead_code` — deadFiles lists fully-dead files                 |           |
+| 10b | `find_dead_code` — circular islands detected as dead                |           |
+| 10c | `find_dead_code` — test/config files excluded by default            |           |
+| 10d | `find_dead_code` — unusedExports detected (exported but never imported) |        |
+| 10e | `find_dead_code` — cascadeDepth tracked for dead chains              |           |
+| 10f | `find_dead_code` — framework symbols (main, Schema) NOT flagged      |           |
+| 10g | `find_dead_code` — scaffolding markers detected (TODO/FIXME/HACK)    |           |
+| 11  | `get_context_for_task` — context entries with relevanceScore        |           |
+| 11a | `get_context_for_task` — taskType affects ranking (fix vs extend)   |           |
+| 11b | `get_context_for_task` — tokenBudget respected                      |           |
+| 11c | `get_context_for_task` — warnings for anti-patterns                 |           |
+| 12  | `get_ranked_context` — results ranked by combinedScore              |           |
+| 12a | `get_ranked_context` — exact name match scores 1.0                  |           |
+| 12b | `get_ranked_context` — importance strategy works                    |           |
+| 12c | `get_ranked_context` — tokenBudget respected                        |           |
+| 13  | `search_symbols` — exact, regex, substring all return results       |           |
+| 13a | `search_symbols` — kind and filePattern filters work               |           |
+| 13b | `search_symbols` — limit caps results, totalMatches shows full count|           |
+| 13c | `search_symbols` — invalid regex falls back to literal (no crash)  |           |
+| 14  | `get_changed_symbols` — returns symbols grouped by changed file     |           |
+| 14a | `get_changed_symbols` — custom since ref returns more changes      |           |
+| 14b | `get_changed_symbols` — maxFiles limits processed files            |           |
+| 14c | `get_changed_symbols` — invalid git ref returns graceful error     |           |
+| 15  | `find_importers` — direct importers returned with depth=1          |           |
+| 15a | `find_importers` — transitive mode returns multi-depth BFS         |           |
+| 15b | `find_importers` — edgeKinds filter restricts edge types           |           |
+| 15c | `find_importers` — maxDepth caps transitive traversal              |           |
+| 15d | `find_importers` — circular deps do not cause infinite loop        |           |
+| 16  | `get_class_hierarchy` — full project returns hierarchy trees        |           |
+| 16a | `get_class_hierarchy` — ancestors returns extends/implements chain |           |
+| 16b | `get_class_hierarchy` — descendants returns implementing classes   |           |
+| 16c | `get_class_hierarchy` — only extends/implements edges traversed    |           |
+| **PageRank & Multi-Language (Steps 16-17)** | | |
+| 17  | `get_symbol_importance` — rankings sorted by PageRank score desc   |           |
+| 17a | `get_symbol_importance` — top symbol is widely-depended-on type    |           |
+| 17b | `get_symbol_importance` — kind and filePattern filters work        |           |
+| 17c | `get_symbol_importance` — converged=true, iterations reasonable    |           |
+| 17d | `get_symbol_importance` — limit caps results count                 |           |
+| 18  | Go adapter: struct→class, interface, function, method extracted      |           |
+| 18a | Go adapter: unexported (lowercase) symbols skipped                   |           |
+| 18b | Go adapter: import edges extracted from `import` declarations        |           |
+| 18c | C# adapter: class, interface, method, enum, constructor extracted    |           |
+| 18d | C# adapter: private methods skipped, namespace qualification correct |           |
+| 18e | C# adapter: using→imports, base_list→extends/implements edges        |           |
+| 18f | Registry: `.go`→syntax, `.cs`→syntax, `.ts`→full, `.py`→none        |           |
+| 18g | Dynamic extension filter: `getSupportedExtensions()` includes all    |           |
+| 18h | Graceful degradation: TS indexing works without tree-sitter installed |           |
+| 18i | Watch command uses local scoped extensions (no mutable global)        |           |
+| **Co-Change & PR Impact (Steps 18-19)** | | |
+| 19  | Co-change matrix generated during indexing                           |           |
+| 19a | Co-change entries filtered (freq >= 0.1, shared >= 2)               |           |
+| 19b | Co-change boost: potential → likely when frequency > 0.5            |           |
+| 20  | `get_pr_impact` — returns risk assessment for changed files         |           |
+| 20a | `get_pr_impact` — riskLevel low/medium/high                         |           |
+| 20b | `get_pr_impact` — coChangedWith array per file                      |           |
+| 20c | `get_pr_impact` — confidence filter works                           |           |
+| **Response Envelope & Intent Filter (Steps 19b-19c)** | | |
+| 21  | Response envelope — `_meta` field present in all tool responses     |           |
+| 21a | Response envelope — truncation works when over threshold            |           |
+| 21b | Response envelope — `CTXO_RESPONSE_LIMIT` configurable             |           |
+| 22  | Intent filter — `get_blast_radius` filters by intent keywords       |           |
+| 22a | Intent filter — `find_importers` filters by intent keywords         |           |
+| 22b | Intent filter — `find_dead_code` filters by intent keywords         |           |
+| 22c | Intent filter — `get_logic_slice` filters dependencies by intent    |           |
+| 22d | Intent filter — backward compatible (no intent = full results)      |           |
+| **Infrastructure (Steps 20-23)** | | |
+| 23  | Staleness detection — no false positive on fresh index              |           |
+| 24  | Unit tests pass (706+)                                              |           |
+| 25  | Git hash masking — visible or redacted (log status)                 |           |
+| 26  | Manual vs MCP comparison table filled with measured data            |           |
 
-**Result:** \_\_\_/91 checks passed
+**Result:** \_\_\_/82 checks passed
 
 ***
 
@@ -1717,4 +1720,4 @@ Then invoke these 14 MCP calls:
 * `get_symbol_importance` — limit: 10
 * `get_pr_impact` — since: "HEAD~3"
 
-**Quick pass criteria:** All 14 return data (not errors), dependencies/dependents non-empty, 6 layers present, dead code has totalSymbols > 0, context has entries with scores, search returns matches, importers non-empty, hierarchy has trees, importance rankings sorted by score descending with converged=true, PR impact returns riskLevel.
+**Quick pass criteria:** All 14 return data (not errors), dependencies/dependents non-empty, 6 layers present, dead code has totalSymbols > 0, context has entries with scores, search returns matches, importers non-empty, hierarchy has trees, importance rankings sorted by score descending with converged=true, PR impact returns riskLevel, all responses contain `_meta` field, intent parameter filters results when provided.
