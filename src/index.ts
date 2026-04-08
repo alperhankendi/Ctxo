@@ -65,6 +65,14 @@ async function main(): Promise<void> {
   const { StalenessDetector } = await import('./core/staleness/staleness-detector.js');
   const staleness = new StalenessDetector(process.cwd(), ctxoRoot);
 
+  // Tool annotations — all Ctxo tools are read-only index queries
+  const toolAnnotations = {
+    readOnlyHint: true,
+    destructiveHint: false,
+    idempotentHint: true,
+    openWorldHint: false,
+  } as const;
+
   // Register tools
   const logicSliceHandler = handleGetLogicSlice(storage, masking, staleness, ctxoRoot);
   const whyContextHandler = handleGetWhyContext(storage, git, masking, staleness, ctxoRoot);
@@ -80,6 +88,7 @@ async function main(): Promise<void> {
         level: z.number().min(1).max(4).optional().default(3).describe('Detail level (L1=signature, L2=direct deps, L3=full closure, L4=with token budget)'),
         intent: z.string().optional().describe('Filter dependencies by intent keywords (e.g., "core", "adapter")'),
       },
+      annotations: toolAnnotations,
     },
     (args) => logicSliceHandler(args),
   );
@@ -92,6 +101,7 @@ async function main(): Promise<void> {
         symbolId: z.string().min(1).describe('The symbol ID (format: file::name::kind)'),
         maxCommits: z.number().int().min(1).optional().describe('Limit commit history to N most recent commits'),
       },
+      annotations: toolAnnotations,
     },
     (args) => whyContextHandler(args),
   );
@@ -103,6 +113,7 @@ async function main(): Promise<void> {
       inputSchema: {
         symbolId: z.string().min(1).describe('The symbol ID (format: file::name::kind)'),
       },
+      annotations: toolAnnotations,
     },
     (args) => changeIntelligenceHandler(args),
   );
@@ -118,6 +129,7 @@ async function main(): Promise<void> {
         confidence: z.enum(['confirmed', 'likely', 'potential']).optional().describe('Filter by confidence tier'),
         intent: z.string().optional().describe('Filter impacted symbols by intent keywords (e.g., "test", "adapter")'),
       },
+      annotations: toolAnnotations,
     },
     (args) => blastRadiusHandler(args),
   );
@@ -131,6 +143,7 @@ async function main(): Promise<void> {
       inputSchema: {
         layer: z.string().optional().describe('Filter by specific layer name'),
       },
+      annotations: toolAnnotations,
     },
     (args) => overlayHandler(args),
   );
@@ -145,6 +158,7 @@ async function main(): Promise<void> {
         includeTests: z.boolean().optional().default(false).describe('Include test files in analysis (default: exclude)'),
         intent: z.string().optional().describe('Filter dead code results by intent keywords (e.g., "adapter", "function")'),
       },
+      annotations: toolAnnotations,
     },
     (args) => deadCodeHandler(args),
   );
@@ -160,6 +174,7 @@ async function main(): Promise<void> {
         taskType: z.enum(['fix', 'extend', 'refactor', 'understand']).describe('Task type determines which context is most relevant'),
         tokenBudget: z.number().optional().default(4000).describe('Max tokens for context (default 4000)'),
       },
+      annotations: toolAnnotations,
     },
     (args) => contextForTaskHandler(args),
   );
@@ -175,6 +190,7 @@ async function main(): Promise<void> {
         tokenBudget: z.number().optional().default(4000).describe('Max tokens for results (default 4000)'),
         strategy: z.enum(['combined', 'dependency', 'importance']).optional().default('combined').describe('Ranking strategy'),
       },
+      annotations: toolAnnotations,
     },
     (args) => rankedContextHandler(args),
   );
@@ -191,6 +207,7 @@ async function main(): Promise<void> {
         filePattern: z.string().optional().describe('Filter by file path substring'),
         limit: z.number().int().min(1).max(100).optional().default(25).describe('Max results (default 25)'),
       },
+      annotations: toolAnnotations,
     },
     (args) => searchSymbolsHandler(args),
   );
@@ -205,6 +222,7 @@ async function main(): Promise<void> {
         since: z.string().optional().default('HEAD~1').describe('Git ref to diff against (default HEAD~1)'),
         maxFiles: z.number().int().min(1).optional().default(50).describe('Max changed files to process (default 50)'),
       },
+      annotations: toolAnnotations,
     },
     (args) => changedSymbolsHandler(args),
   );
@@ -222,6 +240,7 @@ async function main(): Promise<void> {
         maxDepth: z.number().int().min(1).max(10).optional().default(5).describe('Max BFS depth for transitive mode (default 5)'),
         intent: z.string().optional().describe('Filter importers by intent keywords (e.g., "test", "core", "adapter")'),
       },
+      annotations: toolAnnotations,
     },
     (args) => findImportersHandler(args),
   );
@@ -236,6 +255,7 @@ async function main(): Promise<void> {
         symbolId: z.string().min(1).optional().describe('Root symbol ID (omit for full project hierarchy)'),
         direction: z.enum(['ancestors', 'descendants', 'both']).optional().default('both').describe('Traversal direction (default both)'),
       },
+      annotations: toolAnnotations,
     },
     (args) => classHierarchyHandler(args),
   );
@@ -252,6 +272,7 @@ async function main(): Promise<void> {
         filePattern: z.string().optional().describe('Filter by file path substring'),
         damping: z.number().min(0).max(1).optional().default(0.85).describe('PageRank damping factor (default 0.85)'),
       },
+      annotations: toolAnnotations,
     },
     (args) => symbolImportanceHandler(args),
   );
@@ -267,6 +288,7 @@ async function main(): Promise<void> {
         maxFiles: z.number().int().min(1).optional().default(50).describe('Max changed files to analyze'),
         confidence: z.enum(['confirmed', 'likely', 'potential']).optional().describe('Filter impacted symbols by confidence tier'),
       },
+      annotations: toolAnnotations,
     },
     (args) => prImpactHandler(args),
   );
