@@ -30,7 +30,7 @@
       "symbolId": "src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
     }
   ],
-  "contentHash": "72b6d4054f9c179814a6445ef27458f7c823ca5533bfcebccbe49e1165e73100",
+  "contentHash": "487af02d6a083964fc457fd69d7d9c225eb5a0d48298430f166b55190eca4e8b",
   "edges": [
     {
       "from": "src/cli/index-command.ts::IndexCommand::class",
@@ -253,6 +253,12 @@
   "file": "src/cli/index-command.ts",
   "intent": [
     {
+      "date": "2026-04-08T15:47:44+03:00",
+      "hash": "49e4f04a8693d848bdad1f00ed8fc3720b89ced8",
+      "kind": "commit",
+      "message": "Fix CI: relax branch coverage threshold to 88%, suppress require() lint errors"
+    },
+    {
       "date": "2026-04-08T13:12:33+03:00",
       "hash": "0f433a0ad86a8876539f8934820540a9c42928ae",
       "kind": "commit",
@@ -343,11 +349,11 @@
       "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
     }
   ],
-  "lastModified": 1775650824,
+  "lastModified": 1775655013,
   "symbols": [
     {
-      "endLine": 341,
-      "endOffset": 12816,
+      "endLine": 343,
+      "endOffset": 12962,
       "kind": "class",
       "name": "IndexCommand",
       "startLine": 14,
@@ -364,8 +370,8 @@
       "symbolId": "src/cli/index-command.ts::IndexCommand.run::method"
     },
     {
-      "endLine": 200,
-      "endOffset": 7852,
+      "endLine": 202,
+      "endOffset": 7998,
       "kind": "method",
       "name": "IndexCommand.registerTreeSitterAdapters",
       "startLine": 187,
@@ -373,48 +379,48 @@
       "symbolId": "src/cli/index-command.ts::IndexCommand.registerTreeSitterAdapters::method"
     },
     {
-      "endLine": 220,
-      "endOffset": 8457,
+      "endLine": 222,
+      "endOffset": 8603,
       "kind": "method",
       "name": "IndexCommand.discoverFilesIn",
-      "startLine": 202,
-      "startOffset": 7858,
+      "startLine": 204,
+      "startOffset": 8004,
       "symbolId": "src/cli/index-command.ts::IndexCommand.discoverFilesIn::method"
     },
     {
-      "endLine": 263,
-      "endOffset": 9976,
+      "endLine": 265,
+      "endOffset": 10122,
       "kind": "method",
       "name": "IndexCommand.discoverWorkspaces",
-      "startLine": 222,
-      "startOffset": 8463,
+      "startLine": 224,
+      "startOffset": 8609,
       "symbolId": "src/cli/index-command.ts::IndexCommand.discoverWorkspaces::method"
     },
     {
-      "endLine": 268,
-      "endOffset": 10141,
+      "endLine": 270,
+      "endOffset": 10287,
       "kind": "method",
       "name": "IndexCommand.isSupportedExtension",
-      "startLine": 265,
-      "startOffset": 9982,
+      "startLine": 267,
+      "startOffset": 10128,
       "symbolId": "src/cli/index-command.ts::IndexCommand.isSupportedExtension::method"
     },
     {
-      "endLine": 327,
-      "endOffset": 12248,
+      "endLine": 329,
+      "endOffset": 12394,
       "kind": "method",
       "name": "IndexCommand.runCheck",
-      "startLine": 270,
-      "startOffset": 10147,
+      "startLine": 272,
+      "startOffset": 10293,
       "symbolId": "src/cli/index-command.ts::IndexCommand.runCheck::method"
     },
     {
-      "endLine": 340,
-      "endOffset": 12813,
+      "endLine": 342,
+      "endOffset": 12959,
       "kind": "method",
       "name": "IndexCommand.ensureGitignore",
-      "startLine": 329,
-      "startOffset": 12254,
+      "startLine": 331,
+      "startOffset": 12400,
       "symbolId": "src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
     }
   ]

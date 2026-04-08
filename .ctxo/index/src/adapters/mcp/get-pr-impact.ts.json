@@ -6,7 +6,7 @@
       "symbolId": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
     }
   ],
-  "contentHash": "4a675047342e464233061e4bf72d96b1f979f9332e4ab684c5d5d9a64ae23087",
+  "contentHash": "d6a0285a9914df78523e3c5fac4faff1facd228cfb22fdfeba0478033d9df436",
   "edges": [
     {
       "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
@@ -50,6 +50,11 @@
     {
       "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
       "kind": "imports",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "imports",
       "to": "src/core/co-change/co-change-analyzer.ts::loadCoChangeMap::function"
     },
     {
@@ -78,6 +83,11 @@
       "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-pr-impact.ts::loadCoChanges::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "calls",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     },
     {
       "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
@@ -118,10 +128,21 @@
       "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
       "kind": "uses",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "uses",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     }
   ],
   "file": "src/adapters/mcp/get-pr-impact.ts",
   "intent": [
+    {
+      "date": "2026-04-08T15:41:03+03:00",
+      "hash": "676f15d768b3abd1e18a9ace3411e4fb61bf579e",
+      "kind": "commit",
+      "message": "Add response size management with _meta field and auto-truncation (#26)"
+    },
     {
       "date": "2026-04-08T14:43:37+03:00",
       "hash": "712e1fb7e8b721a7fda602fc94ea6b089aa5707e",
@@ -135,15 +156,15 @@
       "message": "Add co-change analysis and get_pr_impact MCP tool (14th tool)"
     }
   ],
-  "lastModified": 1775650824,
+  "lastModified": 1775655013,
   "symbols": [
     {
-      "endLine": 206,
-      "endOffset": 7309,
+      "endLine": 207,
+      "endOffset": 7388,
       "kind": "function",
       "name": "handleGetPrImpact",
-      "startLine": 29,
-      "startOffset": 1290,
+      "startLine": 30,
+      "startOffset": 1355,
       "symbolId": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
     }
   ]

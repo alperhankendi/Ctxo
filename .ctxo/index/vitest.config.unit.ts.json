@@ -1,10 +1,16 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "b89045f95dcb98d041f4dca1d33a0304f66e5ee112cb91612f1326e80e29c749",
+  "contentHash": "bdecc2d0ea62116d316ddab7015ad4c9a42711d594be737531116a1d955eac77",
   "edges": [],
   "file": "vitest.config.unit.ts",
   "intent": [
+    {
+      "date": "2026-04-08T15:49:30+03:00",
+      "hash": "1ad549dff0f9f3e06350fb71b7970f040e4ae5da",
+      "kind": "commit",
+      "message": "Fix CI: also relax threshold in vitest.config.unit.ts (used by CI)"
+    },
     {
       "date": "2026-03-29T21:22:56+03:00",
       "hash": "12e098e603181fccac6132d88a0fce7ecf7d14f8",
@@ -12,6 +18,6 @@
       "message": "Add CI/CD pipelines with test reporting and npm publish"
     }
   ],
-  "lastModified": 1775650824,
+  "lastModified": 1775655014,
   "symbols": []
 }

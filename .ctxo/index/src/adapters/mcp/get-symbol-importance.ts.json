@@ -6,7 +6,7 @@
       "symbolId": "src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function"
     }
   ],
-  "contentHash": "5d62656a9773318c855071e82e440ac10a0900873bc0120177c5f9a8ab29c80c",
+  "contentHash": "5dc07a357465c4395b90dbf59de9dad283ac01a0b0b485bcc93352cf24bba450",
   "edges": [
     {
       "from": "src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function",
@@ -43,6 +43,11 @@
     },
     {
       "from": "src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function",
+      "kind": "imports",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
     },
@@ -50,6 +55,11 @@
       "from": "src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function",
+      "kind": "calls",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     },
     {
       "from": "src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function",
@@ -85,10 +95,21 @@
       "from": "src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function",
       "kind": "uses",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function",
+      "kind": "uses",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     }
   ],
   "file": "src/adapters/mcp/get-symbol-importance.ts",
   "intent": [
+    {
+      "date": "2026-04-08T15:41:03+03:00",
+      "hash": "676f15d768b3abd1e18a9ace3411e4fb61bf579e",
+      "kind": "commit",
+      "message": "Add response size management with _meta field and auto-truncation (#26)"
+    },
     {
       "date": "2026-04-02T02:39:37+03:00",
       "hash": "b8a4e40d0b8ab9ab9066d93ba48d4a2bf0c012f1",
@@ -96,15 +117,15 @@
       "message": "Add get_symbol_importance MCP tool — PageRank centrality on dependency graph"
     }
   ],
-  "lastModified": 1775650824,
+  "lastModified": 1775655013,
   "symbols": [
     {
-      "endLine": 74,
-      "endOffset": 2725,
+      "endLine": 75,
+      "endOffset": 2803,
       "kind": "function",
       "name": "handleGetSymbolImportance",
-      "startLine": 14,
-      "startOffset": 685,
+      "startLine": 15,
+      "startOffset": 749,
       "symbolId": "src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function"
     }
   ]

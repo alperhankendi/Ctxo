@@ -10,7 +10,7 @@
       "symbolId": "src/cli/watch-command.ts::WatchCommand.registerTreeSitterAdapters::method"
     }
   ],
-  "contentHash": "049462976645f2ebedaa2554581c59ff89f95a09149650218ab7231a586ade48",
+  "contentHash": "8916793d451d400ab2a2d8825f74205f8138302a6521044fc3175a29e41d017a",
   "edges": [
     {
       "from": "src/cli/watch-command.ts::WatchCommand::class",
@@ -174,6 +174,12 @@
   "file": "src/cli/watch-command.ts",
   "intent": [
     {
+      "date": "2026-04-08T15:47:44+03:00",
+      "hash": "49e4f04a8693d848bdad1f00ed8fc3720b89ced8",
+      "kind": "commit",
+      "message": "Fix CI: relax branch coverage threshold to 88%, suppress require() lint errors"
+    },
+    {
       "date": "2026-04-08T03:09:19+03:00",
       "hash": "e43db17e512a8ab500108767c0914c857b5707b3",
       "kind": "commit",
@@ -204,11 +210,11 @@
       "message": "Implement all CLI commands and add comprehensive test coverage"
     }
   ],
-  "lastModified": 1775650824,
+  "lastModified": 1775655013,
   "symbols": [
     {
-      "endLine": 140,
-      "endOffset": 5081,
+      "endLine": 142,
+      "endOffset": 5225,
       "kind": "class",
       "name": "WatchCommand",
       "startLine": 14,
@@ -225,8 +231,8 @@
       "symbolId": "src/cli/watch-command.ts::WatchCommand.run::method"
     },
     {
-      "endLine": 139,
-      "endOffset": 5079,
+      "endLine": 141,
+      "endOffset": 5223,
       "kind": "method",
       "name": "WatchCommand.registerTreeSitterAdapters",
       "startLine": 126,

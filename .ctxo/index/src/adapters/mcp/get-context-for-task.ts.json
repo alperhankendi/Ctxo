@@ -6,7 +6,7 @@
       "symbolId": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function"
     }
   ],
-  "contentHash": "3c2b0828d532c35e21ed0bbc1538d2bc486923912f99c9e3279cdba83c8036ec",
+  "contentHash": "b75785d4db9f49bf1b33fc917b320eefd2f7b8249882410256bfc3f878cc4c12",
   "edges": [
     {
       "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
@@ -48,6 +48,11 @@
     },
     {
       "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
+      "kind": "imports",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
     },
@@ -55,6 +60,11 @@
       "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
+      "kind": "calls",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     },
     {
       "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
@@ -100,10 +110,21 @@
       "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
       "kind": "uses",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
+      "kind": "uses",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     }
   ],
   "file": "src/adapters/mcp/get-context-for-task.ts",
   "intent": [
+    {
+      "date": "2026-04-08T15:41:03+03:00",
+      "hash": "676f15d768b3abd1e18a9ace3411e4fb61bf579e",
+      "kind": "commit",
+      "message": "Add response size management with _meta field and auto-truncation (#26)"
+    },
     {
       "date": "2026-03-30T23:21:57+03:00",
       "hash": "1dcd724d46790be519a60d8aeb2c9688e8cb8a90",
@@ -111,15 +132,15 @@
       "message": "Add context assembly: get_context_for_task + get_ranked_context"
     }
   ],
-  "lastModified": 1775650824,
+  "lastModified": 1775655013,
   "symbols": [
     {
-      "endLine": 68,
-      "endOffset": 2405,
+      "endLine": 69,
+      "endOffset": 2521,
       "kind": "function",
       "name": "handleGetContextForTask",
-      "startLine": 16,
-      "startOffset": 692,
+      "startLine": 17,
+      "startOffset": 756,
       "symbolId": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function"
     }
   ]

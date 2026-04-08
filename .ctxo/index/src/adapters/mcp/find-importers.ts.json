@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 21,
+      "cyclomatic": 23,
       "symbolId": "src/adapters/mcp/find-importers.ts::handleFindImporters::function"
     }
   ],
-  "contentHash": "231d7759650b0c0af6449379f8a23a38dc696c635e1a96f23d5873c1a65d24ef",
+  "contentHash": "765bfee3b53390010b9876984826ce51b8bc8382e85c8374a5fb48dd9a17627c",
   "edges": [
     {
       "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
@@ -38,6 +38,16 @@
     },
     {
       "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "imports",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "imports",
+      "to": "src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
     },
@@ -45,6 +55,16 @@
       "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "calls",
+      "to": "src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "calls",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     },
     {
       "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
@@ -70,10 +90,32 @@
       "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
       "kind": "uses",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "uses",
+      "to": "src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "uses",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     }
   ],
   "file": "src/adapters/mcp/find-importers.ts",
   "intent": [
+    {
+      "date": "2026-04-08T16:12:30+03:00",
+      "hash": "ad40ce28e65533d214754df71851a4c7a2f5e5c1",
+      "kind": "commit",
+      "message": "Add intent parameter for context-aware result filtering (#27)"
+    },
+    {
+      "date": "2026-04-08T15:41:03+03:00",
+      "hash": "676f15d768b3abd1e18a9ace3411e4fb61bf579e",
+      "kind": "commit",
+      "message": "Add response size management with _meta field and auto-truncation (#26)"
+    },
     {
       "date": "2026-03-31T03:15:55+03:00",
       "hash": "dcae17802c9cc167416a9a55e325e5da1a595639",
@@ -81,15 +123,15 @@
       "message": "Add 4 new MCP tools, --max-history limit, and improve test coverage"
     }
   ],
-  "lastModified": 1775650824,
+  "lastModified": 1775655013,
   "symbols": [
     {
-      "endLine": 124,
-      "endOffset": 4261,
+      "endLine": 140,
+      "endOffset": 5152,
       "kind": "function",
       "name": "handleFindImporters",
-      "startLine": 13,
-      "startOffset": 590,
+      "startLine": 16,
+      "startOffset": 829,
       "symbolId": "src/adapters/mcp/find-importers.ts::handleFindImporters::function"
     }
   ]

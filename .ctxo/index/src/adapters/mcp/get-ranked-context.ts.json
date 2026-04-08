@@ -6,7 +6,7 @@
       "symbolId": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function"
     }
   ],
-  "contentHash": "0b5d1de2e510bf3d842fcc586d8e751424be83278b408cca12ca745558720715",
+  "contentHash": "cd3b1a7fcd701a2fcb0954a818070c53367ac08f55ab0842033da24d54dfd395",
   "edges": [
     {
       "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
@@ -43,6 +43,11 @@
     },
     {
       "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "imports",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
     },
@@ -50,6 +55,11 @@
       "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "calls",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     },
     {
       "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
@@ -85,10 +95,21 @@
       "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
       "kind": "uses",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "uses",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     }
   ],
   "file": "src/adapters/mcp/get-ranked-context.ts",
   "intent": [
+    {
+      "date": "2026-04-08T15:41:03+03:00",
+      "hash": "676f15d768b3abd1e18a9ace3411e4fb61bf579e",
+      "kind": "commit",
+      "message": "Add response size management with _meta field and auto-truncation (#26)"
+    },
     {
       "date": "2026-03-30T23:21:57+03:00",
       "hash": "1dcd724d46790be519a60d8aeb2c9688e8cb8a90",
@@ -96,15 +117,15 @@
       "message": "Add context assembly: get_context_for_task + get_ranked_context"
     }
   ],
-  "lastModified": 1775650824,
+  "lastModified": 1775655013,
   "symbols": [
     {
-      "endLine": 57,
-      "endOffset": 2017,
+      "endLine": 58,
+      "endOffset": 2133,
       "kind": "function",
       "name": "handleGetRankedContext",
-      "startLine": 13,
-      "startOffset": 610,
+      "startLine": 14,
+      "startOffset": 674,
       "symbolId": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function"
     }
   ]

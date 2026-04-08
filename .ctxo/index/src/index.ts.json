@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "0703743c13dff6eef991b9f03fbf6f24773b69a2f7214e23a07d6e3aa1fb5aa5",
+  "contentHash": "c6582e97b65da6aaf328f1435c35b92dd56415f01da310ef301b08b1043f8714",
   "edges": [
     {
       "from": "src/index.ts::index::variable",
@@ -97,6 +97,18 @@
   ],
   "file": "src/index.ts",
   "intent": [
+    {
+      "date": "2026-04-08T16:12:30+03:00",
+      "hash": "ad40ce28e65533d214754df71851a4c7a2f5e5c1",
+      "kind": "commit",
+      "message": "Add intent parameter for context-aware result filtering (#27)"
+    },
+    {
+      "date": "2026-04-08T15:32:04+03:00",
+      "hash": "85f1d67d58d682c0f038b36ef9dd1b17eac10b6f",
+      "kind": "commit",
+      "message": "Improve MCP tool discoverability, add agentic AI docs, update runbook to 14 tools"
+    },
     {
       "date": "2026-04-08T04:31:58+03:00",
       "hash": "f2fd79d92382071661c21f86fb84aa88feeb7e1f",
@@ -194,6 +206,6 @@
       "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
     }
   ],
-  "lastModified": 1775650824,
+  "lastModified": 1775655014,
   "symbols": []
 }

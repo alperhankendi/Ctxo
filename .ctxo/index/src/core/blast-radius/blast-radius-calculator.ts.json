@@ -6,7 +6,7 @@
       "symbolId": "src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator.calculate::method"
     }
   ],
-  "contentHash": "72974185cdfd79c628acb42b57a69fc362675b8aa58fe1d69299493a7f6b29ec",
+  "contentHash": "60f81a5523c5796ba5420d155d404bfd1d525cfe4b2a0722f5841997eb2813b1",
   "edges": [
     {
       "from": "src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class",
@@ -38,6 +38,12 @@
   ],
   "file": "src/core/blast-radius/blast-radius-calculator.ts",
   "intent": [
+    {
+      "date": "2026-04-08T15:52:43+03:00",
+      "hash": "83ec66fa360f18b1788f952fc5929fcce2174a55",
+      "kind": "commit",
+      "message": "Fix pre-existing TypeScript errors blocking CI"
+    },
     {
       "date": "2026-04-08T04:31:58+03:00",
       "hash": "f2fd79d92382071661c21f86fb84aa88feeb7e1f",
@@ -75,11 +81,11 @@
       "message": "Add blast radius calculator and architectural overlay"
     }
   ],
-  "lastModified": 1775650824,
+  "lastModified": 1775655013,
   "symbols": [
     {
       "endLine": 136,
-      "endOffset": 5088,
+      "endOffset": 5116,
       "kind": "class",
       "name": "BlastRadiusCalculator",
       "startLine": 39,
@@ -88,7 +94,7 @@
     },
     {
       "endLine": 135,
-      "endOffset": 5086,
+      "endOffset": 5114,
       "kind": "method",
       "name": "BlastRadiusCalculator.calculate",
       "startLine": 40,

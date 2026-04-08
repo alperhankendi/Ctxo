@@ -6,7 +6,7 @@
       "symbolId": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function"
     }
   ],
-  "contentHash": "8f1900f11fcaae501434e7bcf1854cd09fc714466a3d4cf5137c26f4fcb32721",
+  "contentHash": "03fdd5518c1ee3db1c4d89f1786e780429b88c5f46897ffaf07a4061ad4294be",
   "edges": [
     {
       "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
@@ -38,6 +38,11 @@
     },
     {
       "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
+      "kind": "imports",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
     },
@@ -45,6 +50,11 @@
       "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
+      "kind": "calls",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     },
     {
       "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
@@ -70,10 +80,21 @@
       "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
       "kind": "uses",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
+      "kind": "uses",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     }
   ],
   "file": "src/adapters/mcp/search-symbols.ts",
   "intent": [
+    {
+      "date": "2026-04-08T15:41:03+03:00",
+      "hash": "676f15d768b3abd1e18a9ace3411e4fb61bf579e",
+      "kind": "commit",
+      "message": "Add response size management with _meta field and auto-truncation (#26)"
+    },
     {
       "date": "2026-03-31T03:15:55+03:00",
       "hash": "dcae17802c9cc167416a9a55e325e5da1a595639",
@@ -81,15 +102,15 @@
       "message": "Add 4 new MCP tools, --max-history limit, and improve test coverage"
     }
   ],
-  "lastModified": 1775650824,
+  "lastModified": 1775655013,
   "symbols": [
     {
-      "endLine": 86,
-      "endOffset": 2953,
+      "endLine": 87,
+      "endOffset": 3031,
       "kind": "function",
       "name": "handleSearchSymbols",
-      "startLine": 13,
-      "startOffset": 570,
+      "startLine": 14,
+      "startOffset": 634,
       "symbolId": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function"
     }
   ]

@@ -6,7 +6,7 @@
       "symbolId": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function"
     }
   ],
-  "contentHash": "032d85803217df11c68cd4f51e26bc3e0d4d85a484a651bd5254ef48d8d764dd",
+  "contentHash": "c29146574ff306d8906354f63e5b3e904272be07f50f6f97f7064c05a9f79ece",
   "edges": [
     {
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
@@ -38,6 +38,16 @@
     {
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
       "kind": "imports",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "imports",
+      "to": "src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "imports",
       "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
       "typeOnly": true
     },
@@ -50,6 +60,16 @@
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "calls",
+      "to": "src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "calls",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     },
     {
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
@@ -85,10 +105,38 @@
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
       "kind": "uses",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "uses",
+      "to": "src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "uses",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     }
   ],
   "file": "src/adapters/mcp/get-dead-code.ts",
   "intent": [
+    {
+      "date": "2026-04-08T16:12:30+03:00",
+      "hash": "ad40ce28e65533d214754df71851a4c7a2f5e5c1",
+      "kind": "commit",
+      "message": "Add intent parameter for context-aware result filtering (#27)"
+    },
+    {
+      "date": "2026-04-08T15:52:43+03:00",
+      "hash": "83ec66fa360f18b1788f952fc5929fcce2174a55",
+      "kind": "commit",
+      "message": "Fix pre-existing TypeScript errors blocking CI"
+    },
+    {
+      "date": "2026-04-08T15:41:03+03:00",
+      "hash": "676f15d768b3abd1e18a9ace3411e4fb61bf579e",
+      "kind": "commit",
+      "message": "Add response size management with _meta field and auto-truncation (#26)"
+    },
     {
       "date": "2026-03-30T22:51:29+03:00",
       "hash": "07e1bbcfca5863df7267e0f450bc6aee1f69216d",
@@ -96,15 +144,15 @@
       "message": "Add find_dead_code MCP tool — unreachable symbol and file detection"
     }
   ],
-  "lastModified": 1775650824,
+  "lastModified": 1775655013,
   "symbols": [
     {
-      "endLine": 53,
-      "endOffset": 1823,
+      "endLine": 62,
+      "endOffset": 2387,
       "kind": "function",
       "name": "handleFindDeadCode",
-      "startLine": 11,
-      "startOffset": 477,
+      "startLine": 14,
+      "startOffset": 730,
       "symbolId": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function"
     }
   ]

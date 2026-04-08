@@ -6,7 +6,7 @@
       "symbolId": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
     }
   ],
-  "contentHash": "acbc70a1a70bacd6e479fa865aa57e7d9b5defdcaaf67bb8e6720281001ff1ec",
+  "contentHash": "5b0e79b5e9ae377445c02a6f3db175da37feabdc33ff08fe26d90ff3784bbd9b",
   "edges": [
     {
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
@@ -24,6 +24,16 @@
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
       "kind": "imports",
       "to": "src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "imports",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "imports",
+      "to": "src/core/intent-filter.ts::filterByIntent::function"
     },
     {
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
@@ -50,6 +60,16 @@
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "calls",
+      "to": "src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "calls",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     },
     {
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
@@ -85,10 +105,32 @@
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
       "kind": "uses",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "uses",
+      "to": "src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "uses",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     }
   ],
   "file": "src/adapters/mcp/get-blast-radius.ts",
   "intent": [
+    {
+      "date": "2026-04-08T16:12:30+03:00",
+      "hash": "ad40ce28e65533d214754df71851a4c7a2f5e5c1",
+      "kind": "commit",
+      "message": "Add intent parameter for context-aware result filtering (#27)"
+    },
+    {
+      "date": "2026-04-08T15:41:03+03:00",
+      "hash": "676f15d768b3abd1e18a9ace3411e4fb61bf579e",
+      "kind": "commit",
+      "message": "Add response size management with _meta field and auto-truncation (#26)"
+    },
     {
       "date": "2026-04-08T03:47:41+03:00",
       "hash": "3afc7eded03044d82270f5d48390e13ccb73b83e",
@@ -138,15 +180,15 @@
       "message": "Add blast radius calculator and architectural overlay"
     }
   ],
-  "lastModified": 1775650824,
+  "lastModified": 1775655013,
   "symbols": [
     {
-      "endLine": 80,
-      "endOffset": 2883,
+      "endLine": 86,
+      "endOffset": 3302,
       "kind": "function",
       "name": "handleGetBlastRadius",
-      "startLine": 12,
-      "startOffset": 537,
+      "startLine": 15,
+      "startOffset": 780,
       "symbolId": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
     }
   ]

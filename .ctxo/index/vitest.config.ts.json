@@ -1,10 +1,16 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "757ee0cbc00a8159ffbafdd4a963bec65a3f6312fae5d073953ce910e087a4ff",
+  "contentHash": "a4ed6ea353f673e63dec8420008798268626bb04b2bd16d47d6963eb396f87fa",
   "edges": [],
   "file": "vitest.config.ts",
   "intent": [
+    {
+      "date": "2026-04-08T15:47:44+03:00",
+      "hash": "49e4f04a8693d848bdad1f00ed8fc3720b89ced8",
+      "kind": "commit",
+      "message": "Fix CI: relax branch coverage threshold to 88%, suppress require() lint errors"
+    },
     {
       "date": "2026-03-29T21:22:56+03:00",
       "hash": "12e098e603181fccac6132d88a0fce7ecf7d14f8",
@@ -18,6 +24,6 @@
       "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
     }
   ],
-  "lastModified": 1775650824,
+  "lastModified": 1775655014,
   "symbols": []
 }

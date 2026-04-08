@@ -34,7 +34,7 @@
       "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.findFirstExportedSymbolId::method"
     }
   ],
-  "contentHash": "105deb6fa7de3122c2354263bf7ca153fca78a394693912231995c7272dc9ad3",
+  "contentHash": "89c92c30bab295980ca8be6dd319c92ec928bc5b9b7e7dff94c42df7494b336d",
   "edges": [
     {
       "from": "src/adapters/language/go-adapter.ts::GoAdapter::class",
@@ -148,17 +148,23 @@
   "file": "src/adapters/language/go-adapter.ts",
   "intent": [
     {
+      "date": "2026-04-08T15:52:43+03:00",
+      "hash": "83ec66fa360f18b1788f952fc5929fcce2174a55",
+      "kind": "commit",
+      "message": "Fix pre-existing TypeScript errors blocking CI"
+    },
+    {
       "date": "2026-04-08T03:09:19+03:00",
       "hash": "e43db17e512a8ab500108767c0914c857b5707b3",
       "kind": "commit",
       "message": "Add tree-sitter adapters for Go and C# with graceful degradation"
     }
   ],
-  "lastModified": 1775650824,
+  "lastModified": 1775655013,
   "symbols": [
     {
       "endLine": 221,
-      "endOffset": 7703,
+      "endOffset": 7708,
       "kind": "class",
       "name": "GoAdapter",
       "startLine": 12,
@@ -194,7 +200,7 @@
     },
     {
       "endLine": 127,
-      "endOffset": 4464,
+      "endOffset": 4468,
       "kind": "method",
       "name": "GoAdapter.isExported",
       "startLine": 125,
@@ -203,38 +209,38 @@
     },
     {
       "endLine": 146,
-      "endOffset": 5139,
+      "endOffset": 5143,
       "kind": "method",
       "name": "GoAdapter.extractReceiverType",
       "startLine": 129,
-      "startOffset": 4468,
+      "startOffset": 4472,
       "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractReceiverType::method"
     },
     {
       "endLine": 170,
-      "endOffset": 5973,
+      "endOffset": 5977,
       "kind": "method",
       "name": "GoAdapter.extractTypeSymbols",
       "startLine": 148,
-      "startOffset": 5143,
+      "startOffset": 5147,
       "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractTypeSymbols::method"
     },
     {
       "endLine": 195,
-      "endOffset": 6669,
+      "endOffset": 6674,
       "kind": "method",
       "name": "GoAdapter.extractImportEdges",
       "startLine": 172,
-      "startOffset": 5977,
+      "startOffset": 5981,
       "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractImportEdges::method"
     },
     {
       "endLine": 220,
-      "endOffset": 7701,
+      "endOffset": 7706,
       "kind": "method",
       "name": "GoAdapter.findFirstExportedSymbolId",
       "startLine": 197,
-      "startOffset": 6673,
+      "startOffset": 6678,
       "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.findFirstExportedSymbolId::method"
     }
   ]

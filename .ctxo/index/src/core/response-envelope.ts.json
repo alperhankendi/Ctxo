@@ -1,0 +1,52 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 7,
+      "symbolId": "src/core/response-envelope.ts::wrapResponse::function"
+    }
+  ],
+  "contentHash": "091fb936fec7b6bd623035e59f3c80973a0c7e596659011ebfb380c16a26147e",
+  "edges": [
+    {
+      "from": "src/core/response-envelope.ts::wrapResponse::function",
+      "kind": "calls",
+      "to": "src/core/response-envelope.ts::getThreshold::function"
+    },
+    {
+      "from": "src/core/response-envelope.ts::wrapResponse::function",
+      "kind": "calls",
+      "to": "src/core/response-envelope.ts::findTruncatableArray::function"
+    }
+  ],
+  "file": "src/core/response-envelope.ts",
+  "intent": [
+    {
+      "date": "2026-04-08T15:41:03+03:00",
+      "hash": "676f15d768b3abd1e18a9ace3411e4fb61bf579e",
+      "kind": "commit",
+      "message": "Add response size management with _meta field and auto-truncation (#26)"
+    }
+  ],
+  "lastModified": 1775655014,
+  "symbols": [
+    {
+      "endLine": 138,
+      "endOffset": 4241,
+      "kind": "function",
+      "name": "wrapResponse",
+      "startLine": 65,
+      "startOffset": 2413,
+      "symbolId": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "endLine": 15,
+      "endOffset": 413,
+      "kind": "interface",
+      "name": "ResponseMeta",
+      "startLine": 9,
+      "startOffset": 272,
+      "symbolId": "src/core/response-envelope.ts::ResponseMeta::interface"
+    }
+  ]
+}

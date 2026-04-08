@@ -6,7 +6,7 @@
       "symbolId": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function"
     }
   ],
-  "contentHash": "1f13249448bfa41cc950d320b22814fb0f315617cce707989f0650a16f72aea5",
+  "contentHash": "6b4476f162c048312e2a42228bf1ccfc2738e2adc05443455bd5418c0002a252",
   "edges": [
     {
       "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
@@ -44,6 +44,11 @@
     },
     {
       "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
     },
@@ -51,6 +56,11 @@
       "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "calls",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     },
     {
       "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
@@ -81,10 +91,21 @@
       "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
       "kind": "uses",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "uses",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     }
   ],
   "file": "src/adapters/mcp/get-changed-symbols.ts",
   "intent": [
+    {
+      "date": "2026-04-08T15:41:03+03:00",
+      "hash": "676f15d768b3abd1e18a9ace3411e4fb61bf579e",
+      "kind": "commit",
+      "message": "Add response size management with _meta field and auto-truncation (#26)"
+    },
     {
       "date": "2026-03-31T03:15:55+03:00",
       "hash": "dcae17802c9cc167416a9a55e325e5da1a595639",
@@ -92,15 +113,15 @@
       "message": "Add 4 new MCP tools, --max-history limit, and improve test coverage"
     }
   ],
-  "lastModified": 1775650824,
+  "lastModified": 1775655013,
   "symbols": [
     {
-      "endLine": 79,
-      "endOffset": 2949,
+      "endLine": 80,
+      "endOffset": 3027,
       "kind": "function",
       "name": "handleGetChangedSymbols",
-      "startLine": 12,
-      "startOffset": 512,
+      "startLine": 13,
+      "startOffset": 576,
       "symbolId": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function"
     }
   ]

@@ -1,0 +1,29 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "3bd06731d31640e4636c6a8de37c775a4eff18a37a7ef02dbcf0580ea5cf4b16",
+  "edges": [
+    {
+      "from": "src/core/__tests__/response-envelope.test.ts::response-envelope.test::variable",
+      "kind": "imports",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    }
+  ],
+  "file": "src/core/__tests__/response-envelope.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-08T15:47:44+03:00",
+      "hash": "49e4f04a8693d848bdad1f00ed8fc3720b89ced8",
+      "kind": "commit",
+      "message": "Fix CI: relax branch coverage threshold to 88%, suppress require() lint errors"
+    },
+    {
+      "date": "2026-04-08T15:41:03+03:00",
+      "hash": "676f15d768b3abd1e18a9ace3411e4fb61bf579e",
+      "kind": "commit",
+      "message": "Add response size management with _meta field and auto-truncation (#26)"
+    }
+  ],
+  "lastModified": 1775655013,
+  "symbols": []
+}

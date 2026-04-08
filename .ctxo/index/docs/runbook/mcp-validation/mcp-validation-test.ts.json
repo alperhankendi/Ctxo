@@ -97,12 +97,18 @@
   "file": "docs/runbook/mcp-validation/mcp-validation-test.ts",
   "intent": [
     {
+      "date": "2026-04-08T15:32:04+03:00",
+      "hash": "85f1d67d58d682c0f038b36ef9dd1b17eac10b6f",
+      "kind": "commit",
+      "message": "Improve MCP tool discoverability, add agentic AI docs, update runbook to 14 tools"
+    },
+    {
       "date": "2026-04-02T04:06:19+03:00",
       "hash": "73d411c2421e334b1db466c32cd6a854f9d90c7a",
       "kind": "commit",
       "message": "Add automated MCP validation test script to runbook"
     }
   ],
-  "lastModified": 1775650823,
+  "lastModified": 1775655013,
   "symbols": []
 }

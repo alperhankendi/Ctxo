@@ -1,10 +1,16 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "3fb36376487bf18329226cd32b65a81a7e903aaf7e9f80cade47f2cd0d58a484",
+  "contentHash": "3bab42947dcc387095b665b1750126d3924d5dc0ed11b537fd6123269d7ac2b9",
   "edges": [],
   "file": "tests/e2e/release-packaging.test.ts",
   "intent": [
+    {
+      "date": "2026-04-08T15:57:05+03:00",
+      "hash": "408d6832ee84f7a7b50d1c2d4cde81b7b6c22f50",
+      "kind": "commit",
+      "message": "Bump tarball size limit to 600KB (new files added)"
+    },
     {
       "date": "2026-03-30T00:12:27+03:00",
       "hash": "cddb5ce67932dcebe25c85ac99c7208c0c1a1718",
@@ -18,6 +24,6 @@
       "message": "Complete Phase 10: Release gate tests"
     }
   ],
-  "lastModified": 1775650824,
+  "lastModified": 1775655014,
   "symbols": []
 }

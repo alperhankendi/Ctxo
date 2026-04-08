@@ -54,20 +54,30 @@ export function handleFindImporters(
       }> = [];
 
       if (!transitive) {
-        // Direct importers only
+        // Direct importers only — deduplicate by symbolId, aggregate edgeKinds
         const reverseEdges = graph.getReverseEdges(symbolId);
+        const seen = new Map<string, { node: typeof importers[0]; edgeKinds: string[] }>();
         for (const edge of reverseEdges) {
           if (edgeKinds && !edgeKinds.includes(edge.kind as 'imports' | 'calls' | 'extends' | 'implements' | 'uses')) continue;
           const node = graph.getNode(edge.from);
           if (node) {
-            importers.push({
-              symbolId: node.symbolId,
-              name: node.name,
-              kind: node.kind,
-              file: node.symbolId.split('::')[0] ?? '',
-              edgeKind: edge.kind,
-              depth: 1,
-            });
+            const existing = seen.get(node.symbolId);
+            if (existing) {
+              if (!existing.edgeKinds.includes(edge.kind)) {
+                existing.edgeKinds.push(edge.kind);
+              }
+            } else {
+              const entry = {
+                symbolId: node.symbolId,
+                name: node.name,
+                kind: node.kind,
+                file: node.symbolId.split('::')[0] ?? '',
+                edgeKind: edge.kind,
+                depth: 1,
+              };
+              seen.set(node.symbolId, { node: entry, edgeKinds: [edge.kind] });
+              importers.push(entry);
+            }
           }
         }
       } else {

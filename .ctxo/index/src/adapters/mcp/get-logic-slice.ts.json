@@ -14,11 +14,11 @@
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
     },
     {
-      "cyclomatic": 11,
+      "cyclomatic": 13,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function"
     }
   ],
-  "contentHash": "17c1e16b7aea61ecb12cc4890d5107300c9720527eb11edf327f328e1438f38c",
+  "contentHash": "6efa827e0c697b3354912027e7f2d1669c4116eb7684aa8fd80d31579d2b0214",
   "edges": [
     {
       "from": "src/adapters/mcp/get-logic-slice.ts::getLogicSliceInputSchema::function",
@@ -58,6 +58,16 @@
       "to": "src/core/types.ts::DetailLevelSchema::variable"
     },
     {
+      "from": "src/adapters/mcp/get-logic-slice.ts::getLogicSliceInputSchema::function",
+      "kind": "imports",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::getLogicSliceInputSchema::function",
+      "kind": "imports",
+      "to": "src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
       "from": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function",
       "kind": "calls",
       "to": "src/core/graph/symbol-graph.ts::SymbolGraph::class"
@@ -81,6 +91,16 @@
       "from": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function",
+      "kind": "calls",
+      "to": "src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function",
+      "kind": "calls",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     },
     {
       "from": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function",
@@ -131,10 +151,32 @@
       "from": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function",
       "kind": "uses",
       "to": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function",
+      "kind": "uses",
+      "to": "src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function",
+      "kind": "uses",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
     }
   ],
   "file": "src/adapters/mcp/get-logic-slice.ts",
   "intent": [
+    {
+      "date": "2026-04-08T16:12:30+03:00",
+      "hash": "ad40ce28e65533d214754df71851a4c7a2f5e5c1",
+      "kind": "commit",
+      "message": "Add intent parameter for context-aware result filtering (#27)"
+    },
+    {
+      "date": "2026-04-08T15:41:03+03:00",
+      "hash": "676f15d768b3abd1e18a9ace3411e4fb61bf579e",
+      "kind": "commit",
+      "message": "Add response size management with _meta field and auto-truncation (#26)"
+    },
     {
       "date": "2026-03-29T23:36:52+03:00",
       "hash": "4172928b846a1f1bd60f0c82d30e1009b1aeaed5",
@@ -166,60 +208,60 @@
       "message": "Add MCP server with get_logic_slice tool and privacy masking pipeline"
     }
   ],
-  "lastModified": 1775650824,
+  "lastModified": 1775655013,
   "symbols": [
     {
-      "endLine": 29,
-      "endOffset": 1290,
+      "endLine": 32,
+      "endOffset": 1537,
       "kind": "function",
       "name": "getLogicSliceInputSchema",
-      "startLine": 20,
-      "startOffset": 900,
+      "startLine": 23,
+      "startOffset": 1147,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::getLogicSliceInputSchema::function"
     },
     {
-      "endLine": 40,
-      "endOffset": 1570,
+      "endLine": 43,
+      "endOffset": 1817,
       "kind": "function",
       "name": "buildGraphFromStorage",
-      "startLine": 31,
-      "startOffset": 1292,
+      "startLine": 34,
+      "startOffset": 1539,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
     },
     {
-      "endLine": 64,
-      "endOffset": 2278,
+      "endLine": 67,
+      "endOffset": 2525,
       "kind": "function",
       "name": "buildGraphFromJsonIndex",
-      "startLine": 46,
-      "startOffset": 1739,
+      "startLine": 49,
+      "startOffset": 1986,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
     },
     {
-      "endLine": 137,
-      "endOffset": 4586,
+      "endLine": 148,
+      "endOffset": 5251,
       "kind": "function",
       "name": "handleGetLogicSlice",
-      "startLine": 70,
-      "startOffset": 2392,
+      "startLine": 73,
+      "startOffset": 2639,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function"
     },
     {
-      "endLine": 68,
-      "endOffset": 2390,
+      "endLine": 71,
+      "endOffset": 2637,
       "kind": "interface",
       "name": "StalenessCheck",
-      "startLine": 66,
-      "startOffset": 2280,
+      "startLine": 69,
+      "startOffset": 2527,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
     },
     {
-      "endLine": 18,
-      "endOffset": 898,
+      "endLine": 21,
+      "endOffset": 1145,
       "kind": "type",
       "name": "GetLogicSliceInput",
-      "startLine": 18,
-      "startOffset": 837,
+      "startLine": 21,
+      "startOffset": 1084,
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::GetLogicSliceInput::type"
     }
   ]
