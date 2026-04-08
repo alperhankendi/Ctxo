@@ -1832,8 +1832,10 @@ document.getElementById('mcpConnectBtn').addEventListener('click', async () => {
       name: 'search_symbols', arguments: { pattern: '.*', limit: 500 },
     });
     let mcpSymbols = [];
-    if (symRes?.result?.content?.[0]?.text) {
-      const symData = JSON.parse(symRes.result.content[0].text);
+    if (symRes?.result?.content?.length) {
+      // Find the last JSON content item (first may be a stale warning)
+      const jsonItem = [...symRes.result.content].reverse().find(c => c.text && c.text.startsWith('{'));
+      const symData = jsonItem ? JSON.parse(jsonItem.text) : {};
       mcpSymbols = symData.results || symData.symbols || [];
     }
 
