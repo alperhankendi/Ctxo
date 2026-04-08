@@ -1,5 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { startHttpTransport } from './adapters/transport/http-server-transport.js';
 import { z } from 'zod';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -302,9 +303,16 @@ async function main(): Promise<void> {
     contents: [{ uri: uri.href, text: 'Ctxo MCP server is running.' }],
   }));
 
-  // Start MCP server
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  // Start MCP server — HTTP mode or stdio mode
+  const httpPortStr = process.env.CTXO_HTTP_PORT
+    || (process.argv.includes('--http') ? (process.argv[process.argv.indexOf('--port') + 1] || '3001') : null);
+
+  if (httpPortStr) {
+    await startHttpTransport(server, parseInt(httpPortStr, 10));
+  } else {
+    const transport = new StdioServerTransport();
+    await server.connect(transport);
+  }
 }
 
 main().catch((err: unknown) => {
