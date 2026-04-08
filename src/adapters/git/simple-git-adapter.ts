@@ -1,12 +1,16 @@
 import { simpleGit, type SimpleGit } from 'simple-git';
 import type { IGitPort } from '../../ports/i-git-port.js';
 import type { CommitRecord, ChurnData } from '../../core/types.js';
+import { createLogger } from '../../core/logger.js';
+
+const log = createLogger('ctxo:git');
 
 export class SimpleGitAdapter implements IGitPort {
   private readonly git: SimpleGit;
 
   constructor(projectRoot: string) {
     this.git = simpleGit(projectRoot);
+    log.debug('Initialized with root: %s', projectRoot);
   }
 
   async isAvailable(): Promise<boolean> {
@@ -33,7 +37,7 @@ export class SimpleGitAdapter implements IGitPort {
         author: entry.author_name,
       }));
     } catch (err) {
-      console.error(`[ctxo:git] Failed to get history for ${filePath}: ${(err as Error).message}`);
+      log.error(` Failed to get history for ${filePath}: ${(err as Error).message}`);
       return [];
     }
   }
@@ -65,7 +69,7 @@ export class SimpleGitAdapter implements IGitPort {
 
       return result;
     } catch (err) {
-      console.error(`[ctxo:git] Batch history failed: ${(err as Error).message}`);
+      log.error(` Batch history failed: ${(err as Error).message}`);
       return new Map();
     }
   }
@@ -75,7 +79,7 @@ export class SimpleGitAdapter implements IGitPort {
       const diff = await this.git.diffSummary([since]);
       return diff.files.map((f) => f.file.replace(/\\/g, '/'));
     } catch (err) {
-      console.error(`[ctxo:git] Failed to get changed files since ${since}: ${(err as Error).message}`);
+      log.error(` Failed to get changed files since ${since}: ${(err as Error).message}`);
       return [];
     }
   }
@@ -89,7 +93,7 @@ export class SimpleGitAdapter implements IGitPort {
         commitCount: log.total,
       };
     } catch (err) {
-      console.error(`[ctxo:git] Failed to get churn for ${filePath}: ${(err as Error).message}`);
+      log.error(` Failed to get churn for ${filePath}: ${(err as Error).message}`);
       return { filePath, commitCount: 0 };
     }
   }

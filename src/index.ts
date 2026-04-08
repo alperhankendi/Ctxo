@@ -3,6 +3,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { createLogger } from './core/logger.js';
 import { SqliteStorageAdapter } from './adapters/storage/sqlite-storage-adapter.js';
 import { MaskingPipeline, type MaskingPatternConfig } from './core/masking/masking-pipeline.js';
 import { handleGetLogicSlice } from './adapters/mcp/get-logic-slice.js';
@@ -21,6 +22,8 @@ import { handleGetClassHierarchy } from './adapters/mcp/get-class-hierarchy.js';
 import { handleGetSymbolImportance } from './adapters/mcp/get-symbol-importance.js';
 import { handleGetPrImpact } from './adapters/mcp/get-pr-impact.js';
 
+const log = createLogger('ctxo:mcp');
+
 function loadMaskingConfig(ctxoRoot: string): MaskingPipeline {
   const jsonConfigPath = join(ctxoRoot, 'masking.json');
 
@@ -29,10 +32,10 @@ function loadMaskingConfig(ctxoRoot: string): MaskingPipeline {
     try {
       const raw = readFileSync(jsonConfigPath, 'utf-8');
       const patterns: MaskingPatternConfig[] = JSON.parse(raw);
-      console.error(`[ctxo] Loaded ${patterns.length} custom masking pattern(s)`);
+      log.info(`Loaded ${patterns.length} custom masking pattern(s)`);
       return MaskingPipeline.fromConfig(patterns);
     } catch (err) {
-      console.error(`[ctxo] Failed to load masking config: ${(err as Error).message}`);
+      log.error(`Failed to load masking config: ${(err as Error).message}`);
     }
   }
 
@@ -305,6 +308,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((err: unknown) => {
-  console.error('[ctxo] Fatal:', (err as Error).message);
+  log.error('Fatal: %s', (err as Error).message);
   process.exit(1);
 });

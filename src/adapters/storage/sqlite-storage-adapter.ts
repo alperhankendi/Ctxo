@@ -4,6 +4,9 @@ import { join, dirname } from 'node:path';
 import type { FileIndex, GraphEdge, SymbolNode } from '../../core/types.js';
 import type { IStoragePort } from '../../ports/i-storage-port.js';
 import { JsonIndexReader } from './json-index-reader.js';
+import { createLogger } from '../../core/logger.js';
+
+const log = createLogger('ctxo:storage');
 
 export class SqliteStorageAdapter implements IStoragePort {
   private db: Database | undefined;
@@ -24,7 +27,7 @@ export class SqliteStorageAdapter implements IStoragePort {
         this.db = new SQL.Database(buffer);
         this.verifyIntegrity();
       } catch {
-        console.error('[ctxo:sqlite] Corrupt DB detected, rebuilding from JSON index');
+        log.warn('Corrupt DB detected, rebuilding from JSON index');
         this.db = new SQL.Database();
         this.createTables();
       }
@@ -311,7 +314,7 @@ export class SqliteStorageAdapter implements IStoragePort {
     try {
       this.persist();
     } catch (err) {
-      console.error(`[ctxo:sqlite] Failed to persist DB: ${(err as Error).message}`);
+      log.error(`Failed to persist DB: ${(err as Error).message}`);
     }
   }
 
