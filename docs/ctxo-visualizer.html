@@ -1772,15 +1772,22 @@ function renderDiff() {
 // MCP SERVER CONNECTION
 // ═══════════════════════════════════════
 let mcpMsgId = 0;
+let mcpSessionId = null;
 
 async function mcpCall(url, method, params = {}) {
   const id = ++mcpMsgId;
   const body = JSON.stringify({ jsonrpc: '2.0', id, method, params });
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json, text/event-stream' },
-    body,
-  });
+  const headers = { 'Content-Type': 'application/json', 'Accept': 'application/json, text/event-stream' };
+  if (mcpSessionId) headers['Mcp-Session-Id'] = mcpSessionId;
+
+  const res = await fetch(url, { method: 'POST', headers, body });
+
+  // Capture session ID from response
+  const sid = res.headers.get('Mcp-Session-Id');
+  if (sid) mcpSessionId = sid;
+
+  if (!res.ok) throw new Error('HTTP ' + res.status + ': ' + (await res.text()));
+
   const text = await res.text();
   // Parse SSE event stream — find the "data:" line with our response
   const lines = text.split('\n');
@@ -1804,6 +1811,7 @@ document.getElementById('mcpConnectBtn').addEventListener('click', async () => {
 
   try {
     // 1. Initialize
+    mcpSessionId = null; // reset session
     const initRes = await mcpCall(url, 'initialize', {
       protocolVersion: '2024-11-05',
       capabilities: {},
@@ -1811,6 +1819,13 @@ document.getElementById('mcpConnectBtn').addEventListener('click', async () => {
     });
     if (!initRes || initRes.error) throw new Error(initRes?.error?.message || 'Init failed');
     statusEl.textContent = 'Connected! Loading data...';
+
+    // 2. Send initialized notification (MCP spec requirement)
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json, text/event-stream', ...(mcpSessionId ? { 'Mcp-Session-Id': mcpSessionId } : {}) },
+      body: JSON.stringify({ jsonrpc: '2.0', method: 'notifications/initialized' }),
+    });
 
     // 2. Call get_architectural_overlay for file list
     const overlayRes = await mcpCall(url, 'tools/call', {
@@ -1823,7 +1838,7 @@ document.getElementById('mcpConnectBtn').addEventListener('click', async () => {
 
     // 3. Call search_symbols to get all symbols
     const symRes = await mcpCall(url, 'tools/call', {
-      name: 'search_symbols', arguments: { query: '.*', limit: 500 },
+      name: 'search_symbols', arguments: { pattern: '.*', limit: 500 },
     });
     let mcpSymbols = [];
     if (symRes?.result?.content?.[0]?.text) {
