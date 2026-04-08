@@ -188,7 +188,8 @@
   .url-status { font-size: 10px; color: var(--text3); margin-top: 4px; }
 
   /* 3D Graph */
-  .graph3d-container { flex: 1; position: relative; overflow: hidden; background: #0a0c10; min-height: 0; }
+  .graph3d-container { flex: 1; position: relative; overflow: hidden; background: #f0f2f8; min-height: 0; }
+  [data-theme="dark"] .graph3d-container { background: #0a0c10; }
   .graph3d-container canvas { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; }
   .graph3d-info { position: absolute; top: 12px; left: 12px; background: rgba(15,17,23,0.9); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; font-size: 11px; color: var(--text2); z-index: 5; }
   [data-theme="light"] .graph3d-info { background: rgba(255,255,255,0.95); }
@@ -406,7 +407,7 @@ const state = {
   edgeFilter: { imports: true, calls: true, extends: true, implements: true, uses: true },
   minComplexity: 0, selectedFile: null,
   graphCluster: 'flat', blastRadius: false,
-  heatmapMode: 'symbol', theme: 'dark',
+  heatmapMode: 'symbol', theme: 'light',
 };
 
 const KIND_COLORS = { function: '#3b82f6', class: '#a855f7', interface: '#14b8a6', method: '#f97316', variable: '#6b7280', type: '#5eead4' };
@@ -460,6 +461,8 @@ function getTransitiveDeps(startId, edges) {
 // THEME
 // ═══════════════════════════════════════
 const themeToggle = document.getElementById('themeToggle');
+document.documentElement.setAttribute('data-theme', 'light');
+themeToggle.textContent = '\u2600';
 themeToggle.addEventListener('click', () => {
   state.theme = state.theme === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', state.theme);
@@ -1352,79 +1355,152 @@ document.getElementById('urlLoadBtn').addEventListener('click', async () => {
 // 3D DEPENDENCY GRAPH (Three.js)
 // ═══════════════════════════════════════
 let scene3d = null, camera3d = null, renderer3d = null, controls3d = null;
-let graph3dMeshes = new Map(), graph3dLines = [];
+let graph3dObjects = []; // all scene objects we added (meshes, lines, sprites)
+let graph3dMeshes = new Map();
 let graph3dInitialized = false, graph3dAnim = null;
+
+function makeTextSprite(text, color) {
+  const THREE = window._THREE;
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const fontSize = 48;
+  ctx.font = '500 ' + fontSize + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+  const metrics = ctx.measureText(text);
+  const w = Math.ceil(metrics.width) + 16;
+  const h = fontSize + 16;
+  canvas.width = w; canvas.height = h;
+  ctx.font = '500 ' + fontSize + 'px -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.fillStyle = color;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, w / 2, h / 2);
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.minFilter = THREE.LinearFilter;
+  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false });
+  const sprite = new THREE.Sprite(mat);
+  sprite.scale.set(w / 8, h / 8, 1);
+  return sprite;
+}
 
 async function renderGraph3D() {
   const container = document.getElementById('graph3dContainer');
   const emptyEl = document.getElementById('graph3dEmpty');
   const infoEl = document.getElementById('graph3dInfo');
+  const ctrlsEl = document.getElementById('graph3dControls');
   const allSyms = filterSymbols(getAllSymbols());
   const allEdges = getAllEdges().filter(e => state.edgeFilter[e.kind]);
-
-  const ctrlsEl = document.getElementById('graph3dControls');
 
   if (!allSyms.length) { emptyEl.style.display = ''; infoEl.style.display = 'none'; ctrlsEl.style.display = 'none'; return; }
   emptyEl.style.display = 'none'; infoEl.style.display = ''; ctrlsEl.style.display = '';
 
-  // Wait a frame for layout to settle so container has dimensions
   if (!graph3dInitialized) {
     await new Promise(r => requestAnimationFrame(r));
     try {
       const THREE = await import('three');
       const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
-
       let w = container.clientWidth || 800, h = container.clientHeight || 600;
 
       scene3d = new THREE.Scene();
-      scene3d.background = new THREE.Color(0x0a0c10);
+      const bgColor = state.theme === 'light' ? 0xf0f2f8 : 0x0a0c10;
+      scene3d.background = new THREE.Color(bgColor);
 
-      camera3d = new THREE.PerspectiveCamera(60, w / h, 0.1, 10000);
-      camera3d.position.set(0, 0, 500);
+      camera3d = new THREE.PerspectiveCamera(55, w / h, 0.1, 10000);
+      camera3d.position.set(0, 100, 500);
 
-      renderer3d = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      renderer3d = new THREE.WebGLRenderer({ antialias: true });
       renderer3d.setSize(w, h);
       renderer3d.setPixelRatio(Math.min(devicePixelRatio, 2));
+      renderer3d.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer3d.toneMappingExposure = 1.2;
 
-      // Remove any existing canvas
       container.querySelectorAll('canvas').forEach(c => c.remove());
       container.appendChild(renderer3d.domElement);
 
       controls3d = new OrbitControls(camera3d, renderer3d.domElement);
       controls3d.enableDamping = true;
-      controls3d.dampingFactor = 0.08;
+      controls3d.dampingFactor = 0.06;
       controls3d.enableZoom = true;
-      controls3d.zoomSpeed = 1.2;
+      controls3d.zoomSpeed = 1.0;
       controls3d.enablePan = true;
       controls3d.panSpeed = 0.8;
-      controls3d.enableRotate = true;
-      controls3d.rotateSpeed = 0.6;
-      controls3d.minDistance = 10;
-      controls3d.maxDistance = 5000;
+      controls3d.rotateSpeed = 0.5;
+      controls3d.minDistance = 20;
+      controls3d.maxDistance = 4000;
+      controls3d.autoRotate = true;
+      controls3d.autoRotateSpeed = 0.3;
 
-      scene3d.add(new THREE.AmbientLight(0xffffff, 0.6));
-      const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
-      dirLight.position.set(300, 400, 300);
-      scene3d.add(dirLight);
-      const dirLight2 = new THREE.DirectionalLight(0x8888ff, 0.4);
-      dirLight2.position.set(-200, -100, -200);
-      scene3d.add(dirLight2);
+      // Lighting
+      scene3d.add(new THREE.AmbientLight(0xffffff, 0.8));
+      const key = new THREE.DirectionalLight(0xffffff, 1.2);
+      key.position.set(400, 500, 300); scene3d.add(key);
+      const fill = new THREE.DirectionalLight(0xaaccff, 0.5);
+      fill.position.set(-300, -200, -200); scene3d.add(fill);
+      const rim = new THREE.DirectionalLight(0xffeedd, 0.3);
+      rim.position.set(0, -400, 200); scene3d.add(rim);
+
+      // Grid helper
+      const gridColor = state.theme === 'light' ? 0xd0d5dd : 0x1a1d27;
+      const grid = new THREE.GridHelper(600, 30, gridColor, gridColor);
+      grid.position.y = -200;
+      grid.material.opacity = 0.3;
+      grid.material.transparent = true;
+      scene3d.add(grid);
 
       const ro = new ResizeObserver(() => {
         const w2 = container.clientWidth, h2 = container.clientHeight;
-        if (w2 > 0 && h2 > 0) {
-          camera3d.aspect = w2 / h2; camera3d.updateProjectionMatrix();
-          renderer3d.setSize(w2, h2);
-        }
+        if (w2 > 0 && h2 > 0) { camera3d.aspect = w2/h2; camera3d.updateProjectionMatrix(); renderer3d.setSize(w2, h2); }
       });
       ro.observe(container);
 
       graph3dInitialized = true;
       window._THREE = THREE;
 
+      // Hover detection
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+      let hoveredMesh = null;
+
+      renderer3d.domElement.addEventListener('mousemove', e => {
+        const rect = renderer3d.domElement.getBoundingClientRect();
+        mouse.x = ((e.clientX-rect.left)/rect.width)*2-1;
+        mouse.y = -((e.clientY-rect.top)/rect.height)*2+1;
+        raycaster.setFromCamera(mouse, camera3d);
+        const hits = raycaster.intersectObjects(Array.from(graph3dMeshes.values()));
+        if (hoveredMesh && hoveredMesh !== (hits[0] && hits[0].object)) {
+          hoveredMesh.material.emissiveIntensity = 0.15;
+          hoveredMesh.scale.setScalar(1);
+          hoveredMesh = null;
+          renderer3d.domElement.style.cursor = 'grab';
+        }
+        if (hits.length) {
+          hoveredMesh = hits[0].object;
+          hoveredMesh.material.emissiveIntensity = 0.6;
+          hoveredMesh.scale.setScalar(1.3);
+          renderer3d.domElement.style.cursor = 'pointer';
+          const sym = hoveredMesh.userData.symbol;
+          infoEl.textContent = sym.name + '  |  ' + sym.kind + '  |  ' + sym.file + ':' + sym.startLine + (sym.cyclomatic != null ? '  |  complexity: ' + sym.cyclomatic : '');
+        }
+      });
+
+      renderer3d.domElement.addEventListener('click', e => {
+        const rect = renderer3d.domElement.getBoundingClientRect();
+        mouse.x = ((e.clientX-rect.left)/rect.width)*2-1;
+        mouse.y = -((e.clientY-rect.top)/rect.height)*2+1;
+        raycaster.setFromCamera(mouse, camera3d);
+        const hits = raycaster.intersectObjects(Array.from(graph3dMeshes.values()));
+        if (hits.length) {
+          // Stop auto-rotate on click
+          controls3d.autoRotate = false;
+          const pos = hits[0].object.position;
+          controls3d.target.lerp(pos, 0.5);
+        }
+      });
+
       function animate() {
         graph3dAnim = requestAnimationFrame(animate);
         controls3d.update();
+        // Make sprites face camera
+        graph3dObjects.forEach(obj => { if (obj.isSprite) return; }); // sprites auto-face
         renderer3d.render(scene3d, camera3d);
       }
       animate();
@@ -1438,56 +1514,88 @@ async function renderGraph3D() {
 
   const THREE = window._THREE;
 
-  // Clear previous
-  graph3dMeshes.forEach(m => scene3d.remove(m));
+  // Clear previous objects
+  graph3dObjects.forEach(o => scene3d.remove(o));
+  graph3dObjects = [];
   graph3dMeshes.clear();
-  graph3dLines.forEach(l => scene3d.remove(l));
-  graph3dLines = [];
+
+  // Update background for current theme
+  scene3d.background = new THREE.Color(state.theme === 'light' ? 0xf0f2f8 : 0x0a0c10);
 
   // Create nodes
   const nodeMap = {};
-  const spread = Math.max(100, Math.min(500, allSyms.length * 3));
+  const spread = Math.max(120, Math.min(600, allSyms.length * 3));
   allSyms.forEach((s, i) => {
     const phi = Math.acos(-1 + (2 * i) / allSyms.length);
     const theta = Math.sqrt(allSyms.length * Math.PI) * phi;
     const r = spread * 0.8;
     const pos = {
-      x: r * Math.cos(theta) * Math.sin(phi) + (Math.random() - 0.5) * 20,
-      y: r * Math.sin(theta) * Math.sin(phi) + (Math.random() - 0.5) * 20,
-      z: r * Math.cos(phi) + (Math.random() - 0.5) * 20,
+      x: r * Math.cos(theta) * Math.sin(phi) + (Math.random()-0.5) * 30,
+      y: r * Math.sin(theta) * Math.sin(phi) + (Math.random()-0.5) * 30,
+      z: r * Math.cos(phi) + (Math.random()-0.5) * 30,
     };
-    const radius = Math.min(3 + (s.cyclomatic || 1) * 0.3, 10);
-    const geo = new THREE.SphereGeometry(radius, 12, 12);
-    const mat = new THREE.MeshPhongMaterial({ color: new THREE.Color(KIND_COLORS[s.kind] || '#888'), emissive: new THREE.Color(KIND_COLORS[s.kind] || '#888'), emissiveIntensity: 0.3 });
+    const colorHex = KIND_COLORS[s.kind] || '#888888';
+    const radius = Math.min(3.5 + (s.cyclomatic || 1) * 0.4, 12);
+
+    // Node sphere
+    const geo = new THREE.SphereGeometry(radius, 16, 16);
+    const mat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(colorHex),
+      emissive: new THREE.Color(colorHex),
+      emissiveIntensity: 0.15,
+      roughness: 0.35,
+      metalness: 0.1,
+    });
     const mesh = new THREE.Mesh(geo, mat);
     mesh.position.set(pos.x, pos.y, pos.z);
     mesh.userData = { symbol: s };
     scene3d.add(mesh);
+    graph3dObjects.push(mesh);
     graph3dMeshes.set(s.symbolId, mesh);
-    nodeMap[s.symbolId] = { ...s, ...pos, vx: 0, vy: 0, vz: 0, mesh, radius };
+
+    // Glow ring
+    const glowGeo = new THREE.RingGeometry(radius * 1.1, radius * 1.5, 24);
+    const glowMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(colorHex), transparent: true, opacity: 0.08, side: THREE.DoubleSide });
+    const glow = new THREE.Mesh(glowGeo, glowMat);
+    glow.position.copy(mesh.position);
+    glow.lookAt(camera3d.position);
+    scene3d.add(glow);
+    graph3dObjects.push(glow);
+
+    // Text label sprite
+    const shortName = s.name.length > 20 ? s.name.substring(0, 18) + '..' : s.name;
+    const labelColor = state.theme === 'light' ? '#374151' : '#d1d5db';
+    const sprite = makeTextSprite(shortName, labelColor);
+    sprite.position.set(pos.x, pos.y - radius - 5, pos.z);
+    scene3d.add(sprite);
+    graph3dObjects.push(sprite);
+
+    nodeMap[s.symbolId] = { ...s, ...pos, vx: 0, vy: 0, vz: 0, mesh, glow, sprite, radius };
   });
 
-  // Edges
+  // Edges — tube lines for thickness
   const filteredEdges = allEdges.filter(e => nodeMap[e.from] && nodeMap[e.to]);
   filteredEdges.forEach(e => {
     const a = nodeMap[e.from], b = nodeMap[e.to];
-    const geo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(a.x,a.y,a.z), new THREE.Vector3(b.x,b.y,b.z)]);
-    const mat = new THREE.LineBasicMaterial({ color: new THREE.Color((EDGE_STYLES[e.kind]||EDGE_STYLES.uses).color), opacity: 0.4, transparent: true });
+    const edgeColor = (EDGE_STYLES[e.kind] || EDGE_STYLES.uses).color;
+    const pts = [new THREE.Vector3(a.x,a.y,a.z), new THREE.Vector3(b.x,b.y,b.z)];
+    const geo = new THREE.BufferGeometry().setFromPoints(pts);
+    const mat = new THREE.LineBasicMaterial({ color: new THREE.Color(edgeColor), opacity: 0.25, transparent: true, linewidth: 1 });
     const line = new THREE.Line(geo, mat);
     line.userData = { nodeA: a, nodeB: b };
     scene3d.add(line);
-    graph3dLines.push(line);
+    graph3dObjects.push(line);
   });
 
-  // Force simulation (pre-compute)
+  // Force simulation (pre-compute 120 iterations)
   const nodes3d = Object.values(nodeMap);
-  for (let iter = 0; iter < 100; iter++) {
-    const alpha = 1 - iter / 100;
+  for (let iter = 0; iter < 120; iter++) {
+    const alpha = Math.max(0, 1 - iter / 120);
     for (let i = 0; i < nodes3d.length; i++) {
       for (let j = i + 1; j < nodes3d.length; j++) {
         const a = nodes3d[i], b = nodes3d[j];
         let dx=b.x-a.x, dy=b.y-a.y, dz=b.z-a.z, dist=Math.sqrt(dx*dx+dy*dy+dz*dz)||1;
-        let force=Math.min(800/(dist*dist),3)*alpha;
+        let force=Math.min(1000/(dist*dist),4)*alpha;
         a.vx-=dx/dist*force; a.vy-=dy/dist*force; a.vz-=dz/dist*force;
         b.vx+=dx/dist*force; b.vy+=dy/dist*force; b.vz+=dz/dist*force;
       }
@@ -1495,19 +1603,25 @@ async function renderGraph3D() {
     filteredEdges.forEach(e => {
       const a=nodeMap[e.from], b=nodeMap[e.to]; if(!a||!b) return;
       let dx=b.x-a.x, dy=b.y-a.y, dz=b.z-a.z, dist=Math.sqrt(dx*dx+dy*dy+dz*dz)||1;
-      let f=(dist-80)*0.003*alpha;
+      let f=(dist-100)*0.004*alpha;
       a.vx+=dx/dist*f; a.vy+=dy/dist*f; a.vz+=dz/dist*f;
       b.vx-=dx/dist*f; b.vy-=dy/dist*f; b.vz-=dz/dist*f;
     });
-    nodes3d.forEach(n => { n.vx*=0.7; n.vy*=0.7; n.vz*=0.7; n.x+=n.vx; n.y+=n.vy; n.z+=n.vz; });
+    nodes3d.forEach(n => { n.vx*=0.65; n.vy*=0.65; n.vz*=0.65; n.x+=n.vx; n.y+=n.vy; n.z+=n.vz; });
   }
 
-  // Update positions
-  nodes3d.forEach(n => n.mesh.position.set(n.x, n.y, n.z));
-  graph3dLines.forEach(line => {
-    const a=line.userData.nodeA, b=line.userData.nodeB;
-    const pos = line.geometry.attributes.position;
-    pos.setXYZ(0,a.x,a.y,a.z); pos.setXYZ(1,b.x,b.y,b.z); pos.needsUpdate = true;
+  // Update all positions
+  nodes3d.forEach(n => {
+    n.mesh.position.set(n.x, n.y, n.z);
+    n.glow.position.set(n.x, n.y, n.z);
+    n.sprite.position.set(n.x, n.y - n.radius - 6, n.z);
+  });
+  graph3dObjects.forEach(obj => {
+    if (obj.userData && obj.userData.nodeA) {
+      const a = obj.userData.nodeA, b = obj.userData.nodeB;
+      const pos = obj.geometry.attributes.position;
+      pos.setXYZ(0,a.x,a.y,a.z); pos.setXYZ(1,b.x,b.y,b.z); pos.needsUpdate = true;
+    }
   });
 
   // Fit camera
@@ -1515,50 +1629,18 @@ async function renderGraph3D() {
   nodes3d.forEach(n => box.expandByPoint(new THREE.Vector3(n.x,n.y,n.z)));
   const center = box.getCenter(new THREE.Vector3());
   const size = box.getSize(new THREE.Vector3()).length();
-  camera3d.position.set(center.x + size * 0.3, center.y + size * 0.2, center.z + size * 1.2);
+  camera3d.position.set(center.x + size * 0.4, center.y + size * 0.3, center.z + size * 1.0);
   controls3d.target.copy(center);
+  controls3d.autoRotate = true;
   controls3d.update();
 
-  // Store for button handlers
   window._graph3dFitData = { center, size };
 
-  // Zoom buttons
-  document.getElementById('zoom3dIn').onclick = () => {
-    camera3d.position.lerp(controls3d.target, 0.3);
-    controls3d.update();
-  };
-  document.getElementById('zoom3dOut').onclick = () => {
-    const dir = camera3d.position.clone().sub(controls3d.target).normalize();
-    camera3d.position.add(dir.multiplyScalar(50));
-    controls3d.update();
-  };
-  document.getElementById('zoom3dFit').onclick = () => {
-    const d = window._graph3dFitData;
-    if (!d) return;
-    camera3d.position.set(d.center.x + d.size * 0.3, d.center.y + d.size * 0.2, d.center.z + d.size * 1.2);
-    controls3d.target.copy(d.center);
-    controls3d.update();
-  };
-  document.getElementById('zoom3dReset').onclick = () => {
-    camera3d.position.set(0, 0, 500);
-    controls3d.target.set(0, 0, 0);
-    controls3d.update();
-  };
-
-  // Click handler
-  const raycaster = new THREE.Raycaster();
-  const mouse = new THREE.Vector2();
-  renderer3d.domElement.onclick = e => {
-    const rect = renderer3d.domElement.getBoundingClientRect();
-    mouse.x = ((e.clientX-rect.left)/rect.width)*2-1;
-    mouse.y = -((e.clientY-rect.top)/rect.height)*2+1;
-    raycaster.setFromCamera(mouse, camera3d);
-    const hits = raycaster.intersectObjects(Array.from(graph3dMeshes.values()));
-    if (hits.length) {
-      const sym = hits[0].object.userData.symbol;
-      infoEl.textContent = sym.name + ' (' + sym.kind + ') - ' + sym.file + ':' + sym.startLine + (sym.cyclomatic != null ? ' | C:' + sym.cyclomatic : '');
-    }
-  };
+  // Button handlers
+  document.getElementById('zoom3dIn').onclick = () => { camera3d.position.lerp(controls3d.target, 0.25); };
+  document.getElementById('zoom3dOut').onclick = () => { const d=camera3d.position.clone().sub(controls3d.target).normalize(); camera3d.position.add(d.multiplyScalar(60)); };
+  document.getElementById('zoom3dFit').onclick = () => { const d=window._graph3dFitData; if(!d) return; camera3d.position.set(d.center.x+d.size*0.4,d.center.y+d.size*0.3,d.center.z+d.size*1.0); controls3d.target.copy(d.center); controls3d.autoRotate=true; };
+  document.getElementById('zoom3dReset').onclick = () => { camera3d.position.set(0,100,500); controls3d.target.set(0,0,0); controls3d.autoRotate=true; };
 }
 
 // ═══════════════════════════════════════
