@@ -150,13 +150,24 @@ Working with class hierarchies?
 ### MCP Tool Response Format (all tools)
 
 ```typescript
-// Success
-{ content: [{ type: 'text', text: JSON.stringify(payload) }] }
+// Success — all responses include _meta with item counts and truncation info
+{ content: [{ type: 'text', text: JSON.stringify({ ...payload, _meta: { totalItems, returnedItems, truncated, totalBytes, hint? } }) }] }
 // Graceful miss
 { content: [{ type: 'text', text: JSON.stringify({ found: false, hint: '...' }) }] }
 // Error — NEVER throw from tool handlers
 { content: [{ type: 'text', text: JSON.stringify({ error: true, message: '...' }) }] }
 ```
+
+### MCP Resources
+
+| Resource | URI | Purpose |
+|---|---|---|
+| `ctxo-status` | `ctxo://status` | Health check — prevents `-32601` from clients calling `listResources` |
+
+### Cross-Cutting Features
+
+- **Response envelope (`_meta`):** All tool responses include `_meta: { totalItems, returnedItems, truncated, totalBytes }`. Large responses auto-truncated at 8KB (configurable via `CTXO_RESPONSE_LIMIT` env).
+- **Intent filtering:** `get_blast_radius`, `get_logic_slice`, `find_importers`, `find_dead_code` accept optional `intent` parameter for keyword-based result filtering.
 
 ## Critical Rules
 

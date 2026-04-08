@@ -1191,6 +1191,23 @@ Call with `{ symbolId: "src/core/graph/symbol-graph.ts::SymbolGraph::class", lev
 
 ***
 
+## Step 19d: MCP Client Compatibility (Resources/Prompts)
+
+Verify that MCP clients calling `listResources` and `listPrompts` get valid responses.
+
+### 19d.1 listResources
+
+* [ ] Client `listResources()` returns a valid response (no `-32601` error)
+* [ ] Response contains `ctxo-status` resource with URI `ctxo://status`
+* [ ] Reading `ctxo://status` returns text "Ctxo MCP server is running."
+
+### 19d.2 listPrompts
+
+* [ ] Client `listPrompts()` does NOT return `-32601 Method not found`
+* [ ] Response is empty array or valid (no crash)
+
+***
+
 ## Step 20: Staleness Detection Check
 
 Run any tool immediately after a fresh index build.
@@ -1636,13 +1653,16 @@ After completing all steps, fill in:
 | 22b | Intent filter — `find_dead_code` filters by intent keywords         |           |
 | 22c | Intent filter — `get_logic_slice` filters dependencies by intent    |           |
 | 22d | Intent filter — backward compatible (no intent = full results)      |           |
+| **Client Compatibility (Step 19d)** | | |
+| 22e | `listResources` returns valid response (no -32601)                  |           |
+| 22f | `ctxo://status` resource readable                                   |           |
 | **Infrastructure (Steps 20-23)** | | |
 | 23  | Staleness detection — no false positive on fresh index              |           |
 | 24  | Unit tests pass (706+)                                              |           |
 | 25  | Git hash masking — visible or redacted (log status)                 |           |
 | 26  | Manual vs MCP comparison table filled with measured data            |           |
 
-**Result:** \_\_\_/82 checks passed
+**Result:** \_\_\_/84 checks passed
 
 ***
 
