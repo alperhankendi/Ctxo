@@ -14,27 +14,38 @@
     --blue: #3b82f6; --purple: #a855f7; --teal: #14b8a6; --gray: #6b7280;
     --border: #2e3244; --radius: 8px;
   }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; }
+  [data-theme="light"] {
+    --bg: #f8f9fc; --bg2: #ffffff; --bg3: #f0f1f5; --bg4: #e5e7eb;
+    --text: #1f2937; --text2: #4b5563; --text3: #9ca3af;
+    --accent: #4f46e5; --accent2: #6366f1;
+    --border: #d1d5db;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; transition: background 0.2s, color 0.2s; }
   .app { display: flex; height: 100vh; }
-  .sidebar { width: 300px; min-width: 300px; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+  .sidebar { width: 300px; min-width: 300px; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; transition: background 0.2s; }
   .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-  .sidebar-header { padding: 16px; border-bottom: 1px solid var(--border); }
-  .sidebar-header h1 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-  .sidebar-header p { font-size: 11px; color: var(--text2); }
+  .sidebar-header { padding: 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .sidebar-header-left h1 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .sidebar-header-left p { font-size: 11px; color: var(--text2); }
+  .theme-toggle { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; width: 34px; height: 34px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; color: var(--text2); }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--text); }
   .sidebar-section { padding: 12px 16px; border-bottom: 1px solid var(--border); }
   .sidebar-section h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); margin-bottom: 8px; }
   .sidebar-scroll { flex: 1; overflow-y: auto; }
-  .drop-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s; }
+  .drop-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s; }
   .drop-zone:hover, .drop-zone.dragover { border-color: var(--accent); background: rgba(99,102,241,0.08); }
   .drop-zone p { font-size: 13px; color: var(--text2); }
   .drop-zone .icon { font-size: 24px; margin-bottom: 6px; }
   .drop-zone input { display: none; }
   .file-count { font-size: 12px; color: var(--accent2); margin-top: 8px; }
-  .tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--bg2); }
-  .tab { padding: 10px 20px; font-size: 13px; font-weight: 500; color: var(--text2); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; background: none; border-top: none; border-left: none; border-right: none; }
+  .browse-btn { margin-top: 8px; width: 100%; padding: 7px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 500; transition: background 0.15s; }
+  .browse-btn:hover { background: var(--accent2); }
+  .browse-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--bg2); flex-wrap: wrap; }
+  .tab { padding: 10px 12px; font-size: 12px; font-weight: 500; color: var(--text2); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; background: none; border-top: none; border-left: none; border-right: none; white-space: nowrap; }
   .tab:hover { color: var(--text); }
   .tab.active { color: var(--accent2); border-bottom-color: var(--accent); }
-  .tab .badge { background: var(--bg4); color: var(--text2); font-size: 10px; padding: 1px 6px; border-radius: 10px; margin-left: 6px; }
+  .tab .badge { background: var(--bg4); color: var(--text2); font-size: 10px; padding: 1px 6px; border-radius: 10px; margin-left: 4px; }
   .filter-group { display: flex; flex-wrap: wrap; gap: 4px; }
   .filter-chip { font-size: 11px; padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg); color: var(--text2); cursor: pointer; transition: all 0.15s; }
   .filter-chip.active { border-color: var(--accent); background: rgba(99,102,241,0.15); color: var(--accent2); }
@@ -72,21 +83,32 @@
   .kind-method { background: rgba(249,115,22,0.2); color: var(--orange); }
   .kind-variable { background: rgba(107,114,128,0.2); color: var(--gray); }
   .kind-type { background: rgba(20,184,166,0.15); color: #5eead4; }
+  .vscode-link { color: var(--accent2); text-decoration: none; font-size: 11px; opacity: 0.7; transition: opacity 0.15s; }
+  .vscode-link:hover { opacity: 1; text-decoration: underline; }
   .graph-container { flex: 1; position: relative; overflow: hidden; }
   .graph-container canvas { display: block; width: 100%; height: 100%; }
   .graph-tooltip { position: absolute; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; font-size: 11px; pointer-events: none; display: none; z-index: 10; max-width: 350px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
   .graph-legend { position: absolute; bottom: 12px; left: 12px; background: rgba(15,17,23,0.85); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; font-size: 10px; display: flex; flex-direction: column; gap: 3px; }
+  [data-theme="light"] .graph-legend { background: rgba(255,255,255,0.92); }
   .graph-legend .leg-item { display: flex; align-items: center; gap: 6px; color: var(--text2); }
   .graph-legend .leg-dot { width: 10px; height: 10px; border-radius: 50%; }
   .graph-legend .leg-line { width: 20px; height: 2px; }
   .graph-controls { position: absolute; top: 12px; right: 12px; display: flex; flex-direction: column; gap: 4px; z-index: 5; }
   .graph-controls button { width: 32px; height: 32px; background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
   .graph-controls button:hover { background: var(--bg3); border-color: var(--accent); }
+  .graph-controls button.active { background: var(--accent); color: white; border-color: var(--accent); }
   .graph-info { position: absolute; top: 12px; left: 12px; background: rgba(15,17,23,0.9); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; font-size: 11px; z-index: 5; max-width: 280px; display: none; }
+  [data-theme="light"] .graph-info { background: rgba(255,255,255,0.95); }
   .graph-info h4 { font-size: 13px; color: var(--accent2); margin-bottom: 6px; }
   .graph-info .gi-row { display: flex; align-items: center; gap: 6px; padding: 2px 0; color: var(--text2); }
   .graph-info .gi-close { position: absolute; top: 6px; right: 8px; cursor: pointer; color: var(--text3); background: none; border: none; font-size: 14px; }
+  .graph-cluster-toggle { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 5; display: flex; gap: 2px; background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; padding: 2px; }
+  .graph-cluster-toggle button { padding: 4px 10px; font-size: 11px; border: none; background: none; color: var(--text2); cursor: pointer; border-radius: 4px; transition: all 0.15s; }
+  .graph-cluster-toggle button.active { background: var(--accent); color: white; }
   .heatmap-container { flex: 1; overflow-y: auto; padding: 16px; }
+  .heatmap-mode-toggle { display: flex; gap: 2px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 2px; margin-bottom: 12px; }
+  .heatmap-mode-toggle button { flex: 1; padding: 5px 10px; font-size: 11px; border: none; background: none; color: var(--text2); cursor: pointer; border-radius: 4px; transition: all 0.15s; font-weight: 500; }
+  .heatmap-mode-toggle button.active { background: var(--accent); color: white; }
   .heatmap-grid { display: flex; flex-wrap: wrap; gap: 4px; align-content: flex-start; }
   .heatmap-cell { border-radius: 4px; cursor: pointer; position: relative; min-width: 30px; min-height: 30px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-family: monospace; color: rgba(0,0,0,0.7); font-weight: 600; transition: transform 0.1s, box-shadow 0.1s; }
   .heatmap-cell:hover { transform: scale(1.05); box-shadow: 0 0 0 2px var(--accent); z-index: 1; }
@@ -96,8 +118,66 @@
   .empty-state p { font-size: 13px; }
   .prompt-bar { background: var(--bg2); border-top: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; gap: 10px; }
   .prompt-text { flex: 1; font-size: 11px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: monospace; }
-  .copy-btn { padding: 5px 12px; background: var(--accent); color: white; border: none; border-radius: 4px; font-size: 11px; cursor: pointer; white-space: nowrap; }
-  .copy-btn:hover { background: var(--accent2); }
+  .copy-btn, .export-btn { padding: 5px 12px; background: var(--accent); color: white; border: none; border-radius: 4px; font-size: 11px; cursor: pointer; white-space: nowrap; }
+  .copy-btn:hover, .export-btn:hover { background: var(--accent2); }
+  .export-bar { display: flex; gap: 6px; padding: 8px 12px; background: var(--bg2); border-bottom: 1px solid var(--border); align-items: center; }
+  .export-bar span { font-size: 11px; color: var(--text3); }
+
+  /* Dashboard */
+  .dashboard { flex: 1; overflow-y: auto; padding: 20px; }
+  .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .dash-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; transition: border-color 0.15s; }
+  .dash-card:hover { border-color: var(--accent); }
+  .dash-card .dc-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); margin-bottom: 6px; }
+  .dash-card .dc-value { font-size: 28px; font-weight: 700; color: var(--text); }
+  .dash-card .dc-sub { font-size: 11px; color: var(--text2); margin-top: 4px; }
+  .dash-section { margin-bottom: 20px; }
+  .dash-section h3 { font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--text); }
+  .dash-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .dash-table th { text-align: left; padding: 6px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); border-bottom: 1px solid var(--border); font-weight: 500; }
+  .dash-table td { padding: 6px 10px; border-bottom: 1px solid var(--border); color: var(--text2); }
+  .dash-table tr:hover td { background: var(--bg3); }
+  .dash-bar { height: 6px; border-radius: 3px; background: var(--bg4); overflow: hidden; }
+  .dash-bar-fill { height: 100%; border-radius: 3px; }
+  .dash-kind-dist { display: flex; gap: 12px; flex-wrap: wrap; }
+  .dash-kind-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); }
+  .dash-kind-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dash-kind-bar { display: flex; height: 20px; border-radius: 4px; overflow: hidden; width: 100%; margin-top: 8px; }
+  .dash-kind-segment { height: 100%; transition: width 0.3s; }
+
+  /* Co-changes */
+  .cochange-container { flex: 1; overflow-y: auto; padding: 16px; }
+  .cochange-list { display: flex; flex-direction: column; gap: 6px; }
+  .cochange-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); font-size: 12px; transition: border-color 0.15s; }
+  .cochange-row:hover { border-color: var(--accent); }
+  .cochange-files { flex: 1; display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .cochange-file { font-family: monospace; font-size: 11px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; }
+  .cochange-arrow { color: var(--accent); font-size: 14px; flex-shrink: 0; }
+  .cochange-stats { display: flex; gap: 12px; flex-shrink: 0; }
+  .cochange-stat { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text3); }
+  .cochange-stat strong { color: var(--text); }
+  .cochange-bar { width: 60px; height: 6px; border-radius: 3px; background: var(--bg4); overflow: hidden; }
+  .cochange-bar-fill { height: 100%; border-radius: 3px; background: var(--accent); }
+  .cochange-search { margin-bottom: 12px; }
+
+  /* Timeline */
+  .timeline-container { flex: 1; overflow-y: auto; padding: 16px; }
+  .timeline { position: relative; padding-left: 24px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+  .tl-month { margin-bottom: 16px; }
+  .tl-month-label { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 8px; position: relative; }
+  .tl-month-label::before { content: ''; position: absolute; left: -20px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); }
+  .tl-entry { padding: 6px 10px; margin-bottom: 4px; border-radius: var(--radius); font-size: 11px; display: flex; align-items: flex-start; gap: 8px; }
+  .tl-entry.anti { background: rgba(249,115,22,0.08); border-left: 3px solid var(--orange); }
+  .tl-entry.revert { background: rgba(239,68,68,0.08); border-left: 3px solid var(--red); }
+  .tl-entry.normal { background: var(--bg2); border-left: 3px solid var(--border); }
+  .tl-date { color: var(--text3); min-width: 72px; flex-shrink: 0; }
+  .tl-msg { color: var(--text2); flex: 1; }
+  .tl-file { color: var(--text3); font-family: monospace; font-size: 10px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 0; }
+  .tl-tag { font-size: 9px; padding: 1px 5px; border-radius: 3px; font-weight: 600; text-transform: uppercase; flex-shrink: 0; }
+  .tl-tag.anti { background: rgba(249,115,22,0.2); color: var(--orange); }
+  .tl-tag.revert { background: rgba(239,68,68,0.2); color: var(--red); }
+
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
@@ -107,8 +187,11 @@
 <div class="app">
   <div class="sidebar">
     <div class="sidebar-header">
-      <h1>Ctxo Visualizer</h1>
-      <p>Drag &amp; drop .ctxo/index JSON files</p>
+      <div class="sidebar-header-left">
+        <h1>Ctxo Visualizer</h1>
+        <p>Drag & drop .ctxo/index JSON files</p>
+      </div>
+      <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode">&#9790;</button>
     </div>
     <div class="sidebar-section">
       <div class="drop-zone" id="dropZone">
@@ -116,6 +199,7 @@
         <p>Drop a folder or JSON files<br>or click to browse</p>
         <input type="file" id="fileInput" multiple accept=".json" webkitdirectory />
       </div>
+      <button class="browse-btn" id="browseFolderBtn">Browse Folder...</button>
       <div class="file-count" id="fileCount"></div>
     </div>
     <div class="sidebar-scroll">
@@ -142,25 +226,43 @@
   </div>
   <div class="main">
     <div class="tabs">
-      <button class="tab active" data-tab="tree">File Tree<span class="badge" id="treeBadge">0</span></button>
-      <button class="tab" data-tab="graph">Dependency Graph<span class="badge" id="graphBadge">0</span></button>
-      <button class="tab" data-tab="heatmap">Complexity Heatmap<span class="badge" id="heatmapBadge">0</span></button>
+      <button class="tab active" data-tab="dashboard">Dashboard</button>
+      <button class="tab" data-tab="tree">File Tree<span class="badge" id="treeBadge">0</span></button>
+      <button class="tab" data-tab="graph">Graph<span class="badge" id="graphBadge">0</span></button>
+      <button class="tab" data-tab="heatmap">Heatmap<span class="badge" id="heatmapBadge">0</span></button>
+      <button class="tab" data-tab="cochanges">Co-Changes<span class="badge" id="cochangeBadge">0</span></button>
+      <button class="tab" data-tab="timeline">Timeline</button>
     </div>
-    <div class="panel active" id="panel-tree">
+    <div class="panel active" id="panel-dashboard">
+      <div class="dashboard" id="dashboardContainer">
+        <div class="empty-state"><div class="es-icon">&#128202;</div><p>Load JSON files to see the dashboard</p></div>
+      </div>
+    </div>
+    <div class="panel" id="panel-tree">
       <div class="file-tree" id="fileTree">
         <div class="empty-state"><div class="es-icon">&#127794;</div><p>Load JSON files to see the file tree</p></div>
       </div>
       <div class="file-detail" id="fileDetail" style="display:none"></div>
     </div>
     <div class="panel" id="panel-graph">
+      <div class="export-bar" id="graphExportBar" style="display:none">
+        <span>Export:</span>
+        <button class="export-btn" id="exportGraphPng">PNG</button>
+        <button class="export-btn" id="exportGraphSvg">SVG</button>
+      </div>
       <div class="graph-container" id="graphContainer">
         <canvas id="graphCanvas"></canvas>
         <div class="graph-tooltip" id="graphTooltip"></div>
+        <div class="graph-cluster-toggle" id="graphClusterToggle" style="display:none">
+          <button class="active" data-mode="flat">Flat</button>
+          <button data-mode="directory">By Directory</button>
+        </div>
         <div class="graph-controls" id="graphControls" style="display:none">
           <button id="zoomIn" title="Zoom In">+</button>
           <button id="zoomOut" title="Zoom Out">&minus;</button>
           <button id="zoomFit" title="Fit All">&#8214;</button>
           <button id="zoomReset" title="Reset View">&#8634;</button>
+          <button id="blastRadiusBtn" title="Blast Radius Mode">&#9881;</button>
         </div>
         <div class="graph-info" id="graphInfo"></div>
         <div class="graph-legend" id="graphLegend" style="display:none"></div>
@@ -168,10 +270,24 @@
       </div>
     </div>
     <div class="panel" id="panel-heatmap">
+      <div class="export-bar" id="heatmapExportBar" style="display:none">
+        <span>Export:</span>
+        <button class="export-btn" id="exportHeatmapCsv">CSV</button>
+      </div>
       <div class="heatmap-container" id="heatmapContainer">
         <div class="empty-state"><div class="es-icon">&#128293;</div><p>Load JSON files to see the complexity heatmap</p></div>
       </div>
       <div class="heatmap-tooltip" id="heatmapTooltip"></div>
+    </div>
+    <div class="panel" id="panel-cochanges">
+      <div class="cochange-container" id="cochangeContainer">
+        <div class="empty-state"><div class="es-icon">&#128257;</div><p>Load JSON files to see co-change patterns</p></div>
+      </div>
+    </div>
+    <div class="panel" id="panel-timeline">
+      <div class="timeline-container" id="timelineContainer">
+        <div class="empty-state"><div class="es-icon">&#128197;</div><p>Load JSON files to see the commit timeline</p></div>
+      </div>
     </div>
     <div class="prompt-bar">
       <span class="prompt-text" id="promptText">Load .ctxo/index JSON files to generate a codebase summary.</span>
@@ -181,15 +297,7 @@
 </div>
 
 <script>
-// ─── HTML Escaping ───
-function esc(str) {
-  if (typeof str !== 'string') return '';
-  const d = document.createElement('div');
-  d.textContent = str;
-  return d.innerHTML;
-}
-
-// ─── Safe DOM Helpers ───
+// ─── DOM Helpers ───
 function el(tag, attrs, children) {
   const e = document.createElement(tag);
   if (attrs) {
@@ -212,13 +320,14 @@ function el(tag, attrs, children) {
 
 // ─── State ───
 const state = {
-  files: [],
-  activeTab: 'tree',
+  files: [], coChanges: [],
+  activeTab: 'dashboard',
   search: '',
   kindFilter: { function: true, class: true, interface: true, method: true, variable: true, type: true },
   edgeFilter: { imports: true, calls: true, extends: true, implements: true, uses: true },
-  minComplexity: 0,
-  selectedFile: null,
+  minComplexity: 0, selectedFile: null,
+  graphCluster: 'flat', blastRadius: false,
+  heatmapMode: 'symbol', theme: 'dark',
 };
 
 const KIND_COLORS = { function: '#3b82f6', class: '#a855f7', interface: '#14b8a6', method: '#f97316', variable: '#6b7280', type: '#5eead4' };
@@ -229,16 +338,14 @@ const EDGE_STYLES = {
   implements: { color: '#22c55e', dash: [3,3], width: 1.5 },
   uses:    { color: '#9ca3b8', dash: [2,2], width: 1 },
 };
+const CLUSTER_PALETTE = ['#6366f1','#22c55e','#f97316','#3b82f6','#a855f7','#ef4444','#eab308','#14b8a6','#ec4899','#8b5cf6','#06b6d4','#84cc16'];
 
 // ─── Helpers ───
 function getAllSymbols() {
-  const syms = [];
-  const complexityMap = {};
+  const syms = [], cxMap = {};
   state.files.forEach(f => {
-    (f.complexity || []).forEach(c => { complexityMap[c.symbolId] = c.cyclomatic; });
-    (f.symbols || []).forEach(s => {
-      syms.push({ ...s, file: f.file, cyclomatic: complexityMap[s.symbolId] ?? null });
-    });
+    (f.complexity || []).forEach(c => { cxMap[c.symbolId] = c.cyclomatic; });
+    (f.symbols || []).forEach(s => { syms.push({ ...s, file: f.file, cyclomatic: cxMap[s.symbolId] ?? null }); });
   });
   return syms;
 }
@@ -254,8 +361,35 @@ function filterSymbols(syms) {
     return true;
   });
 }
+function getDir(fp) { const p = fp.split('/'); return p.length > 1 ? p.slice(0,-1).join('/') : '.'; }
 
-// ─── File Drop ───
+// Transitive deps (BFS) for blast radius
+function getTransitiveDeps(startId, edges) {
+  const visited = new Set([startId]);
+  const queue = [startId];
+  while (queue.length) {
+    const id = queue.shift();
+    edges.forEach(e => {
+      if (e.from === id && !visited.has(e.to)) { visited.add(e.to); queue.push(e.to); }
+      if (e.to === id && !visited.has(e.from)) { visited.add(e.from); queue.push(e.from); }
+    });
+  }
+  return visited;
+}
+
+// ═══════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════
+const themeToggle = document.getElementById('themeToggle');
+themeToggle.addEventListener('click', () => {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', state.theme);
+  themeToggle.textContent = state.theme === 'dark' ? '\u263E' : '\u2600';
+});
+
+// ═══════════════════════════════════════
+// FILE LOADING
+// ═══════════════════════════════════════
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
 dropZone.addEventListener('click', () => fileInput.click());
@@ -264,60 +398,64 @@ dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover
 dropZone.addEventListener('drop', async e => {
   e.preventDefault(); e.stopPropagation(); dropZone.classList.remove('dragover');
   dropZone.querySelector('p').textContent = 'Loading...';
-  try {
-    const files = await collectDroppedFiles(e.dataTransfer);
-    await loadJsonFiles(files);
-  } catch (err) {
-    console.error('Drop error:', err);
-  }
+  try { const files = await collectDroppedFiles(e.dataTransfer); await loadJsonFiles(files); } catch (err) { console.error('Drop error:', err); }
   dropZone.querySelector('p').textContent = 'Drop a folder or JSON files\nor click to browse';
 });
-fileInput.addEventListener('change', async e => {
-  await loadJsonFiles(Array.from(e.target.files));
+fileInput.addEventListener('change', async e => { await loadJsonFiles(Array.from(e.target.files)); });
+
+const browseFolderBtn = document.getElementById('browseFolderBtn');
+if (!('showDirectoryPicker' in window)) { browseFolderBtn.disabled = true; browseFolderBtn.textContent = 'Browse Folder (not supported)'; }
+browseFolderBtn.addEventListener('click', async () => {
+  if (!('showDirectoryPicker' in window)) return;
+  try {
+    const dirHandle = await window.showDirectoryPicker();
+    browseFolderBtn.textContent = 'Loading...';
+    const files = await collectFromDirectoryHandle(dirHandle);
+    await loadJsonFilesFromParsed(files);
+    browseFolderBtn.textContent = 'Browse Folder...';
+  } catch (err) { if (err.name !== 'AbortError') console.error(err); browseFolderBtn.textContent = 'Browse Folder...'; }
 });
 
-// Collect files from drop — supports both folders and individual files
-async function collectDroppedFiles(dataTransfer) {
-  // Try modern File System Access API first
-  if (dataTransfer.items && dataTransfer.items[0] && typeof dataTransfer.items[0].webkitGetAsEntry === 'function') {
-    const entries = [];
-    for (let i = 0; i < dataTransfer.items.length; i++) {
-      const entry = dataTransfer.items[i].webkitGetAsEntry();
-      if (entry) entries.push(entry);
-    }
-    if (entries.length > 0) {
-      const files = [];
-      await Promise.all(entries.map(entry => traverseEntry(entry, files)));
-      return files;
+async function collectFromDirectoryHandle(dirHandle, path = '') {
+  const results = [];
+  for await (const [name, handle] of dirHandle.entries()) {
+    if (handle.kind === 'directory') { results.push(...await collectFromDirectoryHandle(handle, path + name + '/')); }
+    else if (name.endsWith('.json')) {
+      const file = await handle.getFile();
+      const text = await file.text();
+      try {
+        const parsed = JSON.parse(text);
+        if (name === 'co-changes.json' && parsed.entries) { state.coChanges = parsed.entries; }
+        else if (parsed && parsed.file && typeof parsed.file === 'string') { results.push(parsed); }
+      } catch {}
     }
   }
-  // Fallback: plain file list
+  return results;
+}
+
+async function loadJsonFilesFromParsed(parsedFiles) {
+  parsedFiles.forEach(r => state.files.push(r));
+  dedup();
+  updateAll();
+}
+
+async function collectDroppedFiles(dataTransfer) {
+  if (dataTransfer.items && dataTransfer.items[0] && typeof dataTransfer.items[0].webkitGetAsEntry === 'function') {
+    const entries = [];
+    for (let i = 0; i < dataTransfer.items.length; i++) { const entry = dataTransfer.items[i].webkitGetAsEntry(); if (entry) entries.push(entry); }
+    if (entries.length > 0) { const files = []; await Promise.all(entries.map(entry => traverseEntry(entry, files))); return files; }
+  }
   return Array.from(dataTransfer.files);
 }
 
-// Recursively traverse a FileSystemEntry
 function traverseEntry(entry, fileList) {
   return new Promise(resolve => {
-    if (entry.isFile) {
-      entry.file(f => { fileList.push(f); resolve(); }, () => resolve());
-    } else if (entry.isDirectory) {
-      const reader = entry.createReader();
-      const allEntries = [];
-      const readChunk = () => {
-        reader.readEntries(batch => {
-          if (batch.length === 0) {
-            // Done reading this dir, now traverse children
-            Promise.all(allEntries.map(e => traverseEntry(e, fileList))).then(resolve);
-          } else {
-            allEntries.push(...batch);
-            readChunk(); // readEntries returns max 100, must loop
-          }
-        }, () => resolve());
-      };
+    if (entry.isFile) { entry.file(f => { fileList.push(f); resolve(); }, () => resolve()); }
+    else if (entry.isDirectory) {
+      const reader = entry.createReader(); const allEntries = [];
+      const readChunk = () => { reader.readEntries(batch => { if (!batch.length) { Promise.all(allEntries.map(e => traverseEntry(e, fileList))).then(resolve); } else { allEntries.push(...batch); readChunk(); } }, () => resolve()); };
       readChunk();
-    } else {
-      resolve();
-    }
+    } else { resolve(); }
   });
 }
 
@@ -325,14 +463,22 @@ async function loadJsonFiles(fileList) {
   const promises = [];
   for (const f of fileList) {
     if (!f.name.endsWith('.json')) continue;
-    promises.push(f.text().then(t => { try { return JSON.parse(t); } catch { return null; } }));
+    promises.push(f.text().then(t => { try { return { name: f.name, data: JSON.parse(t) }; } catch { return null; } }));
   }
   const results = await Promise.all(promises);
-  results.forEach(r => { if (r && r.file && typeof r.file === 'string') state.files.push(r); });
+  results.forEach(r => {
+    if (!r) return;
+    if (r.name === 'co-changes.json' && r.data.entries) { state.coChanges = r.data.entries; }
+    else if (r.data && r.data.file && typeof r.data.file === 'string') { state.files.push(r.data); }
+  });
+  dedup();
+  updateAll();
+}
+
+function dedup() {
   const seen = new Set();
   state.files = state.files.filter(f => { if (seen.has(f.file)) return false; seen.add(f.file); return true; });
-  document.getElementById('fileCount').textContent = state.files.length + ' file(s) loaded';
-  updateAll();
+  document.getElementById('fileCount').textContent = state.files.length + ' file(s) loaded' + (state.coChanges.length ? ', ' + state.coChanges.length + ' co-changes' : '');
 }
 
 // ─── Tabs ───
@@ -365,13 +511,8 @@ function initFilters() {
   });
 }
 initFilters();
-
 document.getElementById('searchInput').addEventListener('input', e => { state.search = e.target.value.toLowerCase(); updateAll(); });
-document.getElementById('complexitySlider').addEventListener('input', e => {
-  state.minComplexity = parseInt(e.target.value);
-  document.getElementById('complexityVal').textContent = state.minComplexity;
-  updateAll();
-});
+document.getElementById('complexitySlider').addEventListener('input', e => { state.minComplexity = parseInt(e.target.value); document.getElementById('complexityVal').textContent = state.minComplexity; updateAll(); });
 
 // ─── Update All ───
 function updateAll() {
@@ -380,11 +521,105 @@ function updateAll() {
   document.getElementById('treeBadge').textContent = state.files.length;
   document.getElementById('graphBadge').textContent = edges.length;
   document.getElementById('heatmapBadge').textContent = syms.filter(s => s.cyclomatic != null).length;
+  document.getElementById('cochangeBadge').textContent = state.coChanges.length;
 
-  if (state.activeTab === 'tree') renderFileTree();
+  if (state.activeTab === 'dashboard') renderDashboard();
+  else if (state.activeTab === 'tree') renderFileTree();
   else if (state.activeTab === 'graph') renderGraph();
   else if (state.activeTab === 'heatmap') renderHeatmap();
+  else if (state.activeTab === 'cochanges') renderCoChanges();
+  else if (state.activeTab === 'timeline') renderTimeline();
   updatePrompt();
+}
+
+// ═══════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════
+function renderDashboard() {
+  const container = document.getElementById('dashboardContainer');
+  container.textContent = '';
+  if (!state.files.length) { container.appendChild(el('div', { className: 'empty-state' }, [el('div', { className: 'es-icon', textContent: '\u{1F4CA}' }), el('p', { textContent: 'Load JSON files to see the dashboard' })])); return; }
+
+  const syms = getAllSymbols(), edges = getAllEdges();
+  const totalCx = syms.filter(s => s.cyclomatic != null);
+  const avgCx = totalCx.length ? (totalCx.reduce((s, x) => s + x.cyclomatic, 0) / totalCx.length).toFixed(1) : 'N/A';
+  const maxCx = totalCx.length ? Math.max(...totalCx.map(s => s.cyclomatic)) : 0;
+  const antiFiles = state.files.filter(f => (f.antiPatterns || []).length > 0);
+  const totalAnti = state.files.reduce((s, f) => s + (f.antiPatterns || []).length, 0);
+  const totalCommits = state.files.reduce((s, f) => s + (f.intent || []).length, 0);
+
+  const grid = el('div', { className: 'dash-grid' });
+  [
+    { label: 'Files', value: state.files.length, sub: Object.keys(state.files.reduce((a,f) => { a[f.file.split('.').pop()]=1; return a; }, {})).length + ' extensions' },
+    { label: 'Symbols', value: syms.length, sub: Object.entries(syms.reduce((a,s) => { a[s.kind]=(a[s.kind]||0)+1; return a; }, {})).map(([k,v]) => v+' '+k).join(', ') },
+    { label: 'Edges', value: edges.length, sub: Object.entries(edges.reduce((a,e) => { a[e.kind]=(a[e.kind]||0)+1; return a; }, {})).map(([k,v]) => v+' '+k).join(', ') },
+    { label: 'Avg Complexity', value: avgCx, sub: 'Max: ' + maxCx },
+    { label: 'Commits', value: totalCommits, sub: state.files.filter(f => (f.intent||[]).length > 0).length + ' files with history' },
+    { label: 'Anti-Patterns', value: totalAnti, sub: antiFiles.length + ' file(s)', color: totalAnti > 0 ? 'var(--orange)' : undefined },
+  ].forEach(c => {
+    grid.appendChild(el('div', { className: 'dash-card' }, [
+      el('div', { className: 'dc-label', textContent: c.label }),
+      el('div', { className: 'dc-value', textContent: String(c.value), style: c.color ? { color: c.color } : {} }),
+      el('div', { className: 'dc-sub', textContent: c.sub }),
+    ]));
+  });
+  container.appendChild(grid);
+
+  // Kind distribution bar
+  const kindCounts = {};
+  syms.forEach(s => { kindCounts[s.kind] = (kindCounts[s.kind]||0)+1; });
+  const kindSection = el('div', { className: 'dash-section' });
+  kindSection.appendChild(el('h3', { textContent: 'Symbol Distribution' }));
+  const kindBar = el('div', { className: 'dash-kind-bar' });
+  Object.entries(kindCounts).sort((a,b)=>b[1]-a[1]).forEach(([kind,count]) => {
+    kindBar.appendChild(el('div', { className: 'dash-kind-segment', title: kind+': '+count, style: { width: (count/syms.length*100)+'%', background: KIND_COLORS[kind]||'#888' } }));
+  });
+  kindSection.appendChild(kindBar);
+  const kindDist = el('div', { className: 'dash-kind-dist', style: { marginTop: '8px' } });
+  Object.entries(kindCounts).sort((a,b)=>b[1]-a[1]).forEach(([kind,count]) => {
+    kindDist.appendChild(el('div', { className: 'dash-kind-item' }, [el('span', { className: 'dash-kind-dot', style: { background: KIND_COLORS[kind]||'#888' } }), kind+': '+count]));
+  });
+  kindSection.appendChild(kindDist);
+  container.appendChild(kindSection);
+
+  // Top complex files
+  const fileCx = state.files.map(f => { const cx = f.complexity||[]; return { file: f.file, total: cx.reduce((s,c)=>s+c.cyclomatic,0), max: cx.length ? Math.max(...cx.map(c=>c.cyclomatic)) : 0, count: cx.length }; }).filter(f=>f.total>0).sort((a,b)=>b.total-a.total);
+  if (fileCx.length) {
+    const sec = el('div', { className: 'dash-section' }); sec.appendChild(el('h3', { textContent: 'Top Complex Files' }));
+    const tbl = el('table', { className: 'dash-table' });
+    tbl.appendChild(el('thead', {}, [el('tr', {}, [el('th', { textContent: 'File' }), el('th', { textContent: 'Total' }), el('th', { textContent: 'Max' }), el('th', { textContent: '' , style: { width: '100px' } })])]));
+    const tbody = el('tbody'); const topMax = fileCx[0].total;
+    fileCx.slice(0,8).forEach(f => {
+      const barColor = f.max > 20 ? 'var(--red)' : f.max > 10 ? 'var(--orange)' : f.max > 5 ? 'var(--yellow)' : 'var(--green)';
+      tbody.appendChild(el('tr', {}, [
+        el('td', { textContent: f.file.split('/').slice(-2).join('/'), title: f.file, style: { fontFamily: 'monospace', fontSize: '11px', maxWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }),
+        el('td', { textContent: String(f.total), style: { fontWeight: '600' } }),
+        el('td', { textContent: String(f.max) }),
+        el('td', {}, [el('div', { className: 'dash-bar' }, [el('div', { className: 'dash-bar-fill', style: { width: (f.total/topMax*100)+'%', background: barColor } })])])
+      ]));
+    });
+    tbl.appendChild(tbody); sec.appendChild(tbl); container.appendChild(sec);
+  }
+
+  // Top connected symbols
+  const ec = {}; edges.forEach(e => { ec[e.from]=(ec[e.from]||0)+1; ec[e.to]=(ec[e.to]||0)+1; });
+  const topConn = Object.entries(ec).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  if (topConn.length) {
+    const sec = el('div', { className: 'dash-section' }); sec.appendChild(el('h3', { textContent: 'Most Connected Symbols' }));
+    const tbl = el('table', { className: 'dash-table' });
+    tbl.appendChild(el('thead', {}, [el('tr', {}, [el('th', { textContent: 'Symbol' }), el('th', { textContent: 'Kind' }), el('th', { textContent: 'Conn.' }), el('th', { textContent: '', style: { width: '100px' } })])]));
+    const tbody = el('tbody'); const tm = topConn[0][1];
+    topConn.forEach(([id,cnt]) => {
+      const sym = syms.find(s=>s.symbolId===id); const name = sym ? sym.name : id.split('::')[1]||id; const kind = sym ? sym.kind : '?';
+      tbody.appendChild(el('tr', {}, [
+        el('td', { textContent: name, style: { fontFamily: 'monospace', fontSize: '11px', maxWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }),
+        el('td', {}, [el('span', { className: 'kind-badge kind-'+kind, textContent: kind })]),
+        el('td', { textContent: String(cnt), style: { fontWeight: '600' } }),
+        el('td', {}, [el('div', { className: 'dash-bar' }, [el('div', { className: 'dash-bar-fill', style: { width: (cnt/tm*100)+'%', background: 'var(--accent)' } })])])
+      ]));
+    });
+    tbl.appendChild(tbody); sec.appendChild(tbl); container.appendChild(sec);
+  }
 }
 
 // ═══════════════════════════════════════
@@ -393,559 +628,368 @@ function updateAll() {
 function renderFileTree() {
   const container = document.getElementById('fileTree');
   container.textContent = '';
-  if (!state.files.length) {
-    container.appendChild(el('div', { className: 'empty-state' }, [
-      el('div', { className: 'es-icon', textContent: '\u{1F332}' }),
-      el('p', { textContent: 'Load JSON files to see the file tree' })
-    ]));
-    return;
-  }
-
+  if (!state.files.length) { container.appendChild(el('div', { className: 'empty-state' }, [el('div', { className: 'es-icon', textContent: '\u{1F332}' }), el('p', { textContent: 'Load JSON files to see the file tree' })])); return; }
   const root = {};
-  const filtered = state.files.filter(f => {
-    if (!state.search) return true;
-    return f.file.toLowerCase().includes(state.search) || (f.symbols || []).some(s => s.name.toLowerCase().includes(state.search));
-  });
-  filtered.forEach(f => {
-    const parts = f.file.split('/');
-    let node = root;
-    parts.forEach((p, i) => {
-      if (i === parts.length - 1) { node[p] = { __file: f }; }
-      else { if (!node[p]) node[p] = {}; node = node[p]; }
-    });
+  state.files.filter(f => { if (!state.search) return true; return f.file.toLowerCase().includes(state.search) || (f.symbols||[]).some(s => s.name.toLowerCase().includes(state.search)); }).forEach(f => {
+    const parts = f.file.split('/'); let node = root;
+    parts.forEach((p,i) => { if (i === parts.length-1) { node[p] = { __file: f }; } else { if (!node[p]) node[p] = {}; node = node[p]; } });
   });
   buildTreeDOM(root, container);
 }
 
 function buildTreeDOM(node, parent) {
   const dirs = [], files = [];
-  Object.keys(node).sort().forEach(key => {
-    if (key === '__file') return;
-    if (node[key].__file) files.push({ key, data: node[key].__file });
-    else dirs.push({ key, children: node[key] });
-  });
-
+  Object.keys(node).sort().forEach(key => { if (key === '__file') return; if (node[key].__file) files.push({ key, data: node[key].__file }); else dirs.push({ key, children: node[key] }); });
   dirs.forEach(d => {
     const children = el('div', { className: 'tree-children' });
     const arrow = el('span', { className: 'arrow open', textContent: '\u25B6' });
-    const dir = el('div', { className: 'tree-dir', onClick: () => {
-      children.classList.toggle('collapsed');
-      arrow.classList.toggle('open');
-    }}, [arrow, el('span', { textContent: '\u{1F4C1}', style: { color: '#eab308' } }), d.key]);
-    const wrapper = el('div', { className: 'tree-node' }, [dir, children]);
-    parent.appendChild(wrapper);
+    const dir = el('div', { className: 'tree-dir', onClick: () => { children.classList.toggle('collapsed'); arrow.classList.toggle('open'); }}, [arrow, el('span', { textContent: '\u{1F4C1}', style: { color: '#eab308' } }), d.key]);
+    parent.appendChild(el('div', { className: 'tree-node' }, [dir, children]));
     buildTreeDOM(d.children, children);
   });
-
   files.forEach(f => {
-    const d = f.data;
-    const symCount = (d.symbols || []).length;
-    const edgeCount = (d.edges || []).length;
-    const commitCount = (d.intent || []).length;
-    const hasAnti = (d.antiPatterns || []).length > 0;
-
-    const stats = el('span', { className: 'stats' }, [
-      el('span', { title: 'symbols', textContent: '\u25C6 ' + symCount }),
-      el('span', { title: 'edges', textContent: '\u2192 ' + edgeCount }),
-      el('span', { title: 'commits', textContent: '\u25CF ' + commitCount }),
-    ]);
-    const items = [
-      el('span', { textContent: '\u{1F4C4}', style: { color: '#3b82f6', fontSize: '11px' } }),
-      el('span', { textContent: f.key }),
-    ];
+    const d = f.data, symCount = (d.symbols||[]).length, edgeCount = (d.edges||[]).length, commitCount = (d.intent||[]).length, hasAnti = (d.antiPatterns||[]).length > 0;
+    const stats = el('span', { className: 'stats' }, [el('span', { title: 'symbols', textContent: '\u25C6 '+symCount }), el('span', { title: 'edges', textContent: '\u2192 '+edgeCount }), el('span', { title: 'commits', textContent: '\u25CF '+commitCount })]);
+    const items = [el('span', { textContent: '\u{1F4C4}', style: { color: '#3b82f6', fontSize: '11px' } }), el('span', { textContent: f.key })];
     if (hasAnti) items.push(el('span', { textContent: '\u26A0\uFE0F', style: { color: '#f97316' } }));
     items.push(stats);
-
-    const fileEl = el('div', { className: 'tree-file', onClick: () => {
-      document.querySelectorAll('.tree-file').forEach(x => x.classList.remove('selected'));
-      fileEl.classList.add('selected');
-      state.selectedFile = d;
-      showFileDetail(d);
-    }}, items);
+    const fileEl = el('div', { className: 'tree-file', onClick: () => { document.querySelectorAll('.tree-file').forEach(x => x.classList.remove('selected')); fileEl.classList.add('selected'); state.selectedFile = d; showFileDetail(d); }}, items);
     parent.appendChild(fileEl);
   });
 }
 
 function showFileDetail(f) {
   const detail = document.getElementById('fileDetail');
-  detail.style.display = '';
-  detail.textContent = '';
+  detail.style.display = ''; detail.textContent = '';
 
-  detail.appendChild(el('h4', { textContent: f.file }));
+  // Header with VSCode link
+  const header = el('div', { style: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' } });
+  header.appendChild(el('h4', { textContent: f.file, style: { marginBottom: '0' } }));
+  header.appendChild(el('a', { className: 'vscode-link', href: 'vscode://file/' + f.file, textContent: 'Open in VSCode', title: 'Open in VSCode' }));
+  detail.appendChild(header);
 
   if (f.symbols && f.symbols.length) {
-    const section = el('div', { className: 'detail-section' }, [
-      el('h5', { textContent: 'Symbols (' + f.symbols.length + ')' })
-    ]);
+    const section = el('div', { className: 'detail-section' }, [el('h5', { textContent: 'Symbols ('+f.symbols.length+')' })]);
     f.symbols.forEach(s => {
-      const cx = (f.complexity || []).find(c => c.symbolId === s.symbolId);
-      const badge = el('span', { className: 'kind-badge kind-' + s.kind, textContent: s.kind });
+      const cx = (f.complexity||[]).find(c => c.symbolId === s.symbolId);
+      const badge = el('span', { className: 'kind-badge kind-'+s.kind, textContent: s.kind });
       const name = el('span', { textContent: s.name });
-      const loc = el('span', { textContent: 'L' + s.startLine + '-' + s.endLine + (cx ? ' \u00B7 C:' + cx.cyclomatic : ''), style: { color: 'var(--text3)', marginLeft: 'auto' } });
-      section.appendChild(el('div', { className: 'detail-item' }, [badge, name, loc]));
+      const loc = el('span', { textContent: 'L'+s.startLine+'-'+s.endLine+(cx ? ' \u00B7 C:'+cx.cyclomatic : ''), style: { color: 'var(--text3)', marginLeft: 'auto' } });
+      const vsLink = el('a', { className: 'vscode-link', href: 'vscode://file/'+f.file+':'+s.startLine, textContent: '\u2197', title: 'Open at line '+s.startLine });
+      section.appendChild(el('div', { className: 'detail-item' }, [badge, name, loc, vsLink]));
     });
     detail.appendChild(section);
   }
-
   if (f.edges && f.edges.length) {
-    const section = el('div', { className: 'detail-section' }, [
-      el('h5', { textContent: 'Edges (' + f.edges.length + ')' })
-    ]);
-    f.edges.slice(0, 15).forEach(e => {
-      const fromName = e.from.split('::')[1] || e.from;
-      const toName = e.to.split('::')[1] || e.to;
-      const kindSpan = el('span', { textContent: e.kind, style: { color: (EDGE_STYLES[e.kind] || {}).color || '#888' } });
-      const text = el('span', { textContent: ' ' + fromName + ' \u2192 ' + toName });
-      section.appendChild(el('div', { className: 'detail-item', style: { fontSize: '11px' } }, [kindSpan, text]));
+    const section = el('div', { className: 'detail-section' }, [el('h5', { textContent: 'Edges ('+f.edges.length+')' })]);
+    f.edges.slice(0,15).forEach(e => {
+      section.appendChild(el('div', { className: 'detail-item', style: { fontSize: '11px' } }, [
+        el('span', { textContent: e.kind, style: { color: (EDGE_STYLES[e.kind]||{}).color||'#888' } }),
+        el('span', { textContent: ' '+(e.from.split('::')[1]||e.from)+' \u2192 '+(e.to.split('::')[1]||e.to) })
+      ]));
     });
-    if (f.edges.length > 15) section.appendChild(el('div', { className: 'detail-item', style: { color: 'var(--text3)' } }, ['...and ' + (f.edges.length - 15) + ' more']));
+    if (f.edges.length > 15) section.appendChild(el('div', { className: 'detail-item', style: { color: 'var(--text3)' } }, ['...and '+(f.edges.length-15)+' more']));
     detail.appendChild(section);
   }
-
   if (f.intent && f.intent.length) {
-    const section = el('div', { className: 'detail-section' }, [
-      el('h5', { textContent: 'Commits (' + f.intent.length + ')' })
-    ]);
-    f.intent.slice(0, 8).forEach(c => {
-      const d = c.date ? c.date.substring(0, 10) : '';
-      const dateSpan = el('span', { textContent: d, style: { color: 'var(--text3)' } });
-      const msgSpan = el('span', { textContent: ' ' + c.message.substring(0, 60), style: { color: 'var(--text2)' } });
-      section.appendChild(el('div', { className: 'detail-item', style: { fontSize: '11px' } }, [dateSpan, msgSpan]));
+    const section = el('div', { className: 'detail-section' }, [el('h5', { textContent: 'Commits ('+f.intent.length+')' })]);
+    f.intent.slice(0,8).forEach(c => {
+      section.appendChild(el('div', { className: 'detail-item', style: { fontSize: '11px' } }, [
+        el('span', { textContent: (c.date||'').substring(0,10), style: { color: 'var(--text3)' } }),
+        el('span', { textContent: ' '+c.message.substring(0,60), style: { color: 'var(--text2)' } })
+      ]));
     });
     detail.appendChild(section);
   }
-
   if (f.antiPatterns && f.antiPatterns.length) {
-    const section = el('div', { className: 'detail-section' }, [
-      el('h5', { textContent: '\u26A0\uFE0F Anti-Patterns (' + f.antiPatterns.length + ')' })
-    ]);
-    f.antiPatterns.forEach(a => {
-      section.appendChild(el('div', { className: 'detail-item', style: { fontSize: '11px', color: 'var(--orange)' } }, [a.message.substring(0, 60)]));
-    });
+    const section = el('div', { className: 'detail-section' }, [el('h5', { textContent: '\u26A0\uFE0F Anti-Patterns ('+f.antiPatterns.length+')' })]);
+    f.antiPatterns.forEach(a => { section.appendChild(el('div', { className: 'detail-item', style: { fontSize: '11px', color: 'var(--orange)' } }, [a.message.substring(0,60)])); });
     detail.appendChild(section);
   }
 }
 
 // ═══════════════════════════════════════
-// DEPENDENCY GRAPH (Canvas force-directed)
+// DEPENDENCY GRAPH
 // ═══════════════════════════════════════
 let graphNodes = [], graphEdgesArr = [], graphAnim = null, graphNodeMap = {};
 let graphZoom = 1, graphPanX = 0, graphPanY = 0;
 let dragNode = null, dragOffX = 0, dragOffY = 0, didDrag = false;
 let isPanning = false, panStartX = 0, panStartY = 0;
-let selectedNode = null; // currently selected node
-let graphW = 0, graphH = 0;
-let graphStabilized = false, graphFrameCount = 0;
+let selectedNode = null, graphW = 0, graphH = 0;
+let graphStabilized = false, graphFrameCount = 0, clusterHulls = [];
 
 function renderGraph() {
   const canvas = document.getElementById('graphCanvas');
   const emptyEl = document.getElementById('graphEmpty');
   const legendEl = document.getElementById('graphLegend');
   const controlsEl = document.getElementById('graphControls');
-  const tooltip = document.getElementById('graphTooltip');
-
+  const clusterToggle = document.getElementById('graphClusterToggle');
+  const exportBar = document.getElementById('graphExportBar');
   const allSyms = filterSymbols(getAllSymbols());
   const allEdges = getAllEdges().filter(e => state.edgeFilter[e.kind]);
 
-  if (!allSyms.length) {
-    emptyEl.style.display = ''; legendEl.style.display = 'none'; controlsEl.style.display = 'none';
-    if (graphAnim) { cancelAnimationFrame(graphAnim); graphAnim = null; }
-    return;
-  }
-  emptyEl.style.display = 'none'; legendEl.style.display = ''; controlsEl.style.display = '';
+  if (!allSyms.length) { emptyEl.style.display=''; legendEl.style.display='none'; controlsEl.style.display='none'; clusterToggle.style.display='none'; exportBar.style.display='none'; if (graphAnim) { cancelAnimationFrame(graphAnim); graphAnim=null; } return; }
+  emptyEl.style.display='none'; legendEl.style.display=''; controlsEl.style.display=''; clusterToggle.style.display=''; exportBar.style.display='';
 
-  // Build legend with DOM
+  // Update blast radius button state
+  document.getElementById('blastRadiusBtn').classList.toggle('active', state.blastRadius);
+
+  // Legend
   legendEl.textContent = '';
-  legendEl.appendChild(el('div', { textContent: 'Nodes', style: { fontWeight: '600', marginBottom: '2px', color: 'var(--text)' } }));
-  Object.entries(KIND_COLORS).forEach(([k, c]) => {
-    legendEl.appendChild(el('div', { className: 'leg-item' }, [
-      el('span', { className: 'leg-dot', style: { background: c } }), k
-    ]));
-  });
+  if (state.graphCluster === 'flat') {
+    legendEl.appendChild(el('div', { textContent: 'Nodes', style: { fontWeight: '600', marginBottom: '2px', color: 'var(--text)' } }));
+    Object.entries(KIND_COLORS).forEach(([k,c]) => { legendEl.appendChild(el('div', { className: 'leg-item' }, [el('span', { className: 'leg-dot', style: { background: c } }), k])); });
+  } else {
+    legendEl.appendChild(el('div', { textContent: 'Directories', style: { fontWeight: '600', marginBottom: '2px', color: 'var(--text)' } }));
+    [...new Set(allSyms.map(s=>getDir(s.file)))].sort().slice(0,12).forEach((d,i) => { legendEl.appendChild(el('div', { className: 'leg-item' }, [el('span', { className: 'leg-dot', style: { background: CLUSTER_PALETTE[i%CLUSTER_PALETTE.length] } }), d.split('/').slice(-2).join('/')])); });
+  }
+  if (state.blastRadius) {
+    legendEl.appendChild(el('div', { textContent: 'Blast Radius', style: { fontWeight: '600', marginTop: '4px', marginBottom: '2px', color: 'var(--orange)' } }));
+    legendEl.appendChild(el('div', { className: 'leg-item' }, [el('span', { className: 'leg-dot', style: { background: 'var(--orange)' } }), 'Click node to show impact']));
+  }
   legendEl.appendChild(el('div', { textContent: 'Edges', style: { fontWeight: '600', marginTop: '4px', marginBottom: '2px', color: 'var(--text)' } }));
-  Object.entries(EDGE_STYLES).forEach(([k, s]) => {
-    const lineStyle = s.dash.length
-      ? { width: '20px', height: '0', borderTop: '2px dashed ' + s.color, background: 'none' }
-      : { background: s.color };
-    legendEl.appendChild(el('div', { className: 'leg-item' }, [
-      el('span', { className: 'leg-line', style: lineStyle }), k
-    ]));
+  Object.entries(EDGE_STYLES).forEach(([k,s]) => {
+    const ls = s.dash.length ? { width: '20px', height: '0', borderTop: '2px dashed '+s.color, background: 'none' } : { background: s.color };
+    legendEl.appendChild(el('div', { className: 'leg-item' }, [el('span', { className: 'leg-line', style: ls }), k]));
   });
 
-  // Build nodes — reuse positions
-  const existingMap = {};
-  graphNodes.forEach(n => { existingMap[n.id] = n; });
+  const dirSet = [...new Set(allSyms.map(s=>getDir(s.file)))].sort();
+  const dirColorMap = {}; dirSet.forEach((d,i) => { dirColorMap[d] = CLUSTER_PALETTE[i%CLUSTER_PALETTE.length]; });
 
-  graphW = canvas.parentElement.clientWidth;
-  graphH = canvas.parentElement.clientHeight;
+  const existingMap = {}; graphNodes.forEach(n => { existingMap[n.id] = n; });
+  graphW = canvas.parentElement.clientWidth; graphH = canvas.parentElement.clientHeight;
+
+  const clusterCenters = {};
+  if (state.graphCluster === 'directory') {
+    const as = (2*Math.PI)/dirSet.length, r = Math.min(graphW,graphH)*0.3;
+    dirSet.forEach((d,i) => { clusterCenters[d] = { x: graphW/2+Math.cos(as*i)*r, y: graphH/2+Math.sin(as*i)*r }; });
+  }
 
   graphNodes = allSyms.map(s => {
-    if (existingMap[s.symbolId]) {
-      const ex = existingMap[s.symbolId];
-      return { ...ex, ...s, id: s.symbolId };
-    }
-    return {
-      ...s, id: s.symbolId,
-      x: graphW/2 + (Math.random() - 0.5) * graphW * 0.6,
-      y: graphH/2 + (Math.random() - 0.5) * graphH * 0.6,
-      vx: 0, vy: 0,
-      radius: Math.min(6 + (s.cyclomatic || 1) * 0.5, 18),
-      pinned: false,
-    };
+    const dir = getDir(s.file);
+    if (existingMap[s.symbolId]) { const ex = existingMap[s.symbolId]; return { ...ex, ...s, id: s.symbolId, dir, clusterColor: dirColorMap[dir] }; }
+    const cc = state.graphCluster==='directory' && clusterCenters[dir];
+    return { ...s, id: s.symbolId, dir, clusterColor: dirColorMap[dir],
+      x: cc ? cc.x+(Math.random()-0.5)*80 : graphW/2+(Math.random()-0.5)*graphW*0.6,
+      y: cc ? cc.y+(Math.random()-0.5)*80 : graphH/2+(Math.random()-0.5)*graphH*0.6,
+      vx: 0, vy: 0, radius: Math.min(6+(s.cyclomatic||1)*0.5, 18), pinned: false };
   });
 
-  graphNodeMap = {};
-  graphNodes.forEach(n => { graphNodeMap[n.id] = n; });
+  graphNodeMap = {}; graphNodes.forEach(n => { graphNodeMap[n.id] = n; });
   graphEdgesArr = allEdges.filter(e => graphNodeMap[e.from] && graphNodeMap[e.to]);
 
-  canvas.width = graphW * devicePixelRatio;
-  canvas.height = graphH * devicePixelRatio;
-  canvas.style.width = graphW + 'px';
-  canvas.style.height = graphH + 'px';
-
-  if (Object.keys(existingMap).length === 0) { graphZoom = 1; graphPanX = 0; graphPanY = 0; }
-
+  canvas.width = graphW*devicePixelRatio; canvas.height = graphH*devicePixelRatio;
+  canvas.style.width = graphW+'px'; canvas.style.height = graphH+'px';
+  if (!Object.keys(existingMap).length) { graphZoom=1; graphPanX=0; graphPanY=0; }
   if (graphAnim) cancelAnimationFrame(graphAnim);
-
-  graphFrameCount = 0;
-  graphStabilized = false;
-  startGraphLoop();
-  setupGraphInteractions();
+  graphFrameCount = 0; graphStabilized = false;
+  startGraphLoop(); setupGraphInteractions();
 }
+
+// Cluster toggle
+document.getElementById('graphClusterToggle').addEventListener('click', e => {
+  const btn = e.target.closest('button'); if (!btn || !btn.dataset.mode) return;
+  document.querySelectorAll('#graphClusterToggle button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active'); state.graphCluster = btn.dataset.mode; graphNodes = []; renderGraph();
+});
+
+// Blast radius toggle
+document.getElementById('blastRadiusBtn').addEventListener('click', () => {
+  state.blastRadius = !state.blastRadius;
+  document.getElementById('blastRadiusBtn').classList.toggle('active', state.blastRadius);
+  if (!state.blastRadius) selectedNode = null;
+  renderGraph();
+});
+
+// Export PNG
+document.getElementById('exportGraphPng').addEventListener('click', () => {
+  const canvas = document.getElementById('graphCanvas');
+  const link = document.createElement('a'); link.download = 'ctxo-graph.png'; link.href = canvas.toDataURL('image/png'); link.click();
+});
+
+// Export SVG (simplified)
+document.getElementById('exportGraphSvg').addEventListener('click', () => {
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${graphW}" height="${graphH}" style="background:#0f1117">`;
+  graphEdgesArr.forEach(e => {
+    const a = graphNodeMap[e.from], b = graphNodeMap[e.to]; if (!a||!b) return;
+    const s = EDGE_STYLES[e.kind]||EDGE_STYLES.uses;
+    svg += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${s.color}" stroke-width="${s.width}" opacity="0.6"${s.dash.length ? ' stroke-dasharray="'+s.dash.join(',')+'"' : ''}/>`;
+  });
+  graphNodes.forEach(n => {
+    const c = state.graphCluster==='directory' ? n.clusterColor : KIND_COLORS[n.kind]||'#888';
+    svg += `<circle cx="${n.x}" cy="${n.y}" r="${n.radius}" fill="${c}"/>`;
+    svg += `<text x="${n.x}" y="${n.y+n.radius+12}" text-anchor="middle" fill="#c8ccd8" font-size="10" font-family="sans-serif">${n.name.length>24?n.name.substring(0,22)+'...':n.name}</text>`;
+  });
+  svg += '</svg>';
+  const blob = new Blob([svg], { type: 'image/svg+xml' });
+  const link = document.createElement('a'); link.download = 'ctxo-graph.svg'; link.href = URL.createObjectURL(blob); link.click();
+});
 
 function startGraphLoop() {
   const canvas = document.getElementById('graphCanvas');
   const ctx = canvas.getContext('2d');
-  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+
+  const dirSet = [...new Set(graphNodes.map(n=>n.dir))].sort();
+  const cc = {};
+  if (state.graphCluster === 'directory') {
+    const as = (2*Math.PI)/dirSet.length, r = Math.min(graphW,graphH)*0.3;
+    dirSet.forEach((d,i) => { cc[d] = { x: graphW/2+Math.cos(as*i)*r, y: graphH/2+Math.sin(as*i)*r }; });
+  }
 
   function simulate() {
     graphAnim = requestAnimationFrame(simulate);
     graphFrameCount++;
-
-    // Physics — fast cooling, stops after stabilization
     if (!graphStabilized) {
-      const alpha = Math.max(0, 1 - graphFrameCount / 200); // stabilize in ~200 frames
+      const alpha = Math.max(0, 1-graphFrameCount/200);
       if (alpha < 0.005) graphStabilized = true;
-
-      // Repulsion (Barnes-Hut would be better for large graphs, but N^2 is fine for <500 nodes)
-      for (let i = 0; i < graphNodes.length; i++) {
-        for (let j = i + 1; j < graphNodes.length; j++) {
-          const a = graphNodes[i], b = graphNodes[j];
-          let dx = b.x - a.x, dy = b.y - a.y;
-          let dist = Math.sqrt(dx*dx + dy*dy) || 1;
-          let force = Math.min(1200 / (dist * dist), 4) * alpha;
-          const fx = dx/dist * force, fy = dy/dist * force;
-          if (!a.pinned) { a.vx -= fx; a.vy -= fy; }
-          if (!b.pinned) { b.vx += fx; b.vy += fy; }
-        }
-      }
-
-      // Attraction along edges
+      for (let i=0; i<graphNodes.length; i++) { for (let j=i+1; j<graphNodes.length; j++) {
+        const a=graphNodes[i], b=graphNodes[j]; let dx=b.x-a.x, dy=b.y-a.y, dist=Math.sqrt(dx*dx+dy*dy)||1;
+        let force=Math.min(1200/(dist*dist),4)*alpha; const fx=dx/dist*force, fy=dy/dist*force;
+        if (!a.pinned){a.vx-=fx;a.vy-=fy;} if (!b.pinned){b.vx+=fx;b.vy+=fy;}
+      }}
       graphEdgesArr.forEach(e => {
-        const a = graphNodeMap[e.from], b = graphNodeMap[e.to];
-        if (!a || !b) return;
-        let dx = b.x - a.x, dy = b.y - a.y;
-        let dist = Math.sqrt(dx*dx + dy*dy) || 1;
-        let force = (dist - 150) * 0.004 * alpha;
-        const fx = dx/dist * force, fy = dy/dist * force;
-        if (!a.pinned) { a.vx += fx; a.vy += fy; }
-        if (!b.pinned) { b.vx -= fx; b.vy -= fy; }
+        const a=graphNodeMap[e.from], b=graphNodeMap[e.to]; if (!a||!b) return;
+        let dx=b.x-a.x, dy=b.y-a.y, dist=Math.sqrt(dx*dx+dy*dy)||1;
+        let force=(dist-150)*0.004*alpha; const fx=dx/dist*force, fy=dy/dist*force;
+        if (!a.pinned){a.vx+=fx;a.vy+=fy;} if (!b.pinned){b.vx-=fx;b.vy-=fy;}
       });
-
-      // Center gravity
       graphNodes.forEach(n => {
         if (n.pinned) return;
-        n.vx += (graphW/2 - n.x) * 0.0003 * alpha;
-        n.vy += (graphH/2 - n.y) * 0.0003 * alpha;
+        if (state.graphCluster==='directory' && cc[n.dir]) { n.vx+=(cc[n.dir].x-n.x)*0.003*alpha; n.vy+=(cc[n.dir].y-n.y)*0.003*alpha; }
+        else { n.vx+=(graphW/2-n.x)*0.0003*alpha; n.vy+=(graphH/2-n.y)*0.0003*alpha; }
       });
-
-      // Apply velocity with strong damping
-      graphNodes.forEach(n => {
-        if (n === dragNode || n.pinned) return;
-        n.vx *= 0.7; n.vy *= 0.7;
-        n.x += n.vx; n.y += n.vy;
-      });
+      graphNodes.forEach(n => { if (n===dragNode||n.pinned) return; n.vx*=0.7; n.vy*=0.7; n.x+=n.vx; n.y+=n.vy; });
     }
-
-    // Dragged node follows mouse (even after stabilization)
+    if (state.graphCluster==='directory') {
+      clusterHulls = []; const groups = {};
+      graphNodes.forEach(n => { if (!groups[n.dir]) groups[n.dir]=[]; groups[n.dir].push(n); });
+      Object.entries(groups).forEach(([dir,nodes]) => { if (nodes.length<2) return; clusterHulls.push({ dir, nodes, color: nodes[0].clusterColor }); });
+    } else { clusterHulls = []; }
     drawGraph(ctx);
   }
   simulate();
 }
 
 function drawGraph(ctx) {
-  const w = graphW, h = graphH;
-  // Connected node IDs for selection highlighting
-  const connectedIds = new Set();
-  const connectedEdges = new Set();
+  const w=graphW, h=graphH;
+  // Determine highlighted set
+  let highlightIds = null;
   if (selectedNode) {
-    connectedIds.add(selectedNode.id);
-    graphEdgesArr.forEach((e, i) => {
-      if (e.from === selectedNode.id || e.to === selectedNode.id) {
-        connectedIds.add(e.from); connectedIds.add(e.to);
-        connectedEdges.add(i);
-      }
-    });
+    if (state.blastRadius) { highlightIds = getTransitiveDeps(selectedNode.id, graphEdgesArr); }
+    else { highlightIds = new Set([selectedNode.id]); graphEdgesArr.forEach(e => { if (e.from===selectedNode.id||e.to===selectedNode.id) { highlightIds.add(e.from); highlightIds.add(e.to); } }); }
   }
+  const connectedEdges = new Set();
+  if (highlightIds) { graphEdgesArr.forEach((e,i) => { if (highlightIds.has(e.from) && highlightIds.has(e.to)) connectedEdges.add(i); }); }
 
-  ctx.save();
-  ctx.clearRect(0, 0, w, h);
-  ctx.translate(graphPanX, graphPanY);
-  ctx.scale(graphZoom, graphZoom);
+  ctx.save(); ctx.clearRect(0,0,w,h); ctx.translate(graphPanX, graphPanY); ctx.scale(graphZoom, graphZoom);
+
+  // Cluster backgrounds
+  clusterHulls.forEach(hull => {
+    let cx=0, cy=0, maxR=0;
+    hull.nodes.forEach(n => { cx+=n.x; cy+=n.y; }); cx/=hull.nodes.length; cy/=hull.nodes.length;
+    hull.nodes.forEach(n => { const d=Math.sqrt((n.x-cx)**2+(n.y-cy)**2)+n.radius; if (d>maxR) maxR=d; });
+    ctx.beginPath(); ctx.arc(cx,cy,maxR+25,0,Math.PI*2);
+    ctx.fillStyle=hull.color; ctx.globalAlpha=0.06; ctx.fill();
+    ctx.strokeStyle=hull.color; ctx.globalAlpha=0.15; ctx.lineWidth=1; ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha=1;
+    if (graphZoom>0.2) { ctx.fillStyle=hull.color; ctx.globalAlpha=0.4; ctx.font=Math.max(10,12/graphZoom)+'px sans-serif'; ctx.textAlign='center'; ctx.fillText(hull.dir.split('/').slice(-2).join('/'),cx,cy-maxR-8); ctx.globalAlpha=1; }
+  });
 
   // Edges
-  graphEdgesArr.forEach((e, idx) => {
-    const a = graphNodeMap[e.from], b = graphNodeMap[e.to];
-    if (!a || !b) return;
-    const style = EDGE_STYLES[e.kind] || EDGE_STYLES.uses;
-    const dimmed = selectedNode && !connectedEdges.has(idx);
-
-    ctx.beginPath();
-    ctx.setLineDash(style.dash);
-    ctx.lineWidth = dimmed ? style.width * 0.5 : (connectedEdges.has(idx) ? style.width * 2 : style.width);
-    ctx.strokeStyle = style.color;
-    ctx.globalAlpha = dimmed ? 0.1 : (connectedEdges.has(idx) ? 1 : 0.6);
-    ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-
-    // Arrowhead
+  graphEdgesArr.forEach((e,idx) => {
+    const a=graphNodeMap[e.from], b=graphNodeMap[e.to]; if (!a||!b) return;
+    const style=EDGE_STYLES[e.kind]||EDGE_STYLES.uses;
+    const dimmed = highlightIds && !connectedEdges.has(idx);
+    ctx.beginPath(); ctx.setLineDash(style.dash);
+    ctx.lineWidth = dimmed ? style.width*0.5 : (connectedEdges.has(idx) ? style.width*2 : style.width);
+    ctx.strokeStyle = (state.blastRadius && connectedEdges.has(idx)) ? 'var(--orange)' : style.color;
+    ctx.globalAlpha = dimmed ? 0.08 : (connectedEdges.has(idx) ? 1 : 0.6);
+    ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
     if (!dimmed) {
-      const angle = Math.atan2(b.y - a.y, b.x - a.x);
-      const ad = b.radius + 5;
-      const ax = b.x - Math.cos(angle) * ad, ay = b.y - Math.sin(angle) * ad;
-      ctx.beginPath(); ctx.setLineDash([]);
-      ctx.fillStyle = style.color;
-      ctx.moveTo(ax, ay);
-      ctx.lineTo(ax - 7*Math.cos(angle - 0.35), ay - 7*Math.sin(angle - 0.35));
-      ctx.lineTo(ax - 7*Math.cos(angle + 0.35), ay - 7*Math.sin(angle + 0.35));
+      const angle=Math.atan2(b.y-a.y,b.x-a.x), ad=b.radius+5;
+      ctx.beginPath(); ctx.setLineDash([]); ctx.fillStyle=style.color;
+      ctx.moveTo(b.x-Math.cos(angle)*ad, b.y-Math.sin(angle)*ad);
+      ctx.lineTo(b.x-Math.cos(angle)*ad-7*Math.cos(angle-0.35), b.y-Math.sin(angle)*ad-7*Math.sin(angle-0.35));
+      ctx.lineTo(b.x-Math.cos(angle)*ad-7*Math.cos(angle+0.35), b.y-Math.sin(angle)*ad-7*Math.sin(angle+0.35));
       ctx.fill();
     }
   });
-  ctx.setLineDash([]);
-  ctx.globalAlpha = 1;
+  ctx.setLineDash([]); ctx.globalAlpha=1;
 
   // Nodes
   graphNodes.forEach(n => {
-    const isSelected = selectedNode && selectedNode.id === n.id;
-    const isConnected = selectedNode && connectedIds.has(n.id);
-    const dimmed = selectedNode && !isConnected;
+    const isSelected = selectedNode && selectedNode.id===n.id;
+    const isHighlighted = highlightIds && highlightIds.has(n.id);
+    const dimmed = highlightIds && !isHighlighted;
+    ctx.globalAlpha = dimmed ? 0.12 : 1;
 
-    ctx.globalAlpha = dimmed ? 0.15 : 1;
-
-    // Glow for selected
     if (isSelected) {
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, n.radius + 6, 0, Math.PI*2);
-      ctx.fillStyle = KIND_COLORS[n.kind] || '#888';
-      ctx.globalAlpha = 0.25;
-      ctx.fill();
-      ctx.globalAlpha = 1;
+      ctx.beginPath(); ctx.arc(n.x,n.y,n.radius+6,0,Math.PI*2);
+      ctx.fillStyle = state.blastRadius ? '#f97316' : ((state.graphCluster==='directory' ? n.clusterColor : KIND_COLORS[n.kind])||'#888');
+      ctx.globalAlpha=0.3; ctx.fill(); ctx.globalAlpha = dimmed ? 0.12 : 1;
     }
-
-    // Node circle
-    ctx.beginPath();
-    ctx.arc(n.x, n.y, n.radius, 0, Math.PI*2);
-    ctx.fillStyle = KIND_COLORS[n.kind] || '#888';
+    ctx.beginPath(); ctx.arc(n.x,n.y,n.radius,0,Math.PI*2);
+    ctx.fillStyle = (state.graphCluster==='directory' ? n.clusterColor : KIND_COLORS[n.kind])||'#888';
     ctx.fill();
+    ctx.strokeStyle = isSelected ? '#fff' : (isHighlighted ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.1)');
+    ctx.lineWidth = isSelected ? 2.5 : 1; ctx.stroke();
 
-    // Border
-    ctx.strokeStyle = isSelected ? '#fff' : (isConnected ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.1)');
-    ctx.lineWidth = isSelected ? 2.5 : 1;
-    ctx.stroke();
-
-    // Pinned indicator
-    if (n.pinned) {
-      ctx.beginPath();
-      ctx.arc(n.x, n.y - n.radius - 4, 2.5, 0, Math.PI*2);
-      ctx.fillStyle = '#ef4444';
-      ctx.fill();
-    }
-
-    // Label
-    if (graphZoom > 0.35 && !dimmed) {
+    if (n.pinned) { ctx.beginPath(); ctx.arc(n.x,n.y-n.radius-4,2.5,0,Math.PI*2); ctx.fillStyle='#ef4444'; ctx.fill(); }
+    if (graphZoom>0.35 && !dimmed) {
       ctx.fillStyle = isSelected ? '#fff' : '#c8ccd8';
-      ctx.font = (isSelected ? 'bold ' : '') + Math.max(9, 11/graphZoom) + 'px -apple-system, sans-serif';
-      ctx.textAlign = 'center';
-      const label = n.name.length > 24 ? n.name.substring(0, 22) + '\u2026' : n.name;
-      ctx.fillText(label, n.x, n.y + n.radius + 14);
+      ctx.font = (isSelected?'bold ':'')+Math.max(9,11/graphZoom)+'px sans-serif'; ctx.textAlign='center';
+      ctx.fillText(n.name.length>24?n.name.substring(0,22)+'\u2026':n.name, n.x, n.y+n.radius+14);
     }
   });
-
-  ctx.globalAlpha = 1;
-  ctx.restore();
+  ctx.globalAlpha=1; ctx.restore();
 }
 
 function showNodeInfo(n) {
   const info = document.getElementById('graphInfo');
-  info.style.display = 'block';
-  info.textContent = '';
-
-  const closeBtn = el('button', { className: 'gi-close', textContent: '\u2715', onClick: () => { selectedNode = null; info.style.display = 'none'; }});
-  info.appendChild(closeBtn);
+  info.style.display = 'block'; info.textContent = '';
+  info.appendChild(el('button', { className: 'gi-close', textContent: '\u2715', onClick: () => { selectedNode=null; info.style.display='none'; } }));
   info.appendChild(el('h4', { textContent: n.name }));
+  const rows = [['Kind',n.kind],['File',n.file],['Lines',n.startLine+' - '+n.endLine]];
+  if (n.cyclomatic!=null) rows.push(['Complexity',String(n.cyclomatic)]);
+  if (state.blastRadius) {
+    const deps = getTransitiveDeps(n.id, graphEdgesArr);
+    rows.push(['Blast Radius', (deps.size-1)+' symbols']);
+  }
+  rows.forEach(([l,v]) => { info.appendChild(el('div', { className: 'gi-row' }, [el('span', { textContent: l+':', style: { color: 'var(--text3)', minWidth: '80px' } }), el('span', { textContent: v })])); });
 
-  const rows = [
-    ['Kind', n.kind],
-    ['File', n.file],
-    ['Lines', n.startLine + ' - ' + n.endLine],
-  ];
-  if (n.cyclomatic != null) rows.push(['Complexity', String(n.cyclomatic)]);
+  // VSCode link
+  info.appendChild(el('div', { style: { marginTop: '6px' } }, [el('a', { className: 'vscode-link', href: 'vscode://file/'+n.file+':'+n.startLine, textContent: 'Open in VSCode \u2197' })]));
 
-  rows.forEach(([label, value]) => {
-    info.appendChild(el('div', { className: 'gi-row' }, [
-      el('span', { textContent: label + ':', style: { color: 'var(--text3)', minWidth: '70px' } }),
-      el('span', { textContent: value })
-    ]));
-  });
-
-  // Connections
-  const incoming = graphEdgesArr.filter(e => e.to === n.id);
-  const outgoing = graphEdgesArr.filter(e => e.from === n.id);
-
+  const incoming = graphEdgesArr.filter(e=>e.to===n.id), outgoing = graphEdgesArr.filter(e=>e.from===n.id);
   if (outgoing.length) {
-    info.appendChild(el('div', { textContent: 'Depends on (' + outgoing.length + '):', style: { color: 'var(--text3)', marginTop: '6px', fontSize: '10px', textTransform: 'uppercase' } }));
-    outgoing.slice(0, 8).forEach(e => {
-      const targetName = e.to.split('::')[1] || e.to;
-      info.appendChild(el('div', { className: 'gi-row' }, [
-        el('span', { textContent: e.kind, style: { color: (EDGE_STYLES[e.kind] || {}).color || '#888', fontSize: '10px', minWidth: '70px' } }),
-        el('span', { textContent: targetName, style: { fontSize: '11px' } })
-      ]));
-    });
-    if (outgoing.length > 8) info.appendChild(el('div', { className: 'gi-row', style: { color: 'var(--text3)' } }, ['...' + (outgoing.length - 8) + ' more']));
+    info.appendChild(el('div', { textContent: 'Depends on ('+outgoing.length+'):', style: { color: 'var(--text3)', marginTop: '6px', fontSize: '10px', textTransform: 'uppercase' } }));
+    outgoing.slice(0,8).forEach(e => { info.appendChild(el('div', { className: 'gi-row' }, [el('span', { textContent: e.kind, style: { color: (EDGE_STYLES[e.kind]||{}).color||'#888', fontSize: '10px', minWidth: '70px' } }), el('span', { textContent: e.to.split('::')[1]||e.to, style: { fontSize: '11px' } })])); });
   }
   if (incoming.length) {
-    info.appendChild(el('div', { textContent: 'Used by (' + incoming.length + '):', style: { color: 'var(--text3)', marginTop: '6px', fontSize: '10px', textTransform: 'uppercase' } }));
-    incoming.slice(0, 8).forEach(e => {
-      const srcName = e.from.split('::')[1] || e.from;
-      info.appendChild(el('div', { className: 'gi-row' }, [
-        el('span', { textContent: e.kind, style: { color: (EDGE_STYLES[e.kind] || {}).color || '#888', fontSize: '10px', minWidth: '70px' } }),
-        el('span', { textContent: srcName, style: { fontSize: '11px' } })
-      ]));
-    });
-    if (incoming.length > 8) info.appendChild(el('div', { className: 'gi-row', style: { color: 'var(--text3)' } }, ['...' + (incoming.length - 8) + ' more']));
+    info.appendChild(el('div', { textContent: 'Used by ('+incoming.length+'):', style: { color: 'var(--text3)', marginTop: '6px', fontSize: '10px', textTransform: 'uppercase' } }));
+    incoming.slice(0,8).forEach(e => { info.appendChild(el('div', { className: 'gi-row' }, [el('span', { textContent: e.kind, style: { color: (EDGE_STYLES[e.kind]||{}).color||'#888', fontSize: '10px', minWidth: '70px' } }), el('span', { textContent: e.from.split('::')[1]||e.from, style: { fontSize: '11px' } })])); });
   }
 }
 
 function setupGraphInteractions() {
   const canvas = document.getElementById('graphCanvas');
   const tooltip = document.getElementById('graphTooltip');
+  function canvasXY(e) { const r=canvas.getBoundingClientRect(); return { x: (e.clientX-r.left-graphPanX)/graphZoom, y: (e.clientY-r.top-graphPanY)/graphZoom }; }
+  function findNode(mx,my) { for (let i=graphNodes.length-1;i>=0;i--) { const n=graphNodes[i],dx=n.x-mx,dy=n.y-my; if (dx*dx+dy*dy<(n.radius+6)**2) return n; } return null; }
+  function applyZoom(f,cx,cy) { if (cx===undefined){cx=graphW/2;cy=graphH/2;} graphPanX=cx-(cx-graphPanX)*f; graphPanY=cy-(cy-graphPanY)*f; graphZoom=Math.max(0.05,Math.min(8,graphZoom*f)); }
+  function fitAll() { if (!graphNodes.length) return; let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity; graphNodes.forEach(n=>{minX=Math.min(minX,n.x-n.radius);maxX=Math.max(maxX,n.x+n.radius);minY=Math.min(minY,n.y-n.radius);maxY=Math.max(maxY,n.y+n.radius);}); const p=60,rx=maxX-minX+p*2,ry=maxY-minY+p*2; graphZoom=Math.min(graphW/rx,graphH/ry,2); graphPanX=graphW/2-(minX+maxX)/2*graphZoom; graphPanY=graphH/2-(minY+maxY)/2*graphZoom; }
 
-  function canvasXY(e) {
-    const rect = canvas.getBoundingClientRect();
-    return { x: (e.clientX - rect.left - graphPanX) / graphZoom, y: (e.clientY - rect.top - graphPanY) / graphZoom };
-  }
-  function findNode(mx, my) {
-    for (let i = graphNodes.length - 1; i >= 0; i--) {
-      const n = graphNodes[i];
-      const dx = n.x - mx, dy = n.y - my;
-      if (dx*dx + dy*dy < (n.radius + 6) * (n.radius + 6)) return n;
-    }
-    return null;
-  }
+  document.getElementById('zoomIn').onclick=()=>applyZoom(1.3);
+  document.getElementById('zoomOut').onclick=()=>applyZoom(0.7);
+  document.getElementById('zoomFit').onclick=fitAll;
+  document.getElementById('zoomReset').onclick=()=>{graphZoom=1;graphPanX=0;graphPanY=0;};
 
-  function applyZoom(factor, cx, cy) {
-    if (cx === undefined) { cx = graphW / 2; cy = graphH / 2; }
-    graphPanX = cx - (cx - graphPanX) * factor;
-    graphPanY = cy - (cy - graphPanY) * factor;
-    graphZoom = Math.max(0.05, Math.min(8, graphZoom * factor));
-  }
-
-  function fitAll() {
-    if (!graphNodes.length) return;
-    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-    graphNodes.forEach(n => {
-      minX = Math.min(minX, n.x - n.radius); maxX = Math.max(maxX, n.x + n.radius);
-      minY = Math.min(minY, n.y - n.radius); maxY = Math.max(maxY, n.y + n.radius);
-    });
-    const pad = 60;
-    const rangeX = maxX - minX + pad * 2, rangeY = maxY - minY + pad * 2;
-    graphZoom = Math.min(graphW / rangeX, graphH / rangeY, 2);
-    graphPanX = graphW / 2 - (minX + maxX) / 2 * graphZoom;
-    graphPanY = graphH / 2 - (minY + maxY) / 2 * graphZoom;
-  }
-
-  // Zoom controls
-  document.getElementById('zoomIn').onclick = () => applyZoom(1.3);
-  document.getElementById('zoomOut').onclick = () => applyZoom(0.7);
-  document.getElementById('zoomFit').onclick = fitAll;
-  document.getElementById('zoomReset').onclick = () => { graphZoom = 1; graphPanX = 0; graphPanY = 0; };
-
-  canvas.onmousedown = e => {
-    const { x, y } = canvasXY(e);
-    const n = findNode(x, y);
-    if (n) {
-      dragNode = n; dragOffX = n.x - x; dragOffY = n.y - y;
-      didDrag = false;
-    } else {
-      isPanning = true; panStartX = e.clientX - graphPanX; panStartY = e.clientY - graphPanY;
-    }
-  };
-
-  canvas.onmousemove = e => {
-    const { x, y } = canvasXY(e);
-    if (dragNode) {
-      const dx = (x + dragOffX) - dragNode.x, dy = (y + dragOffY) - dragNode.y;
-      if (dx*dx + dy*dy > 4) didDrag = true;
-      dragNode.x = x + dragOffX; dragNode.y = y + dragOffY;
-      dragNode.vx = 0; dragNode.vy = 0;
-    } else if (isPanning) {
-      graphPanX = e.clientX - panStartX; graphPanY = e.clientY - panStartY;
-    } else {
-      const n = findNode(x, y);
-      if (n) {
-        tooltip.style.display = 'block';
-        tooltip.style.left = (e.clientX + 14) + 'px';
-        tooltip.style.top = (e.clientY - 8) + 'px';
-        tooltip.textContent = '';
-        tooltip.appendChild(el('div', { className: 'tt-name', textContent: n.name }));
-        tooltip.appendChild(el('div', { className: 'tt-detail', textContent: n.kind + ' \u00B7 ' + n.file + ':' + n.startLine + '-' + n.endLine + (n.cyclomatic != null ? ' | C:' + n.cyclomatic : '') }));
-        canvas.style.cursor = 'pointer';
-      } else {
-        tooltip.style.display = 'none';
-        canvas.style.cursor = isPanning ? 'grabbing' : 'grab';
-      }
-    }
-  };
-
-  canvas.onmouseup = e => {
-    if (dragNode && !didDrag) {
-      // Click without drag = select/deselect
-      if (selectedNode && selectedNode.id === dragNode.id) {
-        selectedNode = null;
-        document.getElementById('graphInfo').style.display = 'none';
-      } else {
-        selectedNode = dragNode;
-        showNodeInfo(dragNode);
-      }
-    } else if (dragNode && didDrag) {
-      // Pin node after drag
-      dragNode.pinned = true;
-    } else if (!isPanning) {
-      // Click on empty space = deselect
-      selectedNode = null;
-      document.getElementById('graphInfo').style.display = 'none';
-    }
-    dragNode = null; isPanning = false; didDrag = false;
-  };
-
-  canvas.onmouseleave = () => { dragNode = null; isPanning = false; tooltip.style.display = 'none'; };
-
-  canvas.onwheel = e => {
-    e.preventDefault();
-    const factor = e.deltaY > 0 ? 0.88 : 1.14;
-    const rect = canvas.getBoundingClientRect();
-    applyZoom(factor, e.clientX - rect.left, e.clientY - rect.top);
-  };
-
-  // Double-click to unpin
-  canvas.ondblclick = e => {
-    const { x, y } = canvasXY(e);
-    const n = findNode(x, y);
-    if (n) {
-      n.pinned = false;
-      graphStabilized = false;
-      graphFrameCount = Math.max(graphFrameCount, 150); // gentle reheat
-    }
-  };
+  canvas.onmousedown=e=>{const{x,y}=canvasXY(e);const n=findNode(x,y);if(n){dragNode=n;dragOffX=n.x-x;dragOffY=n.y-y;didDrag=false;}else{isPanning=true;panStartX=e.clientX-graphPanX;panStartY=e.clientY-graphPanY;}};
+  canvas.onmousemove=e=>{const{x,y}=canvasXY(e);if(dragNode){const dx=(x+dragOffX)-dragNode.x,dy=(y+dragOffY)-dragNode.y;if(dx*dx+dy*dy>4)didDrag=true;dragNode.x=x+dragOffX;dragNode.y=y+dragOffY;dragNode.vx=0;dragNode.vy=0;}else if(isPanning){graphPanX=e.clientX-panStartX;graphPanY=e.clientY-panStartY;}else{const n=findNode(x,y);if(n){tooltip.style.display='block';tooltip.style.left=(e.clientX+14)+'px';tooltip.style.top=(e.clientY-8)+'px';tooltip.textContent='';tooltip.appendChild(el('div',{className:'tt-name',textContent:n.name}));tooltip.appendChild(el('div',{className:'tt-detail',textContent:n.kind+' \u00B7 '+n.file+':'+n.startLine+'-'+n.endLine+(n.cyclomatic!=null?' | C:'+n.cyclomatic:'')}));canvas.style.cursor='pointer';}else{tooltip.style.display='none';canvas.style.cursor=isPanning?'grabbing':'grab';}}};
+  canvas.onmouseup=e=>{if(dragNode&&!didDrag){if(selectedNode&&selectedNode.id===dragNode.id){selectedNode=null;document.getElementById('graphInfo').style.display='none';}else{selectedNode=dragNode;showNodeInfo(dragNode);}}else if(dragNode&&didDrag){dragNode.pinned=true;}else if(!isPanning){selectedNode=null;document.getElementById('graphInfo').style.display='none';}dragNode=null;isPanning=false;didDrag=false;};
+  canvas.onmouseleave=()=>{dragNode=null;isPanning=false;tooltip.style.display='none';};
+  canvas.onwheel=e=>{e.preventDefault();const f=e.deltaY>0?0.88:1.14;const r=canvas.getBoundingClientRect();applyZoom(f,e.clientX-r.left,e.clientY-r.top);};
+  canvas.ondblclick=e=>{const{x,y}=canvasXY(e);const n=findNode(x,y);if(n){n.pinned=false;graphStabilized=false;graphFrameCount=Math.max(graphFrameCount,150);}};
 }
 
 // ═══════════════════════════════════════
@@ -954,81 +998,202 @@ function setupGraphInteractions() {
 function renderHeatmap() {
   const container = document.getElementById('heatmapContainer');
   const tooltipEl = document.getElementById('heatmapTooltip');
+  const exportBar = document.getElementById('heatmapExportBar');
   container.textContent = '';
+  if (!state.files.length) { container.appendChild(el('div', { className: 'empty-state' }, [el('div', { className: 'es-icon', textContent: '\u{1F525}' }), el('p', { textContent: 'Load JSON files to see the complexity heatmap' })])); exportBar.style.display='none'; return; }
+  exportBar.style.display = '';
 
-  const allSyms = filterSymbols(getAllSymbols());
-  if (!allSyms.length) {
-    container.appendChild(el('div', { className: 'empty-state' }, [
-      el('div', { className: 'es-icon', textContent: '\u{1F525}' }),
-      el('p', { textContent: 'Load JSON files to see the complexity heatmap' })
-    ]));
-    return;
-  }
+  const toggle = el('div', { className: 'heatmap-mode-toggle' });
+  toggle.appendChild(el('button', { textContent: 'By Symbol', className: state.heatmapMode==='symbol'?'active':'', onClick: () => { state.heatmapMode='symbol'; renderHeatmap(); } }));
+  toggle.appendChild(el('button', { textContent: 'By File', className: state.heatmapMode==='file'?'active':'', onClick: () => { state.heatmapMode='file'; renderHeatmap(); } }));
+  container.appendChild(toggle);
 
-  const symsWithSize = allSyms.map(s => ({ ...s, lines: Math.max(1, (s.endLine || 0) - (s.startLine || 0)) }))
-    .filter(s => (s.cyclomatic ?? 0) >= state.minComplexity)
-    .sort((a, b) => (b.cyclomatic ?? 0) - (a.cyclomatic ?? 0));
-
-  function getColor(c) {
-    if (c == null) return '#2e3244';
-    if (c <= 5) return '#22c55e';
-    if (c <= 10) return '#eab308';
-    if (c <= 20) return '#f97316';
-    return '#ef4444';
-  }
-
-  const maxLines = Math.max(...symsWithSize.map(s => s.lines), 1);
+  function getColor(c) { if (c==null) return '#2e3244'; if (c<=5) return '#22c55e'; if (c<=10) return '#eab308'; if (c<=20) return '#f97316'; return '#ef4444'; }
   const grid = el('div', { className: 'heatmap-grid' });
 
-  symsWithSize.forEach(s => {
-    const size = Math.max(35, Math.min(120, 35 + (s.lines / maxLines) * 85));
-    const cell = el('div', {
-      className: 'heatmap-cell',
-      textContent: s.cyclomatic != null ? String(s.cyclomatic) : '?',
-      style: { width: size + 'px', height: size + 'px', background: getColor(s.cyclomatic) },
-      onMouseenter: () => {
-        tooltipEl.style.display = 'block';
-        tooltipEl.textContent = '';
-        tooltipEl.appendChild(el('div', { className: 'tt-name', textContent: s.name }));
-        tooltipEl.appendChild(el('div', { className: 'tt-detail', textContent: s.kind + ' \u00B7 ' + s.file + ':' + s.startLine + '-' + s.endLine + ' | Cyclomatic: ' + (s.cyclomatic ?? 'N/A') + ' \u00B7 Lines: ' + s.lines }));
-      },
-      onMousemove: e => { tooltipEl.style.left = (e.clientX + 12) + 'px'; tooltipEl.style.top = (e.clientY - 10) + 'px'; },
-      onMouseleave: () => { tooltipEl.style.display = 'none'; },
+  if (state.heatmapMode === 'symbol') {
+    const syms = filterSymbols(getAllSymbols()).map(s=>({...s,lines:Math.max(1,(s.endLine||0)-(s.startLine||0))})).filter(s=>(s.cyclomatic??0)>=state.minComplexity).sort((a,b)=>(b.cyclomatic??0)-(a.cyclomatic??0));
+    const maxL = Math.max(...syms.map(s=>s.lines),1);
+    syms.forEach(s => {
+      const size = Math.max(35,Math.min(120,35+(s.lines/maxL)*85));
+      grid.appendChild(el('div', { className: 'heatmap-cell', textContent: s.cyclomatic!=null?String(s.cyclomatic):'?', style: { width: size+'px', height: size+'px', background: getColor(s.cyclomatic) },
+        onMouseenter: () => { tooltipEl.style.display='block'; tooltipEl.textContent=''; tooltipEl.appendChild(el('div',{className:'tt-name',textContent:s.name})); tooltipEl.appendChild(el('div',{className:'tt-detail',textContent:s.kind+' \u00B7 '+s.file+':'+s.startLine+'-'+s.endLine+' | C:'+(s.cyclomatic??'N/A')+' \u00B7 Lines:'+s.lines})); },
+        onMousemove: e => { tooltipEl.style.left=(e.clientX+12)+'px'; tooltipEl.style.top=(e.clientY-10)+'px'; },
+        onMouseleave: () => { tooltipEl.style.display='none'; },
+      }));
     });
-    grid.appendChild(cell);
-  });
+  } else {
+    const fd = state.files.map(f => { const cx=f.complexity||[]; return { file:f.file, total:cx.reduce((s,c)=>s+c.cyclomatic,0), max:cx.length?Math.max(...cx.map(c=>c.cyclomatic)):0, avg:cx.length?cx.reduce((s,c)=>s+c.cyclomatic,0)/cx.length:0, count:cx.length }; }).filter(f=>f.total>=state.minComplexity).sort((a,b)=>b.total-a.total);
+    const maxT = Math.max(...fd.map(f=>f.total),1);
+    fd.forEach(f => {
+      const size = Math.max(40,Math.min(140,40+(f.total/maxT)*100));
+      grid.appendChild(el('div', { className: 'heatmap-cell', textContent: String(f.total), style: { width: size+'px', height: size+'px', background: getColor(f.max), fontSize: '10px' },
+        onMouseenter: () => { tooltipEl.style.display='block'; tooltipEl.textContent=''; tooltipEl.appendChild(el('div',{className:'tt-name',textContent:f.file.split('/').slice(-2).join('/')})); tooltipEl.appendChild(el('div',{className:'tt-detail',textContent:'Total:'+f.total+' | Max:'+f.max+' | Avg:'+f.avg.toFixed(1)+' | Methods:'+f.count})); },
+        onMousemove: e => { tooltipEl.style.left=(e.clientX+12)+'px'; tooltipEl.style.top=(e.clientY-10)+'px'; },
+        onMouseleave: () => { tooltipEl.style.display='none'; },
+      }));
+    });
+  }
   container.appendChild(grid);
+}
+
+// Export heatmap CSV
+document.getElementById('exportHeatmapCsv').addEventListener('click', () => {
+  const syms = getAllSymbols().filter(s=>s.cyclomatic!=null).sort((a,b)=>b.cyclomatic-a.cyclomatic);
+  let csv = 'Symbol,Kind,File,StartLine,EndLine,Cyclomatic\n';
+  syms.forEach(s => { csv += `"${s.name}","${s.kind}","${s.file}",${s.startLine},${s.endLine},${s.cyclomatic}\n`; });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const link = document.createElement('a'); link.download = 'ctxo-complexity.csv'; link.href = URL.createObjectURL(blob); link.click();
+});
+
+// ═══════════════════════════════════════
+// CO-CHANGES
+// ═══════════════════════════════════════
+function renderCoChanges() {
+  const container = document.getElementById('cochangeContainer');
+  container.textContent = '';
+  if (!state.coChanges.length) { container.appendChild(el('div', { className: 'empty-state' }, [el('div', { className: 'es-icon', textContent: '\u{1F501}' }), el('p', { textContent: 'No co-change data. Drop a folder containing co-changes.json' })])); return; }
+
+  // Search
+  const searchInput = el('input', { className: 'search-input cochange-search', placeholder: 'Filter co-changes by file name...', value: '' });
+  container.appendChild(searchInput);
+
+  const list = el('div', { className: 'cochange-list', id: 'cochangeList' });
+  container.appendChild(list);
+
+  function renderList(filter) {
+    list.textContent = '';
+    const maxShared = Math.max(...state.coChanges.map(e => e.sharedCommits), 1);
+    const filtered = filter ? state.coChanges.filter(e => e.file1.toLowerCase().includes(filter) || e.file2.toLowerCase().includes(filter)) : state.coChanges;
+    const sorted = [...filtered].sort((a, b) => b.sharedCommits - a.sharedCommits);
+
+    sorted.slice(0, 100).forEach(entry => {
+      const pct = (entry.sharedCommits / maxShared * 100);
+      const row = el('div', { className: 'cochange-row' }, [
+        el('div', { className: 'cochange-files' }, [
+          el('span', { className: 'cochange-file', textContent: entry.file1.split('/').slice(-2).join('/'), title: entry.file1 }),
+          el('span', { className: 'cochange-arrow', textContent: '\u2194' }),
+          el('span', { className: 'cochange-file', textContent: entry.file2.split('/').slice(-2).join('/'), title: entry.file2 }),
+        ]),
+        el('div', { className: 'cochange-stats' }, [
+          el('span', { className: 'cochange-stat' }, [el('strong', { textContent: String(entry.sharedCommits) }), ' commits']),
+          el('span', { className: 'cochange-stat' }, [el('strong', { textContent: (entry.frequency * 100).toFixed(0) + '%' }), ' freq']),
+          el('div', { className: 'cochange-bar' }, [el('div', { className: 'cochange-bar-fill', style: { width: pct + '%' } })]),
+        ]),
+      ]);
+      list.appendChild(row);
+    });
+    if (sorted.length > 100) { list.appendChild(el('div', { style: { textAlign: 'center', padding: '8px', color: 'var(--text3)', fontSize: '12px' } }, ['...and ' + (sorted.length - 100) + ' more pairs'])); }
+  }
+
+  renderList('');
+  searchInput.addEventListener('input', e => renderList(e.target.value.toLowerCase()));
+}
+
+// ═══════════════════════════════════════
+// TIMELINE
+// ═══════════════════════════════════════
+function renderTimeline() {
+  const container = document.getElementById('timelineContainer');
+  container.textContent = '';
+
+  // Collect all commits and anti-patterns
+  const events = [];
+  state.files.forEach(f => {
+    (f.intent || []).forEach(c => {
+      const isRevert = /revert/i.test(c.message);
+      events.push({ date: c.date || '', message: c.message, file: f.file, type: isRevert ? 'revert' : 'normal', hash: c.hash });
+    });
+    (f.antiPatterns || []).forEach(a => {
+      events.push({ date: a.date || '', message: a.message, file: f.file, type: 'anti', hash: a.hash });
+    });
+  });
+
+  if (!events.length) { container.appendChild(el('div', { className: 'empty-state' }, [el('div', { className: 'es-icon', textContent: '\u{1F4C5}' }), el('p', { textContent: 'No commit history found in loaded files' })])); return; }
+
+  // Sort by date descending
+  events.sort((a, b) => b.date.localeCompare(a.date));
+
+  // Deduplicate by hash (same commit can appear in multiple files)
+  const seenHashes = new Set();
+  const deduped = [];
+  events.forEach(e => {
+    const key = (e.hash || '') + e.message + e.date;
+    if (e.type !== 'normal' || !seenHashes.has(key)) { seenHashes.add(key); deduped.push(e); }
+  });
+
+  // Group by month
+  const months = {};
+  deduped.forEach(e => {
+    const month = e.date.substring(0, 7) || 'Unknown';
+    if (!months[month]) months[month] = [];
+    months[month].push(e);
+  });
+
+  // Filter controls
+  const filterRow = el('div', { style: { display: 'flex', gap: '6px', marginBottom: '12px' } });
+  let showTypes = { normal: true, anti: true, revert: true };
+  ['anti', 'revert', 'normal'].forEach(t => {
+    const colors = { anti: 'var(--orange)', revert: 'var(--red)', normal: 'var(--text3)' };
+    const chip = el('button', { className: 'filter-chip active', onClick: () => { showTypes[t] = !showTypes[t]; chip.classList.toggle('active'); renderEntries(); } }, [
+      el('span', { className: 'dot', style: { background: colors[t] } }), t
+    ]);
+    filterRow.appendChild(chip);
+  });
+  const countSpan = el('span', { style: { marginLeft: 'auto', fontSize: '11px', color: 'var(--text3)', alignSelf: 'center' } });
+  filterRow.appendChild(countSpan);
+  container.appendChild(filterRow);
+
+  const timeline = el('div', { className: 'timeline' });
+  container.appendChild(timeline);
+
+  function renderEntries() {
+    timeline.textContent = '';
+    let count = 0;
+    Object.entries(months).sort((a,b)=>b[0].localeCompare(a[0])).forEach(([month, entries]) => {
+      const filtered = entries.filter(e => showTypes[e.type]);
+      if (!filtered.length) return;
+      count += filtered.length;
+
+      const monthEl = el('div', { className: 'tl-month' });
+      monthEl.appendChild(el('div', { className: 'tl-month-label', textContent: month }));
+
+      filtered.forEach(e => {
+        const entry = el('div', { className: 'tl-entry ' + e.type }, [
+          el('span', { className: 'tl-date', textContent: e.date.substring(0, 10) }),
+          e.type !== 'normal' ? el('span', { className: 'tl-tag ' + e.type, textContent: e.type }) : null,
+          el('span', { className: 'tl-msg', textContent: e.message.substring(0, 80) }),
+          el('span', { className: 'tl-file', textContent: e.file.split('/').slice(-2).join('/'), title: e.file }),
+        ].filter(Boolean));
+        monthEl.appendChild(entry);
+      });
+      timeline.appendChild(monthEl);
+    });
+    countSpan.textContent = count + ' events';
+  }
+  renderEntries();
 }
 
 // ─── Prompt Output ───
 function updatePrompt() {
-  const syms = getAllSymbols();
-  const files = state.files;
+  const syms = getAllSymbols(), files = state.files;
   const promptEl = document.getElementById('promptText');
   if (!files.length) { promptEl.textContent = 'Load .ctxo/index JSON files to generate a codebase summary.'; return; }
-
   const edges = getAllEdges();
-  const totalCx = syms.filter(s => s.cyclomatic != null);
-  const avgCx = totalCx.length ? (totalCx.reduce((sum, x) => sum + x.cyclomatic, 0) / totalCx.length).toFixed(1) : 'N/A';
-  const highCx = totalCx.filter(s => s.cyclomatic > 10);
-  const antiFiles = files.filter(f => (f.antiPatterns || []).length > 0);
-  const kindCounts = {};
-  syms.forEach(s => { kindCounts[s.kind] = (kindCounts[s.kind] || 0) + 1; });
-  const kindStr = Object.entries(kindCounts).map(([k, v]) => v + ' ' + k + 's').join(', ');
-
-  let prompt = 'Codebase: ' + files.length + ' files, ' + syms.length + ' symbols (' + kindStr + '), ' + edges.length + ' edges. Avg complexity: ' + avgCx + '.';
-  if (highCx.length) prompt += ' ' + highCx.length + ' high-complexity symbols (>10): ' + highCx.slice(0, 5).map(s => s.name + '=' + s.cyclomatic).join(', ') + (highCx.length > 5 ? '...' : '') + '.';
-  if (antiFiles.length) prompt += ' ' + antiFiles.length + ' file(s) with anti-patterns: ' + antiFiles.map(f => f.file.split('/').pop()).join(', ') + '.';
-
+  const totalCx = syms.filter(s=>s.cyclomatic!=null);
+  const avgCx = totalCx.length ? (totalCx.reduce((s,x)=>s+x.cyclomatic,0)/totalCx.length).toFixed(1) : 'N/A';
+  const highCx = totalCx.filter(s=>s.cyclomatic>10);
+  const antiFiles = files.filter(f=>(f.antiPatterns||[]).length>0);
+  const kindStr = Object.entries(syms.reduce((a,s)=>{a[s.kind]=(a[s.kind]||0)+1;return a;},{})).map(([k,v])=>v+' '+k+'s').join(', ');
+  let prompt = 'Codebase: '+files.length+' files, '+syms.length+' symbols ('+kindStr+'), '+edges.length+' edges. Avg complexity: '+avgCx+'.';
+  if (highCx.length) prompt += ' '+highCx.length+' high-complexity (>10): '+highCx.slice(0,5).map(s=>s.name+'='+s.cyclomatic).join(', ')+(highCx.length>5?'...':'')+'.';
+  if (antiFiles.length) prompt += ' '+antiFiles.length+' anti-pattern file(s).';
   promptEl.textContent = prompt;
 }
 
-// ─── Copy ───
 document.getElementById('copyBtn').addEventListener('click', () => {
   navigator.clipboard.writeText(document.getElementById('promptText').textContent);
-  const btn = document.getElementById('copyBtn');
-  btn.textContent = 'Copied!';
-  setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+  const btn = document.getElementById('copyBtn'); btn.textContent = 'Copied!'; setTimeout(()=>{btn.textContent='Copy';}, 1500);
 });
 
 updateAll();
