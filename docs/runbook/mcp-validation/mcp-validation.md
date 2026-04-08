@@ -1208,6 +1208,20 @@ Verify that MCP clients calling `listResources` and `listPrompts` get valid resp
 
 ***
 
+## Step 19e: Tool Annotations
+
+Verify that all 14 tools expose MCP tool annotations for agent auto-approval.
+
+Call `tools/list` (or use `client.listTools()`) and for each tool verify:
+
+* [ ] `annotations.readOnlyHint` is `true`
+* [ ] `annotations.destructiveHint` is `false`
+* [ ] `annotations.idempotentHint` is `true`
+* [ ] `annotations.openWorldHint` is `false`
+* [ ] All 14 tools have identical annotations
+
+***
+
 ## Step 20: Staleness Detection Check
 
 Run any tool immediately after a fresh index build.
@@ -1656,13 +1670,16 @@ After completing all steps, fill in:
 | **Client Compatibility (Step 19d)** | | |
 | 22e | `listResources` returns valid response (no -32601)                  |           |
 | 22f | `ctxo://status` resource readable                                   |           |
+| **Tool Annotations (Step 19e)** | | |
+| 22g | All 14 tools have `readOnlyHint: true` annotation                   |           |
+| 22h | All 14 tools have `openWorldHint: false` annotation                 |           |
 | **Infrastructure (Steps 20-23)** | | |
 | 23  | Staleness detection — no false positive on fresh index              |           |
 | 24  | Unit tests pass (706+)                                              |           |
 | 25  | Git hash masking — visible or redacted (log status)                 |           |
 | 26  | Manual vs MCP comparison table filled with measured data            |           |
 
-**Result:** \_\_\_/84 checks passed
+**Result:** \_\_\_/86 checks passed
 
 ***
 
