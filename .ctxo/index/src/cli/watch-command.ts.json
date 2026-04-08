@@ -2,11 +2,15 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 8,
+      "cyclomatic": 7,
       "symbolId": "src/cli/watch-command.ts::WatchCommand.run::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/cli/watch-command.ts::WatchCommand.registerTreeSitterAdapters::method"
     }
   ],
-  "contentHash": "528e1912d2cd242e42703e4ac3598d8cbc20e91a58f5862fcbc9d59cd1929a9c",
+  "contentHash": "049462976645f2ebedaa2554581c59ff89f95a09149650218ab7231a586ade48",
   "edges": [
     {
       "from": "src/cli/watch-command.ts::WatchCommand::class",
@@ -65,6 +69,11 @@
       "kind": "imports",
       "to": "src/core/types.ts::AntiPattern::type",
       "typeOnly": true
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "src/cli/watch-command.ts::WatchCommand.registerTreeSitterAdapters::method"
     },
     {
       "from": "src/cli/watch-command.ts::WatchCommand.run::method",
@@ -189,25 +198,34 @@
       "message": "Implement all CLI commands and add comprehensive test coverage"
     }
   ],
-  "lastModified": 1775598887,
+  "lastModified": 1775606925,
   "symbols": [
     {
-      "endLine": 127,
-      "endOffset": 4574,
+      "endLine": 140,
+      "endOffset": 5081,
       "kind": "class",
       "name": "WatchCommand",
-      "startLine": 15,
-      "startOffset": 904,
+      "startLine": 14,
+      "startOffset": 834,
       "symbolId": "src/cli/watch-command.ts::WatchCommand::class"
     },
     {
-      "endLine": 126,
-      "endOffset": 4572,
+      "endLine": 124,
+      "endOffset": 4513,
       "kind": "method",
       "name": "WatchCommand.run",
-      "startLine": 24,
-      "startOffset": 1138,
+      "startLine": 23,
+      "startOffset": 1068,
       "symbolId": "src/cli/watch-command.ts::WatchCommand.run::method"
+    },
+    {
+      "endLine": 139,
+      "endOffset": 5079,
+      "kind": "method",
+      "name": "WatchCommand.registerTreeSitterAdapters",
+      "startLine": 126,
+      "startOffset": 4517,
+      "symbolId": "src/cli/watch-command.ts::WatchCommand.registerTreeSitterAdapters::method"
     }
   ]
 }

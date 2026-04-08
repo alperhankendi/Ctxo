@@ -1,0 +1,16 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "429f8fbffea9993e04e58ab9bfd16524616c0cd618715b53b8dfb46198f156d0",
+  "edges": [
+    {
+      "from": "src/adapters/language/__tests__/csharp-adapter.test.ts::csharp-adapter.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/language/csharp-adapter.ts::CSharpAdapter::class"
+    }
+  ],
+  "file": "src/adapters/language/__tests__/csharp-adapter.test.ts",
+  "intent": [],
+  "lastModified": 1775606924,
+  "symbols": []
+}

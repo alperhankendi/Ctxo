@@ -1,0 +1,35 @@
+package payment
+
+import (
+	"fmt"
+	"strings"
+)
+
+type PaymentResult struct {
+	Success bool
+	Message string
+}
+
+type Processor interface {
+	Process(amount float64) PaymentResult
+}
+
+func FormatAmount(amount float64) string {
+	return fmt.Sprintf("$%.2f", amount)
+}
+
+type CardProcessor struct {
+	Gateway string
+}
+
+func (c *CardProcessor) Process(amount float64) PaymentResult {
+	msg := FormatAmount(amount)
+	if amount > 0 {
+		return PaymentResult{Success: true, Message: strings.ToUpper(msg)}
+	}
+	return PaymentResult{}
+}
+
+func newProcessor() *CardProcessor {
+	return &CardProcessor{Gateway: "stripe"}
+}

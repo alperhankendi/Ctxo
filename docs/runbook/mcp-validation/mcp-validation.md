@@ -34,6 +34,8 @@ time npx tsx src/index.ts index
 * [ ] Two-pass indexing: Phase 1a (symbols + registry), Phase 1b (edges with registry)
 * [ ] Multi-file project preloading: all sources loaded before Phase 1b for cross-file resolution
 * [ ] Sources cleared after Phase 1b (memory released)
+* [ ] Multi-language adapters registered: TsMorphAdapter (.ts/.tsx/.js/.jsx) + GoAdapter (.go) + CSharpAdapter (.cs)
+* [ ] Dynamic extension filter active via `registry.getSupportedExtensions()`
 
 **Record metrics:**
 
@@ -41,6 +43,7 @@ time npx tsx src/index.ts index
 | ------------- | -------------- |
 | Files indexed | \_\_\_         |
 | Build time    | \_\_\_ seconds |
+| Languages     | TS/JS: \_\_\_, Go: \_\_\_, C#: \_\_\_ |
 
 ### 2.1 Custom `--max-history` Override
 
@@ -831,7 +834,161 @@ Call with `{ limit: 5 }`:
 
 ***
 
-## Step 17: Staleness Detection Check
+## Step 17: Multi-Language Adapter Validation (Epic 7)
+
+Verify that tree-sitter adapters for Go and C# are registered and functional.
+
+### 17.1 Go Adapter — Symbol Extraction
+
+Create a temporary Go file and verify indexing:
+
+```Shell
+mkdir -p /tmp/ctxo-go-test && cat > /tmp/ctxo-go-test/main.go << 'GOEOF'
+package main
+
+import "fmt"
+
+type Config struct {
+    Host string
+    Port int
+}
+
+type Handler interface {
+    Handle()
+}
+
+func NewConfig() Config {
+    return Config{Host: "localhost", Port: 8080}
+}
+
+func (c Config) String() string {
+    return fmt.Sprintf("%s:%d", c.Host, c.Port)
+}
+
+func helper() {}
+GOEOF
+```
+
+```Shell
+node -e "
+const { GoAdapter } = require('./dist/index.js');
+// Or test directly:
+const fs = require('fs');
+const source = fs.readFileSync('/tmp/ctxo-go-test/main.go', 'utf-8');
+const adapter = new (require('./src/adapters/language/go-adapter.js').GoAdapter)();
+const symbols = adapter.extractSymbols('main.go', source);
+const edges = adapter.extractEdges('main.go', source);
+console.log('Symbols:', symbols.map(s => s.name + ' (' + s.kind + ')'));
+console.log('Edges:', edges.length, 'import edges');
+console.log('Exported only:', !symbols.some(s => s.name === 'helper'));
+"
+```
+
+**Verify:**
+
+* [ ] `Config` extracted as `class` (struct → class mapping)
+* [ ] `Handler` extracted as `interface`
+* [ ] `NewConfig` extracted as `function`
+* [ ] `Config.String` extracted as `method` (receiver type in name)
+* [ ] `helper` NOT extracted (unexported — lowercase)
+* [ ] Import edge for `fmt` present
+* [ ] All symbols have byte offsets
+* [ ] Adapter `tier` is `'syntax'`
+
+### 17.2 C# Adapter — Symbol Extraction
+
+```Shell
+mkdir -p /tmp/ctxo-cs-test && cat > /tmp/ctxo-cs-test/Service.cs << 'CSEOF'
+using System;
+
+namespace MyApp.Services
+{
+    public interface IService
+    {
+        void Execute();
+    }
+
+    public class ServiceImpl : IService
+    {
+        public void Execute()
+        {
+            if (DateTime.Now.Hour > 12)
+                Console.WriteLine("PM");
+        }
+
+        private void Log(string msg) {}
+    }
+
+    public enum Status { Active, Inactive }
+}
+CSEOF
+```
+
+**Verify:**
+
+* [ ] `MyApp.Services.IService` extracted as `interface`
+* [ ] `MyApp.Services.ServiceImpl` extracted as `class`
+* [ ] `MyApp.Services.ServiceImpl.Execute` extracted as `method`
+* [ ] `MyApp.Services.Status` extracted as `type` (enum)
+* [ ] `Log` NOT extracted (private)
+* [ ] `using System` → import edge
+* [ ] `ServiceImpl : IService` → implements edge
+* [ ] Namespace qualification in all symbol names
+* [ ] Adapter `tier` is `'syntax'`
+
+### 17.3 Adapter Registry — Dynamic Extension Support
+
+```Shell
+node -e "
+const { LanguageAdapterRegistry } = require('./src/adapters/language/language-adapter-registry.js');
+const { TsMorphAdapter } = require('./src/adapters/language/ts-morph-adapter.js');
+const { GoAdapter } = require('./src/adapters/language/go-adapter.js');
+const { CSharpAdapter } = require('./src/adapters/language/csharp-adapter.js');
+const reg = new LanguageAdapterRegistry();
+reg.register(new TsMorphAdapter());
+reg.register(new GoAdapter());
+reg.register(new CSharpAdapter());
+const exts = reg.getSupportedExtensions();
+console.log('Supported:', [...exts].sort().join(', '));
+console.log('.go adapter:', reg.getAdapter('main.go')?.tier);
+console.log('.cs adapter:', reg.getAdapter('App.cs')?.tier);
+console.log('.ts adapter:', reg.getAdapter('index.ts')?.tier);
+console.log('.py adapter:', reg.getAdapter('main.py')?.tier ?? 'none');
+"
+```
+
+**Verify:**
+
+* [ ] Supported extensions include `.go` and `.cs` alongside `.ts`, `.tsx`, `.js`, `.jsx`
+* [ ] `.go` → `syntax` tier (GoAdapter)
+* [ ] `.cs` → `syntax` tier (CSharpAdapter)
+* [ ] `.ts` → `full` tier (TsMorphAdapter)
+* [ ] `.py` → `none` (unsupported)
+
+### 17.4 Complexity Metrics — Go & C#
+
+**Verify:**
+
+* [ ] Go: `if`, `for`, `expression_switch_statement`, `expression_case` counted as branches
+* [ ] C#: `if`, `for`, `foreach`, `while`, `do`, `switch_section`, `catch_clause`, `conditional_expression` counted
+* [ ] Base complexity = 1 for branchless functions/methods
+* [ ] Only exported/public symbols get complexity metrics
+
+### 17.5 Graceful Degradation — tree-sitter Not Installed
+
+Verify that TypeScript indexing still works when tree-sitter native modules are missing.
+
+**Verify:**
+
+* [ ] `registerTreeSitterAdapters()` uses lazy `require()` with try/catch — no top-level imports
+* [ ] If `tree-sitter-go` is not installed, stderr logs `Go adapter unavailable` and TypeScript indexing continues
+* [ ] If `tree-sitter-c-sharp` is not installed, stderr logs `C# adapter unavailable` and TypeScript indexing continues
+* [ ] `ctxo index --check` registers adapters and uses dynamic extension filter (not hardcoded)
+* [ ] Watch command uses local `const supportedExtensions` (no mutable module-level global)
+
+***
+
+## Step 18: Staleness Detection Check
 
 Run any tool immediately after a fresh index build.
 
@@ -842,7 +999,7 @@ Run any tool immediately after a fresh index build.
 
 ***
 
-## Step 18: Edge Kind Coverage Check
+## Step 19: Edge Kind Coverage Check
 
 From Step 3 metrics, verify edge kind diversity.
 
@@ -906,7 +1063,7 @@ console.log(intraClassCalls > 0 ? 'PASS: this.method() edges detected' : 'INFO: 
 
 ***
 
-## Step 19: Run Unit Tests
+## Step 20: Run Unit Tests
 
 ```Shell
 npx vitest run 2>&1 | tail -10
@@ -919,11 +1076,11 @@ npx vitest run 2>&1 | tail -10
 
 ***
 
-## Step 20: Manual vs MCP Tool Comparison
+## Step 21: Manual vs MCP Tool Comparison
 
 For each tool, manually replicate the same result using standard AI assistant tools (Read, Grep, Glob, Bash). Measure the cost and compare.
 
-### 20.1 Manual: Logic Slice — LogicSliceQuery
+### 21.1 Manual: Logic Slice — LogicSliceQuery
 
 Replicate `get_logic_slice` L3 result manually:
 
@@ -943,7 +1100,7 @@ Replicate `get_logic_slice` L3 result manually:
 
 ***
 
-### 20.2 Manual: Blast Radius — SymbolNode
+### 21.2 Manual: Blast Radius — SymbolNode
 
 Replicate `get_blast_radius` result manually:
 
@@ -964,7 +1121,7 @@ Replicate `get_blast_radius` result manually:
 
 ***
 
-### 20.3 Manual: Architectural Overlay
+### 21.3 Manual: Architectural Overlay
 
 Replicate `get_architectural_overlay` result manually:
 
@@ -983,7 +1140,7 @@ Replicate `get_architectural_overlay` result manually:
 
 ***
 
-### 20.4 Manual: Why Context — MaskingPipeline
+### 21.4 Manual: Why Context — MaskingPipeline
 
 Replicate `get_why_context` result manually:
 
@@ -1001,7 +1158,7 @@ Replicate `get_why_context` result manually:
 
 ***
 
-### 20.5 Manual: Change Intelligence — SqliteStorageAdapter
+### 21.5 Manual: Change Intelligence — SqliteStorageAdapter
 
 Replicate `get_change_intelligence` result manually:
 
@@ -1021,7 +1178,7 @@ Replicate `get_change_intelligence` result manually:
 
 ***
 
-### 20.6 Manual: Dead Code Detection
+### 21.6 Manual: Dead Code Detection
 
 Replicate `find_dead_code` result manually:
 
@@ -1043,7 +1200,7 @@ Replicate `find_dead_code` result manually:
 
 ***
 
-### 20.7 Manual: Search Symbols
+### 21.7 Manual: Search Symbols
 
 Replicate `search_symbols` result manually:
 
@@ -1063,7 +1220,7 @@ Replicate `search_symbols` result manually:
 
 ***
 
-### 20.8 Manual: Changed Symbols
+### 21.8 Manual: Changed Symbols
 
 Replicate `get_changed_symbols` result manually:
 
@@ -1082,7 +1239,7 @@ Replicate `get_changed_symbols` result manually:
 
 ***
 
-### 20.9 Manual: Find Importers
+### 21.9 Manual: Find Importers
 
 Replicate `find_importers` result manually:
 
@@ -1102,7 +1259,7 @@ Replicate `find_importers` result manually:
 
 ***
 
-### 20.10 Manual: Class Hierarchy
+### 21.10 Manual: Class Hierarchy
 
 Replicate `get_class_hierarchy` result manually:
 
@@ -1122,7 +1279,7 @@ Replicate `get_class_hierarchy` result manually:
 
 ***
 
-### 20.11 Comparison Table
+### 21.11 Comparison Table
 
 Fill in after completing both MCP and manual runs:
 
@@ -1143,7 +1300,7 @@ Fill in after completing both MCP and manual runs:
 | `get_symbol_importance`     | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
 | **TOTAL**                   | **\_\_\_** | **13**    | **\_\_\_**    | **\_\_\_**   | **\_\_\_x**   | **\_\_\_x**  |
 
-### 20.13 Manual: Symbol Importance
+### 21.13 Manual: Symbol Importance
 
 Replicate `get_symbol_importance` result manually:
 
@@ -1165,7 +1322,7 @@ Replicate `get_symbol_importance` result manually:
 
 ***
 
-### 20.14 Context Window Budget
+### 21.14 Context Window Budget
 
 ```
 Manual approach:
@@ -1243,14 +1400,25 @@ After completing all steps, fill in:
 | 17b| `get_symbol_importance` — kind and filePattern filters work        |           |
 | 17c| `get_symbol_importance` — converged=true, iterations reasonable    |           |
 | 17d| `get_symbol_importance` — limit caps results count                 |           |
+| 17 | Go adapter: struct→class, interface, function, method extracted      |           |
+| 17a| Go adapter: unexported (lowercase) symbols skipped                   |           |
+| 17b| Go adapter: import edges extracted from `import` declarations        |           |
+| 17c| C# adapter: class, interface, method, enum, constructor extracted    |           |
+| 17d| C# adapter: private methods skipped, namespace qualification correct |           |
+| 17e| C# adapter: using→imports, base_list→extends/implements edges        |           |
+| 17f| Registry: `.go`→syntax, `.cs`→syntax, `.ts`→full, `.py`→none        |           |
+| 17g| Dynamic extension filter: `getSupportedExtensions()` includes all    |           |
+| 17h| Graceful degradation: TS indexing works without tree-sitter installed |           |
+| 17i| `runCheck()` uses registry + dynamic extensions (not hardcoded)       |           |
+| 17j| Watch command uses local scoped extensions (no mutable global)        |           |
 | 18 | Staleness detection — no false positive on fresh index              |           |
-| 19 | Unit tests pass (595+)                                              |           |
+| 19 | Unit tests pass (646+)                                              |           |
 | 20 | Git hash masking — visible or redacted (log status)                 |           |
 | 21 | Manual vs MCP comparison table filled with measured data            |           |
 | 22 | Token savings > 10x for aggregate                                   |           |
 | 23 | Context budget chart shows MCP uses < 1% of 1M window               |           |
 
-**Result:** \_\_\_/58 checks passed
+**Result:** \_\_\_/69 checks passed
 
 ***
 

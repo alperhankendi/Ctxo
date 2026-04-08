@@ -1,0 +1,199 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.isSupported::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.setSymbolRegistry::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.parse::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.buildSymbolId::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.nodeToLineRange::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.countCyclomaticComplexity::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.extractSymbols::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.extractEdges::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.extractComplexity::method"
+    }
+  ],
+  "contentHash": "a4dbeecf851157b00f98796473bfa62496a88b4f065a4dba796cf2d78add6388",
+  "edges": [
+    {
+      "from": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::GraphEdge::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::ComplexityMetrics::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolKind::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class",
+      "kind": "imports",
+      "to": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class",
+      "kind": "implements",
+      "to": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface"
+    },
+    {
+      "from": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class",
+      "kind": "uses",
+      "to": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface"
+    },
+    {
+      "from": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::SymbolKind::type"
+    },
+    {
+      "from": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::SymbolNode::type"
+    },
+    {
+      "from": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::GraphEdge::type"
+    },
+    {
+      "from": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::ComplexityMetrics::interface"
+    }
+  ],
+  "file": "src/adapters/language/tree-sitter-adapter.ts",
+  "intent": [],
+  "lastModified": 1775606924,
+  "symbols": [
+    {
+      "endLine": 66,
+      "endOffset": 2063,
+      "kind": "class",
+      "name": "TreeSitterAdapter",
+      "startLine": 6,
+      "startOffset": 307,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class"
+    },
+    {
+      "endLine": 21,
+      "endOffset": 827,
+      "kind": "method",
+      "name": "TreeSitterAdapter.isSupported",
+      "startLine": 18,
+      "startOffset": 669,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.isSupported::method"
+    },
+    {
+      "endLine": 25,
+      "endOffset": 931,
+      "kind": "method",
+      "name": "TreeSitterAdapter.setSymbolRegistry",
+      "startLine": 23,
+      "startOffset": 831,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.setSymbolRegistry::method"
+    },
+    {
+      "endLine": 29,
+      "endOffset": 1016,
+      "kind": "method",
+      "name": "TreeSitterAdapter.parse",
+      "startLine": 27,
+      "startOffset": 935,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.parse::method"
+    },
+    {
+      "endLine": 33,
+      "endOffset": 1151,
+      "kind": "method",
+      "name": "TreeSitterAdapter.buildSymbolId",
+      "startLine": 31,
+      "startOffset": 1020,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.buildSymbolId::method"
+    },
+    {
+      "endLine": 47,
+      "endOffset": 1469,
+      "kind": "method",
+      "name": "TreeSitterAdapter.nodeToLineRange",
+      "startLine": 35,
+      "startOffset": 1155,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.nodeToLineRange::method"
+    },
+    {
+      "endLine": 61,
+      "endOffset": 1828,
+      "kind": "method",
+      "name": "TreeSitterAdapter.countCyclomaticComplexity",
+      "startLine": 49,
+      "startOffset": 1473,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.countCyclomaticComplexity::method"
+    },
+    {
+      "endLine": 63,
+      "endOffset": 1904,
+      "kind": "method",
+      "name": "TreeSitterAdapter.extractSymbols",
+      "startLine": 63,
+      "startOffset": 1832,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.extractSymbols::method"
+    },
+    {
+      "endLine": 64,
+      "endOffset": 1976,
+      "kind": "method",
+      "name": "TreeSitterAdapter.extractEdges",
+      "startLine": 64,
+      "startOffset": 1907,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.extractEdges::method"
+    },
+    {
+      "endLine": 65,
+      "endOffset": 2061,
+      "kind": "method",
+      "name": "TreeSitterAdapter.extractComplexity",
+      "startLine": 65,
+      "startOffset": 1979,
+      "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.extractComplexity::method"
+    }
+  ]
+}

@@ -1,0 +1,253 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractSymbols::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractEdges::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractComplexity::method"
+    },
+    {
+      "cyclomatic": 13,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitSymbols::method"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractMethodSymbols::method"
+    },
+    {
+      "cyclomatic": 20,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitEdges::method"
+    },
+    {
+      "cyclomatic": 15,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitComplexity::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.isPublic::method"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.resolveBaseType::method"
+    }
+  ],
+  "contentHash": "ae4352eb12c340f4d39a7bcf6fac42ad2f727519e9f724868bf765a29f21dc66",
+  "edges": [
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter::class",
+      "kind": "imports",
+      "to": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class"
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::GraphEdge::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::ComplexityMetrics::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolKind::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter::class",
+      "kind": "extends",
+      "to": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class"
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitSymbols::method"
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractSymbols::method"
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitEdges::method"
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractComplexity::method",
+      "kind": "calls",
+      "to": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitComplexity::method"
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitSymbols::method",
+      "kind": "calls",
+      "to": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.isPublic::method"
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitSymbols::method",
+      "kind": "calls",
+      "to": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractMethodSymbols::method"
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractMethodSymbols::method",
+      "kind": "calls",
+      "to": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.isPublic::method"
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitEdges::method",
+      "kind": "calls",
+      "to": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.isPublic::method"
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitEdges::method",
+      "kind": "calls",
+      "to": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.resolveBaseType::method"
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitComplexity::method",
+      "kind": "calls",
+      "to": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.isPublic::method"
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitComplexity::method",
+      "kind": "calls",
+      "to": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.isPublic::method"
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter::class",
+      "kind": "uses",
+      "to": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class"
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::SymbolNode::type"
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::GraphEdge::type"
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::ComplexityMetrics::interface"
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::SymbolKind::type"
+    }
+  ],
+  "file": "src/adapters/language/csharp-adapter.ts",
+  "intent": [],
+  "lastModified": 1775606924,
+  "symbols": [
+    {
+      "endLine": 283,
+      "endOffset": 9420,
+      "kind": "class",
+      "name": "CSharpAdapter",
+      "startLine": 11,
+      "startOffset": 446,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter::class"
+    },
+    {
+      "endLine": 28,
+      "endOffset": 987,
+      "kind": "method",
+      "name": "CSharpAdapter.extractSymbols",
+      "startLine": 18,
+      "startOffset": 596,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractSymbols::method"
+    },
+    {
+      "endLine": 44,
+      "endOffset": 1562,
+      "kind": "method",
+      "name": "CSharpAdapter.extractEdges",
+      "startLine": 30,
+      "startOffset": 991,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractEdges::method"
+    },
+    {
+      "endLine": 56,
+      "endOffset": 1981,
+      "kind": "method",
+      "name": "CSharpAdapter.extractComplexity",
+      "startLine": 46,
+      "startOffset": 1566,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractComplexity::method"
+    },
+    {
+      "endLine": 116,
+      "endOffset": 3770,
+      "kind": "method",
+      "name": "CSharpAdapter.visitSymbols",
+      "startLine": 60,
+      "startOffset": 2052,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitSymbols::method"
+    },
+    {
+      "endLine": 144,
+      "endOffset": 4633,
+      "kind": "method",
+      "name": "CSharpAdapter.extractMethodSymbols",
+      "startLine": 118,
+      "startOffset": 3774,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractMethodSymbols::method"
+    },
+    {
+      "endLine": 207,
+      "endOffset": 6860,
+      "kind": "method",
+      "name": "CSharpAdapter.visitEdges",
+      "startLine": 148,
+      "startOffset": 4704,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitEdges::method"
+    },
+    {
+      "endLine": 260,
+      "endOffset": 8573,
+      "kind": "method",
+      "name": "CSharpAdapter.visitComplexity",
+      "startLine": 211,
+      "startOffset": 6931,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitComplexity::method"
+    },
+    {
+      "endLine": 270,
+      "endOffset": 8878,
+      "kind": "method",
+      "name": "CSharpAdapter.isPublic",
+      "startLine": 264,
+      "startOffset": 8644,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.isPublic::method"
+    },
+    {
+      "endLine": 282,
+      "endOffset": 9418,
+      "kind": "method",
+      "name": "CSharpAdapter.resolveBaseType",
+      "startLine": 272,
+      "startOffset": 8882,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.resolveBaseType::method"
+    }
+  ]
+}

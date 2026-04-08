@@ -6,11 +6,15 @@
       "symbolId": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.register::method"
     },
     {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.getSupportedExtensions::method"
+    },
+    {
       "cyclomatic": 3,
       "symbolId": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.getAdapter::method"
     }
   ],
-  "contentHash": "18f6f6a976566bb264f726e81a4fec2fcc555a8c5705f333dba5b8a836cf28cb",
+  "contentHash": "a58c26089b561753ea4131186337916af2a57ea24dacfa99a5a1478ced9be0b0",
   "edges": [
     {
       "from": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class",
@@ -33,11 +37,11 @@
       "message": "Add TypeScript language adapter with ts-morph symbol/edge/complexity extraction"
     }
   ],
-  "lastModified": 1775598887,
+  "lastModified": 1775606924,
   "symbols": [
     {
-      "endLine": 20,
-      "endOffset": 630,
+      "endLine": 24,
+      "endOffset": 730,
       "kind": "class",
       "name": "LanguageAdapterRegistry",
       "startLine": 3,
@@ -54,12 +58,21 @@
       "symbolId": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.register::method"
     },
     {
-      "endLine": 19,
-      "endOffset": 628,
+      "endLine": 14,
+      "endOffset": 494,
       "kind": "method",
-      "name": "LanguageAdapterRegistry.getAdapter",
+      "name": "LanguageAdapterRegistry.getSupportedExtensions",
       "startLine": 12,
       "startOffset": 398,
+      "symbolId": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.getSupportedExtensions::method"
+    },
+    {
+      "endLine": 23,
+      "endOffset": 728,
+      "kind": "method",
+      "name": "LanguageAdapterRegistry.getAdapter",
+      "startLine": 16,
+      "startOffset": 498,
       "symbolId": "src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.getAdapter::method"
     }
   ]

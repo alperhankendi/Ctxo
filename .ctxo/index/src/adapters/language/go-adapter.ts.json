@@ -1,0 +1,234 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 11,
+      "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractSymbols::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractEdges::method"
+    },
+    {
+      "cyclomatic": 10,
+      "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractComplexity::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.isExported::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractReceiverType::method"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractTypeSymbols::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractImportEdges::method"
+    },
+    {
+      "cyclomatic": 12,
+      "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.findFirstExportedSymbolId::method"
+    }
+  ],
+  "contentHash": "105deb6fa7de3122c2354263bf7ca153fca78a394693912231995c7272dc9ad3",
+  "edges": [
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter::class",
+      "kind": "imports",
+      "to": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class"
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::GraphEdge::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::ComplexityMetrics::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter::class",
+      "kind": "extends",
+      "to": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class"
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "src/adapters/language/go-adapter.ts::GoAdapter.isExported::method"
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "src/adapters/language/go-adapter.ts::GoAdapter.isExported::method"
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "src/adapters/language/go-adapter.ts::GoAdapter.extractReceiverType::method"
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "src/adapters/language/go-adapter.ts::GoAdapter.extractTypeSymbols::method"
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "src/adapters/language/go-adapter.ts::GoAdapter.findFirstExportedSymbolId::method"
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "src/adapters/language/go-adapter.ts::GoAdapter.extractImportEdges::method"
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter.extractComplexity::method",
+      "kind": "calls",
+      "to": "src/adapters/language/go-adapter.ts::GoAdapter.isExported::method"
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter.extractComplexity::method",
+      "kind": "calls",
+      "to": "src/adapters/language/go-adapter.ts::GoAdapter.isExported::method"
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter.extractComplexity::method",
+      "kind": "calls",
+      "to": "src/adapters/language/go-adapter.ts::GoAdapter.extractReceiverType::method"
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter.extractTypeSymbols::method",
+      "kind": "calls",
+      "to": "src/adapters/language/go-adapter.ts::GoAdapter.isExported::method"
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter.findFirstExportedSymbolId::method",
+      "kind": "calls",
+      "to": "src/adapters/language/go-adapter.ts::GoAdapter.isExported::method"
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter.findFirstExportedSymbolId::method",
+      "kind": "calls",
+      "to": "src/adapters/language/go-adapter.ts::GoAdapter.isExported::method"
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter::class",
+      "kind": "uses",
+      "to": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class"
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::SymbolNode::type"
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::GraphEdge::type"
+    },
+    {
+      "from": "src/adapters/language/go-adapter.ts::GoAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::ComplexityMetrics::interface"
+    }
+  ],
+  "file": "src/adapters/language/go-adapter.ts",
+  "intent": [],
+  "lastModified": 1775606924,
+  "symbols": [
+    {
+      "endLine": 221,
+      "endOffset": 7703,
+      "kind": "class",
+      "name": "GoAdapter",
+      "startLine": 12,
+      "startOffset": 437,
+      "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter::class"
+    },
+    {
+      "endLine": 63,
+      "endOffset": 2153,
+      "kind": "method",
+      "name": "GoAdapter.extractSymbols",
+      "startLine": 19,
+      "startOffset": 579,
+      "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractSymbols::method"
+    },
+    {
+      "endLine": 85,
+      "endOffset": 2863,
+      "kind": "method",
+      "name": "GoAdapter.extractEdges",
+      "startLine": 65,
+      "startOffset": 2157,
+      "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractEdges::method"
+    },
+    {
+      "endLine": 121,
+      "endOffset": 4244,
+      "kind": "method",
+      "name": "GoAdapter.extractComplexity",
+      "startLine": 87,
+      "startOffset": 2867,
+      "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractComplexity::method"
+    },
+    {
+      "endLine": 127,
+      "endOffset": 4464,
+      "kind": "method",
+      "name": "GoAdapter.isExported",
+      "startLine": 125,
+      "startOffset": 4315,
+      "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.isExported::method"
+    },
+    {
+      "endLine": 146,
+      "endOffset": 5139,
+      "kind": "method",
+      "name": "GoAdapter.extractReceiverType",
+      "startLine": 129,
+      "startOffset": 4468,
+      "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractReceiverType::method"
+    },
+    {
+      "endLine": 170,
+      "endOffset": 5973,
+      "kind": "method",
+      "name": "GoAdapter.extractTypeSymbols",
+      "startLine": 148,
+      "startOffset": 5143,
+      "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractTypeSymbols::method"
+    },
+    {
+      "endLine": 195,
+      "endOffset": 6669,
+      "kind": "method",
+      "name": "GoAdapter.extractImportEdges",
+      "startLine": 172,
+      "startOffset": 5977,
+      "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractImportEdges::method"
+    },
+    {
+      "endLine": 220,
+      "endOffset": 7701,
+      "kind": "method",
+      "name": "GoAdapter.findFirstExportedSymbolId",
+      "startLine": 197,
+      "startOffset": 6673,
+      "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.findFirstExportedSymbolId::method"
+    }
+  ]
+}

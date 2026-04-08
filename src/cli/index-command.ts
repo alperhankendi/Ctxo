@@ -14,10 +14,12 @@ import type { FileIndex, SymbolKind } from '../core/types.js';
 export class IndexCommand {
   private readonly projectRoot: string;
   ctxoRoot: string;
+  private supportedExtensions: Set<string>;
 
   constructor(projectRoot: string, ctxoRoot?: string) {
     this.projectRoot = projectRoot;
     this.ctxoRoot = ctxoRoot ?? join(projectRoot, '.ctxo');
+    this.supportedExtensions = new Set(['.ts', '.tsx', '.js', '.jsx', '.go', '.cs']);
   }
 
   async run(options: { file?: string; check?: boolean; skipSideEffects?: boolean; skipHistory?: boolean; maxHistory?: number } = {}): Promise<void> {
@@ -30,6 +32,8 @@ export class IndexCommand {
     const registry = new LanguageAdapterRegistry();
     const tsMorphAdapter = new TsMorphAdapter();
     registry.register(tsMorphAdapter);
+    this.registerTreeSitterAdapters(registry);
+    this.supportedExtensions = registry.getSupportedExtensions();
 
     const writer = new JsonIndexWriter(this.ctxoRoot);
     const schemaManager = new SchemaManager(this.ctxoRoot);
@@ -179,6 +183,21 @@ export class IndexCommand {
     console.error(`[ctxo] Index complete: ${processed} files indexed`);
   }
 
+  private registerTreeSitterAdapters(registry: LanguageAdapterRegistry): void {
+    try {
+      const { GoAdapter } = require('../adapters/language/go-adapter.js');
+      registry.register(new GoAdapter());
+    } catch {
+      console.error('[ctxo] Go adapter unavailable (tree-sitter-go not installed)');
+    }
+    try {
+      const { CSharpAdapter } = require('../adapters/language/csharp-adapter.js');
+      registry.register(new CSharpAdapter());
+    } catch {
+      console.error('[ctxo] C# adapter unavailable (tree-sitter-c-sharp not installed)');
+    }
+  }
+
   private discoverFilesIn(root: string): string[] {
     try {
       const output = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard'], {
@@ -244,11 +263,17 @@ export class IndexCommand {
 
   private isSupportedExtension(filePath: string): boolean {
     const ext = extname(filePath).toLowerCase();
-    return ['.ts', '.tsx', '.js', '.jsx'].includes(ext);
+    return this.supportedExtensions.has(ext);
   }
 
   private async runCheck(): Promise<void> {
     console.error('[ctxo] Checking index freshness...');
+
+    // Register adapters so supportedExtensions includes .go/.cs
+    const registry = new LanguageAdapterRegistry();
+    registry.register(new TsMorphAdapter());
+    this.registerTreeSitterAdapters(registry);
+    this.supportedExtensions = registry.getSupportedExtensions();
 
     const hasher = new ContentHasher();
     const files = this.discoverFilesIn(this.projectRoot);
@@ -259,8 +284,7 @@ export class IndexCommand {
     let staleCount = 0;
 
     for (const filePath of files) {
-      const ext = extname(filePath).toLowerCase();
-      if (!['.ts', '.tsx', '.js', '.jsx'].includes(ext)) continue;
+      if (!this.isSupportedExtension(filePath)) continue;
 
       const relativePath = relative(this.projectRoot, filePath).replace(/\\/g, '/');
       const indexed = indexedMap.get(relativePath);

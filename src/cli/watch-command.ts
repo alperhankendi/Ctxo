@@ -10,7 +10,6 @@ import { SimpleGitAdapter } from '../adapters/git/simple-git-adapter.js';
 import { RevertDetector } from '../core/why-context/revert-detector.js';
 import type { FileIndex, CommitIntent, AntiPattern } from '../core/types.js';
 
-const SUPPORTED_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx']);
 const DEBOUNCE_MS = 300;
 
 export class WatchCommand {
@@ -27,6 +26,8 @@ export class WatchCommand {
 
     const registry = new LanguageAdapterRegistry();
     registry.register(new TsMorphAdapter());
+    this.registerTreeSitterAdapters(registry);
+    const supportedExtensions = registry.getSupportedExtensions();
 
     const writer = new JsonIndexWriter(this.ctxoRoot);
     const storage = new SqliteStorageAdapter(this.ctxoRoot);
@@ -39,9 +40,6 @@ export class WatchCommand {
     const pendingFiles = new Map<string, NodeJS.Timeout>();
 
     const reindexFile = async (filePath: string) => {
-      const ext = extname(filePath).toLowerCase();
-      if (!SUPPORTED_EXTENSIONS.has(ext)) return;
-
       const adapter = registry.getAdapter(filePath);
       if (!adapter) return;
 
@@ -97,7 +95,7 @@ export class WatchCommand {
     watcher.start((event, filePath) => {
       if (event === 'unlink') {
         const ext = extname(filePath).toLowerCase();
-        if (!SUPPORTED_EXTENSIONS.has(ext)) return;
+        if (!supportedExtensions.has(ext)) return;
 
         const relativePath = relative(this.projectRoot, filePath).replace(/\\/g, '/');
         writer.delete(relativePath);
@@ -124,5 +122,20 @@ export class WatchCommand {
 
     process.on('SIGINT', cleanup);
     process.on('SIGTERM', cleanup);
+  }
+
+  private registerTreeSitterAdapters(registry: LanguageAdapterRegistry): void {
+    try {
+      const { GoAdapter } = require('../adapters/language/go-adapter.js');
+      registry.register(new GoAdapter());
+    } catch {
+      console.error('[ctxo] Go adapter unavailable (tree-sitter-go not installed)');
+    }
+    try {
+      const { CSharpAdapter } = require('../adapters/language/csharp-adapter.js');
+      registry.register(new CSharpAdapter());
+    } catch {
+      console.error('[ctxo] C# adapter unavailable (tree-sitter-c-sharp not installed)');
+    }
   }
 }

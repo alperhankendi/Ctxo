@@ -10,6 +10,10 @@ export class LanguageAdapterRegistry {
     }
   }
 
+  getSupportedExtensions(): Set<string> {
+    return new Set(this.adaptersByExtension.keys());
+  }
+
   getAdapter(filePath: string): ILanguageAdapter | undefined {
     if (!filePath) return undefined;
 

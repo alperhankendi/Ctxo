@@ -7,7 +7,7 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   target: 'node20',
-  external: ['tree-sitter'],
+  external: ['tree-sitter', 'tree-sitter-go', 'tree-sitter-c-sharp'],
   banner: {
     js: '#!/usr/bin/env node',
   },

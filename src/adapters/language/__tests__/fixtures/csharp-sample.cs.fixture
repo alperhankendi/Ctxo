@@ -1,0 +1,40 @@
+using System;
+using System.Collections.Generic;
+
+namespace Payment
+{
+    public interface IPaymentProcessor
+    {
+        PaymentResult Process(decimal amount);
+    }
+
+    public class PaymentResult
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
+    }
+
+    public class CardProcessor : IPaymentProcessor
+    {
+        private readonly string _gateway;
+
+        public CardProcessor(string gateway)
+        {
+            _gateway = gateway;
+        }
+
+        public PaymentResult Process(decimal amount)
+        {
+            if (amount > 0)
+            {
+                return new PaymentResult { Success = true, Message = "OK" };
+            }
+            return new PaymentResult { Success = false };
+        }
+
+        private void Log(string message)
+        {
+            Console.WriteLine(message);
+        }
+    }
+}

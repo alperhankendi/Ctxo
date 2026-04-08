@@ -1,0 +1,16 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "ecb306017ce8d581c210b4ae5928122305e22f2b281d5bd83de5f1f8da4a10d9",
+  "edges": [
+    {
+      "from": "src/adapters/language/__tests__/go-adapter.test.ts::go-adapter.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/language/go-adapter.ts::GoAdapter::class"
+    }
+  ],
+  "file": "src/adapters/language/__tests__/go-adapter.test.ts",
+  "intent": [],
+  "lastModified": 1775606924,
+  "symbols": []
+}
