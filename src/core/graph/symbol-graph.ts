@@ -10,9 +10,9 @@ export class SymbolGraph {
   addNode(node: SymbolNode): void {
     this.nodes.set(node.symbolId, node);
     // Index by file::name (ignoring kind) for fuzzy edge resolution
-    const parts = node.symbolId.split('::');
-    if (parts.length >= 2) {
-      this.nodesByFileAndName.set(`${parts[0]}::${parts[1]}`, node);
+    const [p0, p1] = node.symbolId.split('::');
+    if (p0 !== undefined && p1 !== undefined) {
+      this.nodesByFileAndName.set(`${p0}::${p1}`, node);
     }
   }
 
@@ -41,16 +41,16 @@ export class SymbolGraph {
 
   private resolveNodeId(id: string): string {
     if (this.nodes.has(id)) return id;
-    const parts = id.split('::');
-    if (parts.length >= 2) {
-      const fuzzyKey = `${parts[0]}::${parts[1]}`;
+    const [p0, p1] = id.split('::');
+    if (p0 !== undefined && p1 !== undefined) {
+      const fuzzyKey = `${p0}::${p1}`;
       const match = this.nodesByFileAndName.get(fuzzyKey);
       if (match) return match.symbolId;
 
       // Try .js → .ts extension swap (handles unresolved module specifiers)
-      const jsToTs = parts[0].replace(/\.js$/, '.ts');
-      if (jsToTs !== parts[0]) {
-        const altKey = `${jsToTs}::${parts[1]}`;
+      const jsToTs = p0.replace(/\.js$/, '.ts');
+      if (jsToTs !== p0) {
+        const altKey = `${jsToTs}::${p1}`;
         const altMatch = this.nodesByFileAndName.get(altKey);
         if (altMatch) return altMatch.symbolId;
       }
@@ -59,15 +59,15 @@ export class SymbolGraph {
   }
 
   private resolveNodeFuzzy(id: string): SymbolNode | undefined {
-    const parts = id.split('::');
-    if (parts.length >= 2) {
-      const match = this.nodesByFileAndName.get(`${parts[0]}::${parts[1]}`);
+    const [p0, p1] = id.split('::');
+    if (p0 !== undefined && p1 !== undefined) {
+      const match = this.nodesByFileAndName.get(`${p0}::${p1}`);
       if (match) return match;
 
       // Try .js → .ts extension swap (consistent with resolveNodeId)
-      const jsToTs = parts[0].replace(/\.js$/, '.ts');
-      if (jsToTs !== parts[0]) {
-        return this.nodesByFileAndName.get(`${jsToTs}::${parts[1]}`);
+      const jsToTs = p0.replace(/\.js$/, '.ts');
+      if (jsToTs !== p0) {
+        return this.nodesByFileAndName.get(`${jsToTs}::${p1}`);
       }
     }
     return undefined;
