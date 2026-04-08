@@ -133,27 +133,20 @@ export class IndexCommand {
     // Clean up pre-loaded sources
     tsMorphAdapter.clearProjectSources();
 
-    // Phase 2: Batch git history (IO-bound, parallel with concurrency limit)
+    // Phase 2: Batch git history (single git call for all files)
     if (!options.skipHistory && pendingIndices.length > 0) {
-      const CONCURRENCY = 10;
-      for (let i = 0; i < pendingIndices.length; i += CONCURRENCY) {
-        const batch = pendingIndices.slice(i, i + CONCURRENCY);
-        await Promise.all(
-          batch.map(async ({ relativePath, fileIndex }) => {
-            try {
-              const commits = await gitAdapter.getCommitHistory(relativePath, options.maxHistory ?? 20);
-              fileIndex.intent = commits.map((c) => ({
-                hash: c.hash,
-                message: c.message,
-                date: c.date,
-                kind: 'commit' as const,
-              }));
-              fileIndex.antiPatterns = revertDetector.detect(commits);
-            } catch {
-              // Warn-and-continue: git history is optional
-            }
-          }),
-        );
+      const maxHistory = options.maxHistory ?? 20;
+      const batchHistory = await gitAdapter.getBatchHistory?.(maxHistory) ?? new Map<string, import('../core/types.js').CommitRecord[]>();
+
+      for (const { relativePath, fileIndex } of pendingIndices) {
+        const commits = batchHistory.get(relativePath) ?? [];
+        fileIndex.intent = commits.map((c) => ({
+          hash: c.hash,
+          message: c.message,
+          date: c.date,
+          kind: 'commit' as const,
+        }));
+        fileIndex.antiPatterns = revertDetector.detect(commits);
       }
     }
 

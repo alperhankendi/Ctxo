@@ -38,6 +38,38 @@ export class SimpleGitAdapter implements IGitPort {
     }
   }
 
+  async getBatchHistory(maxCount = 20): Promise<Map<string, CommitRecord[]>> {
+    try {
+      const log = await this.git.log({ maxCount: maxCount * 50, '--name-only': null });
+      const result = new Map<string, CommitRecord[]>();
+
+      for (const entry of log.all) {
+        const record: CommitRecord = {
+          hash: entry.hash,
+          message: entry.message,
+          date: entry.date,
+          author: entry.author_name,
+        };
+
+        const diff = entry.diff;
+        const files: string[] = diff?.files?.map((f: { file: string }) => f.file.replace(/\\/g, '/')) ?? [];
+
+        for (const file of files) {
+          let list = result.get(file);
+          if (!list) { list = []; result.set(file, list); }
+          if (list.length < maxCount) {
+            list.push(record);
+          }
+        }
+      }
+
+      return result;
+    } catch (err) {
+      console.error(`[ctxo:git] Batch history failed: ${(err as Error).message}`);
+      return new Map();
+    }
+  }
+
   async getChangedFiles(since: string): Promise<string[]> {
     try {
       const diff = await this.git.diffSummary([since]);
