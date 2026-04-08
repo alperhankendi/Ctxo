@@ -61,6 +61,18 @@ async function main(): Promise<void> {
   // Create MCP server
   const server = new McpServer({ name: 'ctxo', version: '0.1.0' });
 
+  // Register empty prompts/resources handlers so MCP clients that call
+  // listPrompts()/listResources() during init don't get -32601 errors.
+  const { ListPromptsRequestSchema, ListResourcesRequestSchema, ListResourceTemplatesRequestSchema } =
+    await import('@modelcontextprotocol/sdk/types.js');
+  server.server.registerCapabilities({
+    prompts: { listChanged: false },
+    resources: { listChanged: false },
+  });
+  server.server.setRequestHandler(ListPromptsRequestSchema, async () => ({ prompts: [] }));
+  server.server.setRequestHandler(ListResourcesRequestSchema, async () => ({ resources: [] }));
+  server.server.setRequestHandler(ListResourceTemplatesRequestSchema, async () => ({ resourceTemplates: [] }));
+
   // Staleness detection
   const { StalenessDetector } = await import('./core/staleness/staleness-detector.js');
   const staleness = new StalenessDetector(process.cwd(), ctxoRoot);
