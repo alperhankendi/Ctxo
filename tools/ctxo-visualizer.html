@@ -289,6 +289,7 @@
       <button class="tab" data-tab="heatmap">Heatmap<span class="badge" id="heatmapBadge">0</span></button>
       <button class="tab" data-tab="cochanges">Co-Changes<span class="badge" id="cochangeBadge">0</span></button>
       <button class="tab" data-tab="timeline">Timeline</button>
+      <button class="tab" data-tab="mcpexplorer">MCP Explorer</button>
       <button class="tab" data-tab="graph3d">3D Graph</button>
       <button class="tab" data-tab="diff">Diff</button>
     </div>
@@ -346,6 +347,33 @@
     <div class="panel" id="panel-timeline">
       <div class="timeline-container" id="timelineContainer">
         <div class="empty-state"><div class="es-icon">&#128197;</div><p>Load JSON files to see the commit timeline</p></div>
+      </div>
+    </div>
+    <div class="panel" id="panel-mcpexplorer">
+      <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+        <div style="padding:12px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <select id="mcpToolSelect" style="padding:6px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:12px;min-width:200px">
+            <option value="">-- Select a tool --</option>
+            <option value="search_symbols">search_symbols</option>
+            <option value="get_logic_slice">get_logic_slice</option>
+            <option value="get_blast_radius">get_blast_radius</option>
+            <option value="get_architectural_overlay">get_architectural_overlay</option>
+            <option value="get_why_context">get_why_context</option>
+            <option value="get_change_intelligence">get_change_intelligence</option>
+            <option value="find_dead_code">find_dead_code</option>
+            <option value="get_context_for_task">get_context_for_task</option>
+            <option value="get_ranked_context">get_ranked_context</option>
+            <option value="get_changed_symbols">get_changed_symbols</option>
+            <option value="find_importers">find_importers</option>
+            <option value="get_class_hierarchy">get_class_hierarchy</option>
+            <option value="get_symbol_importance">get_symbol_importance</option>
+            <option value="get_pr_impact">get_pr_impact</option>
+          </select>
+          <input id="mcpToolArgs" style="flex:1;padding:6px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:12px;font-family:monospace;min-width:200px" placeholder='{"pattern": ".*", "limit": 10}' />
+          <button id="mcpToolCallBtn" class="browse-btn" style="width:auto;margin:0;padding:6px 16px">Call</button>
+          <span id="mcpToolStatus" style="font-size:11px;color:var(--text3)"></span>
+        </div>
+        <div id="mcpToolResult" style="flex:1;overflow:auto;padding:12px;font-family:'Cascadia Code','Fira Code',monospace;font-size:11px;white-space:pre-wrap;color:var(--text2);background:var(--bg)"></div>
       </div>
     </div>
     <div class="panel" id="panel-graph3d">
@@ -1794,6 +1822,22 @@ async function mcpNotify(url, method) {
   await fetch(url, { method: 'POST', headers, body: JSON.stringify({ jsonrpc: '2.0', method }) });
 }
 
+// Helper: extract JSON from MCP tool response (skips stale warnings)
+function extractJson(res) {
+  if (!res?.result?.content?.length) return null;
+  if (res.result.isError) { console.warn('[MCP] Tool error:', res.result.content[0]?.text); return null; }
+  for (let i = res.result.content.length - 1; i >= 0; i--) {
+    const t = res.result.content[i].text;
+    if (t && (t.startsWith('{') || t.startsWith('['))) {
+      try { return JSON.parse(t); } catch (e) { console.warn('[MCP] JSON parse failed:', e); }
+    }
+  }
+  return null;
+}
+
+// Store MCP URL for tool explorer
+let mcpUrl = null;
+
 document.getElementById('mcpConnectBtn').addEventListener('click', async () => {
   const url = document.getElementById('mcpUrlInput').value.trim();
   const statusEl = document.getElementById('mcpStatus');
@@ -1801,96 +1845,155 @@ document.getElementById('mcpConnectBtn').addEventListener('click', async () => {
   if (!url) return;
 
   btn.disabled = true; btn.textContent = 'Connecting...';
-  statusEl.textContent = 'Initializing...';
+  statusEl.style.color = '';
 
   try {
-    // 1. Initialize MCP session
+    // 1. Initialize
     mcpSessionId = null;
-    statusEl.textContent = 'Initializing...';
+    statusEl.textContent = '1/7 Initializing...';
     const initRes = await mcpCall(url, 'initialize', {
-      protocolVersion: '2024-11-05',
-      capabilities: {},
+      protocolVersion: '2024-11-05', capabilities: {},
       clientInfo: { name: 'ctxo-visualizer', version: '1.0' },
     });
     if (!initRes || initRes.error) throw new Error(initRes?.error?.message || 'Init failed');
-    statusEl.textContent = 'Connected! Loading data...';
-
-    // 2. Send initialized notification
     await mcpNotify(url, 'notifications/initialized');
+    mcpUrl = url;
 
-    // Helper: extract JSON from MCP tool response (skips stale warnings)
-    function extractJson(res) {
-      console.log('[MCP] Raw response:', JSON.stringify(res, null, 2));
-      if (!res?.result?.content?.length) return null;
-      for (let i = res.result.content.length - 1; i >= 0; i--) {
-        const t = res.result.content[i].text;
-        if (t && (t.startsWith('{') || t.startsWith('['))) {
-          try { return JSON.parse(t); } catch (e) { console.warn('[MCP] JSON parse failed for item', i, e); }
-        }
-      }
-      return null;
-    }
-
-    // 2. Call search_symbols (paginated, max 100 per call)
-    console.log('[MCP] Calling search_symbols...');
-    let mcpSymbols = [];
-    const kinds = ['class', 'function', 'method', 'interface', 'type', 'variable'];
-    for (const kind of kinds) {
-      const res = await mcpCall(url, 'tools/call', {
-        name: 'search_symbols', arguments: { pattern: '.*', limit: 100, kind },
-      });
-      const data = extractJson(res);
-      const results = data?.results || [];
-      mcpSymbols.push(...results);
-      console.log('[MCP] search_symbols kind=' + kind + ':', results.length);
-    }
-    console.log('[MCP] Total symbols:', mcpSymbols.length);
-    statusEl.textContent = 'Found ' + mcpSymbols.length + ' symbols. Loading details...';
-
-    // 3. Call get_architectural_overlay
-    console.log('[MCP] Calling get_architectural_overlay...');
-    const overlayRes = await mcpCall(url, 'tools/call', {
-      name: 'get_architectural_overlay', arguments: {},
-    });
-    const overlayData = extractJson(overlayRes);
-    console.log('[MCP] Overlay:', overlayData ? 'OK' : 'empty');
-
-    // Build file index from overlay layers + symbols
     const fileMap = {};
     function ensureFile(fp) {
       if (!fileMap[fp]) fileMap[fp] = { file: fp, lastModified: Date.now()/1000, symbols: [], edges: [], intent: [], antiPatterns: [], complexity: [] };
       return fileMap[fp];
     }
-    // Add files from overlay
+
+    // 2. Architectural overlay (file list + layers)
+    statusEl.textContent = '2/7 Loading architecture...';
+    const overlayData = extractJson(await mcpCall(url, 'tools/call', { name: 'get_architectural_overlay', arguments: {} }));
     if (overlayData?.layers) {
       Object.entries(overlayData.layers).forEach(([layer, files]) => {
-        (files || []).forEach(fp => { const f = ensureFile(fp); f.layer = layer; });
+        (files || []).forEach(fp => { ensureFile(fp).layer = layer; });
       });
     }
-    // Add symbols
-    mcpSymbols.forEach(s => {
-      const filePath = s.symbolId ? s.symbolId.split('::')[0] : (s.file || 'unknown');
-      const f = ensureFile(filePath);
-      f.symbols.push({
-        symbolId: s.symbolId || filePath+'::'+s.name+'::'+s.kind,
-        name: s.name, kind: s.kind,
-        startLine: s.startLine || 0, endLine: s.endLine || 0,
+
+    // 3. Search symbols (by kind, max 100 each)
+    statusEl.textContent = '3/7 Loading symbols...';
+    let totalSyms = 0;
+    for (const kind of ['class', 'function', 'method', 'interface', 'type', 'variable']) {
+      const data = extractJson(await mcpCall(url, 'tools/call', { name: 'search_symbols', arguments: { pattern: '.*', limit: 100, kind } }));
+      (data?.results || []).forEach(s => {
+        const fp = s.symbolId ? s.symbolId.split('::')[0] : (s.file || 'unknown');
+        ensureFile(fp).symbols.push({ symbolId: s.symbolId, name: s.name, kind: s.kind, startLine: s.startLine || 0, endLine: s.endLine || 0 });
+        totalSyms++;
       });
-    });
+    }
+
+    // 4. Change intelligence (complexity)
+    statusEl.textContent = '4/7 Loading complexity (' + totalSyms + ' symbols)...';
+    const ciData = extractJson(await mcpCall(url, 'tools/call', { name: 'get_change_intelligence', arguments: { limit: 100 } }));
+    if (ciData?.results) {
+      ciData.results.forEach(r => {
+        const fp = r.file || (r.symbolId && r.symbolId.split('::')[0]);
+        if (fp) {
+          const f = ensureFile(fp);
+          if (r.cyclomatic != null) f.complexity.push({ symbolId: r.symbolId || fp, cyclomatic: r.cyclomatic });
+        }
+      });
+    }
+
+    // 5. Symbol importance (PageRank)
+    statusEl.textContent = '5/7 Loading symbol importance...';
+    const impData = extractJson(await mcpCall(url, 'tools/call', { name: 'get_symbol_importance', arguments: { limit: 50 } }));
+
+    // 6. Dead code
+    statusEl.textContent = '6/7 Detecting dead code...';
+    const deadData = extractJson(await mcpCall(url, 'tools/call', { name: 'find_dead_code', arguments: {} }));
+
+    // 7. Changed symbols (recent activity)
+    statusEl.textContent = '7/7 Loading recent changes...';
+    const changedData = extractJson(await mcpCall(url, 'tools/call', { name: 'get_changed_symbols', arguments: {} }));
 
     // Load into state
+    state.files = []; // clear previous
     const newFiles = Object.values(fileMap);
     newFiles.forEach(f => state.files.push(f));
     dedup();
 
-    statusEl.textContent = 'Connected! ' + newFiles.length + ' files, ' + mcpSymbols.length + ' symbols loaded via MCP.';
+    statusEl.textContent = 'Connected! ' + newFiles.length + ' files, ' + totalSyms + ' symbols via MCP';
     statusEl.style.color = 'var(--green)';
     updateAll();
   } catch (err) {
     statusEl.textContent = 'Error: ' + err.message;
     statusEl.style.color = 'var(--red)';
+    console.error('[MCP] Connect error:', err);
   }
   btn.disabled = false; btn.textContent = 'Connect';
+});
+
+// ═══════════════════════════════════════
+// MCP TOOL EXPLORER
+// ═══════════════════════════════════════
+document.getElementById('mcpToolCallBtn').addEventListener('click', async () => {
+  const tool = document.getElementById('mcpToolSelect').value;
+  const argsStr = document.getElementById('mcpToolArgs').value.trim();
+  const resultEl = document.getElementById('mcpToolResult');
+  const statusEl = document.getElementById('mcpToolStatus');
+
+  if (!tool) { statusEl.textContent = 'Select a tool first'; return; }
+  if (!mcpUrl) { statusEl.textContent = 'Connect to MCP server first'; return; }
+
+  let args = {};
+  if (argsStr) {
+    try { args = JSON.parse(argsStr); } catch { statusEl.textContent = 'Invalid JSON arguments'; return; }
+  }
+
+  statusEl.textContent = 'Calling ' + tool + '...';
+  resultEl.textContent = '';
+
+  try {
+    const t0 = performance.now();
+    const res = await mcpCall(mcpUrl, 'tools/call', { name: tool, arguments: args });
+    const elapsed = (performance.now() - t0).toFixed(0);
+
+    if (res?.result?.content) {
+      const parts = [];
+      res.result.content.forEach((c, i) => {
+        if (c.text) {
+          // Try to pretty-print JSON
+          try { parts.push(JSON.stringify(JSON.parse(c.text), null, 2)); }
+          catch { parts.push(c.text); }
+        }
+      });
+      resultEl.textContent = parts.join('\n\n---\n\n');
+    } else {
+      resultEl.textContent = JSON.stringify(res, null, 2);
+    }
+    statusEl.textContent = 'Done (' + elapsed + 'ms)' + (res?.result?.isError ? ' [ERROR]' : '');
+    statusEl.style.color = res?.result?.isError ? 'var(--red)' : 'var(--green)';
+  } catch (err) {
+    resultEl.textContent = 'Error: ' + err.message;
+    statusEl.textContent = 'Failed';
+    statusEl.style.color = 'var(--red)';
+  }
+});
+
+// Pre-fill args based on tool selection
+document.getElementById('mcpToolSelect').addEventListener('change', e => {
+  const defaults = {
+    search_symbols: '{"pattern": ".*", "limit": 10}',
+    get_logic_slice: '{"symbolId": "src/index.ts::main::function", "level": "L2"}',
+    get_blast_radius: '{"symbolId": "src/index.ts::main::function"}',
+    get_architectural_overlay: '{}',
+    get_why_context: '{"symbolId": "src/index.ts::main::function"}',
+    get_change_intelligence: '{"limit": 20}',
+    find_dead_code: '{}',
+    get_context_for_task: '{"taskType": "understand", "symbolId": "src/index.ts::main::function"}',
+    get_ranked_context: '{"query": "blast radius calculation", "tokenBudget": 2000}',
+    get_changed_symbols: '{}',
+    find_importers: '{"symbolId": "src/core/types.ts::SymbolNode::interface"}',
+    get_class_hierarchy: '{"symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"}',
+    get_symbol_importance: '{"limit": 10}',
+    get_pr_impact: '{}',
+  };
+  document.getElementById('mcpToolArgs').value = defaults[e.target.value] || '{}';
 });
 
 updateAll();
