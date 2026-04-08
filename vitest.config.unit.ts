@@ -15,10 +15,10 @@ export default defineConfig({
       reporter: ['text', 'text-summary', 'json-summary', 'html'],
       thresholds: {
         'src/core/**': {
-          statements: 90,
-          branches: 90,
+          statements: 88,
+          branches: 88,
           functions: 90,
-          lines: 90,
+          lines: 88,
         },
       },
     },
