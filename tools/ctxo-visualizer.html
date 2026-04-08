@@ -1831,14 +1831,20 @@ document.getElementById('mcpConnectBtn').addEventListener('click', async () => {
       return null;
     }
 
-    // 2. Call search_symbols to get all symbols
+    // 2. Call search_symbols (paginated, max 100 per call)
     console.log('[MCP] Calling search_symbols...');
-    const symRes = await mcpCall(url, 'tools/call', {
-      name: 'search_symbols', arguments: { pattern: '.*', limit: 500 },
-    });
-    const symData = extractJson(symRes);
-    const mcpSymbols = symData?.results || symData?.symbols || [];
-    console.log('[MCP] Got', mcpSymbols.length, 'symbols');
+    let mcpSymbols = [];
+    const kinds = ['class', 'function', 'method', 'interface', 'type', 'variable'];
+    for (const kind of kinds) {
+      const res = await mcpCall(url, 'tools/call', {
+        name: 'search_symbols', arguments: { pattern: '.*', limit: 100, kind },
+      });
+      const data = extractJson(res);
+      const results = data?.results || [];
+      mcpSymbols.push(...results);
+      console.log('[MCP] search_symbols kind=' + kind + ':', results.length);
+    }
+    console.log('[MCP] Total symbols:', mcpSymbols.length);
     statusEl.textContent = 'Found ' + mcpSymbols.length + ' symbols. Loading details...';
 
     // 3. Call get_architectural_overlay
@@ -1849,12 +1855,23 @@ document.getElementById('mcpConnectBtn').addEventListener('click', async () => {
     const overlayData = extractJson(overlayRes);
     console.log('[MCP] Overlay:', overlayData ? 'OK' : 'empty');
 
-    // Build file index from MCP data
+    // Build file index from overlay layers + symbols
     const fileMap = {};
+    function ensureFile(fp) {
+      if (!fileMap[fp]) fileMap[fp] = { file: fp, lastModified: Date.now()/1000, symbols: [], edges: [], intent: [], antiPatterns: [], complexity: [] };
+      return fileMap[fp];
+    }
+    // Add files from overlay
+    if (overlayData?.layers) {
+      Object.entries(overlayData.layers).forEach(([layer, files]) => {
+        (files || []).forEach(fp => { const f = ensureFile(fp); f.layer = layer; });
+      });
+    }
+    // Add symbols
     mcpSymbols.forEach(s => {
       const filePath = s.symbolId ? s.symbolId.split('::')[0] : (s.file || 'unknown');
-      if (!fileMap[filePath]) fileMap[filePath] = { file: filePath, lastModified: Date.now()/1000, symbols: [], edges: [], intent: [], antiPatterns: [], complexity: [] };
-      fileMap[filePath].symbols.push({
+      const f = ensureFile(filePath);
+      f.symbols.push({
         symbolId: s.symbolId || filePath+'::'+s.name+'::'+s.kind,
         name: s.name, kind: s.kind,
         startLine: s.startLine || 0, endLine: s.endLine || 0,
