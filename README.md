@@ -5,7 +5,7 @@
 AI coding assistants waste context window reading files one by one, still missing dependencies. Ctxo gives them the full picture in a single MCP call: symbol graphs, blast radius, git intent, and risk scores.
 
 ```
-Context per query set (8 tools, full codebase investigation):
+Context per query set (full codebase investigation):
 
 Manual   ████████████████████████████████████████  140,000 tokens
 Ctxo     █░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░    2,900 tokens  → 48x less
