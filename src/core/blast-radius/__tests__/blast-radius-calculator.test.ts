@@ -281,6 +281,69 @@ describe('BlastRadiusCalculator', () => {
     expect(result.impactedSymbols[0]!.edgeKinds).toEqual(['implements']);
   });
 
+  it('co-change boost upgrades potential to likely when frequency > 0.5', () => {
+    const graph = new SymbolGraph();
+    for (const id of ['src/a.ts::A::function', 'src/b.ts::B::class']) {
+      graph.addNode(makeNode(id));
+    }
+    graph.addEdge({ from: 'src/a.ts::A::function', to: 'src/b.ts::B::class', kind: 'imports' });
+
+    // Without co-change: imports → potential
+    const resultNoCo = calc.calculate(graph, 'src/b.ts::B::class');
+    expect(resultNoCo.impactedSymbols[0]!.confidence).toBe('potential');
+
+    // With co-change: high frequency → potential upgraded to likely
+    const coChangeMap = new Map<string, import('../../../core/types.js').CoChangeEntry[]>();
+    coChangeMap.set('src/b.ts', [{ file1: 'src/a.ts', file2: 'src/b.ts', sharedCommits: 10, frequency: 0.8 }]);
+
+    const resultWithCo = calc.calculate(graph, 'src/b.ts::B::class', coChangeMap);
+    expect(resultWithCo.impactedSymbols[0]!.confidence).toBe('likely');
+    expect(resultWithCo.impactedSymbols[0]!.coChangeFrequency).toBe(0.8);
+  });
+
+  it('co-change does not upgrade confirmed or likely confidence', () => {
+    const graph = new SymbolGraph();
+    for (const id of ['src/a.ts::A::function', 'src/b.ts::B::class']) {
+      graph.addNode(makeNode(id));
+    }
+    graph.addEdge({ from: 'src/a.ts::A::function', to: 'src/b.ts::B::class', kind: 'calls' });
+
+    const coChangeMap = new Map<string, import('../../../core/types.js').CoChangeEntry[]>();
+    coChangeMap.set('src/b.ts', [{ file1: 'src/a.ts', file2: 'src/b.ts', sharedCommits: 10, frequency: 0.9 }]);
+
+    const result = calc.calculate(graph, 'src/b.ts::B::class', coChangeMap);
+    // calls → confirmed, co-change should not change this
+    expect(result.impactedSymbols[0]!.confidence).toBe('confirmed');
+    expect(result.impactedSymbols[0]!.coChangeFrequency).toBe(0.9);
+  });
+
+  it('co-change with low frequency does not upgrade potential', () => {
+    const graph = new SymbolGraph();
+    for (const id of ['src/a.ts::A::function', 'src/b.ts::B::class']) {
+      graph.addNode(makeNode(id));
+    }
+    graph.addEdge({ from: 'src/a.ts::A::function', to: 'src/b.ts::B::class', kind: 'imports' });
+
+    const coChangeMap = new Map<string, import('../../../core/types.js').CoChangeEntry[]>();
+    coChangeMap.set('src/b.ts', [{ file1: 'src/a.ts', file2: 'src/b.ts', sharedCommits: 2, frequency: 0.3 }]);
+
+    const result = calc.calculate(graph, 'src/b.ts::B::class', coChangeMap);
+    // frequency 0.3 <= 0.5 → stays potential
+    expect(result.impactedSymbols[0]!.confidence).toBe('potential');
+    expect(result.impactedSymbols[0]!.coChangeFrequency).toBe(0.3);
+  });
+
+  it('co-change frequency is undefined when no co-change data', () => {
+    const graph = new SymbolGraph();
+    for (const id of ['src/a.ts::A::function', 'src/b.ts::B::class']) {
+      graph.addNode(makeNode(id));
+    }
+    graph.addEdge({ from: 'src/a.ts::A::function', to: 'src/b.ts::B::class', kind: 'imports' });
+
+    const result = calc.calculate(graph, 'src/b.ts::B::class');
+    expect(result.impactedSymbols[0]!.coChangeFrequency).toBeUndefined();
+  });
+
   it('uses-only edge → likely confidence', () => {
     const graph = new SymbolGraph();
     for (const id of ['a::A::function', 'b::B::class']) {

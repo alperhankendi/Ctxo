@@ -210,6 +210,8 @@ try {
 - [x] `this.method()` intra-class call edge extraction — `resolveThisMethodCall` helper — fixed in `2e33cdc`
 - [x] 3-tier blast radius confidence (confirmed/likely/potential) with `edgeKinds` and `confidence` filter
 - [x] Epic 7: tree-sitter adapter for Go + C# (syntax-level parsing) — `GoAdapter`, `CSharpAdapter` with graceful degradation — fixed in `e43db17`
+- [x] Co-change analysis — mine git history during indexing (zero extra calls), `.ctxo/index/co-changes.json`, blast radius boost (potential → likely when frequency > 0.5)
+- [x] `get_pr_impact` MCP tool (14th tool) — combines changed symbols + blast radius + co-change into single PR risk assessment
 
 ### V1.5 Features (Remaining)
 - [ ] Epic 8: GitHub/GitLab webhook listener for auto-indexing on push events

@@ -1,4 +1,5 @@
 import type { SymbolGraph } from '../graph/symbol-graph.js';
+import type { CoChangeEntry } from '../types.js';
 
 export type ImpactConfidence = 'confirmed' | 'likely' | 'potential';
 
@@ -9,6 +10,7 @@ export interface BlastRadiusEntry {
   readonly riskScore: number;
   readonly confidence: ImpactConfidence;
   readonly edgeKinds: string[];
+  readonly coChangeFrequency?: number;
 }
 
 export interface BlastRadiusResult {
@@ -36,10 +38,12 @@ function edgeKindToConfidence(kind: string): ImpactConfidence {
 }
 
 export class BlastRadiusCalculator {
-  calculate(graph: SymbolGraph, symbolId: string): BlastRadiusResult {
+  calculate(graph: SymbolGraph, symbolId: string, coChangeMap?: Map<string, CoChangeEntry[]>): BlastRadiusResult {
     if (!graph.hasNode(symbolId)) {
-      return { impactedSymbols: [], directDependentsCount: 0, confirmedCount: 0, potentialCount: 0, overallRiskScore: 0 };
+      return { impactedSymbols: [], directDependentsCount: 0, confirmedCount: 0, likelyCount: 0, potentialCount: 0, overallRiskScore: 0 };
     }
+
+    const sourceFile = symbolId.split('::')[0]!;
 
     const visited = new Set<string>([symbolId]);
     const rawEntries: Array<{ symbolId: string; depth: number; riskScore: number; confidence: ImpactConfidence; edgeKinds: string[] }> = [];
@@ -76,12 +80,30 @@ export class BlastRadiusCalculator {
         const depth = current.depth + 1;
         const riskScore = 1 / Math.pow(depth, 0.7);
 
+        // Co-change boost: if files frequently change together, upgrade potential → likely
+        let confidence = info.confidence;
+        let coChangeFrequency: number | undefined;
+        if (coChangeMap) {
+          const nodeFile = nodeId.split('::')[0]!;
+          const coEntries = coChangeMap.get(sourceFile);
+          if (coEntries) {
+            const match = coEntries.find(e => e.file1 === nodeFile || e.file2 === nodeFile);
+            if (match) {
+              coChangeFrequency = match.frequency;
+              if (confidence === 'potential' && match.frequency > 0.5) {
+                confidence = 'likely';
+              }
+            }
+          }
+        }
+
         rawEntries.push({
           symbolId: nodeId,
           depth,
           riskScore: Math.round(riskScore * 1000) / 1000,
-          confidence: info.confidence,
+          confidence,
           edgeKinds: [...info.kinds],
+          coChangeFrequency,
         });
 
         queue.push({ id: nodeId, depth });

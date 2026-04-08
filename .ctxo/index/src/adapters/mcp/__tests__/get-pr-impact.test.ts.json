@@ -1,0 +1,43 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "0d1dcc9f6b38c7b39e5cb371c4dbeac929c26223ced7c5e05d7cc119001ede80",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/__tests__/get-pr-impact.test.ts::get-pr-impact.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-pr-impact.test.ts::get-pr-impact.test::variable",
+      "kind": "imports",
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-pr-impact.test.ts::get-pr-impact.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-pr-impact.test.ts::get-pr-impact.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-pr-impact.test.ts::get-pr-impact.test::variable",
+      "kind": "imports",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-pr-impact.test.ts::get-pr-impact.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+  "intent": [],
+  "lastModified": 1775610907,
+  "symbols": []
+}

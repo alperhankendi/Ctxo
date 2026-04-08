@@ -1,0 +1,82 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 18,
+      "symbolId": "src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/core/co-change/co-change-analyzer.ts::loadCoChangeMap::function"
+    }
+  ],
+  "contentHash": "5e70f0471e6fd6b4988e04ed2b822b421c4529d7bb8cc5e5084eac9a414b79cc",
+  "edges": [
+    {
+      "from": "src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function",
+      "kind": "imports",
+      "to": "src/core/types.ts::CoChangeEntry::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function",
+      "kind": "imports",
+      "to": "src/core/types.ts::CoChangeMatrix::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function",
+      "kind": "uses",
+      "to": "src/core/types.ts::FileIndex::type"
+    },
+    {
+      "from": "src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function",
+      "kind": "uses",
+      "to": "src/core/types.ts::CoChangeMatrix::interface"
+    },
+    {
+      "from": "src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function",
+      "kind": "uses",
+      "to": "src/core/types.ts::CoChangeEntry::interface"
+    },
+    {
+      "from": "src/core/co-change/co-change-analyzer.ts::loadCoChangeMap::function",
+      "kind": "uses",
+      "to": "src/core/types.ts::CoChangeMatrix::interface"
+    },
+    {
+      "from": "src/core/co-change/co-change-analyzer.ts::loadCoChangeMap::function",
+      "kind": "uses",
+      "to": "src/core/types.ts::CoChangeEntry::interface"
+    }
+  ],
+  "file": "src/core/co-change/co-change-analyzer.ts",
+  "intent": [],
+  "lastModified": 1775610907,
+  "symbols": [
+    {
+      "endLine": 64,
+      "endOffset": 2009,
+      "kind": "function",
+      "name": "aggregateCoChanges",
+      "startLine": 5,
+      "startOffset": 136,
+      "symbolId": "src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function"
+    },
+    {
+      "endLine": 78,
+      "endOffset": 2453,
+      "kind": "function",
+      "name": "loadCoChangeMap",
+      "startLine": 66,
+      "startOffset": 2011,
+      "symbolId": "src/core/co-change/co-change-analyzer.ts::loadCoChangeMap::function"
+    }
+  ]
+}

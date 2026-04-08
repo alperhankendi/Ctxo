@@ -19,6 +19,7 @@ import { handleGetChangedSymbols } from './adapters/mcp/get-changed-symbols.js';
 import { handleFindImporters } from './adapters/mcp/find-importers.js';
 import { handleGetClassHierarchy } from './adapters/mcp/get-class-hierarchy.js';
 import { handleGetSymbolImportance } from './adapters/mcp/get-symbol-importance.js';
+import { handleGetPrImpact } from './adapters/mcp/get-pr-impact.js';
 
 function loadMaskingConfig(ctxoRoot: string): MaskingPipeline {
   const jsonConfigPath = join(ctxoRoot, 'masking.json');
@@ -248,6 +249,21 @@ async function main(): Promise<void> {
       },
     },
     (args) => symbolImportanceHandler(args),
+  );
+
+  const prImpactHandler = handleGetPrImpact(storage, git, masking, staleness, ctxoRoot);
+
+  server.registerTool(
+    'get_pr_impact',
+    {
+      description: 'Analyze the impact of a PR or recent changes — combines changed symbols + blast radius + co-change analysis into a single risk assessment',
+      inputSchema: {
+        since: z.string().optional().default('HEAD~1').describe('Git ref to diff against (default HEAD~1)'),
+        maxFiles: z.number().int().min(1).optional().default(50).describe('Max changed files to analyze'),
+        confidence: z.enum(['confirmed', 'likely', 'potential']).optional().describe('Filter impacted symbols by confidence tier'),
+      },
+    },
+    (args) => prImpactHandler(args),
   );
 
   // Start MCP server

@@ -12,6 +12,12 @@
   "file": "src/adapters/language/__tests__/ts-morph-adapter.test.ts",
   "intent": [
     {
+      "date": "2026-04-08T03:47:41+03:00",
+      "hash": "3afc7eded03044d82270f5d48390e13ccb73b83e",
+      "kind": "commit",
+      "message": "Add 3-tier blast radius confidence, edgeKinds, confidence filter, and V1.1 docs"
+    },
+    {
       "date": "2026-04-08T01:41:17+03:00",
       "hash": "2e33cdc34aaa5e3387139345d981f623065d1043",
       "kind": "commit",
@@ -42,6 +48,6 @@
       "message": "Add TypeScript language adapter with ts-morph symbol/edge/complexity extraction"
     }
   ],
-  "lastModified": 1775608547,
+  "lastModified": 1775610907,
   "symbols": []
 }

@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "152a8779ff9f845a40972c38e7c31d16ca2d9449997373499d0b5acc46dff117",
+  "contentHash": "6393417d49f9d01adcae2594c293b6bf21e19d741168aa85575078993aabfcb2",
   "edges": [
     {
       "from": "src/index.ts::index::variable",
@@ -88,6 +88,11 @@
       "from": "src/index.ts::index::variable",
       "kind": "imports",
       "to": "src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
     }
   ],
   "file": "src/index.ts",
@@ -183,6 +188,6 @@
       "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
     }
   ],
-  "lastModified": 1775608547,
+  "lastModified": 1775610908,
   "symbols": []
 }

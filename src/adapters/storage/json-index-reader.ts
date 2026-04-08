@@ -64,7 +64,7 @@ export class JsonIndexReader {
       const fullPath = join(dir, entry.name);
       if (entry.isDirectory()) {
         files.push(...this.collectJsonFiles(fullPath, visited));
-      } else if (entry.name.endsWith('.json')) {
+      } else if (entry.name.endsWith('.json') && entry.name !== 'co-changes.json') {
         files.push(fullPath);
       }
     }

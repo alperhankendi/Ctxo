@@ -1009,7 +1009,84 @@ Verify that TypeScript indexing still works when tree-sitter native modules are 
 
 ***
 
-## Step 18: Staleness Detection Check
+## Step 18: Co-Change Analysis Validation
+
+### 18.1 Co-Change Matrix Generation
+
+After indexing, verify `.ctxo/index/co-changes.json` exists:
+
+```Shell
+node -e "
+const fs = require('fs');
+const data = JSON.parse(fs.readFileSync('.ctxo/index/co-changes.json', 'utf8'));
+console.log('Version:', data.version);
+console.log('Entries:', data.entries.length);
+console.log('Top 5 by frequency:');
+data.entries.slice(0, 5).forEach(e => console.log('  ' + e.file1 + ' <-> ' + e.file2 + ' freq=' + e.frequency + ' shared=' + e.sharedCommits));
+"
+```
+
+**Verify:**
+
+* [ ] `co-changes.json` exists in `.ctxo/index/`
+* [ ] `version` is `1`
+* [ ] `entries` array contains file pairs
+* [ ] Each entry has `file1`, `file2`, `sharedCommits`, `frequency`
+* [ ] `frequency` values between 0.1 and 1.0
+* [ ] `sharedCommits` >= 2 for all entries
+* [ ] Pairs sorted by frequency descending
+
+### 18.2 Co-Change Blast Radius Boost
+
+**Verify:**
+
+* [ ] Blast radius entries with high co-change frequency (> 0.5) have `coChangeFrequency` field
+* [ ] Imports-only entries with co-change > 0.5 upgraded from `potential` → `likely`
+* [ ] `confirmed` entries NOT affected by co-change (no downgrade)
+* [ ] Entries without co-change data have `coChangeFrequency: undefined`
+
+***
+
+## Step 19: Test `get_pr_impact`
+
+Test the PR impact analysis tool:
+
+```Shell
+# Assuming recent changes exist
+npx tsx -e "
+const { handleGetPrImpact } = require('./src/adapters/mcp/get-pr-impact.js');
+// Or call via MCP:
+// get_pr_impact({ since: 'HEAD~3' })
+"
+```
+
+**Verify:**
+
+* [ ] Returns `changedFiles`, `changedSymbols`, `totalImpact` counts
+* [ ] `riskLevel` is `low`, `medium`, or `high`
+* [ ] Each changed file has `symbols` array with blast radius per symbol
+* [ ] Each symbol blast includes `impactScore`, `confirmedCount`, `likelyCount`, `potentialCount`
+* [ ] `topImpacted` array contains top 10 impacted entries by riskScore
+* [ ] `coChangedWith` array present for files with co-change data
+* [ ] `summary.confirmedTotal + summary.likelyTotal + summary.potentialTotal = totalImpact`
+* [ ] `confidence` filter restricts results to specified tier
+* [ ] Empty diff returns `changedFiles: 0, riskLevel: "low"`
+
+**Record:**
+
+| Metric | Value |
+|---|---|
+| Changed files | \_\_\_ |
+| Changed symbols | \_\_\_ |
+| Total impact | \_\_\_ |
+| Risk level | \_\_\_ |
+| Confirmed total | \_\_\_ |
+| Likely total | \_\_\_ |
+| Potential total | \_\_\_ |
+
+***
+
+## Step 20: Staleness Detection Check
 
 Run any tool immediately after a fresh index build.
 
@@ -1020,7 +1097,7 @@ Run any tool immediately after a fresh index build.
 
 ***
 
-## Step 19: Edge Kind Coverage Check
+## Step 21: Edge Kind Coverage Check
 
 From Step 3 metrics, verify edge kind diversity.
 
@@ -1084,7 +1161,7 @@ console.log(intraClassCalls > 0 ? 'PASS: this.method() edges detected' : 'INFO: 
 
 ***
 
-## Step 20: Run Unit Tests
+## Step 22: Run Unit Tests
 
 ```Shell
 npx vitest run 2>&1 | tail -10
@@ -1097,11 +1174,11 @@ npx vitest run 2>&1 | tail -10
 
 ***
 
-## Step 21: Manual vs MCP Tool Comparison
+## Step 23: Manual vs MCP Tool Comparison
 
 For each tool, manually replicate the same result using standard AI assistant tools (Read, Grep, Glob, Bash). Measure the cost and compare.
 
-### 21.1 Manual: Logic Slice — LogicSliceQuery
+### 23.1 Manual: Logic Slice — LogicSliceQuery
 
 Replicate `get_logic_slice` L3 result manually:
 
@@ -1121,7 +1198,7 @@ Replicate `get_logic_slice` L3 result manually:
 
 ***
 
-### 21.2 Manual: Blast Radius — SymbolNode
+### 23.2 Manual: Blast Radius — SymbolNode
 
 Replicate `get_blast_radius` result manually:
 
@@ -1142,7 +1219,7 @@ Replicate `get_blast_radius` result manually:
 
 ***
 
-### 21.3 Manual: Architectural Overlay
+### 23.3 Manual: Architectural Overlay
 
 Replicate `get_architectural_overlay` result manually:
 
@@ -1161,7 +1238,7 @@ Replicate `get_architectural_overlay` result manually:
 
 ***
 
-### 21.4 Manual: Why Context — MaskingPipeline
+### 23.4 Manual: Why Context — MaskingPipeline
 
 Replicate `get_why_context` result manually:
 
@@ -1179,7 +1256,7 @@ Replicate `get_why_context` result manually:
 
 ***
 
-### 21.5 Manual: Change Intelligence — SqliteStorageAdapter
+### 23.5 Manual: Change Intelligence — SqliteStorageAdapter
 
 Replicate `get_change_intelligence` result manually:
 
@@ -1199,7 +1276,7 @@ Replicate `get_change_intelligence` result manually:
 
 ***
 
-### 21.6 Manual: Dead Code Detection
+### 23.6 Manual: Dead Code Detection
 
 Replicate `find_dead_code` result manually:
 
@@ -1221,7 +1298,7 @@ Replicate `find_dead_code` result manually:
 
 ***
 
-### 21.7 Manual: Search Symbols
+### 23.7 Manual: Search Symbols
 
 Replicate `search_symbols` result manually:
 
@@ -1241,7 +1318,7 @@ Replicate `search_symbols` result manually:
 
 ***
 
-### 21.8 Manual: Changed Symbols
+### 23.8 Manual: Changed Symbols
 
 Replicate `get_changed_symbols` result manually:
 
@@ -1260,7 +1337,7 @@ Replicate `get_changed_symbols` result manually:
 
 ***
 
-### 21.9 Manual: Find Importers
+### 23.9 Manual: Find Importers
 
 Replicate `find_importers` result manually:
 
@@ -1280,7 +1357,7 @@ Replicate `find_importers` result manually:
 
 ***
 
-### 21.10 Manual: Class Hierarchy
+### 23.10 Manual: Class Hierarchy
 
 Replicate `get_class_hierarchy` result manually:
 
@@ -1300,7 +1377,7 @@ Replicate `get_class_hierarchy` result manually:
 
 ***
 
-### 21.11 Comparison Table
+### 23.11 Comparison Table
 
 Fill in after completing both MCP and manual runs:
 
@@ -1321,7 +1398,7 @@ Fill in after completing both MCP and manual runs:
 | `get_symbol_importance`     | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
 | **TOTAL**                   | **\_\_\_** | **13**    | **\_\_\_**    | **\_\_\_**   | **\_\_\_x**   | **\_\_\_x**  |
 
-### 21.13 Manual: Symbol Importance
+### 23.13 Manual: Symbol Importance
 
 Replicate `get_symbol_importance` result manually:
 
@@ -1343,7 +1420,7 @@ Replicate `get_symbol_importance` result manually:
 
 ***
 
-### 21.14 Context Window Budget
+### 23.14 Context Window Budget
 
 ```
 Manual approach:
@@ -1434,14 +1511,21 @@ After completing all steps, fill in:
 | 17h| Graceful degradation: TS indexing works without tree-sitter installed |           |
 | 17i| `runCheck()` uses registry + dynamic extensions (not hardcoded)       |           |
 | 17j| Watch command uses local scoped extensions (no mutable global)        |           |
-| 18 | Staleness detection — no false positive on fresh index              |           |
-| 19 | Unit tests pass (654+)                                              |           |
-| 20 | Git hash masking — visible or redacted (log status)                 |           |
-| 21 | Manual vs MCP comparison table filled with measured data            |           |
-| 22 | Token savings > 10x for aggregate                                   |           |
-| 23 | Context budget chart shows MCP uses < 1% of 1M window               |           |
+| 18 | Co-change matrix generated during indexing                           |           |
+| 18a| Co-change entries filtered (freq >= 0.1, shared >= 2)               |           |
+| 18b| Co-change boost: potential → likely when frequency > 0.5            |           |
+| 19 | `get_pr_impact` — returns risk assessment for changed files         |           |
+| 19a| `get_pr_impact` — riskLevel low/medium/high                         |           |
+| 19b| `get_pr_impact` — coChangedWith array per file                      |           |
+| 19c| `get_pr_impact` — confidence filter works                           |           |
+| 20 | Staleness detection — no false positive on fresh index              |           |
+| 21 | Unit tests pass (675+)                                              |           |
+| 22 | Git hash masking — visible or redacted (log status)                 |           |
+| 23 | Manual vs MCP comparison table filled with measured data            |           |
+| 24 | Token savings > 10x for aggregate                                   |           |
+| 25 | Context budget chart shows MCP uses < 1% of 1M window               |           |
 
-**Result:** \_\_\_/71 checks passed
+**Result:** \_\_\_/81 checks passed
 
 ***
 

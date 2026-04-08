@@ -90,6 +90,12 @@
   "file": "src/adapters/mcp/get-blast-radius.ts",
   "intent": [
     {
+      "date": "2026-04-08T03:47:41+03:00",
+      "hash": "3afc7eded03044d82270f5d48390e13ccb73b83e",
+      "kind": "commit",
+      "message": "Add 3-tier blast radius confidence, edgeKinds, confidence filter, and V1.1 docs"
+    },
+    {
       "date": "2026-03-30T22:05:34+03:00",
       "hash": "d38d5ef97f3147209420aff58fcb46b3e30991b4",
       "kind": "commit",
@@ -132,7 +138,7 @@
       "message": "Add blast radius calculator and architectural overlay"
     }
   ],
-  "lastModified": 1775608547,
+  "lastModified": 1775610908,
   "symbols": [
     {
       "endLine": 80,

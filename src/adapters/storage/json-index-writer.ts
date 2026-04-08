@@ -1,6 +1,6 @@
 import { writeFileSync, mkdirSync, unlinkSync, existsSync } from 'node:fs';
 import { dirname, join, resolve, sep } from 'node:path';
-import type { FileIndex } from '../../core/types.js';
+import type { FileIndex, CoChangeMatrix } from '../../core/types.js';
 
 export class JsonIndexWriter {
   private readonly indexDir: string;
@@ -20,6 +20,12 @@ export class JsonIndexWriter {
     const sorted = this.sortKeys(fileIndex);
     const json = JSON.stringify(sorted, null, 2);
     writeFileSync(targetPath, json, 'utf-8');
+  }
+
+  writeCoChanges(matrix: CoChangeMatrix): void {
+    mkdirSync(this.indexDir, { recursive: true });
+    const targetPath = join(this.indexDir, 'co-changes.json');
+    writeFileSync(targetPath, JSON.stringify(matrix, null, 2), 'utf-8');
   }
 
   delete(relativePath: string): void {

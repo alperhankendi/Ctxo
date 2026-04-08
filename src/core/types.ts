@@ -180,6 +180,21 @@ export interface WhyContextResult {
   readonly changeIntelligence?: ChangeIntelligenceScore;
 }
 
+// ── Co-Change Analysis ─────────────────────────────────────────
+
+export interface CoChangeEntry {
+  readonly file1: string;
+  readonly file2: string;
+  readonly sharedCommits: number;
+  readonly frequency: number;
+}
+
+export interface CoChangeMatrix {
+  readonly version: 1;
+  readonly timestamp: number;
+  readonly entries: readonly CoChangeEntry[];
+}
+
 // ── Commit Record (from git adapter) ────────────────────────────
 
 export interface CommitRecord {

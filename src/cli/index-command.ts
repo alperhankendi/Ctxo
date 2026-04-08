@@ -9,6 +9,7 @@ import { SqliteStorageAdapter } from '../adapters/storage/sqlite-storage-adapter
 import { SchemaManager } from '../adapters/storage/schema-manager.js';
 import { SimpleGitAdapter } from '../adapters/git/simple-git-adapter.js';
 import { RevertDetector } from '../core/why-context/revert-detector.js';
+import { aggregateCoChanges } from '../core/co-change/co-change-analyzer.js';
 import type { FileIndex, SymbolKind } from '../core/types.js';
 
 export class IndexCommand {
@@ -154,6 +155,14 @@ export class IndexCommand {
           }),
         );
       }
+    }
+
+    // Phase 2b: Aggregate co-change data from git history
+    if (!options.skipHistory && pendingIndices.length > 0) {
+      const fileIndices = pendingIndices.map(e => e.fileIndex);
+      const coChangeMatrix = aggregateCoChanges(fileIndices);
+      writer.writeCoChanges(coChangeMatrix);
+      console.error(`[ctxo] Co-change analysis: ${coChangeMatrix.entries.length} file pairs detected`);
     }
 
     // Phase 3: Write all indices

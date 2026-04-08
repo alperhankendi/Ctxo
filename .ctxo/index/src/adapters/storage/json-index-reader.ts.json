@@ -10,11 +10,11 @@
       "symbolId": "src/adapters/storage/json-index-reader.ts::JsonIndexReader.readSingle::method"
     },
     {
-      "cyclomatic": 6,
+      "cyclomatic": 7,
       "symbolId": "src/adapters/storage/json-index-reader.ts::JsonIndexReader.collectJsonFiles::method"
     }
   ],
-  "contentHash": "2edfc580e85b8ba2777cd5e8610fcb86c02a5f92ad71ebb3e59ea66d6b58f8f8",
+  "contentHash": "66593b414cc4a1d868bb36d2fa96fbde5092d1cc71c357666159ab08427a088c",
   "edges": [
     {
       "from": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
@@ -69,11 +69,11 @@
       "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
     }
   ],
-  "lastModified": 1775608547,
+  "lastModified": 1775610908,
   "symbols": [
     {
       "endLine": 73,
-      "endOffset": 2082,
+      "endOffset": 2118,
       "kind": "class",
       "name": "JsonIndexReader",
       "startLine": 4,
@@ -100,7 +100,7 @@
     },
     {
       "endLine": 72,
-      "endOffset": 2080,
+      "endOffset": 2116,
       "kind": "method",
       "name": "JsonIndexReader.collectJsonFiles",
       "startLine": 53,

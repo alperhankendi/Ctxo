@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "c698fb54adad51d4a5a9cfb76f1d64d80ec13b67286ef76e5c6418a049e64d21",
+  "contentHash": "df9d6c051a2573f39a4899e57add1235218ed042236d465d8155b5f133962841",
   "edges": [],
   "file": "src/core/types.ts",
   "intent": [
@@ -42,7 +42,7 @@
       "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
     }
   ],
-  "lastModified": 1775608547,
+  "lastModified": 1775610908,
   "symbols": [
     {
       "endLine": 133,
@@ -109,20 +109,38 @@
     },
     {
       "endLine": 189,
-      "endOffset": 5255,
+      "endOffset": 5266,
+      "kind": "interface",
+      "name": "CoChangeEntry",
+      "startLine": 184,
+      "startOffset": 5116,
+      "symbolId": "src/core/types.ts::CoChangeEntry::interface"
+    },
+    {
+      "endLine": 195,
+      "endOffset": 5402,
+      "kind": "interface",
+      "name": "CoChangeMatrix",
+      "startLine": 191,
+      "startOffset": 5268,
+      "symbolId": "src/core/types.ts::CoChangeMatrix::interface"
+    },
+    {
+      "endLine": 204,
+      "endOffset": 5611,
       "kind": "interface",
       "name": "CommitRecord",
-      "startLine": 184,
-      "startOffset": 5117,
+      "startLine": 199,
+      "startOffset": 5473,
       "symbolId": "src/core/types.ts::CommitRecord::interface"
     },
     {
-      "endLine": 198,
-      "endOffset": 5464,
+      "endLine": 213,
+      "endOffset": 5820,
       "kind": "interface",
       "name": "BlameLine",
-      "startLine": 193,
-      "startOffset": 5326,
+      "startLine": 208,
+      "startOffset": 5682,
       "symbolId": "src/core/types.ts::BlameLine::interface"
     },
     {

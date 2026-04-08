@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "ace93b087558ecce96df1535d553e1b562a40cb308b5b565421e91c49563ae07",
+  "contentHash": "47b55502fc70bc65236e65334f2ebbc55c1f5311d17f13dfb851152e9b7b6f0a",
   "edges": [
     {
       "from": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts::blast-radius-calculator.test::variable",
@@ -22,6 +22,12 @@
   ],
   "file": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
   "intent": [
+    {
+      "date": "2026-04-08T03:47:41+03:00",
+      "hash": "3afc7eded03044d82270f5d48390e13ccb73b83e",
+      "kind": "commit",
+      "message": "Add 3-tier blast radius confidence, edgeKinds, confidence filter, and V1.1 docs"
+    },
     {
       "date": "2026-04-02T02:23:24+03:00",
       "hash": "01f901c3e0ce8dba7c0281a8a75ae984a07773bf",
@@ -47,6 +53,6 @@
       "message": "Add blast radius calculator and architectural overlay"
     }
   ],
-  "lastModified": 1775608547,
+  "lastModified": 1775610908,
   "symbols": []
 }

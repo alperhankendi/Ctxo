@@ -2,7 +2,7 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 20,
+      "cyclomatic": 22,
       "symbolId": "src/cli/index-command.ts::IndexCommand.run::method"
     },
     {
@@ -30,7 +30,7 @@
       "symbolId": "src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
     }
   ],
-  "contentHash": "b2e0768505e7cdb1ca113cb34bb785368a779ed24f9aa2d182fc5ed63103b2c5",
+  "contentHash": "9662670f982732b8ef8bdf4adf77de28cbbe797675a3b343ff4c6009a159ef89",
   "edges": [
     {
       "from": "src/cli/index-command.ts::IndexCommand::class",
@@ -75,6 +75,11 @@
     {
       "from": "src/cli/index-command.ts::IndexCommand::class",
       "kind": "imports",
+      "to": "src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
       "to": "src/core/types.ts::FileIndex::type",
       "typeOnly": true
     },
@@ -103,6 +108,11 @@
       "from": "src/cli/index-command.ts::IndexCommand.run::method",
       "kind": "calls",
       "to": "src/cli/index-command.ts::IndexCommand.discoverFilesIn::method"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function"
     },
     {
       "from": "src/cli/index-command.ts::IndexCommand.run::method",
@@ -232,6 +242,11 @@
     {
       "from": "src/cli/index-command.ts::IndexCommand::class",
       "kind": "uses",
+      "to": "src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function"
+    },
+    {
+      "from": "src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
       "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
     }
   ],
@@ -316,78 +331,78 @@
       "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
     }
   ],
-  "lastModified": 1775608547,
+  "lastModified": 1775610908,
   "symbols": [
     {
-      "endLine": 339,
-      "endOffset": 12564,
+      "endLine": 348,
+      "endOffset": 13053,
       "kind": "class",
       "name": "IndexCommand",
-      "startLine": 13,
-      "startOffset": 888,
+      "startLine": 14,
+      "startOffset": 967,
       "symbolId": "src/cli/index-command.ts::IndexCommand::class"
     },
     {
-      "endLine": 183,
-      "endOffset": 7019,
+      "endLine": 192,
+      "endOffset": 7508,
       "kind": "method",
       "name": "IndexCommand.run",
-      "startLine": 24,
-      "startOffset": 1277,
+      "startLine": 25,
+      "startOffset": 1356,
       "symbolId": "src/cli/index-command.ts::IndexCommand.run::method"
     },
     {
-      "endLine": 198,
-      "endOffset": 7600,
+      "endLine": 207,
+      "endOffset": 8089,
       "kind": "method",
       "name": "IndexCommand.registerTreeSitterAdapters",
-      "startLine": 185,
-      "startOffset": 7025,
+      "startLine": 194,
+      "startOffset": 7514,
       "symbolId": "src/cli/index-command.ts::IndexCommand.registerTreeSitterAdapters::method"
     },
     {
-      "endLine": 218,
-      "endOffset": 8205,
+      "endLine": 227,
+      "endOffset": 8694,
       "kind": "method",
       "name": "IndexCommand.discoverFilesIn",
-      "startLine": 200,
-      "startOffset": 7606,
+      "startLine": 209,
+      "startOffset": 8095,
       "symbolId": "src/cli/index-command.ts::IndexCommand.discoverFilesIn::method"
     },
     {
-      "endLine": 261,
-      "endOffset": 9724,
+      "endLine": 270,
+      "endOffset": 10213,
       "kind": "method",
       "name": "IndexCommand.discoverWorkspaces",
-      "startLine": 220,
-      "startOffset": 8211,
+      "startLine": 229,
+      "startOffset": 8700,
       "symbolId": "src/cli/index-command.ts::IndexCommand.discoverWorkspaces::method"
     },
     {
-      "endLine": 266,
-      "endOffset": 9889,
+      "endLine": 275,
+      "endOffset": 10378,
       "kind": "method",
       "name": "IndexCommand.isSupportedExtension",
-      "startLine": 263,
-      "startOffset": 9730,
+      "startLine": 272,
+      "startOffset": 10219,
       "symbolId": "src/cli/index-command.ts::IndexCommand.isSupportedExtension::method"
     },
     {
-      "endLine": 325,
-      "endOffset": 11996,
+      "endLine": 334,
+      "endOffset": 12485,
       "kind": "method",
       "name": "IndexCommand.runCheck",
-      "startLine": 268,
-      "startOffset": 9895,
+      "startLine": 277,
+      "startOffset": 10384,
       "symbolId": "src/cli/index-command.ts::IndexCommand.runCheck::method"
     },
     {
-      "endLine": 338,
-      "endOffset": 12561,
+      "endLine": 347,
+      "endOffset": 13050,
       "kind": "method",
       "name": "IndexCommand.ensureGitignore",
-      "startLine": 327,
-      "startOffset": 12002,
+      "startLine": 336,
+      "startOffset": 12491,
       "symbolId": "src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
     }
   ]

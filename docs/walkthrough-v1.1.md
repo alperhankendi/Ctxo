@@ -251,16 +251,125 @@ Filtered response recalculates `impactScore`, `confirmedCount`, `likelyCount`, `
 
 ***
 
+## Feature 4: Co-Change Analysis
+
+**Commit:** (pending)
+
+### Problem
+
+Blast radius only used static dependency edges. Competitors (SYKE, ops-codegraph) mine git history to find files that frequently change together — adding ~85% confidence signal that static analysis misses.
+
+### Solution: Mine During Indexing (Zero Extra Git Calls)
+
+IndexCommand Phase 2 already fetches `getCommitHistory()` for every file. Each `fileIndex.intent` contains commit hashes. The co-change matrix is built as a side-effect:
+
+1. Build `Map<commitHash, Set<filePath>>` from all intent arrays
+2. For each commit touching 2+ files, enumerate file pairs
+3. Count shared commits per pair
+4. Calculate `frequency = sharedCommits / min(commits_A, commits_B)`
+5. Filter: `frequency >= 0.1` AND `sharedCommits >= 2`
+6. Write to `.ctxo/index/co-changes.json`
+
+### Blast Radius Integration
+
+`BlastRadiusCalculator.calculate()` accepts optional `coChangeMap` parameter:
+- If co-change frequency > 0.5 between source file and dependent file, confidence upgrades from `potential` → `likely`
+- `coChangeFrequency?: number` field added to `BlastRadiusEntry` for transparency
+- Conservative: only upgrades, never downgrades
+
+### Files
+
+| File | Purpose |
+|---|---|
+| `src/core/co-change/co-change-analyzer.ts` | `aggregateCoChanges()` + `loadCoChangeMap()` |
+| `src/core/types.ts` | `CoChangeEntry`, `CoChangeMatrix` types |
+| `src/cli/index-command.ts` | Phase 2b — aggregate after git history |
+| `src/adapters/storage/json-index-writer.ts` | `writeCoChanges()` method |
+| `src/adapters/storage/json-index-reader.ts` | Skip `co-changes.json` in `readAll()` |
+| `src/core/blast-radius/blast-radius-calculator.ts` | Optional `coChangeMap` param, boost logic |
+
+**Tests:** +14 (10 co-change analyzer + 4 blast radius co-change boost)
+
+***
+
+## Feature 5: `get_pr_impact` MCP Tool (14th Tool)
+
+**Commit:** (pending)
+
+### Problem
+
+AI agents calling `get_changed_symbols` + `get_blast_radius` separately for PR review — multiple round trips, manual aggregation. Competitors (ops-codegraph `diff-impact`, trace-mcp PR reports) offer this in one call.
+
+### Solution
+
+Single `get_pr_impact` MCP tool call:
+
+```
+get_pr_impact({ since: "HEAD~3", confidence: "confirmed" })
+```
+
+**Flow:**
+1. `git.getChangedFiles(since)` → changed file list
+2. `buildGraphFromJsonIndex()` → dependency graph
+3. `loadCoChanges()` → co-change matrix (if available)
+4. For each changed file → find symbols → run blast radius per symbol
+5. Aggregate: `riskLevel` (low/medium/high), `summary` totals, `coChangedWith` per file
+
+### Output Shape
+
+```json
+{
+  "since": "HEAD~3",
+  "changedFiles": 5,
+  "changedSymbols": 12,
+  "totalImpact": 47,
+  "riskLevel": "high",
+  "files": [{
+    "file": "src/core/types.ts",
+    "symbols": [{
+      "symbolId": "src/core/types.ts::SymbolNode::type",
+      "blast": {
+        "impactScore": 38,
+        "confirmedCount": 12,
+        "likelyCount": 23,
+        "potentialCount": 3,
+        "riskScore": 1.0,
+        "topImpacted": [...]
+      }
+    }],
+    "coChangedWith": ["src/core/graph/symbol-graph.ts"]
+  }],
+  "summary": {
+    "confirmedTotal": 25,
+    "likelyTotal": 15,
+    "potentialTotal": 7,
+    "highRiskSymbols": ["src/core/types.ts::SymbolNode::type"]
+  }
+}
+```
+
+### Files
+
+| File | Purpose |
+|---|---|
+| `src/adapters/mcp/get-pr-impact.ts` | MCP tool handler |
+| `src/index.ts` | Registration with zod schema |
+
+**Tests:** +7 (impact analysis, blast per symbol, confidence filter, co-change, empty result, error)
+
+***
+
 ## Cumulative Statistics
 
 | Metric | V1 | V1.1 | Delta |
 |---|---|---|---|
-| Tests | 354 | 654 | +300 |
-| Test files | 43 | 58 | +15 |
-| Source files | ~45 | ~52 | +7 new files |
-| MCP tools | 5 (later 13) | 13 | — |
+| Tests | 354 | 675 | +321 |
+| Test files | 43 | 60 | +17 |
+| Source files | ~45 | ~55 | +10 new files |
+| MCP tools | 5 (later 13) | 14 | +1 (get_pr_impact) |
 | Languages supported | TS/JS | TS/JS + Go + C# | +2 |
 | Blast radius tiers | 2 | 3 | +1 (likely) |
+| Blast radius signals | Static edges only | Static + co-change | +1 signal |
 | Edge kind accuracy | Heuristic | Cross-file lookup | Major improvement |
 | Statement coverage | ~90% | ~91% | Stable |
 
