@@ -1969,13 +1969,13 @@ document.getElementById('mcpToolCallBtn').addEventListener('click', async () => 
 document.getElementById('mcpToolSelect').addEventListener('change', e => {
   const defaults = {
     search_symbols: '{"pattern": "Graph", "limit": 10}',
-    get_logic_slice: '{"symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph::class", "level": "L2"}',
+    get_logic_slice: '{"symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph::class", "level": 2}',
     get_blast_radius: '{"symbolId": "src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"}',
     get_architectural_overlay: '{}',
     get_why_context: '{"symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph::class"}',
     get_change_intelligence: '{"symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph::class"}',
     find_dead_code: '{}',
-    get_context_for_task: '{"taskType": "understand", "symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph::class"}',
+    get_context_for_task: '{"symbolId": "src/core/graph/symbol-graph.ts::SymbolGraph::class", "taskType": "understand"}',
     get_ranked_context: '{"query": "blast radius calculation", "tokenBudget": 2000}',
     get_changed_symbols: '{}',
     find_importers: '{"symbolId": "src/core/types.ts::LogicSliceResult::interface"}',
