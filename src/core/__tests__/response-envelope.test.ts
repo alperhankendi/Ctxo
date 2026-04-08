@@ -201,6 +201,59 @@ describe('wrapResponse', () => {
     expect((meta.returnedItems as number)).toBeGreaterThanOrEqual(1);
   });
 
+  it('handles invalid CTXO_RESPONSE_LIMIT values gracefully', () => {
+    process.env['CTXO_RESPONSE_LIMIT'] = 'not-a-number';
+
+    const data = {
+      symbolId: 'test',
+      impactedSymbols: [{ symbolId: 'a' }],
+    };
+
+    const result = wrapResponse(data);
+    const meta = result._meta as Record<string, unknown>;
+    // Should fall back to default (8192), so small payload is not truncated
+    expect(meta.truncated).toBe(false);
+  });
+
+  it('handles zero CTXO_RESPONSE_LIMIT by falling back to default', () => {
+    process.env['CTXO_RESPONSE_LIMIT'] = '0';
+
+    const data = {
+      symbolId: 'test',
+      impactedSymbols: [{ symbolId: 'a' }],
+    };
+
+    const result = wrapResponse(data);
+    const meta = result._meta as Record<string, unknown>;
+    expect(meta.truncated).toBe(false);
+  });
+
+  it('handles negative CTXO_RESPONSE_LIMIT by falling back to default', () => {
+    process.env['CTXO_RESPONSE_LIMIT'] = '-100';
+
+    const data = {
+      symbolId: 'test',
+      impactedSymbols: [{ symbolId: 'a' }],
+    };
+
+    const result = wrapResponse(data);
+    const meta = result._meta as Record<string, unknown>;
+    expect(meta.truncated).toBe(false);
+  });
+
+  it('does not truncate single-element array even when over threshold', () => {
+    process.env['CTXO_RESPONSE_LIMIT'] = '10';
+
+    const data = {
+      impactedSymbols: [{ symbolId: 'src/very-long-name.ts::VeryLongSymbol::class', extra: 'a'.repeat(200) }],
+    };
+
+    const result = wrapResponse(data);
+    const meta = result._meta as Record<string, unknown>;
+    // Single item array can't be truncated further
+    expect(meta.returnedItems).toBe(1);
+  });
+
   it('preserves non-array fields when truncating', () => {
     process.env['CTXO_RESPONSE_LIMIT'] = '400';
 

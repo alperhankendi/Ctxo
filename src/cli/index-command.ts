@@ -187,12 +187,14 @@ export class IndexCommand {
 
   private registerTreeSitterAdapters(registry: LanguageAdapterRegistry): void {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { GoAdapter } = require('../adapters/language/go-adapter.js');
       registry.register(new GoAdapter());
     } catch {
       console.error('[ctxo] Go adapter unavailable (tree-sitter-go not installed)');
     }
     try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { CSharpAdapter } = require('../adapters/language/csharp-adapter.js');
       registry.register(new CSharpAdapter());
     } catch {
