@@ -23,7 +23,7 @@ Ctxo     █░░░░░░░░░░░░░░░░░░░░░░�
 
 ## Quick Start
 
-```bash
+```Shell
 # 1. Index your codebase
 npx ctxo-mcp index
 
@@ -36,38 +36,41 @@ npx ctxo-mcp index
 ## IDE Setup
 
 **Claude Code / Cursor / Windsurf / Cline** — `.mcp.json`:
-```json
+
+```JSON
 { "mcpServers": { "ctxo": { "command": "npx", "args": ["-y", "ctxo-mcp"] } } }
 ```
 
 **VS Code (Copilot)** — `.vscode/mcp.json`:
-```json
+
+```JSON
 { "servers": { "ctxo": { "type": "stdio", "command": "npx", "args": ["-y", "ctxo-mcp"] } } }
 ```
 
 **Zed** — `settings.json`:
-```json
+
+```JSON
 { "context_servers": { "ctxo": { "command": { "path": "npx", "args": ["-y", "ctxo-mcp"] } } } }
 ```
 
 ## 14 Tools
 
-| Tool | What it does |
-|---|---|
-| `get_logic_slice` | Symbol + transitive dependencies (L1-L4 progressive detail) |
-| `get_blast_radius` | What breaks if this changes (3-tier: confirmed/likely/potential) |
-| `get_architectural_overlay` | Project layer map (Domain/Infrastructure/Adapter) |
-| `get_why_context` | Git commit intent + anti-pattern warnings (reverts, rollbacks) |
-| `get_change_intelligence` | Complexity x churn composite score |
-| `find_dead_code` | Unreachable symbols, unused exports, scaffolding markers |
-| `get_context_for_task` | Task-optimized context (fix/extend/refactor/understand) |
-| `get_ranked_context` | BM25 + PageRank search within token budget |
-| `search_symbols` | Symbol name/regex search across index |
-| `get_changed_symbols` | Symbols in recently changed files (git diff) |
-| `find_importers` | Reverse dependency lookup ("who uses this?") |
-| `get_class_hierarchy` | Class inheritance tree (ancestors + descendants) |
-| `get_symbol_importance` | PageRank centrality ranking |
-| `get_pr_impact` | Full PR risk assessment in a single call |
+| Tool                        | What it does                                                     |
+| --------------------------- | ---------------------------------------------------------------- |
+| `get_logic_slice`           | Symbol + transitive dependencies (L1-L4 progressive detail)      |
+| `get_blast_radius`          | What breaks if this changes (3-tier: confirmed/likely/potential) |
+| `get_architectural_overlay` | Project layer map (Domain/Infrastructure/Adapter)                |
+| `get_why_context`           | Git commit intent + anti-pattern warnings (reverts, rollbacks)   |
+| `get_change_intelligence`   | Complexity x churn composite score                               |
+| `find_dead_code`            | Unreachable symbols, unused exports, scaffolding markers         |
+| `get_context_for_task`      | Task-optimized context (fix/extend/refactor/understand)          |
+| `get_ranked_context`        | BM25 + PageRank search within token budget                       |
+| `search_symbols`            | Symbol name/regex search across index                            |
+| `get_changed_symbols`       | Symbols in recently changed files (git diff)                     |
+| `find_importers`            | Reverse dependency lookup ("who uses this?")                     |
+| `get_class_hierarchy`       | Class inheritance tree (ancestors + descendants)                 |
+| `get_symbol_importance`     | PageRank centrality ranking                                      |
+| `get_pr_impact`             | Full PR risk assessment in a single call                         |
 
 ## Tool Selection Guide
 
@@ -85,7 +88,7 @@ Onboarding?               → get_architectural_overlay → get_symbol_importanc
 
 ## CLI Commands
 
-```bash
+```Shell
 npx ctxo-mcp index                # Build full codebase index
 npx ctxo-mcp index --check        # CI gate: fail if index stale
 npx ctxo-mcp index --skip-history # Fast re-index without git history
@@ -125,7 +128,8 @@ TOTAL                   35,050 tokens   3,500 tokens  90%
 ## Agentic AI Usage
 
 **Claude Agent SDK:**
-```typescript
+
+```TypeScript
 import { query } from "@anthropic-ai/claude-agent-sdk";
 
 for await (const message of query({
@@ -138,7 +142,8 @@ for await (const message of query({
 ```
 
 **OpenAI Agents SDK:**
-```python
+
+```Python
 from agents import Agent, Runner
 from agents.mcp import MCPServerStdio
 
@@ -151,11 +156,11 @@ See [Agentic AI Integration Guide](docs/agentic-ai-integration.md) for LangChain
 
 ## Multi-Language Support
 
-| Language | Parser | Tier | Features |
-|---|---|---|---|
-| TypeScript/JavaScript | ts-morph | Full | Type-aware resolution, cross-file imports, `this.method()` calls |
-| Go | tree-sitter | Syntax | Structs, interfaces, functions, methods, import edges |
-| C# | tree-sitter | Syntax | Classes, interfaces, methods, enums, namespace qualification |
+| Language              | Parser      | Tier   | Features                                                         |
+| --------------------- | ----------- | ------ | ---------------------------------------------------------------- |
+| TypeScript/JavaScript | ts-morph    | Full   | Type-aware resolution, cross-file imports, `this.method()` calls |
+| Go                    | tree-sitter | Syntax | Structs, interfaces, functions, methods, import edges            |
+| C#                    | tree-sitter | Syntax | Classes, interfaces, methods, enums, namespace qualification     |
 
 ## How It Works
 
@@ -171,12 +176,12 @@ Ctxo builds a **committed JSON index** (`.ctxo/index/`) that captures symbols, d
 
 ## Links
 
-- [npm](https://www.npmjs.com/package/ctxo-mcp)
-- [Changelog](CHANGELOG.md)
-- [LLM Reference](llms-full.txt)
-- [Validation Runbook](docs/runbook/mcp-validation/mcp-validation.md)
-- [Architecture](docs/artifacts/architecture.md)
-- [PRD](docs/artifacts/prd.md)
+* [npm](https://www.npmjs.com/package/ctxo-mcp)
+* [Changelog](CHANGELOG.md)
+* [LLM Reference](llms-full.txt)
+* [Validation Runbook](docs/runbook/mcp-validation/mcp-validation.md)
+* [Architecture](docs/artifacts/architecture.md)
+* [PRD](docs/artifacts/prd.md)
 
 ## License
 
