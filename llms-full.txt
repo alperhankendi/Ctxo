@@ -1,0 +1,260 @@
+# Ctxo MCP Server — Full Reference
+
+> Dependency-aware, history-enriched code intelligence for AI coding assistants.
+> npm: ctxo-mcp | GitHub: https://github.com/alperhankendi/Ctxo
+
+## Setup
+
+```bash
+npx ctxo-mcp index           # Build codebase index (required once)
+npx ctxo-mcp index --check   # CI gate: fail if index stale
+npx ctxo-mcp                 # Start MCP server (stdio transport)
+```
+
+MCP client configuration:
+```json
+{ "mcpServers": { "ctxo": { "command": "npx", "args": ["-y", "ctxo-mcp"] } } }
+```
+
+---
+
+## Tool Reference (14 tools)
+
+### get_logic_slice
+Retrieve a symbol and all its transitive dependencies.
+
+Parameters:
+- symbolId (string, optional): Symbol ID (format: file::name::kind)
+- symbolIds (string[], optional): Batch: array of symbol IDs
+- level (number 1-4, default 3): L1=signature, L2=direct deps, L3=full closure, L4=with token budget
+- intent (string, optional): Filter dependencies by keyword
+
+When to use: Understanding what a symbol depends on (downstream view).
+Instead of: get_blast_radius (upstream/impact), get_context_for_task (task-specific).
+
+### get_blast_radius
+Find all symbols that would break if a target changes.
+
+Parameters:
+- symbolId (string, required): Symbol ID
+- confidence (enum: confirmed|likely|potential, optional): Filter by tier
+- intent (string, optional): Filter by keyword
+
+Returns: impactedSymbols array with symbolId, depth, riskScore, confidence, edgeKinds.
+3-tier model: confirmed (calls/extends/implements), likely (uses/co-changed), potential (imports-only).
+
+When to use: BEFORE modifying any function or class.
+Instead of: get_logic_slice (forward deps), get_pr_impact (PR-level).
+
+### get_architectural_overlay
+Get project architectural layer map.
+
+Parameters:
+- layer (string, optional): Filter by layer name
+
+Returns: Symbols grouped into Domain, Infrastructure, Adapter, Test, Composition, Configuration layers.
+
+When to use: Onboarding to a new codebase, validating layer boundaries.
+
+### get_why_context
+Retrieve git commit history and anti-pattern warnings for a symbol.
+
+Parameters:
+- symbolId (string, required): Symbol ID
+- maxCommits (number, optional): Limit to N most recent commits
+
+Returns: commitHistory array + antiPatternWarnings (reverts, rollbacks, undo patterns).
+
+When to use: Understanding WHY code was written this way, checking for problem history.
+Pair with: get_change_intelligence (complexity/churn scores).
+
+### get_change_intelligence
+Retrieve complexity x churn composite score.
+
+Parameters:
+- symbolId (string, required): Symbol ID
+
+Returns: complexity (0-1), churn (0-1), composite (0-1), band (low|medium|high|critical).
+
+When to use: Identifying refactoring targets, assessing modification risk.
+
+### find_dead_code
+Find unreachable symbols and files.
+
+Parameters:
+- includeTests (boolean, default false): Include test files
+- intent (string, optional): Filter results by keyword
+
+Returns: deadSymbols (with confidence 1.0/0.9/0.7 and reason), deadFiles, unusedExports, scaffolding markers.
+
+When to use: Cleanup, refactoring, confirming code is truly unused.
+Instead of: find_importers (specific symbol reverse lookup).
+
+### get_context_for_task
+Get task-optimized context for a symbol.
+
+Parameters:
+- symbolId (string, required): Symbol ID
+- taskType (enum: fix|extend|refactor|understand, required): Determines context mix
+- tokenBudget (number, default 4000): Max tokens
+
+Task types:
+- fix: History + anti-patterns + direct deps (bug investigation)
+- extend: Deps + blast radius + interfaces (adding features)
+- refactor: Importers + complexity + churn (restructuring)
+- understand: Full slice + architecture (learning)
+
+When to use: BEST starting point when you know the symbol AND your intent.
+
+### get_ranked_context
+Search and rank symbols by relevance to a query.
+
+Parameters:
+- query (string, required): Natural language search query
+- tokenBudget (number, default 4000): Max tokens for results
+- strategy (enum: combined|dependency|importance, default combined): Ranking strategy
+
+Returns: Symbols ranked by BM25 relevance + PageRank importance, packed within budget.
+
+When to use: Have a question/topic but don't know which symbol to look at.
+Instead of: search_symbols (exact name/regex search).
+
+### search_symbols
+Search symbols by name or regex pattern.
+
+Parameters:
+- pattern (string, required): Substring or regex pattern
+- kind (enum: function|class|interface|method|variable|type, optional): Filter by kind
+- filePattern (string, optional): Filter by file path substring
+- limit (number 1-100, default 25): Max results
+
+When to use: Know (part of) the symbol name, need its ID for other tools.
+Instead of: get_ranked_context (semantic/relevance search).
+
+### get_changed_symbols
+Get symbols in recently changed files.
+
+Parameters:
+- since (string, default HEAD~1): Git ref to diff against
+- maxFiles (number, default 50): Max files to process
+
+When to use: See what was modified in recent commits.
+Instead of: get_pr_impact (full PR risk assessment).
+
+### find_importers
+Find all symbols that depend on a given symbol (reverse dependency).
+
+Parameters:
+- symbolId (string, required): Symbol ID
+- edgeKinds (string[], optional): Filter by imports|calls|extends|implements|uses
+- transitive (boolean, default false): Follow transitive reverse edges
+- maxDepth (number 1-10, default 5): Max BFS depth
+- intent (string, optional): Filter by keyword
+
+When to use: Check if safe to modify/delete, find all consumers.
+Instead of: get_blast_radius (aggregated impact with risk scores).
+
+### get_class_hierarchy
+Get class inheritance hierarchy.
+
+Parameters:
+- symbolId (string, optional): Root symbol (omit for full project)
+- direction (enum: ancestors|descendants|both, default both): Traversal direction
+
+When to use: OOP code, understanding type relationships before modifying base class/interface.
+
+### get_symbol_importance
+Rank symbols by PageRank centrality.
+
+Parameters:
+- limit (number 1-200, default 25): Max results
+- kind (enum: function|class|interface|method|variable|type, optional): Filter
+- filePattern (string, optional): Filter by file path
+- damping (number 0-1, default 0.85): PageRank damping factor
+
+When to use: Identify most critical symbols, high-risk modification targets.
+Instead of: find_dead_code (unused/unimportant code).
+
+### get_pr_impact
+Analyze PR impact in a single call.
+
+Parameters:
+- since (string, default HEAD~1): Git ref to diff against
+- maxFiles (number, default 50): Max files
+- confidence (enum: confirmed|likely|potential, optional): Filter tier
+
+Returns: changedFiles, changedSymbols, totalImpact, riskLevel (low|medium|high), per-file blast radius, co-change data.
+
+When to use: FIRST tool when reviewing a PR or evaluating recent commits.
+
+---
+
+## Tool Selection Guide
+
+```
+Reviewing a PR or recent changes?
+  -> get_pr_impact (single call, full risk assessment)
+
+About to modify a function or class?
+  -> get_blast_radius (what breaks if I change this?)
+  -> then get_why_context (any history of problems?)
+
+Need to understand what a symbol does?
+  -> get_context_for_task(taskType: "understand")
+  -> or get_logic_slice (L2 for overview, L3 for full closure)
+
+Fixing a bug?
+  -> get_context_for_task(taskType: "fix")
+
+Adding a feature / extending code?
+  -> get_context_for_task(taskType: "extend")
+
+Refactoring?
+  -> get_context_for_task(taskType: "refactor")
+
+Don't know the symbol name?
+  -> search_symbols (by name/regex)
+  -> get_ranked_context (by natural language query)
+
+Onboarding to a new codebase?
+  -> get_architectural_overlay (layer map)
+  -> get_symbol_importance (most critical symbols)
+
+Cleaning up code?
+  -> find_dead_code (unused symbols)
+  -> get_change_intelligence (complexity hotspots)
+
+Checking if safe to delete/rename?
+  -> find_importers (who depends on this?)
+  -> get_blast_radius (full impact)
+
+Working with class hierarchies?
+  -> get_class_hierarchy (extends/implements tree)
+```
+
+---
+
+## Cross-Cutting Features
+
+### Response Envelope (_meta)
+All tool responses include:
+```json
+{ "_meta": { "totalItems": 50, "returnedItems": 25, "truncated": true, "totalBytes": 12400, "hint": "Use search_symbols to narrow results." } }
+```
+- Default truncation threshold: 8KB
+- Configurable via CTXO_RESPONSE_LIMIT environment variable
+
+### Intent Filtering
+4 tools accept `intent` parameter: get_blast_radius, get_logic_slice, find_importers, find_dead_code.
+- Keywords extracted from intent string, matched case-insensitively against symbolId, file, name, kind, edgeKind, reason
+- Multiple keywords use OR logic
+- No intent = full results (backward compatible)
+
+### Symbol ID Format
+All symbols use deterministic IDs: `"<relativePath>::<name>::<kind>"`
+- Example: `"src/core/graph/symbol-graph.ts::SymbolGraph::class"`
+- Valid kinds: function, class, interface, method, variable, type
+- Valid edge kinds: imports, calls, extends, implements, uses
+
+### Resources
+- `ctxo://status` — Health check resource (confirms server is running)

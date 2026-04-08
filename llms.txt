@@ -1,0 +1,53 @@
+# Ctxo MCP Server
+
+> Dependency-aware, history-enriched code intelligence for AI coding assistants.
+
+Ctxo is a Model Context Protocol (MCP) server that gives AI agents structured context about codebases: symbol graphs, blast radius, architectural overlays, change intelligence, dead code detection, and PR impact analysis.
+
+## Quick Start
+
+```
+npx ctxo-mcp index    # Build codebase index
+npx ctxo-mcp          # Start MCP server (stdio)
+```
+
+## 14 Tools
+
+- get_logic_slice: Symbol + transitive dependencies (L1-L4 detail levels)
+- get_blast_radius: What breaks if a symbol changes (3-tier: confirmed/likely/potential)
+- get_architectural_overlay: Project layer map (Domain/Infrastructure/Adapter)
+- get_why_context: Git commit intent + anti-pattern warnings (reverts, rollbacks)
+- get_change_intelligence: Complexity x churn composite score
+- find_dead_code: Unreachable symbols and files
+- get_context_for_task: Task-optimized context (fix/extend/refactor/understand)
+- get_ranked_context: BM25 + PageRank search within token budget
+- search_symbols: Symbol name/regex search across index
+- get_changed_symbols: Symbols in recently changed files (git diff)
+- find_importers: Reverse dependency lookup ("who uses this?")
+- get_class_hierarchy: Class inheritance tree (ancestors + descendants)
+- get_symbol_importance: PageRank centrality ranking
+- get_pr_impact: Full PR risk assessment in a single call
+
+## Tool Selection Guide
+
+- Reviewing a PR? -> get_pr_impact
+- About to modify code? -> get_blast_radius
+- Understanding a symbol? -> get_context_for_task(taskType: "understand")
+- Fixing a bug? -> get_context_for_task(taskType: "fix")
+- Refactoring? -> get_context_for_task(taskType: "refactor")
+- Don't know the symbol name? -> search_symbols or get_ranked_context
+- Finding unused code? -> find_dead_code
+- Safe to delete? -> find_importers
+
+## Key Concepts
+
+- Symbol ID format: "file::name::kind" (e.g., "src/foo.ts::myFn::function")
+- All responses include _meta: { totalItems, returnedItems, truncated, totalBytes }
+- 4 tools support intent filtering: get_blast_radius, get_logic_slice, find_importers, find_dead_code
+- Large responses auto-truncated at 8KB (configurable via CTXO_RESPONSE_LIMIT)
+
+## Links
+
+- npm: https://www.npmjs.com/package/ctxo-mcp
+- GitHub: https://github.com/alperhankendi/Ctxo
+- Full reference: llms-full.txt
