@@ -36,7 +36,7 @@ export function handleFindDeadCode(
       const graph = getGraph();
       const result = detector.detect(graph, { includeTests: parsed.data.includeTests });
 
-      const payload = masking.mask(JSON.stringify(wrapResponse(result as Record<string, unknown>)));
+      const payload = masking.mask(JSON.stringify(wrapResponse(result as unknown as Record<string, unknown>)));
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {

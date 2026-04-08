@@ -46,7 +46,7 @@ export class BlastRadiusCalculator {
     const sourceFile = symbolId.split('::')[0]!;
 
     const visited = new Set<string>([symbolId]);
-    const rawEntries: Array<{ symbolId: string; depth: number; riskScore: number; confidence: ImpactConfidence; edgeKinds: string[] }> = [];
+    const rawEntries: Array<{ symbolId: string; depth: number; riskScore: number; confidence: ImpactConfidence; edgeKinds: string[]; coChangeFrequency?: number }> = [];
 
     // BFS via reverse edges (who depends on this symbol?)
     const queue: Array<{ id: string; depth: number }> = [{ id: symbolId, depth: 0 }];

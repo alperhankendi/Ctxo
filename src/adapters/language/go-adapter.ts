@@ -124,7 +124,7 @@ export class GoAdapter extends TreeSitterAdapter {
   // ── Private helpers ─────────────────────────────────────────
 
   private isExported(name: string): boolean {
-    return name.length > 0 && name[0] === name[0].toUpperCase() && name[0] !== name[0].toLowerCase();
+    return name.length > 0 && name[0]! === name[0]!.toUpperCase() && name[0]! !== name[0]!.toLowerCase();
   }
 
   private extractReceiverType(methodNode: SyntaxNode): string | undefined {
@@ -172,7 +172,7 @@ export class GoAdapter extends TreeSitterAdapter {
 
   private extractImportEdges(
     importDecl: SyntaxNode,
-    filePath: string,
+    _filePath: string,
     fromSymbol: string,
     edges: GraphEdge[],
   ): void {
