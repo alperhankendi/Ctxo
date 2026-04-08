@@ -35,7 +35,7 @@ describe('CSharpAdapter — symbol extraction', () => {
     const source = readFixture('csharp-sample.cs.fixture');
     const symbols = adapter.extractSymbols('Services/Payment.cs', source);
 
-    const method = symbols.find(s => s.name === 'Payment.CardProcessor.Process');
+    const method = symbols.find(s => s.name === 'Payment.CardProcessor.Process(1)');
     expect(method).toBeDefined();
     expect(method!.kind).toBe('method');
   });
@@ -44,7 +44,7 @@ describe('CSharpAdapter — symbol extraction', () => {
     const source = readFixture('csharp-sample.cs.fixture');
     const symbols = adapter.extractSymbols('Services/Payment.cs', source);
 
-    const ctor = symbols.find(s => s.name === 'Payment.CardProcessor.CardProcessor');
+    const ctor = symbols.find(s => s.name === 'Payment.CardProcessor.CardProcessor(1)');
     expect(ctor).toBeDefined();
     expect(ctor!.kind).toBe('method');
   });
@@ -65,8 +65,8 @@ describe('CSharpAdapter — symbol extraction', () => {
     expect(names).toContain('Payment.IPaymentProcessor');
     expect(names).toContain('Payment.PaymentResult');
     expect(names).toContain('Payment.CardProcessor');
-    expect(names).toContain('Payment.CardProcessor.Process');
-    expect(names).toContain('Payment.CardProcessor.CardProcessor');
+    expect(names).toContain('Payment.CardProcessor.Process(1)');
+    expect(names).toContain('Payment.CardProcessor.CardProcessor(1)');
   });
 
   it('includes byte offsets on all symbols', () => {
@@ -256,7 +256,7 @@ public class GlobalHelper {
     const cls = symbols.find(s => s.name === 'GlobalHelper');
     expect(cls).toBeDefined();
     expect(cls!.kind).toBe('class');
-    const method = symbols.find(s => s.name === 'GlobalHelper.Help');
+    const method = symbols.find(s => s.name === 'GlobalHelper.Help(0)');
     expect(method).toBeDefined();
   });
 

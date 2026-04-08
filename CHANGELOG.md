@@ -2,6 +2,13 @@
 
 All notable changes to Ctxo MCP Server are documented in this file.
 
+## [0.3.1] - 2026-04-08
+
+### Fixed
+- Fix C# method overload crash: disambiguate symbol IDs with parameter count (`Class.Method(2)`)
+- Fix SQLite `UNIQUE constraint failed: symbols.symbol_id` fatal error on C# codebases with overloaded methods
+- Use `INSERT OR REPLACE` for symbols table as a safety net against duplicate symbol IDs
+
 ## [0.3.0] - 2026-04-08
 
 ### Added

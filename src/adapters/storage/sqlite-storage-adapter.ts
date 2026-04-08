@@ -123,7 +123,7 @@ export class SqliteStorageAdapter implements IStoragePort {
 
       for (const sym of fileIndex.symbols) {
         db.run(
-          'INSERT INTO symbols (symbol_id, name, kind, file_path, start_line, end_line) VALUES (?, ?, ?, ?, ?, ?)',
+          'INSERT OR REPLACE INTO symbols (symbol_id, name, kind, file_path, start_line, end_line) VALUES (?, ?, ?, ?, ?, ?)',
           [sym.symbolId, sym.name, sym.kind, fileIndex.file, sym.startLine, sym.endLine],
         );
       }
@@ -273,7 +273,7 @@ export class SqliteStorageAdapter implements IStoragePort {
 
         for (const sym of fileIndex.symbols) {
           db.run(
-            'INSERT INTO symbols (symbol_id, name, kind, file_path, start_line, end_line) VALUES (?, ?, ?, ?, ?, ?)',
+            'INSERT OR REPLACE INTO symbols (symbol_id, name, kind, file_path, start_line, end_line) VALUES (?, ?, ?, ?, ?, ?)',
             [sym.symbolId, sym.name, sym.kind, fileIndex.file, sym.startLine, sym.endLine],
           );
         }

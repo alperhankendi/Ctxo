@@ -133,7 +133,8 @@ export class CSharpAdapter extends TreeSitterAdapter {
       const name = child.childForFieldName('name')?.text;
       if (!name) continue;
 
-      const qualifiedName = `${className}.${name}`;
+      const paramCount = this.countParameters(child);
+      const qualifiedName = `${className}.${name}(${paramCount})`;
       const range = this.nodeToLineRange(child);
       symbols.push({
         symbolId: this.buildSymbolId(filePath, qualifiedName, 'method'),
@@ -247,8 +248,9 @@ export class CSharpAdapter extends TreeSitterAdapter {
         const methodName = child.childForFieldName('name')?.text;
         if (!methodName) continue;
 
+        const paramCount = this.countParameters(child);
         metrics.push({
-          symbolId: this.buildSymbolId(filePath, `${qualifiedClass}.${methodName}`, 'method'),
+          symbolId: this.buildSymbolId(filePath, `${qualifiedClass}.${methodName}(${paramCount})`, 'method'),
           cyclomatic: this.countCyclomaticComplexity(child, CSHARP_BRANCH_TYPES),
         });
       }
@@ -261,6 +263,16 @@ export class CSharpAdapter extends TreeSitterAdapter {
   }
 
   // ── Helpers ─────────────────────────────────────────────────
+
+  private countParameters(methodNode: SyntaxNode): number {
+    const paramList = methodNode.childForFieldName('parameters');
+    if (!paramList) return 0;
+    let count = 0;
+    for (let i = 0; i < paramList.childCount; i++) {
+      if (paramList.child(i)!.type === 'parameter') count++;
+    }
+    return count;
+  }
 
   private isPublic(node: SyntaxNode): boolean {
     for (let i = 0; i < node.childCount; i++) {
