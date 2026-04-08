@@ -1818,36 +1818,36 @@ document.getElementById('mcpConnectBtn').addEventListener('click', async () => {
     // 2. Send initialized notification
     await mcpNotify(url, 'notifications/initialized');
 
-    // 2. Call get_architectural_overlay for file list
-    const overlayRes = await mcpCall(url, 'tools/call', {
-      name: 'get_architectural_overlay', arguments: {},
-    });
-    if (overlayRes?.result?.content?.[0]?.text) {
-      const overlay = JSON.parse(overlayRes.result.content[0].text);
-      statusEl.textContent = 'Overlay loaded. Fetching symbols...';
+    // Helper: extract JSON from MCP tool response (skips stale warnings)
+    function extractJson(res) {
+      console.log('[MCP] Raw response:', JSON.stringify(res, null, 2));
+      if (!res?.result?.content?.length) return null;
+      for (let i = res.result.content.length - 1; i >= 0; i--) {
+        const t = res.result.content[i].text;
+        if (t && (t.startsWith('{') || t.startsWith('['))) {
+          try { return JSON.parse(t); } catch (e) { console.warn('[MCP] JSON parse failed for item', i, e); }
+        }
+      }
+      return null;
     }
 
-    // 3. Call search_symbols to get all symbols
+    // 2. Call search_symbols to get all symbols
+    console.log('[MCP] Calling search_symbols...');
     const symRes = await mcpCall(url, 'tools/call', {
       name: 'search_symbols', arguments: { pattern: '.*', limit: 500 },
     });
-    let mcpSymbols = [];
-    if (symRes?.result?.content?.length) {
-      // Find the last JSON content item (first may be a stale warning)
-      const jsonItem = [...symRes.result.content].reverse().find(c => c.text && c.text.startsWith('{'));
-      const symData = jsonItem ? JSON.parse(jsonItem.text) : {};
-      mcpSymbols = symData.results || symData.symbols || [];
-    }
+    const symData = extractJson(symRes);
+    const mcpSymbols = symData?.results || symData?.symbols || [];
+    console.log('[MCP] Got', mcpSymbols.length, 'symbols');
+    statusEl.textContent = 'Found ' + mcpSymbols.length + ' symbols. Loading details...';
 
-    // 4. Call get_change_intelligence for complexity hotspots
-    const ciRes = await mcpCall(url, 'tools/call', {
-      name: 'get_change_intelligence', arguments: { limit: 100 },
+    // 3. Call get_architectural_overlay
+    console.log('[MCP] Calling get_architectural_overlay...');
+    const overlayRes = await mcpCall(url, 'tools/call', {
+      name: 'get_architectural_overlay', arguments: {},
     });
-
-    // 5. Call find_dead_code
-    const deadRes = await mcpCall(url, 'tools/call', {
-      name: 'find_dead_code', arguments: {},
-    });
+    const overlayData = extractJson(overlayRes);
+    console.log('[MCP] Overlay:', overlayData ? 'OK' : 'empty');
 
     // Build file index from MCP data
     const fileMap = {};
@@ -1866,7 +1866,7 @@ document.getElementById('mcpConnectBtn').addEventListener('click', async () => {
     newFiles.forEach(f => state.files.push(f));
     dedup();
 
-    statusEl.textContent = 'Connected! ' + newFiles.length + ' files, ' + mcpSymbols.length + ' symbols loaded from MCP.';
+    statusEl.textContent = 'Connected! ' + newFiles.length + ' files, ' + mcpSymbols.length + ' symbols loaded via MCP.';
     statusEl.style.color = 'var(--green)';
     updateAll();
   } catch (err) {
