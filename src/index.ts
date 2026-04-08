@@ -73,7 +73,7 @@ async function main(): Promise<void> {
   server.registerTool(
     'get_logic_slice',
     {
-      description: 'Retrieve a symbol and all its transitive dependencies as a Logic-Slice. Use this when you need to UNDERSTAND what a symbol depends on (downstream view). L1=signature only, L2=direct deps, L3=full closure, L4=with token budget. For impact analysis (what BREAKS if this changes), use get_blast_radius instead. For task-specific context, use get_context_for_task.',
+      description: 'Retrieve a symbol and all its transitive dependencies as a Logic-Slice. Use this when you need to UNDERSTAND what a symbol depends on (downstream view). L1=signature only, L2=direct deps, L3=full closure, L4=with token budget. Use `intent` to filter dependencies by keyword (e.g., "core", "adapter"). All responses include `_meta` with item counts and truncation info. For impact analysis (what BREAKS if this changes), use get_blast_radius instead. For task-specific context, use get_context_for_task.',
       inputSchema: {
         symbolId: z.string().optional().describe('Single symbol ID (format: file::name::kind)'),
         symbolIds: z.array(z.string()).optional().describe('Batch: array of symbol IDs'),
@@ -112,9 +112,10 @@ async function main(): Promise<void> {
   server.registerTool(
     'get_blast_radius',
     {
-      description: 'BEFORE modifying any function or class, call this to understand impact. Returns all symbols that would break if the target changes, split into confirmed (direct importers), likely (co-changed), and potential (transitive) tiers with risk scores. For what a symbol DEPENDS ON (downstream), use get_logic_slice instead. For full PR-level analysis, use get_pr_impact.',
+      description: 'BEFORE modifying any function or class, call this to understand impact. Returns all symbols that would break if the target changes, split into confirmed (direct importers), likely (co-changed), and potential (transitive) tiers with risk scores. Use `confidence` to filter by tier, `intent` to filter by keyword. Large results are auto-truncated with `_meta.hint` for drill-in. For what a symbol DEPENDS ON (downstream), use get_logic_slice instead. For full PR-level analysis, use get_pr_impact.',
       inputSchema: {
         symbolId: z.string().min(1).describe('The symbol ID (format: file::name::kind)'),
+        confidence: z.enum(['confirmed', 'likely', 'potential']).optional().describe('Filter by confidence tier'),
         intent: z.string().optional().describe('Filter impacted symbols by intent keywords (e.g., "test", "adapter")'),
       },
     },
@@ -139,7 +140,7 @@ async function main(): Promise<void> {
   server.registerTool(
     'find_dead_code',
     {
-      description: 'Find unreachable symbols and files that are never imported or called anywhere. Use this during cleanup, refactoring, or before deleting code to confirm it is truly unused. For reverse dependency lookup of a specific symbol, use find_importers instead.',
+      description: 'Find unreachable symbols and files that are never imported or called anywhere. Use this during cleanup, refactoring, or before deleting code to confirm it is truly unused. Use `intent` to filter results by keyword (e.g., "adapter", "function"). Large results are auto-truncated with `_meta`. For reverse dependency lookup of a specific symbol, use find_importers instead.',
       inputSchema: {
         includeTests: z.boolean().optional().default(false).describe('Include test files in analysis (default: exclude)'),
         intent: z.string().optional().describe('Filter dead code results by intent keywords (e.g., "adapter", "function")'),
@@ -168,7 +169,7 @@ async function main(): Promise<void> {
   server.registerTool(
     'get_ranked_context',
     {
-      description: 'Search and rank symbols by relevance to a natural language query, packed within a token budget. Uses BM25 text matching + PageRank importance scoring. Use this when you have a question or topic but do not know which specific symbol to look at. For exact symbol name search, use search_symbols instead.',
+      description: 'Search and rank symbols by relevance to a natural language query, packed within a token budget. Uses BM25 text matching + PageRank importance scoring. Results include `_meta` with truncation info. Use this when you have a question or topic but do not know which specific symbol to look at. For exact symbol name search, use search_symbols instead.',
       inputSchema: {
         query: z.string().min(1).describe('Search query (matches symbol names)'),
         tokenBudget: z.number().optional().default(4000).describe('Max tokens for results (default 4000)'),
@@ -213,7 +214,7 @@ async function main(): Promise<void> {
   server.registerTool(
     'find_importers',
     {
-      description: 'Find all symbols that import or depend on a given symbol (reverse dependency / "who uses this?"). Use this to check if a symbol is safe to modify or delete. Supports transitive traversal for deep impact chains. For forward dependencies (what this symbol uses), use get_logic_slice. For aggregated impact with risk scores, use get_blast_radius.',
+      description: 'Find all symbols that import or depend on a given symbol (reverse dependency / "who uses this?"). Use this to check if a symbol is safe to modify or delete. Supports transitive traversal for deep impact chains. Use `intent` to filter by keyword (e.g., "test", "core"). For forward dependencies (what this symbol uses), use get_logic_slice. For aggregated impact with risk scores, use get_blast_radius.',
       inputSchema: {
         symbolId: z.string().min(1).describe('The symbol ID (format: file::name::kind)'),
         edgeKinds: z.array(z.enum(['imports', 'calls', 'extends', 'implements', 'uses'])).optional().describe('Filter by edge kinds'),
@@ -260,7 +261,7 @@ async function main(): Promise<void> {
   server.registerTool(
     'get_pr_impact',
     {
-      description: 'Analyze the full impact of a PR or recent changes in a SINGLE call — combines changed symbols + blast radius + co-change history into one risk assessment. Use this FIRST when reviewing a PR or evaluating recent commits. For single-symbol analysis, use get_blast_radius instead.',
+      description: 'Analyze the full impact of a PR or recent changes in a SINGLE call — combines changed symbols + blast radius + co-change history into one risk assessment. Results include `_meta` with truncation info. Use this FIRST when reviewing a PR or evaluating recent commits. For single-symbol analysis, use get_blast_radius instead.',
       inputSchema: {
         since: z.string().optional().default('HEAD~1').describe('Git ref to diff against (default HEAD~1)'),
         maxFiles: z.number().int().min(1).optional().default(50).describe('Max changed files to analyze'),
