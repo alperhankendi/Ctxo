@@ -6,7 +6,7 @@
       "symbolId": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
     }
   ],
-  "contentHash": "a6415c88a1fcb40ee0376ce67c40a948be75053d98becf2826d20db205388bef",
+  "contentHash": "4a675047342e464233061e4bf72d96b1f979f9332e4ab684c5d5d9a64ae23087",
   "edges": [
     {
       "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
@@ -123,21 +123,27 @@
   "file": "src/adapters/mcp/get-pr-impact.ts",
   "intent": [
     {
+      "date": "2026-04-08T14:43:37+03:00",
+      "hash": "712e1fb7e8b721a7fda602fc94ea6b089aa5707e",
+      "kind": "commit",
+      "message": "fix(mcp): report indexed file count in get_pr_impact, not raw git paths (#24)"
+    },
+    {
       "date": "2026-04-08T04:31:58+03:00",
       "hash": "f2fd79d92382071661c21f86fb84aa88feeb7e1f",
       "kind": "commit",
       "message": "Add co-change analysis and get_pr_impact MCP tool (14th tool)"
     }
   ],
-  "lastModified": 1775611990,
+  "lastModified": 1775650824,
   "symbols": [
     {
       "endLine": 206,
-      "endOffset": 7110,
+      "endOffset": 7309,
       "kind": "function",
       "name": "handleGetPrImpact",
       "startLine": 29,
-      "startOffset": 1261,
+      "startOffset": 1290,
       "symbolId": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
     }
   ]

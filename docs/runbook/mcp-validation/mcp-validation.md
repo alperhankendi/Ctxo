@@ -1396,7 +1396,8 @@ Fill in after completing both MCP and manual runs:
 | `find_importers`            | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
 | `get_class_hierarchy`       | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
 | `get_symbol_importance`     | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
-| **TOTAL**                   | **\_\_\_** | **13**    | **\_\_\_**    | **\_\_\_**   | **\_\_\_x**   | **\_\_\_x**  |
+| `get_pr_impact`             | \_\_\_     | 1         | \_\_\_        | \_\_\_       | \_\_\_x       | \_\_\_x      |
+| **TOTAL**                   | **\_\_\_** | **14**    | **\_\_\_**    | **\_\_\_**   | **\_\_\_x**   | **\_\_\_x**  |
 
 ### 23.13 Manual: Symbol Importance
 
@@ -1525,13 +1526,13 @@ After completing all steps, fill in:
 | 24 | Token savings > 10x for aggregate                                   |           |
 | 25 | Context budget chart shows MCP uses < 1% of 1M window               |           |
 
-**Result:** \_\_\_/81 checks passed
+**Result:** \_\_\_/83 checks passed
 
 ***
 
 ## Appendix A: Automated Smoke Test
 
-Run all 13 MCP tool calls automatically via InMemoryTransport:
+Run all 14 MCP tool calls automatically via InMemoryTransport:
 
 ```Shell
 # 1. Clean + rebuild index
@@ -1540,16 +1541,16 @@ rm -rf .ctxo/.cache/ .ctxo/index/ && npx tsx src/index.ts index
 # 2. Run unit tests
 npx vitest run
 
-# 3. Run MCP validation (13 tool calls, expects 13/13 PASS)
+# 3. Run MCP validation (14 tool calls, expects 14/14 PASS)
 npx tsx docs/runbook/mcp-validation/mcp-validation-test.ts
 ```
 
 **What it does:**
 - Boots the full MCP server in-process using `InMemoryTransport` (no stdio)
-- Registers all 13 tools with the same wiring as `src/index.ts`
+- Registers all 14 tools with the same wiring as `src/index.ts`
 - Calls each tool with representative arguments and parses the response
 - Prints `PASS | <key metrics>` or `FAIL` per tool
-- Exits with code 0 if 13/13 pass, code 1 otherwise
+- Exits with code 0 if 14/14 pass, code 1 otherwise
 
 **Expected output (all green):**
 
@@ -1567,8 +1568,9 @@ get_changed_symbols:      PASS | files=0 syms=0
 find_importers:           PASS | imp=38 maxD=3
 get_class_hierarchy:      PASS | hier=4 cls=8 edges=4
 get_symbol_importance:    PASS | syms=258 conv=true iter=30 top=FileIndex
+get_pr_impact:            PASS | files=N risk=low
 
-=== RESULT: 13/13 passed, 0 failed ===
+=== RESULT: 14/14 passed, 0 failed ===
 ```
 
 **Source:** [`mcp-validation-test.ts`](mcp-validation-test.ts)
@@ -1587,7 +1589,7 @@ rm -rf .ctxo/.cache/ .ctxo/index/ && npx tsx src/index.ts index
 npx vitest run
 ```
 
-Then invoke these 13 MCP calls:
+Then invoke these 14 MCP calls:
 
 * `get_logic_slice` — `src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class`, level 3
 * `get_blast_radius` — `src/core/types.ts::SymbolNode::type`
@@ -1602,5 +1604,6 @@ Then invoke these 13 MCP calls:
 * `find_importers` — `src/core/types.ts::SymbolNode::type`, transitive: true
 * `get_class_hierarchy` — no params (full project hierarchy)
 * `get_symbol_importance` — limit: 10
+* `get_pr_impact` — since: "HEAD~3"
 
-**Quick pass criteria:** All 13 return data (not errors), dependencies/dependents non-empty, 6 layers present, dead code has totalSymbols > 0, context has entries with scores, search returns matches, importers non-empty, hierarchy has trees, importance rankings sorted by score descending with converged=true.
+**Quick pass criteria:** All 14 return data (not errors), dependencies/dependents non-empty, 6 layers present, dead code has totalSymbols > 0, context has entries with scores, search returns matches, importers non-empty, hierarchy has trees, importance rankings sorted by score descending with converged=true, PR impact returns riskLevel.

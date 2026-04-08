@@ -10,14 +10,8 @@
       "hash": "12e098e603181fccac6132d88a0fce7ecf7d14f8",
       "kind": "commit",
       "message": "Add CI/CD pipelines with test reporting and npm publish"
-    },
-    {
-      "date": "2026-03-29T15:43:28+03:00",
-      "hash": "f9bfea331e6ebdaf0733822d6f8d5b29a106d465",
-      "kind": "commit",
-      "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
     }
   ],
-  "lastModified": 1775611991,
+  "lastModified": 1775650824,
   "symbols": []
 }

@@ -94,57 +94,9 @@
       "hash": "1dcd724d46790be519a60d8aeb2c9688e8cb8a90",
       "kind": "commit",
       "message": "Add context assembly: get_context_for_task + get_ranked_context"
-    },
-    {
-      "date": "2026-03-30T22:51:29+03:00",
-      "hash": "07e1bbcfca5863df7267e0f450bc6aee1f69216d",
-      "kind": "commit",
-      "message": "Add find_dead_code MCP tool — unreachable symbol and file detection"
-    },
-    {
-      "date": "2026-03-30T22:05:34+03:00",
-      "hash": "d38d5ef97f3147209420aff58fcb46b3e30991b4",
-      "kind": "commit",
-      "message": "Add confirmed/potential blast radius split + remove self-dependency"
-    },
-    {
-      "date": "2026-03-29T23:22:18+03:00",
-      "hash": "5b10b3af81a43dc075be17e7b61d428cd25d86ed",
-      "kind": "commit",
-      "message": "Add blast radius risk scoring (inspired by jCodeMunch)"
-    },
-    {
-      "date": "2026-03-29T22:49:58+03:00",
-      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
-      "kind": "commit",
-      "message": "Fix 12 feature completeness gaps found in deep audit"
-    },
-    {
-      "date": "2026-03-29T19:36:39+03:00",
-      "hash": "fe25908f1b52456c787f056d764a44307cfc32ba",
-      "kind": "commit",
-      "message": "Fix MCP tools reading stale data: build graph from JSON index, not SQLite"
-    },
-    {
-      "date": "2026-03-29T17:30:08+03:00",
-      "hash": "a494f9d485aa9268a5e63ad0aad321caecc0e2d8",
-      "kind": "commit",
-      "message": "Add missing CLI tests, wire staleness into all 5 MCP tools, configure npm pack"
-    },
-    {
-      "date": "2026-03-29T16:49:13+03:00",
-      "hash": "3d2a69146903edf71a1a4e6797c8f392620ba4b7",
-      "kind": "commit",
-      "message": "Fix 7 runtime bugs from second code review"
-    },
-    {
-      "date": "2026-03-29T16:35:14+03:00",
-      "hash": "1b61fa7811ad1bc58a6c475de7b8b6582d17be7e",
-      "kind": "commit",
-      "message": "Add blast radius calculator and architectural overlay"
     }
   ],
-  "lastModified": 1775611990,
+  "lastModified": 1775650824,
   "symbols": [
     {
       "endLine": 57,

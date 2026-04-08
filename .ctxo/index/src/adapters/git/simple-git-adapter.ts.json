@@ -10,6 +10,10 @@
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getCommitHistory::method"
     },
     {
+      "cyclomatic": 7,
+      "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getBatchHistory::method"
+    },
+    {
       "cyclomatic": 2,
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getChangedFiles::method"
     },
@@ -18,7 +22,7 @@
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getFileChurn::method"
     }
   ],
-  "contentHash": "860103522955ffe4b14d8d8b78f85c9a7d109f2b83eb6b7869ba30daf2dcb93d",
+  "contentHash": "85531762fb0f9e4e352e6a6924ee1e740ce014ea1841f9a139c9f764fc3bd4f6",
   "edges": [
     {
       "from": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class",
@@ -62,6 +66,12 @@
   "file": "src/adapters/git/simple-git-adapter.ts",
   "intent": [
     {
+      "date": "2026-04-08T13:12:33+03:00",
+      "hash": "0f433a0ad86a8876539f8934820540a9c42928ae",
+      "kind": "commit",
+      "message": "Batch git log calls during indexing (N calls → 1 call)"
+    },
+    {
       "date": "2026-03-31T03:15:55+03:00",
       "hash": "dcae17802c9cc167416a9a55e325e5da1a595639",
       "kind": "commit",
@@ -80,11 +90,11 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1775611990,
+  "lastModified": 1775650824,
   "symbols": [
     {
-      "endLine": 63,
-      "endOffset": 1860,
+      "endLine": 95,
+      "endOffset": 2880,
       "kind": "class",
       "name": "SimpleGitAdapter",
       "startLine": 4,
@@ -110,21 +120,30 @@
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getCommitHistory::method"
     },
     {
-      "endLine": 48,
-      "endOffset": 1449,
+      "endLine": 70,
+      "endOffset": 2116,
       "kind": "method",
-      "name": "SimpleGitAdapter.getChangedFiles",
+      "name": "SimpleGitAdapter.getBatchHistory",
       "startLine": 40,
       "startOffset": 1102,
+      "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getBatchHistory::method"
+    },
+    {
+      "endLine": 80,
+      "endOffset": 2469,
+      "kind": "method",
+      "name": "SimpleGitAdapter.getChangedFiles",
+      "startLine": 72,
+      "startOffset": 2122,
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getChangedFiles::method"
     },
     {
-      "endLine": 62,
-      "endOffset": 1857,
+      "endLine": 94,
+      "endOffset": 2877,
       "kind": "method",
       "name": "SimpleGitAdapter.getFileChurn",
-      "startLine": 50,
-      "startOffset": 1455,
+      "startLine": 82,
+      "startOffset": 2475,
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getFileChurn::method"
     }
   ]

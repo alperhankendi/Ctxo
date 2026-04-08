@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "0d1dcc9f6b38c7b39e5cb371c4dbeac929c26223ced7c5e05d7cc119001ede80",
+  "contentHash": "55e1e9a64f32df40a5482db4c9f6a58b5297595eee0a9de81cae7647320ec941",
   "edges": [
     {
       "from": "src/adapters/mcp/__tests__/get-pr-impact.test.ts::get-pr-impact.test::variable",
@@ -39,12 +39,18 @@
   "file": "src/adapters/mcp/__tests__/get-pr-impact.test.ts",
   "intent": [
     {
+      "date": "2026-04-08T14:43:37+03:00",
+      "hash": "712e1fb7e8b721a7fda602fc94ea6b089aa5707e",
+      "kind": "commit",
+      "message": "fix(mcp): report indexed file count in get_pr_impact, not raw git paths (#24)"
+    },
+    {
       "date": "2026-04-08T04:31:58+03:00",
       "hash": "f2fd79d92382071661c21f86fb84aa88feeb7e1f",
       "kind": "commit",
       "message": "Add co-change analysis and get_pr_impact MCP tool (14th tool)"
     }
   ],
-  "lastModified": 1775611990,
+  "lastModified": 1775650824,
   "symbols": []
 }

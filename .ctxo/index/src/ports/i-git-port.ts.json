@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "df2771853dbfe319db43bb3269f49ef829527f8055d65923657729b5b5e0a8c1",
+  "contentHash": "b34a765ac4824d3449e66f94ae139e9f26a72bca37e5d34110dcb1acb3180c6e",
   "edges": [
     {
       "from": "src/ports/i-git-port.ts::IGitPort::interface",
@@ -19,6 +19,12 @@
   "file": "src/ports/i-git-port.ts",
   "intent": [
     {
+      "date": "2026-04-08T13:12:33+03:00",
+      "hash": "0f433a0ad86a8876539f8934820540a9c42928ae",
+      "kind": "commit",
+      "message": "Batch git log calls during indexing (N calls → 1 call)"
+    },
+    {
       "date": "2026-03-31T03:15:55+03:00",
       "hash": "dcae17802c9cc167416a9a55e325e5da1a595639",
       "kind": "commit",
@@ -31,11 +37,11 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1775611991,
+  "lastModified": 1775650824,
   "symbols": [
     {
-      "endLine": 7,
-      "endOffset": 326,
+      "endLine": 8,
+      "endOffset": 404,
       "kind": "interface",
       "name": "IGitPort",
       "startLine": 2,

@@ -82,15 +82,70 @@ src/
 | CLI commands | kebab-case | `ctxo index`, `ctxo verify-index` |
 | Symbol IDs | deterministic | `"<relativeFile>::<name>::<kind>"` |
 
-## MCP Tools (5 total)
+## MCP Tools (14 total)
 
 | Tool | Purpose |
 |---|---|
 | `get_logic_slice` | Symbol + transitive deps (L1-L4 progressive detail) |
-| `get_blast_radius` | Impact score + affected symbols |
+| `get_blast_radius` | Impact score + affected symbols (3-tier: confirmed/likely/potential) |
 | `get_architectural_overlay` | Project layer map (Domain/Infra/Adapters) |
 | `get_why_context` | Git commit intent + anti-pattern warnings |
 | `get_change_intelligence` | Complexity x churn composite score |
+| `find_dead_code` | Unreachable symbols and files |
+| `get_context_for_task` | Task-aware context (fix/extend/refactor/understand) |
+| `get_ranked_context` | BM25 + PageRank search within token budget |
+| `search_symbols` | Symbol name/regex search across index |
+| `get_changed_symbols` | Symbols in recently changed files (git diff) |
+| `find_importers` | Reverse dependency lookup ("who uses this?") |
+| `get_class_hierarchy` | Class inheritance tree (ancestors + descendants) |
+| `get_symbol_importance` | PageRank centrality ranking |
+| `get_pr_impact` | Full PR risk assessment (changes + blast radius + co-changes) |
+
+### Tool Selection Guide — When to Use Which Tool
+
+```
+Reviewing a PR or recent changes?
+  → get_pr_impact (single call, full risk assessment)
+
+About to modify a function or class?
+  → get_blast_radius (what breaks if I change this?)
+  → then get_why_context (any history of problems?)
+
+Need to understand what a symbol does?
+  → get_context_for_task(taskType: "understand")
+  → or get_logic_slice (L2 for overview, L3 for full closure)
+
+Fixing a bug?
+  → get_context_for_task(taskType: "fix")
+    (includes history, anti-patterns, and deps)
+
+Adding a feature / extending code?
+  → get_context_for_task(taskType: "extend")
+    (includes deps and blast radius)
+
+Refactoring?
+  → get_context_for_task(taskType: "refactor")
+    (includes importers, complexity, and churn)
+
+Don't know the symbol name?
+  → search_symbols (by name/regex)
+  → get_ranked_context (by natural language query)
+
+Onboarding to a new codebase?
+  → get_architectural_overlay (layer map)
+  → get_symbol_importance (most critical symbols)
+
+Cleaning up code?
+  → find_dead_code (unused symbols)
+  → get_change_intelligence (complexity hotspots)
+
+Checking if safe to delete/rename?
+  → find_importers (who depends on this?)
+  → get_blast_radius (full impact)
+
+Working with class hierarchies?
+  → get_class_hierarchy (extends/implements tree)
+```
 
 ### MCP Tool Response Format (all tools)
 
@@ -225,3 +280,4 @@ try {
 - [Epics](docs/artifacts/epics.md) — implementation epics breakdown
 - [V1 Walkthrough](docs/walkthrough-v1.md) — V1 implementation log (354 tests)
 - [V1.1 Walkthrough](docs/walkthrough-v1.1.md) — V1.1 features: cross-file resolution, Go/C#, 3-tier blast radius
+- [Agentic AI Integration](docs/agentic-ai-integration.md) — Claude Agent SDK, OpenAI Agents SDK, LangChain, raw MCP client usage

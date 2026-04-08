@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "ae38f43d7469ac56c1f94d6a4adfd29bbf0515df6dac9552d752e90c0011da44",
+  "contentHash": "d3620a31ab182b26a37b03e9810744ccce73cea2c179a3c216b6819099e96e9d",
   "edges": [
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
@@ -86,6 +86,11 @@
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
+      "to": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
+    },
+    {
+      "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
+      "kind": "imports",
       "to": "src/core/staleness/staleness-detector.ts::StalenessDetector::class"
     }
   ],
@@ -98,6 +103,6 @@
       "message": "Add automated MCP validation test script to runbook"
     }
   ],
-  "lastModified": 1775611989,
+  "lastModified": 1775650823,
   "symbols": []
 }

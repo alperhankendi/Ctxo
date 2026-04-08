@@ -17,6 +17,7 @@ import { handleGetChangedSymbols } from '../../../src/adapters/mcp/get-changed-s
 import { handleFindImporters } from '../../../src/adapters/mcp/find-importers.js';
 import { handleGetClassHierarchy } from '../../../src/adapters/mcp/get-class-hierarchy.js';
 import { handleGetSymbolImportance } from '../../../src/adapters/mcp/get-symbol-importance.js';
+import { handleGetPrImpact } from '../../../src/adapters/mcp/get-pr-impact.js';
 import { StalenessDetector } from '../../../src/core/staleness/staleness-detector.js';
 import { z } from 'zod';
 import { existsSync, readFileSync } from 'node:fs';
@@ -85,6 +86,10 @@ async function main() {
     description: 'SI', inputSchema: { limit: z.number().optional(), kind: z.string().optional(), filePattern: z.string().optional(), damping: z.number().optional() }
   }, (args: any) => handleGetSymbolImportance(storage, masking, staleness, ctxoRoot)(args));
 
+  server.registerTool('get_pr_impact', {
+    description: 'PI', inputSchema: { since: z.string().optional(), maxFiles: z.number().optional(), confidence: z.string().optional() }
+  }, (args: any) => handleGetPrImpact(storage, git, masking, staleness, ctxoRoot)(args));
+
   // Connect with InMemoryTransport
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
   const client = new Client({ name: 'test', version: '1.0' });
@@ -92,7 +97,7 @@ async function main() {
   await server.connect(serverTransport);
   await client.connect(clientTransport);
 
-  // Run all 13 tool tests
+  // Run all 14 tool tests
   const tests: [string, Record<string, any>][] = [
     ['get_logic_slice', { symbolId: 'src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class', level: 3 }],
     ['get_blast_radius', { symbolId: 'src/core/types.ts::SymbolNode::type' }],
@@ -107,6 +112,7 @@ async function main() {
     ['find_importers', { symbolId: 'src/core/types.ts::SymbolNode::type', transitive: true }],
     ['get_class_hierarchy', {}],
     ['get_symbol_importance', { limit: 10 }],
+    ['get_pr_impact', { since: 'HEAD~3' }],
   ];
 
   let pass = 0, fail = 0;
@@ -133,6 +139,7 @@ async function main() {
         case 'find_importers': s=`imp=${d.importerCount} maxD=${Math.max(0,...(d.importers||[]).map((x:any)=>x.depth))}`; break;
         case 'get_class_hierarchy': s=`hier=${d.hierarchies?.length} cls=${d.totalClasses} edges=${d.totalEdges}`; break;
         case 'get_symbol_importance': s=`syms=${d.totalSymbols} conv=${d.converged} iter=${d.iterations} top=${d.rankings?.[0]?.name}`; break;
+        case 'get_pr_impact': s=`files=${d.changedFiles} syms=${d.changedSymbols} risk=${d.riskLevel}`; break;
       }
       console.log(`${name}: PASS | ${s}`);
       pass++;
@@ -142,7 +149,7 @@ async function main() {
     }
   }
 
-  console.log(`\n=== RESULT: ${pass}/13 passed, ${fail} failed ===`);
+  console.log(`\n=== RESULT: ${pass}/14 passed, ${fail} failed ===`);
   await client.close();
   await server.close();
   process.exit(fail > 0 ? 1 : 0);
