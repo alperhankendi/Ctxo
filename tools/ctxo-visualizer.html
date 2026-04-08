@@ -1340,23 +1340,34 @@ document.getElementById('urlLoadBtn').addEventListener('click', async () => {
       }
     } catch (ignored) { /* co-changes optional */ }
 
-    // Try to fetch a directory listing (works with many static servers)
+    // Try manifest.txt first (GitHub Pages), then directory listing (local servers)
     let fileList = [];
     try {
-      const listRes = await fetch(baseUrl);
-      if (listRes.ok) {
-        const html = await listRes.text();
-        const linkRegex = /href="([^"]+\.json)"/g;
-        let match;
-        while ((match = linkRegex.exec(html)) !== null) {
-          const fname = match[1];
-          if (fname !== 'co-changes.json') fileList.push(fname);
-        }
+      const manifestRes = await fetch(baseUrl + 'manifest.txt');
+      if (manifestRes.ok) {
+        const text = await manifestRes.text();
+        fileList = text.trim().split('\n').filter(f => f.endsWith('.json') && f !== 'co-changes.json');
+        statusEl.textContent = 'Found ' + fileList.length + ' files via manifest...';
       }
-    } catch (ignored) { /* listing optional */ }
+    } catch (ignored) {}
+
+    if (!fileList.length) {
+      try {
+        const listRes = await fetch(baseUrl);
+        if (listRes.ok) {
+          const html = await listRes.text();
+          const linkRegex = /href="([^"]+\.json)"/g;
+          let match;
+          while ((match = linkRegex.exec(html)) !== null) {
+            const fname = match[1];
+            if (fname !== 'co-changes.json') fileList.push(fname);
+          }
+        }
+      } catch (ignored) {}
+    }
 
     if (fileList.length === 0) {
-      statusEl.textContent = 'Could not list files. Try drag & drop instead.';
+      statusEl.textContent = 'No files found. Check URL or use drag & drop.';
       btn.disabled = false; btn.textContent = 'Fetch'; return;
     }
 

@@ -30,6 +30,8 @@ jobs:
           cp tools/ctxo-visualizer.html _site/
           cp -r .ctxo/index/* _site/ctxo-index/
           touch _site/.nojekyll
+          # Generate manifest of all JSON files for the visualizer
+          cd _site/ctxo-index && find . -name '*.json' -type f | sed 's|^\./||' | sort > manifest.txt
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
