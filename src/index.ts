@@ -271,6 +271,12 @@ async function main(): Promise<void> {
     (args) => prImpactHandler(args),
   );
 
+  // Register empty resource/prompt capabilities to prevent -32601 errors
+  // from MCP clients that unconditionally call listResources/listPrompts
+  server.resource('ctxo-status', 'ctxo://status', async (uri) => ({
+    contents: [{ uri: uri.href, text: 'Ctxo MCP server is running.' }],
+  }));
+
   // Start MCP server
   const transport = new StdioServerTransport();
   await server.connect(transport);
