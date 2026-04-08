@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { BlastRadiusCalculator } from '../../core/blast-radius/blast-radius-calculator.js';
+import { wrapResponse } from '../../core/response-envelope.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
 
@@ -53,7 +54,7 @@ export function handleGetBlastRadius(
       const likelyCount = symbols.filter(s => s.confidence === 'likely').length;
       const potentialCount = symbols.filter(s => s.confidence === 'potential').length;
 
-      const payload = masking.mask(JSON.stringify({
+      const payload = masking.mask(JSON.stringify(wrapResponse({
         symbolId,
         impactScore: symbols.length,
         directDependentsCount: result.directDependentsCount,
@@ -62,7 +63,7 @@ export function handleGetBlastRadius(
         potentialCount,
         overallRiskScore: result.overallRiskScore,
         impactedSymbols: symbols,
-      }));
+      })));
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {

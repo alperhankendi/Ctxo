@@ -4,6 +4,7 @@ import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { PageRankCalculator } from '../../core/importance/pagerank-calculator.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
+import { wrapResponse } from '../../core/response-envelope.js';
 
 const InputSchema = z.object({
   limit: z.number().int().min(1).max(200).optional().default(25),
@@ -50,13 +51,13 @@ export function handleGetSymbolImportance(
       }
       filtered = filtered.slice(0, limit);
 
-      const payload = masking.mask(JSON.stringify({
+      const payload = masking.mask(JSON.stringify(wrapResponse({
         rankings: filtered,
         totalSymbols: result.totalSymbols,
         iterations: result.iterations,
         converged: result.converged,
         damping,
-      }));
+      })));
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {

@@ -5,6 +5,7 @@ import { ContextAssembler } from '../../core/context-assembly/context-assembler.
 import { JsonIndexReader } from '../storage/json-index-reader.js';
 import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
 import type { StalenessCheck } from './get-logic-slice.js';
+import { wrapResponse } from '../../core/response-envelope.js';
 
 const TaskTypeSchema = z.enum(['fix', 'extend', 'refactor', 'understand']);
 
@@ -50,7 +51,7 @@ export function handleGetContextForTask(
         };
       }
 
-      const payload = masking.mask(JSON.stringify(result));
+      const payload = masking.mask(JSON.stringify(wrapResponse(result as unknown as Record<string, unknown>)));
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {

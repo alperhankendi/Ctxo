@@ -3,6 +3,7 @@ import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
+import { wrapResponse } from '../../core/response-envelope.js';
 
 const InputSchema = z.object({
   pattern: z.string().min(1),
@@ -65,10 +66,10 @@ export function handleSearchSymbols(
         endLine: node.endLine,
       }));
 
-      const payload = masking.mask(JSON.stringify({
+      const payload = masking.mask(JSON.stringify(wrapResponse({
         totalMatches: matches.length,
         results,
-      }));
+      })));
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {

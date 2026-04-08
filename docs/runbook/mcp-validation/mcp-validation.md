@@ -1086,6 +1086,55 @@ const { handleGetPrImpact } = require('./src/adapters/mcp/get-pr-impact.js');
 
 ***
 
+## Step 19b: Response Envelope (`_meta` + Truncation)
+
+Verify that all tool responses include `_meta` field and that large responses are auto-truncated.
+
+### 19b.1 `_meta` Field Present
+
+Call any tool (e.g., `get_blast_radius` with `SymbolNode`) and verify:
+
+* [ ] Response JSON contains `_meta` object
+* [ ] `_meta.totalItems` is a number >= 0
+* [ ] `_meta.returnedItems` is a number >= 0
+* [ ] `_meta.truncated` is a boolean
+* [ ] `_meta.totalBytes` is a number > 0
+
+### 19b.2 Truncation Under Default Threshold
+
+Call `get_blast_radius` with a leaf symbol (few dependents):
+
+* [ ] `_meta.truncated` is `false`
+* [ ] `_meta.totalItems` equals `_meta.returnedItems`
+* [ ] No `_meta.hint` field present
+
+### 19b.3 Truncation Over Threshold
+
+Set `CTXO_RESPONSE_LIMIT=500` environment variable and call `get_blast_radius` with `SymbolNode` (high-impact):
+
+* [ ] `_meta.truncated` is `true`
+* [ ] `_meta.returnedItems` < `_meta.totalItems`
+* [ ] `_meta.hint` contains a drill-in suggestion
+* [ ] `impactedSymbols` array length equals `_meta.returnedItems`
+* [ ] Response JSON byte size is <= 500 bytes
+
+### 19b.4 Configurable Threshold
+
+* [ ] Default threshold is 8192 bytes (when `CTXO_RESPONSE_LIMIT` not set)
+* [ ] Setting `CTXO_RESPONSE_LIMIT=16384` increases the threshold
+* [ ] Invalid values (0, negative, non-numeric) fall back to default
+
+**Record:**
+
+| Tool | _meta.truncated | totalItems | returnedItems | totalBytes |
+|---|---|---|---|---|
+| `get_blast_radius` (leaf) | false | \_\_\_ | \_\_\_ | \_\_\_ |
+| `get_blast_radius` (central, limit=500) | true | \_\_\_ | \_\_\_ | \_\_\_ |
+| `find_dead_code` | \_\_\_ | \_\_\_ | \_\_\_ | \_\_\_ |
+| `find_importers` (SymbolNode) | \_\_\_ | \_\_\_ | \_\_\_ | \_\_\_ |
+
+***
+
 ## Step 20: Staleness Detection Check
 
 Run any tool immediately after a fresh index build.
@@ -1519,6 +1568,9 @@ After completing all steps, fill in:
 | 19a| `get_pr_impact` — riskLevel low/medium/high                         |           |
 | 19b| `get_pr_impact` — coChangedWith array per file                      |           |
 | 19c| `get_pr_impact` — confidence filter works                           |           |
+| 19b| Response envelope — `_meta` field present in all tool responses     |           |
+| 19c| Response envelope — truncation works when over threshold            |           |
+| 19d| Response envelope — `CTXO_RESPONSE_LIMIT` configurable             |           |
 | 20 | Staleness detection — no false positive on fresh index              |           |
 | 21 | Unit tests pass (675+)                                              |           |
 | 22 | Git hash masking — visible or redacted (log status)                 |           |
@@ -1526,7 +1578,7 @@ After completing all steps, fill in:
 | 24 | Token savings > 10x for aggregate                                   |           |
 | 25 | Context budget chart shows MCP uses < 1% of 1M window               |           |
 
-**Result:** \_\_\_/83 checks passed
+**Result:** \_\_\_/86 checks passed
 
 ***
 

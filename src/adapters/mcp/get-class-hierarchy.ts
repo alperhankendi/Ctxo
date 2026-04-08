@@ -3,6 +3,7 @@ import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
+import { wrapResponse } from '../../core/response-envelope.js';
 
 const InputSchema = z.object({
   symbolId: z.string().min(1).optional(),
@@ -127,7 +128,7 @@ export function handleGetClassHierarchy(
     if (direction === 'ancestors' || direction === 'both') result.ancestors = ancestors;
     if (direction === 'descendants' || direction === 'both') result.descendants = descendants;
 
-    const payload = maskingPort.mask(JSON.stringify(result));
+    const payload = maskingPort.mask(JSON.stringify(wrapResponse(result)));
     const content: Array<{ type: 'text'; text: string }> = [];
     if (stalenessCheck) {
       const warning = stalenessCheck.check(storagePort.listIndexedFiles());
@@ -196,11 +197,11 @@ export function handleGetClassHierarchy(
       if (tree) hierarchies.push(tree);
     }
 
-    const payload = maskingPort.mask(JSON.stringify({
+    const payload = maskingPort.mask(JSON.stringify(wrapResponse({
       hierarchies,
       totalClasses: involved.size,
       totalEdges: hierarchyEdges.length,
-    }));
+    })));
 
     const content: Array<{ type: 'text'; text: string }> = [];
     if (stalenessCheck) {

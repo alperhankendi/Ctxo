@@ -3,6 +3,7 @@ import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { DeadCodeDetector } from '../../core/dead-code/dead-code-detector.js';
 import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
+import { wrapResponse } from '../../core/response-envelope.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 
 const InputSchema = z.object({
@@ -35,7 +36,7 @@ export function handleFindDeadCode(
       const graph = getGraph();
       const result = detector.detect(graph, { includeTests: parsed.data.includeTests });
 
-      const payload = masking.mask(JSON.stringify(result));
+      const payload = masking.mask(JSON.stringify(wrapResponse(result as Record<string, unknown>)));
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {

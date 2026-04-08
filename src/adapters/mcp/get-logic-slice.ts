@@ -6,6 +6,7 @@ import { JsonIndexReader } from '../storage/json-index-reader.js';
 import { LogicSliceQuery } from '../../core/logic-slice/logic-slice-query.js';
 import { DetailFormatter } from '../../core/detail-levels/detail-formatter.js';
 import { DetailLevelSchema } from '../../core/types.js';
+import { wrapResponse } from '../../core/response-envelope.js';
 
 const InputSchema = z.object({
   symbolId: z.string().min(1).optional(),
@@ -114,7 +115,7 @@ export function handleGetLogicSlice(
       const responseData = ids.length === 1 ? results[0] : { batch: true, results };
 
       // Apply masking
-      const payload = masking.mask(JSON.stringify(responseData));
+      const payload = masking.mask(JSON.stringify(wrapResponse(responseData as Record<string, unknown>)));
 
       // Check staleness
       const content: Array<{ type: 'text'; text: string }> = [];

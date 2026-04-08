@@ -4,6 +4,7 @@ import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { ContextAssembler } from '../../core/context-assembly/context-assembler.js';
 import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
 import type { StalenessCheck } from './get-logic-slice.js';
+import { wrapResponse } from '../../core/response-envelope.js';
 
 const InputSchema = z.object({
   query: z.string().min(1),
@@ -39,7 +40,7 @@ export function handleGetRankedContext(
 
       const result = assembler.assembleRanked(graph, query, strategy, tokenBudget);
 
-      const payload = masking.mask(JSON.stringify(result));
+      const payload = masking.mask(JSON.stringify(wrapResponse(result as unknown as Record<string, unknown>)));
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {

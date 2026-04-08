@@ -7,6 +7,7 @@ import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
 import { BlastRadiusCalculator } from '../../core/blast-radius/blast-radius-calculator.js';
+import { wrapResponse } from '../../core/response-envelope.js';
 import { loadCoChangeMap } from '../../core/co-change/co-change-analyzer.js';
 import type { CoChangeMatrix, CoChangeEntry } from '../../core/types.js';
 
@@ -175,7 +176,7 @@ export function handleGetPrImpact(
 
       const changedSymbols = files.reduce((sum, f) => sum + f.symbols.length, 0);
 
-      const payload = masking.mask(JSON.stringify({
+      const payload = masking.mask(JSON.stringify(wrapResponse({
         since,
         changedFiles: files.length,
         changedSymbols,
@@ -188,7 +189,7 @@ export function handleGetPrImpact(
           potentialTotal,
           highRiskSymbols: highRiskSymbols.slice(0, 10),
         },
-      }));
+      })));
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {

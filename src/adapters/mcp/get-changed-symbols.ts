@@ -4,6 +4,7 @@ import type { IGitPort } from '../../ports/i-git-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
+import { wrapResponse } from '../../core/response-envelope.js';
 
 const InputSchema = z.object({
   since: z.string().optional().default('HEAD~1'),
@@ -56,12 +57,12 @@ export function handleGetChangedSymbols(
         }
       }
 
-      const payload = masking.mask(JSON.stringify({
+      const payload = masking.mask(JSON.stringify(wrapResponse({
         since,
         changedFiles: files.length,
         changedSymbols: totalSymbols,
         files,
-      }));
+      })));
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {
