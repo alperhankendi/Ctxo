@@ -69,6 +69,33 @@ async function main(): Promise<void> {
   const { StalenessDetector } = await import('./core/staleness/staleness-detector.js');
   const staleness = new StalenessDetector(process.cwd(), ctxoRoot);
 
+  registerTools(server, storage, masking, git, staleness, ctxoRoot);
+
+  // Start MCP server — HTTP mode or stdio mode
+  const httpPortStr = process.env.CTXO_HTTP_PORT
+    || (process.argv.includes('--http') ? (process.argv[process.argv.indexOf('--port') + 1] || '3001') : null);
+
+  if (httpPortStr) {
+    await startHttpTransport(async () => {
+      const s = new McpServer({ name: 'ctxo', version: '0.1.0' });
+      registerTools(s, storage, masking, git, staleness, ctxoRoot);
+      return s;
+    }, parseInt(httpPortStr, 10));
+  } else {
+    const transport = new StdioServerTransport();
+    await server.connect(transport);
+  }
+}
+
+function registerTools(
+  server: McpServer,
+  storage: SqliteStorageAdapter,
+  masking: MaskingPipeline,
+  git: SimpleGitAdapter,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  staleness: any,
+  ctxoRoot = '.ctxo',
+) {
   // Tool annotations — all Ctxo tools are read-only index queries
   const toolAnnotations = {
     readOnlyHint: true,
@@ -302,17 +329,6 @@ async function main(): Promise<void> {
   server.resource('ctxo-status', 'ctxo://status', async (uri) => ({
     contents: [{ uri: uri.href, text: 'Ctxo MCP server is running.' }],
   }));
-
-  // Start MCP server — HTTP mode or stdio mode
-  const httpPortStr = process.env.CTXO_HTTP_PORT
-    || (process.argv.includes('--http') ? (process.argv[process.argv.indexOf('--port') + 1] || '3001') : null);
-
-  if (httpPortStr) {
-    await startHttpTransport(server, parseInt(httpPortStr, 10));
-  } else {
-    const transport = new StdioServerTransport();
-    await server.connect(transport);
-  }
 }
 
 main().catch((err: unknown) => {

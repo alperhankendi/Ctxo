@@ -1771,28 +1771,19 @@ function renderDiff() {
 // ═══════════════════════════════════════
 // MCP SERVER CONNECTION
 // ═══════════════════════════════════════
-let mcpMsgId = 0;
-let mcpSessionId = null;
+let mcpMsgId = 0, mcpSessionId = null;
 
 async function mcpCall(url, method, params = {}) {
   const id = ++mcpMsgId;
-  const body = JSON.stringify({ jsonrpc: '2.0', id, method, params });
   const headers = { 'Content-Type': 'application/json', 'Accept': 'application/json, text/event-stream' };
   if (mcpSessionId) headers['Mcp-Session-Id'] = mcpSessionId;
-
-  const res = await fetch(url, { method: 'POST', headers, body });
-
-  // Capture session ID
+  const res = await fetch(url, { method: 'POST', headers, body: JSON.stringify({ jsonrpc: '2.0', id, method, params }) });
   const sid = res.headers.get('Mcp-Session-Id');
   if (sid) mcpSessionId = sid;
-
   if (!res.ok) throw new Error('HTTP ' + res.status);
-
   const text = await res.text();
   for (const line of text.split('\n')) {
-    if (line.startsWith('data: ')) {
-      try { return JSON.parse(line.substring(6)); } catch {}
-    }
+    if (line.startsWith('data: ')) { try { return JSON.parse(line.substring(6)); } catch {} }
   }
   try { return JSON.parse(text); } catch { return null; }
 }
@@ -1813,8 +1804,9 @@ document.getElementById('mcpConnectBtn').addEventListener('click', async () => {
   statusEl.textContent = 'Initializing...';
 
   try {
-    // 1. Initialize
-    mcpSessionId = null; // reset session
+    // 1. Initialize MCP session
+    mcpSessionId = null;
+    statusEl.textContent = 'Initializing...';
     const initRes = await mcpCall(url, 'initialize', {
       protocolVersion: '2024-11-05',
       capabilities: {},
@@ -1823,7 +1815,7 @@ document.getElementById('mcpConnectBtn').addEventListener('click', async () => {
     if (!initRes || initRes.error) throw new Error(initRes?.error?.message || 'Init failed');
     statusEl.textContent = 'Connected! Loading data...';
 
-    // 2. Send initialized notification (MCP spec requirement)
+    // 2. Send initialized notification
     await mcpNotify(url, 'notifications/initialized');
 
     // 2. Call get_architectural_overlay for file list
