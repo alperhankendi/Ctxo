@@ -103,8 +103,8 @@ src/
 | `get_change_intelligence` | Complexity x churn composite score |
 | `find_dead_code` | Unreachable symbols and files |
 | `get_context_for_task` | Task-aware context (fix/extend/refactor/understand) |
-| `get_ranked_context` | BM25 + PageRank search within token budget |
-| `search_symbols` | Symbol name/regex search across index |
+| `get_ranked_context` | Two-phase BM25 search (camelCase-aware, trigram fallback, fuzzy correction) + PageRank within token budget |
+| `search_symbols` | Symbol name/regex search across index (supports `mode: 'fts'` for BM25 search) |
 | `get_changed_symbols` | Symbols in recently changed files (git diff) |
 | `find_importers` | Reverse dependency lookup ("who uses this?") |
 | `get_class_hierarchy` | Class inheritance tree (ancestors + descendants) |
@@ -178,6 +178,7 @@ Working with class hierarchies?
 
 - **Response envelope (`_meta`):** All tool responses include `_meta: { totalItems, returnedItems, truncated, totalBytes }`. Large responses auto-truncated at 8KB (configurable via `CTXO_RESPONSE_LIMIT` env).
 - **Intent filtering:** `get_blast_radius`, `get_logic_slice`, `find_importers`, `find_dead_code` accept optional `intent` parameter for keyword-based result filtering.
+- **Tool annotations:** All 14 tools declare `readOnlyHint`, `idempotentHint`, `openWorldHint` annotations for MCP clients.
 
 ## Critical Rules
 
@@ -257,8 +258,9 @@ try {
 - [PRD](docs/artifacts/prd.md) — full product requirements
 - [Architecture](docs/artifacts/architecture.md) — architecture decisions and structure
 - [Epics](docs/artifacts/epics.md) — implementation epics breakdown
-- [V1 Walkthrough](docs/walkthrough-v1.md) — V1 implementation log (354 tests)
+- [V1 Walkthrough](docs/walkthrough-v1.md) — V1 implementation log
 - [V1.1 Walkthrough](docs/walkthrough-v1.1.md) — V1.1 features: cross-file resolution, Go/C#, 3-tier blast radius
 - [Agentic AI Integration](docs/agentic-ai-integration.md) — Claude Agent SDK, OpenAI Agents SDK, LangChain, raw MCP client usage
 - [Changelog](CHANGELOG.md) — version history (v0.2.0, v0.3.0)
 - [Validation Runbook](docs/runbook/mcp-validation/mcp-validation.md) — 86-check end-to-end validation
+- [llms.txt](llms.txt) / [llms-full.txt](llms-full.txt) — LLM-friendly project documentation

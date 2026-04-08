@@ -2,6 +2,36 @@
 
 All notable changes to Ctxo MCP Server are documented in this file.
 
+## [0.4.0] - 2026-04-09
+
+### Added
+
+**Advanced Search Engine — Phase 1**
+- **BM25 search engine** replacing old substring matching in `get_ranked_context` (default `searchMode: 'fts'`)
+- **camelCase/PascalCase/snake_case tokenization**: searching "change" now finds `getCoChangeMetrics`, `CoChangeEntry`, etc.
+- **Two-phase cascade**: primary tokenized search → trigram fallback (activated when < 3 results)
+- **Bigram boost**: multi-word queries like "blast radius" rank `BlastRadiusCalculator` highest (adjacent token bonus)
+- **Fuzzy correction**: Damerau-Levenshtein with adaptive threshold (d≤1 for short terms, d≤2 for longer) — "detctor" → "detector"
+- **PageRank multiplicative boost**: structural importance as tiebreaker among BM25-equal results
+- **Exact match 5x boost**: full symbol name matches dominate ranking
+- `searchMetrics` in response: `porterHits`, `trigramHits`, `phase2Activated`, `fuzzyApplied`, `latencyMs`
+- `fuzzyCorrection` in response when typo correction applied
+- `search_symbols` now supports `mode: 'fts'` for BM25-based search
+- `searchMode: 'legacy'` parameter preserves old substring matching behavior
+- Gold standard query set (50 queries, 9 categories) for NDCG@10 quality measurement
+- `ISearchPort` interface for search engine abstraction
+
+### Fixed
+- Search index now auto-rebuilds when graph changes (stale index bug in watch mode)
+- Fuzzy-corrected results now receive bigram + PageRank boosts (previously skipped)
+- `relevanceScore` and `combinedScore` are now distinct values (raw BM25 vs boosted)
+
+### Changed
+- `get_ranked_context` defaults to FTS search mode (use `searchMode: 'legacy'` for old behavior)
+- Tarball size limit bumped from 600KB to 700KB (new search engine code)
+- HTML visualizer search upgraded to camelCase-aware tokenized matching
+- Validation runbook updated with BM25 search quality tests (Steps 11.2-11.5, 12.6-12.7)
+
 ## [0.3.1] - 2026-04-08
 
 ### Fixed

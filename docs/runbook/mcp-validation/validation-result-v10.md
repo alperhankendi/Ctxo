@@ -165,7 +165,7 @@ Meanwhile `get_changed_symbols` correctly filters to only files with indexed sym
 | context for task | `get_context_for_task` | 8 context entries, CoChangeEntry/Matrix at top | PASS |
 | ranked context | `get_ranked_context("co-change")` | relevanceScore=0 for all (hyphen split issue) | NOTE |
 
-**Note:** "co-change" query returns relevanceScore=0 because BM25 tokenization doesn't split camelCase symbol names. Not a bug — design limitation of substring matching.
+**Note (v0.3.x):** "co-change" query returned relevanceScore=0 because old substring matcher didn't split camelCase symbol names. **Fixed in v0.4.0** — BM25 search engine with camelCase tokenization now correctly matches `CoChangeEntry`, `CoChangeMatrix`, etc.
 
 ---
 

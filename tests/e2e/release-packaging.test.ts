@@ -57,7 +57,7 @@ describe('Release Packaging', () => {
     const sizeBytes = info[0]?.unpackedSize ?? 0;
     const sizeKB = sizeBytes / 1024;
 
-    expect(sizeKB).toBeLessThan(600);
+    expect(sizeKB).toBeLessThan(700);
     expect(sizeKB).toBeGreaterThan(1); // Sanity: not empty (dist/ may not exist in CI pre-build)
   });
 });

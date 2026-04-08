@@ -1,0 +1,616 @@
+{
+  "description": "Gold standard query set for search quality measurement. 50 curated queries against Ctxo's own codebase with human-judged relevance scores.",
+  "relevanceScale": {
+    "0": "irrelevant",
+    "1": "marginally relevant",
+    "2": "relevant",
+    "3": "highly relevant"
+  },
+  "queries": [
+    {
+      "id": 1,
+      "query": "change",
+      "category": "camelCase-split",
+      "expectedTop5": ["CoChangeEntry", "CoChangeMatrix", "ChangeIntelligenceScore", "handleGetChangeIntelligence"],
+      "relevanceJudgments": {
+        "CoChangeEntry": 3,
+        "CoChangeMatrix": 3,
+        "ChangeIntelligenceScore": 3,
+        "handleGetChangeIntelligence": 3,
+        "aggregateCoChanges": 2,
+        "loadCoChangeMap": 2,
+        "handleGetChangedSymbols": 2,
+        "FileChangeEvent": 2,
+        "FileChangeHandler": 2,
+        "BlastRadiusCalculator": 0
+      }
+    },
+    {
+      "id": 2,
+      "query": "storage",
+      "category": "camelCase-split",
+      "expectedTop5": ["IStoragePort", "SqliteStorageAdapter"],
+      "relevanceJudgments": {
+        "IStoragePort": 3,
+        "SqliteStorageAdapter": 3,
+        "buildGraphFromStorage": 2,
+        "BlastRadiusCalculator": 0
+      }
+    },
+    {
+      "id": 3,
+      "query": "blast",
+      "category": "camelCase-split",
+      "expectedTop5": ["BlastRadiusCalculator", "BlastRadiusResult", "BlastRadiusEntry", "handleGetBlastRadius"],
+      "relevanceJudgments": {
+        "BlastRadiusCalculator": 3,
+        "BlastRadiusResult": 3,
+        "BlastRadiusEntry": 3,
+        "handleGetBlastRadius": 3,
+        "SymbolGraph": 0
+      }
+    },
+    {
+      "id": 4,
+      "query": "masking",
+      "category": "camelCase-split",
+      "expectedTop5": ["MaskingPipeline", "IMaskingPort", "MaskingPatternConfig"],
+      "relevanceJudgments": {
+        "MaskingPipeline": 3,
+        "IMaskingPort": 3,
+        "MaskingPatternConfig": 3,
+        "wrapResponse": 0
+      }
+    },
+    {
+      "id": 5,
+      "query": "graph",
+      "category": "camelCase-split",
+      "expectedTop5": ["SymbolGraph", "GraphEdge", "buildGraphFromJsonIndex", "buildGraphFromStorage"],
+      "relevanceJudgments": {
+        "SymbolGraph": 3,
+        "GraphEdge": 3,
+        "buildGraphFromJsonIndex": 3,
+        "buildGraphFromStorage": 3,
+        "PageRankCalculator": 1
+      }
+    },
+    {
+      "id": 6,
+      "query": "importance",
+      "category": "camelCase-split",
+      "expectedTop5": ["PageRankCalculator", "handleGetSymbolImportance", "PageRankEntry", "PageRankResult"],
+      "relevanceJudgments": {
+        "PageRankCalculator": 3,
+        "handleGetSymbolImportance": 3,
+        "PageRankEntry": 3,
+        "PageRankResult": 3,
+        "PageRankOptions": 2
+      }
+    },
+    {
+      "id": 7,
+      "query": "complexity",
+      "category": "camelCase-split",
+      "expectedTop5": ["ComplexityCalculator", "ComplexityMetrics"],
+      "relevanceJudgments": {
+        "ComplexityCalculator": 3,
+        "ComplexityMetrics": 3,
+        "HealthScorer": 1,
+        "SymbolGraph": 0
+      }
+    },
+    {
+      "id": 8,
+      "query": "detector",
+      "category": "camelCase-split",
+      "expectedTop5": ["DeadCodeDetector", "RevertDetector", "StalenessDetector"],
+      "relevanceJudgments": {
+        "DeadCodeDetector": 3,
+        "RevertDetector": 3,
+        "StalenessDetector": 3,
+        "BlastRadiusCalculator": 0
+      }
+    },
+    {
+      "id": 9,
+      "query": "adapter",
+      "category": "snake_case-split",
+      "expectedTop5": ["SimpleGitAdapter", "TsMorphAdapter", "SqliteStorageAdapter", "CSharpAdapter", "GoAdapter"],
+      "relevanceJudgments": {
+        "SimpleGitAdapter": 3,
+        "TsMorphAdapter": 3,
+        "SqliteStorageAdapter": 3,
+        "CSharpAdapter": 3,
+        "GoAdapter": 3,
+        "TreeSitterAdapter": 3,
+        "ChokidarWatcherAdapter": 3,
+        "ILanguageAdapter": 2,
+        "LanguageAdapterRegistry": 2
+      }
+    },
+    {
+      "id": 10,
+      "query": "command",
+      "category": "snake_case-split",
+      "expectedTop5": ["IndexCommand", "InitCommand", "StatusCommand", "SyncCommand", "WatchCommand"],
+      "relevanceJudgments": {
+        "IndexCommand": 3,
+        "InitCommand": 3,
+        "StatusCommand": 3,
+        "SyncCommand": 3,
+        "WatchCommand": 3,
+        "VerifyCommand": 3,
+        "CliRouter": 1
+      }
+    },
+    {
+      "id": 11,
+      "query": "BlastRadiusCalculator",
+      "category": "exact-symbol",
+      "expectedRank1": "BlastRadiusCalculator",
+      "relevanceJudgments": {
+        "BlastRadiusCalculator": 3,
+        "BlastRadiusResult": 1,
+        "BlastRadiusEntry": 1
+      }
+    },
+    {
+      "id": 12,
+      "query": "IStoragePort",
+      "category": "exact-symbol",
+      "expectedRank1": "IStoragePort",
+      "relevanceJudgments": {
+        "IStoragePort": 3,
+        "SqliteStorageAdapter": 1
+      }
+    },
+    {
+      "id": 13,
+      "query": "wrapResponse",
+      "category": "exact-symbol",
+      "expectedRank1": "wrapResponse",
+      "relevanceJudgments": {
+        "wrapResponse": 3,
+        "ResponseMeta": 1
+      }
+    },
+    {
+      "id": 14,
+      "query": "SymbolGraph",
+      "category": "exact-symbol",
+      "expectedRank1": "SymbolGraph",
+      "relevanceJudgments": {
+        "SymbolGraph": 3,
+        "GraphEdge": 1,
+        "SymbolNode": 1
+      }
+    },
+    {
+      "id": 15,
+      "query": "FileIndex",
+      "category": "exact-symbol",
+      "expectedRank1": "FileIndex",
+      "relevanceJudgments": {
+        "FileIndex": 3,
+        "JsonIndexReader": 1,
+        "JsonIndexWriter": 1
+      }
+    },
+    {
+      "id": 16,
+      "query": "indexing",
+      "category": "stemmed-variant",
+      "expectedTop5": ["IndexCommand", "JsonIndexReader", "JsonIndexWriter"],
+      "relevanceJudgments": {
+        "IndexCommand": 3,
+        "JsonIndexReader": 3,
+        "JsonIndexWriter": 3,
+        "FileIndex": 2,
+        "buildFileIndex": 2,
+        "SymbolGraph": 0
+      }
+    },
+    {
+      "id": 17,
+      "query": "analyzing",
+      "category": "stemmed-variant",
+      "expectedTop5": ["ChurnAnalyzer", "CoChangeAnalyzer"],
+      "relevanceJudgments": {
+        "ChurnAnalyzer": 3,
+        "CoChangeAnalyzer": 3,
+        "ComplexityCalculator": 1
+      }
+    },
+    {
+      "id": 18,
+      "query": "detection",
+      "category": "stemmed-variant",
+      "expectedTop5": ["DeadCodeDetector", "RevertDetector", "StalenessDetector"],
+      "relevanceJudgments": {
+        "DeadCodeDetector": 3,
+        "RevertDetector": 3,
+        "StalenessDetector": 3
+      }
+    },
+    {
+      "id": 19,
+      "query": "calculating",
+      "category": "stemmed-variant",
+      "expectedTop5": ["BlastRadiusCalculator", "PageRankCalculator", "ComplexityCalculator"],
+      "relevanceJudgments": {
+        "BlastRadiusCalculator": 3,
+        "PageRankCalculator": 3,
+        "ComplexityCalculator": 3
+      }
+    },
+    {
+      "id": 20,
+      "query": "formatting",
+      "category": "stemmed-variant",
+      "expectedTop5": ["DetailFormatter"],
+      "relevanceJudgments": {
+        "DetailFormatter": 3,
+        "DetailLevel": 2,
+        "formatName": 2
+      }
+    },
+    {
+      "id": 21,
+      "query": "databse",
+      "category": "typo",
+      "expectedCorrection": "database",
+      "expectedTop5": ["SqliteStorageAdapter"],
+      "relevanceJudgments": {
+        "SqliteStorageAdapter": 2
+      }
+    },
+    {
+      "id": 22,
+      "query": "cacluator",
+      "category": "typo",
+      "expectedCorrection": "calculator",
+      "expectedTop5": ["BlastRadiusCalculator", "PageRankCalculator", "ComplexityCalculator"],
+      "relevanceJudgments": {
+        "BlastRadiusCalculator": 3,
+        "PageRankCalculator": 3,
+        "ComplexityCalculator": 3
+      }
+    },
+    {
+      "id": 23,
+      "query": "detctor",
+      "category": "typo",
+      "expectedCorrection": "detector",
+      "expectedTop5": ["DeadCodeDetector", "RevertDetector", "StalenessDetector"],
+      "relevanceJudgments": {
+        "DeadCodeDetector": 3,
+        "RevertDetector": 3,
+        "StalenessDetector": 3
+      }
+    },
+    {
+      "id": 24,
+      "query": "symbo",
+      "category": "typo",
+      "expectedCorrection": "symbol",
+      "expectedTop5": ["SymbolGraph", "SymbolNode", "SymbolKind"],
+      "relevanceJudgments": {
+        "SymbolGraph": 3,
+        "SymbolNode": 3,
+        "SymbolKind": 3,
+        "handleGetSymbolImportance": 2
+      }
+    },
+    {
+      "id": 25,
+      "query": "adatper",
+      "category": "typo",
+      "expectedCorrection": "adapter",
+      "expectedTop5": ["SimpleGitAdapter", "TsMorphAdapter", "SqliteStorageAdapter"],
+      "relevanceJudgments": {
+        "SimpleGitAdapter": 3,
+        "TsMorphAdapter": 3,
+        "SqliteStorageAdapter": 3
+      }
+    },
+    {
+      "id": 26,
+      "query": "blast radius",
+      "category": "multi-word-phrase",
+      "expectedRank1": "BlastRadiusCalculator",
+      "expectedTop5": ["BlastRadiusCalculator", "BlastRadiusResult", "BlastRadiusEntry", "handleGetBlastRadius"],
+      "relevanceJudgments": {
+        "BlastRadiusCalculator": 3,
+        "BlastRadiusResult": 3,
+        "BlastRadiusEntry": 3,
+        "handleGetBlastRadius": 3,
+        "ImpactConfidence": 1
+      }
+    },
+    {
+      "id": 27,
+      "query": "dead code",
+      "category": "multi-word-phrase",
+      "expectedRank1": "DeadCodeDetector",
+      "expectedTop5": ["DeadCodeDetector", "handleFindDeadCode", "DeadCodeConfidence", "DeadSymbolEntry"],
+      "relevanceJudgments": {
+        "DeadCodeDetector": 3,
+        "handleFindDeadCode": 3,
+        "DeadCodeConfidence": 3,
+        "DeadSymbolEntry": 3
+      }
+    },
+    {
+      "id": 28,
+      "query": "page rank",
+      "category": "multi-word-phrase",
+      "expectedRank1": "PageRankCalculator",
+      "expectedTop5": ["PageRankCalculator", "PageRankEntry", "PageRankResult", "PageRankOptions"],
+      "relevanceJudgments": {
+        "PageRankCalculator": 3,
+        "PageRankEntry": 3,
+        "PageRankResult": 3,
+        "PageRankOptions": 3,
+        "handleGetSymbolImportance": 2
+      }
+    },
+    {
+      "id": 29,
+      "query": "context assembly",
+      "category": "multi-word-phrase",
+      "expectedRank1": "ContextAssembler",
+      "expectedTop5": ["ContextAssembler", "RankedContextResult", "handleGetRankedContext"],
+      "relevanceJudgments": {
+        "ContextAssembler": 3,
+        "RankedContextResult": 3,
+        "handleGetRankedContext": 2,
+        "TaskContextResult": 2,
+        "ContextEntry": 2
+      }
+    },
+    {
+      "id": 30,
+      "query": "logic slice",
+      "category": "multi-word-phrase",
+      "expectedRank1": "LogicSliceQuery",
+      "expectedTop5": ["LogicSliceQuery", "LogicSliceResult", "handleGetLogicSlice"],
+      "relevanceJudgments": {
+        "LogicSliceQuery": 3,
+        "LogicSliceResult": 3,
+        "handleGetLogicSlice": 3,
+        "getLogicSliceInputSchema": 2,
+        "GetLogicSliceInput": 2
+      }
+    },
+    {
+      "id": 31,
+      "query": "why context",
+      "category": "multi-word-phrase",
+      "expectedRank1": "WhyContextAssembler",
+      "expectedTop5": ["WhyContextAssembler", "WhyContextResult", "handleGetWhyContext"],
+      "relevanceJudgments": {
+        "WhyContextAssembler": 3,
+        "WhyContextResult": 3,
+        "handleGetWhyContext": 3
+      }
+    },
+    {
+      "id": 32,
+      "query": "change intelligence",
+      "category": "multi-word-phrase",
+      "expectedRank1": "ChangeIntelligenceScore",
+      "expectedTop5": ["ChangeIntelligenceScore", "handleGetChangeIntelligence"],
+      "relevanceJudgments": {
+        "ChangeIntelligenceScore": 3,
+        "handleGetChangeIntelligence": 3,
+        "ChurnAnalyzer": 1,
+        "ComplexityCalculator": 1
+      }
+    },
+    {
+      "id": 33,
+      "query": "stor",
+      "category": "partial-prefix",
+      "expectedTop5": ["IStoragePort", "SqliteStorageAdapter", "buildGraphFromStorage"],
+      "relevanceJudgments": {
+        "IStoragePort": 3,
+        "SqliteStorageAdapter": 3,
+        "buildGraphFromStorage": 2
+      }
+    },
+    {
+      "id": 34,
+      "query": "calc",
+      "category": "partial-prefix",
+      "expectedTop5": ["BlastRadiusCalculator", "PageRankCalculator", "ComplexityCalculator"],
+      "relevanceJudgments": {
+        "BlastRadiusCalculator": 3,
+        "PageRankCalculator": 3,
+        "ComplexityCalculator": 3
+      }
+    },
+    {
+      "id": 35,
+      "query": "morph",
+      "category": "partial-prefix",
+      "expectedTop5": ["TsMorphAdapter"],
+      "relevanceJudgments": {
+        "TsMorphAdapter": 3
+      }
+    },
+    {
+      "id": 36,
+      "query": "chok",
+      "category": "partial-prefix",
+      "expectedTop5": ["ChokidarWatcherAdapter"],
+      "relevanceJudgments": {
+        "ChokidarWatcherAdapter": 3
+      }
+    },
+    {
+      "id": 37,
+      "query": "sqlit",
+      "category": "partial-prefix",
+      "expectedTop5": ["SqliteStorageAdapter"],
+      "relevanceJudgments": {
+        "SqliteStorageAdapter": 3
+      }
+    },
+    {
+      "id": 38,
+      "query": "db",
+      "category": "short-query",
+      "expectedTop5": ["SqliteStorageAdapter", "DB_PASSWORD"],
+      "relevanceJudgments": {
+        "SqliteStorageAdapter": 2,
+        "DB_PASSWORD": 2
+      }
+    },
+    {
+      "id": 39,
+      "query": "fs",
+      "category": "short-query",
+      "expectedTop5": [],
+      "relevanceJudgments": {
+        "ChokidarWatcherAdapter": 1
+      }
+    },
+    {
+      "id": 40,
+      "query": "pr",
+      "category": "short-query",
+      "expectedTop5": ["handleGetPrImpact"],
+      "relevanceJudgments": {
+        "handleGetPrImpact": 2
+      }
+    },
+    {
+      "id": 41,
+      "query": "get",
+      "category": "high-frequency-term",
+      "expectedTop5": ["handleGetBlastRadius", "handleGetLogicSlice", "handleGetSymbolImportance", "handleGetRankedContext"],
+      "relevanceJudgments": {
+        "handleGetBlastRadius": 2,
+        "handleGetLogicSlice": 2,
+        "handleGetSymbolImportance": 2,
+        "handleGetRankedContext": 2,
+        "getConfig": 2,
+        "getWeightsForTask": 2,
+        "SymbolGraph": 0
+      }
+    },
+    {
+      "id": 42,
+      "query": "handle",
+      "category": "high-frequency-term",
+      "expectedTop5": ["handleGetBlastRadius", "handleGetLogicSlice", "handleSearchSymbols", "handleFindDeadCode"],
+      "relevanceJudgments": {
+        "handleGetBlastRadius": 3,
+        "handleGetLogicSlice": 3,
+        "handleSearchSymbols": 3,
+        "handleFindDeadCode": 3,
+        "handleFindImporters": 3,
+        "FileChangeHandler": 2
+      }
+    },
+    {
+      "id": 43,
+      "query": "build",
+      "category": "high-frequency-term",
+      "expectedTop5": ["buildGraphFromJsonIndex", "buildGraphFromStorage", "buildFileIndex", "buildSecondFileIndex"],
+      "relevanceJudgments": {
+        "buildGraphFromJsonIndex": 3,
+        "buildGraphFromStorage": 3,
+        "buildFileIndex": 3,
+        "buildSecondFileIndex": 3,
+        "TsMorphAdapter.buildSymbolId": 2
+      }
+    },
+    {
+      "id": 44,
+      "query": "filter",
+      "category": "high-frequency-term",
+      "expectedTop5": ["filterByIntent"],
+      "relevanceJudgments": {
+        "filterByIntent": 3,
+        "IntentFilter": 2
+      }
+    },
+    {
+      "id": 45,
+      "query": "xyzzy123",
+      "category": "negative-no-match",
+      "expectedTop5": [],
+      "expectedResultCount": 0,
+      "relevanceJudgments": {}
+    },
+    {
+      "id": 46,
+      "query": "kubernetes deploy",
+      "category": "negative-no-match",
+      "expectedTop5": [],
+      "expectedResultCount": 0,
+      "relevanceJudgments": {}
+    },
+    {
+      "id": 47,
+      "query": "react component",
+      "category": "negative-no-match",
+      "expectedTop5": [],
+      "expectedResultCount": 0,
+      "relevanceJudgments": {}
+    },
+    {
+      "id": 48,
+      "query": "co change",
+      "category": "multi-word-phrase",
+      "expectedRank1": "CoChangeEntry",
+      "expectedTop5": ["CoChangeEntry", "CoChangeMatrix", "CoChangeAnalyzer", "aggregateCoChanges", "loadCoChangeMap"],
+      "relevanceJudgments": {
+        "CoChangeEntry": 3,
+        "CoChangeMatrix": 3,
+        "CoChangeAnalyzer": 3,
+        "aggregateCoChanges": 3,
+        "loadCoChangeMap": 3
+      }
+    },
+    {
+      "id": 49,
+      "query": "symbol node",
+      "category": "multi-word-phrase",
+      "expectedRank1": "SymbolNode",
+      "expectedTop5": ["SymbolNode", "SymbolGraph", "SymbolKind"],
+      "relevanceJudgments": {
+        "SymbolNode": 3,
+        "SymbolGraph": 2,
+        "SymbolKind": 2,
+        "SymbolId": 2
+      }
+    },
+    {
+      "id": 50,
+      "query": "health score",
+      "category": "multi-word-phrase",
+      "expectedRank1": "HealthScorer",
+      "expectedTop5": ["HealthScorer", "ScoreBand", "ScoringWeights"],
+      "relevanceJudgments": {
+        "HealthScorer": 3,
+        "ScoreBand": 2,
+        "ScoringWeights": 2,
+        "ChangeIntelligenceScore": 1
+      }
+    }
+  ],
+  "categorySummary": {
+    "camelCase-split": { "count": 10, "ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
+    "exact-symbol": { "count": 5, "ids": [11, 12, 13, 14, 15] },
+    "stemmed-variant": { "count": 5, "ids": [16, 17, 18, 19, 20] },
+    "typo": { "count": 5, "ids": [21, 22, 23, 24, 25] },
+    "multi-word-phrase": { "count": 10, "ids": [26, 27, 28, 29, 30, 31, 32, 48, 49, 50] },
+    "partial-prefix": { "count": 5, "ids": [33, 34, 35, 36, 37] },
+    "short-query": { "count": 3, "ids": [38, 39, 40] },
+    "high-frequency-term": { "count": 4, "ids": [41, 42, 43, 44] },
+    "negative-no-match": { "count": 3, "ids": [45, 46, 47] }
+  }
+}

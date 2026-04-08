@@ -4,12 +4,15 @@ import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
 import { wrapResponse } from '../../core/response-envelope.js';
+import { SearchEngine } from '../../core/search/search-engine.js';
+import type { ISearchPort } from '../../ports/i-search-port.js';
 
 const InputSchema = z.object({
   pattern: z.string().min(1),
   kind: z.enum(['function', 'class', 'interface', 'method', 'variable', 'type']).optional(),
   filePattern: z.string().optional(),
   limit: z.number().int().min(1).max(100).optional().default(25),
+  mode: z.enum(['regex', 'fts']).optional().default('regex'),
 });
 
 export function handleSearchSymbols(
@@ -17,7 +20,11 @@ export function handleSearchSymbols(
   masking: IMaskingPort,
   staleness?: StalenessCheck,
   ctxoRoot = '.ctxo',
+  searchEngine?: ISearchPort,
 ) {
+  const engine: ISearchPort = searchEngine ?? new SearchEngine();
+  let lastFtsNodeCount = -1;
+
   const getGraph = () => {
     const jsonGraph = buildGraphFromJsonIndex(ctxoRoot);
     if (jsonGraph.nodeCount > 0) return jsonGraph;
@@ -33,11 +40,61 @@ export function handleSearchSymbols(
         };
       }
 
-      const { pattern, kind, filePattern, limit } = parsed.data;
+      const { pattern, kind, filePattern, limit, mode } = parsed.data;
       const graph = getGraph();
       const allNodes = graph.allNodes();
 
-      // Try regex first, fall back to literal substring
+      // FTS mode: use search engine
+      if (mode === 'fts') {
+        if (allNodes.length !== lastFtsNodeCount) {
+          engine.buildIndex(allNodes);
+          lastFtsNodeCount = allNodes.length;
+        }
+
+        const searchResult = engine.search(pattern, limit);
+        let ftsResults = searchResult.results;
+
+        // Apply kind filter
+        if (kind) {
+          ftsResults = ftsResults.filter((r) => r.kind === kind);
+        }
+        // Apply file pattern filter
+        if (filePattern) {
+          const fp = filePattern.toLowerCase();
+          ftsResults = ftsResults.filter((r) => r.filePath.toLowerCase().includes(fp));
+        }
+
+        const results = ftsResults.slice(0, limit).map((r) => {
+          const node = graph.getNode(r.symbolId);
+          return {
+            symbolId: r.symbolId,
+            name: r.name,
+            kind: r.kind,
+            file: r.filePath,
+            startLine: node?.startLine ?? 0,
+            endLine: node?.endLine ?? 0,
+            relevanceScore: Math.round(r.relevanceScore * 1000) / 1000,
+          };
+        });
+
+        const payload = masking.mask(JSON.stringify(wrapResponse({
+          totalMatches: ftsResults.length,
+          results,
+          searchMetrics: searchResult.metrics,
+          ...(searchResult.fuzzyCorrection ? { fuzzyCorrection: searchResult.fuzzyCorrection } : {}),
+        })));
+
+        const content: Array<{ type: 'text'; text: string }> = [];
+        if (staleness) {
+          const warning = staleness.check(storage.listIndexedFiles());
+          if (warning) content.push({ type: 'text', text: `⚠️ ${warning.message}` });
+        }
+        content.push({ type: 'text', text: payload });
+
+        return { content };
+      }
+
+      // Legacy regex mode (default)
       let matcher: (name: string) => boolean;
       try {
         const regex = new RegExp(pattern, 'i');

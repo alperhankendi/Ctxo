@@ -245,7 +245,7 @@
       </div>
       <button class="browse-btn" id="browseFolderBtn">Browse Folder...</button>
       <div class="url-load">
-        <input type="text" id="urlInput" placeholder="https://alperhankendi.github.io/Ctxo/ctxo-index/" value="https://alperhankendi.github.io/Ctxo/ctxo-index/" />
+        <input type="text" id="urlInput" placeholder="http://localhost:8080/.ctxo/index/" />
         <button id="urlLoadBtn">Fetch</button>
       </div>
       <div class="url-status" id="urlStatus"></div>
@@ -261,8 +261,8 @@
     </div>
     <div class="sidebar-scroll">
       <div class="sidebar-section">
-        <h3>Search</h3>
-        <input class="search-input" id="searchInput" placeholder="Filter symbols, files..." />
+        <h3>Search <span style="font-size:10px;color:var(--text3);font-weight:normal">(camelCase-aware)</span></h3>
+        <input class="search-input" id="searchInput" placeholder="e.g. blast radius, change, detctor..." />
       </div>
       <div class="sidebar-section">
         <h3>Symbol Kinds</h3>
@@ -470,10 +470,58 @@ function getAllEdges() {
   state.files.forEach(f => (f.edges || []).forEach(e => edges.push(e)));
   return edges;
 }
+// camelCase/PascalCase/snake_case tokenizer (matches search-engine implementation)
+function splitSymbolName(name) {
+  const segments = name.split(/[_\-./\\]+/).filter(s => s.length > 0);
+  const tokens = [];
+  for (const seg of segments) {
+    let current = '';
+    for (let i = 0; i < seg.length; i++) {
+      const ch = seg[i], prev = i > 0 ? seg[i-1] : '';
+      if (current.length > 0) {
+        const prevDigit = prev >= '0' && prev <= '9', currDigit = ch >= '0' && ch <= '9';
+        if (prevDigit !== currDigit) { tokens.push(current.toLowerCase()); current = ch; continue; }
+      }
+      if (current.length > 0 && prev >= 'a' && prev <= 'z' && ch >= 'A' && ch <= 'Z') {
+        tokens.push(current.toLowerCase()); current = ch; continue;
+      }
+      if (current.length > 1 && !(ch >= 'A' && ch <= 'Z') && (prev >= 'A' && prev <= 'Z') && !(ch >= '0' && ch <= '9')) {
+        const last = current[current.length-1];
+        if (last >= 'A' && last <= 'Z') { tokens.push(current.slice(0,-1).toLowerCase()); current = last + ch; continue; }
+      }
+      current += ch;
+    }
+    if (current.length > 0) tokens.push(current.toLowerCase());
+  }
+  return tokens;
+}
+
+function matchesSearch(text, queryTokens) {
+  const textLower = text.toLowerCase();
+  // Quick substring check first
+  if (queryTokens.length === 1 && textLower.includes(queryTokens[0])) return true;
+  // Tokenized match: each query token must match at least one symbol token
+  // Matches: substring, prefix, or shared prefix ≥ 4 chars (e.g., "assembly" ~ "assembler")
+  const symTokens = splitSymbolName(text).concat(textLower);
+  return queryTokens.every(qt => symTokens.some(st => {
+    if (st.includes(qt) || qt.includes(st)) return true;
+    // Shared prefix match: both share ≥ 4 chars and ≥ 70% of shorter length
+    const minLen = Math.min(qt.length, st.length);
+    if (minLen < 4) return false;
+    let shared = 0;
+    while (shared < minLen && qt[shared] === st[shared]) shared++;
+    return shared >= 4 && shared >= minLen * 0.7;
+  }) || textLower.includes(qt));
+}
+
 function filterSymbols(syms) {
   return syms.filter(s => {
     if (!state.kindFilter[s.kind]) return false;
-    if (state.search && !s.name.toLowerCase().includes(state.search) && !s.file.toLowerCase().includes(state.search) && !s.symbolId.toLowerCase().includes(state.search)) return false;
+    if (state.search) {
+      const queryTokens = state.search.split(/\s+/).filter(t => t.length > 0);
+      if (queryTokens.length === 0) return true;
+      return matchesSearch(s.name, queryTokens) || matchesSearch(s.file || '', queryTokens) || matchesSearch(s.symbolId || '', queryTokens);
+    }
     return true;
   });
 }
@@ -659,7 +707,33 @@ function renderDashboard() {
   container.textContent = '';
   if (!state.files.length) { container.appendChild(el('div', { className: 'empty-state' }, [el('div', { className: 'es-icon', textContent: '\u{1F4CA}' }), el('p', { textContent: 'Load JSON files to see the dashboard' })])); return; }
 
-  const syms = getAllSymbols(), edges = getAllEdges();
+  const allSyms = getAllSymbols(), edges = getAllEdges();
+  const syms = filterSymbols(allSyms);
+
+  // Show search results panel when searching
+  if (state.search && state.search.trim()) {
+    const searchSection = el('div', { className: 'dash-section', style: { marginBottom: '16px' } });
+    searchSection.appendChild(el('h3', { textContent: 'Search Results (' + syms.length + ' of ' + allSyms.length + ' symbols)' }));
+    if (syms.length === 0) {
+      searchSection.appendChild(el('div', { className: 'empty-state', style: { padding: '16px' } }, [el('p', { textContent: 'No symbols match "' + state.search + '"' })]));
+    } else {
+      const tbl = el('table', { className: 'dash-table' });
+      tbl.appendChild(el('thead', {}, [el('tr', {}, [el('th', { textContent: 'Symbol' }), el('th', { textContent: 'Kind' }), el('th', { textContent: 'File' })])]));
+      const tbody = el('tbody');
+      syms.slice(0, 25).forEach(s => {
+        tbody.appendChild(el('tr', {}, [
+          el('td', { textContent: s.name, style: { fontFamily: 'monospace', fontSize: '11px' } }),
+          el('td', {}, [el('span', { className: 'kind-badge kind-' + s.kind, textContent: s.kind })]),
+          el('td', { textContent: (s.file || s.symbolId.split('::')[0] || '').split('/').slice(-2).join('/'), style: { fontSize: '11px', color: 'var(--text2)' } }),
+        ]));
+      });
+      tbl.appendChild(tbody);
+      searchSection.appendChild(tbl);
+      if (syms.length > 25) searchSection.appendChild(el('div', { style: { fontSize: '11px', color: 'var(--text3)', marginTop: '4px' } }, ['Showing 25 of ' + syms.length + ' results']));
+    }
+    container.appendChild(searchSection);
+  }
+
   const totalCx = syms.filter(s => s.cyclomatic != null);
   const avgCx = totalCx.length ? (totalCx.reduce((s, x) => s + x.cyclomatic, 0) / totalCx.length).toFixed(1) : 'N/A';
   const maxCx = totalCx.length ? Math.max(...totalCx.map(s => s.cyclomatic)) : 0;
@@ -749,7 +823,7 @@ function renderFileTree() {
   container.textContent = '';
   if (!state.files.length) { container.appendChild(el('div', { className: 'empty-state' }, [el('div', { className: 'es-icon', textContent: '\u{1F332}' }), el('p', { textContent: 'Load JSON files to see the file tree' })])); return; }
   const root = {};
-  state.files.filter(f => { if (!state.search) return true; return f.file.toLowerCase().includes(state.search) || (f.symbols||[]).some(s => s.name.toLowerCase().includes(state.search)); }).forEach(f => {
+  state.files.filter(f => { if (!state.search) return true; const qt = state.search.split(/\s+/).filter(t=>t.length>0); if (!qt.length) return true; return matchesSearch(f.file, qt) || (f.symbols||[]).some(s => matchesSearch(s.name, qt)); }).forEach(f => {
     const parts = f.file.split('/'); let node = root;
     parts.forEach((p,i) => { if (i === parts.length-1) { node[p] = { __file: f }; } else { if (!node[p]) node[p] = {}; node = node[p]; } });
   });
@@ -1340,34 +1414,23 @@ document.getElementById('urlLoadBtn').addEventListener('click', async () => {
       }
     } catch (ignored) { /* co-changes optional */ }
 
-    // Try manifest.txt first (GitHub Pages), then directory listing (local servers)
+    // Try to fetch a directory listing (works with many static servers)
     let fileList = [];
     try {
-      const manifestRes = await fetch(baseUrl + 'manifest.txt');
-      if (manifestRes.ok) {
-        const text = await manifestRes.text();
-        fileList = text.trim().split('\n').filter(f => f.endsWith('.json') && f !== 'co-changes.json');
-        statusEl.textContent = 'Found ' + fileList.length + ' files via manifest...';
-      }
-    } catch (ignored) {}
-
-    if (!fileList.length) {
-      try {
-        const listRes = await fetch(baseUrl);
-        if (listRes.ok) {
-          const html = await listRes.text();
-          const linkRegex = /href="([^"]+\.json)"/g;
-          let match;
-          while ((match = linkRegex.exec(html)) !== null) {
-            const fname = match[1];
-            if (fname !== 'co-changes.json') fileList.push(fname);
-          }
+      const listRes = await fetch(baseUrl);
+      if (listRes.ok) {
+        const html = await listRes.text();
+        const linkRegex = /href="([^"]+\.json)"/g;
+        let match;
+        while ((match = linkRegex.exec(html)) !== null) {
+          const fname = match[1];
+          if (fname !== 'co-changes.json') fileList.push(fname);
         }
-      } catch (ignored) {}
-    }
+      }
+    } catch (ignored) { /* listing optional */ }
 
     if (fileList.length === 0) {
-      statusEl.textContent = 'No files found. Check URL or use drag & drop.';
+      statusEl.textContent = 'Could not list files. Try drag & drop instead.';
       btn.disabled = false; btn.textContent = 'Fetch'; return;
     }
 
@@ -1998,14 +2061,6 @@ document.getElementById('mcpToolSelect').addEventListener('change', e => {
 });
 
 updateAll();
-
-// Auto-fetch on page load if URL has a value
-window.addEventListener('load', () => {
-  const urlInput = document.getElementById('urlInput');
-  if (urlInput.value.trim()) {
-    document.getElementById('urlLoadBtn').click();
-  }
-});
 </script>
 </body>
 </html>

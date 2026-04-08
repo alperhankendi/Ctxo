@@ -241,6 +241,10 @@ export class ContextAssembler {
     return kind === 'interface' || kind === 'type';
   }
 
+  estimateTokensPublic(node: SymbolNode): number {
+    return this.estimateTokens(node);
+  }
+
   private estimateTokens(node: SymbolNode): number {
     // Use byte offsets for accurate estimation when available (~4 chars per token)
     if (node.startOffset !== undefined && node.endOffset !== undefined) {

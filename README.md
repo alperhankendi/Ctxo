@@ -66,8 +66,8 @@ npx ctxo-mcp index
 | `get_change_intelligence`   | Complexity x churn composite score                               |
 | `find_dead_code`            | Unreachable symbols, unused exports, scaffolding markers         |
 | `get_context_for_task`      | Task-optimized context (fix/extend/refactor/understand)          |
-| `get_ranked_context`        | BM25 + PageRank search within token budget                       |
-| `search_symbols`            | Symbol name/regex search across index                            |
+| `get_ranked_context`        | Two-phase BM25 search (camelCase-aware, fuzzy correction) + PageRank within token budget |
+| `search_symbols`            | Symbol name/regex search across index (`mode: 'fts'` for BM25)  |
 | `get_changed_symbols`       | Symbols in recently changed files (git diff)                     |
 | `find_importers`            | Reverse dependency lookup ("who uses this?")                     |
 | `get_class_hierarchy`       | Class inheritance tree (ancestors + descendants)                 |

@@ -506,50 +506,106 @@ Call with `{ symbolId: "...", taskType: "understand", tokenBudget: 200 }`:
 
 ## Step 11: Test `get_ranked_context`
 
-Test query-based context ranking with different strategies.
+Test query-based context ranking with BM25 search engine (two-phase cascade).
 
-### 11.1 Combined Strategy (default)
+### 11.1 Combined Strategy — FTS mode (default)
 
 Call with `{ query: "masking" }`:
 
 **Verify:**
 
 * [ ] Results array is non-empty
-* [ ] `MaskingPipeline` appears near top (exact/partial match)
+* [ ] `MaskingPipeline` appears near top (BM25 tokenized match)
 * [ ] Each result has: `symbolId`, `name`, `kind`, `file`, `relevanceScore`, `importanceScore`, `combinedScore`, `tokens`
 * [ ] Results sorted by `combinedScore` descending
 * [ ] `totalTokens` <= `tokenBudget` (default 4000)
+* [ ] Response includes `searchMetrics` with: `porterHits`, `trigramHits`, `phase2Activated`, `fuzzyApplied`, `latencyMs`
 
-### 11.2 Importance Strategy
+### 11.2 camelCase Tokenized Search
+
+Call with `{ query: "change" }`:
+
+**Verify:**
+
+* [ ] Results include `CoChangeEntry`, `CoChangeMatrix`, `ChangeIntelligenceScore` (camelCase sub-token match)
+* [ ] `searchMetrics.porterHits` > 0
+* [ ] `searchMetrics.phase2Activated` is `false` (enough primary hits)
+
+### 11.3 Multi-Word Query with Bigram Boost
+
+Call with `{ query: "blast radius" }`:
+
+**Verify:**
+
+* [ ] `BlastRadiusCalculator` appears in top 3 (bigram boost: "blast"+"radius" adjacent)
+* [ ] Results include `BlastRadiusResult`, `BlastRadiusEntry`, `handleGetBlastRadius`
+* [ ] `BlastRadiusCalculator.combinedScore` > `handleGetBlastRadius.combinedScore` (bigram adjacency boost)
+
+### 11.4 Trigram Fallback (Phase 2)
+
+Call with `{ query: "sqlit" }`:
+
+**Verify:**
+
+* [ ] `SqliteStorageAdapter` appears in results (trigram partial match)
+* [ ] `searchMetrics.phase2Activated` is `true`
+* [ ] `searchMetrics.trigramHits` > 0
+
+### 11.5 Fuzzy Correction
+
+Call with `{ query: "detctor" }`:
+
+**Verify:**
+
+* [ ] Results include `DeadCodeDetector`, `RevertDetector`, `StalenessDetector` (fuzzy corrected)
+* [ ] `searchMetrics.fuzzyApplied` is `true`
+* [ ] Response includes `fuzzyCorrection` object with `correctedQuery` containing "detector"
+
+### 11.6 Importance Strategy
 
 Call with `{ query: "", strategy: "importance" }`:
 
 **Verify:**
 
 * [ ] Results ranked by `importanceScore` (reverse edge count / normalized)
-* [ ] Most-depended-on symbols appear first (e.g., FileIndex, SymbolNode — actual ranking depends on import graph)
-* [ ] `relevanceScore` may be 0 (no text match when query is empty)
+* [ ] Most-depended-on symbols appear first
+* [ ] Uses legacy substring matching (importance strategy bypasses FTS)
 
-### 11.3 Custom Token Budget
+### 11.7 Legacy Mode
+
+Call with `{ query: "Symbol", searchMode: "legacy" }`:
+
+**Verify:**
+
+* [ ] Results use old substring matching (relevanceScore is 0.7 for partial match)
+* [ ] No `searchMetrics` in response
+* [ ] Backward compatible with v0.3.0 behavior
+
+### 11.8 Custom Token Budget
 
 Call with `{ query: "adapter", tokenBudget: 500 }`:
 
 * [ ] `totalTokens` <= 500
 * [ ] Fewer results than default budget
 
-### 11.4 Edge Cases
+### 11.9 Edge Cases
 
-* [ ] Empty query with `strategy: "importance"` returns importance-ranked symbols
-* [ ] Very long query returns empty or low-relevance results
-* [ ] Empty symbolId returns `{ error: true }`
+* [ ] Empty query returns `{ error: true }`
+* [ ] Very long query returns results or empty (no crash)
+* [ ] Query with special chars (`*`, `(`, `[`) does not crash
+* [ ] Query "xyzzy123" returns 0 results (no false fuzzy corrections)
 
 **Record:**
 
-| Query     | Strategy   | Results Count | Top Symbol         | Top Score |
-| --------- | ---------- | ------------- | ------------------ | --------- |
-| "masking" | combined   | \_\_\_        | \_\_\_             | \_\_\_    |
-| ""        | importance | \_\_\_        | \_\_\_             | \_\_\_    |
-| "adapter" | combined   | \_\_\_        | \_\_\_             | \_\_\_    |
+| Query          | Strategy | Mode   | Results | Top Symbol              | Phase2 | Fuzzy | Latency |
+| -------------- | -------- | ------ | ------- | ----------------------- | ------ | ----- | ------- |
+| "masking"      | combined | fts    | \_\_\_  | \_\_\_                  | \_\_\_ | \_\_\_ | \_\_\_ms |
+| "change"       | combined | fts    | \_\_\_  | \_\_\_                  | \_\_\_ | \_\_\_ | \_\_\_ms |
+| "blast radius" | combined | fts    | \_\_\_  | \_\_\_                  | \_\_\_ | \_\_\_ | \_\_\_ms |
+| "sqlit"        | combined | fts    | \_\_\_  | \_\_\_                  | \_\_\_ | \_\_\_ | \_\_\_ms |
+| "detctor"      | combined | fts    | \_\_\_  | \_\_\_                  | \_\_\_ | \_\_\_ | \_\_\_ms |
+| ""             | importance| legacy | \_\_\_ | \_\_\_                  | N/A   | N/A   | \_\_\_ms |
+| "adapter"      | combined | fts    | \_\_\_  | \_\_\_                  | \_\_\_ | \_\_\_ | \_\_\_ms |
 
 ***
 
@@ -601,11 +657,29 @@ Call with `{ pattern: ".*", limit: 3 }`:
 * [ ] `results` array has at most 3 entries
 * [ ] `totalMatches` is greater than 3 (showing total available)
 
-### 12.6 Edge Cases
+### 12.6 FTS Mode Search
+
+Call with `{ pattern: "change", mode: "fts" }`:
+
+**Verify:**
+
+* [ ] Results include `CoChangeEntry`, `CoChangeMatrix`, `ChangeIntelligenceScore` (camelCase token match)
+* [ ] Each result has `relevanceScore` field (BM25 score)
+* [ ] Response includes `searchMetrics`
+
+### 12.7 FTS Mode with Kind Filter
+
+Call with `{ pattern: "calculator", mode: "fts", kind: "class" }`:
+
+* [ ] All results have `kind: "class"`
+* [ ] Results include `BlastRadiusCalculator`, `PageRankCalculator`
+
+### 12.8 Edge Cases
 
 * [ ] Invalid regex (e.g. `[invalid`) does not crash — falls back to literal substring
 * [ ] Empty pattern returns `{ error: true }`
 * [ ] Pattern with no matches returns `{ totalMatches: 0, results: [] }`
+* [ ] FTS mode with typo (e.g., `"databse"`) returns fuzzy-corrected results
 
 **Record:**
 
