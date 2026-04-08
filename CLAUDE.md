@@ -6,7 +6,7 @@ Ctxo is a **Model Context Protocol (MCP) server** that gives AI coding assistant
 
 - **Type:** npm package / CLI tool / MCP server (stdio transport)
 - **Author:** Alper Hankendi
-- **Status:** Greenfield — pre-implementation (architecture complete, ready to build)
+- **Status:** v0.3.0 — production (14 MCP tools, 718 tests, published on npm)
 - **Language:** TypeScript (ESM-first, `"type": "module"`)
 - **Runtime:** Node.js >= 20
 
@@ -16,14 +16,24 @@ Ctxo is a **Model Context Protocol (MCP) server** that gives AI coding assistant
 # Dev
 tsx src/index.ts              # zero-build dev run
 tsup                          # production build to dist/
-vitest                        # run tests
+vitest                        # run tests (718 tests)
+vitest run --coverage         # run with coverage report
 npm link                      # local MCP client wiring
 
 # Usage
 npx ctxo index                # build codebase index
 npx ctxo index --check        # CI gate: fail if index stale
+npx ctxo index --skip-history # fast re-index without git history
+npx ctxo index --max-history 5 # limit commit history per file
 npx ctxo watch                # file watcher for incremental re-index
 npx ctxo sync                 # rebuild SQLite from committed JSON
+npx ctxo init                 # install git hooks (post-commit, post-merge)
+npx ctxo status               # show index manifest
+
+# Environment
+DEBUG=ctxo:*                  # enable all debug output
+DEBUG=ctxo:git,ctxo:storage   # enable specific namespaces
+CTXO_RESPONSE_LIMIT=16384     # response truncation threshold (default 8192)
 ```
 
 ## Architecture
@@ -52,12 +62,12 @@ src/
   ports/                       # interfaces only (ILanguageAdapter, IStoragePort, IGitPort, IMaskingPort)
   core/                        # pure domain (graph, logic-slice, blast-radius, overlay, why-context, change-intelligence, masking, detail-levels)
   adapters/
-    language/                  # ts-morph (full tier), tree-sitter (syntax tier)
+    language/                  # ts-morph (full tier), tree-sitter Go/C# (syntax tier)
     storage/                   # SQLite cache + JSON index read/write
     git/                       # simple-git wrapper
     watcher/                   # chokidar file watcher
-    mcp/                       # MCP tool handlers (5 tools)
-  cli/                         # index, sync, verify commands
+    mcp/                       # MCP tool handlers (14 tools)
+  cli/                         # index, init, sync, status, verify, watch commands
 ```
 
 ### Storage (ADR-STORAGE-01)
@@ -171,7 +181,7 @@ Working with class hierarchies?
 
 ## Critical Rules
 
-1. **NEVER use `console.log`** — MCP stdio uses stdout for JSON-RPC. Use `console.error` for debug/warning only.
+1. **NEVER use `console.log`** — MCP stdio uses stdout for JSON-RPC. Use `createLogger('ctxo:namespace')` from `src/core/logger.ts`. Debug output controlled via `DEBUG=ctxo:*` env.
 2. **Error handling: warn-and-continue** — adapter boundary catches errors and returns fallback values. Core may throw.
 3. **All MCP responses pass through masking pipeline** before delivery.
 4. **Tests co-located** in `__tests__/` adjacent to source files.
@@ -180,11 +190,14 @@ Working with class hierarchies?
 ## Error Handling Pattern
 
 ```typescript
-// All adapter methods:
+// All adapter methods use createLogger:
+import { createLogger } from '../../core/logger.js';
+const log = createLogger('ctxo:adapterName');
+
 try {
   return await doWork()
 } catch (err) {
-  console.error(`[ctxo:${adapterName}] ${(err as Error).message}`)
+  log.error(`${(err as Error).message}`)
   return fallbackValue
 }
 ```
@@ -206,7 +219,7 @@ try {
 | MCP SDK | `@modelcontextprotocol/sdk` |
 | TS/JS Parser | ts-morph (full tier) |
 | Multi-lang Parser | tree-sitter + tree-sitter-language-pack (V1.5) |
-| Database | better-sqlite3 (WAL mode) |
+| Database | sql.js (WASM SQLite) |
 | Git | simple-git |
 | File Watcher | chokidar |
 | Validation | zod |
@@ -229,58 +242,13 @@ try {
 - Valid symbol kinds: `function | class | interface | method | variable | type`
 - Valid edge kinds: `imports | calls | extends | implements | uses`
 
-## Implementation Sequence
-
-1. Project scaffold + tsup build + composition root skeleton
-2. `IStoragePort` + `SqliteStorageAdapter`
-3. `ILanguageAdapter` + ts-morph adapter
-4. Core graph traversal — logic-slice + blast radius
-5. MCP tool handlers wired to core
-6. Git adapter — intent + anti-pattern extraction
-7. `ctxo index` CLI command + chokidar file watcher
-8. Privacy masking pipeline
-9. Change Intelligence module — complexity + churn scoring
-10. Tree-sitter adapter for multi-language (V1.5)
-
-## Documentation
-
 ## TODO
 
-### Bugs (All Closed)
-- [x] **#1** Anti-patterns and intent never persisted to committed index — fixed in `86b1e42`
-- [x] **#2** Masking pipeline false negative — AWS secrets after `=` — fixed in `f986712`
-- [x] **#3** Git commit hashes falsely masked as `AWS_SECRET` — fixed in `f986712`
-- [x] **#4** RevertDetector extended with undo, rollback, indirect patterns — fixed in `f986712`
-- [x] **#5** Masking pipeline edge case test coverage — fixed in `f986712`
-
-### Analysis (Completed)
-- [x] Root cause: `intent: []` hardcoded because IndexCommand (Phase 6) predated git adapter (Phase 7). Wiring never added. Fixed in `86b1e42`.
-
-### V1.1 Improvements (Remaining)
-- [x] `get_why_context` reads from committed index first — fixed in `e06c6d5`
-- [x] `--skip-history` flag for fast re-indexing — fixed in `d7f880e`
-- [x] Blast radius risk score (`1/depth^0.7`) — fixed in `5b10b3a`
-- [x] npm publish via CI/CD — `ctxo-mcp@0.2.0` live on npm
-- [ ] Performance: batch `git log` calls during indexing (currently N sequential calls for N files)
+### Remaining
 - [ ] README.md content (quick start, feature overview, MCP config examples)
-- [x] Confirmed vs potential blast radius split → 3-tier model (confirmed/likely/potential) with `edgeKinds` per entry and `confidence` filter — fixed in `e43db17`
-
-### Learnings from jCodeMunch (Completed)
-- [x] **PageRank centrality** — `get_symbol_importance` tool using PageRank on import graph (damping=0.85)
-- [x] **Byte offset indexing** — store byte offsets per symbol for O(1) source retrieval
-- [x] **Dead code detection** — `find_dead_code` tool: unreachable symbols via reverse import graph
-- [x] **Query-driven context assembly** — `get_ranked_context(query, token_budget)` with BM25 + PageRank
-
-### V1.1 Features (Completed)
-- [x] Multi-file cross-file resolution — `loadProjectSources`/`clearProjectSources` in TsMorphAdapter — fixed in `2e33cdc`
-- [x] `this.method()` intra-class call edge extraction — `resolveThisMethodCall` helper — fixed in `2e33cdc`
-- [x] 3-tier blast radius confidence (confirmed/likely/potential) with `edgeKinds` and `confidence` filter
-- [x] Epic 7: tree-sitter adapter for Go + C# (syntax-level parsing) — `GoAdapter`, `CSharpAdapter` with graceful degradation — fixed in `e43db17`
-- [x] Co-change analysis — mine git history during indexing (zero extra calls), `.ctxo/index/co-changes.json`, blast radius boost (potential → likely when frequency > 0.5)
-- [x] `get_pr_impact` MCP tool (14th tool) — combines changed symbols + blast radius + co-change into single PR risk assessment
-
-### V1.5 Features (Remaining)
 - [ ] Epic 8: GitHub/GitLab webhook listener for auto-indexing on push events
+- [ ] Streamable HTTP transport (for remote/cloud MCP usage)
+- [ ] Performance benchmarks (p95 latency, startup time, index build time)
 
 ## Documentation
 
@@ -292,3 +260,5 @@ try {
 - [V1 Walkthrough](docs/walkthrough-v1.md) — V1 implementation log (354 tests)
 - [V1.1 Walkthrough](docs/walkthrough-v1.1.md) — V1.1 features: cross-file resolution, Go/C#, 3-tier blast radius
 - [Agentic AI Integration](docs/agentic-ai-integration.md) — Claude Agent SDK, OpenAI Agents SDK, LangChain, raw MCP client usage
+- [Changelog](CHANGELOG.md) — version history (v0.2.0, v0.3.0)
+- [Validation Runbook](docs/runbook/mcp-validation/mcp-validation.md) — 86-check end-to-end validation
