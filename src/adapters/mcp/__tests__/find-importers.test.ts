@@ -187,6 +187,56 @@ describe('FindImportersHandler', () => {
     expect(result.content).toHaveLength(1);
   });
 
+  it('deduplicates direct importers with multiple edge kinds', () => {
+    // Add a second edge from A to B (uses) alongside existing imports edge
+    const multiEdgeIndex: FileIndex = {
+      file: 'src/a.ts',
+      lastModified: 1,
+      symbols: [{ symbolId: 'src/a.ts::A::function', name: 'A', kind: 'function', startLine: 1, endLine: 10 }],
+      edges: [
+        { from: 'src/a.ts::A::function', to: 'src/b.ts::B::class', kind: 'imports' },
+        { from: 'src/a.ts::A::function', to: 'src/b.ts::B::class', kind: 'uses' },
+      ],
+      intent: [],
+      antiPatterns: [],
+    };
+    storage.writeSymbolFile(multiEdgeIndex);
+
+    const handler = handleFindImporters(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = handler({ symbolId: 'src/b.ts::B::class' });
+    const payload = JSON.parse(result.content[0]!.text);
+
+    // Should be 1 unique importer, not 2 (deduplicated by symbolId)
+    expect(payload.importerCount).toBe(1);
+    expect(payload.importers[0].symbolId).toBe('src/a.ts::A::function');
+  });
+
+  it('direct importerCount matches transitive maxDepth=1 count', () => {
+    // Add multi-edge: A imports+uses B
+    const multiEdgeIndex: FileIndex = {
+      file: 'src/a.ts',
+      lastModified: 1,
+      symbols: [{ symbolId: 'src/a.ts::A::function', name: 'A', kind: 'function', startLine: 1, endLine: 10 }],
+      edges: [
+        { from: 'src/a.ts::A::function', to: 'src/b.ts::B::class', kind: 'imports' },
+        { from: 'src/a.ts::A::function', to: 'src/b.ts::B::class', kind: 'uses' },
+      ],
+      intent: [],
+      antiPatterns: [],
+    };
+    storage.writeSymbolFile(multiEdgeIndex);
+
+    const handler = handleFindImporters(storage, new MaskingPipeline(), undefined, tempDir);
+
+    const direct = handler({ symbolId: 'src/b.ts::B::class' });
+    const directPayload = JSON.parse(direct.content[0]!.text);
+
+    const transitive = handler({ symbolId: 'src/b.ts::B::class', transitive: true, maxDepth: 1 });
+    const transitivePayload = JSON.parse(transitive.content[0]!.text);
+
+    expect(directPayload.importerCount).toBe(transitivePayload.importerCount);
+  });
+
   it('applies masking to response', () => {
     const sensitiveIndex: FileIndex = {
       file: 'src/config.ts',

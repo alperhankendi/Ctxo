@@ -682,6 +682,8 @@ Call with `{ symbolId: "src/core/types.ts::SymbolNode::type" }`:
 * [ ] Each importer has: `symbolId`, `name`, `kind`, `file`, `edgeKind`, `depth`
 * [ ] All entries have `depth: 1` (direct only)
 * [ ] `edgeKind` is one of: `imports`, `calls`, `extends`, `implements`, `uses`
+* [ ] **No duplicate symbolIds** — direct mode deduplicates by symbolId (Bug #22 fix)
+* [ ] `importerCount` matches transitive maxDepth=1 count (consistency check)
 
 ### 14.2 Transitive Importers
 
