@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "cb9ac4ff7e050322831744d1403e562c2a054cd8cca1b0e924d0272553b1e6bd",
+  "contentHash": "ace93b087558ecce96df1535d553e1b562a40cb308b5b565421e91c49563ae07",
   "edges": [
     {
       "from": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts::blast-radius-calculator.test::variable",
@@ -47,6 +47,6 @@
       "message": "Add blast radius calculator and architectural overlay"
     }
   ],
-  "lastModified": 1775606925,
+  "lastModified": 1775608547,
   "symbols": []
 }

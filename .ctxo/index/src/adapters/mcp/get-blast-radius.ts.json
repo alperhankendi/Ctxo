@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 7,
+      "cyclomatic": 8,
       "symbolId": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
     }
   ],
-  "contentHash": "7e254f08f7ea2c6aed5122719eb0d072c24d3993c53535a398eb3213e7ce468a",
+  "contentHash": "acbc70a1a70bacd6e479fa865aa57e7d9b5defdcaaf67bb8e6720281001ff1ec",
   "edges": [
     {
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
@@ -132,15 +132,15 @@
       "message": "Add blast radius calculator and architectural overlay"
     }
   ],
-  "lastModified": 1775606925,
+  "lastModified": 1775608547,
   "symbols": [
     {
-      "endLine": 67,
-      "endOffset": 2395,
+      "endLine": 80,
+      "endOffset": 2883,
       "kind": "function",
       "name": "handleGetBlastRadius",
-      "startLine": 11,
-      "startOffset": 466,
+      "startLine": 12,
+      "startOffset": 537,
       "symbolId": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
     }
   ]

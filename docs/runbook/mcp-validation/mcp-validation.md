@@ -172,19 +172,39 @@ Test with a high-impact core type to verify multi-depth traversal, risk scoring,
 * [ ] Depth 2 entries have `riskScore` ≈ 0.616 (1/2^0.7)
 * [ ] Deeper entries have progressively lower `riskScore`
 
-### 5.3 Confirmed vs Potential Split
+### 5.3 3-Tier Confidence Model (Semgrep/Endor Labs aligned)
 
 **Verify:**
 
-* [ ] `confirmedCount` + `potentialCount` = `impactScore`
-* [ ] Each entry has `confidence` field: either `"confirmed"` or `"potential"`
-* [ ] Entries with edge kind `calls`, `extends`, `implements`, `uses` → `"confirmed"`
-* [ ] Entries with edge kind `imports` → `"potential"`
-* [ ] `confirmedCount` >= 0 (may be 0 if all edges are imports)
+* [ ] `confirmedCount` + `likelyCount` + `potentialCount` = `impactScore`
+* [ ] Each entry has `confidence` field: `"confirmed"`, `"likely"`, or `"potential"`
+* [ ] Entries with edge kind `calls`, `extends`, `implements` → `"confirmed"`
+* [ ] Entries with edge kind `uses` (import + body reference) → `"likely"`
+* [ ] Entries with edge kind `imports` only → `"potential"`
+* [ ] `likelyCount` present in response (new field)
 
-### 5.4 Edge Cases
+### 5.4 edgeKinds per Entry
 
-* [ ] Leaf symbol (no dependents) returns `impactScore: 0`, `confirmedCount: 0`, `potentialCount: 0`
+**Verify:**
+
+* [ ] Each entry has `edgeKinds` array (non-empty)
+* [ ] Mixed edges shown: e.g., `["imports", "calls"]` → confidence: `"confirmed"` (strongest wins)
+* [ ] `["imports", "uses"]` → confidence: `"likely"`
+* [ ] `["imports"]` alone → confidence: `"potential"`
+
+### 5.5 Confidence Filter
+
+**Verify:**
+
+* [ ] `get_blast_radius({symbolId, confidence: "confirmed"})` returns only confirmed entries
+* [ ] `get_blast_radius({symbolId, confidence: "likely"})` returns only likely entries
+* [ ] `get_blast_radius({symbolId, confidence: "potential"})` returns only potential entries
+* [ ] No `confidence` param → all entries returned (backward compat)
+* [ ] Filtered `impactScore` matches filtered array length
+
+### 5.6 Edge Cases
+
+* [ ] Leaf symbol (no dependents) returns `impactScore: 0`, `confirmedCount: 0`, `likelyCount: 0`, `potentialCount: 0`
 * [ ] Non-existent symbol returns `{ found: false }`
 * [ ] Circular dependency does not cause infinite loop
 
@@ -194,6 +214,7 @@ Test with a high-impact core type to verify multi-depth traversal, risk scoring,
 | ------------------ | ------ |
 | Impact score       | \_\_\_ |
 | Confirmed count    | \_\_\_ |
+| Likely count       | \_\_\_ |
 | Potential count    | \_\_\_ |
 | Overall risk score | \_\_\_ |
 | Depth 1 count      | \_\_\_ |
@@ -1018,7 +1039,7 @@ From Step 3 metrics, verify edge kind diversity.
 | `calls`      | 1+      | Required (includes `this.method()` intra-class calls) |
 | `implements` | 1+      | Required                       |
 | `extends`    | 0       | Optional (depends on codebase) |
-| `uses`       | 1+      | Required (Faz 3 — confirmed blast radius) |
+| `uses`       | 1+      | Required (likely-tier blast radius) |
 
 ### 18.1 Cross-File Edge Resolution Accuracy
 
@@ -1347,7 +1368,7 @@ After completing all steps, fill in:
 | 2  | Index metrics: symbols > 0, edges > 0, intents > 0                  |           |
 | 2a | All symbols have byte offsets (startOffset/endOffset)                |           |
 | 2b | `typeOnly` edges flagged for `import type` statements               |           |
-| 2c | `uses` edges present (confirmed blast radius)                       |           |
+| 2c | `uses` edges present (likely-tier blast radius)                      |           |
 | 2d | Multi-file project preloading active during indexing                 |           |
 | 2e | Import edge target kinds resolved via cross-file lookup              |           |
 | 2f | `this.method()` intra-class call edges extracted                     |           |
@@ -1356,7 +1377,9 @@ After completing all steps, fill in:
 | 5  | `get_logic_slice` — transitive dependencies resolved                |           |
 | 6  | `get_blast_radius` — impactScore > 0, multi-depth dependents        |           |
 | 6a | `get_blast_radius` — riskScore per entry, overallRiskScore 0-1      |           |
-| 6b | `get_blast_radius` — confirmedCount + potentialCount = impactScore   |           |
+| 6b | `get_blast_radius` — 3-tier: confirmed + likely + potential = impactScore |      |
+| 6c | `get_blast_radius` — edgeKinds array per entry (non-empty)           |           |
+| 6d | `get_blast_radius` — confidence filter returns only matching tier    |           |
 | 7  | `get_architectural_overlay` — 6 layers, correct classification      |           |
 | 8  | `get_why_context` — commits returned, no changeIntelligence overlap |           |
 | 8a | `get_why_context` — `maxCommits` slices commitHistory correctly     |           |
@@ -1412,13 +1435,13 @@ After completing all steps, fill in:
 | 17i| `runCheck()` uses registry + dynamic extensions (not hardcoded)       |           |
 | 17j| Watch command uses local scoped extensions (no mutable global)        |           |
 | 18 | Staleness detection — no false positive on fresh index              |           |
-| 19 | Unit tests pass (646+)                                              |           |
+| 19 | Unit tests pass (654+)                                              |           |
 | 20 | Git hash masking — visible or redacted (log status)                 |           |
 | 21 | Manual vs MCP comparison table filled with measured data            |           |
 | 22 | Token savings > 10x for aggregate                                   |           |
 | 23 | Context budget chart shows MCP uses < 1% of 1M window               |           |
 
-**Result:** \_\_\_/69 checks passed
+**Result:** \_\_\_/71 checks passed
 
 ***
 

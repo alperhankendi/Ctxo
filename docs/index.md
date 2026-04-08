@@ -3,6 +3,9 @@
 ## Files
 
 * **[Project-Idea.md](./Project-Idea.md)** - Original vision and core features for Ctxo MCP server
+* **[walkthrough-v1.md](./walkthrough-v1.md)** - V1 implementation log (Phases 1-10, 354 tests)
+* **[walkthrough-v1.1.md](./walkthrough-v1.1.md)** - V1.1 feature development: multi-file resolution, tree-sitter Go/C#, 3-tier blast radius
+* **[research-needed.md](./research-needed.md)** - LSP integration and AST research analysis
 
 ## Subdirectories
 

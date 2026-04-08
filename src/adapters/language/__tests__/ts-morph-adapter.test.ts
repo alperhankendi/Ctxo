@@ -545,7 +545,7 @@ describe('TsMorphAdapter — uses edge extraction (Faz 3)', () => {
 });
 
 describe('TsMorphAdapter — uses edge + blast radius integration', () => {
-  it('uses edge is classified as confirmed in blast radius', async () => {
+  it('uses edge is classified as likely in blast radius (3-tier model)', async () => {
     const { SymbolGraph } = await import('../../../core/graph/symbol-graph.js');
     const { BlastRadiusCalculator } = await import('../../../core/blast-radius/blast-radius-calculator.js');
 
@@ -557,9 +557,11 @@ describe('TsMorphAdapter — uses edge + blast radius integration', () => {
     const calc = new BlastRadiusCalculator();
     const result = calc.calculate(graph, 'src/b.ts::B::class');
 
-    expect(result.confirmedCount).toBe(1);
+    expect(result.likelyCount).toBe(1);
+    expect(result.confirmedCount).toBe(0);
     expect(result.potentialCount).toBe(0);
-    expect(result.impactedSymbols[0]!.confidence).toBe('confirmed');
+    expect(result.impactedSymbols[0]!.confidence).toBe('likely');
+    expect(result.impactedSymbols[0]!.edgeKinds).toEqual(['uses']);
   });
 });
 

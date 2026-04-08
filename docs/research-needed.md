@@ -148,8 +148,8 @@ Without AST, Ctxo cannot extract symbols, build dependency graphs, calculate bla
 
 ## 3. Action Items
 
-- [ ] **P1:** Remove `useInMemoryFileSystem: true` from TsMorphAdapter — enable multi-file Project for accurate cross-file resolution
-- [ ] **P1:** Enable `this.method()` call edge extraction (currently skipped at line 349)
-- [ ] **P2:** Tree-sitter adapter for Go/C# (V1.5 roadmap — Epic 7)
+- [x] **P1:** Remove `useInMemoryFileSystem: true` from TsMorphAdapter — multi-file Project with `loadProjectSources`/`clearProjectSources` — fixed in `2e33cdc`
+- [x] **P1:** Enable `this.method()` call edge extraction — `resolveThisMethodCall` helper — fixed in `2e33cdc`
+- [x] **P2:** Tree-sitter adapter for Go/C# — `GoAdapter`, `CSharpAdapter` with graceful degradation — fixed in `e43db17`
 - [ ] **P3:** Evaluate gopls MCP composition for Go semantic-tier (V2)
 - [ ] **P3:** Evaluate OmniSharp LSP adapter for C# semantic-tier only if tree-sitter proves insufficient based on user feedback

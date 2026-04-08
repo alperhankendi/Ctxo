@@ -7,6 +7,7 @@ import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slic
 
 const InputSchema = z.object({
   symbolId: z.string().min(1),
+  confidence: z.enum(['confirmed', 'likely', 'potential']).optional(),
 });
 
 export function handleGetBlastRadius(
@@ -41,14 +42,26 @@ export function handleGetBlastRadius(
       }
 
       const result = calculator.calculate(graph, symbolId);
+
+      // Apply confidence filter if requested
+      let symbols = result.impactedSymbols;
+      if (parsed.data.confidence) {
+        symbols = symbols.filter(s => s.confidence === parsed.data.confidence);
+      }
+
+      const confirmedCount = symbols.filter(s => s.confidence === 'confirmed').length;
+      const likelyCount = symbols.filter(s => s.confidence === 'likely').length;
+      const potentialCount = symbols.filter(s => s.confidence === 'potential').length;
+
       const payload = masking.mask(JSON.stringify({
         symbolId,
-        impactScore: result.impactedSymbols.length,
+        impactScore: symbols.length,
         directDependentsCount: result.directDependentsCount,
-        confirmedCount: result.confirmedCount,
-        potentialCount: result.potentialCount,
+        confirmedCount,
+        likelyCount,
+        potentialCount,
         overallRiskScore: result.overallRiskScore,
-        impactedSymbols: result.impactedSymbols,
+        impactedSymbols: symbols,
       }));
 
       const content: Array<{ type: 'text'; text: string }> = [];

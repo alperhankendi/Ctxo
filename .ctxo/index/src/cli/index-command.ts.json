@@ -238,6 +238,12 @@
   "file": "src/cli/index-command.ts",
   "intent": [
     {
+      "date": "2026-04-08T03:09:19+03:00",
+      "hash": "e43db17e512a8ab500108767c0914c857b5707b3",
+      "kind": "commit",
+      "message": "Add tree-sitter adapters for Go and C# with graceful degradation"
+    },
+    {
       "date": "2026-04-08T01:41:17+03:00",
       "hash": "2e33cdc34aaa5e3387139345d981f623065d1043",
       "kind": "commit",
@@ -310,7 +316,7 @@
       "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
     }
   ],
-  "lastModified": 1775606925,
+  "lastModified": 1775608547,
   "symbols": [
     {
       "endLine": 339,

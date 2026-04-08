@@ -10,7 +10,14 @@
     }
   ],
   "file": "src/adapters/language/__tests__/csharp-adapter.test.ts",
-  "intent": [],
-  "lastModified": 1775606924,
+  "intent": [
+    {
+      "date": "2026-04-08T03:09:19+03:00",
+      "hash": "e43db17e512a8ab500108767c0914c857b5707b3",
+      "kind": "commit",
+      "message": "Add tree-sitter adapters for Go and C# with graceful degradation"
+    }
+  ],
+  "lastModified": 1775608547,
   "symbols": []
 }

@@ -210,22 +210,88 @@ describe('BlastRadiusCalculator', () => {
     expect(impactedSymbols[1]!.symbolId).toBe('b::B::function');
   });
 
-  it('classifies imports edges as potential and calls/extends as confirmed', () => {
+  it('classifies imports as potential, extends as confirmed, uses as likely (3-tier)', () => {
     const graph = new SymbolGraph();
-    for (const id of ['a::A::function', 'b::B::class', 'c::C::class']) {
+    for (const id of ['a::A::function', 'b::B::class', 'c::C::function', 'd::D::class']) {
       graph.addNode(makeNode(id));
     }
-    graph.addEdge({ from: 'a::A::function', to: 'c::C::class', kind: 'imports' });
-    graph.addEdge({ from: 'b::B::class', to: 'c::C::class', kind: 'extends' });
+    graph.addEdge({ from: 'a::A::function', to: 'd::D::class', kind: 'imports' });
+    graph.addEdge({ from: 'b::B::class', to: 'd::D::class', kind: 'extends' });
+    graph.addEdge({ from: 'c::C::function', to: 'd::D::class', kind: 'uses' });
 
-    const result = calc.calculate(graph, 'c::C::class');
-    expect(result.confirmedCount).toBe(1); // extends
-    expect(result.potentialCount).toBe(1); // imports
+    const result = calc.calculate(graph, 'd::D::class');
+    expect(result.confirmedCount).toBe(1);
+    expect(result.likelyCount).toBe(1);
+    expect(result.potentialCount).toBe(1);
+    expect(result.confirmedCount + result.likelyCount + result.potentialCount).toBe(result.impactedSymbols.length);
 
-    const confirmed = result.impactedSymbols.find((e) => e.confidence === 'confirmed');
-    expect(confirmed?.symbolId).toBe('b::B::class');
+    expect(result.impactedSymbols.find(e => e.symbolId === 'b::B::class')?.confidence).toBe('confirmed');
+    expect(result.impactedSymbols.find(e => e.symbolId === 'c::C::function')?.confidence).toBe('likely');
+    expect(result.impactedSymbols.find(e => e.symbolId === 'a::A::function')?.confidence).toBe('potential');
+  });
 
-    const potential = result.impactedSymbols.find((e) => e.confidence === 'potential');
-    expect(potential?.symbolId).toBe('a::A::function');
+  it('includes edgeKinds per entry', () => {
+    const graph = new SymbolGraph();
+    for (const id of ['a::A::function', 'b::B::class']) {
+      graph.addNode(makeNode(id));
+    }
+    graph.addEdge({ from: 'a::A::function', to: 'b::B::class', kind: 'calls' });
+
+    const result = calc.calculate(graph, 'b::B::class');
+    expect(result.impactedSymbols[0]!.edgeKinds).toEqual(['calls']);
+  });
+
+  it('collects multiple edgeKinds when node has mixed edges', () => {
+    const graph = new SymbolGraph();
+    for (const id of ['a::A::function', 'b::B::class']) {
+      graph.addNode(makeNode(id));
+    }
+    graph.addEdge({ from: 'a::A::function', to: 'b::B::class', kind: 'imports' });
+    graph.addEdge({ from: 'a::A::function', to: 'b::B::class', kind: 'calls' });
+
+    const result = calc.calculate(graph, 'b::B::class');
+    expect(result.impactedSymbols[0]!.edgeKinds).toEqual(expect.arrayContaining(['imports', 'calls']));
+    expect(result.impactedSymbols[0]!.edgeKinds).toHaveLength(2);
+    // calls wins → confirmed
+    expect(result.impactedSymbols[0]!.confidence).toBe('confirmed');
+  });
+
+  it('imports + uses → likely confidence with both edgeKinds', () => {
+    const graph = new SymbolGraph();
+    for (const id of ['a::A::function', 'b::B::class']) {
+      graph.addNode(makeNode(id));
+    }
+    graph.addEdge({ from: 'a::A::function', to: 'b::B::class', kind: 'imports' });
+    graph.addEdge({ from: 'a::A::function', to: 'b::B::class', kind: 'uses' });
+
+    const result = calc.calculate(graph, 'b::B::class');
+    expect(result.impactedSymbols[0]!.confidence).toBe('likely');
+    expect(result.impactedSymbols[0]!.edgeKinds).toEqual(expect.arrayContaining(['imports', 'uses']));
+  });
+
+  it('implements edge → confirmed confidence', () => {
+    const graph = new SymbolGraph();
+    for (const id of ['a::A::class', 'b::B::interface']) {
+      graph.addNode(makeNode(id));
+    }
+    graph.addEdge({ from: 'a::A::class', to: 'b::B::interface', kind: 'implements' });
+
+    const result = calc.calculate(graph, 'b::B::interface');
+    expect(result.impactedSymbols[0]!.confidence).toBe('confirmed');
+    expect(result.impactedSymbols[0]!.edgeKinds).toEqual(['implements']);
+  });
+
+  it('uses-only edge → likely confidence', () => {
+    const graph = new SymbolGraph();
+    for (const id of ['a::A::function', 'b::B::class']) {
+      graph.addNode(makeNode(id));
+    }
+    graph.addEdge({ from: 'a::A::function', to: 'b::B::class', kind: 'uses' });
+
+    const result = calc.calculate(graph, 'b::B::class');
+    expect(result.impactedSymbols[0]!.confidence).toBe('likely');
+    expect(result.likelyCount).toBe(1);
+    expect(result.confirmedCount).toBe(0);
+    expect(result.potentialCount).toBe(0);
   });
 });

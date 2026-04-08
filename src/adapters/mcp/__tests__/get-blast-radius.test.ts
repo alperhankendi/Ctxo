@@ -113,14 +113,15 @@ describe('GetBlastRadiusHandler', () => {
     expect(payload.error).toBe(true);
   });
 
-  it('returns confirmedCount and potentialCount in response', () => {
+  it('returns confirmedCount, likelyCount, and potentialCount in response', () => {
     const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
     const result = handler({ symbolId: 'src/c.ts::C::interface' });
     const payload = JSON.parse(result.content[0]!.text);
 
     expect(typeof payload.confirmedCount).toBe('number');
+    expect(typeof payload.likelyCount).toBe('number');
     expect(typeof payload.potentialCount).toBe('number');
-    expect(payload.confirmedCount + payload.potentialCount).toBe(payload.impactScore);
+    expect(payload.confirmedCount + payload.likelyCount + payload.potentialCount).toBe(payload.impactScore);
   });
 
   it('classifies implements edge as confirmed and imports edge as potential', () => {
@@ -158,7 +159,44 @@ describe('GetBlastRadiusHandler', () => {
 
     expect(payload.impactScore).toBe(0);
     expect(payload.confirmedCount).toBe(0);
+    expect(payload.likelyCount).toBe(0);
     expect(payload.potentialCount).toBe(0);
     expect(payload.overallRiskScore).toBe(0);
+  });
+
+  it('includes edgeKinds in each impacted symbol entry', () => {
+    const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = handler({ symbolId: 'src/c.ts::C::interface' });
+    const payload = JSON.parse(result.content[0]!.text);
+
+    for (const entry of payload.impactedSymbols) {
+      expect(entry.edgeKinds).toBeDefined();
+      expect(Array.isArray(entry.edgeKinds)).toBe(true);
+      expect(entry.edgeKinds.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('filters by confidence when confidence param is provided', () => {
+    const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = handler({ symbolId: 'src/c.ts::C::interface', confidence: 'confirmed' });
+    const payload = JSON.parse(result.content[0]!.text);
+
+    for (const entry of payload.impactedSymbols) {
+      expect(entry.confidence).toBe('confirmed');
+    }
+    expect(payload.confirmedCount).toBe(payload.impactScore);
+    expect(payload.potentialCount).toBe(0);
+    expect(payload.likelyCount).toBe(0);
+  });
+
+  it('returns all entries when no confidence filter', () => {
+    const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
+    const unfiltered = handler({ symbolId: 'src/c.ts::C::interface' });
+    const filtered = handler({ symbolId: 'src/c.ts::C::interface', confidence: 'confirmed' });
+
+    const unfilteredPayload = JSON.parse(unfiltered.content[0]!.text);
+    const filteredPayload = JSON.parse(filtered.content[0]!.text);
+
+    expect(unfilteredPayload.impactScore).toBeGreaterThanOrEqual(filteredPayload.impactScore);
   });
 });

@@ -197,16 +197,21 @@ try {
 - [x] npm publish via CI/CD — `ctxo-mcp@0.2.0` live on npm
 - [ ] Performance: batch `git log` calls during indexing (currently N sequential calls for N files)
 - [ ] README.md content (quick start, feature overview, MCP config examples)
-- [ ] Confirmed vs potential blast radius split (import + symbol ref vs import only)
+- [x] Confirmed vs potential blast radius split → 3-tier model (confirmed/likely/potential) with `edgeKinds` per entry and `confidence` filter — fixed in `e43db17`
 
-### Learnings from jCodeMunch (Future)
-- [ ] **PageRank centrality** — `get_symbol_importance` tool using PageRank on import graph (damping=0.85)
-- [ ] **Byte offset indexing** — store byte offsets per symbol for O(1) source retrieval
-- [ ] **Dead code detection** — `find_dead_code` tool: unreachable symbols via reverse import graph
-- [ ] **Query-driven context assembly** — `get_ranked_context(query, token_budget)` with BM25 + PageRank
+### Learnings from jCodeMunch (Completed)
+- [x] **PageRank centrality** — `get_symbol_importance` tool using PageRank on import graph (damping=0.85)
+- [x] **Byte offset indexing** — store byte offsets per symbol for O(1) source retrieval
+- [x] **Dead code detection** — `find_dead_code` tool: unreachable symbols via reverse import graph
+- [x] **Query-driven context assembly** — `get_ranked_context(query, token_budget)` with BM25 + PageRank
 
-### V1.5 Features
-- [ ] Epic 7: tree-sitter adapter for Go + C# (syntax-level parsing)
+### V1.1 Features (Completed)
+- [x] Multi-file cross-file resolution — `loadProjectSources`/`clearProjectSources` in TsMorphAdapter — fixed in `2e33cdc`
+- [x] `this.method()` intra-class call edge extraction — `resolveThisMethodCall` helper — fixed in `2e33cdc`
+- [x] 3-tier blast radius confidence (confirmed/likely/potential) with `edgeKinds` and `confidence` filter
+- [x] Epic 7: tree-sitter adapter for Go + C# (syntax-level parsing) — `GoAdapter`, `CSharpAdapter` with graceful degradation — fixed in `e43db17`
+
+### V1.5 Features (Remaining)
 - [ ] Epic 8: GitHub/GitLab webhook listener for auto-indexing on push events
 
 ## Documentation
@@ -216,3 +221,5 @@ try {
 - [PRD](docs/artifacts/prd.md) — full product requirements
 - [Architecture](docs/artifacts/architecture.md) — architecture decisions and structure
 - [Epics](docs/artifacts/epics.md) — implementation epics breakdown
+- [V1 Walkthrough](docs/walkthrough-v1.md) — V1 implementation log (354 tests)
+- [V1.1 Walkthrough](docs/walkthrough-v1.1.md) — V1.1 features: cross-file resolution, Go/C#, 3-tier blast radius
