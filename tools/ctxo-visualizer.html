@@ -178,10 +178,51 @@
   .tl-tag.anti { background: rgba(249,115,22,0.2); color: var(--orange); }
   .tl-tag.revert { background: rgba(239,68,68,0.2); color: var(--red); }
 
+  /* Load from URL */
+  .url-load { display: flex; gap: 4px; margin-top: 8px; }
+  .url-load input { flex: 1; padding: 6px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 11px; outline: none; font-family: monospace; }
+  .url-load input:focus { border-color: var(--accent); }
+  .url-load button { padding: 6px 10px; background: var(--accent); color: white; border: none; border-radius: 4px; font-size: 11px; cursor: pointer; white-space: nowrap; }
+  .url-load button:hover { background: var(--accent2); }
+  .url-load button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .url-status { font-size: 10px; color: var(--text3); margin-top: 4px; }
+
+  /* 3D Graph */
+  .graph3d-container { flex: 1; position: relative; overflow: hidden; background: #0a0c10; }
+  .graph3d-info { position: absolute; top: 12px; left: 12px; background: rgba(15,17,23,0.9); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; font-size: 11px; color: var(--text2); z-index: 5; }
+  [data-theme="light"] .graph3d-info { background: rgba(255,255,255,0.95); }
+
+  /* Diff View */
+  .diff-container { flex: 1; overflow-y: auto; padding: 16px; }
+  .diff-slots { display: flex; gap: 12px; margin-bottom: 16px; }
+  .diff-slot { flex: 1; border: 2px dashed var(--border); border-radius: var(--radius); padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s; min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .diff-slot:hover { border-color: var(--accent); }
+  .diff-slot.loaded { border-style: solid; border-color: var(--green); }
+  .diff-slot input { display: none; }
+  .diff-slot .ds-label { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .diff-slot .ds-info { font-size: 10px; color: var(--text3); }
+  .diff-section { margin-bottom: 16px; }
+  .diff-section h3 { font-size: 13px; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .diff-badge { font-size: 10px; padding: 1px 6px; border-radius: 10px; font-weight: 600; }
+  .diff-badge.added { background: rgba(34,197,94,0.2); color: var(--green); }
+  .diff-badge.removed { background: rgba(239,68,68,0.2); color: var(--red); }
+  .diff-badge.changed { background: rgba(234,179,8,0.2); color: var(--yellow); }
+  .diff-list { font-size: 12px; font-family: monospace; }
+  .diff-item { padding: 4px 8px; border-radius: 4px; margin-bottom: 2px; display: flex; align-items: center; gap: 6px; }
+  .diff-item.added { background: rgba(34,197,94,0.06); color: var(--green); }
+  .diff-item.removed { background: rgba(239,68,68,0.06); color: var(--red); }
+  .diff-item.changed { background: rgba(234,179,8,0.06); color: var(--yellow); }
+  .diff-item .di-prefix { font-weight: 700; width: 14px; text-align: center; }
+  .diff-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-bottom: 16px; }
+  .diff-stat { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; text-align: center; }
+  .diff-stat .ds-val { font-size: 22px; font-weight: 700; }
+  .diff-stat .ds-lbl { font-size: 10px; text-transform: uppercase; color: var(--text3); margin-top: 2px; }
+
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
 </style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 </head>
 <body>
 <div class="app">
@@ -200,6 +241,11 @@
         <input type="file" id="fileInput" multiple accept=".json" webkitdirectory />
       </div>
       <button class="browse-btn" id="browseFolderBtn">Browse Folder...</button>
+      <div class="url-load">
+        <input type="text" id="urlInput" placeholder="http://localhost:8080/.ctxo/index/" />
+        <button id="urlLoadBtn">Fetch</button>
+      </div>
+      <div class="url-status" id="urlStatus"></div>
       <div class="file-count" id="fileCount"></div>
     </div>
     <div class="sidebar-scroll">
@@ -232,6 +278,8 @@
       <button class="tab" data-tab="heatmap">Heatmap<span class="badge" id="heatmapBadge">0</span></button>
       <button class="tab" data-tab="cochanges">Co-Changes<span class="badge" id="cochangeBadge">0</span></button>
       <button class="tab" data-tab="timeline">Timeline</button>
+      <button class="tab" data-tab="graph3d">3D Graph</button>
+      <button class="tab" data-tab="diff">Diff</button>
     </div>
     <div class="panel active" id="panel-dashboard">
       <div class="dashboard" id="dashboardContainer">
@@ -287,6 +335,29 @@
     <div class="panel" id="panel-timeline">
       <div class="timeline-container" id="timelineContainer">
         <div class="empty-state"><div class="es-icon">&#128197;</div><p>Load JSON files to see the commit timeline</p></div>
+      </div>
+    </div>
+    <div class="panel" id="panel-graph3d">
+      <div class="graph3d-container" id="graph3dContainer">
+        <div class="graph3d-info" id="graph3dInfo" style="display:none">Scroll to zoom, drag to rotate, right-drag to pan. Click node for details.</div>
+        <div class="empty-state" id="graph3dEmpty"><div class="es-icon">&#127760;</div><p>Load JSON files to see the 3D dependency graph</p></div>
+      </div>
+    </div>
+    <div class="panel" id="panel-diff">
+      <div class="diff-container" id="diffContainer">
+        <div class="diff-slots">
+          <div class="diff-slot" id="diffSlotA">
+            <div class="ds-label">Snapshot A (Before)</div>
+            <div class="ds-info">Click or drop folder</div>
+            <input type="file" id="diffInputA" multiple accept=".json" webkitdirectory />
+          </div>
+          <div class="diff-slot" id="diffSlotB">
+            <div class="ds-label">Snapshot B (After)</div>
+            <div class="ds-info">Click or drop folder</div>
+            <input type="file" id="diffInputB" multiple accept=".json" webkitdirectory />
+          </div>
+        </div>
+        <div id="diffResults"></div>
       </div>
     </div>
     <div class="prompt-bar">
@@ -529,6 +600,7 @@ function updateAll() {
   else if (state.activeTab === 'heatmap') renderHeatmap();
   else if (state.activeTab === 'cochanges') renderCoChanges();
   else if (state.activeTab === 'timeline') renderTimeline();
+  else if (state.activeTab === 'graph3d') renderGraph3D();
   updatePrompt();
 }
 
@@ -1195,6 +1267,364 @@ document.getElementById('copyBtn').addEventListener('click', () => {
   navigator.clipboard.writeText(document.getElementById('promptText').textContent);
   const btn = document.getElementById('copyBtn'); btn.textContent = 'Copied!'; setTimeout(()=>{btn.textContent='Copy';}, 1500);
 });
+
+// ═══════════════════════════════════════
+// LOAD FROM URL
+// ═══════════════════════════════════════
+document.getElementById('urlLoadBtn').addEventListener('click', async () => {
+  const urlInput = document.getElementById('urlInput');
+  const statusEl = document.getElementById('urlStatus');
+  const btn = document.getElementById('urlLoadBtn');
+  let baseUrl = urlInput.value.trim();
+  if (!baseUrl) return;
+  if (!baseUrl.endsWith('/')) baseUrl += '/';
+
+  btn.disabled = true; btn.textContent = 'Loading...';
+  statusEl.textContent = 'Fetching file list...';
+
+  try {
+    // Try fetching co-changes.json
+    try {
+      const ccRes = await fetch(baseUrl + 'co-changes.json');
+      if (ccRes.ok) {
+        const ccData = await ccRes.json();
+        if (ccData.entries) state.coChanges = ccData.entries;
+        statusEl.textContent = 'Loaded co-changes.json...';
+      }
+    } catch (ignored) { /* co-changes optional */ }
+
+    // Try to fetch a directory listing (works with many static servers)
+    let fileList = [];
+    try {
+      const listRes = await fetch(baseUrl);
+      if (listRes.ok) {
+        const html = await listRes.text();
+        const linkRegex = /href="([^"]+\.json)"/g;
+        let match;
+        while ((match = linkRegex.exec(html)) !== null) {
+          const fname = match[1];
+          if (fname !== 'co-changes.json') fileList.push(fname);
+        }
+      }
+    } catch (ignored) { /* listing optional */ }
+
+    if (fileList.length === 0) {
+      statusEl.textContent = 'Could not list files. Try drag & drop instead.';
+      btn.disabled = false; btn.textContent = 'Fetch'; return;
+    }
+
+    statusEl.textContent = 'Fetching ' + fileList.length + ' files...';
+
+    const batchSize = 20;
+    for (let i = 0; i < fileList.length; i += batchSize) {
+      const batch = fileList.slice(i, i + batchSize);
+      const results = await Promise.all(batch.map(async fname => {
+        try {
+          const url = fname.startsWith('http') ? fname : baseUrl + fname;
+          const res = await fetch(url);
+          if (!res.ok) return null;
+          const data = await res.json();
+          return data && data.file && typeof data.file === 'string' ? data : null;
+        } catch (ignored) { return null; }
+      }));
+      results.forEach(r => { if (r) state.files.push(r); });
+      statusEl.textContent = 'Loaded ' + Math.min(i + batchSize, fileList.length) + '/' + fileList.length + ' files...';
+    }
+
+    dedup();
+    statusEl.textContent = 'Loaded ' + state.files.length + ' files from URL';
+    updateAll();
+  } catch (err) {
+    statusEl.textContent = 'Error: ' + err.message;
+  }
+  btn.disabled = false; btn.textContent = 'Fetch';
+});
+
+// ═══════════════════════════════════════
+// 3D DEPENDENCY GRAPH (Three.js)
+// ═══════════════════════════════════════
+let scene3d = null, camera3d = null, renderer3d = null, controls3d = null;
+let graph3dMeshes = new Map(), graph3dLines = [];
+let graph3dInitialized = false, graph3dAnim = null;
+
+async function renderGraph3D() {
+  const container = document.getElementById('graph3dContainer');
+  const emptyEl = document.getElementById('graph3dEmpty');
+  const infoEl = document.getElementById('graph3dInfo');
+  const allSyms = filterSymbols(getAllSymbols());
+  const allEdges = getAllEdges().filter(e => state.edgeFilter[e.kind]);
+
+  if (!allSyms.length) { emptyEl.style.display = ''; infoEl.style.display = 'none'; return; }
+  emptyEl.style.display = 'none'; infoEl.style.display = '';
+
+  if (!graph3dInitialized) {
+    try {
+      const THREE = await import('three');
+      const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+
+      const w = container.clientWidth, h = container.clientHeight;
+      scene3d = new THREE.Scene();
+      scene3d.background = new THREE.Color(0x0a0c10);
+      scene3d.fog = new THREE.FogExp2(0x0a0c10, 0.0015);
+
+      camera3d = new THREE.PerspectiveCamera(60, w / h, 1, 5000);
+      camera3d.position.set(0, 0, 400);
+
+      renderer3d = new THREE.WebGLRenderer({ antialias: true });
+      renderer3d.setSize(w, h);
+      renderer3d.setPixelRatio(devicePixelRatio);
+
+      const existingCanvas = container.querySelector('canvas');
+      if (existingCanvas) existingCanvas.remove();
+      container.insertBefore(renderer3d.domElement, container.firstChild);
+
+      controls3d = new OrbitControls(camera3d, renderer3d.domElement);
+      controls3d.enableDamping = true;
+      controls3d.dampingFactor = 0.08;
+
+      scene3d.add(new THREE.AmbientLight(0x444466, 1.5));
+      const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      dirLight.position.set(200, 300, 200);
+      scene3d.add(dirLight);
+
+      const ro = new ResizeObserver(() => {
+        const w2 = container.clientWidth, h2 = container.clientHeight;
+        camera3d.aspect = w2 / h2; camera3d.updateProjectionMatrix();
+        renderer3d.setSize(w2, h2);
+      });
+      ro.observe(container);
+
+      graph3dInitialized = true;
+      window._THREE = THREE;
+
+      function animate() {
+        graph3dAnim = requestAnimationFrame(animate);
+        controls3d.update();
+        renderer3d.render(scene3d, camera3d);
+      }
+      animate();
+    } catch (err) {
+      emptyEl.style.display = '';
+      emptyEl.querySelector('p').textContent = 'Failed to load Three.js: ' + err.message;
+      return;
+    }
+  }
+
+  const THREE = window._THREE;
+
+  // Clear previous
+  graph3dMeshes.forEach(m => scene3d.remove(m));
+  graph3dMeshes.clear();
+  graph3dLines.forEach(l => scene3d.remove(l));
+  graph3dLines = [];
+
+  // Create nodes
+  const nodeMap = {};
+  const spread = Math.min(300, allSyms.length * 2);
+  allSyms.forEach((s, i) => {
+    const phi = Math.acos(-1 + (2 * i) / allSyms.length);
+    const theta = Math.sqrt(allSyms.length * Math.PI) * phi;
+    const r = spread * 0.8;
+    const pos = {
+      x: r * Math.cos(theta) * Math.sin(phi) + (Math.random() - 0.5) * 20,
+      y: r * Math.sin(theta) * Math.sin(phi) + (Math.random() - 0.5) * 20,
+      z: r * Math.cos(phi) + (Math.random() - 0.5) * 20,
+    };
+    const radius = Math.min(3 + (s.cyclomatic || 1) * 0.3, 10);
+    const geo = new THREE.SphereGeometry(radius, 12, 12);
+    const mat = new THREE.MeshPhongMaterial({ color: new THREE.Color(KIND_COLORS[s.kind] || '#888'), emissive: new THREE.Color(KIND_COLORS[s.kind] || '#888'), emissiveIntensity: 0.3 });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(pos.x, pos.y, pos.z);
+    mesh.userData = { symbol: s };
+    scene3d.add(mesh);
+    graph3dMeshes.set(s.symbolId, mesh);
+    nodeMap[s.symbolId] = { ...s, ...pos, vx: 0, vy: 0, vz: 0, mesh, radius };
+  });
+
+  // Edges
+  const filteredEdges = allEdges.filter(e => nodeMap[e.from] && nodeMap[e.to]);
+  filteredEdges.forEach(e => {
+    const a = nodeMap[e.from], b = nodeMap[e.to];
+    const geo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(a.x,a.y,a.z), new THREE.Vector3(b.x,b.y,b.z)]);
+    const mat = new THREE.LineBasicMaterial({ color: new THREE.Color((EDGE_STYLES[e.kind]||EDGE_STYLES.uses).color), opacity: 0.4, transparent: true });
+    const line = new THREE.Line(geo, mat);
+    line.userData = { nodeA: a, nodeB: b };
+    scene3d.add(line);
+    graph3dLines.push(line);
+  });
+
+  // Force simulation (pre-compute)
+  const nodes3d = Object.values(nodeMap);
+  for (let iter = 0; iter < 100; iter++) {
+    const alpha = 1 - iter / 100;
+    for (let i = 0; i < nodes3d.length; i++) {
+      for (let j = i + 1; j < nodes3d.length; j++) {
+        const a = nodes3d[i], b = nodes3d[j];
+        let dx=b.x-a.x, dy=b.y-a.y, dz=b.z-a.z, dist=Math.sqrt(dx*dx+dy*dy+dz*dz)||1;
+        let force=Math.min(800/(dist*dist),3)*alpha;
+        a.vx-=dx/dist*force; a.vy-=dy/dist*force; a.vz-=dz/dist*force;
+        b.vx+=dx/dist*force; b.vy+=dy/dist*force; b.vz+=dz/dist*force;
+      }
+    }
+    filteredEdges.forEach(e => {
+      const a=nodeMap[e.from], b=nodeMap[e.to]; if(!a||!b) return;
+      let dx=b.x-a.x, dy=b.y-a.y, dz=b.z-a.z, dist=Math.sqrt(dx*dx+dy*dy+dz*dz)||1;
+      let f=(dist-80)*0.003*alpha;
+      a.vx+=dx/dist*f; a.vy+=dy/dist*f; a.vz+=dz/dist*f;
+      b.vx-=dx/dist*f; b.vy-=dy/dist*f; b.vz-=dz/dist*f;
+    });
+    nodes3d.forEach(n => { n.vx*=0.7; n.vy*=0.7; n.vz*=0.7; n.x+=n.vx; n.y+=n.vy; n.z+=n.vz; });
+  }
+
+  // Update positions
+  nodes3d.forEach(n => n.mesh.position.set(n.x, n.y, n.z));
+  graph3dLines.forEach(line => {
+    const a=line.userData.nodeA, b=line.userData.nodeB;
+    const pos = line.geometry.attributes.position;
+    pos.setXYZ(0,a.x,a.y,a.z); pos.setXYZ(1,b.x,b.y,b.z); pos.needsUpdate = true;
+  });
+
+  // Fit camera
+  const box = new THREE.Box3();
+  nodes3d.forEach(n => box.expandByPoint(new THREE.Vector3(n.x,n.y,n.z)));
+  const center = box.getCenter(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3()).length();
+  camera3d.position.set(center.x, center.y, center.z + size * 0.9);
+  controls3d.target.copy(center);
+  controls3d.update();
+
+  // Click handler
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+  renderer3d.domElement.onclick = e => {
+    const rect = renderer3d.domElement.getBoundingClientRect();
+    mouse.x = ((e.clientX-rect.left)/rect.width)*2-1;
+    mouse.y = -((e.clientY-rect.top)/rect.height)*2+1;
+    raycaster.setFromCamera(mouse, camera3d);
+    const hits = raycaster.intersectObjects(Array.from(graph3dMeshes.values()));
+    if (hits.length) {
+      const sym = hits[0].object.userData.symbol;
+      infoEl.textContent = sym.name + ' (' + sym.kind + ') - ' + sym.file + ':' + sym.startLine + (sym.cyclomatic != null ? ' | C:' + sym.cyclomatic : '');
+    }
+  };
+}
+
+// ═══════════════════════════════════════
+// DIFF VIEW
+// ═══════════════════════════════════════
+const diffState = { a: null, b: null };
+
+function loadDiffSlot(slot, fileList) {
+  return new Promise(async resolve => {
+    const files = [];
+    const promises = [];
+    for (const f of fileList) {
+      if (!f.name.endsWith('.json') || f.name === 'co-changes.json') continue;
+      promises.push(f.text().then(t => { try { const d = JSON.parse(t); if (d && d.file) files.push(d); } catch (ignored) {} }));
+    }
+    await Promise.all(promises);
+    resolve(files);
+  });
+}
+
+['A', 'B'].forEach(slot => {
+  const slotEl = document.getElementById('diffSlot' + slot);
+  const inputEl = document.getElementById('diffInput' + slot);
+  slotEl.addEventListener('click', () => inputEl.click());
+  slotEl.addEventListener('dragover', e => { e.preventDefault(); e.stopPropagation(); });
+  slotEl.addEventListener('drop', async e => {
+    e.preventDefault(); e.stopPropagation();
+    const droppedFiles = await collectDroppedFiles(e.dataTransfer);
+    const files = await loadDiffSlot(slot, droppedFiles);
+    diffState[slot.toLowerCase()] = files;
+    slotEl.classList.add('loaded');
+    slotEl.querySelector('.ds-info').textContent = files.length + ' files loaded';
+    if (diffState.a && diffState.b) renderDiff();
+  });
+  inputEl.addEventListener('change', async e => {
+    const files = await loadDiffSlot(slot, Array.from(e.target.files));
+    diffState[slot.toLowerCase()] = files;
+    slotEl.classList.add('loaded');
+    slotEl.querySelector('.ds-info').textContent = files.length + ' files loaded';
+    if (diffState.a && diffState.b) renderDiff();
+  });
+});
+
+function renderDiff() {
+  const container = document.getElementById('diffResults');
+  container.textContent = '';
+  const a = diffState.a, b = diffState.b;
+  if (!a || !b) return;
+
+  const aMap = new Map(a.map(f => [f.file, f]));
+  const bMap = new Map(b.map(f => [f.file, f]));
+
+  const addedFiles = b.filter(f => !aMap.has(f.file));
+  const removedFiles = a.filter(f => !bMap.has(f.file));
+  const commonFiles = b.filter(f => aMap.has(f.file));
+
+  const addedSymbols = [], removedSymbols = [], changedSymbols = [];
+  const addedEdges = [], removedEdges = [];
+
+  addedFiles.forEach(f => (f.symbols||[]).forEach(s => addedSymbols.push({ ...s, file: f.file })));
+  removedFiles.forEach(f => (f.symbols||[]).forEach(s => removedSymbols.push({ ...s, file: f.file })));
+
+  commonFiles.forEach(bf => {
+    const af = aMap.get(bf.file);
+    const aSymIds = new Set((af.symbols||[]).map(s => s.symbolId));
+    const bSymIds = new Set((bf.symbols||[]).map(s => s.symbolId));
+    const aSymMap = new Map((af.symbols||[]).map(s => [s.symbolId, s]));
+
+    (bf.symbols||[]).forEach(s => { if (!aSymIds.has(s.symbolId)) addedSymbols.push({ ...s, file: bf.file }); });
+    (af.symbols||[]).forEach(s => { if (!bSymIds.has(s.symbolId)) removedSymbols.push({ ...s, file: af.file }); });
+    (bf.symbols||[]).forEach(s => {
+      if (aSymIds.has(s.symbolId)) {
+        const as = aSymMap.get(s.symbolId);
+        if (as && (as.startLine !== s.startLine || as.endLine !== s.endLine)) changedSymbols.push({ ...s, file: bf.file, oldStart: as.startLine, oldEnd: as.endLine });
+      }
+    });
+
+    const aEdgeKeys = new Set((af.edges||[]).map(e => e.from+'|'+e.to+'|'+e.kind));
+    const bEdgeKeys = new Set((bf.edges||[]).map(e => e.from+'|'+e.to+'|'+e.kind));
+    (bf.edges||[]).forEach(e => { if (!aEdgeKeys.has(e.from+'|'+e.to+'|'+e.kind)) addedEdges.push(e); });
+    (af.edges||[]).forEach(e => { if (!bEdgeKeys.has(e.from+'|'+e.to+'|'+e.kind)) removedEdges.push(e); });
+  });
+
+  // Summary
+  const summary = el('div', { className: 'diff-summary' });
+  [
+    { label: 'Files Added', value: addedFiles.length, color: 'var(--green)' },
+    { label: 'Files Removed', value: removedFiles.length, color: 'var(--red)' },
+    { label: 'Symbols Added', value: addedSymbols.length, color: 'var(--green)' },
+    { label: 'Symbols Removed', value: removedSymbols.length, color: 'var(--red)' },
+    { label: 'Symbols Changed', value: changedSymbols.length, color: 'var(--yellow)' },
+    { label: 'Edges +/-', value: addedEdges.length + '/' + removedEdges.length, color: 'var(--accent)' },
+  ].forEach(s => {
+    summary.appendChild(el('div', { className: 'diff-stat' }, [
+      el('div', { className: 'ds-val', textContent: String(s.value), style: { color: (s.value > 0 || String(s.value).includes('/')) ? s.color : 'var(--text3)' } }),
+      el('div', { className: 'ds-lbl', textContent: s.label }),
+    ]));
+  });
+  container.appendChild(summary);
+
+  function renderSection(title, items, type, renderItem) {
+    if (!items.length) return;
+    const sec = el('div', { className: 'diff-section' });
+    sec.appendChild(el('h3', {}, [el('span', { className: 'diff-badge ' + type, textContent: (type==='added'?'+':type==='removed'?'-':'~') + items.length }), ' ' + title]));
+    const list = el('div', { className: 'diff-list' });
+    items.slice(0, 30).forEach(item => list.appendChild(renderItem(item)));
+    if (items.length > 30) list.appendChild(el('div', { style: { padding: '4px 8px', color: 'var(--text3)' } }, ['...and ' + (items.length-30) + ' more']));
+    sec.appendChild(list); container.appendChild(sec);
+  }
+
+  renderSection('Files Added', addedFiles, 'added', f => el('div', { className: 'diff-item added' }, [el('span', { className: 'di-prefix', textContent: '+' }), f.file]));
+  renderSection('Files Removed', removedFiles, 'removed', f => el('div', { className: 'diff-item removed' }, [el('span', { className: 'di-prefix', textContent: '-' }), f.file]));
+  renderSection('Symbols Added', addedSymbols, 'added', s => el('div', { className: 'diff-item added' }, [el('span', { className: 'di-prefix', textContent: '+' }), el('span', { className: 'kind-badge kind-'+s.kind, textContent: s.kind }), s.name]));
+  renderSection('Symbols Removed', removedSymbols, 'removed', s => el('div', { className: 'diff-item removed' }, [el('span', { className: 'di-prefix', textContent: '-' }), el('span', { className: 'kind-badge kind-'+s.kind, textContent: s.kind }), s.name]));
+  renderSection('Symbols Changed', changedSymbols, 'changed', s => el('div', { className: 'diff-item changed' }, [el('span', { className: 'di-prefix', textContent: '~' }), el('span', { className: 'kind-badge kind-'+s.kind, textContent: s.kind }), s.name, el('span', { style: { color: 'var(--text3)', marginLeft: 'auto', fontSize: '10px' } }, ['L'+s.oldStart+'\u2192'+s.startLine])]));
+  renderSection('Edges Added', addedEdges, 'added', e => el('div', { className: 'diff-item added' }, [el('span', { className: 'di-prefix', textContent: '+' }), (e.from.split('::')[1]||e.from)+' \u2192 '+(e.to.split('::')[1]||e.to)]));
+  renderSection('Edges Removed', removedEdges, 'removed', e => el('div', { className: 'diff-item removed' }, [el('span', { className: 'di-prefix', textContent: '-' }), (e.from.split('::')[1]||e.from)+' \u2192 '+(e.to.split('::')[1]||e.to)]));
+}
 
 updateAll();
 </script>
