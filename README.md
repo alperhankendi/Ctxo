@@ -4,6 +4,8 @@
 
 AI coding assistants waste context window reading files one by one, still missing dependencies. Ctxo gives them the full picture in a single MCP call: symbol graphs, blast radius, git intent, and risk scores.
 
+[Live Demo — Index Visualizer](https://alperhankendi.github.io/Ctxo/ctxo-visualizer.html)
+
 ```
 Context per query set (full codebase investigation):
 
@@ -162,7 +164,17 @@ See [Agentic AI Integration Guide](docs/agentic-ai-integration.md) for LangChain
 | Go                    | tree-sitter | Syntax | Structs, interfaces, functions, methods, import edges            |
 | C#                    | tree-sitter | Syntax | Classes, interfaces, methods, enums, namespace qualification     |
 
+## Index Visualizer
+
+Ctxo ships with an interactive visualizer that renders your codebase index as a dependency graph. Explore symbols, edges, layers, and PageRank scores visually — deployed automatically to GitHub Pages on every push.
+
+![Ctxo Index Visualizer](docs/img/ui.png)
+
+[Open Live Visualizer](https://alperhankendi.github.io/Ctxo/ctxo-visualizer.html)
+
 ## How It Works
+
+![Ctxo MCP Server Architecture](docs/img/mcp-server.png)
 
 Ctxo builds a **committed JSON index** (`.ctxo/index/`) that captures symbols, dependency edges, git history, and co-change data. The MCP server reads this index to answer queries — no runtime parsing, no external services.
 
