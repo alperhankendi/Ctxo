@@ -1,6 +1,6 @@
-import { createServer, type Server } from 'node:http';
-import { randomUUID } from 'node:crypto';
+import { createServer, type Server, type IncomingMessage, type ServerResponse } from 'node:http';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
+import { randomUUID } from 'node:crypto';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { createLogger } from '../../core/logger.js';
 
@@ -8,7 +8,8 @@ const log = createLogger('ctxo:http');
 
 /**
  * Starts ctxo MCP server over HTTP with Streamable HTTP transport.
- * Each session gets its own transport instance, enabling multiple browser clients.
+ * Uses a single persistent transport per server lifetime.
+ * Browser clients share the same session via Mcp-Session-Id header.
  *
  * Usage:
  *   CTXO_HTTP_PORT=3001 npx ctxo
@@ -17,10 +18,15 @@ const log = createLogger('ctxo:http');
 export async function startHttpTransport(
   server: McpServer,
   port: number,
-): Promise<{ httpServer: Server }> {
-  const sessions = new Map<string, StreamableHTTPServerTransport>();
+): Promise<{ httpServer: Server; transport: StreamableHTTPServerTransport }> {
+  // Single stateful transport — one session for the lifetime of the server
+  const transport = new StreamableHTTPServerTransport({
+    sessionIdGenerator: () => randomUUID(),
+  });
 
-  const httpServer = createServer(async (req, res) => {
+  await server.connect(transport);
+
+  const httpServer = createServer(async (req: IncomingMessage, res: ServerResponse) => {
     // CORS for browser access
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
@@ -33,39 +39,14 @@ export async function startHttpTransport(
       return;
     }
 
-    // Check for existing session
-    const sessionId = req.headers['mcp-session-id'] as string | undefined;
-
-    if (sessionId && sessions.has(sessionId)) {
-      // Existing session — route to its transport
-      const transport = sessions.get(sessionId)!;
+    try {
       await transport.handleRequest(req, res);
-      return;
-    }
-
-    if (sessionId && !sessions.has(sessionId)) {
-      // Invalid session
-      res.writeHead(404, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'Session not found' }));
-      return;
-    }
-
-    // New session — create transport and connect
-    const transport = new StreamableHTTPServerTransport({
-      sessionIdGenerator: () => randomUUID(),
-    });
-
-    transport.onclose = () => {
-      const sid = transport.sessionId;
-      if (sid) sessions.delete(sid);
-    };
-
-    await server.connect(transport);
-    await transport.handleRequest(req, res);
-
-    if (transport.sessionId) {
-      sessions.set(transport.sessionId, transport);
-      log.info('New MCP session: %s', transport.sessionId);
+    } catch (err) {
+      log.error('HTTP request error: %s', (err as Error).message);
+      if (!res.headersSent) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: (err as Error).message }));
+      }
     }
   });
 
@@ -74,7 +55,7 @@ export async function startHttpTransport(
     httpServer.listen(port, () => {
       log.info('MCP HTTP server listening on http://localhost:%d', port);
       process.stderr.write(`[ctxo] MCP HTTP server running at http://localhost:${port}\n`);
-      resolve({ httpServer });
+      resolve({ httpServer, transport });
     });
   });
 }

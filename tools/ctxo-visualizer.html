@@ -1782,22 +1782,25 @@ async function mcpCall(url, method, params = {}) {
 
   const res = await fetch(url, { method: 'POST', headers, body });
 
-  // Capture session ID from response
+  // Capture session ID
   const sid = res.headers.get('Mcp-Session-Id');
   if (sid) mcpSessionId = sid;
 
-  if (!res.ok) throw new Error('HTTP ' + res.status + ': ' + (await res.text()));
+  if (!res.ok) throw new Error('HTTP ' + res.status);
 
   const text = await res.text();
-  // Parse SSE event stream — find the "data:" line with our response
-  const lines = text.split('\n');
-  for (const line of lines) {
+  for (const line of text.split('\n')) {
     if (line.startsWith('data: ')) {
       try { return JSON.parse(line.substring(6)); } catch {}
     }
   }
-  // Fallback: try parsing as raw JSON
   try { return JSON.parse(text); } catch { return null; }
+}
+
+async function mcpNotify(url, method) {
+  const headers = { 'Content-Type': 'application/json', 'Accept': 'application/json, text/event-stream' };
+  if (mcpSessionId) headers['Mcp-Session-Id'] = mcpSessionId;
+  await fetch(url, { method: 'POST', headers, body: JSON.stringify({ jsonrpc: '2.0', method }) });
 }
 
 document.getElementById('mcpConnectBtn').addEventListener('click', async () => {
@@ -1821,11 +1824,7 @@ document.getElementById('mcpConnectBtn').addEventListener('click', async () => {
     statusEl.textContent = 'Connected! Loading data...';
 
     // 2. Send initialized notification (MCP spec requirement)
-    await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json, text/event-stream', ...(mcpSessionId ? { 'Mcp-Session-Id': mcpSessionId } : {}) },
-      body: JSON.stringify({ jsonrpc: '2.0', method: 'notifications/initialized' }),
-    });
+    await mcpNotify(url, 'notifications/initialized');
 
     // 2. Call get_architectural_overlay for file list
     const overlayRes = await mcpCall(url, 'tools/call', {
