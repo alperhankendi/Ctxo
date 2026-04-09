@@ -46,7 +46,11 @@ function loadMaskingConfig(ctxoRoot: string): MaskingPipeline {
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
 
-  if (args.length > 0) {
+  // HTTP mode — check before CLI routing since --http is a server flag, not a CLI command
+  const httpPortStr = process.env.CTXO_HTTP_PORT
+    || (args.includes('--http') ? (args[args.indexOf('--port') + 1] || '3001') : null);
+
+  if (!httpPortStr && args.length > 0) {
     // CLI mode
     const { CliRouter } = await import('./cli/cli-router.js');
     const router = new CliRouter(process.cwd());
@@ -72,9 +76,6 @@ async function main(): Promise<void> {
   registerTools(server, storage, masking, git, staleness, ctxoRoot);
 
   // Start MCP server — HTTP mode or stdio mode
-  const httpPortStr = process.env.CTXO_HTTP_PORT
-    || (process.argv.includes('--http') ? (process.argv[process.argv.indexOf('--port') + 1] || '3001') : null);
-
   if (httpPortStr) {
     await startHttpTransport(async () => {
       const s = new McpServer({ name: 'ctxo', version: '0.1.0' });
