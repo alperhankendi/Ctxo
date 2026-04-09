@@ -37,3 +37,5 @@ _bmad/*
 # Session notes
 todo.md
 CLAUDE.local.md
+_site/
+headers.tmp
