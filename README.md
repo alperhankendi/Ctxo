@@ -1,18 +1,14 @@
 <div align="center">
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/img/hero-svg.svg">
-  <source media="(prefers-color-scheme: light)" srcset="docs/img/hero-svg.svg">
-  <img alt="Ctxo — Code intelligence for AI agents" src="docs/img/hero-svg.svg" width="720">
-</picture>
-
-# Ctxo
-
-**Code intelligence for AI agents — one call instead of hundreds.**
-
 [![npm version](https://img.shields.io/npm/v/ctxo-mcp.svg)](https://www.npmjs.com/package/ctxo-mcp)
 [![CI](https://github.com/alperhankendi/Ctxo/actions/workflows/ci.yml/badge.svg)](https://github.com/alperhankendi/Ctxo/actions/workflows/ci.yml)
 [![Release](https://github.com/alperhankendi/Ctxo/actions/workflows/release.yml/badge.svg)](https://github.com/alperhankendi/Ctxo/actions/workflows/release.yml)
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/hero-svg.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/img/hero-svg.svg">
+  <img alt="Ctxo — Code intelligence for AI agents" src="docs/img/hero-svg.svg" width="100%">
+</picture>
 
 </div>
 
