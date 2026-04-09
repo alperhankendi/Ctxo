@@ -4,7 +4,7 @@
 [![CI](https://github.com/alperhankendi/Ctxo/actions/workflows/ci.yml/badge.svg)](https://github.com/alperhankendi/Ctxo/actions/workflows/ci.yml)
 [![Release](https://github.com/alperhankendi/Ctxo/actions/workflows/release.yml/badge.svg)](https://github.com/alperhankendi/Ctxo/actions/workflows/release.yml)
 
-**Code intelligence for AI agents — one call instead of hundreds.**
+**Code intelligence for AI agents one call instead of hundreds.**
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/hero-svg.svg">
@@ -18,24 +18,24 @@
 
 ### The Problem
 
-AI coding assistants like Copilot, Claude Code, and Cursor rely on generic tools — `grep`, `find`, file reads — to understand your codebase. On brownfield projects with thousands of files, this brute-force exploration creates a chain of problems:
+AI coding assistants like Copilot, Claude Code, and Cursor rely on generic tools  `grep`, `find`, file reads to understand your codebase. On brownfield projects with thousands of files, this brute-force exploration creates a chain of problems:
 
-* **Context window saturation** — The agent fills its window reading files one by one, leaving little room for actual reasoning
-* **Partial context hallucination** — It sees a function but misses its dependencies, leading to wrong assumptions and broken suggestions
-* **Lost-in-the-middle** — Critical information buried deep in a long context gets ignored by the model
-* **Context poisoning** — Irrelevant code pulled in during exploration biases the model's output
-* **Iteration overhead** — Understanding one symbol takes 10-20 tool calls, each adding more noise to the context
-* **Stale reasoning** — After too many iterations, the agent contradicts its own earlier assumptions
+* **Context window saturation** The agent fills its window reading files one by one, leaving little room for actual reasoning
+* **Partial context hallucination** It sees a function but misses its dependencies, leading to wrong assumptions and broken suggestions
+* **Lost-in-the-middle** Critical information buried deep in a long context gets ignored by the model
+* **Context poisoning** Irrelevant code pulled in during exploration biases the model's output
+* **Iteration overhead** Understanding one symbol takes 10-20 tool calls, each adding more noise to the context
+* **Stale reasoning** After too many iterations, the agent contradicts its own earlier assumptions
 
 The result: more tokens burned, slower responses, higher cost, and lower quality output.
 
 ### The Solution
 
-Ctxo is an **MCP server** that **enhances** your existing AI tools with dependency-aware, history-enriched code intelligence. Instead of hundreds of `grep` and `read_file` calls, your agent gets the full picture — symbol graphs, blast radius, git intent, and risk scores — in a **single MCP call**.
+Ctxo is an **MCP server** that **enhances** your existing AI tools with dependency-aware, history-enriched code intelligence. Instead of hundreds of `grep` and `read_file` calls, your agent gets the full picture symbol graphs, blast radius, git intent, and risk scores in a **single MCP call**.
 
-* **Clean context** — Only relevant symbols and their transitive dependencies, nothing more
-* **Fewer iterations** — One call replaces an entire exploration cycle
-* **Higher quality** — The agent reasons over structured, complete context instead of fragmented file reads
+* **Clean context** Only relevant symbols and their transitive dependencies, nothing more
+* **Fewer iterations** One call replaces an entire exploration cycle
+* **Higher quality** The agent reasons over structured, complete context instead of fragmented file reads
 
 > A senior developer takes \~10 minutes to gather context across files. Ctxo delivers that same context in **under 500ms**.
 
@@ -118,15 +118,15 @@ npx ctxo-mcp sync                 # Rebuild SQLite cache from committed JSON
 
 ## Features
 
-**Response Envelope** — All responses include `_meta` with item counts, truncation info, and drill-in hints. Large results auto-truncated at 8KB (configurable via `CTXO_RESPONSE_LIMIT`).
+**Response Envelope** All responses include `_meta` with item counts, truncation info, and drill-in hints. Large results auto-truncated at 8KB (configurable via `CTXO_RESPONSE_LIMIT`).
 
-**Intent Filtering** — 4 tools accept `intent` parameter for keyword-based result filtering. `get_blast_radius(symbolId, intent: "test")` returns only test-related impacts.
+**Intent Filtering** 4 tools accept `intent` parameter for keyword-based result filtering. `get_blast_radius(symbolId, intent: "test")` returns only test-related impacts.
 
-**Tool Annotations** — All tools declare `readOnlyHint: true`, `idempotentHint: true`, `openWorldHint: false` for safe auto-approval in agent frameworks.
+**Tool Annotations** All tools declare `readOnlyHint: true`, `idempotentHint: true`, `openWorldHint: false` for safe auto-approval in agent frameworks.
 
-**Privacy Masking** — AWS keys, GCP service accounts, Azure connection strings, JWTs, private IPs, env secrets automatically redacted. Extensible via `.ctxo/masking.json`.
+**Privacy Masking** AWS keys, GCP service accounts, Azure connection strings, JWTs, private IPs, env secrets automatically redacted. Extensible via `.ctxo/masking.json`.
 
-**Debug Mode** — `DEBUG=ctxo:*` for all debug output, or `DEBUG=ctxo:git,ctxo:storage` for specific namespaces.
+**Debug Mode** `DEBUG=ctxo:*` for all debug output, or `DEBUG=ctxo:git,ctxo:storage` for specific namespaces.
 
 **Per-tool savings vs manual approach:**
 
@@ -182,7 +182,7 @@ See [Agentic AI Integration Guide](docs/agentic-ai-integration.md) for LangChain
 
 ## Index Visualizer
 
-Ctxo ships with an interactive visualizer that renders your codebase index as a dependency graph. Explore symbols, edges, layers, and PageRank scores visually — deployed automatically to GitHub Pages on every push.
+Ctxo ships with an interactive visualizer that renders your codebase index as a dependency graph. Explore symbols, edges, layers, and PageRank scores visually deployed automatically to GitHub Pages on every push.
 
 ![1.00](docs/img/ui.png)
 
@@ -192,7 +192,7 @@ Ctxo ships with an interactive visualizer that renders your codebase index as a 
 
 <img src="docs/img/mcp-server.png" alt="Ctxo MCP Server Architecture" width="400">
 
-Ctxo builds a **committed JSON index** (`.ctxo/index/`) that captures symbols, dependency edges, git history, and co-change data. The MCP server reads this index to answer queries — no runtime parsing, no external services.
+Ctxo builds a **committed JSON index** (`.ctxo/index/`) that captures symbols, dependency edges, git history, and co-change data. The MCP server reads this index to answer queries no runtime parsing, no external services.
 
 ```
 .ctxo/
