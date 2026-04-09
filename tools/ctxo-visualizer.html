@@ -245,7 +245,7 @@
       </div>
       <button class="browse-btn" id="browseFolderBtn">Browse Folder...</button>
       <div class="url-load">
-        <input type="text" id="urlInput" placeholder="http://localhost:8080/.ctxo/index/" />
+        <input type="text" id="urlInput" placeholder="http://localhost:8080/.ctxo/index/" value="ctxo-index/" />
         <button id="urlLoadBtn">Fetch</button>
       </div>
       <div class="url-status" id="urlStatus"></div>
@@ -1414,20 +1414,29 @@ document.getElementById('urlLoadBtn').addEventListener('click', async () => {
       }
     } catch (ignored) { /* co-changes optional */ }
 
-    // Try to fetch a directory listing (works with many static servers)
+    // Try manifest.txt first (GitHub Pages), then directory listing fallback
     let fileList = [];
     try {
-      const listRes = await fetch(baseUrl);
-      if (listRes.ok) {
-        const html = await listRes.text();
-        const linkRegex = /href="([^"]+\.json)"/g;
-        let match;
-        while ((match = linkRegex.exec(html)) !== null) {
-          const fname = match[1];
-          if (fname !== 'co-changes.json') fileList.push(fname);
-        }
+      const manifestRes = await fetch(baseUrl + 'manifest.txt');
+      if (manifestRes.ok) {
+        const text = await manifestRes.text();
+        fileList = text.split('\n').map(f => f.trim()).filter(f => f.endsWith('.json') && f !== 'co-changes.json');
       }
-    } catch (ignored) { /* listing optional */ }
+    } catch (ignored) { /* manifest optional */ }
+    if (fileList.length === 0) {
+      try {
+        const listRes = await fetch(baseUrl);
+        if (listRes.ok) {
+          const html = await listRes.text();
+          const linkRegex = /href="([^"]+\.json)"/g;
+          let match;
+          while ((match = linkRegex.exec(html)) !== null) {
+            const fname = match[1];
+            if (fname !== 'co-changes.json') fileList.push(fname);
+          }
+        }
+      } catch (ignored) { /* listing optional */ }
+    }
 
     if (fileList.length === 0) {
       statusEl.textContent = 'Could not list files. Try drag & drop instead.';
@@ -2061,6 +2070,11 @@ document.getElementById('mcpToolSelect').addEventListener('change', e => {
 });
 
 updateAll();
+
+// Auto-load from URL if default value is set (GitHub Pages)
+if (document.getElementById('urlInput').value.trim()) {
+  document.getElementById('urlLoadBtn').click();
+}
 </script>
 </body>
 </html>
