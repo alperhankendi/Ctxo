@@ -120,9 +120,8 @@ export class SymbolTokenizer {
     let current = '';
 
     for (let i = 0; i < segment.length; i++) {
-      const ch = segment[i];
-      const prev = i > 0 ? segment[i - 1] : '';
-      const next = i < segment.length - 1 ? segment[i + 1] : '';
+      const ch = segment[i]!;
+      const prev = i > 0 ? segment[i - 1]! : '';
 
       // Boundary: letter → digit or digit → letter
       if (current.length > 0) {
@@ -147,7 +146,7 @@ export class SymbolTokenizer {
       // We should split to "HTML" + "Pa..."
       if (current.length > 1 && isUpper(ch) === false && isUpper(prev) && !isDigit(ch)) {
         // prev is uppercase, current char is lowercase → split before prev
-        const lastChar = current[current.length - 1];
+        const lastChar = current[current.length - 1]!;
         if (isUpper(lastChar)) {
           tokens.push(current.slice(0, -1));
           current = lastChar + ch;

@@ -5,13 +5,11 @@
  * Vocabulary is built from tokenized symbol names during index build.
  */
 
-import type { FuzzyCorrection } from '../../ports/i-search-port.js';
+import type { FuzzyCorrection } from '../types.js';
 
 export class FuzzyCorrector {
   /** term → frequency (for tie-breaking) */
   private vocabulary: Map<string, number> = new Map();
-  /** Maximum correction attempts per query */
-  private maxAttempts = 3;
 
   buildVocabulary(termFrequencies: Map<string, number>): void {
     this.vocabulary = new Map(termFrequencies);
@@ -109,32 +107,26 @@ export function damerauLevenshtein(a: string, b: string): number {
   if (lenB === 0) return lenA;
 
   // Optimal string alignment distance (restricted edit distance)
-  const d: number[][] = [];
-  for (let i = 0; i <= lenA; i++) {
-    d[i] = [];
-    for (let j = 0; j <= lenB; j++) {
-      d[i][j] = 0;
-    }
-  }
+  const d: number[][] = Array.from({ length: lenA + 1 }, () => new Array<number>(lenB + 1).fill(0));
 
-  for (let i = 0; i <= lenA; i++) d[i][0] = i;
-  for (let j = 0; j <= lenB; j++) d[0][j] = j;
+  for (let i = 0; i <= lenA; i++) d[i]![0] = i;
+  for (let j = 0; j <= lenB; j++) d[0]![j] = j;
 
   for (let i = 1; i <= lenA; i++) {
     for (let j = 1; j <= lenB; j++) {
       const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      d[i][j] = Math.min(
-        d[i - 1][j] + 1, // deletion
-        d[i][j - 1] + 1, // insertion
-        d[i - 1][j - 1] + cost, // substitution
+      d[i]![j] = Math.min(
+        d[i - 1]![j]! + 1, // deletion
+        d[i]![j - 1]! + 1, // insertion
+        d[i - 1]![j - 1]! + cost, // substitution
       );
 
       // Transposition
       if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
-        d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + cost);
+        d[i]![j] = Math.min(d[i]![j]!, d[i - 2]![j - 2]! + cost);
       }
     }
   }
 
-  return d[lenA][lenB];
+  return d[lenA]![lenB]!;
 }

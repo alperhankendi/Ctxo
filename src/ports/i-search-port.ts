@@ -1,42 +1,11 @@
-import type { SymbolNode } from '../core/types.js';
+import type { SymbolNode, SearchResponse } from '../core/types.js';
 
-export interface SearchResult {
-  symbolId: string;
-  name: string;
-  kind: string;
-  filePath: string;
-  /** BM25 relevance score (higher = more relevant) */
-  relevanceScore: number;
-  /** PageRank importance score (0-1) */
-  importanceScore: number;
-  /** Final combined score after all boosts */
-  combinedScore: number;
-}
-
-export interface SearchMetrics {
-  porterHits: number;
-  trigramHits: number;
-  phase2Activated: boolean;
-  fuzzyApplied: boolean;
-  latencyMs: number;
-}
-
-export interface FuzzyCorrection {
-  originalQuery: string;
-  correctedQuery: string;
-  corrections: Array<{
-    original: string;
-    corrected: string;
-    distance: number;
-  }>;
-}
-
-export interface SearchResponse {
-  query: string;
-  results: SearchResult[];
-  metrics: SearchMetrics;
-  fuzzyCorrection?: FuzzyCorrection;
-}
+export type {
+  SearchResult,
+  SearchMetrics,
+  FuzzyCorrection,
+  SearchResponse,
+} from '../core/types.js';
 
 export interface ISearchPort {
   /**

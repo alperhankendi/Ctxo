@@ -9,13 +9,7 @@
  * Scoring: BM25 * (1 + pageRankWeight * pageRankScore) * bigramBoost
  */
 
-import type { SymbolNode } from '../types.js';
-import type {
-  ISearchPort,
-  SearchResponse,
-  SearchResult,
-  SearchMetrics,
-} from '../../ports/i-search-port.js';
+import type { SymbolNode, SearchResponse, SearchResult, SearchMetrics } from '../types.js';
 import { SymbolTokenizer } from './symbol-tokenizer.js';
 import { FuzzyCorrector } from './fuzzy-corrector.js';
 import { createLogger } from '../logger.js';
@@ -69,7 +63,7 @@ interface Posting {
   termFrequency: number;
 }
 
-export class SearchEngine implements ISearchPort {
+export class SearchEngine {
   private readonly config: SearchEngineConfig;
   private readonly tokenizer: SymbolTokenizer;
   private readonly fuzzy: FuzzyCorrector;
@@ -231,7 +225,7 @@ export class SearchEngine implements ISearchPort {
 
     if (effectiveQueryTerms.length >= 2) {
       for (const [docIdx, score] of allScores) {
-        const doc = this.documents[docIdx];
+        const doc = this.documents[docIdx]!;
         const boost = this.bigramBoost(effectiveQueryTerms, doc.tokens);
         allScores.set(docIdx, score * boost);
       }
@@ -239,7 +233,7 @@ export class SearchEngine implements ISearchPort {
 
     // Apply PageRank boost (applies to ALL paths including fuzzy)
     for (const [docIdx, score] of allScores) {
-      const doc = this.documents[docIdx];
+      const doc = this.documents[docIdx]!;
       const pr = this.pageRankScores.get(doc.symbolId) ?? 0;
       allScores.set(docIdx, score * (1 + this.config.pageRankWeight * pr));
     }
@@ -261,7 +255,7 @@ export class SearchEngine implements ISearchPort {
     // Remove old documents for this file
     const oldIndices = new Set<number>();
     for (let i = 0; i < this.documents.length; i++) {
-      if (this.documents[i].filePath === filePath) {
+      if (this.documents[i]!.filePath === filePath) {
         oldIndices.add(i);
       }
     }
@@ -272,7 +266,7 @@ export class SearchEngine implements ISearchPort {
     const allSymbols: SymbolNode[] = [];
     for (let i = 0; i < this.documents.length; i++) {
       if (!oldIndices.has(i)) {
-        const doc = this.documents[i];
+        const doc = this.documents[i]!;
         allSymbols.push({
           symbolId: doc.symbolId,
           name: doc.name,
@@ -304,7 +298,7 @@ export class SearchEngine implements ISearchPort {
       const idf = Math.log((N - df + 0.5) / (df + 0.5) + 1);
 
       for (const { docIndex, termFrequency } of postings) {
-        const doc = this.documents[docIndex];
+        const doc = this.documents[docIndex]!;
         const tf = termFrequency;
         const docLen = doc.length;
 
@@ -320,7 +314,7 @@ export class SearchEngine implements ISearchPort {
     // Boost exact name matches (FR-1.9: 3-5x higher)
     const queryJoined = queryTerms.join('');
     for (const [docIdx, score] of scores) {
-      const doc = this.documents[docIdx];
+      const doc = this.documents[docIdx]!;
       const nameLower = doc.name.toLowerCase();
       if (nameLower === queryJoined || nameLower === queryTerms.join(' ')) {
         scores.set(docIdx, score * 5.0);
@@ -360,8 +354,8 @@ export class SearchEngine implements ISearchPort {
 
     let adjacentPairs = 0;
     for (let i = 0; i < queryTerms.length - 1; i++) {
-      const idxA = symbolTokens.findIndex((t) => t.includes(queryTerms[i]));
-      const idxB = symbolTokens.findIndex((t) => t.includes(queryTerms[i + 1]));
+      const idxA = symbolTokens.findIndex((t) => t.includes(queryTerms[i]!));
+      const idxB = symbolTokens.findIndex((t) => t.includes(queryTerms[i + 1]!));
       if (idxA >= 0 && idxB >= 0 && Math.abs(idxA - idxB) === 1) {
         adjacentPairs++;
       }
@@ -392,7 +386,7 @@ export class SearchEngine implements ISearchPort {
       .slice(0, limit);
 
     return entries.map(([docIdx, combined]) => {
-      const doc = this.documents[docIdx];
+      const doc = this.documents[docIdx]!;
       const pr = this.pageRankScores.get(doc.symbolId) ?? 0;
       return {
         symbolId: doc.symbolId,
