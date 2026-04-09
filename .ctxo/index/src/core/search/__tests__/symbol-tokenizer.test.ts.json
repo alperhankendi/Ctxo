@@ -1,0 +1,16 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "248692fe2e8579a29406c073edc0dbbab2e690ef4e47ef9639e7587b98d5da37",
+  "edges": [
+    {
+      "from": "src/core/search/__tests__/symbol-tokenizer.test.ts::symbol-tokenizer.test::variable",
+      "kind": "imports",
+      "to": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer::class"
+    }
+  ],
+  "file": "src/core/search/__tests__/symbol-tokenizer.test.ts",
+  "intent": [],
+  "lastModified": 1775691832,
+  "symbols": []
+}

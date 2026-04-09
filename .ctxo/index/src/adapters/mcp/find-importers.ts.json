@@ -105,6 +105,12 @@
   "file": "src/adapters/mcp/find-importers.ts",
   "intent": [
     {
+      "date": "2026-04-08T16:32:23+03:00",
+      "hash": "137f9b2840ab6db0c0cfda0fc546ca72997eb9b6",
+      "kind": "commit",
+      "message": "Fix find_importers direct mode double-counting importers (#22)"
+    },
+    {
       "date": "2026-04-08T16:12:30+03:00",
       "hash": "ad40ce28e65533d214754df71851a4c7a2f5e5c1",
       "kind": "commit",
@@ -123,7 +129,7 @@
       "message": "Add 4 new MCP tools, --max-history limit, and improve test coverage"
     }
   ],
-  "lastModified": 1775655013,
+  "lastModified": 1775691832,
   "symbols": [
     {
       "endLine": 140,

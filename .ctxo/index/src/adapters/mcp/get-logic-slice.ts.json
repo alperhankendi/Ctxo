@@ -18,7 +18,7 @@
       "symbolId": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function"
     }
   ],
-  "contentHash": "6efa827e0c697b3354912027e7f2d1669c4116eb7684aa8fd80d31579d2b0214",
+  "contentHash": "ec1d9fdd4ed4e1908fc4ae4f884b013595b4935b8a7b75fc1e776004e9867486",
   "edges": [
     {
       "from": "src/adapters/mcp/get-logic-slice.ts::getLogicSliceInputSchema::function",
@@ -166,6 +166,12 @@
   "file": "src/adapters/mcp/get-logic-slice.ts",
   "intent": [
     {
+      "date": "2026-04-08T18:30:54+03:00",
+      "hash": "bd9e7ba0057fdbf9eadfc0ea56ddb9b685059a8e",
+      "kind": "commit",
+      "message": "Fix TS2352 typecheck errors in MCP tool handlers"
+    },
+    {
       "date": "2026-04-08T16:12:30+03:00",
       "hash": "ad40ce28e65533d214754df71851a4c7a2f5e5c1",
       "kind": "commit",
@@ -208,7 +214,7 @@
       "message": "Add MCP server with get_logic_slice tool and privacy masking pipeline"
     }
   ],
-  "lastModified": 1775655013,
+  "lastModified": 1775691832,
   "symbols": [
     {
       "endLine": 32,
@@ -239,7 +245,7 @@
     },
     {
       "endLine": 148,
-      "endOffset": 5251,
+      "endOffset": 5262,
       "kind": "function",
       "name": "handleGetLogicSlice",
       "startLine": 73,

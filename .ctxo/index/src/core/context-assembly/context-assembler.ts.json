@@ -26,11 +26,15 @@
       "symbolId": "src/core/context-assembly/context-assembler.ts::ContextAssembler.isInterfaceOrType::method"
     },
     {
+      "cyclomatic": 1,
+      "symbolId": "src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokensPublic::method"
+    },
+    {
       "cyclomatic": 3,
       "symbolId": "src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokens::method"
     }
   ],
-  "contentHash": "aadf3b676c8b6f973228be28d4ad141540a52e42ada9729e156ea5badbeaa20b",
+  "contentHash": "59076d2c4632a7a368d7742f4909de412305cb23a9b5ddc01ee6fc7307a1fc04",
   "edges": [
     {
       "from": "src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
@@ -129,6 +133,11 @@
       "to": "src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokens::method"
     },
     {
+      "from": "src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokensPublic::method",
+      "kind": "calls",
+      "to": "src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokens::method"
+    },
+    {
       "from": "src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
       "kind": "uses",
       "to": "src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class"
@@ -189,11 +198,11 @@
       "message": "Add context assembly: get_context_for_task + get_ranked_context"
     }
   ],
-  "lastModified": 1775655013,
+  "lastModified": 1775691832,
   "symbols": [
     {
-      "endLine": 250,
-      "endOffset": 8760,
+      "endLine": 254,
+      "endOffset": 8854,
       "kind": "class",
       "name": "ContextAssembler",
       "startLine": 45,
@@ -255,12 +264,21 @@
       "symbolId": "src/core/context-assembly/context-assembler.ts::ContextAssembler.isInterfaceOrType::method"
     },
     {
-      "endLine": 249,
-      "endOffset": 8758,
+      "endLine": 245,
+      "endOffset": 8512,
       "kind": "method",
-      "name": "ContextAssembler.estimateTokens",
+      "name": "ContextAssembler.estimateTokensPublic",
       "startLine": 243,
       "startOffset": 8422,
+      "symbolId": "src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokensPublic::method"
+    },
+    {
+      "endLine": 253,
+      "endOffset": 8852,
+      "kind": "method",
+      "name": "ContextAssembler.estimateTokens",
+      "startLine": 247,
+      "startOffset": 8516,
       "symbolId": "src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokens::method"
     },
     {

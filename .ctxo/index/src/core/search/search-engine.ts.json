@@ -1,0 +1,307 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.getTier::method"
+    },
+    {
+      "cyclomatic": 18,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.buildIndex::method"
+    },
+    {
+      "cyclomatic": 16,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.search::method"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.updateFile::method"
+    },
+    {
+      "cyclomatic": 9,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.bm25Search::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.mergeScores::method"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.bigramBoost::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.extractTrigrams::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.buildResults::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.emptyResponse::method"
+    }
+  ],
+  "contentHash": "a771ce44d42ba634e6076ff0b5795ec405f3223503a32ce9ce1769ffe1a236e8",
+  "edges": [
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine::class",
+      "kind": "imports",
+      "to": "src/ports/i-search-port.ts::ISearchPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine::class",
+      "kind": "imports",
+      "to": "src/ports/i-search-port.ts::SearchResponse::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine::class",
+      "kind": "imports",
+      "to": "src/ports/i-search-port.ts::SearchResult::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine::class",
+      "kind": "imports",
+      "to": "src/ports/i-search-port.ts::SearchMetrics::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine::class",
+      "kind": "imports",
+      "to": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer::class"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine::class",
+      "kind": "imports",
+      "to": "src/core/search/fuzzy-corrector.ts::FuzzyCorrector::class"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine::class",
+      "kind": "imports",
+      "to": "src/core/logger.ts::createLogger::function"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine::class",
+      "kind": "implements",
+      "to": "src/ports/i-search-port.ts::ISearchPort::interface"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine.buildIndex::method",
+      "kind": "calls",
+      "to": "src/core/search/search-engine.ts::SearchEngine.extractTrigrams::method"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine.search::method",
+      "kind": "calls",
+      "to": "src/core/search/search-engine.ts::SearchEngine.emptyResponse::method"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine.search::method",
+      "kind": "calls",
+      "to": "src/core/search/search-engine.ts::SearchEngine.bm25Search::method"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine.search::method",
+      "kind": "calls",
+      "to": "src/core/search/search-engine.ts::SearchEngine.extractTrigrams::method"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine.search::method",
+      "kind": "calls",
+      "to": "src/core/search/search-engine.ts::SearchEngine.bm25Search::method"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine.search::method",
+      "kind": "calls",
+      "to": "src/core/search/search-engine.ts::SearchEngine.mergeScores::method"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine.search::method",
+      "kind": "calls",
+      "to": "src/core/search/search-engine.ts::SearchEngine.bm25Search::method"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine.search::method",
+      "kind": "calls",
+      "to": "src/core/search/search-engine.ts::SearchEngine.mergeScores::method"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine.search::method",
+      "kind": "calls",
+      "to": "src/core/search/search-engine.ts::SearchEngine.extractTrigrams::method"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine.search::method",
+      "kind": "calls",
+      "to": "src/core/search/search-engine.ts::SearchEngine.bm25Search::method"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine.search::method",
+      "kind": "calls",
+      "to": "src/core/search/search-engine.ts::SearchEngine.mergeScores::method"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine.search::method",
+      "kind": "calls",
+      "to": "src/core/search/search-engine.ts::SearchEngine.bigramBoost::method"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine.search::method",
+      "kind": "calls",
+      "to": "src/core/search/search-engine.ts::SearchEngine.buildResults::method"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine.updateFile::method",
+      "kind": "calls",
+      "to": "src/core/search/search-engine.ts::SearchEngine.buildIndex::method"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine::class",
+      "kind": "uses",
+      "to": "src/ports/i-search-port.ts::ISearchPort::interface"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine::class",
+      "kind": "uses",
+      "to": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer::class"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine::class",
+      "kind": "uses",
+      "to": "src/core/search/fuzzy-corrector.ts::FuzzyCorrector::class"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::SymbolNode::type"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine::class",
+      "kind": "uses",
+      "to": "src/ports/i-search-port.ts::SearchResponse::interface"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine::class",
+      "kind": "uses",
+      "to": "src/ports/i-search-port.ts::SearchMetrics::interface"
+    },
+    {
+      "from": "src/core/search/search-engine.ts::SearchEngine::class",
+      "kind": "uses",
+      "to": "src/ports/i-search-port.ts::SearchResult::interface"
+    }
+  ],
+  "file": "src/core/search/search-engine.ts",
+  "intent": [],
+  "lastModified": 1775691832,
+  "symbols": [
+    {
+      "endLine": 421,
+      "endOffset": 14052,
+      "kind": "class",
+      "name": "SearchEngine",
+      "startLine": 71,
+      "startOffset": 2074,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine::class"
+    },
+    {
+      "endLine": 95,
+      "endOffset": 2932,
+      "kind": "method",
+      "name": "SearchEngine.getTier",
+      "startLine": 93,
+      "startOffset": 2860,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.getTier::method"
+    },
+    {
+      "endLine": 161,
+      "endOffset": 5256,
+      "kind": "method",
+      "name": "SearchEngine.buildIndex",
+      "startLine": 97,
+      "startOffset": 2936,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.buildIndex::method"
+    },
+    {
+      "endLine": 257,
+      "endOffset": 9204,
+      "kind": "method",
+      "name": "SearchEngine.search",
+      "startLine": 163,
+      "startOffset": 5260,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.search::method"
+    },
+    {
+      "endLine": 286,
+      "endOffset": 10093,
+      "kind": "method",
+      "name": "SearchEngine.updateFile",
+      "startLine": 259,
+      "startOffset": 9208,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.updateFile::method"
+    },
+    {
+      "endLine": 330,
+      "endOffset": 11542,
+      "kind": "method",
+      "name": "SearchEngine.bm25Search",
+      "startLine": 292,
+      "startOffset": 10185,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.bm25Search::method"
+    },
+    {
+      "endLine": 351,
+      "endOffset": 12107,
+      "kind": "method",
+      "name": "SearchEngine.mergeScores",
+      "startLine": 335,
+      "startOffset": 11615,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.mergeScores::method"
+    },
+    {
+      "endLine": 370,
+      "endOffset": 12749,
+      "kind": "method",
+      "name": "SearchEngine.bigramBoost",
+      "startLine": 357,
+      "startOffset": 12244,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.bigramBoost::method"
+    },
+    {
+      "endLine": 382,
+      "endOffset": 13068,
+      "kind": "method",
+      "name": "SearchEngine.extractTrigrams",
+      "startLine": 376,
+      "startOffset": 12857,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.extractTrigrams::method"
+    },
+    {
+      "endLine": 406,
+      "endOffset": 13741,
+      "kind": "method",
+      "name": "SearchEngine.buildResults",
+      "startLine": 384,
+      "startOffset": 13072,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.buildResults::method"
+    },
+    {
+      "endLine": 420,
+      "endOffset": 14050,
+      "kind": "method",
+      "name": "SearchEngine.emptyResponse",
+      "startLine": 408,
+      "startOffset": 13745,
+      "symbolId": "src/core/search/search-engine.ts::SearchEngine.emptyResponse::method"
+    }
+  ]
+}

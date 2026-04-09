@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "429f8fbffea9993e04e58ab9bfd16524616c0cd618715b53b8dfb46198f156d0",
+  "contentHash": "63ebeef128c696de39ec2e29cba6fa0788e5f5e3a0623d507cbba8c2447e530f",
   "edges": [
     {
       "from": "src/adapters/language/__tests__/csharp-adapter.test.ts::csharp-adapter.test::variable",
@@ -12,12 +12,18 @@
   "file": "src/adapters/language/__tests__/csharp-adapter.test.ts",
   "intent": [
     {
+      "date": "2026-04-08T19:15:40+03:00",
+      "hash": "d3a80b889a1610d6201e52ab46f6a8672161b3cc",
+      "kind": "commit",
+      "message": "Fix C# method overload crash causing UNIQUE constraint failure"
+    },
+    {
       "date": "2026-04-08T03:09:19+03:00",
       "hash": "e43db17e512a8ab500108767c0914c857b5707b3",
       "kind": "commit",
       "message": "Add tree-sitter adapters for Go and C# with graceful degradation"
     }
   ],
-  "lastModified": 1775655013,
+  "lastModified": 1775691832,
   "symbols": []
 }

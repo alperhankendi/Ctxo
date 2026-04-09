@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "3bab42947dcc387095b665b1750126d3924d5dc0ed11b537fd6123269d7ac2b9",
+  "contentHash": "f8d620baa12678b5ecc7a1bca48b8edde1f232975347793d54d2e35a53452d4f",
   "edges": [],
   "file": "tests/e2e/release-packaging.test.ts",
   "intent": [
@@ -24,6 +24,6 @@
       "message": "Complete Phase 10: Release gate tests"
     }
   ],
-  "lastModified": 1775655014,
+  "lastModified": 1775691832,
   "symbols": []
 }

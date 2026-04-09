@@ -90,7 +90,7 @@
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.getEdgesForFile::method"
     }
   ],
-  "contentHash": "7ce7577f4d44b61e8f0fd741b4abfa150731ce3587195a513dab7fef662bb6cf",
+  "contentHash": "131535cc547e5ae3d9bcd1c8173c0e78aa8013eefcdf5d43dae1b94c090882e6",
   "edges": [
     {
       "from": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class",
@@ -120,6 +120,11 @@
       "from": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class",
       "kind": "imports",
       "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class",
+      "kind": "imports",
+      "to": "src/core/logger.ts::createLogger::function"
     },
     {
       "from": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class",
@@ -300,6 +305,18 @@
   "file": "src/adapters/storage/sqlite-storage-adapter.ts",
   "intent": [
     {
+      "date": "2026-04-08T19:15:40+03:00",
+      "hash": "d3a80b889a1610d6201e52ab46f6a8672161b3cc",
+      "kind": "commit",
+      "message": "Fix C# method overload crash causing UNIQUE constraint failure"
+    },
+    {
+      "date": "2026-04-08T17:56:58+03:00",
+      "hash": "18430d5cc2948dcaec9c139aaf48686023053b3a",
+      "kind": "commit",
+      "message": "Add debug mode (DEBUG=ctxo:*), structured logger, and CHANGELOG.md"
+    },
+    {
       "date": "2026-03-31T02:26:20+03:00",
       "hash": "88dcc914d2f67c3ee240451419f8ab50e2c9abda",
       "kind": "commit",
@@ -360,213 +377,213 @@
       "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
     }
   ],
-  "lastModified": 1775655013,
+  "lastModified": 1775691832,
   "symbols": [
     {
-      "endLine": 361,
-      "endOffset": 11000,
+      "endLine": 364,
+      "endOffset": 11084,
       "kind": "class",
       "name": "SqliteStorageAdapter",
-      "startLine": 7,
-      "startOffset": 382,
+      "startLine": 10,
+      "startOffset": 481,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
     },
     {
-      "endLine": 37,
-      "endOffset": 1302,
+      "endLine": 40,
+      "endOffset": 1382,
       "kind": "method",
       "name": "SqliteStorageAdapter.init",
-      "startLine": 17,
-      "startOffset": 690,
+      "startLine": 20,
+      "startOffset": 789,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.init::method"
     },
     {
-      "endLine": 43,
-      "endOffset": 1444,
+      "endLine": 46,
+      "endOffset": 1524,
       "kind": "method",
       "name": "SqliteStorageAdapter.initEmpty",
-      "startLine": 39,
-      "startOffset": 1308,
+      "startLine": 42,
+      "startOffset": 1388,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.initEmpty::method"
     },
     {
-      "endLine": 50,
-      "endOffset": 1618,
+      "endLine": 53,
+      "endOffset": 1698,
       "kind": "method",
       "name": "SqliteStorageAdapter.database",
-      "startLine": 45,
-      "startOffset": 1450,
+      "startLine": 48,
+      "startOffset": 1530,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.database::method"
     },
     {
-      "endLine": 66,
-      "endOffset": 2157,
+      "endLine": 69,
+      "endOffset": 2237,
       "kind": "method",
       "name": "SqliteStorageAdapter.verifyIntegrity",
-      "startLine": 52,
-      "startOffset": 1624,
+      "startLine": 55,
+      "startOffset": 1704,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.verifyIntegrity::method"
     },
     {
-      "endLine": 97,
-      "endOffset": 3117,
+      "endLine": 100,
+      "endOffset": 3197,
       "kind": "method",
       "name": "SqliteStorageAdapter.createTables",
-      "startLine": 68,
-      "startOffset": 2163,
+      "startLine": 71,
+      "startOffset": 2243,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.createTables::method"
     },
     {
-      "endLine": 106,
-      "endOffset": 3328,
+      "endLine": 109,
+      "endOffset": 3408,
       "kind": "method",
       "name": "SqliteStorageAdapter.rebuildFromJson",
-      "startLine": 99,
-      "startOffset": 3123,
+      "startLine": 102,
+      "startOffset": 3203,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.rebuildFromJson::method"
     },
     {
-      "endLine": 140,
-      "endOffset": 4295,
+      "endLine": 143,
+      "endOffset": 4386,
       "kind": "method",
       "name": "SqliteStorageAdapter.writeSymbolFile",
-      "startLine": 108,
-      "startOffset": 3334,
+      "startLine": 111,
+      "startOffset": 3414,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.writeSymbolFile::method"
     },
     {
-      "endLine": 173,
-      "endOffset": 5298,
+      "endLine": 176,
+      "endOffset": 5389,
       "kind": "method",
       "name": "SqliteStorageAdapter.readSymbolFile",
-      "startLine": 148,
-      "startOffset": 4551,
+      "startLine": 151,
+      "startOffset": 4642,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.readSymbolFile::method"
     },
     {
-      "endLine": 180,
-      "endOffset": 5544,
+      "endLine": 183,
+      "endOffset": 5635,
       "kind": "method",
       "name": "SqliteStorageAdapter.listIndexedFiles",
-      "startLine": 175,
-      "startOffset": 5304,
+      "startLine": 178,
+      "startOffset": 5395,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.listIndexedFiles::method"
     },
     {
-      "endLine": 185,
-      "endOffset": 5678,
+      "endLine": 188,
+      "endOffset": 5769,
       "kind": "method",
       "name": "SqliteStorageAdapter.deleteSymbolFile",
-      "startLine": 182,
-      "startOffset": 5550,
+      "startLine": 185,
+      "startOffset": 5641,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.deleteSymbolFile::method"
     },
     {
-      "endLine": 199,
-      "endOffset": 6226,
+      "endLine": 202,
+      "endOffset": 6317,
       "kind": "method",
       "name": "SqliteStorageAdapter.getSymbolById",
-      "startLine": 187,
-      "startOffset": 5684,
+      "startLine": 190,
+      "startOffset": 5775,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.getSymbolById::method"
     },
     {
-      "endLine": 213,
-      "endOffset": 6639,
+      "endLine": 216,
+      "endOffset": 6730,
       "kind": "method",
       "name": "SqliteStorageAdapter.getEdgesFrom",
-      "startLine": 201,
-      "startOffset": 6232,
+      "startLine": 204,
+      "startOffset": 6323,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.getEdgesFrom::method"
     },
     {
-      "endLine": 227,
-      "endOffset": 7048,
+      "endLine": 230,
+      "endOffset": 7139,
       "kind": "method",
       "name": "SqliteStorageAdapter.getEdgesTo",
-      "startLine": 215,
-      "startOffset": 6645,
+      "startLine": 218,
+      "startOffset": 6736,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.getEdgesTo::method"
     },
     {
-      "endLine": 242,
-      "endOffset": 7500,
+      "endLine": 245,
+      "endOffset": 7591,
       "kind": "method",
       "name": "SqliteStorageAdapter.getAllSymbols",
-      "startLine": 229,
-      "startOffset": 7054,
+      "startLine": 232,
+      "startOffset": 7145,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.getAllSymbols::method"
     },
     {
-      "endLine": 255,
-      "endOffset": 7855,
+      "endLine": 258,
+      "endOffset": 7946,
       "kind": "method",
       "name": "SqliteStorageAdapter.getAllEdges",
-      "startLine": 244,
-      "startOffset": 7506,
+      "startLine": 247,
+      "startOffset": 7597,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.getAllEdges::method"
     },
     {
-      "endLine": 291,
-      "endOffset": 8901,
+      "endLine": 294,
+      "endOffset": 9003,
       "kind": "method",
       "name": "SqliteStorageAdapter.bulkWrite",
-      "startLine": 257,
-      "startOffset": 7861,
+      "startLine": 260,
+      "startOffset": 7952,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.bulkWrite::method"
     },
     {
-      "endLine": 299,
-      "endOffset": 9132,
+      "endLine": 302,
+      "endOffset": 9234,
       "kind": "method",
       "name": "SqliteStorageAdapter.persist",
-      "startLine": 293,
-      "startOffset": 8907,
+      "startLine": 296,
+      "startOffset": 9009,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.persist::method"
     },
     {
-      "endLine": 307,
-      "endOffset": 9260,
+      "endLine": 310,
+      "endOffset": 9362,
       "kind": "method",
       "name": "SqliteStorageAdapter.close",
-      "startLine": 301,
-      "startOffset": 9138,
+      "startLine": 304,
+      "startOffset": 9240,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.close::method"
     },
     {
-      "endLine": 315,
-      "endOffset": 9453,
+      "endLine": 318,
+      "endOffset": 9537,
       "kind": "method",
       "name": "SqliteStorageAdapter.persistIfNeeded",
-      "startLine": 309,
-      "startOffset": 9266,
+      "startLine": 312,
+      "startOffset": 9368,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.persistIfNeeded::method"
     },
     {
-      "endLine": 330,
-      "endOffset": 9996,
+      "endLine": 333,
+      "endOffset": 10080,
       "kind": "method",
       "name": "SqliteStorageAdapter.deleteFileData",
-      "startLine": 317,
-      "startOffset": 9459,
+      "startLine": 320,
+      "startOffset": 9543,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.deleteFileData::method"
     },
     {
-      "endLine": 345,
-      "endOffset": 10516,
+      "endLine": 348,
+      "endOffset": 10600,
       "kind": "method",
       "name": "SqliteStorageAdapter.getSymbolsForFile",
-      "startLine": 332,
-      "startOffset": 10002,
+      "startLine": 335,
+      "startOffset": 10086,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.getSymbolsForFile::method"
     },
     {
-      "endLine": 360,
-      "endOffset": 10997,
+      "endLine": 363,
+      "endOffset": 11081,
       "kind": "method",
       "name": "SqliteStorageAdapter.getEdgesForFile",
-      "startLine": 347,
-      "startOffset": 10522,
+      "startLine": 350,
+      "startOffset": 10606,
       "symbolId": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.getEdgesForFile::method"
     }
   ]

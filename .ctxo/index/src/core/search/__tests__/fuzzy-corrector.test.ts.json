@@ -1,0 +1,21 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "b3d3e307c6ad79adb9e3f0d2d7d8fe4b261eed5d51e17cb8cf3a0ca5d720de4b",
+  "edges": [
+    {
+      "from": "src/core/search/__tests__/fuzzy-corrector.test.ts::fuzzy-corrector.test::variable",
+      "kind": "imports",
+      "to": "src/core/search/fuzzy-corrector.ts::FuzzyCorrector::class"
+    },
+    {
+      "from": "src/core/search/__tests__/fuzzy-corrector.test.ts::fuzzy-corrector.test::variable",
+      "kind": "imports",
+      "to": "src/core/search/fuzzy-corrector.ts::damerauLevenshtein::function"
+    }
+  ],
+  "file": "src/core/search/__tests__/fuzzy-corrector.test.ts",
+  "intent": [],
+  "lastModified": 1775691831,
+  "symbols": []
+}

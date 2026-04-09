@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 13,
+      "cyclomatic": 23,
       "symbolId": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function"
     }
   ],
-  "contentHash": "03fdd5518c1ee3db1c4d89f1786e780429b88c5f46897ffaf07a4061ad4294be",
+  "contentHash": "b6a126a98d6102a41d790a03712a19eb996343f615424d50fb4f34e4cd53961e",
   "edges": [
     {
       "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
@@ -43,6 +43,17 @@
     },
     {
       "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
+      "kind": "imports",
+      "to": "src/core/search/search-engine.ts::SearchEngine::class"
+    },
+    {
+      "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
+      "kind": "imports",
+      "to": "src/ports/i-search-port.ts::ISearchPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
     },
@@ -58,6 +69,16 @@
     },
     {
       "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
+      "kind": "calls",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
+      "kind": "calls",
+      "to": "src/core/search/search-engine.ts::SearchEngine::class"
+    },
+    {
+      "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
       "kind": "uses",
       "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
     },
@@ -70,6 +91,16 @@
       "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
       "kind": "uses",
       "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
+    },
+    {
+      "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
+      "kind": "uses",
+      "to": "src/ports/i-search-port.ts::ISearchPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
+      "kind": "uses",
+      "to": "src/core/search/search-engine.ts::SearchEngine::class"
     },
     {
       "from": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
@@ -102,15 +133,15 @@
       "message": "Add 4 new MCP tools, --max-history limit, and improve test coverage"
     }
   ],
-  "lastModified": 1775655013,
+  "lastModified": 1775691832,
   "symbols": [
     {
-      "endLine": 87,
-      "endOffset": 3031,
+      "endLine": 144,
+      "endOffset": 5072,
       "kind": "function",
       "name": "handleSearchSymbols",
-      "startLine": 14,
-      "startOffset": 634,
+      "startLine": 17,
+      "startOffset": 828,
       "symbolId": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function"
     }
   ]

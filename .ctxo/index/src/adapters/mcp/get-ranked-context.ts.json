@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 6,
+      "cyclomatic": 19,
       "symbolId": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function"
     }
   ],
-  "contentHash": "cd3b1a7fcd701a2fcb0954a818070c53367ac08f55ab0842033da24d54dfd395",
+  "contentHash": "a7bb030cc6bcf1e7ad7bbf7c45bab1945290d57653606e304e728473c76394c8",
   "edges": [
     {
       "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
@@ -48,6 +48,22 @@
     },
     {
       "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "imports",
+      "to": "src/core/search/search-engine.ts::SearchEngine::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "imports",
+      "to": "src/ports/i-search-port.ts::ISearchPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "imports",
+      "to": "src/core/logger.ts::createLogger::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
       "kind": "calls",
       "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
     },
@@ -64,7 +80,17 @@
     {
       "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
       "kind": "calls",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "calls",
       "to": "src/core/context-assembly/context-assembler.ts::ContextAssembler::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "calls",
+      "to": "src/core/search/search-engine.ts::SearchEngine::class"
     },
     {
       "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
@@ -84,7 +110,17 @@
     {
       "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
       "kind": "uses",
+      "to": "src/ports/i-search-port.ts::ISearchPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "uses",
       "to": "src/core/context-assembly/context-assembler.ts::ContextAssembler::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "uses",
+      "to": "src/core/search/search-engine.ts::SearchEngine::class"
     },
     {
       "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
@@ -117,15 +153,15 @@
       "message": "Add context assembly: get_context_for_task + get_ranked_context"
     }
   ],
-  "lastModified": 1775655013,
+  "lastModified": 1775691832,
   "symbols": [
     {
-      "endLine": 58,
-      "endOffset": 2133,
+      "endLine": 146,
+      "endOffset": 5521,
       "kind": "function",
       "name": "handleGetRankedContext",
-      "startLine": 14,
-      "startOffset": 674,
+      "startLine": 21,
+      "startOffset": 1015,
       "symbolId": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function"
     }
   ]

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ctxo — Context Intelligence</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Outfit:wght@300;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --border: #1e1e2e;
+    --text: #e2e2ef;
+    --text-dim: #6b6b80;
+    --red: #ff4060;
+    --red-soft: rgba(255,64,96,0.1);
+    --red-border: rgba(255,64,96,0.3);
+    --red-bg: rgba(255,64,96,0.04);
+    --red-overflow: rgba(255,64,96,0.15);
+    --green: #00e88f;
+    --green-soft: rgba(0,232,143,0.12);
+    --green-border: rgba(0,232,143,0.3);
+    --green-bg: rgba(0,232,143,0.04);
+    --green-glow: rgba(0,232,143,0.3);
+    --green-badge-bg: rgba(0,232,143,0.1);
+    --green-badge-border: rgba(0,232,143,0.2);
+    --cyan: #00d4ff;
+    --cyan-soft: rgba(0,212,255,0.1);
+    --cyan-border: rgba(0,212,255,0.3);
+    --orange: #ff8a3d;
+    --orange-soft: rgba(255,138,61,0.1);
+    --orange-border: rgba(255,138,61,0.3);
+    --purple: #a78bfa;
+    --purple-soft: rgba(167,139,250,0.1);
+    --purple-border: rgba(167,139,250,0.3);
+    --done-bg: rgba(0,232,143,0.08);
+    --done-border: rgba(0,232,143,0.25);
+    --vs-color: #3a3a50;
+    --shadow: 0 0 30px rgba(0,232,143,0.3);
+    --mcp-bg: rgba(0,212,255,0.05);
+    --mcp-border: rgba(0,212,255,0.15);
+    --mcp-text: #5a5a70;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f8f9fc;
+      --surface: #ffffff;
+      --border: #e2e4ea;
+      --text: #1a1a2e;
+      --text-dim: #6e7181;
+      --red: #dc2f4e;
+      --red-soft: rgba(220,47,78,0.07);
+      --red-border: rgba(220,47,78,0.22);
+      --red-bg: rgba(220,47,78,0.04);
+      --red-overflow: rgba(220,47,78,0.08);
+      --green: #059669;
+      --green-soft: rgba(5,150,105,0.08);
+      --green-border: rgba(5,150,105,0.2);
+      --green-bg: rgba(5,150,105,0.04);
+      --green-glow: rgba(5,150,105,0.2);
+      --green-badge-bg: rgba(5,150,105,0.07);
+      --green-badge-border: rgba(5,150,105,0.18);
+      --cyan: #0891b2;
+      --cyan-soft: rgba(8,145,178,0.07);
+      --cyan-border: rgba(8,145,178,0.22);
+      --orange: #d97218;
+      --orange-soft: rgba(217,114,24,0.07);
+      --orange-border: rgba(217,114,24,0.22);
+      --purple: #7c3aed;
+      --purple-soft: rgba(124,58,237,0.07);
+      --purple-border: rgba(124,58,237,0.22);
+      --done-bg: rgba(5,150,105,0.05);
+      --done-border: rgba(5,150,105,0.18);
+      --vs-color: #b0b3c0;
+      --shadow: 0 0 30px rgba(5,150,105,0.2);
+      --mcp-bg: rgba(8,145,178,0.04);
+      --mcp-border: rgba(8,145,178,0.12);
+      --mcp-text: #6e7181;
+    }
+  }
+
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    overflow-x: hidden; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px 20px; transition: background 0.3s, color 0.3s;
+  }
+  .container { max-width: 960px; width: 100%; }
+
+  .header {
+    text-align: center; margin-bottom: 56px;
+    opacity: 0; animation: fadeUp 0.8s ease forwards;
+  }
+  .header h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 4px;
+    color: var(--cyan); margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .header h1 svg { width: 18px; height: 18px; }
+  .header p { font-size: 28px; font-weight: 300; color: var(--text-dim); line-height: 1.4; }
+  .header p strong { color: var(--text); font-weight: 700; }
+
+  .comparison {
+    display: grid; grid-template-columns: 1fr 48px 1fr;
+    align-items: stretch; margin-bottom: 56px;
+  }
+
+  .panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px 28px;
+    position: relative; overflow: hidden; opacity: 0;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .panel--chaos { animation: fadeUp 0.6s 0.3s ease forwards; }
+  .panel--clarity { animation: fadeUp 0.6s 0.5s ease forwards; }
+  .panel--chaos::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--red), var(--orange));
+  }
+  .panel--clarity::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--green), var(--cyan));
+  }
+  .panel__label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 2px; margin-bottom: 24px;
+  }
+  .panel--chaos .panel__label { color: var(--red); }
+  .panel--clarity .panel__label { color: var(--green); }
+
+  .vs {
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; animation: fadeUp 0.6s 0.4s ease forwards;
+  }
+  .vs span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 800; color: var(--vs-color);
+    writing-mode: vertical-lr; letter-spacing: 3px;
+  }
+
+  .chaos-graph { position: relative; height: 200px; margin-bottom: 20px; }
+  .chaos-node {
+    position: absolute; width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700;
+    border: 1px solid; opacity: 0; animation: chaosAppear 0.4s ease forwards;
+  }
+  .chaos-node.file { background: var(--red-soft); border-color: var(--red-border); color: var(--red); }
+  .chaos-node.grep { background: var(--orange-soft); border-color: var(--orange-border); color: var(--orange); }
+  .chaos-node.read { background: var(--purple-soft); border-color: var(--purple-border); color: var(--purple); }
+
+  .chaos-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+  .chaos-svg line { stroke: var(--red); stroke-width: 1; opacity: 0; animation: lineAppear 0.3s ease forwards; }
+  .chaos-svg line:nth-child(1){animation-delay:1.0s}.chaos-svg line:nth-child(2){animation-delay:1.1s}
+  .chaos-svg line:nth-child(3){animation-delay:1.2s}.chaos-svg line:nth-child(4){animation-delay:1.3s}
+  .chaos-svg line:nth-child(5){animation-delay:1.4s}.chaos-svg line:nth-child(6){animation-delay:1.5s}
+  .chaos-svg line:nth-child(7){animation-delay:1.6s}.chaos-svg line:nth-child(8){animation-delay:1.7s}
+  .chaos-svg line:nth-child(9){animation-delay:1.8s}.chaos-svg line:nth-child(10){animation-delay:1.9s}
+  .chaos-svg line:nth-child(11){animation-delay:1.3s}.chaos-svg line:nth-child(12){animation-delay:1.5s}
+
+  .chaos-overflow {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 48px;
+    background: linear-gradient(0deg, var(--red-overflow), transparent);
+    border-radius: 0 0 8px 8px;
+    display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px;
+    opacity: 0; animation: pulseIn 0.6s 2s ease forwards;
+  }
+  .chaos-overflow span {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--red); animation: blink 1.5s infinite;
+  }
+
+  .clarity-graph {
+    position: relative; height: 200px; margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .clarity-flow {
+    display: flex; align-items: center; gap: 12px;
+    opacity: 0; animation: fadeUp 0.8s 1.2s ease forwards;
+  }
+  .clarity-node {
+    width: 56px; height: 56px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .clarity-node svg.icon { width: 24px; height: 24px; }
+  .clarity-node.agent { background: var(--cyan-soft); border: 1px solid var(--cyan-border); }
+  .clarity-node.agent svg.icon { color: var(--cyan); }
+  .clarity-node.ctxo {
+    background: var(--green-soft); border: 2px solid var(--green);
+    box-shadow: var(--shadow); width: 68px; height: 68px; border-radius: 16px;
+  }
+  .clarity-node.ctxo svg.icon { width: 28px; height: 28px; color: var(--green); }
+  .clarity-node.result { background: var(--done-bg); border: 1px solid var(--done-border); }
+  .clarity-node.result svg.icon { color: var(--green); }
+
+  .clarity-arrow {
+    width: 40px; height: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--green));
+    position: relative; border-radius: 2px;
+    opacity: 0; animation: arrowGrow 0.6s 1.5s ease forwards;
+  }
+  .clarity-arrow::after {
+    content: ''; position: absolute; right: -5px; top: -4px;
+    border-left: 6px solid var(--green);
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+  }
+  .clarity-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    text-align: center; position: absolute; bottom: -22px; left: 50%;
+    transform: translateX(-50%); white-space: nowrap; color: var(--text-dim);
+  }
+
+  .problem-list, .solution-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .problem-list li {
+    font-size: 12px; color: var(--text-dim); padding: 6px 10px;
+    background: var(--red-bg); border-left: 2px solid var(--red-border);
+    border-radius: 0 6px 6px 0;
+    font-family: 'JetBrains Mono', monospace;
+    opacity: 0; animation: slideRight 0.4s ease forwards;
+  }
+  .problem-list li .x { color: var(--red); margin-right: 6px; }
+  .solution-list li {
+    font-size: 12px; color: var(--text-dim); padding: 6px 10px;
+    background: var(--green-bg); border-left: 2px solid var(--green-border);
+    border-radius: 0 6px 6px 0;
+    font-family: 'JetBrains Mono', monospace;
+    opacity: 0; animation: slideRight 0.4s ease forwards;
+  }
+  .solution-list li .check { color: var(--green); margin-right: 6px; }
+
+  .mcp-strip {
+    margin-top: 20px; padding: 10px 14px;
+    background: var(--mcp-bg); border: 1px solid var(--mcp-border);
+    border-radius: 8px;
+    display: flex; align-items: center; gap: 8px;
+    opacity: 0; animation: fadeUp 0.6s 1.6s ease forwards;
+  }
+  .mcp-strip svg { width: 14px; height: 14px; color: var(--cyan); flex-shrink: 0; }
+  .mcp-strip span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--mcp-text); line-height: 1.4;
+  }
+  .mcp-strip strong { color: var(--text-dim); font-weight: 700; }
+
+  .metrics {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    opacity: 0; animation: fadeUp 0.8s 0.7s ease forwards;
+  }
+  .metric {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 24px 20px; text-align: center;
+    position: relative; overflow: hidden;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .metric::before {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--green), var(--cyan)); opacity: 0.6;
+  }
+  .metric__label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--text-dim); margin-bottom: 12px;
+  }
+  .metric__comparison {
+    display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 14px;
+  }
+  .metric__old {
+    font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700;
+    color: var(--red); text-decoration: line-through; opacity: 0.6;
+  }
+  .metric__arrow-icon { color: var(--text-dim); font-size: 14px; }
+  .metric__new {
+    font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 800;
+    color: var(--green);
+  }
+  .metric__badge {
+    display: inline-block; padding: 4px 10px; border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+    background: var(--green-badge-bg); color: var(--green);
+    border: 1px solid var(--green-badge-border);
+  }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)} }
+  @keyframes chaosAppear { from{opacity:0;transform:scale(0.5)}to{opacity:1;transform:scale(1)} }
+  @keyframes lineAppear { from{opacity:0}to{opacity:0.15} }
+  @keyframes pulseIn { from{opacity:0}to{opacity:1} }
+  @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
+  @keyframes slideRight { from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)} }
+  @keyframes arrowGrow { from{opacity:0;width:0}to{opacity:1;width:40px} }
+  @keyframes float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)} }
+  .float { animation: float 3s ease-in-out infinite; }
+
+  .problem-list li:nth-child(1){animation-delay:.8s}.problem-list li:nth-child(2){animation-delay:.95s}
+  .problem-list li:nth-child(3){animation-delay:1.1s}.problem-list li:nth-child(4){animation-delay:1.25s}
+  .problem-list li:nth-child(5){animation-delay:1.4s}.problem-list li:nth-child(6){animation-delay:1.55s}
+  .solution-list li:nth-child(1){animation-delay:1.0s}.solution-list li:nth-child(2){animation-delay:1.15s}
+  .solution-list li:nth-child(3){animation-delay:1.3s}
+
+  .cn1{top:10px;left:5%;animation-delay:.5s}.cn2{top:50px;left:30%;animation-delay:.6s}
+  .cn3{top:15px;left:55%;animation-delay:.7s}.cn4{top:70px;left:65%;animation-delay:.8s}
+  .cn5{top:100px;left:10%;animation-delay:.9s}.cn6{top:90px;left:42%;animation-delay:1.0s}
+  .cn7{top:130px;left:25%;animation-delay:1.1s}.cn8{top:140px;left:58%;animation-delay:1.2s}
+  .cn9{top:40px;left:80%;animation-delay:1.3s}.cn10{top:120px;left:75%;animation-delay:1.4s}
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Ctxo
+      </h1>
+      <p>Your AI agent explores <strong>409+ files</strong> to understand one symbol.<br>
+      What if it only needed <strong>one call</strong>?</p>
+    </div>
+
+    <div class="comparison">
+      <div class="panel panel--chaos">
+        <div class="panel__label">Without Ctxo</div>
+        <div class="chaos-graph">
+          <svg class="chaos-svg" viewBox="0 0 320 200" preserveAspectRatio="none">
+            <line x1="23" y1="28" x2="116" y2="68"/><line x1="116" y1="68" x2="58" y2="118"/>
+            <line x1="196" y1="33" x2="152" y2="108"/><line x1="23" y1="28" x2="196" y2="33"/>
+            <line x1="232" y1="88" x2="152" y2="108"/><line x1="58" y1="118" x2="200" y2="158"/>
+            <line x1="116" y1="68" x2="232" y2="88"/><line x1="260" y1="58" x2="196" y2="33"/>
+            <line x1="260" y1="58" x2="244" y2="138"/><line x1="98" y1="148" x2="200" y2="158"/>
+            <line x1="38" y1="118" x2="98" y2="148"/><line x1="152" y1="108" x2="98" y2="148"/>
+          </svg>
+          <div class="chaos-node file cn1">grep</div>
+          <div class="chaos-node read cn2">read</div>
+          <div class="chaos-node file cn3">find</div>
+          <div class="chaos-node grep cn4">grep</div>
+          <div class="chaos-node read cn5">read</div>
+          <div class="chaos-node file cn6">read</div>
+          <div class="chaos-node grep cn7">grep</div>
+          <div class="chaos-node read cn8">read</div>
+          <div class="chaos-node file cn9">find</div>
+          <div class="chaos-node grep cn10">read</div>
+          <div class="chaos-overflow"><span>⚠ CONTEXT OVERFLOW</span></div>
+        </div>
+        <ul class="problem-list">
+          <li><span class="x">✕</span> Context window saturated</li>
+          <li><span class="x">✕</span> Partial context hallucination</li>
+          <li><span class="x">✕</span> Lost-in-the-middle</li>
+          <li><span class="x">✕</span> Context poisoning</li>
+          <li><span class="x">✕</span> 10-20 calls per symbol</li>
+          <li><span class="x">✕</span> Stale reasoning after iterations</li>
+        </ul>
+      </div>
+
+      <div class="vs"><span>VS</span></div>
+
+      <div class="panel panel--clarity">
+        <div class="panel__label">With Ctxo</div>
+        <div class="clarity-graph">
+          <div class="clarity-flow">
+            <div class="clarity-node agent float" style="animation-delay:0s;">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                <path d="M8 21h8"/><path d="M12 17v4"/>
+                <path d="M7 8l3 3-3 3"/><line x1="13" y1="14" x2="17" y2="14"/>
+              </svg>
+              <span class="clarity-label">Agent</span>
+            </div>
+            <div class="clarity-arrow"></div>
+            <div class="clarity-node ctxo float" style="animation-delay:0.5s;">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+              <span class="clarity-label" style="color:var(--green);">Ctxo</span>
+            </div>
+            <div class="clarity-arrow"></div>
+            <div class="clarity-node result float" style="animation-delay:1s;">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>
+              </svg>
+              <span class="clarity-label">Done</span>
+            </div>
+          </div>
+        </div>
+        <ul class="solution-list">
+          <li><span class="check">✓</span> Clean, relevant context only</li>
+          <li><span class="check">✓</span> One call replaces full exploration</li>
+          <li><span class="check">✓</span> Structured symbol graphs + deps</li>
+        </ul>
+        <div class="mcp-strip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+            <path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+          </svg>
+          <span>Built on <strong>MCP</strong> — works with Claude Code, Copilot, Cursor, Windsurf, Cline &amp; any MCP client</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric__label">Token Usage</div>
+        <div class="metric__comparison">
+          <span class="metric__old">140K</span>
+          <span class="metric__arrow-icon">→</span>
+          <span class="metric__new">2.9K</span>
+        </div>
+        <div class="metric__badge">48× less</div>
+      </div>
+      <div class="metric">
+        <div class="metric__label">Tool Calls</div>
+        <div class="metric__comparison">
+          <span class="metric__old">409+</span>
+          <span class="metric__arrow-icon">→</span>
+          <span class="metric__new">8</span>
+        </div>
+        <div class="metric__badge">51× fewer</div>
+      </div>
+      <div class="metric">
+        <div class="metric__label">Context Free</div>
+        <div class="metric__comparison">
+          <span class="metric__old">Overflow</span>
+          <span class="metric__arrow-icon">→</span>
+          <span class="metric__new">97%</span>
+        </div>
+        <div class="metric__badge">97% free</div>
+      </div>
+    </div>
+
+    <a href="ctxo-visualizer.html" style="display:inline-block;margin-top:2rem;padding:0.6rem 1.6rem;font-family:'JetBrains Mono',monospace;font-size:0.85rem;font-weight:700;color:var(--cyan);border:1px solid var(--cyan-border,rgba(0,212,255,0.3));border-radius:8px;background:rgba(0,212,255,0.06);text-decoration:none;letter-spacing:1px;transition:background 0.2s,border-color 0.2s;" onmouseover="this.style.background='rgba(0,212,255,0.12)'" onmouseout="this.style.background='rgba(0,212,255,0.06)'">
+      Ctxo Index Visualizer →
+    </a>
+
+  </div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "timestamp": 1775655014,
+  "timestamp": 1775691833,
   "entries": [
     {
       "file1": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
@@ -93,8 +93,8 @@
       "frequency": 1
     },
     {
-      "file1": "src/cli/__tests__/cli-router.test.ts",
-      "file2": "src/index.ts",
+      "file1": "src/adapters/language/__tests__/csharp-adapter.test.ts",
+      "file2": "src/adapters/language/csharp-adapter.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
@@ -291,12 +291,6 @@
       "frequency": 0.714
     },
     {
-      "file1": "src/adapters/mcp/get-logic-slice.ts",
-      "file2": "src/index.ts",
-      "sharedCommits": 5,
-      "frequency": 0.714
-    },
-    {
       "file1": "src/adapters/mcp/get-change-intelligence.ts",
       "file2": "src/adapters/mcp/get-why-context.ts",
       "sharedCommits": 4,
@@ -369,12 +363,6 @@
       "frequency": 0.667
     },
     {
-      "file1": "src/adapters/mcp/find-importers.ts",
-      "file2": "src/index.ts",
-      "sharedCommits": 2,
-      "frequency": 0.667
-    },
-    {
       "file1": "src/adapters/mcp/__tests__/get-blast-radius.test.ts",
       "file2": "src/adapters/mcp/__tests__/get-change-intelligence.test.ts",
       "sharedCommits": 2,
@@ -411,28 +399,10 @@
       "frequency": 0.667
     },
     {
-      "file1": "src/adapters/mcp/__tests__/get-logic-slice.test.ts",
+      "file1": "src/adapters/git/simple-git-adapter.ts",
       "file2": "src/index.ts",
-      "sharedCommits": 2,
-      "frequency": 0.667
-    },
-    {
-      "file1": "src/adapters/mcp/find-importers.ts",
-      "file2": "src/adapters/mcp/get-blast-radius.ts",
-      "sharedCommits": 2,
-      "frequency": 0.667
-    },
-    {
-      "file1": "src/adapters/mcp/find-importers.ts",
-      "file2": "src/adapters/mcp/get-dead-code.ts",
-      "sharedCommits": 2,
-      "frequency": 0.667
-    },
-    {
-      "file1": "src/adapters/mcp/find-importers.ts",
-      "file2": "src/adapters/mcp/get-logic-slice.ts",
-      "sharedCommits": 2,
-      "frequency": 0.667
+      "sharedCommits": 3,
+      "frequency": 0.6
     },
     {
       "file1": "src/adapters/mcp/get-blast-radius.ts",
@@ -441,10 +411,16 @@
       "frequency": 0.6
     },
     {
-      "file1": "src/core/types.ts",
-      "file2": "src/index.ts",
-      "sharedCommits": 4,
-      "frequency": 0.571
+      "file1": "src/adapters/mcp/get-blast-radius.ts",
+      "file2": "src/adapters/mcp/get-dead-code.ts",
+      "sharedCommits": 3,
+      "frequency": 0.6
+    },
+    {
+      "file1": "src/adapters/mcp/get-dead-code.ts",
+      "file2": "src/adapters/mcp/get-logic-slice.ts",
+      "sharedCommits": 3,
+      "frequency": 0.6
     },
     {
       "file1": "src/adapters/mcp/get-blast-radius.ts",
@@ -460,8 +436,14 @@
     },
     {
       "file1": "src/adapters/mcp/get-blast-radius.ts",
+      "file2": "src/adapters/mcp/get-logic-slice.ts",
+      "sharedCommits": 4,
+      "frequency": 0.5
+    },
+    {
+      "file1": "src/adapters/mcp/get-logic-slice.ts",
       "file2": "src/index.ts",
-      "sharedCommits": 5,
+      "sharedCommits": 4,
       "frequency": 0.5
     },
     {
@@ -489,20 +471,8 @@
       "frequency": 0.5
     },
     {
-      "file1": "src/adapters/git/simple-git-adapter.ts",
-      "file2": "src/adapters/mcp/get-why-context.ts",
-      "sharedCommits": 2,
-      "frequency": 0.5
-    },
-    {
-      "file1": "src/adapters/git/simple-git-adapter.ts",
+      "file1": "src/adapters/mcp/find-importers.ts",
       "file2": "src/index.ts",
-      "sharedCommits": 2,
-      "frequency": 0.5
-    },
-    {
-      "file1": "src/adapters/git/simple-git-adapter.ts",
-      "file2": "src/cli/index-command.ts",
       "sharedCommits": 2,
       "frequency": 0.5
     },
@@ -543,19 +513,19 @@
       "frequency": 0.5
     },
     {
-      "file1": "src/adapters/mcp/get-dead-code.ts",
-      "file2": "src/index.ts",
+      "file1": "src/adapters/mcp/find-importers.ts",
+      "file2": "src/adapters/mcp/get-blast-radius.ts",
       "sharedCommits": 2,
       "frequency": 0.5
     },
     {
-      "file1": "src/adapters/mcp/get-blast-radius.ts",
+      "file1": "src/adapters/mcp/find-importers.ts",
       "file2": "src/adapters/mcp/get-dead-code.ts",
       "sharedCommits": 2,
       "frequency": 0.5
     },
     {
-      "file1": "src/adapters/mcp/get-dead-code.ts",
+      "file1": "src/adapters/mcp/find-importers.ts",
       "file2": "src/adapters/mcp/get-logic-slice.ts",
       "sharedCommits": 2,
       "frequency": 0.5
@@ -567,16 +537,40 @@
       "frequency": 0.5
     },
     {
-      "file1": "src/cli/cli-router.ts",
+      "file1": "src/adapters/transport/http-server-transport.ts",
+      "file2": "src/index.ts",
+      "sharedCommits": 2,
+      "frequency": 0.5
+    },
+    {
+      "file1": "src/adapters/mcp/get-blast-radius.ts",
+      "file2": "src/index.ts",
+      "sharedCommits": 5,
+      "frequency": 0.455
+    },
+    {
+      "file1": "src/core/types.ts",
       "file2": "src/index.ts",
       "sharedCommits": 3,
       "frequency": 0.429
     },
     {
-      "file1": "src/adapters/mcp/get-blast-radius.ts",
-      "file2": "src/adapters/mcp/get-logic-slice.ts",
-      "sharedCommits": 3,
-      "frequency": 0.429
+      "file1": "src/adapters/git/simple-git-adapter.ts",
+      "file2": "src/adapters/mcp/get-why-context.ts",
+      "sharedCommits": 2,
+      "frequency": 0.4
+    },
+    {
+      "file1": "src/adapters/git/simple-git-adapter.ts",
+      "file2": "src/adapters/storage/sqlite-storage-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 0.4
+    },
+    {
+      "file1": "src/adapters/git/simple-git-adapter.ts",
+      "file2": "src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 0.4
     },
     {
       "file1": "src/adapters/storage/json-index-writer.ts",
@@ -587,6 +581,12 @@
     {
       "file1": "src/index.ts",
       "file2": "tests/e2e/mcp-spec-compliance.test.ts",
+      "sharedCommits": 2,
+      "frequency": 0.4
+    },
+    {
+      "file1": "src/adapters/mcp/get-dead-code.ts",
+      "file2": "src/index.ts",
       "sharedCommits": 2,
       "frequency": 0.4
     },
@@ -693,12 +693,6 @@
       "frequency": 0.333
     },
     {
-      "file1": "src/core/masking/masking-pipeline.ts",
-      "file2": "src/index.ts",
-      "sharedCommits": 2,
-      "frequency": 0.333
-    },
-    {
       "file1": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
       "file2": "src/index.ts",
       "sharedCommits": 2,
@@ -723,10 +717,10 @@
       "frequency": 0.333
     },
     {
-      "file1": "src/cli/index-command.ts",
+      "file1": "src/cli/cli-router.ts",
       "file2": "src/index.ts",
-      "sharedCommits": 5,
-      "frequency": 0.313
+      "sharedCommits": 2,
+      "frequency": 0.286
     },
     {
       "file1": "src/adapters/language/ts-morph-adapter.ts",
@@ -753,6 +747,12 @@
       "frequency": 0.286
     },
     {
+      "file1": "src/cli/index-command.ts",
+      "file2": "src/index.ts",
+      "sharedCommits": 4,
+      "frequency": 0.25
+    },
+    {
       "file1": "src/adapters/language/ts-morph-adapter.ts",
       "file2": "src/adapters/storage/sqlite-storage-adapter.ts",
       "sharedCommits": 2,
@@ -762,7 +762,7 @@
       "file1": "src/adapters/mcp/get-blast-radius.ts",
       "file2": "src/cli/index-command.ts",
       "sharedCommits": 2,
-      "frequency": 0.2
+      "frequency": 0.182
     }
   ]
 }

@@ -1,0 +1,63 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "a34297eedc8f1ca7739e25b7871080c6c89e9e9c3a171d178f11808ee92df843",
+  "edges": [
+    {
+      "from": "src/ports/i-search-port.ts::SearchResult::interface",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "src/ports/i-search-port.ts",
+  "intent": [],
+  "lastModified": 1775691832,
+  "symbols": [
+    {
+      "endLine": 13,
+      "endOffset": 379,
+      "kind": "interface",
+      "name": "SearchResult",
+      "startLine": 2,
+      "startOffset": 53,
+      "symbolId": "src/ports/i-search-port.ts::SearchResult::interface"
+    },
+    {
+      "endLine": 21,
+      "endOffset": 534,
+      "kind": "interface",
+      "name": "SearchMetrics",
+      "startLine": 15,
+      "startOffset": 381,
+      "symbolId": "src/ports/i-search-port.ts::SearchMetrics::interface"
+    },
+    {
+      "endLine": 31,
+      "endOffset": 719,
+      "kind": "interface",
+      "name": "FuzzyCorrection",
+      "startLine": 23,
+      "startOffset": 536,
+      "symbolId": "src/ports/i-search-port.ts::FuzzyCorrection::interface"
+    },
+    {
+      "endLine": 38,
+      "endOffset": 863,
+      "kind": "interface",
+      "name": "SearchResponse",
+      "startLine": 33,
+      "startOffset": 721,
+      "symbolId": "src/ports/i-search-port.ts::SearchResponse::interface"
+    },
+    {
+      "endLine": 63,
+      "endOffset": 1578,
+      "kind": "interface",
+      "name": "ISearchPort",
+      "startLine": 40,
+      "startOffset": 865,
+      "symbolId": "src/ports/i-search-port.ts::ISearchPort::interface"
+    }
+  ]
+}

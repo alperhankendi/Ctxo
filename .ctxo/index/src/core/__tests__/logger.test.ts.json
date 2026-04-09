@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "3dff479c22d91284392a6283a610fc5c4d403b42fa21310d3483183af1e44442",
+  "edges": [
+    {
+      "from": "src/core/__tests__/logger.test.ts::logger.test::variable",
+      "kind": "imports",
+      "to": "src/core/logger.ts::createLogger::function"
+    }
+  ],
+  "file": "src/core/__tests__/logger.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-08T17:56:58+03:00",
+      "hash": "18430d5cc2948dcaec9c139aaf48686023053b3a",
+      "kind": "commit",
+      "message": "Add debug mode (DEBUG=ctxo:*), structured logger, and CHANGELOG.md"
+    }
+  ],
+  "lastModified": 1775691832,
+  "symbols": []
+}

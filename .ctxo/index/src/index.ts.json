@@ -1,8 +1,18 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "c6582e97b65da6aaf328f1435c35b92dd56415f01da310ef301b08b1043f8714",
+  "contentHash": "456fbb23fd43bfdb75d5bedc7e9b11fdd4a3e1c1708f7a9cb75402ed6601f880",
   "edges": [
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/transport/http-server-transport.ts::startHttpTransport::function"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/core/logger.ts::createLogger::function"
+    },
     {
       "from": "src/index.ts::index::variable",
       "kind": "imports",
@@ -98,6 +108,42 @@
   "file": "src/index.ts",
   "intent": [
     {
+      "date": "2026-04-08T21:23:57+03:00",
+      "hash": "33b92551d18cad5bd3a03d6306bb9ccd83d48d10",
+      "kind": "commit",
+      "message": "Fix MCP HTTP: serverFactory pattern, stateful sessions, full init flow"
+    },
+    {
+      "date": "2026-04-08T20:58:41+03:00",
+      "hash": "86b4dd3c638e314ade6b7abbb9b4049419e395ba",
+      "kind": "commit",
+      "message": "Add HTTP transport adapter and MCP Connect in visualizer"
+    },
+    {
+      "date": "2026-04-08T17:56:58+03:00",
+      "hash": "18430d5cc2948dcaec9c139aaf48686023053b3a",
+      "kind": "commit",
+      "message": "Add debug mode (DEBUG=ctxo:*), structured logger, and CHANGELOG.md"
+    },
+    {
+      "date": "2026-04-08T17:26:51+03:00",
+      "hash": "fcebd60c7a305ae76484222a363a29078c6bfb01",
+      "kind": "commit",
+      "message": "Add tool annotations (readOnlyHint, idempotentHint, openWorldHint) to all 14 tools"
+    },
+    {
+      "date": "2026-04-08T16:56:40+03:00",
+      "hash": "3f4c1b696b8d4f5b4a4f5cf3079e7cca5c7c683e",
+      "kind": "commit",
+      "message": "Register empty resource capability to prevent -32601 errors (#29)"
+    },
+    {
+      "date": "2026-04-08T16:52:28+03:00",
+      "hash": "145ed0e895f9afd3defc4f7435daf0261bdaf059",
+      "kind": "commit",
+      "message": "Update tool descriptions: document _meta, intent, confidence params, auto-truncation"
+    },
+    {
       "date": "2026-04-08T16:12:30+03:00",
       "hash": "ad40ce28e65533d214754df71851a4c7a2f5e5c1",
       "kind": "commit",
@@ -180,32 +226,8 @@
       "hash": "a193b5f72cb6284291ba0e38fdc13017e0953816",
       "kind": "commit",
       "message": "Add git adapter, why-context, and change intelligence modules"
-    },
-    {
-      "date": "2026-03-29T16:23:42+03:00",
-      "hash": "98ebb212e830854e7c2a31edaba34847eb0cfbfd",
-      "kind": "commit",
-      "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
-    },
-    {
-      "date": "2026-03-29T16:04:56+03:00",
-      "hash": "fa4701d71ac553fd4fb73614c21446fa5e1896c7",
-      "kind": "commit",
-      "message": "Add MCP server with get_logic_slice tool and privacy masking pipeline"
-    },
-    {
-      "date": "2026-03-29T15:44:52+03:00",
-      "hash": "c808049d680a6d3e8b9cb47ed0f4586e16d623c1",
-      "kind": "commit",
-      "message": "Replace deprecated Server with McpServer from MCP SDK"
-    },
-    {
-      "date": "2026-03-29T15:43:28+03:00",
-      "hash": "f9bfea331e6ebdaf0733822d6f8d5b29a106d465",
-      "kind": "commit",
-      "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
     }
   ],
-  "lastModified": 1775655014,
+  "lastModified": 1775691832,
   "symbols": []
 }

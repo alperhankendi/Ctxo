@@ -6,7 +6,7 @@
       "symbolId": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function"
     }
   ],
-  "contentHash": "c29146574ff306d8906354f63e5b3e904272be07f50f6f97f7064c05a9f79ece",
+  "contentHash": "eeaa10b7cdd8fd96ffd8159232236be33e869a6b6a02cb0a7297d27748321d4d",
   "edges": [
     {
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
@@ -120,6 +120,12 @@
   "file": "src/adapters/mcp/get-dead-code.ts",
   "intent": [
     {
+      "date": "2026-04-08T18:30:54+03:00",
+      "hash": "bd9e7ba0057fdbf9eadfc0ea56ddb9b685059a8e",
+      "kind": "commit",
+      "message": "Fix TS2352 typecheck errors in MCP tool handlers"
+    },
+    {
       "date": "2026-04-08T16:12:30+03:00",
       "hash": "ad40ce28e65533d214754df71851a4c7a2f5e5c1",
       "kind": "commit",
@@ -144,11 +150,11 @@
       "message": "Add find_dead_code MCP tool — unreachable symbol and file detection"
     }
   ],
-  "lastModified": 1775655013,
+  "lastModified": 1775691832,
   "symbols": [
     {
       "endLine": 62,
-      "endOffset": 2387,
+      "endOffset": 2398,
       "kind": "function",
       "name": "handleFindDeadCode",
       "startLine": 14,

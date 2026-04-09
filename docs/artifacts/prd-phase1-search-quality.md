@@ -145,10 +145,11 @@ Query (tokenized via Symbol Tokenizer)
 ```
 
 **Why Two-Phase over parallel RRF:**
-- **Faster common case:** ~80% of well-formed queries are fully served by Phase 1 alone (single FTS5 query)
-- **No score normalization needed:** BM25 scores from Porter and Trigram are on different scales — parallel fusion via RRF discards score magnitude. Two-phase avoids this entirely.
-- **Simpler implementation:** No RRF algorithm, no rank merging, no weight tuning. Less code = fewer bugs.
-- **Same quality ceiling:** When Phase 2 activates, its results are merged with Phase 1 (union + deduplicate by symbol_id, take best score). The final ranking is equivalent to RRF for the cases that matter (low-recall queries).
+
+* **Faster common case:** \~80% of well-formed queries are fully served by Phase 1 alone (single FTS5 query)
+* **No score normalization needed:** BM25 scores from Porter and Trigram are on different scales — parallel fusion via RRF discards score magnitude. Two-phase avoids this entirely.
+* **Simpler implementation:** No RRF algorithm, no rank merging, no weight tuning. Less code = fewer bugs.
+* **Same quality ceiling:** When Phase 2 activates, its results are merged with Phase 1 (union + deduplicate by symbol\_id, take best score). The final ranking is equivalent to RRF for the cases that matter (low-recall queries).
 
 ### 4.2 Component Design
 
@@ -257,7 +258,7 @@ LIMIT 50;
 
 Each phase produces BM25-scored results. PageRank importance is applied as a **multiplicative boost** on BM25 scores:
 
-```typescript
+```TypeScript
 // Final score for each result
 finalScore = bm25Score * (1 + pageRankWeight * pageRankScore);
 // Default pageRankWeight = 0.5
@@ -265,25 +266,27 @@ finalScore = bm25Score * (1 + pageRankWeight * pageRankScore);
 ```
 
 When Phase 2 (Trigram) activates, its results are **merged** with Phase 1:
-- Union by `symbol_id` (deduplicate)
-- If a symbol appears in both phases, take the higher score
-- Trigram results receive a **0.8x penalty** (they are fuzzier, lower precision)
 
-```typescript
+* Union by `symbol_id` (deduplicate)
+* If a symbol appears in both phases, take the higher score
+* Trigram results receive a **0.8x penalty** (they are fuzzier, lower precision)
+
+```TypeScript
 // Phase 2 score penalty
 trigramFinalScore = bm25Score * 0.8 * (1 + pageRankWeight * pageRankScore);
 ```
 
 **Why multiplicative PageRank over separate rank list:**
-- Single score dimension — no fusion algorithm needed
-- PageRank acts as a "tiebreaker among equals" — two symbols with similar BM25 scores are ordered by structural importance
-- Simpler to debug: one score per result, not three rank positions
+
+* Single score dimension — no fusion algorithm needed
+* PageRank acts as a "tiebreaker among equals" — two symbols with similar BM25 scores are ordered by structural importance
+* Simpler to debug: one score per result, not three rank positions
 
 #### 4.2.5 Bigram Boost (Multi-Word Queries)
 
 For multi-word queries, boost symbols where adjacent query terms appear as adjacent tokens in the symbol name. This is simpler and more effective than span-based proximity scoring.
 
-```typescript
+```TypeScript
 function bigramBoost(queryTerms: string[], symbolTokens: string[]): number {
   if (queryTerms.length < 2) return 1.0;
   
@@ -302,13 +305,15 @@ function bigramBoost(queryTerms: string[], symbolTokens: string[]): number {
 ```
 
 **Examples:**
-- Query `"blast radius"` → `BlastRadiusCalculator` tokens: `["blast", "radius", "calculator"]` → "blast"+"radius" adjacent → **3x boost**
-- Query `"blast radius"` → `RadiusHelper` + `BlastConfig` (no adjacency) → **1x (no boost)**
+
+* Query `"blast radius"` → `BlastRadiusCalculator` tokens: `["blast", "radius", "calculator"]` → "blast"+"radius" adjacent → **3x boost**
+* Query `"blast radius"` → `RadiusHelper` + `BlastConfig` (no adjacency) → **1x (no boost)**
 
 **Why bigram over span-based proximity:**
-- Bigram is a simple boolean per pair — no continuous distance function to tune
-- Matches how code symbols are composed: `BlastRadius` is a bigram, not a "span of 2"
-- Used by Sourcegraph/Zoekt for phrase matching in symbol names
+
+* Bigram is a simple boolean per pair — no continuous distance function to tune
+* Matches how code symbols are composed: `BlastRadius` is a bigram, not a "span of 2"
+* Used by Sourcegraph/Zoekt for phrase matching in symbol names
 
 #### 4.2.6 Fuzzy Correction Layer
 
@@ -370,7 +375,7 @@ interface FuzzyCorrection {
 
 | ID     | Requirement                                                                                                                                                         | Priority |
 | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| FR-3.1 | **Two-phase search:** Query Porter FTS5 first; query Trigram FTS5 only if Porter returns < 3 results. No parallel fan-out. | P0       |
+| FR-3.1 | **Two-phase search:** Query Porter FTS5 first; query Trigram FTS5 only if Porter returns < 3 results. No parallel fan-out.                                          | P0       |
 | FR-3.2 | Use `bm25()` with configurable column weights                                                                                                                       | P0       |
 | FR-3.3 | Default column weights: tokenized\_name=10, name=15 (exact match priority), kind=1, file\_path=2. BM25 params: k1=1.2, b=0.25 (code-search-tuned, not NLP defaults) | P0       |
 | FR-3.4 | Limit raw FTS5 results to 50 per table (configurable)                                                                                                               | P1       |
@@ -379,20 +384,20 @@ interface FuzzyCorrection {
 
 ### FR-4: Result Scoring & Merging (replaces RRF)
 
-| ID     | Requirement                                                              | Priority |
-| ------ | ------------------------------------------------------------------------ | -------- |
-| FR-4.1 | Apply PageRank as multiplicative boost on BM25: `bm25 * (1 + 0.5 * pageRank)` | P0       |
-| FR-4.2 | Trigram (Phase 2) results receive 0.8x score penalty vs Porter (Phase 1) | P0       |
-| FR-4.3 | When Phase 2 activates, merge with Phase 1: union by symbol_id, keep highest score | P0       |
-| FR-4.4 | Configurable `pageRankWeight` via `get_ranked_context` parameters | P2       |
+| ID     | Requirement                                                                         | Priority |
+| ------ | ----------------------------------------------------------------------------------- | -------- |
+| FR-4.1 | Apply PageRank as multiplicative boost on BM25: `bm25 * (1 + 0.5 * pageRank)`       | P0       |
+| FR-4.2 | Trigram (Phase 2) results receive 0.8x score penalty vs Porter (Phase 1)            | P0       |
+| FR-4.3 | When Phase 2 activates, merge with Phase 1: union by symbol\_id, keep highest score | P0       |
+| FR-4.4 | Configurable `pageRankWeight` via `get_ranked_context` parameters                   | P2       |
 
 ### FR-5: Bigram Boost (replaces Proximity Reranking)
 
-| ID     | Requirement                                                           | Priority |
-| ------ | --------------------------------------------------------------------- | -------- |
-| FR-5.1 | For multi-word queries, check if adjacent query terms appear as adjacent tokens in symbol name | P0       |
+| ID     | Requirement                                                                                          | Priority |
+| ------ | ---------------------------------------------------------------------------------------------------- | -------- |
+| FR-5.1 | For multi-word queries, check if adjacent query terms appear as adjacent tokens in symbol name       | P0       |
 | FR-5.2 | Each adjacent bigram match applies a **2x multiplicative boost** (e.g., 2 adjacent pairs = 5x total) | P0       |
-| FR-5.3 | Skip bigram boost for single-term queries                          | P0       |
+| FR-5.3 | Skip bigram boost for single-term queries                                                            | P0       |
 
 ### FR-6: Fuzzy Correction
 
@@ -408,12 +413,12 @@ interface FuzzyCorrection {
 
 ### FR-7: API Changes to `get_ranked_context`
 
-| ID     | Requirement                                                                                  | Priority |
-| ------ | -------------------------------------------------------------------------------------------- | -------- |
-| FR-7.1 | Add optional `fuzzy: boolean` parameter (default: true)                                      | P1       |
-| FR-7.2 | Add optional `searchMode: 'fts' \| 'legacy'` parameter (default: 'fts')                      | P1       |
-| FR-7.3 | Include `searchMetrics` in response: `{ porterHits, trigramHits, phase2Activated, fuzzyApplied, latencyMs }` | P1       |
-| FR-7.4 | Backward-compatible: existing calls work identically (same parameter names/types)            | P0       |
+| ID     | Requirement                                                                                                        | Priority |
+| ------ | ------------------------------------------------------------------------------------------------------------------ | -------- |
+| FR-7.1 | Add optional `fuzzy: boolean` parameter (default: true)                                                            | P1       |
+| FR-7.2 | Add optional `searchMode: 'fts' \| 'legacy'` parameter (default: 'fts')                                            | P1       |
+| FR-7.3 | Include `searchMetrics` in response: `{ porterHits, trigramHits, phase2Activated, fuzzyApplied, latencyMs }`       | P1       |
+| FR-7.4 | Backward-compatible: existing calls work identically (same parameter names/types)                                  | P0       |
 | FR-7.5 | `strategy` parameter continues to work: 'combined' uses two-phase FTS5 + PageRank, 'importance' uses PageRank only | P0       |
 
 ### FR-8: API Changes to `search_symbols`
@@ -459,11 +464,11 @@ interface FuzzyCorrection {
 
 ### NFR-4: Observability
 
-| ID      | Requirement                                                                                  |
-| ------- | -------------------------------------------------------------------------------------------- |
+| ID      | Requirement                                                                                                                                    |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | NFR-4.1 | Log FTS5 query time to stderr: `[ctxo:search] porter=8ms phase2=no total=8ms` or `[ctxo:search] porter=6ms trigram=12ms phase2=yes total=18ms` |
-| NFR-4.2 | Log fuzzy corrections: `[ctxo:search] fuzzy correction: "databse" → "database" (distance=1)` |
-| NFR-4.3 | Include search metrics in tool response for LLM introspection                                |
+| NFR-4.2 | Log fuzzy corrections: `[ctxo:search] fuzzy correction: "databse" → "database" (distance=1)`                                                   |
+| NFR-4.3 | Include search metrics in tool response for LLM introspection                                                                                  |
 
 ***
 
@@ -492,7 +497,7 @@ interface FuzzyCorrection {
 * **Porter** excels at semantic recall: `"indexing"` → `"index"` (stemmed match)
 * **Trigram** excels at partial/fuzzy recall: `"sqlit"` → `"sqlite"` (character overlap)
 * Neither alone covers all cases; together they cover the spectrum
-* **Two-phase cascade** is simpler than parallel query + fusion: ~80% of queries are served by Porter alone, so Trigram is only queried when needed
+* **Two-phase cascade** is simpler than parallel query + fusion: \~80% of queries are served by Porter alone, so Trigram is only queried when needed
 
 **Alternative considered:** Parallel query + RRF fusion. Rejected because: (1) RRF discards BM25 score magnitudes (uses only rank positions), losing useful signal; (2) adds an algorithm (RRF) that needs k-parameter tuning with no labeled data to tune against; (3) doubles query load on every request even when Porter alone has sufficient results.
 
@@ -504,7 +509,7 @@ interface FuzzyCorrection {
 
 **Rationale:**
 
-* **Faster common case:** Single FTS5 query for ~80% of well-formed queries
+* **Faster common case:** Single FTS5 query for \~80% of well-formed queries
 * **No score normalization problem:** BM25 scores from Porter and Trigram are on different scales — RRF "solves" this by discarding scores entirely, but that loses useful information. Two-phase avoids the problem: Phase 2 scores are penalized by a fixed 0.8x factor.
 * **Less code, fewer failure modes:** No RRF algorithm, no weight tuning (k=60 is dataset-dependent — Benham & Culpepper 2017 showed sensitivity to number of rankers), no rank merging logic.
 * **Same quality ceiling:** When Phase 2 activates, results are merged (union + best-score dedup). For the low-recall queries where Trigram matters, this produces equivalent ranking to RRF.
@@ -664,25 +669,25 @@ try {
 
 ### Unit Tests
 
-| Test Suite       | Scope                                                         | Count (est.) |
-| ---------------- | ------------------------------------------------------------- | ------------ |
-| Symbol Tokenizer | camelCase, snake\_case, PascalCase, digits, edge cases        | 20+          |
-| Bigram Boost     | Single-word (no boost), multi-word adjacent, non-adjacent, mixed | 10+          |
-| Fuzzy Corrector  | Damerau-Levenshtein, adaptive threshold, tie-breaking, no-match | 15+          |
+| Test Suite       | Scope                                                                           | Count (est.) |
+| ---------------- | ------------------------------------------------------------------------------- | ------------ |
+| Symbol Tokenizer | camelCase, snake\_case, PascalCase, digits, edge cases                          | 20+          |
+| Bigram Boost     | Single-word (no boost), multi-word adjacent, non-adjacent, mixed                | 10+          |
+| Fuzzy Corrector  | Damerau-Levenshtein, adaptive threshold, tie-breaking, no-match                 | 15+          |
 | Search Engine    | Two-phase cascade, Phase 2 activation threshold, PageRank boost, result merging | 20+          |
 
 ### Integration Tests
 
-| Test                    | Description                                                     |
-| ----------------------- | --------------------------------------------------------------- |
-| Porter FTS5 round-trip  | Index 100 symbols → search → verify BM25 ranking                |
-| Trigram FTS5 round-trip | Index → partial query → verify trigram matches                  |
-| Two-phase cascade       | Porter returns < 3 → Trigram activated → merged results correct |
-| Bigram boost            | Multi-word query → verify adjacent-token symbols rank higher    |
-| Fuzzy fallback          | Typo query → < 3 results → correction → results returned       |
-| Incremental update      | Modify 1 file → verify FTS5 tables updated without full rebuild |
+| Test                    | Description                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| Porter FTS5 round-trip  | Index 100 symbols → search → verify BM25 ranking                                    |
+| Trigram FTS5 round-trip | Index → partial query → verify trigram matches                                      |
+| Two-phase cascade       | Porter returns < 3 → Trigram activated → merged results correct                     |
+| Bigram boost            | Multi-word query → verify adjacent-token symbols rank higher                        |
+| Fuzzy fallback          | Typo query → < 3 results → correction → results returned                            |
+| Incremental update      | Modify 1 file → verify FTS5 tables updated without full rebuild                     |
 | Tier degradation        | Mock better-sqlite3 failure → verify Tier 2 (Orama) or Tier 3 (substring) activates |
-| Gold standard baseline  | Run 50 gold standard queries against current substring → record NDCG@10 |
+| Gold standard baseline  | Run 50 gold standard queries against current substring → record NDCG\@10            |
 
 ### Gold Standard Query Set (prerequisite for all quality metrics)
 
@@ -810,7 +815,7 @@ Create `docs/test-data/search-gold-standard.json` with 50 curated queries agains
 ### Step 7: Benchmarks & Tuning (Day 7-8)
 
 * Run benchmark suite across codebase sizes
-* Run gold standard queries → measure NDCG@10 improvement over baseline
+* Run gold standard queries → measure NDCG\@10 improvement over baseline
 * Tune BM25 column weights and k1/b parameters
 * Tune Phase 2 activation threshold (default < 3)
 * Tune fuzzy correction adaptive threshold
@@ -848,15 +853,15 @@ Create `docs/test-data/search-gold-standard.json` with 50 curated queries agains
 
 ## 14. Glossary
 
-| Term                     | Definition                                                                                |
-| ------------------------ | ----------------------------------------------------------------------------------------- |
-| **BM25**                 | Best Matching 25 — probabilistic relevance scoring function used in information retrieval |
-| **FTS5**                 | Full-Text Search version 5 — SQLite extension for inverted-index text search              |
-| **Porter stemmer**       | Algorithm that reduces words to root forms (e.g., "indexing" → "index")                   |
-| **Trigram**              | 3-character sliding window tokenizer (e.g., "sqlite" → "sql", "qli", "lit", "ite")        |
-| **Two-phase cascade**    | Search architecture where a primary index is queried first; a secondary index activates only when primary returns insufficient results |
-| **Bigram boost**         | Scoring bonus applied when adjacent query terms appear as adjacent tokens in a symbol name |
-| **Damerau-Levenshtein**  | Edit distance that includes transpositions as a single operation (extends Levenshtein)    |
-| **NDCG\@k**              | Normalized Discounted Cumulative Gain — standard metric for ranking quality               |
-| **Gold standard**        | Curated set of queries with human-judged relevance scores, used to measure search quality |
+| Term                    | Definition                                                                                                                             |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **BM25**                | Best Matching 25 — probabilistic relevance scoring function used in information retrieval                                              |
+| **FTS5**                | Full-Text Search version 5 — SQLite extension for inverted-index text search                                                           |
+| **Porter stemmer**      | Algorithm that reduces words to root forms (e.g., "indexing" → "index")                                                                |
+| **Trigram**             | 3-character sliding window tokenizer (e.g., "sqlite" → "sql", "qli", "lit", "ite")                                                     |
+| **Two-phase cascade**   | Search architecture where a primary index is queried first; a secondary index activates only when primary returns insufficient results |
+| **Bigram boost**        | Scoring bonus applied when adjacent query terms appear as adjacent tokens in a symbol name                                             |
+| **Damerau-Levenshtein** | Edit distance that includes transpositions as a single operation (extends Levenshtein)                                                 |
+| **NDCG\@k**             | Normalized Discounted Cumulative Gain — standard metric for ranking quality                                                            |
+| **Gold standard**       | Curated set of queries with human-judged relevance scores, used to measure search quality                                              |
 

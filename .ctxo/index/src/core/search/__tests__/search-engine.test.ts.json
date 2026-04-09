@@ -1,0 +1,22 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "deb0c044aa9dd4a6e4cf320ae3ecea116cc2e83aeded1b72e7dc0630fcb04189",
+  "edges": [
+    {
+      "from": "src/core/search/__tests__/search-engine.test.ts::search-engine.test::variable",
+      "kind": "imports",
+      "to": "src/core/search/search-engine.ts::SearchEngine::class"
+    },
+    {
+      "from": "src/core/search/__tests__/search-engine.test.ts::search-engine.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "src/core/search/__tests__/search-engine.test.ts",
+  "intent": [],
+  "lastModified": 1775691832,
+  "symbols": []
+}

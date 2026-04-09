@@ -22,7 +22,7 @@
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getFileChurn::method"
     }
   ],
-  "contentHash": "85531762fb0f9e4e352e6a6924ee1e740ce014ea1841f9a139c9f764fc3bd4f6",
+  "contentHash": "fb90386f71891084e16dce53638edf78984373de2bf72a24461eda76e6e8941e",
   "edges": [
     {
       "from": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class",
@@ -41,6 +41,11 @@
       "kind": "imports",
       "to": "src/core/types.ts::ChurnData::interface",
       "typeOnly": true
+    },
+    {
+      "from": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class",
+      "kind": "imports",
+      "to": "src/core/logger.ts::createLogger::function"
     },
     {
       "from": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class",
@@ -66,6 +71,12 @@
   "file": "src/adapters/git/simple-git-adapter.ts",
   "intent": [
     {
+      "date": "2026-04-08T17:56:58+03:00",
+      "hash": "18430d5cc2948dcaec9c139aaf48686023053b3a",
+      "kind": "commit",
+      "message": "Add debug mode (DEBUG=ctxo:*), structured logger, and CHANGELOG.md"
+    },
+    {
       "date": "2026-04-08T13:12:33+03:00",
       "hash": "0f433a0ad86a8876539f8934820540a9c42928ae",
       "kind": "commit",
@@ -90,60 +101,60 @@
       "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1775655013,
+  "lastModified": 1775691832,
   "symbols": [
     {
-      "endLine": 95,
-      "endOffset": 2880,
+      "endLine": 99,
+      "endOffset": 2977,
       "kind": "class",
       "name": "SimpleGitAdapter",
-      "startLine": 4,
-      "startOffset": 188,
+      "startLine": 7,
+      "startOffset": 283,
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
     },
     {
-      "endLine": 18,
-      "endOffset": 517,
+      "endLine": 22,
+      "endOffset": 670,
       "kind": "method",
       "name": "SimpleGitAdapter.isAvailable",
-      "startLine": 11,
-      "startOffset": 366,
+      "startLine": 15,
+      "startOffset": 519,
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.isAvailable::method"
     },
     {
-      "endLine": 38,
-      "endOffset": 1096,
+      "endLine": 42,
+      "endOffset": 1235,
       "kind": "method",
       "name": "SimpleGitAdapter.getCommitHistory",
-      "startLine": 20,
-      "startOffset": 523,
+      "startLine": 24,
+      "startOffset": 676,
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getCommitHistory::method"
     },
     {
-      "endLine": 70,
-      "endOffset": 2116,
+      "endLine": 74,
+      "endOffset": 2241,
       "kind": "method",
       "name": "SimpleGitAdapter.getBatchHistory",
-      "startLine": 40,
-      "startOffset": 1102,
+      "startLine": 44,
+      "startOffset": 1241,
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getBatchHistory::method"
     },
     {
-      "endLine": 80,
-      "endOffset": 2469,
+      "endLine": 84,
+      "endOffset": 2580,
       "kind": "method",
       "name": "SimpleGitAdapter.getChangedFiles",
-      "startLine": 72,
-      "startOffset": 2122,
+      "startLine": 76,
+      "startOffset": 2247,
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getChangedFiles::method"
     },
     {
-      "endLine": 94,
-      "endOffset": 2877,
+      "endLine": 98,
+      "endOffset": 2974,
       "kind": "method",
       "name": "SimpleGitAdapter.getFileChurn",
-      "startLine": 82,
-      "startOffset": 2475,
+      "startLine": 86,
+      "startOffset": 2586,
       "symbolId": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getFileChurn::method"
     }
   ]

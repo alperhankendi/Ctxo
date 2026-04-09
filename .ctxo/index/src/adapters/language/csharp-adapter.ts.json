@@ -31,6 +31,10 @@
     },
     {
       "cyclomatic": 4,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.countParameters::method"
+    },
+    {
+      "cyclomatic": 4,
       "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.isPublic::method"
     },
     {
@@ -38,7 +42,7 @@
       "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.resolveBaseType::method"
     }
   ],
-  "contentHash": "ae4352eb12c340f4d39a7bcf6fac42ad2f727519e9f724868bf765a29f21dc66",
+  "contentHash": "e425ef2349be9c619f3bbe92cde823f3cf421f0d603a8eefa0918438038cc252",
   "edges": [
     {
       "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter::class",
@@ -110,6 +114,11 @@
       "to": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.isPublic::method"
     },
     {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractMethodSymbols::method",
+      "kind": "calls",
+      "to": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.countParameters::method"
+    },
+    {
       "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitEdges::method",
       "kind": "calls",
       "to": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.isPublic::method"
@@ -128,6 +137,11 @@
       "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitComplexity::method",
       "kind": "calls",
       "to": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.isPublic::method"
+    },
+    {
+      "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitComplexity::method",
+      "kind": "calls",
+      "to": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.countParameters::method"
     },
     {
       "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter::class",
@@ -158,17 +172,23 @@
   "file": "src/adapters/language/csharp-adapter.ts",
   "intent": [
     {
+      "date": "2026-04-08T19:15:40+03:00",
+      "hash": "d3a80b889a1610d6201e52ab46f6a8672161b3cc",
+      "kind": "commit",
+      "message": "Fix C# method overload crash causing UNIQUE constraint failure"
+    },
+    {
       "date": "2026-04-08T03:09:19+03:00",
       "hash": "e43db17e512a8ab500108767c0914c857b5707b3",
       "kind": "commit",
       "message": "Add tree-sitter adapters for Go and C# with graceful degradation"
     }
   ],
-  "lastModified": 1775655013,
+  "lastModified": 1775691832,
   "symbols": [
     {
-      "endLine": 283,
-      "endOffset": 9420,
+      "endLine": 295,
+      "endOffset": 9878,
       "kind": "class",
       "name": "CSharpAdapter",
       "startLine": 11,
@@ -212,8 +232,8 @@
       "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitSymbols::method"
     },
     {
-      "endLine": 144,
-      "endOffset": 4633,
+      "endLine": 145,
+      "endOffset": 4702,
       "kind": "method",
       "name": "CSharpAdapter.extractMethodSymbols",
       "startLine": 118,
@@ -221,39 +241,48 @@
       "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractMethodSymbols::method"
     },
     {
-      "endLine": 207,
-      "endOffset": 6860,
+      "endLine": 208,
+      "endOffset": 6929,
       "kind": "method",
       "name": "CSharpAdapter.visitEdges",
-      "startLine": 148,
-      "startOffset": 4704,
+      "startLine": 149,
+      "startOffset": 4773,
       "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitEdges::method"
     },
     {
-      "endLine": 260,
-      "endOffset": 8573,
+      "endLine": 262,
+      "endOffset": 8713,
       "kind": "method",
       "name": "CSharpAdapter.visitComplexity",
-      "startLine": 211,
-      "startOffset": 6931,
+      "startLine": 212,
+      "startOffset": 7000,
       "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitComplexity::method"
     },
     {
-      "endLine": 270,
-      "endOffset": 8878,
+      "endLine": 274,
+      "endOffset": 9098,
       "kind": "method",
-      "name": "CSharpAdapter.isPublic",
-      "startLine": 264,
-      "startOffset": 8644,
-      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.isPublic::method"
+      "name": "CSharpAdapter.countParameters",
+      "startLine": 266,
+      "startOffset": 8784,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.countParameters::method"
     },
     {
       "endLine": 282,
-      "endOffset": 9418,
+      "endOffset": 9336,
+      "kind": "method",
+      "name": "CSharpAdapter.isPublic",
+      "startLine": 276,
+      "startOffset": 9102,
+      "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.isPublic::method"
+    },
+    {
+      "endLine": 294,
+      "endOffset": 9876,
       "kind": "method",
       "name": "CSharpAdapter.resolveBaseType",
-      "startLine": 272,
-      "startOffset": 8882,
+      "startLine": 284,
+      "startOffset": 9340,
       "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.resolveBaseType::method"
     }
   ]

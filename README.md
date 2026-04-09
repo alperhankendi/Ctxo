@@ -1,27 +1,45 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/hero-svg.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/img/hero-svg.svg">
+  <img alt="Ctxo — Code intelligence for AI agents" src="docs/img/hero-svg.svg" width="720">
+</picture>
+
 # Ctxo
 
 **Code intelligence for AI agents — one call instead of hundreds.**
 
-AI coding assistants waste context window reading files one by one, still missing dependencies. Ctxo gives them the full picture in a single MCP call: symbol graphs, blast radius, git intent, and risk scores.
+[![npm version](https://img.shields.io/npm/v/ctxo-mcp.svg)](https://www.npmjs.com/package/ctxo-mcp)
+[![CI](https://github.com/alperhankendi/Ctxo/actions/workflows/ci.yml/badge.svg)](https://github.com/alperhankendi/Ctxo/actions/workflows/ci.yml)
+[![Release](https://github.com/alperhankendi/Ctxo/actions/workflows/release.yml/badge.svg)](https://github.com/alperhankendi/Ctxo/actions/workflows/release.yml)
 
-[Live Demo — Index Visualizer](https://alperhankendi.github.io/Ctxo/ctxo-visualizer.html)
+</div>
 
-```
-Context per query set (full codebase investigation):
+***
 
-Manual   ████████████████████████████████████████  140,000 tokens
-Ctxo     █░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░    2,900 tokens  → 48x less
+### The Problem
 
-Tool calls per query set:
+AI coding assistants like Copilot, Claude Code, and Cursor rely on generic tools — `grep`, `find`, file reads — to understand your codebase. On brownfield projects with thousands of files, this brute-force exploration creates a chain of problems:
 
-Manual   ████████████████████████████████████████  409+ calls
-Ctxo     █░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░    8 calls       → 51x fewer
+* **Context window saturation** — The agent fills its window reading files one by one, leaving little room for actual reasoning
+* **Partial context hallucination** — It sees a function but misses its dependencies, leading to wrong assumptions and broken suggestions
+* **Lost-in-the-middle** — Critical information buried deep in a long context gets ignored by the model
+* **Context poisoning** — Irrelevant code pulled in during exploration biases the model's output
+* **Iteration overhead** — Understanding one symbol takes 10-20 tool calls, each adding more noise to the context
+* **Stale reasoning** — After too many iterations, the agent contradicts its own earlier assumptions
 
-Context after 10 investigation rounds:
+The result: more tokens burned, slower responses, higher cost, and lower quality output.
 
-Manual   ██████████████████████████████████████████ 140% — OOM at round 7
-Ctxo     █░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 2.9% — 97% free for coding
-```
+### The Solution
+
+Ctxo is an **MCP server** that **enhances** your existing AI tools with dependency-aware, history-enriched code intelligence. Instead of hundreds of `grep` and `read_file` calls, your agent gets the full picture — symbol graphs, blast radius, git intent, and risk scores — in a **single MCP call**.
+
+* **Clean context** — Only relevant symbols and their transitive dependencies, nothing more
+* **Fewer iterations** — One call replaces an entire exploration cycle
+* **Higher quality** — The agent reasons over structured, complete context instead of fragmented file reads
+
+> A senior developer takes \~10 minutes to gather context across files. Ctxo delivers that same context in **under 500ms**.
 
 ## Quick Start
 
@@ -57,22 +75,22 @@ npx ctxo-mcp index
 
 ## 14 Tools
 
-| Tool                        | What it does                                                     |
-| --------------------------- | ---------------------------------------------------------------- |
-| `get_logic_slice`           | Symbol + transitive dependencies (L1-L4 progressive detail)      |
-| `get_blast_radius`          | What breaks if this changes (3-tier: confirmed/likely/potential) |
-| `get_architectural_overlay` | Project layer map (Domain/Infrastructure/Adapter)                |
-| `get_why_context`           | Git commit intent + anti-pattern warnings (reverts, rollbacks)   |
-| `get_change_intelligence`   | Complexity x churn composite score                               |
-| `find_dead_code`            | Unreachable symbols, unused exports, scaffolding markers         |
-| `get_context_for_task`      | Task-optimized context (fix/extend/refactor/understand)          |
+| Tool                        | What it does                                                                             |
+| --------------------------- | ---------------------------------------------------------------------------------------- |
+| `get_logic_slice`           | Symbol + transitive dependencies (L1-L4 progressive detail)                              |
+| `get_blast_radius`          | What breaks if this changes (3-tier: confirmed/likely/potential)                         |
+| `get_architectural_overlay` | Project layer map (Domain/Infrastructure/Adapter)                                        |
+| `get_why_context`           | Git commit intent + anti-pattern warnings (reverts, rollbacks)                           |
+| `get_change_intelligence`   | Complexity x churn composite score                                                       |
+| `find_dead_code`            | Unreachable symbols, unused exports, scaffolding markers                                 |
+| `get_context_for_task`      | Task-optimized context (fix/extend/refactor/understand)                                  |
 | `get_ranked_context`        | Two-phase BM25 search (camelCase-aware, fuzzy correction) + PageRank within token budget |
-| `search_symbols`            | Symbol name/regex search across index (`mode: 'fts'` for BM25)  |
-| `get_changed_symbols`       | Symbols in recently changed files (git diff)                     |
-| `find_importers`            | Reverse dependency lookup ("who uses this?")                     |
-| `get_class_hierarchy`       | Class inheritance tree (ancestors + descendants)                 |
-| `get_symbol_importance`     | PageRank centrality ranking                                      |
-| `get_pr_impact`             | Full PR risk assessment in a single call                         |
+| `search_symbols`            | Symbol name/regex search across index (`mode: 'fts'` for BM25)                           |
+| `get_changed_symbols`       | Symbols in recently changed files (git diff)                                             |
+| `find_importers`            | Reverse dependency lookup ("who uses this?")                                             |
+| `get_class_hierarchy`       | Class inheritance tree (ancestors + descendants)                                         |
+| `get_symbol_importance`     | PageRank centrality ranking                                                              |
+| `get_pr_impact`             | Full PR risk assessment in a single call                                                 |
 
 ## Tool Selection Guide
 
@@ -168,7 +186,7 @@ See [Agentic AI Integration Guide](docs/agentic-ai-integration.md) for LangChain
 
 Ctxo ships with an interactive visualizer that renders your codebase index as a dependency graph. Explore symbols, edges, layers, and PageRank scores visually — deployed automatically to GitHub Pages on every push.
 
-![Ctxo Index Visualizer](docs/img/ui.png)
+![1.00](docs/img/ui.png)
 
 [Open Live Visualizer](https://alperhankendi.github.io/Ctxo/ctxo-visualizer.html)
 

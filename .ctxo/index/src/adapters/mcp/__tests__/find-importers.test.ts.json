@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "e7f98882f518dc0c20cb3ff006485c72746675c5faabf6042d66f935777e28cb",
+  "contentHash": "0f6b148e9d2195a9f19c6fcd58cb591677b18f3286695d6441820d1c8ee0f50d",
   "edges": [
     {
       "from": "src/adapters/mcp/__tests__/find-importers.test.ts::find-importers.test::variable",
@@ -28,12 +28,18 @@
   "file": "src/adapters/mcp/__tests__/find-importers.test.ts",
   "intent": [
     {
+      "date": "2026-04-08T16:50:11+03:00",
+      "hash": "c02da4f533f70d435e58c6ef82205beeabc3c5d2",
+      "kind": "commit",
+      "message": "Add dedup regression tests and update runbook checklist (#22)"
+    },
+    {
       "date": "2026-03-31T03:15:55+03:00",
       "hash": "dcae17802c9cc167416a9a55e325e5da1a595639",
       "kind": "commit",
       "message": "Add 4 new MCP tools, --max-history limit, and improve test coverage"
     }
   ],
-  "lastModified": 1775655013,
+  "lastModified": 1775691832,
   "symbols": []
 }

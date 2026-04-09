@@ -6,7 +6,7 @@
       "symbolId": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
     }
   ],
-  "contentHash": "5b0e79b5e9ae377445c02a6f3db175da37feabdc33ff08fe26d90ff3784bbd9b",
+  "contentHash": "675e7ebc3345eeb8fb490d82f3a154227c5adfcf57214dec0f949f1b58431046",
   "edges": [
     {
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
@@ -120,6 +120,12 @@
   "file": "src/adapters/mcp/get-blast-radius.ts",
   "intent": [
     {
+      "date": "2026-04-08T18:30:54+03:00",
+      "hash": "bd9e7ba0057fdbf9eadfc0ea56ddb9b685059a8e",
+      "kind": "commit",
+      "message": "Fix TS2352 typecheck errors in MCP tool handlers"
+    },
+    {
       "date": "2026-04-08T16:12:30+03:00",
       "hash": "ad40ce28e65533d214754df71851a4c7a2f5e5c1",
       "kind": "commit",
@@ -180,11 +186,11 @@
       "message": "Add blast radius calculator and architectural overlay"
     }
   ],
-  "lastModified": 1775655013,
+  "lastModified": 1775691832,
   "symbols": [
     {
       "endLine": 86,
-      "endOffset": 3302,
+      "endOffset": 3313,
       "kind": "function",
       "name": "handleGetBlastRadius",
       "startLine": 15,

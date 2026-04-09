@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" fill="none">
+  <defs>
+    <linearGradient id="redGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ff4060"/><stop offset="100%" stop-color="#ff8a3d"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00e88f"/><stop offset="100%" stop-color="#00d4ff"/>
+    </linearGradient>
+    <linearGradient id="redGradL" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#dc2f4e"/><stop offset="100%" stop-color="#d97218"/>
+    </linearGradient>
+    <linearGradient id="greenGradL" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#0891b2"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800');
+
+      .bg{fill:#0a0a0f} .sf{fill:#12121a;stroke:#1e1e2e}
+      .t1{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:3px;fill:#00d4ff}
+      .t2{font-family:'JetBrains Mono',monospace;font-size:20px;fill:#6b6b80}
+      .t2b{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;fill:#e2e2ef}
+      .lb{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px}
+      .nt{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700}
+      .pr{font-family:'JetBrains Mono',monospace;font-size:11px;fill:#6b6b80}
+      .xm{font-family:'JetBrains Mono',monospace;font-size:11px;fill:#ff4060}
+      .ck{font-family:'JetBrains Mono',monospace;font-size:11px;fill:#00e88f}
+      .ml{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1.5px;fill:#6b6b80}
+      .mo{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;fill:#ff4060;text-decoration:line-through;opacity:.6}
+      .mn{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:800;fill:#00e88f}
+      .mb{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;fill:#00e88f}
+      .vs{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:800;fill:#3a3a50;letter-spacing:2px}
+      .ft{font-family:'JetBrains Mono',monospace;font-size:11px;fill:#6b6b80}
+      .ov{font-family:'JetBrains Mono',monospace;font-size:10px;fill:#ff4060}
+      .cl{font-family:'JetBrains Mono',monospace;font-size:9px;fill:#6b6b80}
+      .cg{font-family:'JetBrains Mono',monospace;font-size:9px;fill:#00e88f}
+      .mc{font-family:'JetBrains Mono',monospace;font-size:9px;fill:#5a5a70}
+      .mcb{font-family:'JetBrains Mono',monospace;font-size:9px;fill:#6b6b80;font-weight:700}
+
+      .lr{fill:#ff4060} .lo{fill:#ff8a3d} .lp{fill:#a78bfa} .lg{fill:#00e88f} .lc{fill:#00d4ff}
+      .nr{fill:rgba(255,64,96,.1);stroke:rgba(255,64,96,.3)}
+      .no{fill:rgba(255,138,61,.1);stroke:rgba(255,138,61,.3)}
+      .np{fill:rgba(167,139,250,.1);stroke:rgba(167,139,250,.3)}
+      .ca{fill:rgba(0,212,255,.1);stroke:rgba(0,212,255,.3)}
+      .cc{fill:rgba(0,232,143,.12);stroke:#00e88f}
+      .cd{fill:rgba(0,232,143,.08);stroke:rgba(0,232,143,.25)}
+      .ob{fill:rgba(255,64,96,.08)}
+      .bb{fill:rgba(0,232,143,.1);stroke:rgba(0,232,143,.2)}
+      .sl{stroke:#ff4060;opacity:.2}
+      .gl{opacity:.5}
+      .tr{fill:url(#redGrad)} .tg{fill:url(#greenGrad)}
+      .af{fill:#00e88f} .as{stroke:url(#greenGrad)}
+      .icon-cyan{stroke:#00d4ff;fill:none} .icon-green{stroke:#00e88f;fill:none}
+      .mcbg{fill:rgba(0,212,255,.05);stroke:rgba(0,212,255,.15)}
+      .mci{stroke:#00d4ff;fill:none}
+
+      @media(prefers-color-scheme:light){
+        .bg{fill:#f8f9fc} .sf{fill:#fff;stroke:#e2e4ea}
+        .t1{fill:#0891b2} .t2{fill:#6e7181} .t2b{fill:#1a1a2e}
+        .pr{fill:#6e7181} .xm{fill:#dc2f4e} .ck{fill:#059669}
+        .ml{fill:#6e7181} .mo{fill:#dc2f4e;opacity:.5} .mn{fill:#059669} .mb{fill:#059669}
+        .vs{fill:#b0b3c0} .ft{fill:#6e7181} .ov{fill:#dc2f4e}
+        .cl{fill:#6e7181} .cg{fill:#059669}
+        .mc{fill:#6e7181} .mcb{fill:#6e7181}
+        .lr{fill:#dc2f4e} .lo{fill:#d97218} .lp{fill:#7c3aed} .lg{fill:#059669} .lc{fill:#0891b2}
+        .nr{fill:rgba(220,47,78,.07);stroke:rgba(220,47,78,.22)}
+        .no{fill:rgba(217,114,24,.07);stroke:rgba(217,114,24,.22)}
+        .np{fill:rgba(124,58,237,.07);stroke:rgba(124,58,237,.22)}
+        .ca{fill:rgba(8,145,178,.07);stroke:rgba(8,145,178,.22)}
+        .cc{fill:rgba(5,150,105,.08);stroke:#059669}
+        .cd{fill:rgba(5,150,105,.05);stroke:rgba(5,150,105,.18)}
+        .ob{fill:rgba(220,47,78,.05)}
+        .bb{fill:rgba(5,150,105,.07);stroke:rgba(5,150,105,.18)}
+        .sl{stroke:#dc2f4e;opacity:.15}
+        .gl{opacity:.6}
+        .tr{fill:url(#redGradL)} .tg{fill:url(#greenGradL)}
+        .af{fill:#059669} .as{stroke:url(#greenGradL)}
+        .icon-cyan{stroke:#0891b2} .icon-green{stroke:#059669}
+        .mcbg{fill:rgba(8,145,178,.04);stroke:rgba(8,145,178,.12)}
+        .mci{stroke:#0891b2}
+      }
+    </style>
+  </defs>
+
+  <rect class="bg" width="960" height="540" rx="16"/>
+
+  <!-- Header -->
+  <g transform="translate(453,18)">
+    <path class="icon-cyan" d="M10 1L2 11h7l-.8 6.4L16 7H9l1-6z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="490" y="36" text-anchor="middle" class="t1">CTXO</text>
+  <text x="480" y="64" text-anchor="middle">
+    <tspan class="t2">Your AI agent explores </tspan><tspan class="t2b">409+ files</tspan><tspan class="t2"> to understand one symbol.</tspan>
+  </text>
+  <text x="480" y="88" text-anchor="middle">
+    <tspan class="t2">What if it only needed </tspan><tspan class="t2b">one call</tspan><tspan class="t2">?</tspan>
+  </text>
+
+  <!-- LEFT PANEL -->
+  <rect class="sf" x="24" y="110" width="424" height="290" rx="12"/>
+  <rect class="tr" x="24" y="110" width="424" height="3" rx="1.5"/>
+  <text x="52" y="140" class="lb lr">WITHOUT CTXO</text>
+
+  <g class="sl" stroke-width="1">
+    <line x1="75" y1="175" x2="185" y2="210"/><line x1="185" y1="210" x2="115" y2="250"/>
+    <line x1="260" y1="180" x2="215" y2="245"/><line x1="75" y1="175" x2="260" y2="180"/>
+    <line x1="330" y1="215" x2="215" y2="245"/><line x1="115" y1="250" x2="290" y2="280"/>
+    <line x1="185" y1="210" x2="330" y2="215"/><line x1="360" y1="190" x2="260" y2="180"/>
+    <line x1="360" y1="190" x2="350" y2="265"/><line x1="160" y1="275" x2="290" y2="280"/>
+    <line x1="115" y1="250" x2="160" y2="275"/><line x1="215" y1="245" x2="160" y2="275"/>
+  </g>
+
+  <rect class="nr" x="56" y="160" width="38" height="30" rx="6"/><text x="75" y="179" text-anchor="middle" class="nt lr">grep</text>
+  <rect class="np" x="166" y="196" width="38" height="30" rx="6"/><text x="185" y="215" text-anchor="middle" class="nt lp">read</text>
+  <rect class="nr" x="241" y="166" width="38" height="30" rx="6"/><text x="260" y="185" text-anchor="middle" class="nt lr">find</text>
+  <rect class="no" x="311" y="200" width="38" height="30" rx="6"/><text x="330" y="219" text-anchor="middle" class="nt lo">grep</text>
+  <rect class="np" x="96" y="236" width="38" height="30" rx="6"/><text x="115" y="255" text-anchor="middle" class="nt lp">read</text>
+  <rect class="nr" x="196" y="231" width="38" height="30" rx="6"/><text x="215" y="250" text-anchor="middle" class="nt lr">read</text>
+  <rect class="no" x="141" y="261" width="38" height="30" rx="6"/><text x="160" y="280" text-anchor="middle" class="nt lo">grep</text>
+  <rect class="np" x="271" y="266" width="38" height="30" rx="6"/><text x="290" y="285" text-anchor="middle" class="nt lp">read</text>
+  <rect class="nr" x="341" y="176" width="38" height="30" rx="6"/><text x="360" y="195" text-anchor="middle" class="nt lr">find</text>
+  <rect class="no" x="331" y="251" width="38" height="30" rx="6"/><text x="350" y="270" text-anchor="middle" class="nt lo">read</text>
+
+  <rect class="ob" x="24" y="298" width="424" height="28"/>
+  <text x="236" y="316" text-anchor="middle" class="ov">⚠ CONTEXT OVERFLOW</text>
+
+  <text x="52" y="346"><tspan class="xm">✕ </tspan><tspan class="pr">Context window saturated</tspan></text>
+  <text x="52" y="363"><tspan class="xm">✕ </tspan><tspan class="pr">Partial context hallucination</tspan></text>
+  <text x="52" y="380"><tspan class="xm">✕ </tspan><tspan class="pr">Lost-in-the-middle / context poisoning</tspan></text>
+  <text x="52" y="397"><tspan class="xm">✕ </tspan><tspan class="pr">10-20 tool calls per symbol</tspan></text>
+
+  <text x="480" y="260" text-anchor="middle" class="vs">VS</text>
+
+  <!-- RIGHT PANEL -->
+  <rect class="sf" x="512" y="110" width="424" height="290" rx="12"/>
+  <rect class="tg" x="512" y="110" width="424" height="3" rx="1.5"/>
+  <text x="540" y="140" class="lb lg">WITH CTXO</text>
+
+  <!-- Agent node -->
+  <rect class="ca" x="574" y="210" width="52" height="52" rx="12"/>
+  <g transform="translate(588,222)" class="icon-cyan" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="1" y="1" width="22" height="15" rx="2"/><path d="M7 20h10"/><path d="M12 16v4"/>
+    <path d="M6 7l3 3-3 3"/><line x1="12" y1="13" x2="17" y2="13"/>
+  </g>
+  <text x="600" y="278" text-anchor="middle" class="cl">Agent</text>
+
+  <line class="as" x1="634" y1="236" x2="684" y2="236" stroke-width="2"/>
+  <polygon class="af" points="684,232 692,236 684,240"/>
+
+  <!-- Ctxo node -->
+  <rect class="cc" x="700" y="202" width="64" height="64" rx="16" stroke-width="2" filter="url(#glow)"/>
+  <g transform="translate(718,218)" class="icon-green" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 1L4 13h8l-1 8L21 9h-8l1-8z"/>
+  </g>
+  <text x="732" y="282" text-anchor="middle" class="cg">Ctxo</text>
+
+  <line class="as" x1="772" y1="236" x2="822" y2="236" stroke-width="2"/>
+  <polygon class="af" points="822,232 830,236 822,240"/>
+
+  <!-- Done node -->
+  <rect class="cd" x="838" y="210" width="52" height="52" rx="12"/>
+  <g transform="translate(850,222)" class="icon-green" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>
+  </g>
+  <text x="864" y="278" text-anchor="middle" class="cl">Done</text>
+
+  <text x="540" y="316"><tspan class="ck">✓ </tspan><tspan class="pr">Clean, relevant context only</tspan></text>
+  <text x="540" y="333"><tspan class="ck">✓ </tspan><tspan class="pr">One call replaces full exploration</tspan></text>
+  <text x="540" y="350"><tspan class="ck">✓ </tspan><tspan class="pr">Structured symbol graphs + deps</tspan></text>
+
+  <!-- MCP strip -->
+  <rect class="mcbg" x="530" y="368" width="390" height="26" rx="6"/>
+  <g transform="translate(538,372)" class="mci" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="8" cy="8" r="7"/><line x1="1" y1="8" x2="15" y2="8"/>
+    <path d="M8 1a10.7 10.7 0 012.8 7A10.7 10.7 0 018 15a10.7 10.7 0 01-2.8-7A10.7 10.7 0 018 1z"/>
+  </g>
+  <text x="558" y="385">
+    <tspan class="mc">Built on </tspan><tspan class="mcb">MCP</tspan>
+    <tspan class="mc"> — Claude Code · Copilot · Cursor · Windsurf · Cline &amp; more</tspan>
+  </text>
+
+  <!-- METRICS -->
+  <rect class="sf" x="24" y="420" width="296" height="80" rx="12"/>
+  <rect class="gl" x="24" y="498" width="296" height="2" rx="1" fill="url(#greenGrad)"/>
+  <text x="172" y="444" text-anchor="middle" class="ml">TOKEN USAGE</text>
+  <text x="120" y="472" text-anchor="middle" class="mo">140K</text>
+  <text x="157" y="472" text-anchor="middle" class="ft">→</text>
+  <text x="200" y="474" text-anchor="middle" class="mn">2.9K</text>
+  <rect class="bb" x="240" y="458" width="60" height="22" rx="11"/>
+  <text x="270" y="473" text-anchor="middle" class="mb">48× ↓</text>
+
+  <rect class="sf" x="332" y="420" width="296" height="80" rx="12"/>
+  <rect class="gl" x="332" y="498" width="296" height="2" rx="1" fill="url(#greenGrad)"/>
+  <text x="480" y="444" text-anchor="middle" class="ml">TOOL CALLS</text>
+  <text x="428" y="472" text-anchor="middle" class="mo">409+</text>
+  <text x="465" y="472" text-anchor="middle" class="ft">→</text>
+  <text x="500" y="474" text-anchor="middle" class="mn">8</text>
+  <rect class="bb" x="532" y="458" width="60" height="22" rx="11"/>
+  <text x="562" y="473" text-anchor="middle" class="mb">51× ↓</text>
+
+  <rect class="sf" x="640" y="420" width="296" height="80" rx="12"/>
+  <rect class="gl" x="640" y="498" width="296" height="2" rx="1" fill="url(#greenGrad)"/>
+  <text x="788" y="444" text-anchor="middle" class="ml">CONTEXT FREE</text>
+  <text x="724" y="472" text-anchor="middle" class="mo">Overflow</text>
+  <text x="773" y="472" text-anchor="middle" class="ft">→</text>
+  <text x="812" y="474" text-anchor="middle" class="mn">97%</text>
+  <rect class="bb" x="848" y="458" width="68" height="22" rx="11"/>
+  <text x="882" y="473" text-anchor="middle" class="mb">97% free</text>
+</svg>

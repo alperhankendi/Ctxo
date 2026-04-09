@@ -1,0 +1,149 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 8,
+      "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.tokenize::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.tokenizeQuery::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitName::method"
+    },
+    {
+      "cyclomatic": 15,
+      "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.tokenizeFilePath::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.isStopWord::method"
+    }
+  ],
+  "contentHash": "0acec551762cfafb30311640fe945cbdef87af5b97969f3fac377b5184b5a0df",
+  "edges": [
+    {
+      "from": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method",
+      "kind": "calls",
+      "to": "src/core/search/symbol-tokenizer.ts::isDigit::function"
+    },
+    {
+      "from": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method",
+      "kind": "calls",
+      "to": "src/core/search/symbol-tokenizer.ts::isDigit::function"
+    },
+    {
+      "from": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method",
+      "kind": "calls",
+      "to": "src/core/search/symbol-tokenizer.ts::isLower::function"
+    },
+    {
+      "from": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method",
+      "kind": "calls",
+      "to": "src/core/search/symbol-tokenizer.ts::isUpper::function"
+    },
+    {
+      "from": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method",
+      "kind": "calls",
+      "to": "src/core/search/symbol-tokenizer.ts::isUpper::function"
+    },
+    {
+      "from": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method",
+      "kind": "calls",
+      "to": "src/core/search/symbol-tokenizer.ts::isUpper::function"
+    },
+    {
+      "from": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method",
+      "kind": "calls",
+      "to": "src/core/search/symbol-tokenizer.ts::isDigit::function"
+    },
+    {
+      "from": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method",
+      "kind": "calls",
+      "to": "src/core/search/symbol-tokenizer.ts::isUpper::function"
+    }
+  ],
+  "file": "src/core/search/symbol-tokenizer.ts",
+  "intent": [],
+  "lastModified": 1775691832,
+  "symbols": [
+    {
+      "endLine": 192,
+      "endOffset": 6123,
+      "kind": "class",
+      "name": "SymbolTokenizer",
+      "startLine": 27,
+      "startOffset": 894,
+      "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer::class"
+    },
+    {
+      "endLine": 71,
+      "endOffset": 2378,
+      "kind": "method",
+      "name": "SymbolTokenizer.tokenize",
+      "startLine": 44,
+      "startOffset": 1526,
+      "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.tokenize::method"
+    },
+    {
+      "endLine": 89,
+      "endOffset": 2893,
+      "kind": "method",
+      "name": "SymbolTokenizer.tokenizeQuery",
+      "startLine": 76,
+      "startOffset": 2476,
+      "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.tokenizeQuery::method"
+    },
+    {
+      "endLine": 112,
+      "endOffset": 3689,
+      "kind": "method",
+      "name": "SymbolTokenizer.splitName",
+      "startLine": 100,
+      "startOffset": 3271,
+      "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitName::method"
+    },
+    {
+      "endLine": 165,
+      "endOffset": 5261,
+      "kind": "method",
+      "name": "SymbolTokenizer.splitCamelCase",
+      "startLine": 117,
+      "startOffset": 3775,
+      "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method"
+    },
+    {
+      "endLine": 186,
+      "endOffset": 5981,
+      "kind": "method",
+      "name": "SymbolTokenizer.tokenizeFilePath",
+      "startLine": 171,
+      "startOffset": 5426,
+      "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.tokenizeFilePath::method"
+    },
+    {
+      "endLine": 191,
+      "endOffset": 6121,
+      "kind": "method",
+      "name": "SymbolTokenizer.isStopWord",
+      "startLine": 189,
+      "startOffset": 6026,
+      "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.isStopWord::method"
+    },
+    {
+      "endLine": 19,
+      "endOffset": 756,
+      "kind": "interface",
+      "name": "TokenizerOptions",
+      "startLine": 12,
+      "startOffset": 428,
+      "symbolId": "src/core/search/symbol-tokenizer.ts::TokenizerOptions::interface"
+    }
+  ]
+}
