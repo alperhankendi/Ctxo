@@ -95,7 +95,7 @@ function renderBanner(version: string | undefined, pc: PC): string {
   const colors = [pc.cyan, pc.cyan, pc.blueBright, pc.blueBright, pc.magentaBright, pc.magentaBright];
   const coloredArt = art.map((line, i) => colors[i](line));
 
-  const ver = version ? pc.dim(` v${version}`) : '';
+  const _ver = version ? pc.dim(` v${version}`) : '';
   const tagline1 = pc.bold(pc.white('  Code intelligence for AI agents.'));
   const tagline2 = pc.dim('  One call instead of hundreds.');
 
