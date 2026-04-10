@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { existsSync, readFileSync, writeFileSync, mkdirSync, chmodSync } from 'node:fs';
-import { PLATFORMS, detectPlatforms, installRules } from './ai-rules.js';
+import { PLATFORMS, detectPlatforms, installRules, ensureGitignore, ensureConfig } from './ai-rules.js';
 
 /* ------------------------------------------------------------------ */
 /*  Git hook content                                                   */
@@ -233,8 +233,20 @@ export class InitCommand {
 
     const results: string[] = [];
 
+    // Automatic scaffolding (always runs, no prompt needed)
+    const gitignoreResult = ensureGitignore(this.projectRoot);
+    const configResult = ensureConfig(this.projectRoot);
+
     if (!options.rulesOnly) {
       results.push(`${pc.green('\u2713')} ${pc.bold('.ctxo/index/')}  ${pc.dim('index directory')}`);
+    }
+
+    if (configResult.action !== 'skipped') {
+      results.push(`${pc.green('\u2713')} ${pc.bold(configResult.file)}  ${pc.dim(configResult.action)}`);
+    }
+
+    if (gitignoreResult.action !== 'skipped') {
+      results.push(`${pc.green('\u2713')} ${pc.bold(gitignoreResult.file)}  ${pc.dim(gitignoreResult.action)}`);
     }
 
     for (const toolId of (selectedTools as string[])) {
@@ -285,10 +297,21 @@ export class InitCommand {
       }
     }
 
+    // Automatic scaffolding
+    const gitignoreResult = ensureGitignore(this.projectRoot);
+    const configResult = ensureConfig(this.projectRoot);
+
     if (!options.rulesOnly) {
       const indexDir = join(this.projectRoot, '.ctxo', 'index');
       if (!existsSync(indexDir)) mkdirSync(indexDir, { recursive: true });
       console.error('[ctxo] \u2713 .ctxo/index/ ready');
+    }
+
+    if (configResult.action !== 'skipped') {
+      console.error(`[ctxo] \u2713 ${configResult.file} \u2014 ${configResult.action}`);
+    }
+    if (gitignoreResult.action !== 'skipped') {
+      console.error(`[ctxo] \u2713 ${gitignoreResult.file} \u2014 ${gitignoreResult.action}`);
     }
 
     for (const toolId of toolIds) {

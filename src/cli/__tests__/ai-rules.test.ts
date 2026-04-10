@@ -2,7 +2,7 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { mkdtempSync, rmSync, existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { PLATFORMS, generateRules, installRules, detectPlatforms } from '../ai-rules.js';
+import { PLATFORMS, generateRules, installRules, detectPlatforms, ensureGitignore, ensureConfig } from '../ai-rules.js';
 
 const tempDirs: string[] = [];
 
@@ -170,5 +170,68 @@ describe('installRules', () => {
     for (const p of PLATFORMS) {
       expect(() => installRules(dir, p.id)).not.toThrow();
     }
+  });
+});
+
+describe('ensureGitignore', () => {
+  it('creates .gitignore with cache entry if missing', () => {
+    const dir = makeTempDir();
+    const result = ensureGitignore(dir);
+    expect(result.action).toBe('created');
+    const content = readFileSync(join(dir, '.gitignore'), 'utf-8');
+    expect(content).toContain('.ctxo/.cache/');
+  });
+
+  it('appends cache entry to existing .gitignore', () => {
+    const dir = makeTempDir();
+    writeFileSync(join(dir, '.gitignore'), 'node_modules/\n', 'utf-8');
+    const result = ensureGitignore(dir);
+    expect(result.action).toBe('updated');
+    const content = readFileSync(join(dir, '.gitignore'), 'utf-8');
+    expect(content).toContain('node_modules/');
+    expect(content).toContain('.ctxo/.cache/');
+  });
+
+  it('skips if entry already exists', () => {
+    const dir = makeTempDir();
+    writeFileSync(join(dir, '.gitignore'), '.ctxo/.cache/\n', 'utf-8');
+    const result = ensureGitignore(dir);
+    expect(result.action).toBe('skipped');
+  });
+
+  it('is idempotent — does not duplicate entry', () => {
+    const dir = makeTempDir();
+    ensureGitignore(dir);
+    ensureGitignore(dir);
+    const content = readFileSync(join(dir, '.gitignore'), 'utf-8');
+    const count = (content.match(/\.ctxo\/\.cache\//g) ?? []).length;
+    expect(count).toBe(1);
+  });
+});
+
+describe('ensureConfig', () => {
+  it('creates config.yaml with defaults', () => {
+    const dir = makeTempDir();
+    const result = ensureConfig(dir);
+    expect(result.action).toBe('created');
+    expect(existsSync(join(dir, '.ctxo', 'config.yaml'))).toBe(true);
+    const content = readFileSync(join(dir, '.ctxo', 'config.yaml'), 'utf-8');
+    expect(content).toContain('version');
+  });
+
+  it('skips if config.yaml already exists', () => {
+    const dir = makeTempDir();
+    mkdirSync(join(dir, '.ctxo'), { recursive: true });
+    writeFileSync(join(dir, '.ctxo', 'config.yaml'), 'custom: true\n', 'utf-8');
+    const result = ensureConfig(dir);
+    expect(result.action).toBe('skipped');
+    const content = readFileSync(join(dir, '.ctxo', 'config.yaml'), 'utf-8');
+    expect(content).toBe('custom: true\n');
+  });
+
+  it('creates .ctxo/ directory if missing', () => {
+    const dir = makeTempDir();
+    ensureConfig(dir);
+    expect(existsSync(join(dir, '.ctxo'))).toBe(true);
   });
 });

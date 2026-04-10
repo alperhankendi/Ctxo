@@ -159,3 +159,47 @@ export function installRules(projectRoot: string, platformId: string): InstallRe
 function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
+
+/* ------------------------------------------------------------------ */
+/*  Project scaffolding (automatic, not prompted)                      */
+/* ------------------------------------------------------------------ */
+
+const GITIGNORE_ENTRY = '.ctxo/.cache/';
+
+export function ensureGitignore(projectRoot: string): InstallResult {
+  const filePath = join(projectRoot, '.gitignore');
+
+  if (!existsSync(filePath)) {
+    writeFileSync(filePath, `# Ctxo local cache (auto-rebuilt, never committed)\n${GITIGNORE_ENTRY}\n`, 'utf-8');
+    return { file: '.gitignore', action: 'created' };
+  }
+
+  const existing = readFileSync(filePath, 'utf-8');
+  if (existing.includes(GITIGNORE_ENTRY)) {
+    return { file: '.gitignore', action: 'skipped' };
+  }
+
+  const separator = existing.endsWith('\n') ? '\n' : '\n\n';
+  const updated = existing + `${separator}# Ctxo local cache (auto-rebuilt, never committed)\n${GITIGNORE_ENTRY}\n`;
+  writeFileSync(filePath, updated, 'utf-8');
+  return { file: '.gitignore', action: 'updated' };
+}
+
+const DEFAULT_CONFIG = `# ctxo project configuration
+# Docs: https://github.com/alperhankendi/Ctxo
+version: "1.0"
+`;
+
+export function ensureConfig(projectRoot: string): InstallResult {
+  const filePath = join(projectRoot, '.ctxo', 'config.yaml');
+  const dir = dirname(filePath);
+
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+
+  if (existsSync(filePath)) {
+    return { file: '.ctxo/config.yaml', action: 'skipped' };
+  }
+
+  writeFileSync(filePath, DEFAULT_CONFIG, 'utf-8');
+  return { file: '.ctxo/config.yaml', action: 'created' };
+}
