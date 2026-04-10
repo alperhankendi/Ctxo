@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 import type { IHealthCheck, CheckResult, CheckContext } from '../../../core/diagnostics/types.js';
+import type { FileIndex } from '../../../core/types.js';
 import { JsonIndexReader } from '../../storage/json-index-reader.js';
 import { StalenessDetector } from '../../../core/staleness/staleness-detector.js';
 import { SchemaManager } from '../../storage/schema-manager.js';
@@ -16,6 +17,11 @@ function fail(id: string, title: string, message: string, fix?: string, value?: 
   return { id, title, status: 'fail', message, fix, value };
 }
 
+/** Use pre-loaded indices from context, or fall back to reading from disk */
+function getIndices(ctx: CheckContext): readonly FileIndex[] {
+  return ctx.indices ?? new JsonIndexReader(ctx.ctxoRoot).readAll();
+}
+
 export class IndexDirectoryCheck implements IHealthCheck {
   readonly id = 'index_directory';
   readonly title = 'Index directory';
@@ -25,8 +31,7 @@ export class IndexDirectoryCheck implements IHealthCheck {
     if (!existsSync(indexDir)) {
       return fail(this.id, this.title, 'No index directory', 'Run "ctxo index"');
     }
-    const reader = new JsonIndexReader(ctx.ctxoRoot);
-    const indices = reader.readAll();
+    const indices = getIndices(ctx);
     if (indices.length === 0) {
       return fail(this.id, this.title, 'Index directory empty', 'Run "ctxo index"');
     }
@@ -39,8 +44,7 @@ export class IndexFreshnessCheck implements IHealthCheck {
   readonly title = 'Index freshness';
 
   async run(ctx: CheckContext): Promise<CheckResult> {
-    const reader = new JsonIndexReader(ctx.ctxoRoot);
-    const indices = reader.readAll();
+    const indices = getIndices(ctx);
     if (indices.length === 0) {
       return fail(this.id, this.title, 'No indexed files to check', 'Run "ctxo index"');
     }
@@ -69,8 +73,7 @@ export class SymbolCountCheck implements IHealthCheck {
   readonly title = 'Symbol count';
 
   async run(ctx: CheckContext): Promise<CheckResult> {
-    const reader = new JsonIndexReader(ctx.ctxoRoot);
-    const indices = reader.readAll();
+    const indices = getIndices(ctx);
     const total = indices.reduce((sum, idx) => sum + idx.symbols.length, 0);
     if (total > 0) {
       return pass(this.id, this.title, `${total.toLocaleString()} symbols`, String(total));
@@ -84,8 +87,7 @@ export class EdgeCountCheck implements IHealthCheck {
   readonly title = 'Edge count';
 
   async run(ctx: CheckContext): Promise<CheckResult> {
-    const reader = new JsonIndexReader(ctx.ctxoRoot);
-    const indices = reader.readAll();
+    const indices = getIndices(ctx);
     const total = indices.reduce((sum, idx) => sum + idx.edges.length, 0);
     if (total > 0) {
       return pass(this.id, this.title, `${total.toLocaleString()} edges`, String(total));
@@ -99,8 +101,7 @@ export class OrphanedFilesCheck implements IHealthCheck {
   readonly title = 'Orphaned index files';
 
   async run(ctx: CheckContext): Promise<CheckResult> {
-    const reader = new JsonIndexReader(ctx.ctxoRoot);
-    const indices = reader.readAll();
+    const indices = getIndices(ctx);
     if (indices.length === 0) {
       return pass(this.id, this.title, 'no index files to check');
     }

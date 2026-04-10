@@ -9,7 +9,6 @@ import { buildFileIndex } from '../../adapters/storage/__tests__/test-fixtures.j
 let tempDir: string;
 let errorSpy: ReturnType<typeof vi.spyOn>;
 let stdoutSpy: ReturnType<typeof vi.spyOn>;
-let exitSpy: ReturnType<typeof vi.spyOn>;
 
 function setupHealthyProject(): void {
   const ctxoRoot = join(tempDir, '.ctxo');
@@ -55,22 +54,22 @@ beforeEach(() => {
   tempDir = mkdtempSync(join(tmpdir(), 'ctxo-doctor-'));
   errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
   stdoutSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
-  exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => { throw new Error('exit'); }) as never);
+  process.exitCode = undefined; // reset between tests
 });
 
 afterEach(() => {
   errorSpy.mockRestore();
   stdoutSpy.mockRestore();
-  exitSpy.mockRestore();
+  process.exitCode = undefined;
   rmSync(tempDir, { recursive: true, force: true });
 });
 
 describe('DoctorCommand', () => {
-  it('runs without crashing on empty project', async () => {
+  it('sets exitCode 1 on empty project (many checks fail)', async () => {
     const cmd = new DoctorCommand(tempDir);
-    // Will have failures (no index, no git repo in tempDir) → exit(1)
-    await expect(cmd.run()).rejects.toThrow('exit');
-    expect(exitSpy).toHaveBeenCalledWith(1);
+    await cmd.run();
+    expect(process.exitCode).toBe(1);
+    process.exitCode = undefined; // cleanup
   });
 
   it('outputs human-readable format by default', async () => {
@@ -118,11 +117,12 @@ describe('DoctorCommand', () => {
     expect(output).not.toContain('ctxo doctor — Health Check');
   });
 
-  it('exits with code 1 when any check fails', async () => {
+  it('sets exitCode 1 when any check fails', async () => {
     // Empty temp dir — no .git, no .ctxo — many checks will fail
     const cmd = new DoctorCommand(tempDir);
-    await expect(cmd.run()).rejects.toThrow('exit');
-    expect(exitSpy).toHaveBeenCalledWith(1);
+    await cmd.run();
+    expect(process.exitCode).toBe(1);
+    process.exitCode = undefined; // cleanup
   });
 
   it('does not exit when all checks pass or warn on healthy project', async () => {

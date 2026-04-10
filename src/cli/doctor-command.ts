@@ -1,5 +1,7 @@
 import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 import type { IHealthCheck } from '../core/diagnostics/types.js';
+import { JsonIndexReader } from '../adapters/storage/json-index-reader.js';
 import { HealthChecker } from '../adapters/diagnostics/health-checker.js';
 import { DoctorReporter } from '../adapters/diagnostics/doctor-reporter.js';
 import { NodeVersionCheck, TsMorphCheck, TreeSitterCheck } from '../adapters/diagnostics/checks/runtime-check.js';
@@ -50,10 +52,17 @@ export class DoctorCommand {
       new SchemaVersionCheck(),
     ];
 
+    // Pre-load index once — shared by all index-related checks (avoids 5x redundant readAll)
+    const indexDir = join(this.ctxoRoot, 'index');
+    const indices = existsSync(indexDir)
+      ? new JsonIndexReader(this.ctxoRoot).readAll()
+      : [];
+
     const checker = new HealthChecker(checks);
     const report = await checker.runAll({
       projectRoot: this.projectRoot,
       ctxoRoot: this.ctxoRoot,
+      indices,
     });
 
     const reporter = new DoctorReporter();
@@ -71,7 +80,7 @@ export class DoctorCommand {
     }
 
     if (report.exitCode !== 0) {
-      process.exit(1);
+      process.exitCode = 1;
     }
   }
 }

@@ -13,9 +13,10 @@ export class SqliteCacheCheck implements IHealthCheck {
     }
 
     try {
-      const initSqlJs = (await import('sql.js')).default;
+      const { default: initSqlJs } = await import('sql.js');
+      const SQL = await initSqlJs();
       const buffer = readFileSync(dbPath);
-      const db = new (await initSqlJs()).Database(new Uint8Array(buffer));
+      const db = new SQL.Database(new Uint8Array(buffer));
       const result = db.exec('PRAGMA integrity_check');
       db.close();
 

@@ -52,7 +52,7 @@ export class DoctorReporter {
   private formatCheckLine(check: CheckResult): string {
     const icon = ICONS[check.status] ?? '?';
     const title = check.title.padEnd(24);
-    const suffix = check.fix ? ` (${check.fix.toLowerCase().startsWith('run') ? check.fix : check.fix})` : '';
+    const suffix = check.fix ? ` (${check.fix})` : '';
     return `  ${icon} ${title} ${check.message}${suffix}`;
   }
 }

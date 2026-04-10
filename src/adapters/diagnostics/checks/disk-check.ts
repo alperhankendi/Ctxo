@@ -43,8 +43,11 @@ export class DiskUsageCheck implements IHealthCheck {
       for (const entry of entries) {
         if (entry.isFile()) {
           try {
-            const parentPath = (entry as unknown as { parentPath?: string }).parentPath ?? dirPath;
-            total += statSync(join(parentPath, entry.name)).size;
+            // parentPath available in Node 20.12+, path in earlier Node 20.x
+            const parent = (entry as unknown as { parentPath?: string; path?: string }).parentPath
+              ?? (entry as unknown as { path?: string }).path
+              ?? dirPath;
+            total += statSync(join(parent, entry.name)).size;
           } catch {
             // skip unreadable files
           }

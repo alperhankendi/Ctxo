@@ -12,6 +12,7 @@ export interface CheckResult {
 export interface CheckContext {
   readonly projectRoot: string;
   readonly ctxoRoot: string;
+  readonly indices?: readonly import('../types.js').FileIndex[];
 }
 
 export interface IHealthCheck {
