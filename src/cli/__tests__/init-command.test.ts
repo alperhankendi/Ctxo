@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from 'vitest';
-import { mkdtempSync, rmSync, existsSync, readFileSync, mkdirSync } from 'node:fs';
+import { mkdtempSync, rmSync, existsSync, readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { InitCommand } from '../init-command.js';
@@ -11,33 +11,28 @@ afterEach(() => {
   tempDirs.length = 0;
 });
 
-function createGitDir(tempDir: string): void {
-  mkdirSync(join(tempDir, '.git', 'hooks'), { recursive: true });
+function makeTempProject(prefix = 'ctxo-init-'): string {
+  const dir = mkdtempSync(join(tmpdir(), prefix));
+  tempDirs.push(dir);
+  mkdirSync(join(dir, '.git', 'hooks'), { recursive: true });
+  return dir;
 }
 
-describe('InitCommand', () => {
+describe('InitCommand — hook installation', () => {
   it('installs post-commit and post-merge git hooks', () => {
-    const tempDir = mkdtempSync(join(tmpdir(), 'ctxo-init-'));
-    tempDirs.push(tempDir);
-    createGitDir(tempDir);
+    const dir = makeTempProject();
+    new InitCommand(dir).installHooks();
 
-    new InitCommand(tempDir).run();
-
-    expect(existsSync(join(tempDir, '.git', 'hooks', 'post-commit'))).toBe(true);
-    expect(existsSync(join(tempDir, '.git', 'hooks', 'post-merge'))).toBe(true);
+    expect(existsSync(join(dir, '.git', 'hooks', 'post-commit'))).toBe(true);
+    expect(existsSync(join(dir, '.git', 'hooks', 'post-merge'))).toBe(true);
   });
 
   it('preserves existing hook content (appends ctxo block)', () => {
-    const tempDir = mkdtempSync(join(tmpdir(), 'ctxo-init2-'));
-    tempDirs.push(tempDir);
-    createGitDir(tempDir);
+    const dir = makeTempProject();
+    const hookPath = join(dir, '.git', 'hooks', 'post-commit');
+    writeFileSync(hookPath, '#!/bin/sh\necho "existing hook"\n', 'utf-8');
 
-    // Write existing hook
-    const hookPath = join(tempDir, '.git', 'hooks', 'post-commit');
-    const existingContent = '#!/bin/sh\necho "existing hook"\n';
-    require('fs').writeFileSync(hookPath, existingContent, 'utf-8');
-
-    new InitCommand(tempDir).run();
+    new InitCommand(dir).installHooks();
 
     const result = readFileSync(hookPath, 'utf-8');
     expect(result).toContain('existing hook');
@@ -46,27 +41,67 @@ describe('InitCommand', () => {
   });
 
   it('is idempotent — running twice does not duplicate ctxo block', () => {
-    const tempDir = mkdtempSync(join(tmpdir(), 'ctxo-init3-'));
-    tempDirs.push(tempDir);
-    createGitDir(tempDir);
+    const dir = makeTempProject();
+    new InitCommand(dir).installHooks();
+    new InitCommand(dir).installHooks();
 
-    new InitCommand(tempDir).run();
-    new InitCommand(tempDir).run();
-
-    const hookContent = readFileSync(join(tempDir, '.git', 'hooks', 'post-commit'), 'utf-8');
-    const startCount = (hookContent.match(/# ctxo-start/g) ?? []).length;
+    const content = readFileSync(join(dir, '.git', 'hooks', 'post-commit'), 'utf-8');
+    const startCount = (content.match(/# ctxo-start/g) ?? []).length;
     expect(startCount).toBe(1);
   });
 
   it('uses # ctxo-start / # ctxo-end markers', () => {
-    const tempDir = mkdtempSync(join(tmpdir(), 'ctxo-init4-'));
-    tempDirs.push(tempDir);
-    createGitDir(tempDir);
+    const dir = makeTempProject();
+    new InitCommand(dir).installHooks();
 
-    new InitCommand(tempDir).run();
-
-    const hookContent = readFileSync(join(tempDir, '.git', 'hooks', 'post-commit'), 'utf-8');
-    expect(hookContent).toContain('# ctxo-start');
-    expect(hookContent).toContain('# ctxo-end');
+    const content = readFileSync(join(dir, '.git', 'hooks', 'post-commit'), 'utf-8');
+    expect(content).toContain('# ctxo-start');
+    expect(content).toContain('# ctxo-end');
   });
 });
+
+describe('InitCommand — non-interactive mode', () => {
+  it('creates index directory and installs hooks with --yes', async () => {
+    const dir = makeTempProject();
+    await new InitCommand(dir).run({ yes: true });
+
+    expect(existsSync(join(dir, '.ctxo', 'index'))).toBe(true);
+    expect(existsSync(join(dir, '.git', 'hooks', 'post-commit'))).toBe(true);
+  });
+
+  it('generates rules for specified tools', async () => {
+    const dir = makeTempProject();
+    await new InitCommand(dir).run({ tools: ['windsurf', 'cursor'], yes: true });
+
+    expect(existsSync(join(dir, '.windsurfrules'))).toBe(true);
+    expect(existsSync(join(dir, '.cursor', 'rules', 'ctxo-mcp.mdc'))).toBe(true);
+  });
+
+  it('rejects unknown tool IDs', async () => {
+    const dir = makeTempProject();
+    const mockExit = vi.spyOn(process, 'exit').mockImplementation(() => { throw new Error('exit'); });
+
+    await expect(new InitCommand(dir).run({ tools: ['unknown'], yes: true })).rejects.toThrow('exit');
+
+    mockExit.mockRestore();
+  });
+
+  it('--rules only regenerates rules without hooks', async () => {
+    const dir = makeTempProject();
+    await new InitCommand(dir).run({ tools: ['windsurf'], rulesOnly: true });
+
+    expect(existsSync(join(dir, '.windsurfrules'))).toBe(true);
+    // No hooks installed
+    expect(existsSync(join(dir, '.git', 'hooks', 'post-commit'))).toBe(false);
+  });
+
+  it('--dry-run does not create any files', async () => {
+    const dir = makeTempProject();
+    await new InitCommand(dir).run({ tools: ['windsurf'], dryRun: true });
+
+    expect(existsSync(join(dir, '.windsurfrules'))).toBe(false);
+  });
+});
+
+// Import vi for mocking
+import { vi } from 'vitest';

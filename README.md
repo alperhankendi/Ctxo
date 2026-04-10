@@ -41,17 +41,13 @@ Ctxo is an **MCP server** that **enhances** your existing AI tools with dependen
 
 ## Quick Start
 
+One command sets up everything — index directory, AI tool rules, and git hooks:
+
 ```Shell
-# 1. Index your codebase
-npx ctxo-mcp index
-
-# 2. Add to your IDE's MCP config
-# (see IDE Setup below)
-
-# 3. Start using — your AI assistant now has 14 code intelligence tools
+npx ctxo-mcp init
 ```
 
-## IDE Setup
+Then add ctxo to your IDE's MCP config:
 
 **Claude Code / Cursor / Windsurf / Cline** — `.mcp.json`:
 
@@ -107,20 +103,23 @@ Onboarding?               → get_architectural_overlay → get_symbol_importanc
 ## CLI Commands
 
 ```Shell
-npx ctxo-mcp index                # Build full codebase index
-npx ctxo-mcp index --check        # CI gate: fail if index stale
-npx ctxo-mcp index --skip-history # Fast re-index without git history
-npx ctxo-mcp watch                # File watcher for incremental re-index
-npx ctxo-mcp init                 # Install git hooks (post-commit, post-merge)
-npx ctxo-mcp status               # Show index manifest
-npx ctxo-mcp sync                 # Rebuild SQLite cache from committed JSON
-npx ctxo-mcp stats                # Show usage statistics
-npx ctxo-mcp stats --json         # Machine-readable output
-npx ctxo-mcp stats --days 7       # Last 7 days only
-npx ctxo-mcp stats --clear        # Delete all session data
-npx ctxo-mcp doctor               # Health check all subsystems
-npx ctxo-mcp doctor --json        # Machine-readable output
-npx ctxo-mcp doctor --quiet       # Show only warnings/failures (CI-friendly)
+# Setup
+npx ctxo-mcp init                          # Interactive setup (index, AI tool rules, git hooks)
+npx ctxo-mcp init --tools claude-code,cursor -y  # Non-interactive setup
+npx ctxo-mcp init --rules                  # Regenerate AI tool rules only
+npx ctxo-mcp init --dry-run                # Preview what would be created
+
+# Indexing
+npx ctxo-mcp index                         # Build full codebase index
+npx ctxo-mcp index --check                 # CI gate: fail if index stale
+npx ctxo-mcp index --skip-history          # Fast re-index without git history
+npx ctxo-mcp watch                         # File watcher for incremental re-index
+npx ctxo-mcp sync                          # Rebuild SQLite cache from committed JSON
+
+# Diagnostics
+npx ctxo-mcp status                        # Show index manifest
+npx ctxo-mcp doctor                        # Health check all subsystems (--json, --quiet)
+npx ctxo-mcp stats                         # Show usage statistics (--json, --days N, --clear)
 ```
 
 **Example output:**

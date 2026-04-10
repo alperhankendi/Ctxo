@@ -39,6 +39,7 @@
   "author": "Alper Hankendi",
   "license": "MIT",
   "dependencies": {
+    "@clack/prompts": "^1.2.0",
     "@modelcontextprotocol/sdk": "^1.12.1",
     "chokidar": "^5.0.0",
     "simple-git": "^3.27.0",
