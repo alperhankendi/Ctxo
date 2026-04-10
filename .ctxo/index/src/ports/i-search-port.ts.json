@@ -1,62 +1,45 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "a34297eedc8f1ca7739e25b7871080c6c89e9e9c3a171d178f11808ee92df843",
+  "contentHash": "388de3b29311ef449c7350ee050c8419a096951923441e4c7a8861f95f2ede6e",
   "edges": [
     {
-      "from": "src/ports/i-search-port.ts::SearchResult::interface",
+      "from": "src/ports/i-search-port.ts::ISearchPort::interface",
       "kind": "imports",
       "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/ports/i-search-port.ts::ISearchPort::interface",
+      "kind": "imports",
+      "to": "src/core/types.ts::SearchResponse::interface",
       "typeOnly": true
     }
   ],
   "file": "src/ports/i-search-port.ts",
-  "intent": [],
-  "lastModified": 1775691832,
+  "intent": [
+    {
+      "date": "2026-04-09T22:25:53+03:00",
+      "hash": "efb51c17265798275c70ebcb967289b23233ec2a",
+      "kind": "commit",
+      "message": "fix(search): resolve lint and typecheck errors in BM25 search engine"
+    },
+    {
+      "date": "2026-04-09T02:52:59+03:00",
+      "hash": "75de5e11d4c6e4b56483dfe7491b9297a01363d9",
+      "kind": "commit",
+      "message": "Add BM25 search engine with camelCase tokenization, fuzzy correction, and two-phase cascade (v0.4.0)"
+    }
+  ],
+  "lastModified": 1775782017,
   "symbols": [
     {
-      "endLine": 13,
-      "endOffset": 379,
-      "kind": "interface",
-      "name": "SearchResult",
-      "startLine": 2,
-      "startOffset": 53,
-      "symbolId": "src/ports/i-search-port.ts::SearchResult::interface"
-    },
-    {
-      "endLine": 21,
-      "endOffset": 534,
-      "kind": "interface",
-      "name": "SearchMetrics",
-      "startLine": 15,
-      "startOffset": 381,
-      "symbolId": "src/ports/i-search-port.ts::SearchMetrics::interface"
-    },
-    {
-      "endLine": 31,
-      "endOffset": 719,
-      "kind": "interface",
-      "name": "FuzzyCorrection",
-      "startLine": 23,
-      "startOffset": 536,
-      "symbolId": "src/ports/i-search-port.ts::FuzzyCorrection::interface"
-    },
-    {
-      "endLine": 38,
-      "endOffset": 863,
-      "kind": "interface",
-      "name": "SearchResponse",
-      "startLine": 33,
-      "startOffset": 721,
-      "symbolId": "src/ports/i-search-port.ts::SearchResponse::interface"
-    },
-    {
-      "endLine": 63,
-      "endOffset": 1578,
+      "endLine": 32,
+      "endOffset": 894,
       "kind": "interface",
       "name": "ISearchPort",
-      "startLine": 40,
-      "startOffset": 865,
+      "startLine": 9,
+      "startOffset": 181,
       "symbolId": "src/ports/i-search-port.ts::ISearchPort::interface"
     }
   ]

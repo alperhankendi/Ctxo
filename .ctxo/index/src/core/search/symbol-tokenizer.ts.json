@@ -14,7 +14,7 @@
       "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitName::method"
     },
     {
-      "cyclomatic": 15,
+      "cyclomatic": 14,
       "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method"
     },
     {
@@ -26,7 +26,7 @@
       "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.isStopWord::method"
     }
   ],
-  "contentHash": "0acec551762cfafb30311640fe945cbdef87af5b97969f3fac377b5184b5a0df",
+  "contentHash": "08c22f1b8d693e676315c91472e032e9b8c5277441e3bb7b72ceb961fd39989c",
   "edges": [
     {
       "from": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method",
@@ -70,12 +70,25 @@
     }
   ],
   "file": "src/core/search/symbol-tokenizer.ts",
-  "intent": [],
-  "lastModified": 1775691832,
+  "intent": [
+    {
+      "date": "2026-04-09T22:25:53+03:00",
+      "hash": "efb51c17265798275c70ebcb967289b23233ec2a",
+      "kind": "commit",
+      "message": "fix(search): resolve lint and typecheck errors in BM25 search engine"
+    },
+    {
+      "date": "2026-04-09T02:52:59+03:00",
+      "hash": "75de5e11d4c6e4b56483dfe7491b9297a01363d9",
+      "kind": "commit",
+      "message": "Add BM25 search engine with camelCase tokenization, fuzzy correction, and two-phase cascade (v0.4.0)"
+    }
+  ],
+  "lastModified": 1775782017,
   "symbols": [
     {
-      "endLine": 192,
-      "endOffset": 6123,
+      "endLine": 191,
+      "endOffset": 6061,
       "kind": "class",
       "name": "SymbolTokenizer",
       "startLine": 27,
@@ -110,8 +123,8 @@
       "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitName::method"
     },
     {
-      "endLine": 165,
-      "endOffset": 5261,
+      "endLine": 164,
+      "endOffset": 5199,
       "kind": "method",
       "name": "SymbolTokenizer.splitCamelCase",
       "startLine": 117,
@@ -119,21 +132,21 @@
       "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method"
     },
     {
-      "endLine": 186,
-      "endOffset": 5981,
+      "endLine": 185,
+      "endOffset": 5919,
       "kind": "method",
       "name": "SymbolTokenizer.tokenizeFilePath",
-      "startLine": 171,
-      "startOffset": 5426,
+      "startLine": 170,
+      "startOffset": 5364,
       "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.tokenizeFilePath::method"
     },
     {
-      "endLine": 191,
-      "endOffset": 6121,
+      "endLine": 190,
+      "endOffset": 6059,
       "kind": "method",
       "name": "SymbolTokenizer.isStopWord",
-      "startLine": 189,
-      "startOffset": 6026,
+      "startLine": 188,
+      "startOffset": 5964,
       "symbolId": "src/core/search/symbol-tokenizer.ts::SymbolTokenizer.isStopWord::method"
     },
     {

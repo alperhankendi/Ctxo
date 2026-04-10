@@ -46,11 +46,16 @@ export class SqliteStorageAdapter implements IStoragePort {
     this.createTables();
   }
 
-  private database(): Database {
+  /** Returns the underlying sql.js Database instance. Throws if not initialized. */
+  getDb(): Database {
     if (!this.db) {
       throw new Error('SqliteStorageAdapter not initialized. Call init() first.');
     }
     return this.db;
+  }
+
+  private database(): Database {
+    return this.getDb();
   }
 
   private verifyIntegrity(): void {

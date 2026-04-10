@@ -10,7 +10,14 @@
     }
   ],
   "file": "src/core/search/__tests__/symbol-tokenizer.test.ts",
-  "intent": [],
-  "lastModified": 1775691832,
+  "intent": [
+    {
+      "date": "2026-04-09T02:52:59+03:00",
+      "hash": "75de5e11d4c6e4b56483dfe7491b9297a01363d9",
+      "kind": "commit",
+      "message": "Add BM25 search engine with camelCase tokenization, fuzzy correction, and two-phase cascade (v0.4.0)"
+    }
+  ],
+  "lastModified": 1775782017,
   "symbols": []
 }

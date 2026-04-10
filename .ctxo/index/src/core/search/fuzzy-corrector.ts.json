@@ -2,7 +2,7 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 14,
+      "cyclomatic": 12,
       "symbolId": "src/core/search/fuzzy-corrector.ts::damerauLevenshtein::function"
     },
     {
@@ -18,12 +18,12 @@
       "symbolId": "src/core/search/fuzzy-corrector.ts::FuzzyCorrector.findClosest::method"
     }
   ],
-  "contentHash": "d28f26a90da7ece4e516eee9ae1ed3be11d0c9278528633337f37e3b5bd6f7bd",
+  "contentHash": "db16844a29c2a16dbaee9d77b933f46aa9b07d2ec3e916bfb3924c8aea991cdc",
   "edges": [
     {
       "from": "src/core/search/fuzzy-corrector.ts::damerauLevenshtein::function",
       "kind": "imports",
-      "to": "src/ports/i-search-port.ts::FuzzyCorrection::interface",
+      "to": "src/core/types.ts::FuzzyCorrection::interface",
       "typeOnly": true
     },
     {
@@ -39,56 +39,69 @@
     {
       "from": "src/core/search/fuzzy-corrector.ts::FuzzyCorrector::class",
       "kind": "uses",
-      "to": "src/ports/i-search-port.ts::FuzzyCorrection::interface"
+      "to": "src/core/types.ts::FuzzyCorrection::interface"
     }
   ],
   "file": "src/core/search/fuzzy-corrector.ts",
-  "intent": [],
-  "lastModified": 1775691832,
+  "intent": [
+    {
+      "date": "2026-04-09T22:25:53+03:00",
+      "hash": "efb51c17265798275c70ebcb967289b23233ec2a",
+      "kind": "commit",
+      "message": "fix(search): resolve lint and typecheck errors in BM25 search engine"
+    },
+    {
+      "date": "2026-04-09T02:52:59+03:00",
+      "hash": "75de5e11d4c6e4b56483dfe7491b9297a01363d9",
+      "kind": "commit",
+      "message": "Add BM25 search engine with camelCase tokenization, fuzzy correction, and two-phase cascade (v0.4.0)"
+    }
+  ],
+  "lastModified": 1775782017,
   "symbols": [
     {
-      "endLine": 139,
-      "endOffset": 3948,
+      "endLine": 131,
+      "endOffset": 3828,
       "kind": "function",
       "name": "damerauLevenshtein",
-      "startLine": 103,
-      "startOffset": 2970,
+      "startLine": 101,
+      "startOffset": 2879,
       "symbolId": "src/core/search/fuzzy-corrector.ts::damerauLevenshtein::function"
     },
     {
-      "endLine": 96,
-      "endOffset": 2796,
+      "endLine": 94,
+      "endOffset": 2705,
       "kind": "class",
       "name": "FuzzyCorrector",
       "startLine": 9,
-      "startOffset": 292,
+      "startOffset": 275,
       "symbolId": "src/core/search/fuzzy-corrector.ts::FuzzyCorrector::class"
     },
     {
-      "endLine": 17,
-      "endOffset": 612,
+      "endLine": 15,
+      "endOffset": 521,
       "kind": "method",
       "name": "FuzzyCorrector.buildVocabulary",
-      "startLine": 15,
-      "startOffset": 499,
+      "startLine": 13,
+      "startOffset": 408,
       "symbolId": "src/core/search/fuzzy-corrector.ts::FuzzyCorrector.buildVocabulary::method"
     },
     {
-      "endLine": 66,
-      "endOffset": 1898,
+      "endLine": 64,
+      "endOffset": 1807,
       "kind": "method",
       "name": "FuzzyCorrector.correct",
-      "startLine": 23,
-      "startOffset": 735,
+      "startLine": 21,
+      "startOffset": 644,
       "symbolId": "src/core/search/fuzzy-corrector.ts::FuzzyCorrector.correct::method"
     },
     {
-      "endLine": 95,
-      "endOffset": 2794,
+      "endLine": 93,
+      "endOffset": 2703,
       "kind": "method",
       "name": "FuzzyCorrector.findClosest",
-      "startLine": 72,
-      "startOffset": 2023,
+      "startLine": 70,
+      "startOffset": 1932,
       "symbolId": "src/core/search/fuzzy-corrector.ts::FuzzyCorrector.findClosest::method"
     }
   ]

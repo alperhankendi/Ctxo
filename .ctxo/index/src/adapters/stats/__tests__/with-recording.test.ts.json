@@ -1,0 +1,28 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "7584c3ed1c2827f3422b89529769973690b3aaee7729d316c93f175566fc1e19",
+  "edges": [
+    {
+      "from": "src/adapters/stats/__tests__/with-recording.test.ts::with-recording.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/stats/with-recording.ts::withRecording::function"
+    },
+    {
+      "from": "src/adapters/stats/__tests__/with-recording.test.ts::with-recording.test::variable",
+      "kind": "imports",
+      "to": "src/ports/i-session-recorder-port.ts::ISessionRecorderPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/stats/__tests__/with-recording.test.ts::with-recording.test::variable",
+      "kind": "imports",
+      "to": "src/ports/i-session-recorder-port.ts::SessionEvent::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "src/adapters/stats/__tests__/with-recording.test.ts",
+  "intent": [],
+  "lastModified": 1775782017,
+  "symbols": []
+}

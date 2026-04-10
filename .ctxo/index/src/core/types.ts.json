@@ -1,10 +1,16 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "df9d6c051a2573f39a4899e57add1235218ed042236d465d8155b5f133962841",
+  "contentHash": "0d923c130133f31b11d7337b75fe5c5e0506c3cdce50f506c8ebee5dc7cffa51",
   "edges": [],
   "file": "src/core/types.ts",
   "intent": [
+    {
+      "date": "2026-04-09T22:25:53+03:00",
+      "hash": "efb51c17265798275c70ebcb967289b23233ec2a",
+      "kind": "commit",
+      "message": "fix(search): resolve lint and typecheck errors in BM25 search engine"
+    },
     {
       "date": "2026-04-08T04:31:58+03:00",
       "hash": "f2fd79d92382071661c21f86fb84aa88feeb7e1f",
@@ -48,7 +54,7 @@
       "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
     }
   ],
-  "lastModified": 1775691832,
+  "lastModified": 1775782017,
   "symbols": [
     {
       "endLine": 133,
@@ -148,6 +154,42 @@
       "startLine": 208,
       "startOffset": 5682,
       "symbolId": "src/core/types.ts::BlameLine::interface"
+    },
+    {
+      "endLine": 228,
+      "endOffset": 6216,
+      "kind": "interface",
+      "name": "SearchResult",
+      "startLine": 217,
+      "startOffset": 5890,
+      "symbolId": "src/core/types.ts::SearchResult::interface"
+    },
+    {
+      "endLine": 236,
+      "endOffset": 6371,
+      "kind": "interface",
+      "name": "SearchMetrics",
+      "startLine": 230,
+      "startOffset": 6218,
+      "symbolId": "src/core/types.ts::SearchMetrics::interface"
+    },
+    {
+      "endLine": 246,
+      "endOffset": 6556,
+      "kind": "interface",
+      "name": "FuzzyCorrection",
+      "startLine": 238,
+      "startOffset": 6373,
+      "symbolId": "src/core/types.ts::FuzzyCorrection::interface"
+    },
+    {
+      "endLine": 253,
+      "endOffset": 6700,
+      "kind": "interface",
+      "name": "SearchResponse",
+      "startLine": 248,
+      "startOffset": 6558,
+      "symbolId": "src/core/types.ts::SearchResponse::interface"
     },
     {
       "endLine": 14,

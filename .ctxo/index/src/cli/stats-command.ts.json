@@ -1,0 +1,223 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 11,
+      "symbolId": "src/cli/stats-command.ts::StatsCommand.run::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/cli/stats-command.ts::StatsCommand.isStatsEnabled::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/cli/stats-command.ts::StatsCommand.buildReport::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/cli/stats-command.ts::StatsCommand.emptyReport::method"
+    },
+    {
+      "cyclomatic": 8,
+      "symbolId": "src/cli/stats-command.ts::StatsCommand.printHumanReadable::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/cli/stats-command.ts::StatsCommand.renderBar::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/cli/stats-command.ts::StatsCommand.formatNumber::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/cli/stats-command.ts::StatsCommand.formatTokens::method"
+    }
+  ],
+  "contentHash": "9ed1230f366ec57179c44e8c3bd23c8f4f9a9909046b066a861fe19a6ce0964e",
+  "edges": [
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand::class",
+      "kind": "imports",
+      "to": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class"
+    },
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand::class",
+      "kind": "imports",
+      "to": "src/ports/i-session-recorder-port.ts::AggregatedStats::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand::class",
+      "kind": "imports",
+      "to": "src/core/stats/stats-types.ts::StatsReport::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand.run::method",
+      "kind": "calls",
+      "to": "src/cli/stats-command.ts::StatsCommand.isStatsEnabled::method"
+    },
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand.run::method",
+      "kind": "calls",
+      "to": "src/cli/stats-command.ts::StatsCommand.emptyReport::method"
+    },
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand.run::method",
+      "kind": "calls",
+      "to": "src/cli/stats-command.ts::StatsCommand.emptyReport::method"
+    },
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand.run::method",
+      "kind": "calls",
+      "to": "src/cli/stats-command.ts::StatsCommand.buildReport::method"
+    },
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand.run::method",
+      "kind": "calls",
+      "to": "src/cli/stats-command.ts::StatsCommand.printHumanReadable::method"
+    },
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand.run::method",
+      "kind": "calls",
+      "to": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class"
+    },
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand.emptyReport::method",
+      "kind": "calls",
+      "to": "src/cli/stats-command.ts::StatsCommand.buildReport::method"
+    },
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand.printHumanReadable::method",
+      "kind": "calls",
+      "to": "src/cli/stats-command.ts::StatsCommand.formatNumber::method"
+    },
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand.printHumanReadable::method",
+      "kind": "calls",
+      "to": "src/cli/stats-command.ts::StatsCommand.formatTokens::method"
+    },
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand.printHumanReadable::method",
+      "kind": "calls",
+      "to": "src/cli/stats-command.ts::StatsCommand.formatNumber::method"
+    },
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand.printHumanReadable::method",
+      "kind": "calls",
+      "to": "src/cli/stats-command.ts::StatsCommand.formatNumber::method"
+    },
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand.printHumanReadable::method",
+      "kind": "calls",
+      "to": "src/cli/stats-command.ts::StatsCommand.formatNumber::method"
+    },
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand.printHumanReadable::method",
+      "kind": "calls",
+      "to": "src/cli/stats-command.ts::StatsCommand.renderBar::method"
+    },
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand::class",
+      "kind": "uses",
+      "to": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class"
+    },
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand::class",
+      "kind": "uses",
+      "to": "src/ports/i-session-recorder-port.ts::AggregatedStats::interface"
+    },
+    {
+      "from": "src/cli/stats-command.ts::StatsCommand::class",
+      "kind": "uses",
+      "to": "src/core/stats/stats-types.ts::StatsReport::interface"
+    }
+  ],
+  "file": "src/cli/stats-command.ts",
+  "intent": [],
+  "lastModified": 1775782017,
+  "symbols": [
+    {
+      "endLine": 185,
+      "endOffset": 5934,
+      "kind": "class",
+      "name": "StatsCommand",
+      "startLine": 7,
+      "startOffset": 348,
+      "symbolId": "src/cli/stats-command.ts::StatsCommand::class"
+    },
+    {
+      "endLine": 78,
+      "endOffset": 2506,
+      "kind": "method",
+      "name": "StatsCommand.run",
+      "startLine": 16,
+      "startOffset": 582,
+      "symbolId": "src/cli/stats-command.ts::StatsCommand.run::method"
+    },
+    {
+      "endLine": 92,
+      "endOffset": 2894,
+      "kind": "method",
+      "name": "StatsCommand.isStatsEnabled",
+      "startLine": 80,
+      "startOffset": 2510,
+      "symbolId": "src/cli/stats-command.ts::StatsCommand.isStatsEnabled::method"
+    },
+    {
+      "endLine": 114,
+      "endOffset": 3557,
+      "kind": "method",
+      "name": "StatsCommand.buildReport",
+      "startLine": 94,
+      "startOffset": 2898,
+      "symbolId": "src/cli/stats-command.ts::StatsCommand.buildReport::method"
+    },
+    {
+      "endLine": 124,
+      "endOffset": 3784,
+      "kind": "method",
+      "name": "StatsCommand.emptyReport",
+      "startLine": 116,
+      "startOffset": 3561,
+      "symbolId": "src/cli/stats-command.ts::StatsCommand.emptyReport::method"
+    },
+    {
+      "endLine": 168,
+      "endOffset": 5467,
+      "kind": "method",
+      "name": "StatsCommand.printHumanReadable",
+      "startLine": 126,
+      "startOffset": 3788,
+      "symbolId": "src/cli/stats-command.ts::StatsCommand.printHumanReadable::method"
+    },
+    {
+      "endLine": 174,
+      "endOffset": 5652,
+      "kind": "method",
+      "name": "StatsCommand.renderBar",
+      "startLine": 170,
+      "startOffset": 5471,
+      "symbolId": "src/cli/stats-command.ts::StatsCommand.renderBar::method"
+    },
+    {
+      "endLine": 178,
+      "endOffset": 5739,
+      "kind": "method",
+      "name": "StatsCommand.formatNumber",
+      "startLine": 176,
+      "startOffset": 5656,
+      "symbolId": "src/cli/stats-command.ts::StatsCommand.formatNumber::method"
+    },
+    {
+      "endLine": 184,
+      "endOffset": 5932,
+      "kind": "method",
+      "name": "StatsCommand.formatTokens",
+      "startLine": 180,
+      "startOffset": 5743,
+      "symbolId": "src/cli/stats-command.ts::StatsCommand.formatTokens::method"
+    }
+  ]
+}

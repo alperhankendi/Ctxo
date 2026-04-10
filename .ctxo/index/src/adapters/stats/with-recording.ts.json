@@ -1,0 +1,48 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 10,
+      "symbolId": "src/adapters/stats/with-recording.ts::withRecording::function"
+    }
+  ],
+  "contentHash": "0837fe511076a491bb954b1244e2eb097543adff1cb2c78c320a7ca0da5b16d3",
+  "edges": [
+    {
+      "from": "src/adapters/stats/with-recording.ts::withRecording::function",
+      "kind": "imports",
+      "to": "src/ports/i-session-recorder-port.ts::ISessionRecorderPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/stats/with-recording.ts::withRecording::function",
+      "kind": "imports",
+      "to": "src/ports/i-session-recorder-port.ts::SessionEvent::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/stats/with-recording.ts::withRecording::function",
+      "kind": "uses",
+      "to": "src/ports/i-session-recorder-port.ts::ISessionRecorderPort::interface"
+    },
+    {
+      "from": "src/adapters/stats/with-recording.ts::withRecording::function",
+      "kind": "uses",
+      "to": "src/ports/i-session-recorder-port.ts::SessionEvent::interface"
+    }
+  ],
+  "file": "src/adapters/stats/with-recording.ts",
+  "intent": [],
+  "lastModified": 1775782017,
+  "symbols": [
+    {
+      "endLine": 63,
+      "endOffset": 2054,
+      "kind": "function",
+      "name": "withRecording",
+      "startLine": 13,
+      "startOffset": 572,
+      "symbolId": "src/adapters/stats/with-recording.ts::withRecording::function"
+    }
+  ]
+}

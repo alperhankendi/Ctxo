@@ -4,6 +4,7 @@ import { StatusCommand } from './status-command.js';
 import { VerifyCommand } from './verify-command.js';
 import { InitCommand } from './init-command.js';
 import { WatchCommand } from './watch-command.js';
+import { StatsCommand } from './stats-command.js';
 
 export class CliRouter {
   private readonly projectRoot: string;
@@ -62,6 +63,15 @@ export class CliRouter {
         new InitCommand(this.projectRoot).run();
         break;
 
+      case 'stats': {
+        const daysIdx = args.indexOf('--days');
+        const daysArg = daysIdx !== -1 ? Number(args[daysIdx + 1]) : undefined;
+        const jsonArg = args.includes('--json');
+        const clearArg = args.includes('--clear');
+        await new StatsCommand(this.projectRoot).run({ days: daysArg, json: jsonArg, clear: clearArg });
+        break;
+      }
+
       default:
         console.error(`[ctxo] Unknown command: "${command}". Run "ctxo --help" for usage.`);
         process.exit(1);
@@ -81,6 +91,7 @@ Usage:
   ctxo verify-index         CI gate: fail if index is stale
   ctxo status               Show index manifest
   ctxo init                 Install git hooks
+  ctxo stats                Show usage statistics (--json, --days N, --clear)
   ctxo --help               Show this help message
 `.trim());
   }

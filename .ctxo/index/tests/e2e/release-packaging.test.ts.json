@@ -6,6 +6,12 @@
   "file": "tests/e2e/release-packaging.test.ts",
   "intent": [
     {
+      "date": "2026-04-09T02:52:59+03:00",
+      "hash": "75de5e11d4c6e4b56483dfe7491b9297a01363d9",
+      "kind": "commit",
+      "message": "Add BM25 search engine with camelCase tokenization, fuzzy correction, and two-phase cascade (v0.4.0)"
+    },
+    {
       "date": "2026-04-08T15:57:05+03:00",
       "hash": "408d6832ee84f7a7b50d1c2d4cde81b7b6c22f50",
       "kind": "commit",
@@ -24,6 +30,6 @@
       "message": "Complete Phase 10: Release gate tests"
     }
   ],
-  "lastModified": 1775691832,
+  "lastModified": 1775782017,
   "symbols": []
 }

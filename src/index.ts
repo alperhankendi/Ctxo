@@ -22,6 +22,9 @@ import { handleFindImporters } from './adapters/mcp/find-importers.js';
 import { handleGetClassHierarchy } from './adapters/mcp/get-class-hierarchy.js';
 import { handleGetSymbolImportance } from './adapters/mcp/get-symbol-importance.js';
 import { handleGetPrImpact } from './adapters/mcp/get-pr-impact.js';
+import { SessionRecorderAdapter } from './adapters/stats/session-recorder-adapter.js';
+import { withRecording } from './adapters/stats/with-recording.js';
+import type { ISessionRecorderPort } from './ports/i-session-recorder-port.js';
 
 const log = createLogger('ctxo:mcp');
 
@@ -41,6 +44,21 @@ function loadMaskingConfig(ctxoRoot: string): MaskingPipeline {
   }
 
   return new MaskingPipeline();
+}
+
+function readStatsEnabled(ctxoRoot: string): boolean {
+  const configPath = join(ctxoRoot, 'config.yaml');
+  if (!existsSync(configPath)) return true;
+
+  try {
+    const raw = readFileSync(configPath, 'utf-8');
+    // Simple YAML parsing for stats.enabled — avoid importing yaml package
+    const match = raw.match(/stats:\s*\n\s*enabled:\s*(true|false)/);
+    if (match) return match[1] !== 'false';
+    return true;
+  } catch {
+    return true;
+  }
 }
 
 async function main(): Promise<void> {
@@ -66,6 +84,11 @@ async function main(): Promise<void> {
   const masking = loadMaskingConfig(ctxoRoot);
   const git = new SimpleGitAdapter(process.cwd());
 
+  // Session recording (opt-out via config.yaml stats.enabled: false)
+  const recorder: ISessionRecorderPort | null = readStatsEnabled(ctxoRoot)
+    ? new SessionRecorderAdapter(storage.getDb())
+    : null;
+
   // Create MCP server
   const server = new McpServer({ name: 'ctxo', version: '0.1.0' });
 
@@ -73,13 +96,13 @@ async function main(): Promise<void> {
   const { StalenessDetector } = await import('./core/staleness/staleness-detector.js');
   const staleness = new StalenessDetector(process.cwd(), ctxoRoot);
 
-  registerTools(server, storage, masking, git, staleness, ctxoRoot);
+  registerTools(server, storage, masking, git, staleness, recorder, ctxoRoot);
 
   // Start MCP server — HTTP mode or stdio mode
   if (httpPortStr) {
     await startHttpTransport(async () => {
       const s = new McpServer({ name: 'ctxo', version: '0.1.0' });
-      registerTools(s, storage, masking, git, staleness, ctxoRoot);
+      registerTools(s, storage, masking, git, staleness, recorder, ctxoRoot);
       return s;
     }, parseInt(httpPortStr, 10));
   } else {
@@ -95,6 +118,7 @@ function registerTools(
   git: SimpleGitAdapter,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   staleness: any,
+  recorder: ISessionRecorderPort | null,
   ctxoRoot = '.ctxo',
 ) {
   // Tool annotations — all Ctxo tools are read-only index queries
@@ -105,10 +129,10 @@ function registerTools(
     openWorldHint: false,
   } as const;
 
-  // Register tools
-  const logicSliceHandler = handleGetLogicSlice(storage, masking, staleness, ctxoRoot);
-  const whyContextHandler = handleGetWhyContext(storage, git, masking, staleness, ctxoRoot);
-  const changeIntelligenceHandler = handleGetChangeIntelligence(storage, git, masking, staleness, ctxoRoot);
+  // Register tools — each handler wrapped with session recording
+  const logicSliceHandler = withRecording('get_logic_slice', handleGetLogicSlice(storage, masking, staleness, ctxoRoot), recorder);
+  const whyContextHandler = withRecording('get_why_context', handleGetWhyContext(storage, git, masking, staleness, ctxoRoot), recorder);
+  const changeIntelligenceHandler = withRecording('get_change_intelligence', handleGetChangeIntelligence(storage, git, masking, staleness, ctxoRoot), recorder);
 
   server.registerTool(
     'get_logic_slice',
@@ -150,7 +174,7 @@ function registerTools(
     (args) => changeIntelligenceHandler(args),
   );
 
-  const blastRadiusHandler = handleGetBlastRadius(storage, masking, staleness, ctxoRoot);
+  const blastRadiusHandler = withRecording('get_blast_radius', handleGetBlastRadius(storage, masking, staleness, ctxoRoot), recorder);
 
   server.registerTool(
     'get_blast_radius',
@@ -166,7 +190,7 @@ function registerTools(
     (args) => blastRadiusHandler(args),
   );
 
-  const overlayHandler = handleGetArchitecturalOverlay(storage, masking, staleness);
+  const overlayHandler = withRecording('get_architectural_overlay', handleGetArchitecturalOverlay(storage, masking, staleness), recorder);
 
   server.registerTool(
     'get_architectural_overlay',
@@ -180,7 +204,7 @@ function registerTools(
     (args) => overlayHandler(args),
   );
 
-  const deadCodeHandler = handleFindDeadCode(storage, masking, staleness, ctxoRoot);
+  const deadCodeHandler = withRecording('find_dead_code', handleFindDeadCode(storage, masking, staleness, ctxoRoot), recorder);
 
   server.registerTool(
     'find_dead_code',
@@ -195,7 +219,7 @@ function registerTools(
     (args) => deadCodeHandler(args),
   );
 
-  const contextForTaskHandler = handleGetContextForTask(storage, masking, staleness, ctxoRoot);
+  const contextForTaskHandler = withRecording('get_context_for_task', handleGetContextForTask(storage, masking, staleness, ctxoRoot), recorder);
 
   server.registerTool(
     'get_context_for_task',
@@ -211,7 +235,7 @@ function registerTools(
     (args) => contextForTaskHandler(args),
   );
 
-  const rankedContextHandler = handleGetRankedContext(storage, masking, staleness, ctxoRoot);
+  const rankedContextHandler = withRecording('get_ranked_context', handleGetRankedContext(storage, masking, staleness, ctxoRoot), recorder);
 
   server.registerTool(
     'get_ranked_context',
@@ -227,7 +251,7 @@ function registerTools(
     (args) => rankedContextHandler(args),
   );
 
-  const searchSymbolsHandler = handleSearchSymbols(storage, masking, staleness, ctxoRoot);
+  const searchSymbolsHandler = withRecording('search_symbols', handleSearchSymbols(storage, masking, staleness, ctxoRoot), recorder);
 
   server.registerTool(
     'search_symbols',
@@ -244,7 +268,7 @@ function registerTools(
     (args) => searchSymbolsHandler(args),
   );
 
-  const changedSymbolsHandler = handleGetChangedSymbols(storage, git, masking, staleness, ctxoRoot);
+  const changedSymbolsHandler = withRecording('get_changed_symbols', handleGetChangedSymbols(storage, git, masking, staleness, ctxoRoot), recorder);
 
   server.registerTool(
     'get_changed_symbols',
@@ -259,7 +283,7 @@ function registerTools(
     (args) => changedSymbolsHandler(args),
   );
 
-  const findImportersHandler = handleFindImporters(storage, masking, staleness, ctxoRoot);
+  const findImportersHandler = withRecording('find_importers', handleFindImporters(storage, masking, staleness, ctxoRoot), recorder);
 
   server.registerTool(
     'find_importers',
@@ -277,7 +301,7 @@ function registerTools(
     (args) => findImportersHandler(args),
   );
 
-  const classHierarchyHandler = handleGetClassHierarchy(storage, masking, staleness, ctxoRoot);
+  const classHierarchyHandler = withRecording('get_class_hierarchy', handleGetClassHierarchy(storage, masking, staleness, ctxoRoot), recorder);
 
   server.registerTool(
     'get_class_hierarchy',
@@ -292,7 +316,7 @@ function registerTools(
     (args) => classHierarchyHandler(args),
   );
 
-  const symbolImportanceHandler = handleGetSymbolImportance(storage, masking, staleness, ctxoRoot);
+  const symbolImportanceHandler = withRecording('get_symbol_importance', handleGetSymbolImportance(storage, masking, staleness, ctxoRoot), recorder);
 
   server.registerTool(
     'get_symbol_importance',
@@ -309,7 +333,7 @@ function registerTools(
     (args) => symbolImportanceHandler(args),
   );
 
-  const prImpactHandler = handleGetPrImpact(storage, git, masking, staleness, ctxoRoot);
+  const prImpactHandler = withRecording('get_pr_impact', handleGetPrImpact(storage, git, masking, staleness, ctxoRoot), recorder);
 
   server.registerTool(
     'get_pr_impact',

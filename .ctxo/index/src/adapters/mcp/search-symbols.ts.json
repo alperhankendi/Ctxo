@@ -121,6 +121,12 @@
   "file": "src/adapters/mcp/search-symbols.ts",
   "intent": [
     {
+      "date": "2026-04-09T02:52:59+03:00",
+      "hash": "75de5e11d4c6e4b56483dfe7491b9297a01363d9",
+      "kind": "commit",
+      "message": "Add BM25 search engine with camelCase tokenization, fuzzy correction, and two-phase cascade (v0.4.0)"
+    },
+    {
       "date": "2026-04-08T15:41:03+03:00",
       "hash": "676f15d768b3abd1e18a9ace3411e4fb61bf579e",
       "kind": "commit",
@@ -133,7 +139,7 @@
       "message": "Add 4 new MCP tools, --max-history limit, and improve test coverage"
     }
   ],
-  "lastModified": 1775691832,
+  "lastModified": 1775782017,
   "symbols": [
     {
       "endLine": 144,

@@ -1,0 +1,20 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "b5be3b7e2cd23c1ec9ebe0a244eef161155ee62ec7a11cdfb512c5f6ca898fd7",
+  "edges": [],
+  "file": "src/core/stats/stats-types.ts",
+  "intent": [],
+  "lastModified": 1775782017,
+  "symbols": [
+    {
+      "endLine": 29,
+      "endOffset": 599,
+      "kind": "interface",
+      "name": "StatsReport",
+      "startLine": 4,
+      "startOffset": 124,
+      "symbolId": "src/core/stats/stats-types.ts::StatsReport::interface"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "456fbb23fd43bfdb75d5bedc7e9b11fdd4a3e1c1708f7a9cb75402ed6601f880",
+  "contentHash": "3275d81ef850684b3a8fb5d0b920846b573097e7ba51593e240467aabd0a8f5f",
   "edges": [
     {
       "from": "src/index.ts::index::variable",
@@ -103,10 +103,32 @@
       "from": "src/index.ts::index::variable",
       "kind": "imports",
       "to": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/adapters/stats/with-recording.ts::withRecording::function"
+    },
+    {
+      "from": "src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "src/ports/i-session-recorder-port.ts::ISessionRecorderPort::interface",
+      "typeOnly": true
     }
   ],
   "file": "src/index.ts",
   "intent": [
+    {
+      "date": "2026-04-09T13:52:19+03:00",
+      "hash": "1eb3ad75acb00025a02c5d7f4f8c32f4aaa6aec7",
+      "kind": "commit",
+      "message": "fix(cli): route --http flag to HTTP transport instead of CLI router"
+    },
     {
       "date": "2026-04-08T21:23:57+03:00",
       "hash": "33b92551d18cad5bd3a03d6306bb9ccd83d48d10",
@@ -220,14 +242,8 @@
       "hash": "1b61fa7811ad1bc58a6c475de7b8b6582d17be7e",
       "kind": "commit",
       "message": "Add blast radius calculator and architectural overlay"
-    },
-    {
-      "date": "2026-03-29T16:31:14+03:00",
-      "hash": "a193b5f72cb6284291ba0e38fdc13017e0953816",
-      "kind": "commit",
-      "message": "Add git adapter, why-context, and change intelligence modules"
     }
   ],
-  "lastModified": 1775691832,
+  "lastModified": 1775782017,
   "symbols": []
 }

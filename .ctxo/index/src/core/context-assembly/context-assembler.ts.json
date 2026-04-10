@@ -186,6 +186,12 @@
   "file": "src/core/context-assembly/context-assembler.ts",
   "intent": [
     {
+      "date": "2026-04-09T02:52:59+03:00",
+      "hash": "75de5e11d4c6e4b56483dfe7491b9297a01363d9",
+      "kind": "commit",
+      "message": "Add BM25 search engine with camelCase tokenization, fuzzy correction, and two-phase cascade (v0.4.0)"
+    },
+    {
       "date": "2026-04-02T02:58:40+03:00",
       "hash": "e68a490d8a37b5e6a485e4693de0fcdaf9bc552b",
       "kind": "commit",
@@ -198,7 +204,7 @@
       "message": "Add context assembly: get_context_for_task + get_ranked_context"
     }
   ],
-  "lastModified": 1775691832,
+  "lastModified": 1775782017,
   "symbols": [
     {
       "endLine": 254,

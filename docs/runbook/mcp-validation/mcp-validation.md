@@ -1804,6 +1804,34 @@ get_pr_impact:            PASS | files=N risk=low
 
 ***
 
+## Appendix A.1: Session Recording Cross-Check
+
+After running the MCP validation (14 tool calls), verify that session recording captured all calls.
+
+```bash
+npx tsx src/index.ts stats
+```
+
+**Verify:**
+
+* [ ] `Total tool calls` >= 14 (all MCP tool calls were recorded)
+* [ ] `Top Tools` section lists tools used during validation (e.g., `get_logic_slice`, `get_blast_radius`)
+* [ ] No errors during recording (stats output is consistent)
+
+```bash
+npx tsx src/index.ts stats --json | node -e "
+const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
+console.log('Total calls:', d.summary.totalCalls, d.summary.totalCalls >= 14 ? 'PASS' : 'FAIL');
+console.log('Tools recorded:', d.topTools.length, d.topTools.length > 0 ? 'PASS' : 'FAIL');
+const toolNames = d.topTools.map(t => t.tool);
+console.log('Tools:', toolNames.join(', '));
+"
+```
+
+> **Note:** For full CLI validation including `ctxo stats` edge cases, see [CLI Validation Runbook](../cli-validation/cli-validation.md).
+
+***
+
 ## Appendix B: Manual Smoke Test
 
 For manual validation without the automated script:
