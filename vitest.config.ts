@@ -11,7 +11,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['src/**/*.ts'],
-      exclude: ['src/**/__tests__/**', 'src/index.ts'],
+      exclude: ['src/**/__tests__/**', 'src/index.ts', 'src/types/**', 'src/ports/**', 'src/core/diagnostics/types.ts', 'src/core/stats/stats-types.ts'],
       reporter: ['text', 'text-summary', 'json-summary', 'html'],
       thresholds: {
         'src/core/**': {

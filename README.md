@@ -118,6 +118,9 @@ npx ctxo-mcp stats                # Show usage statistics
 npx ctxo-mcp stats --json         # Machine-readable output
 npx ctxo-mcp stats --days 7       # Last 7 days only
 npx ctxo-mcp stats --clear        # Delete all session data
+npx ctxo-mcp doctor               # Health check all subsystems
+npx ctxo-mcp doctor --json        # Machine-readable output
+npx ctxo-mcp doctor --quiet       # Show only warnings/failures (CI-friendly)
 ```
 
 **Example output:**

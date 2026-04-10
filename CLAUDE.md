@@ -29,6 +29,7 @@ npx ctxo watch                # file watcher for incremental re-index
 npx ctxo sync                 # rebuild SQLite from committed JSON
 npx ctxo init                 # install git hooks (post-commit, post-merge)
 npx ctxo status               # show index manifest
+npx ctxo doctor               # health check all subsystems (--json, --quiet)
 
 # Environment
 DEBUG=ctxo:*                  # enable all debug output
@@ -180,6 +181,40 @@ Working with class hierarchies?
 - **Intent filtering:** `get_blast_radius`, `get_logic_slice`, `find_importers`, `find_dead_code` accept optional `intent` parameter for keyword-based result filtering.
 - **Tool annotations:** All 14 tools declare `readOnlyHint`, `idempotentHint`, `openWorldHint` annotations for MCP clients.
 
+## AI Assistant Rules (MCP Tool Usage — MANDATORY)
+
+**ALWAYS use ctxo MCP tools before reading source files or making code changes.** The ctxo index contains dependency graphs, git intent, anti-patterns, and change health that cannot be derived from reading files alone. Skipping these tools leads to blind edits and broken dependencies.
+
+### Before ANY Code Modification
+1. Call `get_blast_radius` for the symbol you are about to change — understand what breaks
+2. Call `get_why_context` for the same symbol — check for revert history or anti-patterns
+3. Only then read and edit source files
+
+### Before Starting a Task
+| Task Type | REQUIRED First Call |
+|---|---|
+| Fixing a bug | `get_context_for_task(taskType: "fix")` |
+| Adding/extending a feature | `get_context_for_task(taskType: "extend")` |
+| Refactoring | `get_context_for_task(taskType: "refactor")` |
+| Understanding code | `get_context_for_task(taskType: "understand")` |
+
+### Before Reviewing a PR or Diff
+- Call `get_pr_impact` — single call gives full risk assessment with co-change analysis
+
+### When Exploring or Searching Code
+- Use `search_symbols` for name/regex lookup — DO NOT grep source files for symbol discovery
+- Use `get_ranked_context` for natural language queries — DO NOT manually browse directories
+
+### Orientation in Unfamiliar Areas
+- Call `get_architectural_overlay` to understand layer boundaries
+- Call `get_symbol_importance` to identify critical symbols
+
+### NEVER Do These
+- NEVER edit a function without first calling `get_blast_radius` on it
+- NEVER skip `get_why_context` — reverted code and anti-patterns are invisible without it
+- NEVER grep source files to find symbols when `search_symbols` exists
+- NEVER manually trace imports when `find_importers` gives the full reverse dependency graph
+
 ## Critical Rules
 
 1. **NEVER use `console.log`** — MCP stdio uses stdout for JSON-RPC. Use `createLogger('ctxo:namespace')` from `src/core/logger.ts`. Debug output controlled via `DEBUG=ctxo:*` env.
@@ -264,3 +299,39 @@ try {
 - [Changelog](CHANGELOG.md) — version history (v0.2.0, v0.3.0)
 - [Validation Runbook](docs/runbook/mcp-validation/mcp-validation.md) — 86-check end-to-end validation
 - [llms.txt](llms.txt) / [llms-full.txt](llms-full.txt) — LLM-friendly project documentation
+
+<!-- ctxo-rules-start -->
+## ctxo MCP Tool Usage (MANDATORY)
+
+**ALWAYS use ctxo MCP tools before reading source files or making code changes.** The ctxo index contains dependency graphs, git intent, anti-patterns, and change health that cannot be derived from reading files alone. Skipping these tools leads to blind edits and broken dependencies.
+
+### Before ANY Code Modification
+1. Call `get_blast_radius` for the symbol you are about to change — understand what breaks
+2. Call `get_why_context` for the same symbol — check for revert history or anti-patterns
+3. Only then read and edit source files
+
+### Before Starting a Task
+| Task Type | REQUIRED First Call |
+|---|---|
+| Fixing a bug | `get_context_for_task(taskType: "fix")` |
+| Adding/extending a feature | `get_context_for_task(taskType: "extend")` |
+| Refactoring | `get_context_for_task(taskType: "refactor")` |
+| Understanding code | `get_context_for_task(taskType: "understand")` |
+
+### Before Reviewing a PR or Diff
+- Call `get_pr_impact` — single call gives full risk assessment with co-change analysis
+
+### When Exploring or Searching Code
+- Use `search_symbols` for name/regex lookup — DO NOT grep source files for symbol discovery
+- Use `get_ranked_context` for natural language queries — DO NOT manually browse directories
+
+### Orientation in Unfamiliar Areas
+- Call `get_architectural_overlay` to understand layer boundaries
+- Call `get_symbol_importance` to identify critical symbols
+
+### NEVER Do These
+- NEVER edit a function without first calling `get_blast_radius` on it
+- NEVER skip `get_why_context` — reverted code and anti-patterns are invisible without it
+- NEVER grep source files to find symbols when `search_symbols` exists
+- NEVER manually trace imports when `find_importers` gives the full reverse dependency graph
+<!-- ctxo-rules-end -->

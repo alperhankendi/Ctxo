@@ -18,6 +18,7 @@
 | `ctxo init` | Install git hooks | — |
 | `ctxo watch` | File watcher for incremental re-index | — |
 | `ctxo stats` | Show usage statistics | `--json`, `--days N`, `--clear` |
+| `ctxo doctor` | Health check all subsystems | `--json`, `--quiet` |
 | `ctxo --help` | Show help | — |
 
 ***
@@ -462,9 +463,70 @@ npx tsx src/index.ts sync
 
 ***
 
-## Step 9: Cross-Command Integration
+## Step 9: `ctxo doctor`
 
-### 9.1 Index → Status → Verify Round-trip
+### 9.1 Default Output (Human-Readable)
+
+```bash
+npx tsx src/index.ts doctor
+```
+
+**Expected:**
+- Header: `ctxo doctor — Health Check`
+- 15 check lines with `✓`, `⚠`, or `✗` icons
+- Summary line: `N passed, N warnings, N failures`
+- Exit code 0 if no failures: `echo $?` → `0`
+
+### 9.2 JSON Output
+
+```bash
+npx tsx src/index.ts doctor --json
+```
+
+**Expected:**
+- Valid JSON on stdout
+- `checks` array with objects containing `name`, `status`, `value`, `message`
+- `summary` with `pass`, `warn`, `fail` counts
+- `summary.pass + summary.warn + summary.fail === checks.length`
+- `exitCode` field matching actual exit code
+
+### 9.3 Quiet Output
+
+```bash
+npx tsx src/index.ts doctor --quiet
+```
+
+**Expected:**
+- Only WARN/FAIL lines shown (no PASS lines)
+- Summary line still present
+- No `ctxo doctor — Health Check` header
+
+### 9.4 Doctor on Missing Index
+
+```bash
+rm -rf /tmp/ctxo-test-empty && mkdir /tmp/ctxo-test-empty && cd /tmp/ctxo-test-empty
+npx tsx /path/to/ctxo/src/index.ts doctor --json 2>/dev/null
+```
+
+**Expected:**
+- Multiple checks with `"status": "fail"` (index_directory, index_freshness, etc.)
+- `exitCode: 1`
+
+### 9.5 Exit Code Verification
+
+```bash
+npx tsx src/index.ts doctor; echo "Exit: $?"
+```
+
+**Expected:**
+- Exit 0 if all checks pass/warn
+- Exit 1 if any check fails
+
+***
+
+## Step 10: Cross-Command Integration
+
+### 10.1 Index → Status → Verify Round-trip
 
 ```bash
 rm -rf .ctxo/.cache/ .ctxo/index/
@@ -477,7 +539,7 @@ npx tsx src/index.ts verify-index 2>&1; echo "Exit: $?"
 
 * [ ] Index builds → status shows matching count → verify passes (exit 0)
 
-### 9.2 Index → Sync → Status Round-trip
+### 10.2 Index → Sync → Status Round-trip
 
 ```bash
 rm -rf .ctxo/.cache/
@@ -489,7 +551,7 @@ npx tsx src/index.ts status 2>&1 | grep "SQLite cache"
 
 * [ ] After sync, status shows `SQLite cache: present`
 
-### 9.3 Stats Recording via MCP
+### 10.3 Stats Recording via MCP
 
 After running MCP validation (see [MCP Validation Runbook](../mcp-validation/mcp-validation.md)), verify that stats were recorded:
 
@@ -505,7 +567,7 @@ npx tsx src/index.ts stats
 
 ***
 
-## Step 10: Run CLI Unit Tests
+## Step 11: Run CLI Unit Tests
 
 ```bash
 npx vitest run src/cli/__tests__/ 2>&1 | tail -5
@@ -538,14 +600,15 @@ npx vitest run src/adapters/stats/__tests__/ 2>&1 | tail -5
 | 6 | `ctxo init` | Hook creation | [ ] |
 | 7 | `ctxo watch` | Startup, clean exit | [ ] |
 | 8 | `ctxo stats` | Default, --json, --days, --clear, empty, disabled | [ ] |
-| 9 | Cross-command | Index→Status→Verify, Index→Sync→Status, MCP→Stats | [ ] |
-| 10 | Unit tests | CLI + stats adapter tests | [ ] |
+| 9 | `ctxo doctor` | Default, --json, --quiet, missing index, exit codes | [ ] |
+| 10 | Cross-command | Index→Status→Verify, Index→Sync→Status, MCP→Stats | [ ] |
+| 11 | Unit tests | CLI + stats + diagnostics adapter tests | [ ] |
 
-**Total checks: 54**
+**Total checks: 59**
 
 ***
 
-## Step 11: Generate Validation Report
+## Step 12: Generate Validation Report
 
 After completing all steps, create a validation result file to record outcomes.
 

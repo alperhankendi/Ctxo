@@ -5,6 +5,7 @@ import { VerifyCommand } from './verify-command.js';
 import { InitCommand } from './init-command.js';
 import { WatchCommand } from './watch-command.js';
 import { StatsCommand } from './stats-command.js';
+import { DoctorCommand } from './doctor-command.js';
 
 export class CliRouter {
   private readonly projectRoot: string;
@@ -59,9 +60,16 @@ export class CliRouter {
         new StatusCommand(this.projectRoot).run();
         break;
 
-      case 'init':
-        new InitCommand(this.projectRoot).run();
+      case 'init': {
+        const toolsIdx = args.indexOf('--tools');
+        const toolsArg = toolsIdx !== -1 ? args[toolsIdx + 1] : undefined;
+        const yesArg = args.includes('--yes') || args.includes('-y');
+        const rulesOnly = args.includes('--rules');
+        const dryRun = args.includes('--dry-run');
+        const tools = toolsArg ? toolsArg.split(',').map(t => t.trim()) : undefined;
+        await new InitCommand(this.projectRoot).run({ tools, yes: yesArg, rulesOnly, dryRun });
         break;
+      }
 
       case 'stats': {
         const daysIdx = args.indexOf('--days');
@@ -69,6 +77,13 @@ export class CliRouter {
         const jsonArg = args.includes('--json');
         const clearArg = args.includes('--clear');
         await new StatsCommand(this.projectRoot).run({ days: daysArg, json: jsonArg, clear: clearArg });
+        break;
+      }
+
+      case 'doctor': {
+        const jsonArg = args.includes('--json');
+        const quietArg = args.includes('--quiet');
+        await new DoctorCommand(this.projectRoot).run({ json: jsonArg, quiet: quietArg });
         break;
       }
 
@@ -90,8 +105,12 @@ Usage:
   ctxo watch                Start file watcher for incremental re-indexing
   ctxo verify-index         CI gate: fail if index is stale
   ctxo status               Show index manifest
-  ctxo init                 Install git hooks
+  ctxo init                 Interactive setup (tools, rules, hooks)
+  ctxo init --rules         Regenerate AI tool rules only
+  ctxo init --tools a,b -y  Non-interactive (claude-code,cursor,...)
+  ctxo init --dry-run       Preview what would be created
   ctxo stats                Show usage statistics (--json, --days N, --clear)
+  ctxo doctor               Health check all subsystems (--json, --quiet)
   ctxo --help               Show this help message
 `.trim());
   }
