@@ -44,7 +44,8 @@ export interface InitOptions {
 /*  Terminal UI helpers (zero dependency — picocolors only)            */
 /* ------------------------------------------------------------------ */
 
-type PC = typeof import('picocolors').default;
+import type picocolorsType from 'picocolors';
+type PC = typeof picocolorsType;
 
 const STRIP_ANSI = /\u001b\[[0-9;]*m/g;
 const strip = (s: string) => s.replace(STRIP_ANSI, '');
@@ -81,7 +82,7 @@ function stepHeader(step: number, total: number, title: string, desc: string, pc
 /*  ASCII banner with faux gradient                                    */
 /* ------------------------------------------------------------------ */
 
-function renderBanner(version: string | undefined, pc: PC): string {
+function renderBanner(_version: string | undefined, pc: PC): string {
   const art = [
     '  \u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557  \u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2557 ',
     '  \u2588\u2588\u2554\u2550\u2550\u2550\u255d\u255a\u2550\u2550\u2588\u2588\u2554\u2550\u2550\u255d\u255a\u2588\u2588\u2557\u2588\u2588\u2554\u255d\u2588\u2588\u2554\u2550\u2550\u2550\u2588\u2588\u2557',
@@ -92,10 +93,9 @@ function renderBanner(version: string | undefined, pc: PC): string {
   ];
 
   // Faux vertical gradient: cyan → blueBright → magentaBright
-  const colors = [pc.cyan, pc.cyan, pc.blueBright, pc.blueBright, pc.magentaBright, pc.magentaBright];
-  const coloredArt = art.map((line, i) => colors[i](line));
+  const colors = [pc.cyan, pc.cyan, pc.blueBright, pc.blueBright, pc.magentaBright, pc.magentaBright] as const;
+  const coloredArt = art.map((line, i) => colors[i]!(line));
 
-  const _ver = version ? pc.dim(` v${version}`) : '';
   const tagline1 = pc.bold(pc.white('  Code intelligence for AI agents.'));
   const tagline2 = pc.dim('  One call instead of hundreds.');
 
@@ -168,7 +168,7 @@ export class InitCommand {
         placeholder: '.ctxo/index',
         initialValue: '.ctxo/index',
         validate: (val) => {
-          if (!val.trim()) return 'Directory path is required';
+          if (!val?.trim()) return 'Directory path is required';
           return undefined;
         },
       });
