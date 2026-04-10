@@ -65,8 +65,9 @@ async function main(): Promise<void> {
   const args = process.argv.slice(2);
 
   // HTTP mode — check before CLI routing since --http is a server flag, not a CLI command
+  const portIdx = args.indexOf('--port');
   const httpPortStr = process.env.CTXO_HTTP_PORT
-    || (args.includes('--http') ? (args[args.indexOf('--port') + 1] || '3001') : null);
+    || (args.includes('--http') ? (portIdx >= 0 && portIdx + 1 < args.length ? args[portIdx + 1] : '3001') : null);
 
   if (!httpPortStr && args.length > 0) {
     // CLI mode
