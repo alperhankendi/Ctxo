@@ -114,6 +114,42 @@ npx ctxo-mcp watch                # File watcher for incremental re-index
 npx ctxo-mcp init                 # Install git hooks (post-commit, post-merge)
 npx ctxo-mcp status               # Show index manifest
 npx ctxo-mcp sync                 # Rebuild SQLite cache from committed JSON
+npx ctxo-mcp stats                # Show usage statistics
+npx ctxo-mcp stats --json         # Machine-readable output
+npx ctxo-mcp stats --days 7       # Last 7 days only
+npx ctxo-mcp stats --clear        # Delete all session data
+```
+
+**Example output:**
+
+```
+npx ctxo-mcp stats
+
+  Usage Summary (all time)
+  ────────────────────────────────────────
+  Total tool calls:      30
+  Total tokens served:   26.0K
+
+  Top Tools
+  ────────────────────────────────────────
+  get_logic_slice         14 calls      avg 352 tokens
+  get_blast_radius        3 calls       avg 1,279 tokens
+  get_ranked_context      3 calls       avg 898 tokens
+  find_importers          2 calls       avg 1,342 tokens
+  get_context_for_task    2 calls       avg 740 tokens
+
+  Top Queried Symbols
+  ────────────────────────────────────────
+  SymbolNode                      15 queries
+  LogicSliceQuery                 4 queries
+  SqliteStorageAdapter            2 queries
+
+  Detail Level Distribution
+  ────────────────────────────────────────
+  L1: ███░░░░░░░   25%
+  L2: ███░░░░░░░   25%
+  L3: ███░░░░░░░   25%
+  L4: ███░░░░░░░   25%
 ```
 
 ## Features
@@ -207,7 +243,8 @@ Ctxo builds a **committed JSON index** (`.ctxo/index/`) that captures symbols, d
 * [npm](https://www.npmjs.com/package/ctxo-mcp)
 * [Changelog](CHANGELOG.md)
 * [LLM Reference](llms-full.txt)
-* [Validation Runbook](docs/runbook/mcp-validation/mcp-validation.md)
+* [MCP Validation Runbook](docs/runbook/mcp-validation/mcp-validation.md)
+* [CLI Validation Runbook](docs/runbook/cli-validation/cli-validation.md)
 * [Architecture](docs/artifacts/architecture.md)
 * [PRD](docs/artifacts/prd.md)
 
