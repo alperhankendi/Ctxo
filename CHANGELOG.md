@@ -2,6 +2,17 @@
 
 All notable changes to Ctxo MCP Server are documented in this file.
 
+## [0.4.1] - 2026-04-10
+
+### Added
+- `ctxo stats` command — usage statistics dashboard with `--json`, `--days N`, `--clear` flags
+- Session recording middleware (`withRecording`) tracks all MCP tool calls automatically
+- Opt-out via `stats.enabled: false` in `.ctxo/config.yaml`
+
+### Fixed
+- Stats session events now persist to disk after each MCP tool call (was in-memory only)
+- `ctxo index` no longer wipes session_events table — existing stats survive index rebuilds
+
 ## [0.4.0] - 2026-04-09
 
 ### Added
