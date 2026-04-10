@@ -169,14 +169,15 @@
   <text x="540" y="316"><tspan class="ck">✓ </tspan><tspan class="pr">Clean, relevant context only</tspan></text>
   <text x="540" y="333"><tspan class="ck">✓ </tspan><tspan class="pr">One call replaces full exploration</tspan></text>
   <text x="540" y="350"><tspan class="ck">✓ </tspan><tspan class="pr">Structured symbol graphs + deps</tspan></text>
+  <text x="540" y="367"><tspan class="ck">✓ </tspan><tspan class="pr">Built-in usage stats &amp; insights</tspan></text>
 
   <!-- MCP strip -->
-  <rect class="mcbg" x="530" y="368" width="390" height="26" rx="6"/>
-  <g transform="translate(538,372)" class="mci" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+  <rect class="mcbg" x="530" y="382" width="390" height="26" rx="6"/>
+  <g transform="translate(538,386)" class="mci" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="8" cy="8" r="7"/><line x1="1" y1="8" x2="15" y2="8"/>
     <path d="M8 1a10.7 10.7 0 012.8 7A10.7 10.7 0 018 15a10.7 10.7 0 01-2.8-7A10.7 10.7 0 018 1z"/>
   </g>
-  <text x="558" y="385">
+  <text x="558" y="399">
     <tspan class="mc">Built on </tspan><tspan class="mcb">MCP</tspan>
     <tspan class="mc"> — Claude Code · Copilot · Cursor · Windsurf · Cline &amp; more</tspan>
   </text>
