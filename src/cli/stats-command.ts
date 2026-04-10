@@ -6,11 +6,9 @@ import type { AggregatedStats } from '../ports/i-session-recorder-port.js';
 import type { StatsReport } from '../core/stats/stats-types.js';
 
 export class StatsCommand {
-  private readonly projectRoot: string;
   private readonly ctxoRoot: string;
 
   constructor(projectRoot: string) {
-    this.projectRoot = projectRoot;
     this.ctxoRoot = join(projectRoot, '.ctxo');
   }
 
