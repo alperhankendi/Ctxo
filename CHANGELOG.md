@@ -2,6 +2,16 @@
 
 All notable changes to Ctxo MCP Server are documented in this file.
 
+## [0.4.2] - 2026-04-10
+
+### Fixed
+- Fix eslint `no-console` violations in `stats-command.ts` — use `process.stdout.write` for JSON output
+
+### Added
+- PRD: AI-Driven Context Awareness (pre-edit safety, dynamic tool descriptions, resource notifications)
+- PRD: Developer Insight (standalone usage stats)
+- Docs: ctxo stats command in README and landing page
+
 ## [0.4.1] - 2026-04-10
 
 ### Added

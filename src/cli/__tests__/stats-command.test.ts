@@ -22,7 +22,7 @@ describe('StatsCommand', () => {
     mkdirSync(cacheDir, { recursive: true });
 
     errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    logSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
   });
 
   afterEach(() => {

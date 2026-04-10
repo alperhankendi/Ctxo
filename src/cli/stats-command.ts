@@ -24,7 +24,7 @@ export class StatsCommand {
     const dbPath = join(this.ctxoRoot, '.cache', 'symbols.db');
     if (!existsSync(dbPath)) {
       if (options.json) {
-        console.log(JSON.stringify(this.emptyReport(options.days)));
+        process.stdout.write(JSON.stringify(this.emptyReport(options.days)) + '\n');
       } else {
         console.error('[ctxo] No usage data yet. Start using Ctxo MCP tools to collect stats.');
       }
@@ -61,7 +61,7 @@ export class StatsCommand {
 
       if (stats.totalCalls === 0) {
         if (options.json) {
-          console.log(JSON.stringify(this.emptyReport(options.days)));
+          process.stdout.write(JSON.stringify(this.emptyReport(options.days)) + '\n');
         } else {
           console.error('[ctxo] No usage data yet. Start using Ctxo MCP tools to collect stats.');
         }
@@ -69,7 +69,7 @@ export class StatsCommand {
       }
 
       if (options.json) {
-        console.log(JSON.stringify(this.buildReport(stats, options.days), null, 2));
+        process.stdout.write(JSON.stringify(this.buildReport(stats, options.days), null, 2) + '\n');
       } else {
         this.printHumanReadable(stats, options.days);
       }
