@@ -86,7 +86,7 @@ async function main(): Promise<void> {
 
   // Session recording (opt-out via config.yaml stats.enabled: false)
   const recorder: ISessionRecorderPort | null = readStatsEnabled(ctxoRoot)
-    ? new SessionRecorderAdapter(storage.getDb())
+    ? new SessionRecorderAdapter(storage.getDb(), () => storage.persist())
     : null;
 
   // Create MCP server

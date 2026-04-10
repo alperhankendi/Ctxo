@@ -13,10 +13,12 @@ const log = createLogger('ctxo:stats');
 
 export class SessionRecorderAdapter implements ISessionRecorderPort {
   private readonly db: Database;
+  private readonly onWrite: (() => void) | null;
   private tableCreated = false;
 
-  constructor(db: Database) {
+  constructor(db: Database, onWrite?: () => void) {
     this.db = db;
+    this.onWrite = onWrite ?? null;
   }
 
   private ensureTable(): void {
@@ -55,6 +57,7 @@ export class SessionRecorderAdapter implements ISessionRecorderPort {
           event.truncated ? 1 : 0,
         ],
       );
+      this.flushToDisk();
     } catch (err) {
       log.error(`Failed to record session event: ${(err as Error).message}`);
     }
@@ -132,5 +135,14 @@ export class SessionRecorderAdapter implements ISessionRecorderPort {
   clear(): void {
     this.ensureTable();
     this.db.run('DELETE FROM session_events');
+    this.flushToDisk();
+  }
+
+  private flushToDisk(): void {
+    try {
+      this.onWrite?.();
+    } catch (err) {
+      log.error(`Failed to flush stats to disk: ${(err as Error).message}`);
+    }
   }
 }

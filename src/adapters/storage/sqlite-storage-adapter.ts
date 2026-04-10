@@ -42,8 +42,18 @@ export class SqliteStorageAdapter implements IStoragePort {
 
   async initEmpty(): Promise<void> {
     const SQL = await initSqlJs();
-    this.db = new SQL.Database();
+    if (existsSync(this.dbPath)) {
+      try {
+        const buffer = readFileSync(this.dbPath);
+        this.db = new SQL.Database(buffer);
+      } catch {
+        this.db = new SQL.Database();
+      }
+    } else {
+      this.db = new SQL.Database();
+    }
     this.createTables();
+    this.clearIndexTables();
   }
 
   /** Returns the underlying sql.js Database instance. Throws if not initialized. */
@@ -103,6 +113,13 @@ export class SqliteStorageAdapter implements IStoragePort {
     db.run('CREATE INDEX IF NOT EXISTS idx_symbols_file ON symbols(file_path)');
     db.run('CREATE INDEX IF NOT EXISTS idx_edges_from ON edges(from_symbol)');
     db.run('CREATE INDEX IF NOT EXISTS idx_edges_to ON edges(to_symbol)');
+  }
+
+  private clearIndexTables(): void {
+    const db = this.database();
+    db.run('DELETE FROM edges');
+    db.run('DELETE FROM symbols');
+    db.run('DELETE FROM files');
   }
 
   private rebuildFromJson(): void {
