@@ -34,6 +34,9 @@ export class DoctorCommand {
   }
 
   async run(options: DoctorOptions = {}): Promise<void> {
+    const { getVersion } = await import('./cli-router.js');
+    console.error(`ctxo v${getVersion()} — health check\n`);
+
     const checks: IHealthCheck[] = [
       new NodeVersionCheck(),
       new GitBinaryCheck(),

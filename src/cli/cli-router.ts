@@ -1,3 +1,5 @@
+import { readFileSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { IndexCommand } from './index-command.js';
 import { SyncCommand } from './sync-command.js';
 import { StatusCommand } from './status-command.js';
@@ -6,6 +8,23 @@ import { InitCommand } from './init-command.js';
 import { WatchCommand } from './watch-command.js';
 import { StatsCommand } from './stats-command.js';
 import { DoctorCommand } from './doctor-command.js';
+
+export function getVersion(): string {
+  let dir = import.meta.dirname;
+  for (let i = 0; i < 10; i++) {
+    const pkg = join(dir, 'package.json');
+    if (existsSync(pkg)) {
+      try {
+        const json = JSON.parse(readFileSync(pkg, 'utf-8'));
+        return json.version ?? 'unknown';
+      } catch { break; }
+    }
+    const parent = join(dir, '..');
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return 'unknown';
+}
 
 export class CliRouter {
   private readonly projectRoot: string;
@@ -16,6 +35,11 @@ export class CliRouter {
 
   async route(args: string[]): Promise<void> {
     const command = args[0];
+
+    if (command === '--version' || command === '-v' || command === '-V') {
+      console.error(`ctxo ${getVersion()}`);
+      return;
+    }
 
     if (!command || command === '--help' || command === '-h') {
       this.printHelp();
@@ -95,8 +119,9 @@ export class CliRouter {
   }
 
   private printHelp(): void {
+    const v = getVersion();
     console.error(`
-ctxo — MCP server for dependency-aware codebase context
+ctxo v${v} — MCP server for dependency-aware codebase context
 
 Usage:
   ctxo                      Start MCP server (stdio transport)
