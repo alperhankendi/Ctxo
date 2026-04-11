@@ -4,9 +4,6 @@
 [![CI](https://github.com/alperhankendi/Ctxo/actions/workflows/ci.yml/badge.svg)](https://github.com/alperhankendi/Ctxo/actions/workflows/ci.yml)
 [![Release](https://github.com/alperhankendi/Ctxo/actions/workflows/release.yml/badge.svg)](https://github.com/alperhankendi/Ctxo/actions/workflows/release.yml)
 
-**AI agents don't fail because they can't code. They fail because they code blind.**
-**Ctxo gives them the full picture before they write a single line.**
-
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/hero-svg.svg">
   <source media="(prefers-color-scheme: light)" srcset="docs/img/hero-svg.svg">
