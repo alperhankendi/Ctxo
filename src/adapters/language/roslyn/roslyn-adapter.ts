@@ -62,19 +62,22 @@ export class RoslynAdapter implements ILanguageAdapter {
 
     const result = await runBatchIndex(this.roslynProjectDir!, this.solutionPath!);
 
-    // Cache results by file path, normalized to project root
-    // .NET app outputs paths relative to solution dir (e.g., "CFTCoreService/Base.cs")
-    // IndexCommand uses paths relative to project root (e.g., "src/CFTCoreService/Base.cs")
-    // We need to re-key the cache to match IndexCommand's expectation
+    // Build path mapping: solution-relative -> project-root-relative for ALL files
+    // .NET outputs "CFTCoreService/Base.cs" (relative to solution dir)
+    // IndexCommand expects "src/CFTCoreService/Base.cs" (relative to project root)
     const solutionDir = dirname(this.solutionPath!);
-    this.cache.clear();
+    const pathMap = new Map<string, string>();
     for (const file of result.files) {
-      // Convert: solution-relative -> absolute -> project-root-relative
       const absolutePath = resolve(solutionDir, file.file);
       const projectRelative = relative(this.rootDir!, absolutePath).replace(/\\/g, '/');
+      pathMap.set(file.file, projectRelative);
+    }
 
-      // Also rewrite symbolId and edge from/to paths
-      const rewritten = rewritePaths(file, file.file, projectRelative);
+    // Rewrite all paths using the complete mapping
+    this.cache.clear();
+    for (const file of result.files) {
+      const projectRelative = pathMap.get(file.file)!;
+      const rewritten = rewriteAllPaths(file, projectRelative, pathMap);
       this.cache.set(projectRelative, rewritten);
     }
 
@@ -156,15 +159,27 @@ export class RoslynAdapter implements ILanguageAdapter {
 }
 
 /**
- * Rewrite file paths in symbols/edges from solution-relative to project-root-relative.
- * e.g., "CFTCoreService/Base.cs" -> "src/CFTCoreService/Base.cs"
+ * Rewrite ALL file paths in symbols/edges using the complete path mapping.
+ * Handles cross-file edge targets (e.g., ChatSync -> BaseSyncJob) correctly.
  */
-function rewritePaths(file: RoslynFileResult, oldPrefix: string, newPrefix: string): RoslynFileResult {
-  const rewrite = (s: string) => s.replace(oldPrefix, newPrefix);
+function rewriteAllPaths(
+  file: RoslynFileResult,
+  newFilePath: string,
+  pathMap: Map<string, string>,
+): RoslynFileResult {
+  // Rewrite a symbolId or path string: find any solution-relative path prefix and replace it
+  const rewrite = (s: string): string => {
+    for (const [oldPath, newPath] of pathMap) {
+      if (s.includes(oldPath)) {
+        return s.replaceAll(oldPath, newPath);
+      }
+    }
+    return s;
+  };
 
   return {
     ...file,
-    file: newPrefix,
+    file: newFilePath,
     symbols: file.symbols.map(s => ({
       ...s,
       symbolId: rewrite(s.symbolId),
