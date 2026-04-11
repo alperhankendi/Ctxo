@@ -315,6 +315,28 @@
 </head>
 <body>
   <nav style="position:fixed;top:0;right:0;z-index:100;display:flex;gap:0.25rem;padding:1rem 1.5rem;">
+    <div style="position:relative;" onmouseenter="this.querySelector('.lang-dropdown').style.display='flex'" onmouseleave="this.querySelector('.lang-dropdown').style.display='none'">
+      <a href="#" onclick="return false" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--green);border:1px solid var(--green-border);border-radius:6px;background:var(--green-bg);text-decoration:none;transition:background 0.2s,border-color 0.2s;" onmouseover="this.style.background='var(--green-soft)'" onmouseout="this.style.background='var(--green-bg)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Languages
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </a>
+      <div class="lang-dropdown" style="display:none;position:absolute;top:100%;right:0;margin-top:4px;flex-direction:column;gap:2px;min-width:200px;padding:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+        <a href="lang/csharp.md" style="display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:600;color:var(--text);border-radius:6px;text-decoration:none;transition:background 0.15s;" onmouseover="this.style.background='var(--green-soft)'" onmouseout="this.style.background='transparent'">
+          <span style="font-size:1rem;">C#</span>
+          <span style="flex:1;color:var(--text-dim);font-weight:400;">Full Tier (Roslyn)</span>
+          <span style="padding:2px 6px;font-size:0.6rem;font-weight:700;background:var(--green-badge-bg);color:var(--green);border:1px solid var(--green-badge-border);border-radius:10px;">NEW</span>
+        </a>
+        <a href="#" onclick="return false" style="display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:600;color:var(--text-dim);border-radius:6px;text-decoration:none;cursor:default;">
+          <span style="font-size:1rem;">TS</span>
+          <span style="flex:1;font-weight:400;">Full Tier (ts-morph)</span>
+        </a>
+        <a href="#" onclick="return false" style="display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:600;color:var(--text-dim);border-radius:6px;text-decoration:none;cursor:default;">
+          <span style="font-size:1rem;">Go</span>
+          <span style="flex:1;font-weight:400;">Syntax Tier</span>
+        </a>
+      </div>
+    </div>
     <a href="ctxo-visualizer.html" title="Ctxo Index Visualizer" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--cyan);border:1px solid rgba(0,212,255,0.3);border-radius:6px;background:rgba(0,212,255,0.06);text-decoration:none;transition:background 0.2s,border-color 0.2s;" onmouseover="this.style.background='rgba(0,212,255,0.12)'" onmouseout="this.style.background='rgba(0,212,255,0.06)'">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/><path d="M2 12h20"/></svg>
       Visualizer
