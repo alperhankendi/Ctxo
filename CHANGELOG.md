@@ -2,6 +2,43 @@
 
 All notable changes to Ctxo MCP Server are documented in this file.
 
+## [0.5.0] - 2026-04-11
+
+### Added
+
+**Interactive Setup (`ctxo init`)**
+- Step-by-step interactive installer with ASCII banner, colored boxes, and spinner
+- Auto-detects installed AI tools (Claude Code, Cursor, Copilot, Windsurf, Antigravity, Augment, Amazon Q) via project directory markers
+- Generates MCP tool usage rules for 7 platforms — each in its native format (`.mdc`, `.md`, etc.)
+- Rules instruct AI assistants to always use ctxo tools (blast radius, why-context, etc.) before reading or editing code
+- Pre-selects detected tools, shows Claude Code with a star (★)
+- Non-interactive mode: `ctxo init --tools claude-code,cursor -y`
+- Dry run preview: `ctxo init --dry-run`
+- Rules-only regeneration: `ctxo init --rules`
+- Auto-scaffolds `.gitignore` (ensures `.ctxo/.cache/` is excluded) and `.ctxo/config.yaml` (team config template)
+- `@clack/prompts` for interactive CLI prompts
+- 35 new tests for init feature (ai-rules + init-command)
+
+**Health Check (`ctxo doctor`)**
+- `ctxo doctor` command — runs 15 diagnostic checks across all subsystems
+- Checks: git repo, Node.js version, tree-sitter, index directory, schema version, symbol count, index freshness, SQLite cache, config file, disk usage
+- `--json` flag for machine-readable output (CI pipelines)
+- `--quiet` flag for warnings/failures only (exit code 1 on failure)
+- Health checks registered via `IHealthCheck` port interface
+
+### Fixed
+- 5 runtime bugs in doctor command (fs.stat async, exit code handling, check context passing)
+- TypeScript type errors in init-command (clack prompt types)
+- ESLint no-unused-vars violations in init-command
+
+### Changed
+- `ctxo init` now runs full interactive setup instead of just installing git hooks
+- CLI help text updated with new init flags and doctor command
+- README Quick Start simplified to single `npx ctxo-mcp init` command
+- Landing page hero section includes `npx ctxo-mcp init` install command
+- Tarball size limit bumped to 850KB (new @clack/prompts dependency)
+- 972 total tests (up from 718)
+
 ## [0.4.2] - 2026-04-10
 
 ### Fixed
