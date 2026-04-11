@@ -281,7 +281,8 @@ try {
 ## TODO
 
 ### Remaining
-- [ ] README.md content (quick start, feature overview, MCP config examples)
+- [ ] C# full-tier: Roslyn LSP adapter (cross-file resolution, call graph, type-aware) — [ADR-007](docs/artifacts/adr-007-csharp-roslyn-lsp.md)
+- [ ] Go full-tier: gopls MCP composition (type-aware, cross-package)
 - [ ] Epic 8: GitHub/GitLab webhook listener for auto-indexing on push events
 - [ ] Streamable HTTP transport (for remote/cloud MCP usage)
 - [ ] Performance benchmarks (p95 latency, startup time, index build time)
