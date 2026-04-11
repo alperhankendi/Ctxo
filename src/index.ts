@@ -3,7 +3,8 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { startHttpTransport } from './adapters/transport/http-server-transport.js';
 import { z } from 'zod';
 import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createLogger } from './core/logger.js';
 import { SqliteStorageAdapter } from './adapters/storage/sqlite-storage-adapter.js';
 import { MaskingPipeline, type MaskingPatternConfig } from './core/masking/masking-pipeline.js';
@@ -61,6 +62,17 @@ function readStatsEnabled(ctxoRoot: string): boolean {
   }
 }
 
+const PKG_VERSION: string = (() => {
+  try {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
+    const pkg = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf-8')) as { version?: string };
+    return pkg.version ?? '0.0.0';
+  } catch {
+    return '0.0.0';
+  }
+})();
+
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
 
@@ -90,7 +102,7 @@ async function main(): Promise<void> {
     : null;
 
   // Create MCP server
-  const server = new McpServer({ name: 'ctxo', version: '0.1.0' });
+  const server = new McpServer({ name: 'ctxo', version: PKG_VERSION });
 
   // Staleness detection
   const { StalenessDetector } = await import('./core/staleness/staleness-detector.js');
@@ -101,7 +113,7 @@ async function main(): Promise<void> {
   // Start MCP server — HTTP mode or stdio mode
   if (httpPortStr) {
     await startHttpTransport(async () => {
-      const s = new McpServer({ name: 'ctxo', version: '0.1.0' });
+      const s = new McpServer({ name: 'ctxo', version: PKG_VERSION });
       registerTools(s, storage, masking, git, staleness, recorder, ctxoRoot);
       return s;
     }, parseInt(httpPortStr, 10));
