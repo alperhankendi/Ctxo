@@ -3,6 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/ctxo-mcp.svg)](https://www.npmjs.com/package/ctxo-mcp)
 [![CI](https://github.com/alperhankendi/Ctxo/actions/workflows/ci.yml/badge.svg)](https://github.com/alperhankendi/Ctxo/actions/workflows/ci.yml)
 [![Release](https://github.com/alperhankendi/Ctxo/actions/workflows/release.yml/badge.svg)](https://github.com/alperhankendi/Ctxo/actions/workflows/release.yml)
+[![SafeSkill 85/100](https://img.shields.io/badge/SafeSkill-85%2F100_Passes%20with%20Notes-yellow)](https://safeskill.dev/scan/alperhankendi-ctxo)
 
 **Code intelligence for AI agents one call instead of hundreds.**
 
