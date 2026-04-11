@@ -4,25 +4,25 @@ Ctxo provides **compiler-accurate semantic analysis** for C# codebases via a sta
 
 ## What You Get
 
-When you run `ctxo index` on a C# project with .NET SDK 8+ installed, Ctxo automatically upgrades from syntax-only tree-sitter analysis to full semantic analysis:
+When you run `ctxo index` on a C# project with .NET SDK 8+ installed, Ctxo delivers full semantic analysis powered by the Roslyn Compiler API:
 
-| Capability | Syntax Tier (tree-sitter) | Full Tier (Roslyn) |
-|---|---|---|
-| Symbol extraction | Public classes, methods, interfaces | All access levels, generics, properties, events, delegates |
-| Edge resolution | File-level `using` directives | Cross-file, cross-project via SymbolFinder |
-| Inheritance | I-prefix heuristic (`IFoo` = interface) | Semantic: `BaseType` vs `Interfaces` |
-| Call graph | None | Incoming (`FindCallersAsync`) + outgoing (IOperation tree) |
-| Complexity | tree-sitter branch counting | `SyntaxKind` enum (compiler-accurate cyclomatic + cognitive) |
-| Type resolution | None | Full: generics, overloads, implicit types, var, nullable |
-| Scope | Single file | Solution-wide (.sln/.csproj) |
+| Capability | Full Tier (Roslyn) |
+|---|---|
+| Symbol extraction | All access levels, generics, properties, events, delegates |
+| Edge resolution | Cross-file, cross-project via SymbolFinder |
+| Inheritance | Semantic: `BaseType` vs `Interfaces` (compiler-accurate) |
+| Call graph | Incoming (`FindCallersAsync`) + outgoing (IOperation tree) |
+| Complexity | Cyclomatic + cognitive via `SyntaxKind` enum |
+| Type resolution | Generics, overloads, implicit types, var, nullable |
+| Scope | Solution-wide (.sln/.csproj) |
 
 ## Requirements
 
-- **.NET SDK 8.0 or later** (8.0, 9.0, 10.0+ all supported)
-- If .NET SDK is not installed, Ctxo falls back to tree-sitter syntax tier automatically
-- No configuration needed - auto-discovers `.sln` and `.csproj` files
+* **.NET SDK 8.0 or later** (8.0, 9.0, 10.0+ all supported)
+* If .NET SDK is not installed, Ctxo falls back to tree-sitter syntax tier automatically
+* No configuration needed - auto-discovers `.sln` and `.csproj` files
 
-```bash
+```Shell
 # Check your .NET SDK version
 dotnet --version
 
@@ -54,7 +54,7 @@ ctxo index
   +-- Write .ctxo/index/ JSON files
 ```
 
-**Index time:** ~3-5 seconds for a typical 150-file C# solution (semantic analysis included).
+**Index time:** \~3-5 seconds for a typical 150-file C# solution (semantic analysis included).
 
 ## Edge Types Extracted
 
@@ -62,10 +62,11 @@ Roslyn provides **5 semantic edge types** that the syntax tier cannot:
 
 ### `extends` - Class Inheritance
 
-```csharp
+```C#
 public class UserSyncJob : BaseSyncJob { }
 ```
-```json
+
+```JSON
 {"from": "src/Jobs/UserSyncJob.cs::UserSyncJob::class",
  "to": "src/Jobs/BaseSyncJob.cs::BaseSyncJob::class",
  "kind": "extends"}
@@ -75,10 +76,11 @@ Roslyn uses `INamedTypeSymbol.BaseType` - no heuristic needed. The syntax tier u
 
 ### `implements` - Interface Implementation
 
-```csharp
+```C#
 public class UserService : IUserRepository { }
 ```
-```json
+
+```JSON
 {"from": "src/Services/UserService.cs::UserService::class",
  "to": "src/Interfaces/IUserRepository.cs::IUserRepository::interface",
  "kind": "implements"}
@@ -88,13 +90,14 @@ Roslyn uses `INamedTypeSymbol.Interfaces` - semantically correct for multiple in
 
 ### `calls` - Method Invocations (Cross-File)
 
-```csharp
+```C#
 public override async Task ExecuteAsync() {
     var users = _userService.GetAll();    // cross-file call
     LogStart();                            // base class call
 }
 ```
-```json
+
+```JSON
 {"from": "src/Jobs/UserSyncJob.cs::UserSyncJob.ExecuteAsync::method",
  "to": "src/Services/UserService.cs::UserService.GetAll::method",
  "kind": "calls"}
@@ -104,11 +107,12 @@ Extracted via Roslyn's `IOperation` tree (`IInvocationOperation`). Resolves the 
 
 ### `uses` - Property/Field Access (Cross-File)
 
-```csharp
+```C#
 var display = user.GetDisplayName();  // uses User.GetDisplayName
 var id = user.Id;                     // uses User.Id property
 ```
-```json
+
+```JSON
 {"from": "src/Services/UserService.cs::UserService.GetUserDisplay::method",
  "to": "src/Models/User.cs::User.Id::variable",
  "kind": "uses"}
@@ -118,11 +122,12 @@ Tracks `IPropertyReferenceOperation` and `IFieldReferenceOperation` across file 
 
 ### `imports` - Type Dependencies
 
-```csharp
+```C#
 using CsharpSample.Models;    // resolved to actual types used
 using CsharpSample.Interfaces;
 ```
-```json
+
+```JSON
 {"from": "src/Services/UserService.cs::UserService::class",
  "to": "src/Models/User.cs::User::class",
  "kind": "imports"}
@@ -135,16 +140,18 @@ Unlike the syntax tier which only recorded namespace strings, Roslyn resolves `u
 Roslyn provides compiler-accurate complexity via `SyntaxKind` enum:
 
 **Cyclomatic complexity** - counts decision points:
-- `IfStatement`, `ForStatement`, `ForEachStatement`, `WhileStatement`, `DoStatement`
-- `SwitchStatement`, `SwitchExpression`, `CatchClause`, `ConditionalExpression`
-- `LogicalAndExpression`, `LogicalOrExpression`, `CoalesceExpression`
+
+* `IfStatement`, `ForStatement`, `ForEachStatement`, `WhileStatement`, `DoStatement`
+* `SwitchStatement`, `SwitchExpression`, `CatchClause`, `ConditionalExpression`
+* `LogicalAndExpression`, `LogicalOrExpression`, `CoalesceExpression`
 
 **Cognitive complexity** - adds nesting penalty:
-- Each nesting level (if, for, while, switch, catch, lambda) increases the weight
-- `ElseClause` counted with nesting penalty
-- More representative of actual code comprehension difficulty
 
-```json
+* Each nesting level (if, for, while, switch, catch, lambda) increases the weight
+* `ElseClause` counted with nesting penalty
+* More representative of actual code comprehension difficulty
+
+```JSON
 {"symbolId": "src/Services/UserService.cs::UserService.GetUserDisplay::method",
  "cyclomatic": 3, "cognitive": 2}
 ```
@@ -153,16 +160,16 @@ Roslyn provides compiler-accurate complexity via `SyntaxKind` enum:
 
 All 14 MCP tools automatically benefit from semantic edges:
 
-| Tool | Syntax Tier | Full Tier |
-|---|---|---|
-| `get_blast_radius` | 0 impact (edges missing) | 35 impact, risk 1.0, 4 depth levels |
-| `find_importers` | 0 results | 34 importers, cross-file transitive |
-| `get_class_hierarchy` | I-prefix heuristic | Semantic extends/implements tree |
-| `get_symbol_importance` | PageRank on partial graph | PageRank on complete dependency graph |
-| `get_logic_slice` | Incomplete closure | Full transitive dependency closure |
-| `search_symbols` | Public symbols only | All 2382 symbols (all access levels) |
-| `get_context_for_task` | Limited accuracy | Semantic edges for fix/extend/refactor/understand |
-| `get_pr_impact` | Partial risk assessment | Full risk with call graph + co-changes |
+| Tool                    | Syntax Tier               | Full Tier                                         |
+| ----------------------- | ------------------------- | ------------------------------------------------- |
+| `get_blast_radius`      | 0 impact (edges missing)  | 35 impact, risk 1.0, 4 depth levels               |
+| `find_importers`        | 0 results                 | 34 importers, cross-file transitive               |
+| `get_class_hierarchy`   | I-prefix heuristic        | Semantic extends/implements tree                  |
+| `get_symbol_importance` | PageRank on partial graph | PageRank on complete dependency graph             |
+| `get_logic_slice`       | Incomplete closure        | Full transitive dependency closure                |
+| `search_symbols`        | Public symbols only       | All 2382 symbols (all access levels)              |
+| `get_context_for_task`  | Limited accuracy          | Semantic edges for fix/extend/refactor/understand |
+| `get_pr_impact`         | Partial risk assessment   | Full risk with call graph + co-changes            |
 
 ## Real-World Example: CaasBackend
 
@@ -223,7 +230,7 @@ Roslyn's `Solution` is immutable + snapshot-based. `WithDocumentText()` creates 
 
 Optional settings in `.ctxo/config.yaml`:
 
-```yaml
+```YAML
 csharp:
   mode: keep-alive      # "keep-alive" (default) | "one-shot"
   timeout: 300           # keep-alive inactivity timeout in seconds
@@ -235,18 +242,20 @@ Most projects need no configuration - Ctxo auto-discovers the `.sln` file.
 ## What Roslyn Can and Cannot Resolve
 
 ### Fully Resolved (compiler-accurate)
-- All type references (generics, nullable, var, tuples, anonymous)
-- Cross-file symbol resolution (partial classes, extension methods, global usings)
-- Method overload resolution (exact overload the compiler selects)
-- Inheritance chains (multiple interfaces, default interface methods, records)
-- Async/await patterns, LINQ, lambda/delegate binding
-- Operator overloads, implicit/explicit conversions
+
+* All type references (generics, nullable, var, tuples, anonymous)
+* Cross-file symbol resolution (partial classes, extension methods, global usings)
+* Method overload resolution (exact overload the compiler selects)
+* Inheritance chains (multiple interfaces, default interface methods, records)
+* Async/await patterns, LINQ, lambda/delegate binding
+* Operator overloads, implicit/explicit conversions
 
 ### Not Resolvable (inherent to static analysis)
-- Reflection-based calls (`typeof(X).GetMethod("Y")`)
-- `dynamic` keyword operations
-- DI container resolution (which implementation is injected at runtime)
-- Runtime polymorphism (which virtual override runs at a specific call site)
+
+* Reflection-based calls (`typeof(X).GetMethod("Y")`)
+* `dynamic` keyword operations
+* DI container resolution (which implementation is injected at runtime)
+* Runtime polymorphism (which virtual override runs at a specific call site)
 
 These limitations are shared by all static analyzers in any language - they are fundamental to the halting problem, not Roslyn-specific.
 
@@ -263,14 +272,14 @@ No error, no crash - graceful degradation to the best available analysis.
 
 ## Comparison with TypeScript Analysis
 
-| Aspect | TypeScript (ts-morph) | C# (Roslyn) |
-|---|---|---|
-| Parser | TypeScript Compiler API | Roslyn Compiler API |
-| Tier | Full (since V1) | Full (since V2 / v0.6.0) |
-| Cross-file | Via project preloading | Via MSBuildWorkspace |
-| Call graph | Syntax-based | IOperation tree (semantic) |
-| Inheritance | `getExtends()` / `getImplements()` | `BaseType` / `Interfaces` |
-| Complexity | SyntaxKind counting | SyntaxKind counting |
-| Prerequisites | None (ts-morph bundled) | .NET SDK 8+ (external) |
+| Aspect        | TypeScript (ts-morph)              | C# (Roslyn)                |
+| ------------- | ---------------------------------- | -------------------------- |
+| Parser        | TypeScript Compiler API            | Roslyn Compiler API        |
+| Tier          | Full (since V1)                    | Full (since V2 / v0.6.0)   |
+| Cross-file    | Via project preloading             | Via MSBuildWorkspace       |
+| Call graph    | Syntax-based                       | IOperation tree (semantic) |
+| Inheritance   | `getExtends()` / `getImplements()` | `BaseType` / `Interfaces`  |
+| Complexity    | SyntaxKind counting                | SyntaxKind counting        |
+| Prerequisites | None (ts-morph bundled)            | .NET SDK 8+ (external)     |
 
 Both languages now have full semantic analysis. The main difference is that TypeScript analysis is bundled (no external dependency), while C# requires .NET SDK installed on the machine.
