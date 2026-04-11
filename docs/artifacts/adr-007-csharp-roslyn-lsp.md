@@ -21,6 +21,52 @@ When running ctxo on a real-world C# backend project (`CaasBackend`, ~400+ files
 3. **Missing method-level call graph** — `BaseSyncJob` has 34 subclasses, but blast radius only shows direct base_list edges, not transitive callers
 4. **Heuristic-based inheritance** — I-prefix pattern matching (`IFoo` = interface) instead of semantic analysis
 
+### Real-World Example: CaasBackend `BaseSyncJob` Analysis
+
+**Project:** CaasBackend (enterprise C# backend, ~400+ files, multiple namespaces)
+**User prompt:**
+
+> I need to refactor the `BaseSyncJob` class. Before making any changes:
+> 1. What is the blast radius if I modify this class?
+> 2. Are there any anti-patterns or reverted changes in its history?
+> 3. Who imports it and how critical is it to the codebase?
+
+**What happened:**
+
+The AI assistant called `get_blast_radius` for `BaseSyncJob`. Ctxo returned a partial result with the warning:
+
+```
+ctxo index is stale (C# edges not fully resolved)
+```
+
+The assistant then **fell back to manual `Read` and `Grep` tool calls** — reading `BaseSyncJob.cs` directly and running `grep ":\s*BaseSyncJob"` to find subclasses. This produced 34 lines of output showing direct inheritors, but:
+
+- No transitive dependency chain (classes that call methods on BaseSyncJob subclasses)
+- No interface implementation graph (which sync services implement which contracts)
+- No co-change analysis (which files historically change together with BaseSyncJob)
+- No complexity or churn scoring
+
+**What should have happened with Roslyn LSP (V2):**
+
+```
+get_blast_radius("BaseSyncJob")
+→ 34 confirmed (direct subclasses via extends edge)
+→ 12 likely (classes that call methods on subclasses)
+→ 8 potential (co-change correlated files)
+→ riskScore: 0.92
+
+get_why_context("BaseSyncJob")
+→ 3 reverts in history, 1 anti-pattern (mutex removal)
+→ "High-risk symbol: modified 47 times, 3 incident-related commits"
+
+find_importers("BaseSyncJob")
+→ 34 direct importers (subclasses)
+→ 58 transitive importers (services, controllers, tests)
+→ PageRank: top 3% (critical infrastructure class)
+```
+
+**The gap:** Without Roslyn LSP, the AI assistant spent **10+ additional tool calls** (Read, Grep) to manually reconstruct what a single `get_blast_radius` call should have delivered. This is exactly the "hundreds of calls vs one call" problem ctxo is designed to solve — but the syntax tier cannot deliver it for C#.
+
 ### Root Cause: Syntax Tier Limitations
 
 | Capability | V1.5 (tree-sitter) | Needed |
