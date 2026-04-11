@@ -2,47 +2,65 @@
 
 All notable changes to Ctxo MCP Server are documented in this file.
 
-## [0.5.1] - 2026-04-11
+## [0.6.0] - 2026-04-12
 
 ### Added
 
-**Interactive Setup (`ctxo init`)**
+**C# Full-Tier Semantic Analysis (ADR-007)**
+- Standalone .NET 8+ console app (`tools/ctxo-roslyn/`) using Roslyn Compiler API (MSBuildWorkspace + SymbolFinder + SemanticModel + IOperation tree)
+- Full semantic C# analysis: cross-file references, call graph, type hierarchy, cyclomatic + cognitive complexity
+- Semantic `extends` vs `implements` edge detection (replaces I-prefix heuristic)
+- Cross-file `calls` edges via IOperation tree walking
+- Cross-file `imports` edges resolved to actual types (not just namespaces)
+- Byte offsets (startOffset/endOffset) for all C# symbols
+- Project dependency graph via `solution.GetProjectDependencyGraph()`
+- One-shot batch mode for `ctxo index` (single-pass, all .cs files)
+- Keep-alive mode for `ctxo watch` (incremental <100ms re-index via `WithDocumentText`)
+- Configurable via `.ctxo/config.yaml`: `csharp.mode` (keep-alive/one-shot), `csharp.timeout`, `csharp.solution`
+- Graceful fallback to tree-sitter syntax tier when .NET SDK unavailable
+- Tier breakdown in index summary (TypeScript: full, C#: full/syntax, Go: syntax)
+- Compiler-generated symbol filtering (angle brackets, implicit record bases)
+- C# fixture project for integration testing (`tests/e2e/fixtures/csharp-sample/`)
+
+**Interactive Setup (`ctxo init`) (since 0.5.1)**
 - Step-by-step interactive installer with ASCII banner, colored boxes, and spinner
-- Auto-detects installed AI tools (Claude Code, Cursor, Copilot, Windsurf, Antigravity, Augment, Amazon Q) via project directory markers
-- Generates MCP tool usage rules for 7 platforms — each in its native format (`.mdc`, `.md`, etc.)
-- Rules instruct AI assistants to always use ctxo tools (blast radius, why-context, etc.) before reading or editing code
-- Pre-selects detected tools, shows Claude Code with a star (★)
+- Auto-detects installed AI tools (Claude Code, Cursor, Copilot, Windsurf, Antigravity, Augment, Amazon Q)
+- Generates MCP tool usage rules for 7 platforms in native format (`.mdc`, `.md`, etc.)
 - Non-interactive mode: `ctxo init --tools claude-code,cursor -y`
 - Dry run preview: `ctxo init --dry-run`
 - Rules-only regeneration: `ctxo init --rules`
-- Auto-scaffolds `.gitignore` (ensures `.ctxo/.cache/` is excluded) and `.ctxo/config.yaml` (team config template)
-- **Auto-registers ctxo MCP server** in the correct config file based on selected tools:
-  - `.mcp.json` for Claude Code, Cursor, Windsurf, Augment, Antigravity
-  - `.vscode/mcp.json` for GitHub Copilot (with `type: "stdio"`)
-  - `.amazonq/mcp.json` for Amazon Q
-  - Merges into existing config (preserves other MCP servers), skips if already registered
-- `@clack/prompts` for interactive CLI prompts
-- 47 new tests for init feature (ai-rules + init-command)
+- **Auto-registers ctxo MCP server** in `.mcp.json`, `.vscode/mcp.json`, `.amazonq/mcp.json`
 
-**Health Check (`ctxo doctor`)**
-- `ctxo doctor` command — runs 15 diagnostic checks across all subsystems
-- Checks: git repo, Node.js version, tree-sitter, index directory, schema version, symbol count, index freshness, SQLite cache, config file, disk usage
-- `--json` flag for machine-readable output (CI pipelines)
-- `--quiet` flag for warnings/failures only (exit code 1 on failure)
-- Health checks registered via `IHealthCheck` port interface
+**Health Check (`ctxo doctor`) (since 0.5.1)**
+- `ctxo doctor` command - 15 diagnostic checks across all subsystems
+- `--json` for machine-readable output, `--quiet` for warnings/failures only
+- Health checks via `IHealthCheck` port interface
+
+**Async ILanguageAdapter**
+- Port interface evolved to `Promise<T>` return types for all adapter methods
+- Optional `initialize()` and `dispose()` lifecycle methods for solution-level adapters
+- All existing adapters (TsMorph, TreeSitter, CSharp, Go) updated to async
 
 ### Fixed
+- Symbol startLine/endLine now covers full body span (was showing declaration line only)
+- Generated files (obj/bin) excluded from Roslyn analysis
+- Constructor symbolId uses type name (`BaseSyncJob.BaseSyncJob`) instead of `.ctor`
+- Empty/invalid symbol IDs filtered (record implicit base types, compiler-generated `<Program>$`)
+- Complexity calculated for constructors (was methods only)
+- ElseClause included in cognitive complexity calculation
+- Double process spawn avoided in watch mode (keep-alive only, no redundant batch)
+- Integration test isolation (beforeAll + absolute fixture path)
+- Symbol ID regex validation in edge extraction (prevents malformed edges)
 - 5 runtime bugs in doctor command (fs.stat async, exit code handling, check context passing)
 - TypeScript type errors in init-command (clack prompt types)
-- ESLint no-unused-vars violations in init-command
 
 ### Changed
-- `ctxo init` now runs full interactive setup instead of just installing git hooks
+- Minimum .NET SDK requirement: 8.0 (for C# full-tier; not required for other languages)
+- `ctxo index` now shows language tier breakdown in summary output
+- `ctxo init` runs full interactive setup instead of just installing git hooks
 - CLI help text updated with new init flags and doctor command
-- README Quick Start simplified to single `npx ctxo-mcp init` command
-- Landing page hero section includes `npx ctxo-mcp init` install command
-- Tarball size limit bumped to 850KB (new @clack/prompts dependency)
-- 984 total tests (up from 718)
+- ADR-007 rewritten: Roslyn LSP rejected in favor of standalone .NET app approach
+- 1007 total tests (up from 718)
 
 ## [0.4.2] - 2026-04-10
 
