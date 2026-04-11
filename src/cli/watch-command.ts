@@ -34,8 +34,8 @@ export class WatchCommand {
       const roslyn = new RoslynAdapter();
       await roslyn.initialize(this.projectRoot);
       if (roslyn.isReady()) {
-        // Batch index first to warm cache, then start keep-alive
-        await roslyn.batchIndex();
+        // BUG 7 FIX: Start keep-alive directly (it loads solution once).
+        // No separate batchIndex - avoid double solution load.
         const started = await roslyn.startKeepAlive();
         if (started) {
           registry.register(roslyn);

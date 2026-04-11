@@ -86,9 +86,7 @@ export class RoslynAdapter implements ILanguageAdapter {
     const cached = this.cache.get(filePath);
     if (!cached) return [];
 
-    return cached.edges
-      .filter(e => !e.to.startsWith('ns:')) // filter namespace-only imports for now
-      .map(e => ({
+    return cached.edges.map(e => ({
         from: e.from,
         to: e.to,
         kind: e.kind as GraphEdge['kind'],

@@ -48,7 +48,7 @@ workspace.WorkspaceFailed += (_, e) =>
 
 var solution = await workspace.OpenSolutionAsync(solutionPath);
 var projectCount = solution.Projects.Count();
-var fileCount = solution.Projects.SelectMany(p => p.Documents).Count(d => d.FilePath?.EndsWith(".cs") == true);
+var fileCount = solution.Projects.SelectMany(p => p.Documents).Count(d => IsUserCsFile(d.FilePath));
 
 WriteProgress($"Solution loaded: {projectCount} projects, {fileCount} .cs files");
 
@@ -87,9 +87,10 @@ async Task RunBatchIndex(Solution sol, Dictionary<ProjectId, Compilation> comps)
 
         foreach (var document in project.Documents)
         {
-            if (document.FilePath == null || !document.FilePath.EndsWith(".cs")) continue;
+            // BUG 2 FIX: Skip generated/obj/bin files
+            if (!IsUserCsFile(document.FilePath)) continue;
 
-            var relativePath = Path.GetRelativePath(solutionDir, document.FilePath).Replace('\\', '/');
+            var relativePath = Path.GetRelativePath(solutionDir, document.FilePath!).Replace('\\', '/');
             var result = await AnalyzeDocument(document, compilation, sol, relativePath);
             WriteLine(JsonSerializer.Serialize(result, jsonOptions));
             totalFiles++;
@@ -177,7 +178,7 @@ async Task<FileResult> AnalyzeDocument(Document document, Compilation compilatio
         return new FileResult { Type = "file", File = relativePath };
 
     var symbols = ExtractSymbols(syntaxRoot, semanticModel, relativePath);
-    var edges = await ExtractEdges(syntaxRoot, semanticModel, compilation, sol, relativePath);
+    var edges = ExtractEdges(syntaxRoot, semanticModel, compilation, relativePath);
     var complexity = ExtractComplexity(syntaxRoot, semanticModel, relativePath);
 
     return new FileResult
@@ -221,17 +222,19 @@ List<CtxoSymbol> ExtractSymbols(SyntaxNode root, SemanticModel model, string fil
         var kind = MapSymbolKind(symbol);
         if (kind == null) continue;
 
-        var lineSpan = symbol.Locations.FirstOrDefault()?.GetLineSpan();
-        if (lineSpan == null) continue;
+        // BUG 1 FIX: Use syntax node span for full body range, not just declaration line
+        var nodeSpan = node.GetLocation().GetLineSpan();
 
+        // BUG 3 FIX: Use type name for constructors instead of .ctor
         var qualifiedName = GetQualifiedName(symbol);
+
         symbols.Add(new CtxoSymbol
         {
             SymbolId = $"{filePath}::{qualifiedName}::{kind}",
             Name = qualifiedName,
             Kind = kind,
-            StartLine = lineSpan.Value.StartLinePosition.Line,
-            EndLine = lineSpan.Value.EndLinePosition.Line,
+            StartLine = nodeSpan.StartLinePosition.Line,
+            EndLine = nodeSpan.EndLinePosition.Line,
         });
     }
 
@@ -240,8 +243,8 @@ List<CtxoSymbol> ExtractSymbols(SyntaxNode root, SemanticModel model, string fil
 
 // ── Edge Extraction (IOperation-based) ───────────────────────────────
 
-async Task<List<CtxoEdge>> ExtractEdges(
-    SyntaxNode root, SemanticModel model, Compilation compilation, Solution sol, string filePath)
+List<CtxoEdge> ExtractEdges(
+    SyntaxNode root, SemanticModel model, Compilation compilation, string filePath)
 {
     var edges = new List<CtxoEdge>();
     var seen = new HashSet<string>();
@@ -271,18 +274,36 @@ async Task<List<CtxoEdge>> ExtractEdges(
         }
     }
 
-    // 2. Using directives -> imports
-    foreach (var usingDir in root.DescendantNodes().OfType<UsingDirectiveSyntax>())
+    // BUG 5 FIX: Resolve using directives to actual type references, not just namespaces
+    // Walk all identifier nodes and resolve cross-file type usages as imports edges
+    var fileTypes = new HashSet<string>();
+    foreach (var typeDecl in root.DescendantNodes().OfType<TypeDeclarationSyntax>())
     {
-        if (usingDir.Name == null) continue;
-        var symbolInfo = model.GetSymbolInfo(usingDir.Name);
-        if (symbolInfo.Symbol is INamespaceSymbol ns)
+        if (model.GetDeclaredSymbol(typeDecl) is INamedTypeSymbol ts)
+            fileTypes.Add(GetQualifiedName(ts));
+    }
+
+    var firstTypeId = root.DescendantNodes().OfType<TypeDeclarationSyntax>().FirstOrDefault() is { } ftd
+        && model.GetDeclaredSymbol(ftd) is INamedTypeSymbol ft
+        ? $"{filePath}::{GetQualifiedName(ft)}::{MapSymbolKind(ft)}"
+        : null;
+
+    if (firstTypeId != null)
+    {
+        // Find all type references in signatures (base lists already covered above)
+        foreach (var typeRef in root.DescendantNodes().OfType<IdentifierNameSyntax>())
         {
-            var firstTypeDecl = root.DescendantNodes().OfType<TypeDeclarationSyntax>().FirstOrDefault();
-            if (firstTypeDecl != null && model.GetDeclaredSymbol(firstTypeDecl) is INamedTypeSymbol firstType)
+            var refSymbol = model.GetSymbolInfo(typeRef).Symbol;
+            if (refSymbol is INamedTypeSymbol referencedType &&
+                referencedType.Locations.FirstOrDefault()?.IsInSource == true)
             {
-                var fromId = $"{filePath}::{GetQualifiedName(firstType)}::{MapSymbolKind(firstType)}";
-                AddEdge(edges, seen, fromId, $"ns:{ns.ToDisplayString()}", "imports");
+                var refName = GetQualifiedName(referencedType);
+                if (!fileTypes.Contains(refName)) // cross-file reference
+                {
+                    var toId = SymbolToId(referencedType);
+                    if (toId != null)
+                        AddEdge(edges, seen, firstTypeId, toId, "imports");
+                }
             }
         }
     }
@@ -308,7 +329,7 @@ async Task<List<CtxoEdge>> ExtractEdges(
         {
             switch (op)
             {
-                case Microsoft.CodeAnalysis.Operations.IInvocationOperation invocation:
+                case IInvocationOperation invocation:
                 {
                     var target = invocation.TargetMethod.OriginalDefinition;
                     var toId = SymbolToId(target);
@@ -316,7 +337,7 @@ async Task<List<CtxoEdge>> ExtractEdges(
                         AddEdge(edges, seen, fromId, toId, "calls");
                     break;
                 }
-                case Microsoft.CodeAnalysis.Operations.IObjectCreationOperation creation:
+                case IObjectCreationOperation creation:
                 {
                     if (creation.Type is INamedTypeSymbol createdType)
                     {
@@ -326,7 +347,7 @@ async Task<List<CtxoEdge>> ExtractEdges(
                     }
                     break;
                 }
-                case Microsoft.CodeAnalysis.Operations.IPropertyReferenceOperation propRef:
+                case IPropertyReferenceOperation propRef:
                 {
                     if (!SymbolEqualityComparer.Default.Equals(propRef.Property.ContainingType, methodSymbol.ContainingType))
                     {
@@ -336,7 +357,7 @@ async Task<List<CtxoEdge>> ExtractEdges(
                     }
                     break;
                 }
-                case Microsoft.CodeAnalysis.Operations.IFieldReferenceOperation fieldRef:
+                case IFieldReferenceOperation fieldRef:
                 {
                     if (!SymbolEqualityComparer.Default.Equals(fieldRef.Field.ContainingType, methodSymbol.ContainingType))
                     {
@@ -355,15 +376,21 @@ async Task<List<CtxoEdge>> ExtractEdges(
 
 // ── Complexity ───────────────────────────────────────────────────────
 
+// BUG 4 FIX: Process all method-like declarations (methods + constructors + accessors)
 List<CtxoComplexity> ExtractComplexity(SyntaxNode root, SemanticModel model, string filePath)
 {
     var metrics = new List<CtxoComplexity>();
 
-    foreach (var method in root.DescendantNodes().OfType<MethodDeclarationSyntax>())
+    foreach (var methodDecl in root.DescendantNodes().OfType<BaseMethodDeclarationSyntax>())
     {
-        if (model.GetDeclaredSymbol(method) is not IMethodSymbol methodSymbol) continue;
+        if (model.GetDeclaredSymbol(methodDecl) is not IMethodSymbol methodSymbol) continue;
 
-        var body = (SyntaxNode?)method.Body ?? method.ExpressionBody;
+        var body = (SyntaxNode?)methodDecl switch
+        {
+            MethodDeclarationSyntax m => (SyntaxNode?)m.Body ?? m.ExpressionBody,
+            ConstructorDeclarationSyntax c => (SyntaxNode?)c.Body ?? c.ExpressionBody,
+            _ => null,
+        };
         if (body == null) continue;
 
         int cyclomatic = 1;
@@ -378,6 +405,9 @@ List<CtxoComplexity> ExtractComplexity(SyntaxNode root, SemanticModel model, str
                 or WhileStatementSyntax or DoStatementSyntax
                 or CatchClauseSyntax;
 
+            // BUG 8 FIX: Count else clauses in cognitive complexity
+            bool isElse = node is ElseClauseSyntax;
+
             bool isBoolOp = node is BinaryExpressionSyntax bin &&
                 (bin.IsKind(SyntaxKind.LogicalAndExpression) ||
                  bin.IsKind(SyntaxKind.LogicalOrExpression) ||
@@ -387,6 +417,10 @@ List<CtxoComplexity> ExtractComplexity(SyntaxNode root, SemanticModel model, str
             {
                 cyclomatic++;
                 cognitive += 1 + depth;
+            }
+            if (isElse)
+            {
+                cognitive += 1 + depth; // else adds cognitive complexity with nesting penalty
             }
             if (isBoolOp)
             {
@@ -447,6 +481,14 @@ object BuildProjectGraph(Solution sol)
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
+// BUG 2 FIX: Filter out generated/build artifact files
+bool IsUserCsFile(string? filePath)
+{
+    if (filePath == null || !filePath.EndsWith(".cs")) return false;
+    var normalized = filePath.Replace('\\', '/');
+    return !normalized.Contains("/obj/") && !normalized.Contains("/bin/");
+}
+
 IEnumerable<IOperation> EnumerateOperations(IOperation root)
 {
     var stack = new Stack<IOperation>();
@@ -478,11 +520,19 @@ string? MapSymbolKind(ISymbol symbol) => symbol switch
     _ => null,
 };
 
+// BUG 3 FIX: Use containing type name for constructors
 string GetQualifiedName(ISymbol symbol)
 {
-    // Build: Namespace.Type.Member format (without assembly)
     var parts = new List<string>();
     var current = symbol;
+
+    // For constructors, replace .ctor with the type name (e.g., BaseSyncJob.BaseSyncJob)
+    if (current is IMethodSymbol ms && ms.MethodKind == MethodKind.Constructor && ms.ContainingType != null)
+    {
+        parts.Add(ms.ContainingType.Name);
+        current = current.ContainingSymbol; // skip to containing type
+    }
+
     while (current != null && current is not INamespaceSymbol { IsGlobalNamespace: true })
     {
         if (current is INamespaceSymbol ns)
@@ -500,20 +550,21 @@ string GetQualifiedName(ISymbol symbol)
     return string.Join(".", parts);
 }
 
+// BUG 6 FIX: Consistent SymbolToId for all symbol types
 string? SymbolToId(ISymbol symbol)
 {
     // Only resolve symbols that are in source (not metadata/framework)
-    var location = symbol.Locations.FirstOrDefault();
+    var original = symbol.OriginalDefinition;
+    var location = original.Locations.FirstOrDefault();
     if (location == null || !location.IsInSource) return null;
 
     var sourceFilePath = location.SourceTree?.FilePath;
     if (sourceFilePath == null) return null;
 
     var relativePath = Path.GetRelativePath(solutionDir, sourceFilePath).Replace('\\', '/');
-    var kind = MapSymbolKind(symbol is IMethodSymbol m && m.MethodKind == MethodKind.Constructor
-        ? symbol : symbol.OriginalDefinition);
+    var kind = MapSymbolKind(original);
 
-    return kind != null ? $"{relativePath}::{GetQualifiedName(symbol.OriginalDefinition)}::{kind}" : null;
+    return kind != null ? $"{relativePath}::{GetQualifiedName(original)}::{kind}" : null;
 }
 
 void AddEdge(List<CtxoEdge> edges, HashSet<string> seen, string from, string to, string kind)
