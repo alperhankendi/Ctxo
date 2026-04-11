@@ -69,10 +69,13 @@ function findFiles(dir: string, ext: string, maxDepth: number, currentDepth = 0)
 
 export function findCtxoRoslynProject(): string | null {
   // Look for the ctxo-roslyn project relative to this package
+  // Covers: local dev, npm install, npx, global install
   const candidates = [
-    join(import.meta.dirname, '../../../../tools/ctxo-roslyn'),
-    join(process.cwd(), 'tools/ctxo-roslyn'),
-    join(process.cwd(), 'node_modules/ctxo/tools/ctxo-roslyn'),
+    join(import.meta.dirname, '../../../../tools/ctxo-roslyn'),      // local dev (src/adapters/language/roslyn -> tools/)
+    join(import.meta.dirname, '../../../tools/ctxo-roslyn'),          // built dist (dist/adapters/language/roslyn -> tools/)
+    join(process.cwd(), 'node_modules/ctxo-mcp/tools/ctxo-roslyn'),  // npm install in project
+    join(process.cwd(), 'node_modules/ctxo/tools/ctxo-roslyn'),      // alt package name
+    join(process.cwd(), 'tools/ctxo-roslyn'),                         // local repo root
   ];
 
   for (const candidate of candidates) {

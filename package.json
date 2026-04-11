@@ -1,6 +1,6 @@
 {
   "name": "ctxo-mcp",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "MCP server delivering dependency-aware, history-enriched context for codebases",
   "type": "module",
   "engines": {
@@ -11,6 +11,8 @@
   },
   "files": [
     "dist/",
+    "tools/ctxo-roslyn/ctxo-roslyn.csproj",
+    "tools/ctxo-roslyn/Program.cs",
     "README.md",
     "llms.txt",
     "llms-full.txt"
