@@ -8,6 +8,7 @@ import { ChokidarWatcherAdapter } from '../adapters/watcher/chokidar-watcher-ada
 import { ContentHasher } from '../core/staleness/content-hasher.js';
 import { SimpleGitAdapter } from '../adapters/git/simple-git-adapter.js';
 import { RevertDetector } from '../core/why-context/revert-detector.js';
+import { RoslynAdapter } from '../adapters/language/roslyn/roslyn-adapter.js';
 import type { FileIndex, CommitIntent, AntiPattern } from '../core/types.js';
 
 const DEBOUNCE_MS = 300;
@@ -26,9 +27,35 @@ export class WatchCommand {
 
     const registry = new LanguageAdapterRegistry();
     registry.register(new TsMorphAdapter());
-    this.registerTreeSitterAdapters(registry);
-    const supportedExtensions = registry.getSupportedExtensions();
 
+    // C# - try Roslyn keep-alive, fallback to tree-sitter
+    let roslynAdapter: RoslynAdapter | null = null;
+    try {
+      const roslyn = new RoslynAdapter();
+      await roslyn.initialize(this.projectRoot);
+      if (roslyn.isReady()) {
+        // Batch index first to warm cache, then start keep-alive
+        await roslyn.batchIndex();
+        const started = await roslyn.startKeepAlive();
+        if (started) {
+          registry.register(roslyn);
+          roslynAdapter = roslyn;
+          console.error('[ctxo] C# watch: Roslyn keep-alive active (full tier, <100ms per change)');
+        } else {
+          await roslyn.dispose();
+          this.registerTreeSitterCSharp(registry);
+        }
+      } else {
+        this.registerTreeSitterCSharp(registry);
+      }
+    } catch {
+      this.registerTreeSitterCSharp(registry);
+    }
+
+    // Go - tree-sitter
+    this.registerTreeSitterGo(registry);
+
+    const supportedExtensions = registry.getSupportedExtensions();
     const writer = new JsonIndexWriter(this.ctxoRoot);
     const storage = new SqliteStorageAdapter(this.ctxoRoot);
     await storage.init();
@@ -46,14 +73,54 @@ export class WatchCommand {
       const relativePath = relative(this.projectRoot, filePath).replace(/\\/g, '/');
 
       try {
+        // For .cs files with Roslyn keep-alive: use incremental re-index
+        if (roslynAdapter?.isReady() && filePath.endsWith('.cs')) {
+          const result = await roslynAdapter.reindexFile(relativePath);
+          if (result) {
+            const commits = await gitAdapter.getCommitHistory(relativePath);
+            const intent: CommitIntent[] = commits.map((c) => ({
+              hash: c.hash, message: c.message, date: c.date, kind: 'commit' as const,
+            }));
+            const antiPatterns: AntiPattern[] = revertDetector.detect(commits);
+            const source = readFileSync(filePath, 'utf-8');
+
+            const fileIndex: FileIndex = {
+              file: relativePath,
+              lastModified: Math.floor(Date.now() / 1000),
+              contentHash: hasher.hash(source),
+              symbols: result.symbols.map(s => ({
+                symbolId: s.symbolId, name: s.name,
+                kind: s.kind as FileIndex['symbols'][0]['kind'],
+                startLine: s.startLine, endLine: s.endLine,
+              })),
+              edges: result.edges
+                .filter(e => !e.to.startsWith('ns:'))
+                .map(e => ({
+                  from: e.from, to: e.to,
+                  kind: e.kind as FileIndex['edges'][0]['kind'],
+                })),
+              complexity: result.complexity.map(c => ({
+                symbolId: c.symbolId, cyclomatic: c.cyclomatic,
+              })),
+              intent,
+              antiPatterns,
+            };
+
+            writer.write(fileIndex);
+            storage.writeSymbolFile(fileIndex);
+            console.error(`[ctxo] Re-indexed (Roslyn): ${relativePath}`);
+            return;
+          }
+        }
+
+        // Default path: use adapter from registry (tree-sitter or ts-morph)
         const source = readFileSync(filePath, 'utf-8');
         const lastModified = Math.floor(Date.now() / 1000);
 
-        const symbols = adapter.extractSymbols(relativePath, source);
-        const edges = adapter.extractEdges(relativePath, source);
-        const complexity = adapter.extractComplexity(relativePath, source);
+        const symbols = await adapter.extractSymbols(relativePath, source);
+        const edges = await adapter.extractEdges(relativePath, source);
+        const complexity = await adapter.extractComplexity(relativePath, source);
 
-        // Git history and anti-patterns
         const commits = await gitAdapter.getCommitHistory(relativePath);
         const intent: CommitIntent[] = commits.map((c) => ({
           hash: c.hash, message: c.message, date: c.date, kind: 'commit' as const,
@@ -113,10 +180,14 @@ export class WatchCommand {
       for (const timeout of pendingFiles.values()) {
         clearTimeout(timeout);
       }
-      watcher.stop().then(() => {
-        storage.close();
-        console.error('[ctxo] Watcher stopped');
-        process.exit(0);
+      // Shutdown Roslyn keep-alive
+      const roslynShutdown = roslynAdapter ? roslynAdapter.dispose() : Promise.resolve();
+      roslynShutdown.then(() => {
+        watcher.stop().then(() => {
+          storage.close();
+          console.error('[ctxo] Watcher stopped');
+          process.exit(0);
+        });
       });
     };
 
@@ -124,20 +195,23 @@ export class WatchCommand {
     process.on('SIGTERM', cleanup);
   }
 
-  private registerTreeSitterAdapters(registry: LanguageAdapterRegistry): void {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { GoAdapter } = require('../adapters/language/go-adapter.js');
-      registry.register(new GoAdapter());
-    } catch {
-      console.error('[ctxo] Go adapter unavailable (tree-sitter-go not installed)');
-    }
+  private registerTreeSitterCSharp(registry: LanguageAdapterRegistry): void {
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { CSharpAdapter } = require('../adapters/language/csharp-adapter.js');
       registry.register(new CSharpAdapter());
     } catch {
       console.error('[ctxo] C# adapter unavailable (tree-sitter-c-sharp not installed)');
+    }
+  }
+
+  private registerTreeSitterGo(registry: LanguageAdapterRegistry): void {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { GoAdapter } = require('../adapters/language/go-adapter.js');
+      registry.register(new GoAdapter());
+    } catch {
+      console.error('[ctxo] Go adapter unavailable (tree-sitter-go not installed)');
     }
   }
 }

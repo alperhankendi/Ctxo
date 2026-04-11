@@ -17,7 +17,7 @@ export class GoAdapter extends TreeSitterAdapter {
     super(GoLanguage);
   }
 
-  extractSymbols(filePath: string, source: string): SymbolNode[] {
+  async extractSymbols(filePath: string, source: string): Promise<SymbolNode[]> {
     try {
       const tree = this.parse(source);
       const symbols: SymbolNode[] = [];
@@ -63,7 +63,7 @@ export class GoAdapter extends TreeSitterAdapter {
     }
   }
 
-  extractEdges(filePath: string, source: string): GraphEdge[] {
+  async extractEdges(filePath: string, source: string): Promise<GraphEdge[]> {
     try {
       const tree = this.parse(source);
       const edges: GraphEdge[] = [];
@@ -85,7 +85,7 @@ export class GoAdapter extends TreeSitterAdapter {
     }
   }
 
-  extractComplexity(filePath: string, source: string): ComplexityMetrics[] {
+  async extractComplexity(filePath: string, source: string): Promise<ComplexityMetrics[]> {
     try {
       const tree = this.parse(source);
       const metrics: ComplexityMetrics[] = [];

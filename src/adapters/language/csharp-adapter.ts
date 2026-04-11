@@ -16,7 +16,7 @@ export class CSharpAdapter extends TreeSitterAdapter {
     super(CSharpLanguage);
   }
 
-  extractSymbols(filePath: string, source: string): SymbolNode[] {
+  async extractSymbols(filePath: string, source: string): Promise<SymbolNode[]> {
     try {
       const tree = this.parse(source);
       const symbols: SymbolNode[] = [];
@@ -28,11 +28,11 @@ export class CSharpAdapter extends TreeSitterAdapter {
     }
   }
 
-  extractEdges(filePath: string, source: string): GraphEdge[] {
+  async extractEdges(filePath: string, source: string): Promise<GraphEdge[]> {
     try {
       const tree = this.parse(source);
       const edges: GraphEdge[] = [];
-      const symbols = this.extractSymbols(filePath, source);
+      const symbols = await this.extractSymbols(filePath, source);
       const firstSymbol = symbols.length > 0 ? symbols[0]!.symbolId : undefined;
       if (!firstSymbol) return edges;
 
@@ -44,7 +44,7 @@ export class CSharpAdapter extends TreeSitterAdapter {
     }
   }
 
-  extractComplexity(filePath: string, source: string): ComplexityMetrics[] {
+  async extractComplexity(filePath: string, source: string): Promise<ComplexityMetrics[]> {
     try {
       const tree = this.parse(source);
       const metrics: ComplexityMetrics[] = [];

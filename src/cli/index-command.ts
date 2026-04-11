@@ -11,6 +11,7 @@ import { SimpleGitAdapter } from '../adapters/git/simple-git-adapter.js';
 import { RevertDetector } from '../core/why-context/revert-detector.js';
 import { aggregateCoChanges } from '../core/co-change/co-change-analyzer.js';
 import type { FileIndex, SymbolKind } from '../core/types.js';
+import { RoslynAdapter } from '../adapters/language/roslyn/roslyn-adapter.js';
 
 export class IndexCommand {
   private readonly projectRoot: string;
@@ -33,7 +34,8 @@ export class IndexCommand {
     const registry = new LanguageAdapterRegistry();
     const tsMorphAdapter = new TsMorphAdapter();
     registry.register(tsMorphAdapter);
-    this.registerTreeSitterAdapters(registry);
+    const { roslynAdapter, csharpTier } = await this.registerCSharpAdapter(registry);
+    this.registerGoAdapter(registry);
     this.supportedExtensions = registry.getSupportedExtensions();
 
     const writer = new JsonIndexWriter(this.ctxoRoot);
@@ -59,6 +61,14 @@ export class IndexCommand {
       console.error(`[ctxo] Building codebase index... Found ${files.length} source files`);
     }
 
+    // Phase 0: Roslyn batch index (if available, pre-caches all C# results)
+    if (roslynAdapter?.isReady()) {
+      const hasCsFiles = files.some(f => f.endsWith('.cs'));
+      if (hasCsFiles) {
+        await roslynAdapter.batchIndex();
+      }
+    }
+
     // Phase 1a: Extract symbols (CPU-bound, builds symbol registry for edge resolution)
     const symbolRegistry = new Map<string, SymbolKind>();
     const pendingIndices: Array<{
@@ -78,8 +88,8 @@ export class IndexCommand {
         const source = readFileSync(filePath, 'utf-8');
         const lastModified = Math.floor(Date.now() / 1000);
 
-        const symbols = adapter.extractSymbols(relativePath, source);
-        const complexity = adapter.extractComplexity(relativePath, source);
+        const symbols = await adapter.extractSymbols(relativePath, source);
+        const complexity = await adapter.extractComplexity(relativePath, source);
 
         // Build symbol registry for accurate edge resolution
         for (const sym of symbols) {
@@ -124,7 +134,7 @@ export class IndexCommand {
 
       try {
         adapter.setSymbolRegistry?.(symbolRegistry);
-        entry.fileIndex.edges = adapter.extractEdges(entry.relativePath, entry.source);
+        entry.fileIndex.edges = await adapter.extractEdges(entry.relativePath, entry.source);
       } catch (err) {
         console.error(`[ctxo] Edge extraction failed for ${entry.relativePath}: ${(err as Error).message}`);
       }
@@ -182,23 +192,49 @@ export class IndexCommand {
       this.ensureGitignore();
     }
 
+    // Tier summary
+    const csCount = pendingIndices.filter(e => e.relativePath.endsWith('.cs')).length;
+    const tsCount = pendingIndices.filter(e => /\.(ts|tsx|js|jsx)$/.test(e.relativePath)).length;
+    const goCount = pendingIndices.filter(e => e.relativePath.endsWith('.go')).length;
     console.error(`[ctxo] Index complete: ${processed} files indexed`);
+    if (tsCount > 0) console.error(`[ctxo]   TypeScript/JS: ${tsCount} files (full tier)`);
+    if (csCount > 0) console.error(`[ctxo]   C#: ${csCount} files (${csharpTier} tier${csharpTier === 'syntax' ? ' - .NET SDK 8+ for full analysis' : ''})`);
+    if (goCount > 0) console.error(`[ctxo]   Go: ${goCount} files (syntax tier)`);
+
+    // Dispose Roslyn adapter
+    if (roslynAdapter) await roslynAdapter.dispose();
   }
 
-  private registerTreeSitterAdapters(registry: LanguageAdapterRegistry): void {
+  private async registerCSharpAdapter(registry: LanguageAdapterRegistry): Promise<{ roslynAdapter: RoslynAdapter | null; csharpTier: string }> {
+    try {
+      const roslyn = new RoslynAdapter();
+      await roslyn.initialize(this.projectRoot);
+      if (roslyn.isReady()) {
+        registry.register(roslyn);
+        return { roslynAdapter: roslyn, csharpTier: 'full' };
+      }
+    } catch (err) {
+      console.error(`[ctxo] Roslyn adapter init failed: ${(err as Error).message}`);
+    }
+
+    // Fallback to tree-sitter
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { CSharpAdapter } = require('../adapters/language/csharp-adapter.js');
+      registry.register(new CSharpAdapter());
+      return { roslynAdapter: null, csharpTier: 'syntax' };
+    } catch {
+      return { roslynAdapter: null, csharpTier: 'unavailable' };
+    }
+  }
+
+  private registerGoAdapter(registry: LanguageAdapterRegistry): void {
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { GoAdapter } = require('../adapters/language/go-adapter.js');
       registry.register(new GoAdapter());
     } catch {
       console.error('[ctxo] Go adapter unavailable (tree-sitter-go not installed)');
-    }
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { CSharpAdapter } = require('../adapters/language/csharp-adapter.js');
-      registry.register(new CSharpAdapter());
-    } catch {
-      console.error('[ctxo] C# adapter unavailable (tree-sitter-c-sharp not installed)');
     }
   }
 
@@ -276,8 +312,10 @@ export class IndexCommand {
     // Register adapters so supportedExtensions includes .go/.cs
     const registry = new LanguageAdapterRegistry();
     registry.register(new TsMorphAdapter());
-    this.registerTreeSitterAdapters(registry);
+    const { roslynAdapter: _roslyn } = await this.registerCSharpAdapter(registry);
+    this.registerGoAdapter(registry);
     this.supportedExtensions = registry.getSupportedExtensions();
+    if (_roslyn) await _roslyn.dispose();
 
     const hasher = new ContentHasher();
     const files = this.discoverFilesIn(this.projectRoot);

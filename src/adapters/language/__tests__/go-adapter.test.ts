@@ -12,9 +12,9 @@ function readFixture(name: string): string {
 describe('GoAdapter — symbol extraction', () => {
   const adapter = new GoAdapter();
 
-  it('extracts exported function as symbol', () => {
+  it('extracts exported function as symbol', async () => {
     const source = readFixture('go-sample.go.fixture');
-    const symbols = adapter.extractSymbols('cmd/payment.go', source);
+    const symbols = await adapter.extractSymbols('cmd/payment.go', source);
 
     const fn = symbols.find(s => s.name === 'FormatAmount');
     expect(fn).toBeDefined();
@@ -22,17 +22,17 @@ describe('GoAdapter — symbol extraction', () => {
     expect(fn!.symbolId).toBe('cmd/payment.go::FormatAmount::function');
   });
 
-  it('skips unexported functions (lowercase)', () => {
+  it('skips unexported functions (lowercase)', async () => {
     const source = readFixture('go-sample.go.fixture');
-    const symbols = adapter.extractSymbols('cmd/payment.go', source);
+    const symbols = await adapter.extractSymbols('cmd/payment.go', source);
 
     const unexported = symbols.find(s => s.name === 'newProcessor');
     expect(unexported).toBeUndefined();
   });
 
-  it('extracts struct as class kind', () => {
+  it('extracts struct as class kind', async () => {
     const source = readFixture('go-sample.go.fixture');
-    const symbols = adapter.extractSymbols('cmd/payment.go', source);
+    const symbols = await adapter.extractSymbols('cmd/payment.go', source);
 
     const struct = symbols.find(s => s.name === 'PaymentResult');
     expect(struct).toBeDefined();
@@ -40,18 +40,18 @@ describe('GoAdapter — symbol extraction', () => {
     expect(struct!.symbolId).toBe('cmd/payment.go::PaymentResult::class');
   });
 
-  it('extracts interface as interface kind', () => {
+  it('extracts interface as interface kind', async () => {
     const source = readFixture('go-sample.go.fixture');
-    const symbols = adapter.extractSymbols('cmd/payment.go', source);
+    const symbols = await adapter.extractSymbols('cmd/payment.go', source);
 
     const iface = symbols.find(s => s.name === 'Processor');
     expect(iface).toBeDefined();
     expect(iface!.kind).toBe('interface');
   });
 
-  it('extracts method with receiver type in name', () => {
+  it('extracts method with receiver type in name', async () => {
     const source = readFixture('go-sample.go.fixture');
-    const symbols = adapter.extractSymbols('cmd/payment.go', source);
+    const symbols = await adapter.extractSymbols('cmd/payment.go', source);
 
     const method = symbols.find(s => s.name === 'CardProcessor.Process');
     expect(method).toBeDefined();
@@ -59,9 +59,9 @@ describe('GoAdapter — symbol extraction', () => {
     expect(method!.symbolId).toBe('cmd/payment.go::CardProcessor.Process::method');
   });
 
-  it('extracts all exported symbols from fixture', () => {
+  it('extracts all exported symbols from fixture', async () => {
     const source = readFixture('go-sample.go.fixture');
-    const symbols = adapter.extractSymbols('cmd/payment.go', source);
+    const symbols = await adapter.extractSymbols('cmd/payment.go', source);
 
     const names = symbols.map(s => s.name);
     expect(names).toContain('PaymentResult');
@@ -72,9 +72,9 @@ describe('GoAdapter — symbol extraction', () => {
     expect(names).toHaveLength(5);
   });
 
-  it('includes byte offsets on all symbols', () => {
+  it('includes byte offsets on all symbols', async () => {
     const source = readFixture('go-sample.go.fixture');
-    const symbols = adapter.extractSymbols('cmd/payment.go', source);
+    const symbols = await adapter.extractSymbols('cmd/payment.go', source);
 
     for (const sym of symbols) {
       expect(sym.startOffset).toBeDefined();
@@ -83,9 +83,9 @@ describe('GoAdapter — symbol extraction', () => {
     }
   });
 
-  it('includes correct line numbers', () => {
+  it('includes correct line numbers', async () => {
     const source = readFixture('go-sample.go.fixture');
-    const symbols = adapter.extractSymbols('cmd/payment.go', source);
+    const symbols = await adapter.extractSymbols('cmd/payment.go', source);
 
     const fn = symbols.find(s => s.name === 'FormatAmount');
     expect(fn!.startLine).toBeGreaterThanOrEqual(0);
@@ -96,9 +96,9 @@ describe('GoAdapter — symbol extraction', () => {
 describe('GoAdapter — edge extraction', () => {
   const adapter = new GoAdapter();
 
-  it('extracts import edges from import declarations', () => {
+  it('extracts import edges from import declarations', async () => {
     const source = readFixture('go-sample.go.fixture');
-    const edges = adapter.extractEdges('cmd/payment.go', source);
+    const edges = await adapter.extractEdges('cmd/payment.go', source);
 
     const importEdges = edges.filter(e => e.kind === 'imports');
     expect(importEdges.length).toBeGreaterThanOrEqual(2);
@@ -106,23 +106,23 @@ describe('GoAdapter — edge extraction', () => {
     expect(importEdges.some(e => e.to.includes('strings'))).toBe(true);
   });
 
-  it('returns empty edges for file with no imports', () => {
+  it('returns empty edges for file with no imports', async () => {
     const source = `package main
 
 func Hello() string { return "hi" }
 `;
-    const edges = adapter.extractEdges('cmd/main.go', source);
+    const edges = await adapter.extractEdges('cmd/main.go', source);
     expect(edges).toEqual([]);
   });
 
-  it('returns empty edges for file with no exported symbols', () => {
+  it('returns empty edges for file with no exported symbols', async () => {
     const source = `package internal
 
 import "fmt"
 
 func helper() { fmt.Println("hi") }
 `;
-    const edges = adapter.extractEdges('cmd/internal.go', source);
+    const edges = await adapter.extractEdges('cmd/internal.go', source);
     // No exported symbol to use as 'from' — should return empty
     expect(edges).toEqual([]);
   });
@@ -131,28 +131,28 @@ func helper() { fmt.Println("hi") }
 describe('GoAdapter — complexity extraction', () => {
   const adapter = new GoAdapter();
 
-  it('returns complexity 1 for function with no branches', () => {
+  it('returns complexity 1 for function with no branches', async () => {
     const source = `package main
 
 func Simple() int { return 42 }
 `;
-    const metrics = adapter.extractComplexity('cmd/simple.go', source);
+    const metrics = await adapter.extractComplexity('cmd/simple.go', source);
     expect(metrics).toHaveLength(1);
     expect(metrics[0]!.cyclomatic).toBe(1);
   });
 
-  it('counts if statement as branch', () => {
+  it('counts if statement as branch', async () => {
     const source = readFixture('go-sample.go.fixture');
-    const metrics = adapter.extractComplexity('cmd/payment.go', source);
+    const metrics = await adapter.extractComplexity('cmd/payment.go', source);
 
     const processMetric = metrics.find(m => m.symbolId.includes('CardProcessor.Process'));
     expect(processMetric).toBeDefined();
     expect(processMetric!.cyclomatic).toBeGreaterThan(1);
   });
 
-  it('skips unexported functions', () => {
+  it('skips unexported functions', async () => {
     const source = readFixture('go-sample.go.fixture');
-    const metrics = adapter.extractComplexity('cmd/payment.go', source);
+    const metrics = await adapter.extractComplexity('cmd/payment.go', source);
 
     const unexported = metrics.find(m => m.symbolId.includes('newProcessor'));
     expect(unexported).toBeUndefined();
@@ -162,20 +162,20 @@ func Simple() int { return 42 }
 describe('GoAdapter — edge cases', () => {
   const adapter = new GoAdapter();
 
-  it('extracts method with non-pointer receiver', () => {
+  it('extracts method with non-pointer receiver', async () => {
     const source = `package main
 
 type Svc struct{}
 
 func (s Svc) Run() {}
 `;
-    const symbols = adapter.extractSymbols('cmd/svc.go', source);
+    const symbols = await adapter.extractSymbols('cmd/svc.go', source);
     const method = symbols.find(s => s.name === 'Svc.Run');
     expect(method).toBeDefined();
     expect(method!.kind).toBe('method');
   });
 
-  it('uses type_spec as first exported symbol for edge from', () => {
+  it('uses type_spec as first exported symbol for edge from', async () => {
     // File with no function — only an exported struct, then imports
     const source = `package models
 
@@ -187,14 +187,14 @@ type Config struct {
 
 func init() { fmt.Println("init") }
 `;
-    const edges = adapter.extractEdges('pkg/models.go', source);
+    const edges = await adapter.extractEdges('pkg/models.go', source);
     const importEdge = edges.find(e => e.kind === 'imports');
     expect(importEdge).toBeDefined();
     // from should be the Config struct (first exported symbol)
     expect(importEdge!.from).toBe('pkg/models.go::Config::class');
   });
 
-  it('uses interface as first exported symbol for edge from', () => {
+  it('uses interface as first exported symbol for edge from', async () => {
     const source = `package api
 
 import "net/http"
@@ -203,47 +203,47 @@ type Handler interface {
     Handle()
 }
 `;
-    const edges = adapter.extractEdges('pkg/api.go', source);
+    const edges = await adapter.extractEdges('pkg/api.go', source);
     const importEdge = edges.find(e => e.kind === 'imports');
     expect(importEdge).toBeDefined();
     expect(importEdge!.from).toBe('pkg/api.go::Handler::interface');
   });
 
-  it('extracts type alias (non-struct, non-interface) as type kind', () => {
+  it('extracts type alias (non-struct, non-interface) as type kind', async () => {
     const source = `package main
 
 type ID string
 `;
-    const symbols = adapter.extractSymbols('cmd/id.go', source);
+    const symbols = await adapter.extractSymbols('cmd/id.go', source);
     const t = symbols.find(s => s.name === 'ID');
     expect(t).toBeDefined();
     expect(t!.kind).toBe('type');
   });
 
-  it('extracts exported const as variable', () => {
+  it('extracts exported const as variable', async () => {
     const source = `package main
 
 const MaxRetries = 3
 `;
-    const symbols = adapter.extractSymbols('cmd/const.go', source);
+    const symbols = await adapter.extractSymbols('cmd/const.go', source);
     // const_spec is at top level — currently not extracted (only functions/types/methods)
     // This documents the current behavior
     expect(symbols).toHaveLength(0);
   });
 
-  it('handles single import (no parens)', () => {
+  it('handles single import (no parens)', async () => {
     const source = `package main
 
 import "fmt"
 
 func Hello() { fmt.Println("hi") }
 `;
-    const edges = adapter.extractEdges('cmd/hello.go', source);
+    const edges = await adapter.extractEdges('cmd/hello.go', source);
     const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('fmt'));
     expect(importEdge).toBeDefined();
   });
 
-  it('handles file with only unexported types — no edges', () => {
+  it('handles file with only unexported types — no edges', async () => {
     const source = `package internal
 
 import "fmt"
@@ -252,11 +252,11 @@ type config struct { host string }
 
 func setup() { fmt.Println("setup") }
 `;
-    const edges = adapter.extractEdges('pkg/internal.go', source);
+    const edges = await adapter.extractEdges('pkg/internal.go', source);
     expect(edges).toEqual([]);
   });
 
-  it('complexity counts switch cases', () => {
+  it('complexity counts switch cases', async () => {
     const source = `package main
 
 func Route(path string) string {
@@ -270,7 +270,7 @@ func Route(path string) string {
     }
 }
 `;
-    const metrics = adapter.extractComplexity('cmd/route.go', source);
+    const metrics = await adapter.extractComplexity('cmd/route.go', source);
     expect(metrics).toHaveLength(1);
     // 1 base + 1 switch + 2 case clauses = 4
     expect(metrics[0]!.cyclomatic).toBeGreaterThanOrEqual(3);
@@ -280,19 +280,19 @@ func Route(path string) string {
 describe('GoAdapter — isSupported', () => {
   const adapter = new GoAdapter();
 
-  it('returns true for .go files', () => {
+  it('returns true for .go files', async () => {
     expect(adapter.isSupported('cmd/main.go')).toBe(true);
   });
 
-  it('returns false for .ts files', () => {
+  it('returns false for .ts files', async () => {
     expect(adapter.isSupported('src/main.ts')).toBe(false);
   });
 
-  it('returns false for .cs files', () => {
+  it('returns false for .cs files', async () => {
     expect(adapter.isSupported('src/App.cs')).toBe(false);
   });
 
-  it('has syntax tier', () => {
+  it('has syntax tier', async () => {
     expect(adapter.tier).toBe('syntax');
   });
 });

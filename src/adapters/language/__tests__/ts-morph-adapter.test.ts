@@ -16,9 +16,9 @@ describe('TsMorphAdapter — symbol extraction', () => {
     adapter = new TsMorphAdapter();
   });
 
-  it('extracts exported function as symbol with correct ID format', () => {
+  it('extracts exported function as symbol with correct ID format', async () => {
     const source = readFixture('sample-module.ts.fixture');
-    const symbols = adapter.extractSymbols('src/payment.ts', source);
+    const symbols = await adapter.extractSymbols('src/payment.ts', source);
 
     const fn = symbols.find((s) => s.name === 'processPayment');
     expect(fn).toBeDefined();
@@ -28,9 +28,9 @@ describe('TsMorphAdapter — symbol extraction', () => {
     expect(fn?.endLine).toBeGreaterThan(fn!.startLine);
   });
 
-  it('extracts class with correct kind "class"', () => {
+  it('extracts class with correct kind "class"', async () => {
     const source = readFixture('sample-module.ts.fixture');
-    const symbols = adapter.extractSymbols('src/payment.ts', source);
+    const symbols = await adapter.extractSymbols('src/payment.ts', source);
 
     const cls = symbols.find((s) => s.name === 'PaymentProcessor');
     expect(cls).toBeDefined();
@@ -38,36 +38,36 @@ describe('TsMorphAdapter — symbol extraction', () => {
     expect(cls?.symbolId).toBe('src/payment.ts::PaymentProcessor::class');
   });
 
-  it('extracts interface with correct kind "interface"', () => {
+  it('extracts interface with correct kind "interface"', async () => {
     const source = readFixture('sample-module.ts.fixture');
-    const symbols = adapter.extractSymbols('src/payment.ts', source);
+    const symbols = await adapter.extractSymbols('src/payment.ts', source);
 
     const iface = symbols.find((s) => s.name === 'PaymentResult');
     expect(iface).toBeDefined();
     expect(iface?.kind).toBe('interface');
   });
 
-  it('extracts type alias with correct kind "type"', () => {
+  it('extracts type alias with correct kind "type"', async () => {
     const source = readFixture('sample-module.ts.fixture');
-    const symbols = adapter.extractSymbols('src/payment.ts', source);
+    const symbols = await adapter.extractSymbols('src/payment.ts', source);
 
     const typeAlias = symbols.find((s) => s.name === 'Currency');
     expect(typeAlias).toBeDefined();
     expect(typeAlias?.kind).toBe('type');
   });
 
-  it('extracts exported variable with correct kind "variable"', () => {
+  it('extracts exported variable with correct kind "variable"', async () => {
     const source = readFixture('sample-module.ts.fixture');
-    const symbols = adapter.extractSymbols('src/payment.ts', source);
+    const symbols = await adapter.extractSymbols('src/payment.ts', source);
 
     const variable = symbols.find((s) => s.name === 'MAX_AMOUNT');
     expect(variable).toBeDefined();
     expect(variable?.kind).toBe('variable');
   });
 
-  it('extracts method inside class with correct symbolId', () => {
+  it('extracts method inside class with correct symbolId', async () => {
     const source = readFixture('sample-module.ts.fixture');
-    const symbols = adapter.extractSymbols('src/payment.ts', source);
+    const symbols = await adapter.extractSymbols('src/payment.ts', source);
 
     const method = symbols.find((s) => s.name === 'PaymentProcessor.process');
     expect(method).toBeDefined();
@@ -75,36 +75,36 @@ describe('TsMorphAdapter — symbol extraction', () => {
     expect(method?.symbolId).toBe('src/payment.ts::PaymentProcessor.process::method');
   });
 
-  it('generates deterministic symbolId across repeated parses', () => {
+  it('generates deterministic symbolId across repeated parses', async () => {
     const source = readFixture('sample-module.ts.fixture');
-    const first = adapter.extractSymbols('src/payment.ts', source);
-    const second = adapter.extractSymbols('src/payment.ts', source);
+    const first = await adapter.extractSymbols('src/payment.ts', source);
+    const second = await adapter.extractSymbols('src/payment.ts', source);
 
     expect(first.map((s) => s.symbolId)).toEqual(second.map((s) => s.symbolId));
   });
 
-  it('skips non-exported symbols (private functions)', () => {
+  it('skips non-exported symbols (private functions)', async () => {
     const source = readFixture('sample-module.ts.fixture');
-    const symbols = adapter.extractSymbols('src/payment.ts', source);
+    const symbols = await adapter.extractSymbols('src/payment.ts', source);
 
     const internal = symbols.find((s) => s.name === 'internalHelper');
     expect(internal).toBeUndefined();
   });
 
-  it('returns empty array for empty file', () => {
-    const symbols = adapter.extractSymbols('src/empty.ts', '');
+  it('returns empty array for empty file', async () => {
+    const symbols = await adapter.extractSymbols('src/empty.ts', '');
     expect(symbols).toEqual([]);
   });
 
-  it('returns empty array for file with only comments', () => {
+  it('returns empty array for file with only comments', async () => {
     const source = readFixture('empty-file.ts.fixture');
-    const symbols = adapter.extractSymbols('src/empty.ts', source);
+    const symbols = await adapter.extractSymbols('src/empty.ts', source);
     expect(symbols).toEqual([]);
   });
 
-  it('handles TSX file with JSX elements', () => {
+  it('handles TSX file with JSX elements', async () => {
     const source = readFixture('tsx-component.tsx.fixture');
-    const symbols = adapter.extractSymbols('src/Button.tsx', source);
+    const symbols = await adapter.extractSymbols('src/Button.tsx', source);
 
     const button = symbols.find((s) => s.name === 'Button');
     expect(button).toBeDefined();
@@ -127,9 +127,9 @@ describe('TsMorphAdapter — edge extraction', () => {
     adapter = new TsMorphAdapter();
   });
 
-  it('detects "extends" edge for class inheritance', () => {
+  it('detects "extends" edge for class inheritance', async () => {
     const source = readFixture('class-with-inheritance.ts.fixture');
-    const edges = adapter.extractEdges('src/user-service.ts', source);
+    const edges = await adapter.extractEdges('src/user-service.ts', source);
 
     const extendsEdge = edges.find((e) => e.kind === 'extends');
     expect(extendsEdge).toBeDefined();
@@ -137,9 +137,9 @@ describe('TsMorphAdapter — edge extraction', () => {
     expect(extendsEdge?.to).toContain('BaseService');
   });
 
-  it('detects "implements" edge for interface implementation', () => {
+  it('detects "implements" edge for interface implementation', async () => {
     const source = readFixture('class-with-inheritance.ts.fixture');
-    const edges = adapter.extractEdges('src/user-service.ts', source);
+    const edges = await adapter.extractEdges('src/user-service.ts', source);
 
     const implEdge = edges.find((e) => e.kind === 'implements');
     expect(implEdge).toBeDefined();
@@ -147,35 +147,35 @@ describe('TsMorphAdapter — edge extraction', () => {
     expect(implEdge?.to).toContain('Configurable');
   });
 
-  it('resolves cross-file implements edge to normalized path (BUG-19)', () => {
+  it('resolves cross-file implements edge to normalized path (BUG-19)', async () => {
     const source = `
 import { IStoragePort } from '../../ports/i-storage-port.js';
 export class MyAdapter implements IStoragePort {
   save(): void {}
 }
 `;
-    const edges = adapter.extractEdges('src/adapters/storage/my-adapter.ts', source);
+    const edges = await adapter.extractEdges('src/adapters/storage/my-adapter.ts', source);
     const implEdge = edges.find((e) => e.kind === 'implements');
     expect(implEdge).toBeDefined();
     expect(implEdge?.to).toBe('src/ports/i-storage-port.ts::IStoragePort::interface');
   });
 
-  it('resolves cross-file implements edge with .jsx → .tsx (BUG-19)', () => {
+  it('resolves cross-file implements edge with .jsx → .tsx (BUG-19)', async () => {
     const source = `
 import { IRenderer } from '../ports/i-renderer.jsx';
 export class MyRenderer implements IRenderer {
   render(): void {}
 }
 `;
-    const edges = adapter.extractEdges('src/adapters/my-renderer.ts', source);
+    const edges = await adapter.extractEdges('src/adapters/my-renderer.ts', source);
     const implEdge = edges.find((e) => e.kind === 'implements');
     expect(implEdge).toBeDefined();
     expect(implEdge?.to).toBe('src/ports/i-renderer.tsx::IRenderer::interface');
   });
 
-  it('returns empty edges for file with no imports or references', () => {
+  it('returns empty edges for file with no imports or references', async () => {
     const source = 'export function standalone(): void {}';
-    const edges = adapter.extractEdges('src/standalone.ts', source);
+    const edges = await adapter.extractEdges('src/standalone.ts', source);
     expect(edges).toEqual([]);
   });
 });
@@ -187,24 +187,24 @@ describe('TsMorphAdapter — complexity extraction', () => {
     adapter = new TsMorphAdapter();
   });
 
-  it('returns complexity 1 for function with no branches', () => {
+  it('returns complexity 1 for function with no branches', async () => {
     const source = 'export function simple(): number { return 42; }';
-    const metrics = adapter.extractComplexity('src/simple.ts', source);
+    const metrics = await adapter.extractComplexity('src/simple.ts', source);
 
     expect(metrics).toHaveLength(1);
     expect(metrics[0]?.cyclomatic).toBe(1);
   });
 
-  it('returns higher complexity for function with if/else/switch', () => {
+  it('returns higher complexity for function with if/else/switch', async () => {
     const source = readFixture('sample-module.ts.fixture');
-    const metrics = adapter.extractComplexity('src/payment.ts', source);
+    const metrics = await adapter.extractComplexity('src/payment.ts', source);
 
     const processFn = metrics.find((m) => m.symbolId.includes('processPayment'));
     expect(processFn).toBeDefined();
     expect(processFn!.cyclomatic).toBeGreaterThan(1);
   });
 
-  it('counts nested conditionals correctly', () => {
+  it('counts nested conditionals correctly', async () => {
     const source = `export function nested(a: number, b: number): string {
       if (a > 0) {
         if (b > 0) {
@@ -214,7 +214,7 @@ describe('TsMorphAdapter — complexity extraction', () => {
       }
       return 'neither';
     }`;
-    const metrics = adapter.extractComplexity('src/nested.ts', source);
+    const metrics = await adapter.extractComplexity('src/nested.ts', source);
     expect(metrics[0]?.cyclomatic).toBe(3); // 1 base + 2 if statements
   });
 });
@@ -226,9 +226,9 @@ describe('TsMorphAdapter — byte offset indexing', () => {
     adapter = new TsMorphAdapter();
   });
 
-  it('extracts startOffset and endOffset for functions', () => {
+  it('extracts startOffset and endOffset for functions', async () => {
     const source = 'export function hello(): void {}\n';
-    const symbols = adapter.extractSymbols('src/fn.ts', source);
+    const symbols = await adapter.extractSymbols('src/fn.ts', source);
     const fn = symbols.find(s => s.name === 'hello');
 
     expect(fn).toBeDefined();
@@ -240,9 +240,9 @@ describe('TsMorphAdapter — byte offset indexing', () => {
     expect(source.substring(fn!.startOffset!, fn!.endOffset!)).toContain('function hello');
   });
 
-  it('extracts byte offsets for classes and methods', () => {
+  it('extracts byte offsets for classes and methods', async () => {
     const source = `export class MyClass {\n  greet(): void {}\n}\n`;
-    const symbols = adapter.extractSymbols('src/cls.ts', source);
+    const symbols = await adapter.extractSymbols('src/cls.ts', source);
 
     const cls = symbols.find(s => s.kind === 'class');
     expect(cls!.startOffset).toBeDefined();
@@ -255,36 +255,36 @@ describe('TsMorphAdapter — byte offset indexing', () => {
     expect(source.substring(method!.startOffset!, method!.endOffset!)).toContain('greet');
   });
 
-  it('extracts byte offsets for interfaces', () => {
+  it('extracts byte offsets for interfaces', async () => {
     const source = `export interface IFoo {\n  bar(): void;\n}\n`;
-    const symbols = adapter.extractSymbols('src/iface.ts', source);
+    const symbols = await adapter.extractSymbols('src/iface.ts', source);
     const iface = symbols.find(s => s.kind === 'interface');
 
     expect(iface!.startOffset).toBeDefined();
     expect(source.substring(iface!.startOffset!, iface!.endOffset!)).toContain('interface IFoo');
   });
 
-  it('extracts byte offsets for type aliases', () => {
+  it('extracts byte offsets for type aliases', async () => {
     const source = `export type ID = string;\n`;
-    const symbols = adapter.extractSymbols('src/alias.ts', source);
+    const symbols = await adapter.extractSymbols('src/alias.ts', source);
     const t = symbols.find(s => s.kind === 'type');
 
     expect(t!.startOffset).toBeDefined();
     expect(source.substring(t!.startOffset!, t!.endOffset!)).toContain('type ID');
   });
 
-  it('extracts byte offsets for variables', () => {
+  it('extracts byte offsets for variables', async () => {
     const source = `export const MAX = 100;\n`;
-    const symbols = adapter.extractSymbols('src/var.ts', source);
+    const symbols = await adapter.extractSymbols('src/var.ts', source);
     const v = symbols.find(s => s.kind === 'variable');
 
     expect(v!.startOffset).toBeDefined();
     expect(source.substring(v!.startOffset!, v!.endOffset!)).toContain('MAX');
   });
 
-  it('byte offsets are precise for multi-symbol files', () => {
+  it('byte offsets are precise for multi-symbol files', async () => {
     const source = `// comment\nexport function a(): void {}\nexport function b(): void {}\n`;
-    const symbols = adapter.extractSymbols('src/multi.ts', source);
+    const symbols = await adapter.extractSymbols('src/multi.ts', source);
 
     const a = symbols.find(s => s.name === 'a')!;
     const b = symbols.find(s => s.name === 'b')!;
@@ -306,14 +306,14 @@ describe('TsMorphAdapter — edge cases', () => {
     adapter = new TsMorphAdapter();
   });
 
-  it('handles file with duplicate function names in different scopes', () => {
+  it('handles file with duplicate function names in different scopes', async () => {
     const source = `
       export function process(): void {}
       export class Processor {
         process(): void {}
       }
     `;
-    const symbols = adapter.extractSymbols('src/dup.ts', source);
+    const symbols = await adapter.extractSymbols('src/dup.ts', source);
 
     const fnProcess = symbols.find(
       (s) => s.name === 'process' && s.kind === 'function',
@@ -327,13 +327,13 @@ describe('TsMorphAdapter — edge cases', () => {
     expect(fnProcess?.symbolId).not.toBe(methodProcess?.symbolId);
   });
 
-  it('handles very large source without crashing', () => {
+  it('handles very large source without crashing', async () => {
     const lines = Array.from(
       { length: 1000 },
       (_, i) => `export function fn${i}(): void {}`,
     );
     const source = lines.join('\n');
-    const symbols = adapter.extractSymbols('src/large.ts', source);
+    const symbols = await adapter.extractSymbols('src/large.ts', source);
     expect(symbols).toHaveLength(1000);
   });
 });
@@ -345,13 +345,13 @@ describe('TsMorphAdapter — Faz 1 fixes', () => {
     adapter = new TsMorphAdapter();
   });
 
-  it('import edges have valid from symbolId (not phantom) when file has exports (BUG-1 fix)', () => {
+  it('import edges have valid from symbolId (not phantom) when file has exports (BUG-1 fix)', async () => {
     const source = `
       export function myFunc(): void {}
       import { Helper } from './helper.js';
     `;
-    const symbols = adapter.extractSymbols('src/caller.ts', source);
-    const edges = adapter.extractEdges('src/caller.ts', source);
+    const symbols = await adapter.extractSymbols('src/caller.ts', source);
+    const edges = await adapter.extractEdges('src/caller.ts', source);
 
     const importEdge = edges.find(e => e.kind === 'imports');
     expect(importEdge).toBeDefined();
@@ -361,24 +361,24 @@ describe('TsMorphAdapter — Faz 1 fixes', () => {
     expect(symbols.some(s => s.symbolId === importEdge!.from)).toBe(true);
   });
 
-  it('strips generic type arguments from extends (BUG-17 fix)', () => {
+  it('strips generic type arguments from extends (BUG-17 fix)', async () => {
     const source = `
       export class Base {}
       export class Child extends Base {}
     `;
     // First index the symbols to build context
-    const edges = adapter.extractEdges('src/generic.ts', source);
+    const edges = await adapter.extractEdges('src/generic.ts', source);
     const extendsEdge = edges.find(e => e.kind === 'extends');
     expect(extendsEdge).toBeDefined();
     expect(extendsEdge!.to).not.toContain('<');
   });
 
-  it('strips generic type arguments from extends with generics', () => {
+  it('strips generic type arguments from extends with generics', async () => {
     const source = `
       import { Base } from './base.js';
       export class Child extends Base<string> {}
     `;
-    const edges = adapter.extractEdges('src/child.ts', source);
+    const edges = await adapter.extractEdges('src/child.ts', source);
     const extendsEdge = edges.find(e => e.kind === 'extends');
     expect(extendsEdge).toBeDefined();
     // Should be Base, not Base<string>
@@ -387,19 +387,19 @@ describe('TsMorphAdapter — Faz 1 fixes', () => {
     expect(extendsEdge!.to).not.toContain('>');
   });
 
-  it('strips generic type arguments from implements', () => {
+  it('strips generic type arguments from implements', async () => {
     const source = `
       import { IRepo } from './repo.js';
       export class UserRepo implements IRepo<User> {}
     `;
-    const edges = adapter.extractEdges('src/user-repo.ts', source);
+    const edges = await adapter.extractEdges('src/user-repo.ts', source);
     const implEdge = edges.find(e => e.kind === 'implements');
     expect(implEdge).toBeDefined();
     expect(implEdge!.to).toContain('::IRepo::');
     expect(implEdge!.to).not.toContain('<');
   });
 
-  it('uses symbolRegistry for correct kind resolution (BUG-8/9 fix)', () => {
+  it('uses symbolRegistry for correct kind resolution (BUG-8/9 fix)', async () => {
     const registry = new Map<string, import('../../../core/types.js').SymbolKind>();
     registry.set('src/types.ts::Handler::type', 'type');
 
@@ -409,7 +409,7 @@ describe('TsMorphAdapter — Faz 1 fixes', () => {
       import { Handler } from './types.js';
       export function process(h: Handler): void {}
     `;
-    const edges = adapter.extractEdges('src/processor.ts', source);
+    const edges = await adapter.extractEdges('src/processor.ts', source);
     const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('Handler'));
     expect(importEdge).toBeDefined();
     // Should resolve to ::type not ::class (heuristic would say class for PascalCase)
@@ -419,14 +419,14 @@ describe('TsMorphAdapter — Faz 1 fixes', () => {
     adapter.setSymbolRegistry(new Map());
   });
 
-  it('falls back to heuristic when symbolRegistry has no match', () => {
+  it('falls back to heuristic when symbolRegistry has no match', async () => {
     adapter.setSymbolRegistry(new Map()); // empty registry
 
     const source = `
       import { SomeClass } from './mod.js';
       export function use(): void {}
     `;
-    const edges = adapter.extractEdges('src/user.ts', source);
+    const edges = await adapter.extractEdges('src/user.ts', source);
     const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('SomeClass'));
     expect(importEdge).toBeDefined();
     // PascalCase → heuristic says 'class'
@@ -441,21 +441,21 @@ describe('TsMorphAdapter — uses edge extraction (Faz 3)', () => {
     adapter = new TsMorphAdapter();
   });
 
-  it('emits uses edge when exported function references an import in its body', () => {
+  it('emits uses edge when exported function references an import in its body', async () => {
     const source = `
       import { validate } from './validator.js';
       export function process(data: string): boolean {
         return validate(data);
       }
     `;
-    const edges = adapter.extractEdges('src/processor.ts', source);
+    const edges = await adapter.extractEdges('src/processor.ts', source);
     const usesEdge = edges.find(e => e.kind === 'uses' && e.to.includes('validate'));
     expect(usesEdge).toBeDefined();
     expect(usesEdge!.from).toBe('src/processor.ts::process::function');
     expect(usesEdge!.to).toContain('::validate::');
   });
 
-  it('emits uses edge when exported class references an import', () => {
+  it('emits uses edge when exported class references an import', async () => {
     const source = `
       import { Logger } from './logger.js';
       export class Service {
@@ -464,25 +464,25 @@ describe('TsMorphAdapter — uses edge extraction (Faz 3)', () => {
         }
       }
     `;
-    const edges = adapter.extractEdges('src/service.ts', source);
+    const edges = await adapter.extractEdges('src/service.ts', source);
     const usesEdge = edges.find(e => e.kind === 'uses' && e.to.includes('Logger'));
     expect(usesEdge).toBeDefined();
     expect(usesEdge!.from).toBe('src/service.ts::Service::class');
   });
 
-  it('does not emit uses edge for imports not referenced in body', () => {
+  it('does not emit uses edge for imports not referenced in body', async () => {
     const source = `
       import { unusedHelper } from './helper.js';
       export function doWork(): void {
         console.log('hello');
       }
     `;
-    const edges = adapter.extractEdges('src/worker.ts', source);
+    const edges = await adapter.extractEdges('src/worker.ts', source);
     const usesEdge = edges.find(e => e.kind === 'uses' && e.to.includes('unusedHelper'));
     expect(usesEdge).toBeUndefined();
   });
 
-  it('emits one uses edge per unique import reference (deduplicates)', () => {
+  it('emits one uses edge per unique import reference (deduplicates)', async () => {
     const source = `
       import { helper } from './utils.js';
       export function process(): void {
@@ -491,12 +491,12 @@ describe('TsMorphAdapter — uses edge extraction (Faz 3)', () => {
         helper();
       }
     `;
-    const edges = adapter.extractEdges('src/caller.ts', source);
+    const edges = await adapter.extractEdges('src/caller.ts', source);
     const usesEdges = edges.filter(e => e.kind === 'uses' && e.to.includes('helper'));
     expect(usesEdges).toHaveLength(1);
   });
 
-  it('emits uses edges for multiple distinct imports', () => {
+  it('emits uses edges for multiple distinct imports', async () => {
     const source = `
       import { foo } from './a.js';
       import { bar } from './b.js';
@@ -505,7 +505,7 @@ describe('TsMorphAdapter — uses edge extraction (Faz 3)', () => {
         bar();
       }
     `;
-    const edges = adapter.extractEdges('src/multi.ts', source);
+    const edges = await adapter.extractEdges('src/multi.ts', source);
     const usesEdges = edges.filter(e => e.kind === 'uses');
     expect(usesEdges).toHaveLength(2);
     expect(usesEdges.map(e => e.to)).toEqual(
@@ -516,7 +516,7 @@ describe('TsMorphAdapter — uses edge extraction (Faz 3)', () => {
     );
   });
 
-  it('does not emit uses edge for non-exported functions', () => {
+  it('does not emit uses edge for non-exported functions', async () => {
     const source = `
       import { helper } from './utils.js';
       function internal(): void {
@@ -524,20 +524,20 @@ describe('TsMorphAdapter — uses edge extraction (Faz 3)', () => {
       }
       export function pub(): void {}
     `;
-    const edges = adapter.extractEdges('src/internal.ts', source);
+    const edges = await adapter.extractEdges('src/internal.ts', source);
     const usesEdges = edges.filter(e => e.kind === 'uses');
     // Only pub is exported, and it doesn't reference helper
     expect(usesEdges).toHaveLength(0);
   });
 
-  it('does not emit uses edge for external (non-relative) imports', () => {
+  it('does not emit uses edge for external (non-relative) imports', async () => {
     const source = `
       import { z } from 'zod';
       export function validate(input: unknown): boolean {
         return z.string().safeParse(input).success;
       }
     `;
-    const edges = adapter.extractEdges('src/val.ts', source);
+    const edges = await adapter.extractEdges('src/val.ts', source);
     const usesEdges = edges.filter(e => e.kind === 'uses');
     // zod is external, should not produce uses edge
     expect(usesEdges).toHaveLength(0);
@@ -572,23 +572,23 @@ describe('TsMorphAdapter — namespace imports (GAP-3 fix)', () => {
     adapter = new TsMorphAdapter();
   });
 
-  it('creates import edge for namespace import (import * as X)', () => {
+  it('creates import edge for namespace import (import * as X)', async () => {
     const source = `
       import * as utils from './utils.js';
       export function run(): void { utils.doStuff(); }
     `;
-    const edges = adapter.extractEdges('src/runner.ts', source);
+    const edges = await adapter.extractEdges('src/runner.ts', source);
     const nsEdge = edges.find(e => e.kind === 'imports' && e.to.includes('utils'));
     expect(nsEdge).toBeDefined();
     expect(nsEdge!.to).toBe('src/utils.ts::utils::variable');
   });
 
-  it('does not create namespace edge for external modules', () => {
+  it('does not create namespace edge for external modules', async () => {
     const source = `
       import * as path from 'node:path';
       export function resolve(): string { return path.join('.'); }
     `;
-    const edges = adapter.extractEdges('src/paths.ts', source);
+    const edges = await adapter.extractEdges('src/paths.ts', source);
     const nsEdge = edges.find(e => e.kind === 'imports' && e.to.includes('path'));
     expect(nsEdge).toBeUndefined();
   });
@@ -601,20 +601,20 @@ describe('TsMorphAdapter — constructor calls (GAP-11 fix)', () => {
     adapter = new TsMorphAdapter();
   });
 
-  it('creates calls edge for new Foo() in exported function', () => {
+  it('creates calls edge for new Foo() in exported function', async () => {
     const source = `
       import { Service } from './service.js';
       export function createService(): Service {
         return new Service();
       }
     `;
-    const edges = adapter.extractEdges('src/factory.ts', source);
+    const edges = await adapter.extractEdges('src/factory.ts', source);
     const callEdge = edges.find(e => e.kind === 'calls' && e.to.includes('Service'));
     expect(callEdge).toBeDefined();
     expect(callEdge!.from).toBe('src/factory.ts::createService::function');
   });
 
-  it('creates calls edge for new Foo() in class method', () => {
+  it('creates calls edge for new Foo() in class method', async () => {
     const source = `
       import { Logger } from './logger.js';
       export class App {
@@ -623,19 +623,19 @@ describe('TsMorphAdapter — constructor calls (GAP-11 fix)', () => {
         }
       }
     `;
-    const edges = adapter.extractEdges('src/app.ts', source);
+    const edges = await adapter.extractEdges('src/app.ts', source);
     const callEdge = edges.find(e => e.kind === 'calls' && e.to.includes('Logger'));
     expect(callEdge).toBeDefined();
     expect(callEdge!.from).toContain('App.init');
   });
 
-  it('does not create constructor edge for non-imported class', () => {
+  it('does not create constructor edge for non-imported class', async () => {
     const source = `
       export function make(): void {
         const x = new Map();
       }
     `;
-    const edges = adapter.extractEdges('src/map.ts', source);
+    const edges = await adapter.extractEdges('src/map.ts', source);
     const callEdge = edges.find(e => e.kind === 'calls');
     expect(callEdge).toBeUndefined();
   });
@@ -648,23 +648,23 @@ describe('TsMorphAdapter — typeOnly flag (SCHEMA-40 fix)', () => {
     adapter = new TsMorphAdapter();
   });
 
-  it('marks import type edges as typeOnly: true', () => {
+  it('marks import type edges as typeOnly: true', async () => {
     const source = `
       import type { Foo } from './foo.js';
       export function useFoo(f: Foo): void {}
     `;
-    const edges = adapter.extractEdges('src/consumer.ts', source);
+    const edges = await adapter.extractEdges('src/consumer.ts', source);
     const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('Foo'));
     expect(importEdge).toBeDefined();
     expect(importEdge!.typeOnly).toBe(true);
   });
 
-  it('marks per-specifier type imports as typeOnly', () => {
+  it('marks per-specifier type imports as typeOnly', async () => {
     const source = `
       import { type Bar, baz } from './mod.js';
       export function use(): void { baz(); }
     `;
-    const edges = adapter.extractEdges('src/mixed.ts', source);
+    const edges = await adapter.extractEdges('src/mixed.ts', source);
     const barEdge = edges.find(e => e.kind === 'imports' && e.to.includes('Bar'));
     const bazEdge = edges.find(e => e.kind === 'imports' && e.to.includes('baz'));
     expect(barEdge).toBeDefined();
@@ -673,12 +673,12 @@ describe('TsMorphAdapter — typeOnly flag (SCHEMA-40 fix)', () => {
     expect(bazEdge!.typeOnly).toBeUndefined(); // value import — no typeOnly flag
   });
 
-  it('does not set typeOnly for regular value imports', () => {
+  it('does not set typeOnly for regular value imports', async () => {
     const source = `
       import { helper } from './utils.js';
       export function run(): void { helper(); }
     `;
-    const edges = adapter.extractEdges('src/user.ts', source);
+    const edges = await adapter.extractEdges('src/user.ts', source);
     const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('helper'));
     expect(importEdge).toBeDefined();
     expect(importEdge!.typeOnly).toBeUndefined();
@@ -686,7 +686,7 @@ describe('TsMorphAdapter — typeOnly flag (SCHEMA-40 fix)', () => {
 });
 
 describe('TsMorphAdapter — multi-file project resolution', () => {
-  it('resolves import target kind from pre-loaded project instead of heuristic', () => {
+  it('resolves import target kind from pre-loaded project instead of heuristic', async () => {
     const adapter = new TsMorphAdapter();
 
     const sources = new Map<string, string>();
@@ -697,7 +697,7 @@ describe('TsMorphAdapter — multi-file project resolution', () => {
     `);
     adapter.loadProjectSources(sources);
 
-    const edges = adapter.extractEdges('src/consumer.ts', sources.get('src/consumer.ts')!);
+    const edges = await adapter.extractEdges('src/consumer.ts', sources.get('src/consumer.ts')!);
     const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('Handler'));
 
     expect(importEdge).toBeDefined();
@@ -707,7 +707,7 @@ describe('TsMorphAdapter — multi-file project resolution', () => {
     adapter.clearProjectSources();
   });
 
-  it('resolves interface kind from pre-loaded project instead of PascalCase heuristic', () => {
+  it('resolves interface kind from pre-loaded project instead of PascalCase heuristic', async () => {
     const adapter = new TsMorphAdapter();
 
     const sources = new Map<string, string>();
@@ -718,7 +718,7 @@ describe('TsMorphAdapter — multi-file project resolution', () => {
     `);
     adapter.loadProjectSources(sources);
 
-    const edges = adapter.extractEdges('src/app.ts', sources.get('src/app.ts')!);
+    const edges = await adapter.extractEdges('src/app.ts', sources.get('src/app.ts')!);
     const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('ServiceConfig'));
 
     expect(importEdge).toBeDefined();
@@ -728,7 +728,7 @@ describe('TsMorphAdapter — multi-file project resolution', () => {
     adapter.clearProjectSources();
   });
 
-  it('falls back to heuristic when file is not in pre-loaded project', () => {
+  it('falls back to heuristic when file is not in pre-loaded project', async () => {
     const adapter = new TsMorphAdapter();
 
     const sources = new Map<string, string>();
@@ -739,7 +739,7 @@ describe('TsMorphAdapter — multi-file project resolution', () => {
     `);
     adapter.loadProjectSources(sources);
 
-    const edges = adapter.extractEdges('src/consumer.ts', sources.get('src/consumer.ts')!);
+    const edges = await adapter.extractEdges('src/consumer.ts', sources.get('src/consumer.ts')!);
     const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('SomeClass'));
 
     expect(importEdge).toBeDefined();
@@ -749,30 +749,30 @@ describe('TsMorphAdapter — multi-file project resolution', () => {
     adapter.clearProjectSources();
   });
 
-  it('handles empty map passed to loadProjectSources without crashing', () => {
+  it('handles empty map passed to loadProjectSources without crashing', async () => {
     const adapter = new TsMorphAdapter();
     adapter.loadProjectSources(new Map());
 
     // Should still work in single-file mode after loading empty map
     const source = 'export function hello(): void {}';
-    const symbols = adapter.extractSymbols('src/empty.ts', source);
+    const symbols = await adapter.extractSymbols('src/empty.ts', source);
     expect(symbols).toHaveLength(1);
 
     adapter.clearProjectSources();
   });
 
-  it('handles clearProjectSources without prior load', () => {
+  it('handles clearProjectSources without prior load', async () => {
     const adapter = new TsMorphAdapter();
     // Should not crash
     adapter.clearProjectSources();
 
     // Should still work normally after no-op clear
     const source = 'export function hello(): void {}';
-    const edges = adapter.extractEdges('src/test.ts', source);
+    const edges = await adapter.extractEdges('src/test.ts', source);
     expect(edges).toEqual([]);
   });
 
-  it('second loadProjectSources overwrites previous load', () => {
+  it('second loadProjectSources overwrites previous load', async () => {
     const adapter = new TsMorphAdapter();
 
     // First load: Handler is a type
@@ -789,7 +789,7 @@ describe('TsMorphAdapter — multi-file project resolution', () => {
     `);
     adapter.loadProjectSources(sources2);
 
-    const edges = adapter.extractEdges('src/consumer.ts', sources2.get('src/consumer.ts')!);
+    const edges = await adapter.extractEdges('src/consumer.ts', sources2.get('src/consumer.ts')!);
     const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('Handler'));
     expect(importEdge).toBeDefined();
     // Should resolve to class (second load), not type (first load)
@@ -798,7 +798,7 @@ describe('TsMorphAdapter — multi-file project resolution', () => {
     adapter.clearProjectSources();
   });
 
-  it('resolves circular imports between preloaded files without crashing', () => {
+  it('resolves circular imports between preloaded files without crashing', async () => {
     const adapter = new TsMorphAdapter();
 
     const sources = new Map<string, string>();
@@ -812,8 +812,8 @@ describe('TsMorphAdapter — multi-file project resolution', () => {
     `);
     adapter.loadProjectSources(sources);
 
-    const edgesA = adapter.extractEdges('src/a.ts', sources.get('src/a.ts')!);
-    const edgesB = adapter.extractEdges('src/b.ts', sources.get('src/b.ts')!);
+    const edgesA = await adapter.extractEdges('src/a.ts', sources.get('src/a.ts')!);
+    const edgesB = await adapter.extractEdges('src/b.ts', sources.get('src/b.ts')!);
 
     expect(edgesA.find(e => e.kind === 'imports' && e.to.includes('B'))).toBeDefined();
     expect(edgesB.find(e => e.kind === 'imports' && e.to.includes('A'))).toBeDefined();
@@ -821,7 +821,7 @@ describe('TsMorphAdapter — multi-file project resolution', () => {
     adapter.clearProjectSources();
   });
 
-  it('resolves function kind from pre-loaded project (camelCase would match heuristic)', () => {
+  it('resolves function kind from pre-loaded project (camelCase would match heuristic)', async () => {
     const adapter = new TsMorphAdapter();
 
     const sources = new Map<string, string>();
@@ -832,7 +832,7 @@ describe('TsMorphAdapter — multi-file project resolution', () => {
     `);
     adapter.loadProjectSources(sources);
 
-    const edges = adapter.extractEdges('src/app.ts', sources.get('src/app.ts')!);
+    const edges = await adapter.extractEdges('src/app.ts', sources.get('src/app.ts')!);
     const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('formatName'));
     expect(importEdge).toBeDefined();
     expect(importEdge!.to).toBe('src/utils.ts::formatName::function');
@@ -840,7 +840,7 @@ describe('TsMorphAdapter — multi-file project resolution', () => {
     adapter.clearProjectSources();
   });
 
-  it('symbolRegistry takes precedence over project lookup', () => {
+  it('symbolRegistry takes precedence over project lookup', async () => {
     const adapter = new TsMorphAdapter();
 
     // Pre-load: Handler is a class in the file
@@ -857,7 +857,7 @@ describe('TsMorphAdapter — multi-file project resolution', () => {
     registry.set('src/types.ts::Handler::type', 'type');
     adapter.setSymbolRegistry(registry);
 
-    const edges = adapter.extractEdges('src/consumer.ts', sources.get('src/consumer.ts')!);
+    const edges = await adapter.extractEdges('src/consumer.ts', sources.get('src/consumer.ts')!);
     const importEdge = edges.find(e => e.kind === 'imports' && e.to.includes('Handler'));
     expect(importEdge).toBeDefined();
     expect(importEdge!.to).toBe('src/types.ts::Handler::type');
@@ -868,7 +868,7 @@ describe('TsMorphAdapter — multi-file project resolution', () => {
 });
 
 describe('TsMorphAdapter — this.method() call edges', () => {
-  it('emits calls edge for this.method() within a class', () => {
+  it('emits calls edge for this.method() within a class', async () => {
     const adapter = new TsMorphAdapter();
     const source = `
       export class PaymentProcessor {
@@ -880,7 +880,7 @@ describe('TsMorphAdapter — this.method() call edges', () => {
         }
       }
     `;
-    const edges = adapter.extractEdges('src/payment.ts', source);
+    const edges = await adapter.extractEdges('src/payment.ts', source);
     const callEdge = edges.find(
       e => e.kind === 'calls' && e.from.includes('PaymentProcessor.process')
     );
@@ -888,7 +888,7 @@ describe('TsMorphAdapter — this.method() call edges', () => {
     expect(callEdge!.to).toBe('src/payment.ts::PaymentProcessor.validate::method');
   });
 
-  it('does not emit calls edge when target method does not exist on class', () => {
+  it('does not emit calls edge when target method does not exist on class', async () => {
     const adapter = new TsMorphAdapter();
     const source = `
       export class Svc {
@@ -897,12 +897,12 @@ describe('TsMorphAdapter — this.method() call edges', () => {
         }
       }
     `;
-    const edges = adapter.extractEdges('src/svc.ts', source);
+    const edges = await adapter.extractEdges('src/svc.ts', source);
     const callEdge = edges.find(e => e.kind === 'calls' && e.to.includes('inheritedMethod'));
     expect(callEdge).toBeUndefined();
   });
 
-  it('does not emit self-referential calls edge', () => {
+  it('does not emit self-referential calls edge', async () => {
     const adapter = new TsMorphAdapter();
     const source = `
       export class Recursive {
@@ -911,14 +911,14 @@ describe('TsMorphAdapter — this.method() call edges', () => {
         }
       }
     `;
-    const edges = adapter.extractEdges('src/rec.ts', source);
+    const edges = await adapter.extractEdges('src/rec.ts', source);
     const selfCall = edges.find(
       e => e.kind === 'calls' && e.from.includes('Recursive.run') && e.to.includes('Recursive.run')
     );
     expect(selfCall).toBeUndefined();
   });
 
-  it('emits multiple this.method() edges from one method', () => {
+  it('emits multiple this.method() edges from one method', async () => {
     const adapter = new TsMorphAdapter();
     const source = `
       export class Pipeline {
@@ -932,7 +932,7 @@ describe('TsMorphAdapter — this.method() call edges', () => {
         save(): void {}
       }
     `;
-    const edges = adapter.extractEdges('src/pipeline.ts', source);
+    const edges = await adapter.extractEdges('src/pipeline.ts', source);
     const callEdges = edges.filter(
       e => e.kind === 'calls' && e.from.includes('Pipeline.run')
     );
@@ -944,7 +944,7 @@ describe('TsMorphAdapter — this.method() call edges', () => {
     ]));
   });
 
-  it('resolves this.method() to class method, not shadowed import', () => {
+  it('resolves this.method() to class method, not shadowed import', async () => {
     const adapter = new TsMorphAdapter();
     const source = `
       import { validate } from './utils.js';
@@ -955,7 +955,7 @@ describe('TsMorphAdapter — this.method() call edges', () => {
         }
       }
     `;
-    const edges = adapter.extractEdges('src/processor.ts', source);
+    const edges = await adapter.extractEdges('src/processor.ts', source);
     const callEdge = edges.find(
       e => e.kind === 'calls' && e.from.includes('Processor.process')
     );
@@ -964,7 +964,7 @@ describe('TsMorphAdapter — this.method() call edges', () => {
     expect(callEdge!.to).toBe('src/processor.ts::Processor.validate::method');
   });
 
-  it('emits this.method() edge for private methods', () => {
+  it('emits this.method() edge for private methods', async () => {
     const adapter = new TsMorphAdapter();
     const source = `
       export class Service {
@@ -974,7 +974,7 @@ describe('TsMorphAdapter — this.method() call edges', () => {
         private doWork(): void {}
       }
     `;
-    const edges = adapter.extractEdges('src/service.ts', source);
+    const edges = await adapter.extractEdges('src/service.ts', source);
     const callEdge = edges.find(
       e => e.kind === 'calls' && e.from.includes('Service.run')
     );
@@ -982,7 +982,7 @@ describe('TsMorphAdapter — this.method() call edges', () => {
     expect(callEdge!.to).toBe('src/service.ts::Service.doWork::method');
   });
 
-  it('emits this.method() edges in conditional expressions', () => {
+  it('emits this.method() edges in conditional expressions', async () => {
     const adapter = new TsMorphAdapter();
     const source = `
       export class Guard {
@@ -993,7 +993,7 @@ describe('TsMorphAdapter — this.method() call edges', () => {
         deny(): boolean { return false; }
       }
     `;
-    const edges = adapter.extractEdges('src/guard.ts', source);
+    const edges = await adapter.extractEdges('src/guard.ts', source);
     const callEdges = edges.filter(
       e => e.kind === 'calls' && e.from.includes('Guard.check')
     );
@@ -1004,7 +1004,7 @@ describe('TsMorphAdapter — this.method() call edges', () => {
     ]));
   });
 
-  it('emits this.method() edge for async method calls', () => {
+  it('emits this.method() edge for async method calls', async () => {
     const adapter = new TsMorphAdapter();
     const source = `
       export class AsyncService {
@@ -1014,7 +1014,7 @@ describe('TsMorphAdapter — this.method() call edges', () => {
         async fetch(): Promise<void> {}
       }
     `;
-    const edges = adapter.extractEdges('src/async.ts', source);
+    const edges = await adapter.extractEdges('src/async.ts', source);
     const callEdge = edges.find(
       e => e.kind === 'calls' && e.from.includes('AsyncService.run')
     );
@@ -1030,27 +1030,27 @@ describe('TsMorphAdapter — isSupported', () => {
     adapter = new TsMorphAdapter();
   });
 
-  it('returns true for .ts files', () => {
+  it('returns true for .ts files', async () => {
     expect(adapter.isSupported('src/foo.ts')).toBe(true);
   });
 
-  it('returns true for .tsx files', () => {
+  it('returns true for .tsx files', async () => {
     expect(adapter.isSupported('src/App.tsx')).toBe(true);
   });
 
-  it('returns true for .js files', () => {
+  it('returns true for .js files', async () => {
     expect(adapter.isSupported('src/utils.js')).toBe(true);
   });
 
-  it('returns true for .jsx files', () => {
+  it('returns true for .jsx files', async () => {
     expect(adapter.isSupported('src/Component.jsx')).toBe(true);
   });
 
-  it('returns false for .py files', () => {
+  it('returns false for .py files', async () => {
     expect(adapter.isSupported('src/main.py')).toBe(false);
   });
 
-  it('returns false for .go files', () => {
+  it('returns false for .go files', async () => {
     expect(adapter.isSupported('src/main.go')).toBe(false);
   });
 });

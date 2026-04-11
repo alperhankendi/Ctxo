@@ -62,7 +62,7 @@ export abstract class TreeSitterAdapter implements ILanguageAdapter {
     return complexity;
   }
 
-  abstract extractSymbols(filePath: string, source: string): SymbolNode[];
-  abstract extractEdges(filePath: string, source: string): GraphEdge[];
-  abstract extractComplexity(filePath: string, source: string): ComplexityMetrics[];
+  abstract extractSymbols(filePath: string, source: string): Promise<SymbolNode[]>;
+  abstract extractEdges(filePath: string, source: string): Promise<GraphEdge[]>;
+  abstract extractComplexity(filePath: string, source: string): Promise<ComplexityMetrics[]>;
 }

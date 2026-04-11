@@ -62,7 +62,7 @@ export class TsMorphAdapter implements ILanguageAdapter {
     this.projectPreloaded = false;
   }
 
-  extractSymbols(filePath: string, source: string): SymbolNode[] {
+  async extractSymbols(filePath: string, source: string): Promise<SymbolNode[]> {
     const sourceFile = this.parseSource(filePath, source);
     if (!sourceFile) return [];
 
@@ -84,7 +84,7 @@ export class TsMorphAdapter implements ILanguageAdapter {
     }
   }
 
-  extractEdges(filePath: string, source: string): GraphEdge[] {
+  async extractEdges(filePath: string, source: string): Promise<GraphEdge[]> {
     const sourceFile = this.parseSource(filePath, source);
     if (!sourceFile) return [];
 
@@ -107,7 +107,7 @@ export class TsMorphAdapter implements ILanguageAdapter {
     }
   }
 
-  extractComplexity(filePath: string, source: string): ComplexityMetrics[] {
+  async extractComplexity(filePath: string, source: string): Promise<ComplexityMetrics[]> {
     const sourceFile = this.parseSource(filePath, source);
     if (!sourceFile) return [];
 
