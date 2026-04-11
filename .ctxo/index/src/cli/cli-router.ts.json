@@ -2,7 +2,7 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 21,
+      "cyclomatic": 25,
       "symbolId": "src/cli/cli-router.ts::CliRouter.route::method"
     },
     {
@@ -10,7 +10,7 @@
       "symbolId": "src/cli/cli-router.ts::CliRouter.printHelp::method"
     }
   ],
-  "contentHash": "7aaee55a35923a2dc698200028c4cdb65901ade82bd26325110f30f1bc71248f",
+  "contentHash": "9290bf6147d6db7c1117b1151e2a19d93a44947475d3a8c7ee8615736f3f11ad",
   "edges": [
     {
       "from": "src/cli/cli-router.ts::CliRouter::class",
@@ -46,6 +46,11 @@
       "from": "src/cli/cli-router.ts::CliRouter::class",
       "kind": "imports",
       "to": "src/cli/stats-command.ts::StatsCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter::class",
+      "kind": "imports",
+      "to": "src/cli/doctor-command.ts::DoctorCommand::class"
     },
     {
       "from": "src/cli/cli-router.ts::CliRouter.route::method",
@@ -88,6 +93,11 @@
       "to": "src/cli/stats-command.ts::StatsCommand::class"
     },
     {
+      "from": "src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "src/cli/doctor-command.ts::DoctorCommand::class"
+    },
+    {
       "from": "src/cli/cli-router.ts::CliRouter::class",
       "kind": "uses",
       "to": "src/cli/index-command.ts::IndexCommand::class"
@@ -121,10 +131,21 @@
       "from": "src/cli/cli-router.ts::CliRouter::class",
       "kind": "uses",
       "to": "src/cli/stats-command.ts::StatsCommand::class"
+    },
+    {
+      "from": "src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "src/cli/doctor-command.ts::DoctorCommand::class"
     }
   ],
   "file": "src/cli/cli-router.ts",
   "intent": [
+    {
+      "date": "2026-04-11T01:50:54+03:00",
+      "hash": "308982ad956b5f091739c3e6e5fbdb1c7414c3c4",
+      "kind": "commit",
+      "message": "feat: add ctxo doctor command — unified health check for all subsystems"
+    },
     {
       "date": "2026-04-10T03:52:10+03:00",
       "hash": "0cf2ae6801b0a02ce046f2587853f888b89b4360",
@@ -174,33 +195,33 @@
       "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
     }
   ],
-  "lastModified": 1775783076,
+  "lastModified": 1775919998,
   "symbols": [
     {
-      "endLine": 97,
-      "endOffset": 3505,
+      "endLine": 116,
+      "endOffset": 4536,
       "kind": "class",
       "name": "CliRouter",
-      "startLine": 8,
-      "startOffset": 366,
+      "startLine": 9,
+      "startOffset": 420,
       "symbolId": "src/cli/cli-router.ts::CliRouter::class"
     },
     {
-      "endLine": 79,
-      "endOffset": 2775,
+      "endLine": 94,
+      "endOffset": 3521,
       "kind": "method",
       "name": "CliRouter.route",
-      "startLine": 15,
-      "startOffset": 519,
+      "startLine": 16,
+      "startOffset": 573,
       "symbolId": "src/cli/cli-router.ts::CliRouter.route::method"
     },
     {
-      "endLine": 96,
-      "endOffset": 3502,
+      "endLine": 115,
+      "endOffset": 4533,
       "kind": "method",
       "name": "CliRouter.printHelp",
-      "startLine": 81,
-      "startOffset": 2781,
+      "startLine": 96,
+      "startOffset": 3527,
       "symbolId": "src/cli/cli-router.ts::CliRouter.printHelp::method"
     }
   ]

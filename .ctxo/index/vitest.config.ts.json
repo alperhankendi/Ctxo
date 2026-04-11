@@ -1,10 +1,16 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "a4ed6ea353f673e63dec8420008798268626bb04b2bd16d47d6963eb396f87fa",
+  "contentHash": "216ce363d664559d7d243e09243f265d708f4a9e9c6201dfb62c9b475cbd295a",
   "edges": [],
   "file": "vitest.config.ts",
   "intent": [
+    {
+      "date": "2026-04-11T01:50:54+03:00",
+      "hash": "308982ad956b5f091739c3e6e5fbdb1c7414c3c4",
+      "kind": "commit",
+      "message": "feat: add ctxo doctor command — unified health check for all subsystems"
+    },
     {
       "date": "2026-04-08T15:47:44+03:00",
       "hash": "49e4f04a8693d848bdad1f00ed8fc3720b89ced8",
@@ -24,6 +30,6 @@
       "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
     }
   ],
-  "lastModified": 1775783077,
+  "lastModified": 1775919999,
   "symbols": []
 }

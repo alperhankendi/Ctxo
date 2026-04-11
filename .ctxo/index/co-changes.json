@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "timestamp": 1775783077,
+  "timestamp": 1775919999,
   "entries": [
     {
       "file1": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
@@ -30,6 +30,150 @@
       "file1": "src/adapters/storage/__tests__/sqlite-storage-adapter.test.ts",
       "file2": "src/adapters/storage/sqlite-storage-adapter.ts",
       "sharedCommits": 3,
+      "frequency": 1
+    },
+    {
+      "file1": "src/cli/__tests__/ai-rules.test.ts",
+      "file2": "src/cli/ai-rules.ts",
+      "sharedCommits": 3,
+      "frequency": 1
+    },
+    {
+      "file1": "src/cli/__tests__/ai-rules.test.ts",
+      "file2": "src/cli/init-command.ts",
+      "sharedCommits": 3,
+      "frequency": 1
+    },
+    {
+      "file1": "src/cli/ai-rules.ts",
+      "file2": "src/cli/init-command.ts",
+      "sharedCommits": 3,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/diagnostics/checks/disk-check.ts",
+      "file2": "src/adapters/diagnostics/checks/index-check.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/diagnostics/checks/disk-check.ts",
+      "file2": "src/adapters/diagnostics/checks/storage-check.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/diagnostics/checks/disk-check.ts",
+      "file2": "src/adapters/diagnostics/doctor-reporter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/diagnostics/checks/disk-check.ts",
+      "file2": "src/cli/__tests__/doctor-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/diagnostics/checks/disk-check.ts",
+      "file2": "src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/diagnostics/checks/disk-check.ts",
+      "file2": "src/core/diagnostics/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/diagnostics/checks/index-check.ts",
+      "file2": "src/adapters/diagnostics/checks/storage-check.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/diagnostics/checks/index-check.ts",
+      "file2": "src/adapters/diagnostics/doctor-reporter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/diagnostics/checks/index-check.ts",
+      "file2": "src/cli/__tests__/doctor-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/diagnostics/checks/index-check.ts",
+      "file2": "src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/diagnostics/checks/index-check.ts",
+      "file2": "src/core/diagnostics/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/diagnostics/checks/storage-check.ts",
+      "file2": "src/adapters/diagnostics/doctor-reporter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/diagnostics/checks/storage-check.ts",
+      "file2": "src/cli/__tests__/doctor-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/diagnostics/checks/storage-check.ts",
+      "file2": "src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/diagnostics/checks/storage-check.ts",
+      "file2": "src/core/diagnostics/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/diagnostics/doctor-reporter.ts",
+      "file2": "src/cli/__tests__/doctor-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/diagnostics/doctor-reporter.ts",
+      "file2": "src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/diagnostics/doctor-reporter.ts",
+      "file2": "src/core/diagnostics/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/cli/__tests__/doctor-command.test.ts",
+      "file2": "src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/cli/__tests__/doctor-command.test.ts",
+      "file2": "src/core/diagnostics/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/cli/doctor-command.ts",
+      "file2": "src/core/diagnostics/types.ts",
+      "sharedCommits": 2,
       "frequency": 1
     },
     {
@@ -123,18 +267,6 @@
       "frequency": 1
     },
     {
-      "file1": "src/cli/init-command.ts",
-      "file2": "src/cli/verify-command.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
-      "file1": "src/cli/init-command.ts",
-      "file2": "src/cli/watch-command.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
       "file1": "src/cli/status-command.ts",
       "file2": "src/cli/verify-command.ts",
       "sharedCommits": 2,
@@ -219,12 +351,6 @@
       "frequency": 1
     },
     {
-      "file1": "src/core/staleness/__tests__/staleness-detector.test.ts",
-      "file2": "src/index.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
       "file1": "src/core/overlay/__tests__/architectural-overlay.test.ts",
       "file2": "src/core/overlay/architectural-overlay.ts",
       "sharedCommits": 2,
@@ -249,6 +375,30 @@
       "frequency": 1
     },
     {
+      "file1": "src/adapters/stats/session-recorder-adapter.ts",
+      "file2": "src/adapters/storage/sqlite-storage-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/stats/session-recorder-adapter.ts",
+      "file2": "src/index.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/adapters/stats/with-recording.ts",
+      "file2": "src/cli/stats-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/cli/__tests__/stats-command.test.ts",
+      "file2": "src/cli/stats-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
       "file1": "src/adapters/storage/__tests__/json-index-writer.test.ts",
       "file2": "src/adapters/storage/json-index-writer.ts",
       "sharedCommits": 2,
@@ -257,6 +407,12 @@
     {
       "file1": "src/adapters/watcher/chokidar-watcher-adapter.ts",
       "file2": "src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "src/cli/__tests__/init-command.test.ts",
+      "file2": "src/cli/init-command.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
@@ -417,12 +573,6 @@
       "frequency": 0.667
     },
     {
-      "file1": "src/cli/cli-router.ts",
-      "file2": "src/cli/index-command.ts",
-      "sharedCommits": 5,
-      "frequency": 0.625
-    },
-    {
       "file1": "src/adapters/mcp/get-blast-radius.ts",
       "file2": "tests/e2e/mcp-spec-compliance.test.ts",
       "sharedCommits": 3,
@@ -447,6 +597,12 @@
       "frequency": 0.571
     },
     {
+      "file1": "src/cli/cli-router.ts",
+      "file2": "src/cli/index-command.ts",
+      "sharedCommits": 5,
+      "frequency": 0.556
+    },
+    {
       "file1": "src/cli/index-command.ts",
       "file2": "src/core/types.ts",
       "sharedCommits": 4,
@@ -455,12 +611,6 @@
     {
       "file1": "src/adapters/mcp/get-blast-radius.ts",
       "file2": "src/adapters/mcp/get-logic-slice.ts",
-      "sharedCommits": 4,
-      "frequency": 0.5
-    },
-    {
-      "file1": "src/adapters/mcp/get-logic-slice.ts",
-      "file2": "src/index.ts",
       "sharedCommits": 4,
       "frequency": 0.5
     },
@@ -495,12 +645,6 @@
       "frequency": 0.5
     },
     {
-      "file1": "src/adapters/mcp/get-change-intelligence.ts",
-      "file2": "src/index.ts",
-      "sharedCommits": 3,
-      "frequency": 0.5
-    },
-    {
       "file1": "src/adapters/mcp/find-importers.ts",
       "file2": "src/index.ts",
       "sharedCommits": 2,
@@ -531,8 +675,8 @@
       "frequency": 0.5
     },
     {
-      "file1": "src/cli/verify-command.ts",
-      "file2": "src/index.ts",
+      "file1": "src/cli/init-command.ts",
+      "file2": "src/cli/verify-command.ts",
       "sharedCommits": 2,
       "frequency": 0.5
     },
@@ -615,13 +759,13 @@
       "frequency": 0.4
     },
     {
-      "file1": "src/cli/cli-router.ts",
+      "file1": "src/core/types.ts",
       "file2": "src/index.ts",
       "sharedCommits": 3,
       "frequency": 0.375
     },
     {
-      "file1": "src/core/types.ts",
+      "file1": "src/adapters/mcp/get-logic-slice.ts",
       "file2": "src/index.ts",
       "sharedCommits": 3,
       "frequency": 0.375
@@ -723,14 +867,20 @@
       "frequency": 0.333
     },
     {
-      "file1": "src/cli/watch-command.ts",
-      "file2": "src/core/types.ts",
+      "file1": "src/adapters/mcp/get-change-intelligence.ts",
+      "file2": "src/index.ts",
+      "sharedCommits": 2,
+      "frequency": 0.333
+    },
+    {
+      "file1": "src/cli/init-command.ts",
+      "file2": "src/cli/watch-command.ts",
       "sharedCommits": 2,
       "frequency": 0.333
     },
     {
       "file1": "src/cli/watch-command.ts",
-      "file2": "src/index.ts",
+      "file2": "src/core/types.ts",
       "sharedCommits": 2,
       "frequency": 0.333
     },
@@ -765,16 +915,16 @@
       "frequency": 0.286
     },
     {
-      "file1": "src/cli/index-command.ts",
-      "file2": "src/index.ts",
-      "sharedCommits": 4,
-      "frequency": 0.25
-    },
-    {
       "file1": "src/adapters/language/ts-morph-adapter.ts",
       "file2": "src/core/types.ts",
       "sharedCommits": 2,
       "frequency": 0.25
+    },
+    {
+      "file1": "src/cli/cli-router.ts",
+      "file2": "src/index.ts",
+      "sharedCommits": 2,
+      "frequency": 0.222
     },
     {
       "file1": "src/adapters/language/ts-morph-adapter.ts",
@@ -783,16 +933,22 @@
       "frequency": 0.222
     },
     {
+      "file1": "src/adapters/storage/sqlite-storage-adapter.ts",
+      "file2": "src/index.ts",
+      "sharedCommits": 3,
+      "frequency": 0.214
+    },
+    {
+      "file1": "src/cli/index-command.ts",
+      "file2": "src/index.ts",
+      "sharedCommits": 3,
+      "frequency": 0.188
+    },
+    {
       "file1": "src/adapters/mcp/get-blast-radius.ts",
       "file2": "src/cli/index-command.ts",
       "sharedCommits": 2,
       "frequency": 0.182
-    },
-    {
-      "file1": "src/adapters/storage/sqlite-storage-adapter.ts",
-      "file2": "src/index.ts",
-      "sharedCommits": 2,
-      "frequency": 0.154
     }
   ]
 }

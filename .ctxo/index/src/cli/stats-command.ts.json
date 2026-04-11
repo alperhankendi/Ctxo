@@ -34,7 +34,7 @@
       "symbolId": "src/cli/stats-command.ts::StatsCommand.formatTokens::method"
     }
   ],
-  "contentHash": "9ed1230f366ec57179c44e8c3bd23c8f4f9a9909046b066a861fe19a6ce0964e",
+  "contentHash": "2849dc3f98a9c2d9efc1e9f98a7c767ede10e00b9233ef1e936885939d7b152d",
   "edges": [
     {
       "from": "src/cli/stats-command.ts::StatsCommand::class",
@@ -137,17 +137,29 @@
   "file": "src/cli/stats-command.ts",
   "intent": [
     {
+      "date": "2026-04-10T04:45:59+03:00",
+      "hash": "c7c44f4e763fca4816f4fbd7d8bba2fdbdc234de",
+      "kind": "commit",
+      "message": "fix: resolve TypeScript type errors in withRecording and stats-command"
+    },
+    {
+      "date": "2026-04-10T04:41:41+03:00",
+      "hash": "79782145cfd626bee11e0338a01c9338f4209562",
+      "kind": "commit",
+      "message": "fix: resolve eslint no-console violations in stats-command"
+    },
+    {
       "date": "2026-04-10T03:52:10+03:00",
       "hash": "0cf2ae6801b0a02ce046f2587853f888b89b4360",
       "kind": "commit",
       "message": "feat(stats): add ctxo stats command with session recording"
     }
   ],
-  "lastModified": 1775783076,
+  "lastModified": 1775919998,
   "symbols": [
     {
-      "endLine": 185,
-      "endOffset": 5934,
+      "endLine": 183,
+      "endOffset": 5906,
       "kind": "class",
       "name": "StatsCommand",
       "startLine": 7,
@@ -155,75 +167,75 @@
       "symbolId": "src/cli/stats-command.ts::StatsCommand::class"
     },
     {
-      "endLine": 78,
-      "endOffset": 2506,
+      "endLine": 76,
+      "endOffset": 2478,
       "kind": "method",
       "name": "StatsCommand.run",
-      "startLine": 16,
-      "startOffset": 582,
+      "startLine": 14,
+      "startOffset": 506,
       "symbolId": "src/cli/stats-command.ts::StatsCommand.run::method"
     },
     {
-      "endLine": 92,
-      "endOffset": 2894,
+      "endLine": 90,
+      "endOffset": 2866,
       "kind": "method",
       "name": "StatsCommand.isStatsEnabled",
-      "startLine": 80,
-      "startOffset": 2510,
+      "startLine": 78,
+      "startOffset": 2482,
       "symbolId": "src/cli/stats-command.ts::StatsCommand.isStatsEnabled::method"
     },
     {
-      "endLine": 114,
-      "endOffset": 3557,
+      "endLine": 112,
+      "endOffset": 3529,
       "kind": "method",
       "name": "StatsCommand.buildReport",
-      "startLine": 94,
-      "startOffset": 2898,
+      "startLine": 92,
+      "startOffset": 2870,
       "symbolId": "src/cli/stats-command.ts::StatsCommand.buildReport::method"
     },
     {
-      "endLine": 124,
-      "endOffset": 3784,
+      "endLine": 122,
+      "endOffset": 3756,
       "kind": "method",
       "name": "StatsCommand.emptyReport",
-      "startLine": 116,
-      "startOffset": 3561,
+      "startLine": 114,
+      "startOffset": 3533,
       "symbolId": "src/cli/stats-command.ts::StatsCommand.emptyReport::method"
     },
     {
-      "endLine": 168,
-      "endOffset": 5467,
+      "endLine": 166,
+      "endOffset": 5439,
       "kind": "method",
       "name": "StatsCommand.printHumanReadable",
-      "startLine": 126,
-      "startOffset": 3788,
+      "startLine": 124,
+      "startOffset": 3760,
       "symbolId": "src/cli/stats-command.ts::StatsCommand.printHumanReadable::method"
     },
     {
-      "endLine": 174,
-      "endOffset": 5652,
+      "endLine": 172,
+      "endOffset": 5624,
       "kind": "method",
       "name": "StatsCommand.renderBar",
-      "startLine": 170,
-      "startOffset": 5471,
+      "startLine": 168,
+      "startOffset": 5443,
       "symbolId": "src/cli/stats-command.ts::StatsCommand.renderBar::method"
     },
     {
-      "endLine": 178,
-      "endOffset": 5739,
+      "endLine": 176,
+      "endOffset": 5711,
       "kind": "method",
       "name": "StatsCommand.formatNumber",
-      "startLine": 176,
-      "startOffset": 5656,
+      "startLine": 174,
+      "startOffset": 5628,
       "symbolId": "src/cli/stats-command.ts::StatsCommand.formatNumber::method"
     },
     {
-      "endLine": 184,
-      "endOffset": 5932,
+      "endLine": 182,
+      "endOffset": 5904,
       "kind": "method",
       "name": "StatsCommand.formatTokens",
-      "startLine": 180,
-      "startOffset": 5743,
+      "startLine": 178,
+      "startOffset": 5715,
       "symbolId": "src/cli/stats-command.ts::StatsCommand.formatTokens::method"
     }
   ]

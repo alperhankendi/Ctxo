@@ -1,0 +1,527 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck.run::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck.run::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::SymbolCountCheck.run::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::EdgeCountCheck.run::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck.run::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck.getSourceFiles::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::CoChangesCacheCheck.run::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::SchemaVersionCheck.run::method"
+    }
+  ],
+  "contentHash": "db35fe6622b3308e6982f24ca92d9c45d559af5d8e01d822ea3094f8c6502a26",
+  "edges": [
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck::class",
+      "kind": "imports",
+      "to": "src/core/diagnostics/types.ts::IHealthCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck::class",
+      "kind": "imports",
+      "to": "src/core/diagnostics/types.ts::CheckResult::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck::class",
+      "kind": "imports",
+      "to": "src/core/diagnostics/types.ts::CheckContext::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck::class",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck::class",
+      "kind": "imports",
+      "to": "src/core/staleness/staleness-detector.ts::StalenessDetector::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck::class",
+      "kind": "imports",
+      "to": "src/adapters/storage/schema-manager.ts::SchemaManager::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck::class",
+      "kind": "implements",
+      "to": "src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck::class",
+      "kind": "implements",
+      "to": "src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::SymbolCountCheck::class",
+      "kind": "implements",
+      "to": "src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::EdgeCountCheck::class",
+      "kind": "implements",
+      "to": "src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck::class",
+      "kind": "implements",
+      "to": "src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::CoChangesCacheCheck::class",
+      "kind": "implements",
+      "to": "src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::SchemaVersionCheck::class",
+      "kind": "implements",
+      "to": "src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::fail::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::getIndices::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::fail::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::pass::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::getIndices::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::fail::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::pass::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::warn::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::fail::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck.run::method",
+      "kind": "calls",
+      "to": "src/core/staleness/staleness-detector.ts::StalenessDetector::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::SymbolCountCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::getIndices::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::SymbolCountCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::pass::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::SymbolCountCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::fail::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::EdgeCountCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::getIndices::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::EdgeCountCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::pass::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::EdgeCountCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::warn::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::getIndices::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::pass::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck.getSourceFiles::method"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::pass::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::pass::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::warn::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::fail::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::CoChangesCacheCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::pass::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::CoChangesCacheCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::warn::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::SchemaVersionCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::fail::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::SchemaVersionCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::pass::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::SchemaVersionCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::fail::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::SchemaVersionCheck.run::method",
+      "kind": "calls",
+      "to": "src/adapters/storage/schema-manager.ts::SchemaManager::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::CheckContext::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::CheckResult::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::CheckContext::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::CheckResult::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck::class",
+      "kind": "uses",
+      "to": "src/core/staleness/staleness-detector.ts::StalenessDetector::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::SymbolCountCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::SymbolCountCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::CheckContext::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::SymbolCountCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::CheckResult::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::EdgeCountCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::EdgeCountCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::CheckContext::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::EdgeCountCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::CheckResult::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::CheckContext::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::CheckResult::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::CoChangesCacheCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::CoChangesCacheCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::CheckContext::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::CoChangesCacheCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::CheckResult::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::SchemaVersionCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::SchemaVersionCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::CheckContext::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::SchemaVersionCheck::class",
+      "kind": "uses",
+      "to": "src/core/diagnostics/types.ts::CheckResult::interface"
+    },
+    {
+      "from": "src/adapters/diagnostics/checks/index-check.ts::SchemaVersionCheck::class",
+      "kind": "uses",
+      "to": "src/adapters/storage/schema-manager.ts::SchemaManager::class"
+    }
+  ],
+  "file": "src/adapters/diagnostics/checks/index-check.ts",
+  "intent": [
+    {
+      "date": "2026-04-11T01:55:45+03:00",
+      "hash": "e1280049fa9beae895bd3eecd5f6d2c25a5bc76a",
+      "kind": "commit",
+      "message": "fix: resolve 5 runtime bugs in ctxo doctor command"
+    },
+    {
+      "date": "2026-04-11T01:50:54+03:00",
+      "hash": "308982ad956b5f091739c3e6e5fbdb1c7414c3c4",
+      "kind": "commit",
+      "message": "feat: add ctxo doctor command — unified health check for all subsystems"
+    }
+  ],
+  "lastModified": 1775919998,
+  "symbols": [
+    {
+      "endLine": 39,
+      "endOffset": 1851,
+      "kind": "class",
+      "name": "IndexDirectoryCheck",
+      "startLine": 24,
+      "startOffset": 1215,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck::class"
+    },
+    {
+      "endLine": 38,
+      "endOffset": 1848,
+      "kind": "method",
+      "name": "IndexDirectoryCheck.run",
+      "startLine": 28,
+      "startOffset": 1354,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck.run::method"
+    },
+    {
+      "endLine": 68,
+      "endOffset": 2999,
+      "kind": "class",
+      "name": "IndexFreshnessCheck",
+      "startLine": 41,
+      "startOffset": 1855,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck::class"
+    },
+    {
+      "endLine": 67,
+      "endOffset": 2996,
+      "kind": "method",
+      "name": "IndexFreshnessCheck.run",
+      "startLine": 45,
+      "startOffset": 1994,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck.run::method"
+    },
+    {
+      "endLine": 82,
+      "endOffset": 3522,
+      "kind": "class",
+      "name": "SymbolCountCheck",
+      "startLine": 70,
+      "startOffset": 3003,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::SymbolCountCheck::class"
+    },
+    {
+      "endLine": 81,
+      "endOffset": 3519,
+      "kind": "method",
+      "name": "SymbolCountCheck.run",
+      "startLine": 74,
+      "startOffset": 3133,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::SymbolCountCheck.run::method"
+    },
+    {
+      "endLine": 96,
+      "endOffset": 4036,
+      "kind": "class",
+      "name": "EdgeCountCheck",
+      "startLine": 84,
+      "startOffset": 3526,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::EdgeCountCheck::class"
+    },
+    {
+      "endLine": 95,
+      "endOffset": 4033,
+      "kind": "method",
+      "name": "EdgeCountCheck.run",
+      "startLine": 88,
+      "startOffset": 3650,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::EdgeCountCheck.run::method"
+    },
+    {
+      "endLine": 134,
+      "endOffset": 5468,
+      "kind": "class",
+      "name": "OrphanedFilesCheck",
+      "startLine": 98,
+      "startOffset": 4040,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck::class"
+    },
+    {
+      "endLine": 121,
+      "endOffset": 5080,
+      "kind": "method",
+      "name": "OrphanedFilesCheck.run",
+      "startLine": 102,
+      "startOffset": 4182,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck.run::method"
+    },
+    {
+      "endLine": 133,
+      "endOffset": 5465,
+      "kind": "method",
+      "name": "OrphanedFilesCheck.getSourceFiles",
+      "startLine": 123,
+      "startOffset": 5086,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck.getSourceFiles::method"
+    },
+    {
+      "endLine": 147,
+      "endOffset": 5962,
+      "kind": "class",
+      "name": "CoChangesCacheCheck",
+      "startLine": 136,
+      "startOffset": 5472,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::CoChangesCacheCheck::class"
+    },
+    {
+      "endLine": 146,
+      "endOffset": 5959,
+      "kind": "method",
+      "name": "CoChangesCacheCheck.run",
+      "startLine": 140,
+      "startOffset": 5613,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::CoChangesCacheCheck.run::method"
+    },
+    {
+      "endLine": 166,
+      "endOffset": 6677,
+      "kind": "class",
+      "name": "SchemaVersionCheck",
+      "startLine": 149,
+      "startOffset": 5966,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::SchemaVersionCheck::class"
+    },
+    {
+      "endLine": 165,
+      "endOffset": 6674,
+      "kind": "method",
+      "name": "SchemaVersionCheck.run",
+      "startLine": 153,
+      "startOffset": 6102,
+      "symbolId": "src/adapters/diagnostics/checks/index-check.ts::SchemaVersionCheck.run::method"
+    }
+  ]
+}

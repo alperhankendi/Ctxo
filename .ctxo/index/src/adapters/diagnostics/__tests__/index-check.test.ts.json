@@ -1,0 +1,69 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "732deec3d05aa42b096d838b99ca002c22e4066362efeae5a6e5cc8754ef8ab9",
+  "edges": [
+    {
+      "from": "src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::SymbolCountCheck::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::EdgeCountCheck::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::CoChangesCacheCheck::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/diagnostics/checks/index-check.ts::SchemaVersionCheck::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/__tests__/test-fixtures.ts::buildFileIndex::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/__tests__/test-fixtures.ts::buildSecondFileIndex::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "src/core/diagnostics/types.ts::CheckContext::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "src/adapters/diagnostics/__tests__/index-check.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-11T01:50:54+03:00",
+      "hash": "308982ad956b5f091739c3e6e5fbdb1c7414c3c4",
+      "kind": "commit",
+      "message": "feat: add ctxo doctor command — unified health check for all subsystems"
+    }
+  ],
+  "lastModified": 1775919998,
+  "symbols": []
+}

@@ -1,10 +1,16 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "f8d620baa12678b5ecc7a1bca48b8edde1f232975347793d54d2e35a53452d4f",
+  "contentHash": "dc698caf7f6d1aae3c970fc3aa037c5a693681fac90ed1ed211c2f1689ffbfbc",
   "edges": [],
   "file": "tests/e2e/release-packaging.test.ts",
   "intent": [
+    {
+      "date": "2026-04-11T02:04:39+03:00",
+      "hash": "08a10fb91f0a112a4f56dc8779f41e863171cdce",
+      "kind": "commit",
+      "message": "feat: interactive ctxo init with AI tool rule generation (#34)"
+    },
     {
       "date": "2026-04-09T02:52:59+03:00",
       "hash": "75de5e11d4c6e4b56483dfe7491b9297a01363d9",
@@ -30,6 +36,6 @@
       "message": "Complete Phase 10: Release gate tests"
     }
   ],
-  "lastModified": 1775783077,
+  "lastModified": 1775919999,
   "symbols": []
 }

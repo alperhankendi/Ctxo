@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 10,
+      "cyclomatic": 3,
       "symbolId": "src/adapters/stats/with-recording.ts::withRecording::function"
     }
   ],
-  "contentHash": "0837fe511076a491bb954b1244e2eb097543adff1cb2c78c320a7ca0da5b16d3",
+  "contentHash": "b42f911bd5a12c0827e1e64b60e8343f1028bdaa7aee01c1c190d20bc4ae9727",
   "edges": [
     {
       "from": "src/adapters/stats/with-recording.ts::withRecording::function",
@@ -22,17 +22,28 @@
     },
     {
       "from": "src/adapters/stats/with-recording.ts::withRecording::function",
-      "kind": "uses",
-      "to": "src/ports/i-session-recorder-port.ts::ISessionRecorderPort::interface"
+      "kind": "calls",
+      "to": "src/adapters/stats/with-recording.ts::recordEvent::function"
+    },
+    {
+      "from": "src/adapters/stats/with-recording.ts::withRecording::function",
+      "kind": "calls",
+      "to": "src/adapters/stats/with-recording.ts::recordEvent::function"
     },
     {
       "from": "src/adapters/stats/with-recording.ts::withRecording::function",
       "kind": "uses",
-      "to": "src/ports/i-session-recorder-port.ts::SessionEvent::interface"
+      "to": "src/ports/i-session-recorder-port.ts::ISessionRecorderPort::interface"
     }
   ],
   "file": "src/adapters/stats/with-recording.ts",
   "intent": [
+    {
+      "date": "2026-04-10T04:45:59+03:00",
+      "hash": "c7c44f4e763fca4816f4fbd7d8bba2fdbdc234de",
+      "kind": "commit",
+      "message": "fix: resolve TypeScript type errors in withRecording and stats-command"
+    },
     {
       "date": "2026-04-10T03:52:10+03:00",
       "hash": "0cf2ae6801b0a02ce046f2587853f888b89b4360",
@@ -40,15 +51,15 @@
       "message": "feat(stats): add ctxo stats command with session recording"
     }
   ],
-  "lastModified": 1775783076,
+  "lastModified": 1775919998,
   "symbols": [
     {
-      "endLine": 63,
-      "endOffset": 2054,
+      "endLine": 37,
+      "endOffset": 1324,
       "kind": "function",
       "name": "withRecording",
       "startLine": 13,
-      "startOffset": 572,
+      "startOffset": 613,
       "symbolId": "src/adapters/stats/with-recording.ts::withRecording::function"
     }
   ]

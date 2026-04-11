@@ -1,0 +1,44 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "979e6e0d908bc8a306581b72c33ca32e480e982d0a13758ef9c51278211d6d13",
+  "edges": [
+    {
+      "from": "src/adapters/diagnostics/__tests__/runtime-check.test.ts::runtime-check.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/diagnostics/checks/runtime-check.ts::NodeVersionCheck::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/__tests__/runtime-check.test.ts::runtime-check.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/diagnostics/checks/runtime-check.ts::TsMorphCheck::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/__tests__/runtime-check.test.ts::runtime-check.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/diagnostics/checks/runtime-check.ts::TreeSitterCheck::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/__tests__/runtime-check.test.ts::runtime-check.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/diagnostics/checks/runtime-check.ts::checkNodeVersion::function"
+    },
+    {
+      "from": "src/adapters/diagnostics/__tests__/runtime-check.test.ts::runtime-check.test::variable",
+      "kind": "imports",
+      "to": "src/core/diagnostics/types.ts::CheckContext::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "src/adapters/diagnostics/__tests__/runtime-check.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-11T01:50:54+03:00",
+      "hash": "308982ad956b5f091739c3e6e5fbdb1c7414c3c4",
+      "kind": "commit",
+      "message": "feat: add ctxo doctor command — unified health check for all subsystems"
+    }
+  ],
+  "lastModified": 1775919998,
+  "symbols": []
+}

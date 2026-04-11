@@ -1,10 +1,16 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "848f608af4c86c691da6069befdfe802ad3a7f3670506fe01bdde81ddae71332",
+  "contentHash": "8ebd30fb63ff8b6199ac94757344b66a5dcb9d65c6e699756a923efacdd22023",
   "edges": [],
   "file": "eslint.config.js",
   "intent": [
+    {
+      "date": "2026-04-11T02:31:38+03:00",
+      "hash": "b588ba0916da88d952820868e17e6aec05a0299a",
+      "kind": "commit",
+      "message": "fix: resolve eslint no-unused-vars errors breaking CI"
+    },
     {
       "date": "2026-03-29T15:43:28+03:00",
       "hash": "f9bfea331e6ebdaf0733822d6f8d5b29a106d465",
@@ -12,6 +18,6 @@
       "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
     }
   ],
-  "lastModified": 1775783076,
+  "lastModified": 1775919998,
   "symbols": []
 }
