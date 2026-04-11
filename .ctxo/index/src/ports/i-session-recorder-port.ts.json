@@ -4,8 +4,15 @@
   "contentHash": "172b786d61d41bf99b8dca8bb7867e7157d264ae95c10789502f9b14c32d35f0",
   "edges": [],
   "file": "src/ports/i-session-recorder-port.ts",
-  "intent": [],
-  "lastModified": 1775782017,
+  "intent": [
+    {
+      "date": "2026-04-10T03:52:10+03:00",
+      "hash": "0cf2ae6801b0a02ce046f2587853f888b89b4360",
+      "kind": "commit",
+      "message": "feat(stats): add ctxo stats command with session recording"
+    }
+  ],
+  "lastModified": 1775783077,
   "symbols": [
     {
       "endLine": 22,

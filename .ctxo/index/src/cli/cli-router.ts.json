@@ -126,6 +126,12 @@
   "file": "src/cli/cli-router.ts",
   "intent": [
     {
+      "date": "2026-04-10T03:52:10+03:00",
+      "hash": "0cf2ae6801b0a02ce046f2587853f888b89b4360",
+      "kind": "commit",
+      "message": "feat(stats): add ctxo stats command with session recording"
+    },
+    {
       "date": "2026-03-31T03:56:35+03:00",
       "hash": "716ad0185df988c826fac022737e66012117506a",
       "kind": "commit",
@@ -168,7 +174,7 @@
       "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
     }
   ],
-  "lastModified": 1775782017,
+  "lastModified": 1775783076,
   "symbols": [
     {
       "endLine": 97,

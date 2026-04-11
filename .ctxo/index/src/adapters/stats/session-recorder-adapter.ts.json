@@ -16,9 +16,13 @@
     {
       "cyclomatic": 1,
       "symbolId": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.clear::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.flushToDisk::method"
     }
   ],
-  "contentHash": "173fa934a33b460bbecac3c76c2d295ec733b277099640902a757ed77b0ecfc4",
+  "contentHash": "459b74d6819591d35bf8476570454e18d0ecd2713d8793442da9894c93020a31",
   "edges": [
     {
       "from": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class",
@@ -72,6 +76,11 @@
       "to": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.ensureTable::method"
     },
     {
+      "from": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.record::method",
+      "kind": "calls",
+      "to": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.flushToDisk::method"
+    },
+    {
       "from": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.queryStats::method",
       "kind": "calls",
       "to": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.ensureTable::method"
@@ -80,6 +89,11 @@
       "from": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.clear::method",
       "kind": "calls",
       "to": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.ensureTable::method"
+    },
+    {
+      "from": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.clear::method",
+      "kind": "calls",
+      "to": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.flushToDisk::method"
     },
     {
       "from": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class",
@@ -113,12 +127,19 @@
     }
   ],
   "file": "src/adapters/stats/session-recorder-adapter.ts",
-  "intent": [],
-  "lastModified": 1775782017,
+  "intent": [
+    {
+      "date": "2026-04-10T03:52:10+03:00",
+      "hash": "0cf2ae6801b0a02ce046f2587853f888b89b4360",
+      "kind": "commit",
+      "message": "feat(stats): add ctxo stats command with session recording"
+    }
+  ],
+  "lastModified": 1775783076,
   "symbols": [
     {
-      "endLine": 135,
-      "endOffset": 4280,
+      "endLine": 147,
+      "endOffset": 4611,
       "kind": "class",
       "name": "SessionRecorderAdapter",
       "startLine": 13,
@@ -126,40 +147,49 @@
       "symbolId": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class"
     },
     {
-      "endLine": 39,
-      "endOffset": 1165,
+      "endLine": 41,
+      "endOffset": 1272,
       "kind": "method",
       "name": "SessionRecorderAdapter.ensureTable",
-      "startLine": 21,
-      "startOffset": 496,
+      "startLine": 23,
+      "startOffset": 603,
       "symbolId": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.ensureTable::method"
     },
     {
-      "endLine": 60,
-      "endOffset": 1763,
+      "endLine": 63,
+      "endOffset": 1896,
       "kind": "method",
       "name": "SessionRecorderAdapter.record",
-      "startLine": 41,
-      "startOffset": 1169,
+      "startLine": 43,
+      "startOffset": 1276,
       "symbolId": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.record::method"
     },
     {
-      "endLine": 129,
-      "endOffset": 4184,
+      "endLine": 132,
+      "endOffset": 4317,
       "kind": "method",
       "name": "SessionRecorderAdapter.queryStats",
-      "startLine": 62,
-      "startOffset": 1767,
+      "startLine": 65,
+      "startOffset": 1900,
       "symbolId": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.queryStats::method"
     },
     {
-      "endLine": 134,
-      "endOffset": 4278,
+      "endLine": 138,
+      "endOffset": 4435,
       "kind": "method",
       "name": "SessionRecorderAdapter.clear",
-      "startLine": 131,
-      "startOffset": 4188,
+      "startLine": 134,
+      "startOffset": 4321,
       "symbolId": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.clear::method"
+    },
+    {
+      "endLine": 146,
+      "endOffset": 4609,
+      "kind": "method",
+      "name": "SessionRecorderAdapter.flushToDisk",
+      "startLine": 140,
+      "startOffset": 4439,
+      "symbolId": "src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.flushToDisk::method"
     }
   ]
 }

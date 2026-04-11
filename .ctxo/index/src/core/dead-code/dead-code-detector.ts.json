@@ -131,7 +131,7 @@
       "message": "Add find_dead_code MCP tool — unreachable symbol and file detection"
     }
   ],
-  "lastModified": 1775782017,
+  "lastModified": 1775783076,
   "symbols": [
     {
       "endLine": 325,

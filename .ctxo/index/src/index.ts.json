@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "3275d81ef850684b3a8fb5d0b920846b573097e7ba51593e240467aabd0a8f5f",
+  "contentHash": "c0335526a1eea06ffb6ef0bd7621c90b3e452bdae4431dc4b1c1eef3ad2cca09",
   "edges": [
     {
       "from": "src/index.ts::index::variable",
@@ -124,6 +124,12 @@
   "file": "src/index.ts",
   "intent": [
     {
+      "date": "2026-04-10T03:52:10+03:00",
+      "hash": "0cf2ae6801b0a02ce046f2587853f888b89b4360",
+      "kind": "commit",
+      "message": "feat(stats): add ctxo stats command with session recording"
+    },
+    {
       "date": "2026-04-09T13:52:19+03:00",
       "hash": "1eb3ad75acb00025a02c5d7f4f8c32f4aaa6aec7",
       "kind": "commit",
@@ -236,14 +242,8 @@
       "hash": "031d4b7cd1c78c1c839c3076b65bdc644d33d38f",
       "kind": "commit",
       "message": "Fix 5 bugs, implement missing FRs, add NFR benchmarks and staleness"
-    },
-    {
-      "date": "2026-03-29T16:35:14+03:00",
-      "hash": "1b61fa7811ad1bc58a6c475de7b8b6582d17be7e",
-      "kind": "commit",
-      "message": "Add blast radius calculator and architectural overlay"
     }
   ],
-  "lastModified": 1775782017,
+  "lastModified": 1775783077,
   "symbols": []
 }
