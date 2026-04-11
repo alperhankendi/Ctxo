@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" fill="none">
   <defs>
     <linearGradient id="redGrad" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="#ff4060"/><stop offset="100%" stop-color="#ff8a3d"/>
@@ -19,8 +19,8 @@
       @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800');
 
       .bg{fill:#0a0a0f} .sf{fill:#12121a;stroke:#1e1e2e}
-      .t1{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:3px;fill:#00d4ff}
-      .t2{font-family:'JetBrains Mono',monospace;font-size:20px;fill:#6b6b80}
+      .t1{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:800;letter-spacing:6px;fill:#e2e2ef}
+      .t2{font-family:'JetBrains Mono',monospace;font-size:20px;fill:#00d4ff}
       .t2b{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;fill:#e2e2ef}
       .lb{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px}
       .nt{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700}
@@ -58,7 +58,7 @@
 
       @media(prefers-color-scheme:light){
         .bg{fill:#f8f9fc} .sf{fill:#fff;stroke:#e2e4ea}
-        .t1{fill:#0891b2} .t2{fill:#6e7181} .t2b{fill:#1a1a2e}
+        .t1{fill:#1a1a2e} .t2{fill:#0891b2} .t2b{fill:#1a1a2e}
         .pr{fill:#6e7181} .xm{fill:#dc2f4e} .ck{fill:#059669}
         .ml{fill:#6e7181} .mo{fill:#dc2f4e;opacity:.5} .mn{fill:#059669} .mb{fill:#059669}
         .vs{fill:#b0b3c0} .ft{fill:#6e7181} .ov{fill:#dc2f4e}
@@ -84,22 +84,25 @@
     </style>
   </defs>
 
-  <rect class="bg" width="960" height="540" rx="16"/>
+  <rect class="bg" width="960" height="560" rx="16"/>
 
   <!-- Header -->
-  <g transform="translate(453,18)">
+  <g transform="translate(448,14) scale(1.5)">
     <path class="icon-cyan" d="M10 1L2 11h7l-.8 6.4L16 7H9l1-6z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
-  <text x="490" y="36" text-anchor="middle" class="t1">CTXO</text>
-  <text x="480" y="58" text-anchor="middle">
+  <text x="480" y="40" text-anchor="start" class="t1">CTXO</text>
+  <text x="480" y="68" text-anchor="middle">
     <tspan class="t2">AI agents don't fail because they can't code.</tspan>
   </text>
-  <text x="480" y="78" text-anchor="middle">
+  <text x="480" y="94" text-anchor="middle">
     <tspan class="t2">They fail because they </tspan><tspan class="t2b">code blind</tspan><tspan class="t2">.</tspan>
   </text>
-  <text x="480" y="98" text-anchor="middle">
+  <text x="480" y="120" text-anchor="middle">
     <tspan class="t2">Ctxo gives them the full picture </tspan><tspan class="t2b">before they write a single line</tspan><tspan class="t2">.</tspan>
   </text>
+
+  <!-- Panels + Metrics (shifted down for header spacing) -->
+  <g transform="translate(0,20)">
 
   <!-- LEFT PANEL -->
   <rect class="sf" x="24" y="110" width="424" height="290" rx="12"/>
@@ -212,4 +215,6 @@
   <text x="812" y="474" text-anchor="middle" class="mn">97%</text>
   <rect class="bb" x="848" y="458" width="68" height="22" rx="11"/>
   <text x="882" y="473" text-anchor="middle" class="mb">97% free</text>
+
+  </g>
 </svg>
