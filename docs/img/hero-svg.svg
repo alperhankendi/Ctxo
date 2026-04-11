@@ -91,11 +91,14 @@
     <path class="icon-cyan" d="M10 1L2 11h7l-.8 6.4L16 7H9l1-6z" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
   <text x="490" y="36" text-anchor="middle" class="t1">CTXO</text>
-  <text x="480" y="64" text-anchor="middle">
-    <tspan class="t2">Your AI agent explores </tspan><tspan class="t2b">409+ files</tspan><tspan class="t2"> to understand one symbol.</tspan>
+  <text x="480" y="58" text-anchor="middle">
+    <tspan class="t2">AI agents don't fail because they can't code.</tspan>
   </text>
-  <text x="480" y="88" text-anchor="middle">
-    <tspan class="t2">What if it only needed </tspan><tspan class="t2b">one call</tspan><tspan class="t2">?</tspan>
+  <text x="480" y="78" text-anchor="middle">
+    <tspan class="t2">They fail because they </tspan><tspan class="t2b">code blind</tspan><tspan class="t2">.</tspan>
+  </text>
+  <text x="480" y="98" text-anchor="middle">
+    <tspan class="t2">Ctxo gives them the full picture </tspan><tspan class="t2b">before they write a single line</tspan><tspan class="t2">.</tspan>
   </text>
 
   <!-- LEFT PANEL -->
