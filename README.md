@@ -41,13 +41,16 @@ Ctxo is an **MCP server** that **enhances** your existing AI tools with dependen
 
 ## Quick Start
 
-One command sets up everything — index directory, AI tool rules, and git hooks:
+One command sets up everything — index directory, MCP server registration, AI tool rules, and git hooks:
 
 ```Shell
 npx ctxo-mcp init
 ```
 
-Then add ctxo to your IDE's MCP config:
+That's it. The interactive wizard detects your AI tools, registers the ctxo MCP server in the correct config file (`.mcp.json`, `.vscode/mcp.json`, etc.), and generates usage rules so your assistant knows when to call each tool.
+
+<details>
+<summary>Manual MCP config (if not using <code>ctxo init</code>)</summary>
 
 **Claude Code / Cursor / Windsurf / Cline** — `.mcp.json`:
 
@@ -66,6 +69,8 @@ Then add ctxo to your IDE's MCP config:
 ```JSON
 { "context_servers": { "ctxo": { "command": { "path": "npx", "args": ["-y", "ctxo-mcp"] } } } }
 ```
+
+</details>
 
 ## 14 Tools
 

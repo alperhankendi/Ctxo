@@ -203,3 +203,83 @@ export function ensureConfig(projectRoot: string): InstallResult {
   writeFileSync(filePath, DEFAULT_CONFIG, 'utf-8');
   return { file: '.ctxo/config.yaml', action: 'created' };
 }
+
+/* ------------------------------------------------------------------ */
+/*  MCP server registration                                            */
+/* ------------------------------------------------------------------ */
+
+const CTXO_MCP_ENTRY = { command: 'npx', args: ['-y', 'ctxo-mcp'] };
+
+interface McpConfigTarget {
+  file: string;
+  /** JSON key that holds server map */
+  serverKey: 'mcpServers' | 'servers';
+  /** Extra fields per server entry */
+  extraFields?: Record<string, string>;
+}
+
+/**
+ * Returns which MCP config files to create/update based on selected platforms.
+ * Multiple platforms may map to the same config file (deduplicated).
+ */
+export function getMcpConfigTargets(selectedPlatformIds: string[]): McpConfigTarget[] {
+  const targets = new Map<string, McpConfigTarget>();
+
+  for (const id of selectedPlatformIds) {
+    switch (id) {
+      case 'claude-code':
+      case 'cursor':
+      case 'windsurf':
+      case 'augment':
+      case 'antigravity':
+        // .mcp.json is the universal project-level MCP config
+        targets.set('.mcp.json', { file: '.mcp.json', serverKey: 'mcpServers' });
+        break;
+      case 'github-copilot':
+        targets.set('.vscode/mcp.json', { file: '.vscode/mcp.json', serverKey: 'servers', extraFields: { type: 'stdio' } });
+        break;
+      case 'amazonq':
+        targets.set('.amazonq/mcp.json', { file: '.amazonq/mcp.json', serverKey: 'mcpServers' });
+        break;
+    }
+  }
+
+  return [...targets.values()];
+}
+
+export function ensureMcpConfig(projectRoot: string, target: McpConfigTarget): InstallResult {
+  const filePath = join(projectRoot, target.file);
+  const dir = dirname(filePath);
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+
+  const entry = target.extraFields
+    ? { ...target.extraFields, ...CTXO_MCP_ENTRY }
+    : { ...CTXO_MCP_ENTRY };
+
+  if (!existsSync(filePath)) {
+    const config = { [target.serverKey]: { ctxo: entry } };
+    writeFileSync(filePath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
+    return { file: target.file, action: 'created' };
+  }
+
+  // Merge into existing config
+  let existing: Record<string, unknown>;
+  try {
+    existing = JSON.parse(readFileSync(filePath, 'utf-8'));
+  } catch {
+    // Corrupt JSON — overwrite
+    const config = { [target.serverKey]: { ctxo: entry } };
+    writeFileSync(filePath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
+    return { file: target.file, action: 'updated' };
+  }
+
+  const servers = (existing[target.serverKey] ?? {}) as Record<string, unknown>;
+  if (servers['ctxo']) {
+    return { file: target.file, action: 'skipped' };
+  }
+
+  servers['ctxo'] = entry;
+  existing[target.serverKey] = servers;
+  writeFileSync(filePath, JSON.stringify(existing, null, 2) + '\n', 'utf-8');
+  return { file: target.file, action: 'updated' };
+}

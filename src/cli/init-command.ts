@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 import { existsSync, readFileSync, writeFileSync, mkdirSync, chmodSync } from 'node:fs';
-import { PLATFORMS, detectPlatforms, installRules, ensureGitignore, ensureConfig } from './ai-rules.js';
+import { PLATFORMS, detectPlatforms, installRules, ensureGitignore, ensureConfig, getMcpConfigTargets, ensureMcpConfig } from './ai-rules.js';
 
 /* ------------------------------------------------------------------ */
 /*  Git hook content                                                   */
@@ -254,6 +254,15 @@ export class InitCommand {
       results.push(`${pc.green('\u2713')} ${pc.bold(result.file)}  ${pc.dim(result.action)}`);
     }
 
+    // MCP server registration (automatic based on selected tools)
+    const mcpTargets = getMcpConfigTargets(selectedTools as string[]);
+    for (const target of mcpTargets) {
+      const result = ensureMcpConfig(this.projectRoot, target);
+      if (result.action !== 'skipped') {
+        results.push(`${pc.green('\u2713')} ${pc.bold(result.file)}  ${pc.dim(result.action + ' \u2014 MCP server registered')}`);
+      }
+    }
+
     if (installGitHooks) {
       this.installHooks();
       results.push(`${pc.green('\u2713')} ${pc.bold('post-commit, post-merge')}  ${pc.dim('hooks installed')}`);
@@ -317,6 +326,15 @@ export class InitCommand {
     for (const toolId of toolIds) {
       const result = installRules(this.projectRoot, toolId);
       console.error(`[ctxo] \u2713 ${result.file} \u2014 ${result.action}`);
+    }
+
+    // MCP server registration
+    const mcpTargets = getMcpConfigTargets(toolIds);
+    for (const target of mcpTargets) {
+      const result = ensureMcpConfig(this.projectRoot, target);
+      if (result.action !== 'skipped') {
+        console.error(`[ctxo] \u2713 ${result.file} \u2014 ${result.action} (MCP server registered)`);
+      }
     }
 
     if (!options.rulesOnly) {

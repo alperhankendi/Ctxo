@@ -2,7 +2,7 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { mkdtempSync, rmSync, existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { PLATFORMS, generateRules, installRules, detectPlatforms, ensureGitignore, ensureConfig } from '../ai-rules.js';
+import { PLATFORMS, generateRules, installRules, detectPlatforms, ensureGitignore, ensureConfig, getMcpConfigTargets, ensureMcpConfig } from '../ai-rules.js';
 
 const tempDirs: string[] = [];
 
@@ -233,5 +233,107 @@ describe('ensureConfig', () => {
     const dir = makeTempDir();
     ensureConfig(dir);
     expect(existsSync(join(dir, '.ctxo'))).toBe(true);
+  });
+});
+
+describe('getMcpConfigTargets', () => {
+  it('returns .mcp.json for claude-code', () => {
+    const targets = getMcpConfigTargets(['claude-code']);
+    expect(targets).toHaveLength(1);
+    expect(targets[0].file).toBe('.mcp.json');
+    expect(targets[0].serverKey).toBe('mcpServers');
+  });
+
+  it('returns .vscode/mcp.json for github-copilot', () => {
+    const targets = getMcpConfigTargets(['github-copilot']);
+    expect(targets).toHaveLength(1);
+    expect(targets[0].file).toBe('.vscode/mcp.json');
+    expect(targets[0].serverKey).toBe('servers');
+  });
+
+  it('returns .amazonq/mcp.json for amazonq', () => {
+    const targets = getMcpConfigTargets(['amazonq']);
+    expect(targets).toHaveLength(1);
+    expect(targets[0].file).toBe('.amazonq/mcp.json');
+  });
+
+  it('deduplicates .mcp.json for multiple tools', () => {
+    const targets = getMcpConfigTargets(['claude-code', 'cursor', 'windsurf']);
+    expect(targets).toHaveLength(1);
+    expect(targets[0].file).toBe('.mcp.json');
+  });
+
+  it('returns both .mcp.json and .vscode/mcp.json when mixed', () => {
+    const targets = getMcpConfigTargets(['claude-code', 'github-copilot']);
+    expect(targets).toHaveLength(2);
+    const files = targets.map(t => t.file).sort();
+    expect(files).toEqual(['.mcp.json', '.vscode/mcp.json']);
+  });
+
+  it('returns empty for no tools', () => {
+    expect(getMcpConfigTargets([])).toHaveLength(0);
+  });
+});
+
+describe('ensureMcpConfig', () => {
+  it('creates .mcp.json with ctxo entry', () => {
+    const dir = makeTempDir();
+    const target = getMcpConfigTargets(['claude-code'])[0];
+    const result = ensureMcpConfig(dir, target);
+
+    expect(result.action).toBe('created');
+    const config = JSON.parse(readFileSync(join(dir, '.mcp.json'), 'utf-8'));
+    expect(config.mcpServers.ctxo).toBeDefined();
+    expect(config.mcpServers.ctxo.command).toBe('npx');
+    expect(config.mcpServers.ctxo.args).toContain('ctxo-mcp');
+  });
+
+  it('creates .vscode/mcp.json with type: stdio for copilot', () => {
+    const dir = makeTempDir();
+    const target = getMcpConfigTargets(['github-copilot'])[0];
+    ensureMcpConfig(dir, target);
+
+    const config = JSON.parse(readFileSync(join(dir, '.vscode', 'mcp.json'), 'utf-8'));
+    expect(config.servers.ctxo.type).toBe('stdio');
+    expect(config.servers.ctxo.command).toBe('npx');
+  });
+
+  it('merges into existing config without overwriting other servers', () => {
+    const dir = makeTempDir();
+    const existing = { mcpServers: { other: { command: 'node', args: ['other.js'] } } };
+    writeFileSync(join(dir, '.mcp.json'), JSON.stringify(existing), 'utf-8');
+
+    const target = getMcpConfigTargets(['claude-code'])[0];
+    const result = ensureMcpConfig(dir, target);
+
+    expect(result.action).toBe('updated');
+    const config = JSON.parse(readFileSync(join(dir, '.mcp.json'), 'utf-8'));
+    expect(config.mcpServers.other).toBeDefined();
+    expect(config.mcpServers.ctxo).toBeDefined();
+  });
+
+  it('skips if ctxo already registered', () => {
+    const dir = makeTempDir();
+    const target = getMcpConfigTargets(['claude-code'])[0];
+    ensureMcpConfig(dir, target);
+    const result = ensureMcpConfig(dir, target);
+    expect(result.action).toBe('skipped');
+  });
+
+  it('creates parent directory if missing', () => {
+    const dir = makeTempDir();
+    const target = getMcpConfigTargets(['amazonq'])[0];
+    ensureMcpConfig(dir, target);
+    expect(existsSync(join(dir, '.amazonq', 'mcp.json'))).toBe(true);
+  });
+
+  it('handles corrupt JSON by overwriting', () => {
+    const dir = makeTempDir();
+    writeFileSync(join(dir, '.mcp.json'), 'not json{{{', 'utf-8');
+    const target = getMcpConfigTargets(['claude-code'])[0];
+    const result = ensureMcpConfig(dir, target);
+    expect(result.action).toBe('updated');
+    const config = JSON.parse(readFileSync(join(dir, '.mcp.json'), 'utf-8'));
+    expect(config.mcpServers.ctxo).toBeDefined();
   });
 });

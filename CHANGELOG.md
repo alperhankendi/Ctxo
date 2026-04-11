@@ -2,7 +2,7 @@
 
 All notable changes to Ctxo MCP Server are documented in this file.
 
-## [0.5.0] - 2026-04-11
+## [0.5.1] - 2026-04-11
 
 ### Added
 
@@ -16,8 +16,13 @@ All notable changes to Ctxo MCP Server are documented in this file.
 - Dry run preview: `ctxo init --dry-run`
 - Rules-only regeneration: `ctxo init --rules`
 - Auto-scaffolds `.gitignore` (ensures `.ctxo/.cache/` is excluded) and `.ctxo/config.yaml` (team config template)
+- **Auto-registers ctxo MCP server** in the correct config file based on selected tools:
+  - `.mcp.json` for Claude Code, Cursor, Windsurf, Augment, Antigravity
+  - `.vscode/mcp.json` for GitHub Copilot (with `type: "stdio"`)
+  - `.amazonq/mcp.json` for Amazon Q
+  - Merges into existing config (preserves other MCP servers), skips if already registered
 - `@clack/prompts` for interactive CLI prompts
-- 35 new tests for init feature (ai-rules + init-command)
+- 47 new tests for init feature (ai-rules + init-command)
 
 **Health Check (`ctxo doctor`)**
 - `ctxo doctor` command — runs 15 diagnostic checks across all subsystems
@@ -37,7 +42,7 @@ All notable changes to Ctxo MCP Server are documented in this file.
 - README Quick Start simplified to single `npx ctxo-mcp init` command
 - Landing page hero section includes `npx ctxo-mcp init` install command
 - Tarball size limit bumped to 850KB (new @clack/prompts dependency)
-- 972 total tests (up from 718)
+- 984 total tests (up from 718)
 
 ## [0.4.2] - 2026-04-10
 
