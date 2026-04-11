@@ -1,0 +1,17 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "f482812181a7c4c317f7441d84bf039f7f1093fddae2ecf9cfe062ab24fe9951",
+  "edges": [],
+  "file": "tests/e2e/fixtures/csharp-sample/CsharpSample/Jobs/BaseSyncJob.cs",
+  "intent": [
+    {
+      "date": "2026-04-11T23:13:59+03:00",
+      "hash": "b2e28ca3a884f301c199b716dcfd164ca8217ec6",
+      "kind": "commit",
+      "message": "feat: add C# full-tier analysis via standalone Roslyn .NET app"
+    }
+  ],
+  "lastModified": 1775940932,
+  "symbols": []
+}

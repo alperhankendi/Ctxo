@@ -567,9 +567,10 @@ string? SymbolToId(ISymbol symbol)
     var kind = MapSymbolKind(original);
     if (kind == null) return null;
 
-    // BUG 3 FIX: Guard against empty qualified names (e.g., implicit record base types)
+    // BUG 3 FIX: Guard against empty/invalid qualified names (e.g., implicit record base types, compiler-generated types like <Program>$)
     var name = GetQualifiedName(original);
     if (string.IsNullOrWhiteSpace(name)) return null;
+    if (name.Contains('<') || name.Contains('>')) return null; // compiler-generated
 
     return $"{relativePath}::{name}::{kind}";
 }

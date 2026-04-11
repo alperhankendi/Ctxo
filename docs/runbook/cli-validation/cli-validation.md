@@ -210,11 +210,15 @@ npx tsx src/index.ts verify-index 2>&1; echo "Exit: $?"
 * [ ] Shows `Index is up to date`
 * [ ] Exit code 0
 
-### 5.2 Stale Index
+### 5.2 Stale Index (Symbol Change)
+
+> **Note:** `verify-index` rebuilds into a temp directory and compares extracted symbols/edges/intent.
+> A `touch` or comment-only change will NOT be detected since symbols don't change.
+> To trigger staleness, add/remove/rename an actual symbol (type, function, variable, etc.).
 
 ```bash
-# Touch a source file to make index stale
-touch src/core/types.ts
+# Add a new exported type to create a symbol diff
+echo 'export type VerifyTestDummy = { x: number };' >> src/core/types.ts
 npx tsx src/index.ts verify-index 2>&1; echo "Exit: $?"
 ```
 
@@ -225,8 +229,22 @@ npx tsx src/index.ts verify-index 2>&1; echo "Exit: $?"
 
 ```bash
 # Restore
-npx tsx src/index.ts index --file src/core/types.ts
+git checkout src/core/types.ts
 ```
+
+### 5.3 Stale Index (mtime-only, via `index --check`)
+
+> **Note:** `index --check` uses fast mtime + content-hash detection without rebuilding.
+
+```bash
+touch src/core/types.ts
+npx tsx src/index.ts index --check 2>&1; echo "Exit: $?"
+```
+
+**Verify:**
+
+* [ ] Exit code 0 (hash matches - mtime-only change is not stale)
+* [ ] No full rebuild triggered
 
 ***
 

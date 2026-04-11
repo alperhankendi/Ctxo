@@ -34,7 +34,7 @@
       "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.findFirstExportedSymbolId::method"
     }
   ],
-  "contentHash": "89c92c30bab295980ca8be6dd319c92ec928bc5b9b7e7dff94c42df7494b336d",
+  "contentHash": "daf1f957f6012e7dc2d19b5c71011291a163d9182d2086a61f57e478634a8e6d",
   "edges": [
     {
       "from": "src/adapters/language/go-adapter.ts::GoAdapter::class",
@@ -148,6 +148,12 @@
   "file": "src/adapters/language/go-adapter.ts",
   "intent": [
     {
+      "date": "2026-04-11T23:13:59+03:00",
+      "hash": "b2e28ca3a884f301c199b716dcfd164ca8217ec6",
+      "kind": "commit",
+      "message": "feat: add C# full-tier analysis via standalone Roslyn .NET app"
+    },
+    {
       "date": "2026-04-08T15:52:43+03:00",
       "hash": "83ec66fa360f18b1788f952fc5929fcce2174a55",
       "kind": "commit",
@@ -160,11 +166,11 @@
       "message": "Add tree-sitter adapters for Go and C# with graceful degradation"
     }
   ],
-  "lastModified": 1775919998,
+  "lastModified": 1775940931,
   "symbols": [
     {
       "endLine": 221,
-      "endOffset": 7708,
+      "endOffset": 7753,
       "kind": "class",
       "name": "GoAdapter",
       "startLine": 12,
@@ -173,7 +179,7 @@
     },
     {
       "endLine": 63,
-      "endOffset": 2153,
+      "endOffset": 2168,
       "kind": "method",
       "name": "GoAdapter.extractSymbols",
       "startLine": 19,
@@ -182,65 +188,65 @@
     },
     {
       "endLine": 85,
-      "endOffset": 2863,
+      "endOffset": 2893,
       "kind": "method",
       "name": "GoAdapter.extractEdges",
       "startLine": 65,
-      "startOffset": 2157,
+      "startOffset": 2172,
       "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractEdges::method"
     },
     {
       "endLine": 121,
-      "endOffset": 4244,
+      "endOffset": 4289,
       "kind": "method",
       "name": "GoAdapter.extractComplexity",
       "startLine": 87,
-      "startOffset": 2867,
+      "startOffset": 2897,
       "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractComplexity::method"
     },
     {
       "endLine": 127,
-      "endOffset": 4468,
+      "endOffset": 4513,
       "kind": "method",
       "name": "GoAdapter.isExported",
       "startLine": 125,
-      "startOffset": 4315,
+      "startOffset": 4360,
       "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.isExported::method"
     },
     {
       "endLine": 146,
-      "endOffset": 5143,
+      "endOffset": 5188,
       "kind": "method",
       "name": "GoAdapter.extractReceiverType",
       "startLine": 129,
-      "startOffset": 4472,
+      "startOffset": 4517,
       "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractReceiverType::method"
     },
     {
       "endLine": 170,
-      "endOffset": 5977,
+      "endOffset": 6022,
       "kind": "method",
       "name": "GoAdapter.extractTypeSymbols",
       "startLine": 148,
-      "startOffset": 5147,
+      "startOffset": 5192,
       "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractTypeSymbols::method"
     },
     {
       "endLine": 195,
-      "endOffset": 6674,
+      "endOffset": 6719,
       "kind": "method",
       "name": "GoAdapter.extractImportEdges",
       "startLine": 172,
-      "startOffset": 5981,
+      "startOffset": 6026,
       "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.extractImportEdges::method"
     },
     {
       "endLine": 220,
-      "endOffset": 7706,
+      "endOffset": 7751,
       "kind": "method",
       "name": "GoAdapter.findFirstExportedSymbolId",
       "startLine": 197,
-      "startOffset": 6678,
+      "startOffset": 6723,
       "symbolId": "src/adapters/language/go-adapter.ts::GoAdapter.findFirstExportedSymbolId::method"
     }
   ]

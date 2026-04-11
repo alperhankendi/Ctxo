@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "63ebeef128c696de39ec2e29cba6fa0788e5f5e3a0623d507cbba8c2447e530f",
+  "contentHash": "04e6fb9b1ed1bc27a4d268badde8b3d619b2ac60058c776128f4581471a0ded3",
   "edges": [
     {
       "from": "src/adapters/language/__tests__/csharp-adapter.test.ts::csharp-adapter.test::variable",
@@ -11,6 +11,12 @@
   ],
   "file": "src/adapters/language/__tests__/csharp-adapter.test.ts",
   "intent": [
+    {
+      "date": "2026-04-11T23:13:59+03:00",
+      "hash": "b2e28ca3a884f301c199b716dcfd164ca8217ec6",
+      "kind": "commit",
+      "message": "feat: add C# full-tier analysis via standalone Roslyn .NET app"
+    },
     {
       "date": "2026-04-08T19:15:40+03:00",
       "hash": "d3a80b889a1610d6201e52ab46f6a8672161b3cc",
@@ -24,6 +30,6 @@
       "message": "Add tree-sitter adapters for Go and C# with graceful degradation"
     }
   ],
-  "lastModified": 1775919998,
+  "lastModified": 1775940931,
   "symbols": []
 }

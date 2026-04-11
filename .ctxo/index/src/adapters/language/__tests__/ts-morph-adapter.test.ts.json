@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "4290e8a14f3e540f86812ad6e34fd698adfc97dda7ba450caca840f37ab65b91",
+  "contentHash": "2ab66dae0f446314479919cf239d01584c4dde43496c4788255cb550aa9bda72",
   "edges": [
     {
       "from": "src/adapters/language/__tests__/ts-morph-adapter.test.ts::ts-morph-adapter.test::variable",
@@ -11,6 +11,12 @@
   ],
   "file": "src/adapters/language/__tests__/ts-morph-adapter.test.ts",
   "intent": [
+    {
+      "date": "2026-04-11T23:13:59+03:00",
+      "hash": "b2e28ca3a884f301c199b716dcfd164ca8217ec6",
+      "kind": "commit",
+      "message": "feat: add C# full-tier analysis via standalone Roslyn .NET app"
+    },
     {
       "date": "2026-04-08T03:47:41+03:00",
       "hash": "3afc7eded03044d82270f5d48390e13ccb73b83e",
@@ -48,6 +54,6 @@
       "message": "Add TypeScript language adapter with ts-morph symbol/edge/complexity extraction"
     }
   ],
-  "lastModified": 1775919998,
+  "lastModified": 1775940931,
   "symbols": []
 }

@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "a7a74f467bd1e160486fcec58d1ebe61c0ad742ef38bec029ece47d06dac720c",
+  "contentHash": "7b13608d58837efa78b382defc7970a79376cf32cbf9e3cd2dc4c0cf51702a2b",
   "edges": [
     {
       "from": "src/adapters/language/__tests__/ts-morph-adapter.edge-cases.test.ts::ts-morph-adapter.edge-cases.test::variable",
@@ -11,6 +11,12 @@
   ],
   "file": "src/adapters/language/__tests__/ts-morph-adapter.edge-cases.test.ts",
   "intent": [
+    {
+      "date": "2026-04-11T23:13:59+03:00",
+      "hash": "b2e28ca3a884f301c199b716dcfd164ca8217ec6",
+      "kind": "commit",
+      "message": "feat: add C# full-tier analysis via standalone Roslyn .NET app"
+    },
     {
       "date": "2026-04-08T01:41:17+03:00",
       "hash": "2e33cdc34aaa5e3387139345d981f623065d1043",
@@ -24,6 +30,6 @@
       "message": "Add missing MCP handler tests and edge case coverage"
     }
   ],
-  "lastModified": 1775919998,
+  "lastModified": 1775940931,
   "symbols": []
 }

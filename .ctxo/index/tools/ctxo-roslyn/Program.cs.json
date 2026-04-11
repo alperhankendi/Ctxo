@@ -1,0 +1,246 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "8e3a82709865b1705e1dbb508793c675b060165d7da690fe741cd9c9d4e345eb",
+  "edges": [],
+  "file": "tools/ctxo-roslyn/Program.cs",
+  "intent": [
+    {
+      "date": "2026-04-11T23:50:37+03:00",
+      "hash": "39ae069226a0ec724b00bc89475c56d1714a942b",
+      "kind": "commit",
+      "message": "fix: resolve 3 bugs - test isolation, empty symbol ID, byte offsets"
+    },
+    {
+      "date": "2026-04-11T23:38:26+03:00",
+      "hash": "5996773538229359bb8bedf106c314c221a3b2e3",
+      "kind": "commit",
+      "message": "fix: resolve 8 bugs in ctxo-roslyn analyzer"
+    },
+    {
+      "date": "2026-04-11T23:13:59+03:00",
+      "hash": "b2e28ca3a884f301c199b716dcfd164ca8217ec6",
+      "kind": "commit",
+      "message": "feat: add C# full-tier analysis via standalone Roslyn .NET app"
+    }
+  ],
+  "lastModified": 1775940932,
+  "symbols": [
+    {
+      "endLine": 606,
+      "endOffset": 21599,
+      "kind": "class",
+      "name": "FileResult",
+      "startLine": 599,
+      "startOffset": 21182,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::FileResult::class"
+    },
+    {
+      "endLine": 601,
+      "endOffset": 21276,
+      "kind": "variable",
+      "name": "FileResult.Type",
+      "startLine": 601,
+      "startOffset": 21206,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::FileResult.Type::variable"
+    },
+    {
+      "endLine": 602,
+      "endOffset": 21347,
+      "kind": "variable",
+      "name": "FileResult.File",
+      "startLine": 602,
+      "startOffset": 21281,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::FileResult.File::variable"
+    },
+    {
+      "endLine": 603,
+      "endOffset": 21429,
+      "kind": "variable",
+      "name": "FileResult.Symbols",
+      "startLine": 603,
+      "startOffset": 21352,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::FileResult.Symbols::variable"
+    },
+    {
+      "endLine": 604,
+      "endOffset": 21505,
+      "kind": "variable",
+      "name": "FileResult.Edges",
+      "startLine": 604,
+      "startOffset": 21434,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::FileResult.Edges::variable"
+    },
+    {
+      "endLine": 605,
+      "endOffset": 21597,
+      "kind": "variable",
+      "name": "FileResult.Complexity",
+      "startLine": 605,
+      "startOffset": 21510,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::FileResult.Complexity::variable"
+    },
+    {
+      "endLine": 617,
+      "endOffset": 22131,
+      "kind": "class",
+      "name": "CtxoSymbol",
+      "startLine": 608,
+      "startOffset": 21601,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::CtxoSymbol::class"
+    },
+    {
+      "endLine": 610,
+      "endOffset": 21699,
+      "kind": "variable",
+      "name": "CtxoSymbol.SymbolId",
+      "startLine": 610,
+      "startOffset": 21625,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::CtxoSymbol.SymbolId::variable"
+    },
+    {
+      "endLine": 611,
+      "endOffset": 21770,
+      "kind": "variable",
+      "name": "CtxoSymbol.Name",
+      "startLine": 611,
+      "startOffset": 21704,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::CtxoSymbol.Name::variable"
+    },
+    {
+      "endLine": 612,
+      "endOffset": 21841,
+      "kind": "variable",
+      "name": "CtxoSymbol.Kind",
+      "startLine": 612,
+      "startOffset": 21775,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::CtxoSymbol.Kind::variable"
+    },
+    {
+      "endLine": 613,
+      "endOffset": 21913,
+      "kind": "variable",
+      "name": "CtxoSymbol.StartLine",
+      "startLine": 613,
+      "startOffset": 21846,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::CtxoSymbol.StartLine::variable"
+    },
+    {
+      "endLine": 614,
+      "endOffset": 21981,
+      "kind": "variable",
+      "name": "CtxoSymbol.EndLine",
+      "startLine": 614,
+      "startOffset": 21918,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::CtxoSymbol.EndLine::variable"
+    },
+    {
+      "endLine": 615,
+      "endOffset": 22057,
+      "kind": "variable",
+      "name": "CtxoSymbol.StartOffset",
+      "startLine": 615,
+      "startOffset": 21986,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::CtxoSymbol.StartOffset::variable"
+    },
+    {
+      "endLine": 616,
+      "endOffset": 22129,
+      "kind": "variable",
+      "name": "CtxoSymbol.EndOffset",
+      "startLine": 616,
+      "startOffset": 22062,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::CtxoSymbol.EndOffset::variable"
+    },
+    {
+      "endLine": 624,
+      "endOffset": 22361,
+      "kind": "class",
+      "name": "CtxoEdge",
+      "startLine": 619,
+      "startOffset": 22133,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::CtxoEdge::class"
+    },
+    {
+      "endLine": 621,
+      "endOffset": 22221,
+      "kind": "variable",
+      "name": "CtxoEdge.From",
+      "startLine": 621,
+      "startOffset": 22155,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::CtxoEdge.From::variable"
+    },
+    {
+      "endLine": 622,
+      "endOffset": 22288,
+      "kind": "variable",
+      "name": "CtxoEdge.To",
+      "startLine": 622,
+      "startOffset": 22226,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::CtxoEdge.To::variable"
+    },
+    {
+      "endLine": 623,
+      "endOffset": 22359,
+      "kind": "variable",
+      "name": "CtxoEdge.Kind",
+      "startLine": 623,
+      "startOffset": 22293,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::CtxoEdge.Kind::variable"
+    },
+    {
+      "endLine": 631,
+      "endOffset": 22613,
+      "kind": "class",
+      "name": "CtxoComplexity",
+      "startLine": 626,
+      "startOffset": 22363,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::CtxoComplexity::class"
+    },
+    {
+      "endLine": 628,
+      "endOffset": 22465,
+      "kind": "variable",
+      "name": "CtxoComplexity.SymbolId",
+      "startLine": 628,
+      "startOffset": 22391,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::CtxoComplexity.SymbolId::variable"
+    },
+    {
+      "endLine": 629,
+      "endOffset": 22539,
+      "kind": "variable",
+      "name": "CtxoComplexity.Cyclomatic",
+      "startLine": 629,
+      "startOffset": 22470,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::CtxoComplexity.Cyclomatic::variable"
+    },
+    {
+      "endLine": 630,
+      "endOffset": 22611,
+      "kind": "variable",
+      "name": "CtxoComplexity.Cognitive",
+      "startLine": 630,
+      "startOffset": 22544,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::CtxoComplexity.Cognitive::variable"
+    },
+    {
+      "endLine": 636,
+      "endOffset": 22708,
+      "kind": "class",
+      "name": "KeepAliveRequest",
+      "startLine": 633,
+      "startOffset": 22615,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::KeepAliveRequest::class"
+    },
+    {
+      "endLine": 635,
+      "endOffset": 22706,
+      "kind": "variable",
+      "name": "KeepAliveRequest.File",
+      "startLine": 635,
+      "startOffset": 22645,
+      "symbolId": "tools/ctxo-roslyn/Program.cs::KeepAliveRequest.File::variable"
+    }
+  ]
+}

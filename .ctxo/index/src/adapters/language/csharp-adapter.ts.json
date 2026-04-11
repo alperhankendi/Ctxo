@@ -42,7 +42,7 @@
       "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.resolveBaseType::method"
     }
   ],
-  "contentHash": "e425ef2349be9c619f3bbe92cde823f3cf421f0d603a8eefa0918438038cc252",
+  "contentHash": "ca4e5e11ee7fa547bf52b8a7e6a602b2c13828b524190c3665acb34bbde525d7",
   "edges": [
     {
       "from": "src/adapters/language/csharp-adapter.ts::CSharpAdapter::class",
@@ -172,6 +172,12 @@
   "file": "src/adapters/language/csharp-adapter.ts",
   "intent": [
     {
+      "date": "2026-04-11T23:13:59+03:00",
+      "hash": "b2e28ca3a884f301c199b716dcfd164ca8217ec6",
+      "kind": "commit",
+      "message": "feat: add C# full-tier analysis via standalone Roslyn .NET app"
+    },
+    {
       "date": "2026-04-08T19:15:40+03:00",
       "hash": "d3a80b889a1610d6201e52ab46f6a8672161b3cc",
       "kind": "commit",
@@ -184,11 +190,11 @@
       "message": "Add tree-sitter adapters for Go and C# with graceful degradation"
     }
   ],
-  "lastModified": 1775919998,
+  "lastModified": 1775940931,
   "symbols": [
     {
       "endLine": 295,
-      "endOffset": 9878,
+      "endOffset": 9929,
       "kind": "class",
       "name": "CSharpAdapter",
       "startLine": 11,
@@ -197,7 +203,7 @@
     },
     {
       "endLine": 28,
-      "endOffset": 987,
+      "endOffset": 1002,
       "kind": "method",
       "name": "CSharpAdapter.extractSymbols",
       "startLine": 18,
@@ -206,83 +212,83 @@
     },
     {
       "endLine": 44,
-      "endOffset": 1562,
+      "endOffset": 1598,
       "kind": "method",
       "name": "CSharpAdapter.extractEdges",
       "startLine": 30,
-      "startOffset": 991,
+      "startOffset": 1006,
       "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractEdges::method"
     },
     {
       "endLine": 56,
-      "endOffset": 1981,
+      "endOffset": 2032,
       "kind": "method",
       "name": "CSharpAdapter.extractComplexity",
       "startLine": 46,
-      "startOffset": 1566,
+      "startOffset": 1602,
       "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractComplexity::method"
     },
     {
       "endLine": 116,
-      "endOffset": 3770,
+      "endOffset": 3821,
       "kind": "method",
       "name": "CSharpAdapter.visitSymbols",
       "startLine": 60,
-      "startOffset": 2052,
+      "startOffset": 2103,
       "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitSymbols::method"
     },
     {
       "endLine": 145,
-      "endOffset": 4702,
+      "endOffset": 4753,
       "kind": "method",
       "name": "CSharpAdapter.extractMethodSymbols",
       "startLine": 118,
-      "startOffset": 3774,
+      "startOffset": 3825,
       "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.extractMethodSymbols::method"
     },
     {
       "endLine": 208,
-      "endOffset": 6929,
+      "endOffset": 6980,
       "kind": "method",
       "name": "CSharpAdapter.visitEdges",
       "startLine": 149,
-      "startOffset": 4773,
+      "startOffset": 4824,
       "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitEdges::method"
     },
     {
       "endLine": 262,
-      "endOffset": 8713,
+      "endOffset": 8764,
       "kind": "method",
       "name": "CSharpAdapter.visitComplexity",
       "startLine": 212,
-      "startOffset": 7000,
+      "startOffset": 7051,
       "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.visitComplexity::method"
     },
     {
       "endLine": 274,
-      "endOffset": 9098,
+      "endOffset": 9149,
       "kind": "method",
       "name": "CSharpAdapter.countParameters",
       "startLine": 266,
-      "startOffset": 8784,
+      "startOffset": 8835,
       "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.countParameters::method"
     },
     {
       "endLine": 282,
-      "endOffset": 9336,
+      "endOffset": 9387,
       "kind": "method",
       "name": "CSharpAdapter.isPublic",
       "startLine": 276,
-      "startOffset": 9102,
+      "startOffset": 9153,
       "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.isPublic::method"
     },
     {
       "endLine": 294,
-      "endOffset": 9876,
+      "endOffset": 9927,
       "kind": "method",
       "name": "CSharpAdapter.resolveBaseType",
       "startLine": 284,
-      "startOffset": 9340,
+      "startOffset": 9391,
       "symbolId": "src/adapters/language/csharp-adapter.ts::CSharpAdapter.resolveBaseType::method"
     }
   ]

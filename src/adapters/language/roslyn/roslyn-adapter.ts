@@ -88,7 +88,11 @@ export class RoslynAdapter implements ILanguageAdapter {
     const cached = this.cache.get(filePath);
     if (!cached) return [];
 
-    return cached.edges.map(e => ({
+    // Filter out edges with invalid symbol ID format (must be file::name::kind with non-empty segments)
+    const VALID_SYMBOL_ID = /^.+::.+::.+$/;
+    return cached.edges
+      .filter(e => VALID_SYMBOL_ID.test(e.from) && VALID_SYMBOL_ID.test(e.to))
+      .map(e => ({
         from: e.from,
         to: e.to,
         kind: e.kind as GraphEdge['kind'],

@@ -38,7 +38,7 @@
       "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.extractComplexity::method"
     }
   ],
-  "contentHash": "6bf31eaa9c69ee1d36679ba65936b727ce46b5ef5a0d96560fed3a084dfd206a",
+  "contentHash": "21c8164c3a89a99d10eb68e43efceb08fe02c3acdf85c3f04bd187fa08019330",
   "edges": [
     {
       "from": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter::class",
@@ -104,6 +104,12 @@
   "file": "src/adapters/language/tree-sitter-adapter.ts",
   "intent": [
     {
+      "date": "2026-04-11T23:13:59+03:00",
+      "hash": "b2e28ca3a884f301c199b716dcfd164ca8217ec6",
+      "kind": "commit",
+      "message": "feat: add C# full-tier analysis via standalone Roslyn .NET app"
+    },
+    {
       "date": "2026-04-08T15:52:43+03:00",
       "hash": "83ec66fa360f18b1788f952fc5929fcce2174a55",
       "kind": "commit",
@@ -116,11 +122,11 @@
       "message": "Add tree-sitter adapters for Go and C# with graceful degradation"
     }
   ],
-  "lastModified": 1775919998,
+  "lastModified": 1775940931,
   "symbols": [
     {
       "endLine": 67,
-      "endOffset": 2128,
+      "endOffset": 2155,
       "kind": "class",
       "name": "TreeSitterAdapter",
       "startLine": 7,
@@ -183,7 +189,7 @@
     },
     {
       "endLine": 64,
-      "endOffset": 1969,
+      "endOffset": 1978,
       "kind": "method",
       "name": "TreeSitterAdapter.extractSymbols",
       "startLine": 64,
@@ -192,20 +198,20 @@
     },
     {
       "endLine": 65,
-      "endOffset": 2041,
+      "endOffset": 2059,
       "kind": "method",
       "name": "TreeSitterAdapter.extractEdges",
       "startLine": 65,
-      "startOffset": 1972,
+      "startOffset": 1981,
       "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.extractEdges::method"
     },
     {
       "endLine": 66,
-      "endOffset": 2126,
+      "endOffset": 2153,
       "kind": "method",
       "name": "TreeSitterAdapter.extractComplexity",
       "startLine": 66,
-      "startOffset": 2044,
+      "startOffset": 2062,
       "symbolId": "src/adapters/language/tree-sitter-adapter.ts::TreeSitterAdapter.extractComplexity::method"
     }
   ]

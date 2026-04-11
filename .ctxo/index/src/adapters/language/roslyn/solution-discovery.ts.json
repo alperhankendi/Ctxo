@@ -1,0 +1,79 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/adapters/language/roslyn/solution-discovery.ts::detectDotnetSdk::function"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "src/adapters/language/roslyn/solution-discovery.ts::discoverSolution::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/adapters/language/roslyn/solution-discovery.ts::findCtxoRoslynProject::function"
+    }
+  ],
+  "contentHash": "449c798fb7f72a7c467d53133c29df9ba9230229ed6c384c66210b25de475bf2",
+  "edges": [
+    {
+      "from": "src/adapters/language/roslyn/solution-discovery.ts::detectDotnetSdk::function",
+      "kind": "imports",
+      "to": "src/core/logger.ts::createLogger::function"
+    },
+    {
+      "from": "src/adapters/language/roslyn/solution-discovery.ts::discoverSolution::function",
+      "kind": "calls",
+      "to": "src/adapters/language/roslyn/solution-discovery.ts::findFiles::function"
+    },
+    {
+      "from": "src/adapters/language/roslyn/solution-discovery.ts::discoverSolution::function",
+      "kind": "calls",
+      "to": "src/adapters/language/roslyn/solution-discovery.ts::findFiles::function"
+    },
+    {
+      "from": "src/adapters/language/roslyn/solution-discovery.ts::discoverSolution::function",
+      "kind": "calls",
+      "to": "src/adapters/language/roslyn/solution-discovery.ts::findFiles::function"
+    }
+  ],
+  "file": "src/adapters/language/roslyn/solution-discovery.ts",
+  "intent": [
+    {
+      "date": "2026-04-11T23:13:59+03:00",
+      "hash": "b2e28ca3a884f301c199b716dcfd164ca8217ec6",
+      "kind": "commit",
+      "message": "feat: add C# full-tier analysis via standalone Roslyn .NET app"
+    }
+  ],
+  "lastModified": 1775940931,
+  "symbols": [
+    {
+      "endLine": 21,
+      "endOffset": 802,
+      "kind": "function",
+      "name": "detectDotnetSdk",
+      "startLine": 9,
+      "startOffset": 326,
+      "symbolId": "src/adapters/language/roslyn/solution-discovery.ts::detectDotnetSdk::function"
+    },
+    {
+      "endLine": 47,
+      "endOffset": 1567,
+      "kind": "function",
+      "name": "discoverSolution",
+      "startLine": 23,
+      "startOffset": 804,
+      "symbolId": "src/adapters/language/roslyn/solution-discovery.ts::discoverSolution::function"
+    },
+    {
+      "endLine": 83,
+      "endOffset": 2684,
+      "kind": "function",
+      "name": "findCtxoRoslynProject",
+      "startLine": 69,
+      "startOffset": 2196,
+      "symbolId": "src/adapters/language/roslyn/solution-discovery.ts::findCtxoRoslynProject::function"
+    }
+  ]
+}

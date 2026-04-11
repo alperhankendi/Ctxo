@@ -1,0 +1,343 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.isSupported::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.isReady::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.initialize::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.batchIndex::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.extractSymbols::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.extractEdges::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.extractComplexity::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.startKeepAlive::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.reindexFile::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.dispose::method"
+    }
+  ],
+  "contentHash": "dc11c975d136a67b851efcfb19d1c9e627f629fb610b6cbc2fe7f31f28038ec1",
+  "edges": [
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::GraphEdge::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::ComplexityMetrics::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolKind::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "imports",
+      "to": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "imports",
+      "to": "src/core/logger.ts::createLogger::function"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "imports",
+      "to": "src/adapters/language/roslyn/solution-discovery.ts::detectDotnetSdk::function"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "imports",
+      "to": "src/adapters/language/roslyn/solution-discovery.ts::discoverSolution::function"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "imports",
+      "to": "src/adapters/language/roslyn/solution-discovery.ts::findCtxoRoslynProject::function"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "imports",
+      "to": "src/adapters/language/roslyn/roslyn-process.ts::runBatchIndex::function"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "imports",
+      "to": "src/adapters/language/roslyn/roslyn-process.ts::RoslynKeepAlive::class"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "imports",
+      "to": "src/adapters/language/roslyn/roslyn-process.ts::RoslynBatchResult::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "imports",
+      "to": "src/adapters/language/roslyn/roslyn-process.ts::RoslynFileResult::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "implements",
+      "to": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.initialize::method",
+      "kind": "calls",
+      "to": "src/adapters/language/roslyn/solution-discovery.ts::detectDotnetSdk::function"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.initialize::method",
+      "kind": "calls",
+      "to": "src/adapters/language/roslyn/solution-discovery.ts::findCtxoRoslynProject::function"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.initialize::method",
+      "kind": "calls",
+      "to": "src/adapters/language/roslyn/solution-discovery.ts::discoverSolution::function"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.batchIndex::method",
+      "kind": "calls",
+      "to": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.isReady::method"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.batchIndex::method",
+      "kind": "calls",
+      "to": "src/adapters/language/roslyn/roslyn-process.ts::runBatchIndex::function"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.startKeepAlive::method",
+      "kind": "calls",
+      "to": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.isReady::method"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.startKeepAlive::method",
+      "kind": "calls",
+      "to": "src/adapters/language/roslyn/roslyn-process.ts::RoslynKeepAlive::class"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "uses",
+      "to": "src/ports/i-language-adapter.ts::ILanguageAdapter::interface"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "uses",
+      "to": "src/adapters/language/roslyn/roslyn-process.ts::RoslynFileResult::interface"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "uses",
+      "to": "src/adapters/language/roslyn/roslyn-process.ts::RoslynKeepAlive::class"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "uses",
+      "to": "src/adapters/language/roslyn/solution-discovery.ts::detectDotnetSdk::function"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "uses",
+      "to": "src/adapters/language/roslyn/solution-discovery.ts::findCtxoRoslynProject::function"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "uses",
+      "to": "src/adapters/language/roslyn/solution-discovery.ts::discoverSolution::function"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "uses",
+      "to": "src/adapters/language/roslyn/roslyn-process.ts::RoslynBatchResult::interface"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "uses",
+      "to": "src/adapters/language/roslyn/roslyn-process.ts::runBatchIndex::function"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::SymbolNode::type"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::SymbolKind::type"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::GraphEdge::type"
+    },
+    {
+      "from": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::ComplexityMetrics::interface"
+    }
+  ],
+  "file": "src/adapters/language/roslyn/roslyn-adapter.ts",
+  "intent": [
+    {
+      "date": "2026-04-11T23:50:37+03:00",
+      "hash": "39ae069226a0ec724b00bc89475c56d1714a942b",
+      "kind": "commit",
+      "message": "fix: resolve 3 bugs - test isolation, empty symbol ID, byte offsets"
+    },
+    {
+      "date": "2026-04-11T23:38:26+03:00",
+      "hash": "5996773538229359bb8bedf106c314c221a3b2e3",
+      "kind": "commit",
+      "message": "fix: resolve 8 bugs in ctxo-roslyn analyzer"
+    },
+    {
+      "date": "2026-04-11T23:13:59+03:00",
+      "hash": "b2e28ca3a884f301c199b716dcfd164ca8217ec6",
+      "kind": "commit",
+      "message": "feat: add C# full-tier analysis via standalone Roslyn .NET app"
+    }
+  ],
+  "lastModified": 1775940931,
+  "symbols": [
+    {
+      "endLine": 142,
+      "endOffset": 4595,
+      "kind": "class",
+      "name": "RoslynAdapter",
+      "startLine": 8,
+      "startOffset": 494,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class"
+    },
+    {
+      "endLine": 20,
+      "endOffset": 947,
+      "kind": "method",
+      "name": "RoslynAdapter.isSupported",
+      "startLine": 18,
+      "startOffset": 866,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.isSupported::method"
+    },
+    {
+      "endLine": 24,
+      "endOffset": 1068,
+      "kind": "method",
+      "name": "RoslynAdapter.isReady",
+      "startLine": 22,
+      "startOffset": 951,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.isReady::method"
+    },
+    {
+      "endLine": 50,
+      "endOffset": 1887,
+      "kind": "method",
+      "name": "RoslynAdapter.initialize",
+      "startLine": 26,
+      "startOffset": 1072,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.initialize::method"
+    },
+    {
+      "endLine": 69,
+      "endOffset": 2469,
+      "kind": "method",
+      "name": "RoslynAdapter.batchIndex",
+      "startLine": 56,
+      "startOffset": 2039,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.batchIndex::method"
+    },
+    {
+      "endLine": 84,
+      "endOffset": 2954,
+      "kind": "method",
+      "name": "RoslynAdapter.extractSymbols",
+      "startLine": 71,
+      "startOffset": 2473,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.extractSymbols::method"
+    },
+    {
+      "endLine": 99,
+      "endOffset": 3478,
+      "kind": "method",
+      "name": "RoslynAdapter.extractEdges",
+      "startLine": 86,
+      "startOffset": 2958,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.extractEdges::method"
+    },
+    {
+      "endLine": 109,
+      "endOffset": 3760,
+      "kind": "method",
+      "name": "RoslynAdapter.extractComplexity",
+      "startLine": 101,
+      "startOffset": 3482,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.extractComplexity::method"
+    },
+    {
+      "endLine": 119,
+      "endOffset": 4035,
+      "kind": "method",
+      "name": "RoslynAdapter.startKeepAlive",
+      "startLine": 114,
+      "startOffset": 3822,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.startKeepAlive::method"
+    },
+    {
+      "endLine": 132,
+      "endOffset": 4399,
+      "kind": "method",
+      "name": "RoslynAdapter.reindexFile",
+      "startLine": 124,
+      "startOffset": 4116,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.reindexFile::method"
+    },
+    {
+      "endLine": 141,
+      "endOffset": 4593,
+      "kind": "method",
+      "name": "RoslynAdapter.dispose",
+      "startLine": 134,
+      "startOffset": 4403,
+      "symbolId": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter.dispose::method"
+    }
+  ]
+}

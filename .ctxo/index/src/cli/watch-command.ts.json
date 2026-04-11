@@ -2,15 +2,19 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 7,
+      "cyclomatic": 14,
       "symbolId": "src/cli/watch-command.ts::WatchCommand.run::method"
     },
     {
-      "cyclomatic": 3,
-      "symbolId": "src/cli/watch-command.ts::WatchCommand.registerTreeSitterAdapters::method"
+      "cyclomatic": 2,
+      "symbolId": "src/cli/watch-command.ts::WatchCommand.registerTreeSitterCSharp::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/cli/watch-command.ts::WatchCommand.registerTreeSitterGo::method"
     }
   ],
-  "contentHash": "8916793d451d400ab2a2d8825f74205f8138302a6521044fc3175a29e41d017a",
+  "contentHash": "d77667d1a1bf0079f23f289030e74230410ed576d1c0bcbef8dbf5c793ac1b47",
   "edges": [
     {
       "from": "src/cli/watch-command.ts::WatchCommand::class",
@@ -55,6 +59,11 @@
     {
       "from": "src/cli/watch-command.ts::WatchCommand::class",
       "kind": "imports",
+      "to": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
       "to": "src/core/types.ts::FileIndex::type",
       "typeOnly": true
     },
@@ -73,7 +82,22 @@
     {
       "from": "src/cli/watch-command.ts::WatchCommand.run::method",
       "kind": "calls",
-      "to": "src/cli/watch-command.ts::WatchCommand.registerTreeSitterAdapters::method"
+      "to": "src/cli/watch-command.ts::WatchCommand.registerTreeSitterCSharp::method"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "src/cli/watch-command.ts::WatchCommand.registerTreeSitterCSharp::method"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "src/cli/watch-command.ts::WatchCommand.registerTreeSitterCSharp::method"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "src/cli/watch-command.ts::WatchCommand.registerTreeSitterGo::method"
     },
     {
       "from": "src/cli/watch-command.ts::WatchCommand.run::method",
@@ -84,6 +108,11 @@
       "from": "src/cli/watch-command.ts::WatchCommand.run::method",
       "kind": "calls",
       "to": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class"
     },
     {
       "from": "src/cli/watch-command.ts::WatchCommand.run::method",
@@ -124,6 +153,11 @@
       "from": "src/cli/watch-command.ts::WatchCommand::class",
       "kind": "uses",
       "to": "src/adapters/language/ts-morph-adapter.ts::TsMorphAdapter::class"
+    },
+    {
+      "from": "src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "src/adapters/language/roslyn/roslyn-adapter.ts::RoslynAdapter::class"
     },
     {
       "from": "src/cli/watch-command.ts::WatchCommand::class",
@@ -174,6 +208,18 @@
   "file": "src/cli/watch-command.ts",
   "intent": [
     {
+      "date": "2026-04-11T23:38:26+03:00",
+      "hash": "5996773538229359bb8bedf106c314c221a3b2e3",
+      "kind": "commit",
+      "message": "fix: resolve 8 bugs in ctxo-roslyn analyzer"
+    },
+    {
+      "date": "2026-04-11T23:13:59+03:00",
+      "hash": "b2e28ca3a884f301c199b716dcfd164ca8217ec6",
+      "kind": "commit",
+      "message": "feat: add C# full-tier analysis via standalone Roslyn .NET app"
+    },
+    {
       "date": "2026-04-08T15:47:44+03:00",
       "hash": "49e4f04a8693d848bdad1f00ed8fc3720b89ced8",
       "kind": "commit",
@@ -210,34 +256,43 @@
       "message": "Implement all CLI commands and add comprehensive test coverage"
     }
   ],
-  "lastModified": 1775919998,
+  "lastModified": 1775940932,
   "symbols": [
     {
-      "endLine": 142,
-      "endOffset": 5225,
+      "endLine": 216,
+      "endOffset": 8223,
       "kind": "class",
       "name": "WatchCommand",
-      "startLine": 14,
-      "startOffset": 834,
+      "startLine": 15,
+      "startOffset": 913,
       "symbolId": "src/cli/watch-command.ts::WatchCommand::class"
     },
     {
-      "endLine": 124,
-      "endOffset": 4513,
+      "endLine": 195,
+      "endOffset": 7434,
       "kind": "method",
       "name": "WatchCommand.run",
-      "startLine": 23,
-      "startOffset": 1068,
+      "startLine": 24,
+      "startOffset": 1147,
       "symbolId": "src/cli/watch-command.ts::WatchCommand.run::method"
     },
     {
-      "endLine": 141,
-      "endOffset": 5223,
+      "endLine": 205,
+      "endOffset": 7838,
       "kind": "method",
-      "name": "WatchCommand.registerTreeSitterAdapters",
-      "startLine": 126,
-      "startOffset": 4517,
-      "symbolId": "src/cli/watch-command.ts::WatchCommand.registerTreeSitterAdapters::method"
+      "name": "WatchCommand.registerTreeSitterCSharp",
+      "startLine": 197,
+      "startOffset": 7438,
+      "symbolId": "src/cli/watch-command.ts::WatchCommand.registerTreeSitterCSharp::method"
+    },
+    {
+      "endLine": 215,
+      "endOffset": 8221,
+      "kind": "method",
+      "name": "WatchCommand.registerTreeSitterGo",
+      "startLine": 207,
+      "startOffset": 7842,
+      "symbolId": "src/cli/watch-command.ts::WatchCommand.registerTreeSitterGo::method"
     }
   ]
 }
