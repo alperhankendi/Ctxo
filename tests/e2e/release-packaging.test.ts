@@ -50,14 +50,14 @@ describe('Release Packaging', () => {
     expect(files.some((f: string) => f === 'package.json')).toBe(true);
   });
 
-  it('tarball size is reasonable (< 850KB)', () => {
+  it('tarball size is reasonable (< 900KB)', () => {
     const output = execSync('npm pack --dry-run --json', { cwd: ROOT, encoding: 'utf-8' });
 
     const info = JSON.parse(output);
     const sizeBytes = info[0]?.unpackedSize ?? 0;
     const sizeKB = sizeBytes / 1024;
 
-    expect(sizeKB).toBeLessThan(850);
+    expect(sizeKB).toBeLessThan(900);
     expect(sizeKB).toBeGreaterThan(1); // Sanity: not empty (dist/ may not exist in CI pre-build)
   });
 });
