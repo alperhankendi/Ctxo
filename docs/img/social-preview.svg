@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" fill="none">
+  <defs>
+    <linearGradient id="greenGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00e88f"/><stop offset="100%" stop-color="#00d4ff"/>
+    </linearGradient>
+    <linearGradient id="cyanGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.15"/><stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glowStrong">
+      <feGaussianBlur stdDeviation="20" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&amp;family=Inter:wght@400;600;700;800&amp;display=swap');
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="640" fill="#08080f"/>
+
+  <!-- Subtle grid -->
+  <g opacity="0.03" stroke="#00d4ff" stroke-width="1">
+    <line x1="0" y1="80" x2="1280" y2="80"/><line x1="0" y1="160" x2="1280" y2="160"/>
+    <line x1="0" y1="240" x2="1280" y2="240"/><line x1="0" y1="320" x2="1280" y2="320"/>
+    <line x1="0" y1="400" x2="1280" y2="400"/><line x1="0" y1="480" x2="1280" y2="480"/>
+    <line x1="0" y1="560" x2="1280" y2="560"/>
+    <line x1="160" y1="0" x2="160" y2="640"/><line x1="320" y1="0" x2="320" y2="640"/>
+    <line x1="480" y1="0" x2="480" y2="640"/><line x1="640" y1="0" x2="640" y2="640"/>
+    <line x1="800" y1="0" x2="800" y2="640"/><line x1="960" y1="0" x2="960" y2="640"/>
+    <line x1="1120" y1="0" x2="1120" y2="640"/>
+  </g>
+
+  <!-- Background graph nodes (decorative) -->
+  <g opacity="0.06">
+    <!-- Left cluster -->
+    <circle cx="120" cy="180" r="4" fill="#ff4060"/>
+    <circle cx="180" cy="140" r="3" fill="#a78bfa"/>
+    <circle cx="90" cy="250" r="3" fill="#ff8a3d"/>
+    <circle cx="200" cy="220" r="5" fill="#ff4060"/>
+    <circle cx="150" cy="300" r="3" fill="#a78bfa"/>
+    <line x1="120" y1="180" x2="180" y2="140" stroke="#ff4060" stroke-width="1"/>
+    <line x1="120" y1="180" x2="200" y2="220" stroke="#ff4060" stroke-width="1"/>
+    <line x1="90" y1="250" x2="150" y2="300" stroke="#ff8a3d" stroke-width="1"/>
+    <line x1="200" y1="220" x2="150" y2="300" stroke="#a78bfa" stroke-width="1"/>
+
+    <!-- Right cluster -->
+    <circle cx="1100" cy="400" r="4" fill="#ff4060"/>
+    <circle cx="1160" cy="360" r="3" fill="#a78bfa"/>
+    <circle cx="1070" cy="470" r="3" fill="#ff8a3d"/>
+    <circle cx="1180" cy="440" r="5" fill="#ff4060"/>
+    <circle cx="1130" cy="520" r="3" fill="#a78bfa"/>
+    <line x1="1100" y1="400" x2="1160" y2="360" stroke="#ff4060" stroke-width="1"/>
+    <line x1="1100" y1="400" x2="1180" y2="440" stroke="#ff4060" stroke-width="1"/>
+    <line x1="1070" y1="470" x2="1130" y2="520" stroke="#ff8a3d" stroke-width="1"/>
+    <line x1="1180" y1="440" x2="1130" y2="520" stroke="#a78bfa" stroke-width="1"/>
+
+    <!-- Top right scatter -->
+    <circle cx="1050" cy="100" r="3" fill="#00d4ff"/>
+    <circle cx="1100" cy="130" r="2" fill="#00e88f"/>
+    <circle cx="1000" cy="150" r="2" fill="#00d4ff"/>
+    <line x1="1050" y1="100" x2="1100" y2="130" stroke="#00d4ff" stroke-width="1"/>
+    <line x1="1050" y1="100" x2="1000" y2="150" stroke="#00d4ff" stroke-width="1"/>
+
+    <!-- Bottom left scatter -->
+    <circle cx="250" cy="480" r="3" fill="#00d4ff"/>
+    <circle cx="300" cy="510" r="2" fill="#00e88f"/>
+    <circle cx="200" cy="530" r="2" fill="#00d4ff"/>
+    <line x1="250" y1="480" x2="300" y2="510" stroke="#00d4ff" stroke-width="1"/>
+    <line x1="250" y1="480" x2="200" y2="530" stroke="#00d4ff" stroke-width="1"/>
+  </g>
+
+  <!-- Center glow -->
+  <ellipse cx="640" cy="280" rx="300" ry="200" fill="url(#cyanGrad)" filter="url(#glowStrong)" opacity="0.3"/>
+
+  <!-- Lightning bolt icon -->
+  <g transform="translate(590, 100)" filter="url(#glow)">
+    <path d="M56 0L20 60h28L40 120L88 48H56L68 0z" fill="none" stroke="#00d4ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M56 0L20 60h28L40 120L88 48H56L68 0z" fill="#00d4ff" opacity="0.1"/>
+  </g>
+
+  <!-- CTXO title -->
+  <text x="640" y="280" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="72" font-weight="800" letter-spacing="16" fill="#e2e2ef">CTXO</text>
+
+  <!-- Subtitle -->
+  <text x="640" y="330" text-anchor="middle" font-family="'Inter', 'JetBrains Mono', sans-serif" font-size="24" font-weight="600" fill="#6b6b80">Code intelligence for AI agents</text>
+
+  <!-- Tagline -->
+  <text x="640" y="370" text-anchor="middle" font-family="'Inter', 'JetBrains Mono', sans-serif" font-size="18" fill="#4a4a60">One MCP call instead of hundreds of grep + read</text>
+
+  <!-- Metric boxes -->
+  <!-- Token Usage -->
+  <g transform="translate(240, 430)">
+    <rect width="220" height="80" rx="12" fill="rgba(0,232,143,0.06)" stroke="rgba(0,232,143,0.15)" stroke-width="1"/>
+    <text x="110" y="30" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" letter-spacing="2" fill="#6b6b80">TOKEN USAGE</text>
+    <text x="70" y="60" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="700" fill="#ff4060" opacity="0.6" text-decoration="line-through">140K</text>
+    <text x="105" y="60" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="14" fill="#4a4a60">-></text>
+    <text x="145" y="62" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="22" font-weight="800" fill="#00e88f">2.9K</text>
+    <rect x="170" y="46" width="36" height="20" rx="10" fill="rgba(0,232,143,0.1)" stroke="rgba(0,232,143,0.2)" stroke-width="1"/>
+    <text x="188" y="60" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#00e88f">48x</text>
+  </g>
+
+  <!-- Tool Calls -->
+  <g transform="translate(530, 430)">
+    <rect width="220" height="80" rx="12" fill="rgba(0,232,143,0.06)" stroke="rgba(0,232,143,0.15)" stroke-width="1"/>
+    <text x="110" y="30" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" letter-spacing="2" fill="#6b6b80">TOOL CALLS</text>
+    <text x="70" y="60" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="700" fill="#ff4060" opacity="0.6" text-decoration="line-through">409+</text>
+    <text x="105" y="60" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="14" fill="#4a4a60">-></text>
+    <text x="140" y="62" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="22" font-weight="800" fill="#00e88f">8</text>
+    <rect x="160" y="46" width="36" height="20" rx="10" fill="rgba(0,232,143,0.1)" stroke="rgba(0,232,143,0.2)" stroke-width="1"/>
+    <text x="178" y="60" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#00e88f">51x</text>
+  </g>
+
+  <!-- Context Free -->
+  <g transform="translate(820, 430)">
+    <rect width="220" height="80" rx="12" fill="rgba(0,232,143,0.06)" stroke="rgba(0,232,143,0.15)" stroke-width="1"/>
+    <text x="110" y="30" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" letter-spacing="2" fill="#6b6b80">CONTEXT FREE</text>
+    <text x="65" y="60" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="700" fill="#ff4060" opacity="0.6" text-decoration="line-through">Overflow</text>
+    <text x="110" y="60" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="14" fill="#4a4a60">-></text>
+    <text x="150" y="62" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="22" font-weight="800" fill="#00e88f">97%</text>
+    <rect x="175" y="46" width="36" height="20" rx="10" fill="rgba(0,232,143,0.1)" stroke="rgba(0,232,143,0.2)" stroke-width="1"/>
+    <text x="193" y="60" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#00e88f">free</text>
+  </g>
+
+  <!-- MCP badge -->
+  <g transform="translate(490, 550)">
+    <rect width="300" height="32" rx="16" fill="rgba(0,212,255,0.05)" stroke="rgba(0,212,255,0.15)" stroke-width="1"/>
+    <circle cx="20" cy="16" r="8" fill="none" stroke="#00d4ff" stroke-width="1.4"/>
+    <line x1="12" y1="16" x2="28" y2="16" stroke="#00d4ff" stroke-width="1.4"/>
+    <text x="150" y="21" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" fill="#6b6b80">
+      <tspan>Built on </tspan><tspan font-weight="700">Model Context Protocol</tspan>
+    </text>
+  </g>
+
+  <!-- Bottom accent line -->
+  <rect x="0" y="636" width="1280" height="4" fill="url(#greenGrad)" opacity="0.6"/>
+</svg>
