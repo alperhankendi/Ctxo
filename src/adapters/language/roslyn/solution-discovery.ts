@@ -7,6 +7,17 @@ const log = createLogger('ctxo:roslyn');
 
 const IGNORE_DIRS = new Set(['bin', 'obj', 'node_modules', '.git', '.ctxo', 'packages']);
 
+function findPackageRoot(startDir: string): string | null {
+  let dir = startDir;
+  for (let i = 0; i < 10; i++) {
+    if (existsSync(join(dir, 'package.json'))) return dir;
+    const parent = join(dir, '..');
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return null;
+}
+
 export function detectDotnetSdk(): { available: boolean; version?: string } {
   try {
     const version = execFileSync('dotnet', ['--version'], { encoding: 'utf-8', timeout: 10_000 }).trim();
@@ -69,13 +80,15 @@ function findFiles(dir: string, ext: string, maxDepth: number, currentDepth = 0)
 
 export function findCtxoRoslynProject(): string | null {
   // Look for the ctxo-roslyn project relative to this package
-  // Covers: local dev, npm install, npx, global install
+  // tsup bundles all code into dist/*.js, so import.meta.dirname = dist/
+  // We need to find the package root by walking up from import.meta.dirname
+  const pkgRoot = findPackageRoot(import.meta.dirname);
   const candidates = [
-    join(import.meta.dirname, '../../../../tools/ctxo-roslyn'),      // local dev (src/adapters/language/roslyn -> tools/)
-    join(import.meta.dirname, '../../../tools/ctxo-roslyn'),          // built dist (dist/adapters/language/roslyn -> tools/)
-    join(process.cwd(), 'node_modules/ctxo-mcp/tools/ctxo-roslyn'),  // npm install in project
-    join(process.cwd(), 'node_modules/ctxo/tools/ctxo-roslyn'),      // alt package name
-    join(process.cwd(), 'tools/ctxo-roslyn'),                         // local repo root
+    ...(pkgRoot ? [join(pkgRoot, 'tools/ctxo-roslyn')] : []),         // package root (npx, global, local dev)
+    join(import.meta.dirname, '../tools/ctxo-roslyn'),                 // dist/ -> tools/ (tsup bundled)
+    join(import.meta.dirname, '../../../../tools/ctxo-roslyn'),        // src/adapters/language/roslyn -> tools/ (dev unbundled)
+    join(process.cwd(), 'node_modules/ctxo-mcp/tools/ctxo-roslyn'),   // npm install in project
+    join(process.cwd(), 'tools/ctxo-roslyn'),                          // local repo root
   ];
 
   for (const candidate of candidates) {

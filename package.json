@@ -1,6 +1,6 @@
 {
   "name": "ctxo-mcp",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "MCP server delivering dependency-aware, history-enriched context for codebases",
   "type": "module",
   "engines": {
