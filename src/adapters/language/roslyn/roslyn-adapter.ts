@@ -1,3 +1,4 @@
+import { relative, dirname, resolve } from 'node:path';
 import type { SymbolNode, GraphEdge, ComplexityMetrics, SymbolKind } from '../../../core/types.js';
 import type { ILanguageAdapter } from '../../../ports/i-language-adapter.js';
 import { createLogger } from '../../../core/logger.js';
@@ -12,6 +13,7 @@ export class RoslynAdapter implements ILanguageAdapter {
 
   private roslynProjectDir: string | null = null;
   private solutionPath: string | null = null;
+  private rootDir: string | null = null;
   private cache = new Map<string, RoslynFileResult>();
   private keepAlive: RoslynKeepAlive | null = null;
   private initialized = false;
@@ -46,6 +48,7 @@ export class RoslynAdapter implements ILanguageAdapter {
       return;
     }
 
+    this.rootDir = rootDir;
     log.info(`Roslyn adapter ready: SDK ${sdk.version}, solution ${this.solutionPath}`);
     this.initialized = true;
   }
@@ -59,10 +62,20 @@ export class RoslynAdapter implements ILanguageAdapter {
 
     const result = await runBatchIndex(this.roslynProjectDir!, this.solutionPath!);
 
-    // Cache results by file path
+    // Cache results by file path, normalized to project root
+    // .NET app outputs paths relative to solution dir (e.g., "CFTCoreService/Base.cs")
+    // IndexCommand uses paths relative to project root (e.g., "src/CFTCoreService/Base.cs")
+    // We need to re-key the cache to match IndexCommand's expectation
+    const solutionDir = dirname(this.solutionPath!);
     this.cache.clear();
     for (const file of result.files) {
-      this.cache.set(file.file, file);
+      // Convert: solution-relative -> absolute -> project-root-relative
+      const absolutePath = resolve(solutionDir, file.file);
+      const projectRelative = relative(this.rootDir!, absolutePath).replace(/\\/g, '/');
+
+      // Also rewrite symbolId and edge from/to paths
+      const rewritten = rewritePaths(file, file.file, projectRelative);
+      this.cache.set(projectRelative, rewritten);
     }
 
     log.info(`Roslyn batch index: ${result.totalFiles} files in ${result.elapsed}`);
@@ -140,4 +153,30 @@ export class RoslynAdapter implements ILanguageAdapter {
     this.cache.clear();
     this.initialized = false;
   }
+}
+
+/**
+ * Rewrite file paths in symbols/edges from solution-relative to project-root-relative.
+ * e.g., "CFTCoreService/Base.cs" -> "src/CFTCoreService/Base.cs"
+ */
+function rewritePaths(file: RoslynFileResult, oldPrefix: string, newPrefix: string): RoslynFileResult {
+  const rewrite = (s: string) => s.replace(oldPrefix, newPrefix);
+
+  return {
+    ...file,
+    file: newPrefix,
+    symbols: file.symbols.map(s => ({
+      ...s,
+      symbolId: rewrite(s.symbolId),
+    })),
+    edges: file.edges.map(e => ({
+      ...e,
+      from: rewrite(e.from),
+      to: rewrite(e.to),
+    })),
+    complexity: file.complexity.map(c => ({
+      ...c,
+      symbolId: rewrite(c.symbolId),
+    })),
+  };
 }
