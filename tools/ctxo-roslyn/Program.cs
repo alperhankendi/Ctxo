@@ -235,6 +235,8 @@ List<CtxoSymbol> ExtractSymbols(SyntaxNode root, SemanticModel model, string fil
             Kind = kind,
             StartLine = nodeSpan.StartLinePosition.Line,
             EndLine = nodeSpan.EndLinePosition.Line,
+            StartOffset = node.Span.Start,
+            EndOffset = node.Span.End,
         });
     }
 
@@ -563,8 +565,13 @@ string? SymbolToId(ISymbol symbol)
 
     var relativePath = Path.GetRelativePath(solutionDir, sourceFilePath).Replace('\\', '/');
     var kind = MapSymbolKind(original);
+    if (kind == null) return null;
 
-    return kind != null ? $"{relativePath}::{GetQualifiedName(original)}::{kind}" : null;
+    // BUG 3 FIX: Guard against empty qualified names (e.g., implicit record base types)
+    var name = GetQualifiedName(original);
+    if (string.IsNullOrWhiteSpace(name)) return null;
+
+    return $"{relativePath}::{name}::{kind}";
 }
 
 void AddEdge(List<CtxoEdge> edges, HashSet<string> seen, string from, string to, string kind)
@@ -605,6 +612,8 @@ record CtxoSymbol
     [JsonPropertyName("kind")] public string Kind { get; init; } = "";
     [JsonPropertyName("startLine")] public int StartLine { get; init; }
     [JsonPropertyName("endLine")] public int EndLine { get; init; }
+    [JsonPropertyName("startOffset")] public int StartOffset { get; init; }
+    [JsonPropertyName("endOffset")] public int EndOffset { get; init; }
 }
 
 record CtxoEdge

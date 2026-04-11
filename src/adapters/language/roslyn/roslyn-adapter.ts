@@ -79,6 +79,8 @@ export class RoslynAdapter implements ILanguageAdapter {
       kind: s.kind as SymbolKind,
       startLine: s.startLine,
       endLine: s.endLine,
+      ...(s.startOffset != null ? { startOffset: s.startOffset } : {}),
+      ...(s.endOffset != null ? { endOffset: s.endOffset } : {}),
     }));
   }
 

@@ -17,6 +17,8 @@ export interface RoslynSymbol {
   kind: string;
   startLine: number;
   endLine: number;
+  startOffset?: number;
+  endOffset?: number;
 }
 
 export interface RoslynEdge {
