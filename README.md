@@ -52,7 +52,7 @@ That's it. The interactive wizard detects your AI tools, registers the ctxo MCP 
 <details>
 <summary>Manual MCP config (if not using <code>ctxo init</code>)</summary>
 
-**Claude Code / Cursor / Windsurf / Cline** — `.mcp.json`:
+**Claude Code / Cursor / Windsurf / Augment / Antigravity** — `.mcp.json`:
 
 ```JSON
 { "mcpServers": { "ctxo": { "command": "npx", "args": ["-y", "ctxo-mcp"] } } }
@@ -62,6 +62,12 @@ That's it. The interactive wizard detects your AI tools, registers the ctxo MCP 
 
 ```JSON
 { "servers": { "ctxo": { "type": "stdio", "command": "npx", "args": ["-y", "ctxo-mcp"] } } }
+```
+
+**Amazon Q** — `.amazonq/mcp.json`:
+
+```JSON
+{ "mcpServers": { "ctxo": { "command": "npx", "args": ["-y", "ctxo-mcp"] } } }
 ```
 
 **Zed** — `settings.json`:
