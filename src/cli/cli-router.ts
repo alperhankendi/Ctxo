@@ -153,6 +153,9 @@ Usage:
   ctxo stats                Show usage statistics (--json, --days N, --clear)
   ctxo doctor               Health check all subsystems (--json, --quiet)
   ctxo visualize            Generate interactive dependency graph HTML
+  ctxo visualize --max-nodes N   Limit to top N symbols by PageRank
+  ctxo visualize --output PATH   Write HTML to custom path
+  ctxo visualize --no-browser    Skip auto-opening browser
   ctxo --help               Show this help message
 `.trim());
   }

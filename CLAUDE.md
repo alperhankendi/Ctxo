@@ -30,6 +30,9 @@ npx ctxo sync                 # rebuild SQLite from committed JSON
 npx ctxo init                 # install git hooks (post-commit, post-merge)
 npx ctxo status               # show index manifest
 npx ctxo doctor               # health check all subsystems (--json, --quiet)
+npx ctxo visualize            # generate interactive dependency graph HTML
+npx ctxo visualize --max-nodes 200  # limit to top 200 symbols by PageRank
+npx ctxo visualize --no-browser     # skip auto-opening browser
 
 # Environment
 DEBUG=ctxo:*                  # enable all debug output
@@ -68,7 +71,7 @@ src/
     git/                       # simple-git wrapper
     watcher/                   # chokidar file watcher
     mcp/                       # MCP tool handlers (14 tools)
-  cli/                         # index, init, sync, status, verify, watch commands
+  cli/                         # index, init, sync, status, verify, watch, visualize commands
 ```
 
 ### Storage (ADR-STORAGE-01)

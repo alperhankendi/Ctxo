@@ -173,6 +173,8 @@ npx ctxo-mcp stats
 
 **Privacy Masking** AWS keys, GCP service accounts, Azure connection strings, JWTs, private IPs, env secrets automatically redacted. Extensible via `.ctxo/masking.json`.
 
+**Interactive Graph** `ctxo visualize` generates a self-contained HTML with vis.js dependency graph. ForceAtlas2 layout, PageRank-based sizing, layer coloring, blast radius on click, git history per symbol, dead code and anti-pattern filters, dark/light theme.
+
 **Debug Mode** `DEBUG=ctxo:*` for all debug output, or `DEBUG=ctxo:git,ctxo:storage` for specific namespaces.
 
 **Per-tool savings vs manual approach:**
