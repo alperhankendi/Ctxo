@@ -10,6 +10,7 @@ import { StatsCommand } from './stats-command.js';
 import { DoctorCommand } from './doctor-command.js';
 import { VisualizeCommand } from './visualize-command.js';
 import { VersionCommand } from './version-command.js';
+import { InstallCommand } from './install-command.js';
 
 export function getVersion(): string {
   let dir = import.meta.dirname;
@@ -125,6 +126,43 @@ export class CliRouter {
         break;
       }
 
+      case 'install': {
+        const languages: string[] = [];
+        const flagValues: Record<string, string | boolean> = {};
+        for (let i = 1; i < args.length; i++) {
+          const a = args[i]!;
+          if (a === '--yes' || a === '-y') flagValues['yes'] = true;
+          else if (a === '--global' || a === '-g') flagValues['global'] = true;
+          else if (a === '--dry-run') flagValues['dryRun'] = true;
+          else if (a === '--force') flagValues['force'] = true;
+          else if (a === '--pm') {
+            const next = args[++i];
+            if (!next) { console.error('[ctxo] --pm requires a value'); process.exit(1); return; }
+            flagValues['pm'] = next;
+          } else if (a === '--version') {
+            const next = args[++i];
+            if (!next) { console.error('[ctxo] --version requires a value'); process.exit(1); return; }
+            flagValues['version'] = next;
+          } else if (a.startsWith('--')) {
+            console.error(`[ctxo] Unknown install flag: ${a}`);
+            process.exit(1);
+            return;
+          } else {
+            languages.push(a);
+          }
+        }
+        await new InstallCommand(this.projectRoot).run({
+          languages,
+          yes: flagValues['yes'] === true,
+          global: flagValues['global'] === true,
+          dryRun: flagValues['dryRun'] === true,
+          force: flagValues['force'] === true,
+          pm: typeof flagValues['pm'] === 'string' ? flagValues['pm'] : undefined,
+          version: typeof flagValues['version'] === 'string' ? flagValues['version'] : undefined,
+        });
+        break;
+      }
+
       case 'visualize': {
         const outputIdx = args.indexOf('--output');
         const outputArg = outputIdx !== -1 ? args[outputIdx + 1] : undefined;
@@ -169,6 +207,10 @@ Usage:
   ctxo visualize --max-nodes N   Limit to top N symbols by PageRank
   ctxo visualize --output PATH   Write HTML to custom path
   ctxo visualize --no-browser    Skip auto-opening browser
+  ctxo install [<lang>...]  Install language plugins (detects if omitted)
+  ctxo install python -y    Batch install, no prompt
+  ctxo install ts --global  Install globally
+  ctxo install py --dry-run Show command without running
   ctxo --version                 Print core version
   ctxo --version --verbose       Print core + plugins + runtime
   ctxo --version --json          Machine-readable version payload
