@@ -26,6 +26,8 @@ import { handleGetPrImpact } from './adapters/mcp/get-pr-impact.js';
 import { SessionRecorderAdapter } from './adapters/stats/session-recorder-adapter.js';
 import { withRecording } from './adapters/stats/with-recording.js';
 import type { ISessionRecorderPort } from './ports/i-session-recorder-port.js';
+import { detectWorkspace } from './adapters/workspace/single-package-workspace.js';
+import { setWorkspaceMeta } from './core/response-envelope.js';
 
 const log = createLogger('ctxo:mcp');
 
@@ -90,6 +92,8 @@ async function main(): Promise<void> {
 
   // Initialize adapters
   const ctxoRoot = '.ctxo';
+  const workspace = detectWorkspace(process.cwd());
+  setWorkspaceMeta({ root: workspace.root });
   const storage = new SqliteStorageAdapter(ctxoRoot);
   await storage.init();
 

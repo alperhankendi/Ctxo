@@ -43,6 +43,7 @@
   "license": "MIT",
   "dependencies": {
     "@clack/prompts": "^1.2.0",
+    "@ctxo/plugin-api": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.12.1",
     "chokidar": "^5.0.0",
     "picocolors": "^1.1.1",

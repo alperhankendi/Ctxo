@@ -13,6 +13,28 @@ export interface ResponseMeta {
   truncated: boolean;
   totalBytes: number;
   hint?: string;
+  /**
+   * Workspace descriptor (forward-compat for Monorepo Workspace PRD).
+   * v0.7: `root` is set at startup; `package` is always undefined.
+   */
+  workspace?: {
+    root: string;
+    package?: string;
+  };
+}
+
+let workspaceMeta: ResponseMeta['workspace'] | undefined;
+
+/**
+ * Set the workspace descriptor attached to every subsequent `_meta` envelope.
+ * Called once at composition root after `detectWorkspace()` resolves.
+ */
+export function setWorkspaceMeta(workspace: ResponseMeta['workspace']): void {
+  workspaceMeta = workspace;
+}
+
+export function getWorkspaceMeta(): ResponseMeta['workspace'] | undefined {
+  return workspaceMeta;
 }
 
 /**
@@ -63,6 +85,10 @@ function findTruncatableArray(data: Record<string, unknown>): { key: string; arr
  * @param data - The raw response object (before JSON.stringify)
  * @returns The data object with _meta added (and arrays truncated if over threshold)
  */
+function buildMeta(base: Omit<ResponseMeta, 'workspace'>): ResponseMeta {
+  return workspaceMeta ? { ...base, workspace: workspaceMeta } : base;
+}
+
 export function wrapResponse(data: Record<string, unknown>): Record<string, unknown> {
   const threshold = getThreshold();
   const fullJson = JSON.stringify(data);
@@ -75,26 +101,25 @@ export function wrapResponse(data: Record<string, unknown>): Record<string, unkn
   if (totalBytes <= threshold) {
     return {
       ...data,
-      _meta: {
+      _meta: buildMeta({
         totalItems,
         returnedItems: totalItems,
         truncated: false,
         totalBytes,
-      } satisfies ResponseMeta,
+      }),
     };
   }
 
   // Over threshold — truncate the largest array
   if (!truncatable || truncatable.arr.length <= 1) {
-    // No array to truncate, just add _meta
     return {
       ...data,
-      _meta: {
+      _meta: buildMeta({
         totalItems,
         returnedItems: totalItems,
         truncated: false,
         totalBytes,
-      } satisfies ResponseMeta,
+      }),
     };
   }
 
@@ -107,13 +132,13 @@ export function wrapResponse(data: Record<string, unknown>): Record<string, unkn
     const trial = {
       ...data,
       [truncatable.key]: truncatable.arr.slice(0, mid),
-      _meta: {
+      _meta: buildMeta({
         totalItems,
         returnedItems: mid,
         truncated: true,
         totalBytes,
         hint: TRUNCATABLE_FIELDS[truncatable.key],
-      },
+      }),
     };
     const size = Buffer.byteLength(JSON.stringify(trial), 'utf-8');
     if (size <= threshold) {
@@ -128,12 +153,12 @@ export function wrapResponse(data: Record<string, unknown>): Record<string, unkn
   return {
     ...data,
     [truncatable.key]: truncatable.arr.slice(0, lo),
-    _meta: {
+    _meta: buildMeta({
       totalItems,
       returnedItems: lo,
       truncated: true,
       totalBytes,
       hint,
-    } satisfies ResponseMeta,
+    }),
   };
 }
