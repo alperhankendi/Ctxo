@@ -209,6 +209,7 @@ describe('FindImportersHandler', () => {
     // Should be 1 unique importer, not 2 (deduplicated by symbolId)
     expect(payload.importerCount).toBe(1);
     expect(payload.importers[0].symbolId).toBe('src/a.ts::A::function');
+    expect(payload.importers[0].edgeKinds).toEqual(['imports', 'uses']);
   });
 
   it('direct importerCount matches transitive maxDepth=1 count', () => {
