@@ -35,11 +35,10 @@ export class IndexCommand {
       return this.runCheck();
     }
 
-    // Set up adapters: plugins via discovery, remaining languages wired directly until Steps 15/16
+    // Set up adapters: plugins via discovery, C# wired directly until Step 16
     const registry = new LanguageAdapterRegistry();
     const tsMorphLike = await this.registerDiscoveredPlugins(registry);
     const { roslynAdapter, csharpTier } = await this.registerCSharpAdapter(registry);
-    this.registerGoAdapter(registry);
     this.supportedExtensions = registry.getSupportedExtensions();
 
     const writer = new JsonIndexWriter(this.ctxoRoot);
@@ -250,17 +249,6 @@ export class IndexCommand {
     }
   }
 
-  private registerGoAdapter(registry: LanguageAdapterRegistry): void {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { GoAdapter } = require('../adapters/language/go-adapter.js');
-      const adapter = new GoAdapter();
-      registry.register(adapter.extensions, adapter);
-    } catch {
-      console.error('[ctxo] Go adapter unavailable (tree-sitter-go not installed)');
-    }
-  }
-
   private discoverFilesIn(root: string): string[] {
     try {
       const output = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard'], {
@@ -332,11 +320,10 @@ export class IndexCommand {
   private async runCheck(): Promise<void> {
     console.error('[ctxo] Checking index freshness...');
 
-    // Register adapters so supportedExtensions includes .go/.cs
+    // Register adapters so supportedExtensions includes .cs / discovered extensions
     const registry = new LanguageAdapterRegistry();
     await this.registerDiscoveredPlugins(registry);
     const { roslynAdapter: _roslyn } = await this.registerCSharpAdapter(registry);
-    this.registerGoAdapter(registry);
     this.supportedExtensions = registry.getSupportedExtensions();
     if (_roslyn) await _roslyn.dispose();
 

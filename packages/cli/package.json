@@ -51,10 +51,10 @@
     "sql.js": "^1.14.1",
     "tree-sitter": "^0.21.1",
     "tree-sitter-c-sharp": "^0.23.1",
-    "tree-sitter-go": "^0.23.4",
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@ctxo/lang-go": "workspace:*",
     "@ctxo/lang-typescript": "workspace:*",
     "@types/node": "^22.15.3",
     "@vitest/coverage-v8": "^3.1.3",

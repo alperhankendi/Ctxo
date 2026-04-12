@@ -57,9 +57,6 @@ export class WatchCommand {
       this.registerTreeSitterCSharp(registry);
     }
 
-    // Go - tree-sitter
-    this.registerTreeSitterGo(registry);
-
     const supportedExtensions = registry.getSupportedExtensions();
     const writer = new JsonIndexWriter(this.ctxoRoot);
     const storage = new SqliteStorageAdapter(this.ctxoRoot);
@@ -211,14 +208,4 @@ export class WatchCommand {
     }
   }
 
-  private registerTreeSitterGo(registry: LanguageAdapterRegistry): void {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { GoAdapter } = require('../adapters/language/go-adapter.js');
-      const adapter = new GoAdapter();
-      registry.register(adapter.extensions, adapter);
-    } catch {
-      console.error('[ctxo] Go adapter unavailable (tree-sitter-go not installed)');
-    }
-  }
 }

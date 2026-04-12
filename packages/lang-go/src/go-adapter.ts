@@ -1,7 +1,7 @@
 import GoLanguage from 'tree-sitter-go';
 import type { SyntaxNode } from 'tree-sitter';
 import { TreeSitterAdapter } from './tree-sitter-adapter.js';
-import type { SymbolNode, GraphEdge, ComplexityMetrics } from '../../core/types.js';
+import type { SymbolNode, GraphEdge, ComplexityMetrics } from '@ctxo/plugin-api';
 
 const GO_BRANCH_TYPES = [
   'if_statement', 'for_statement',
