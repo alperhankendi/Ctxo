@@ -18,6 +18,17 @@ function findPackageRoot(startDir: string): string | null {
   return null;
 }
 
+function findMonorepoRoot(startDir: string): string | null {
+  let dir = startDir;
+  for (let i = 0; i < 12; i++) {
+    if (existsSync(join(dir, 'pnpm-workspace.yaml'))) return dir;
+    const parent = join(dir, '..');
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return null;
+}
+
 export function detectDotnetSdk(): { available: boolean; version?: string } {
   try {
     const version = execFileSync('dotnet', ['--version'], { encoding: 'utf-8', timeout: 10_000 }).trim();
@@ -83,12 +94,18 @@ export function findCtxoRoslynProject(): string | null {
   // tsup bundles all code into dist/*.js, so import.meta.dirname = dist/
   // We need to find the package root by walking up from import.meta.dirname
   const pkgRoot = findPackageRoot(import.meta.dirname);
+  const monorepoRoot = findMonorepoRoot(import.meta.dirname);
   const candidates = [
-    ...(pkgRoot ? [join(pkgRoot, 'tools/ctxo-roslyn')] : []),         // package root (npx, global, local dev)
-    join(import.meta.dirname, '../tools/ctxo-roslyn'),                 // dist/ -> tools/ (tsup bundled)
-    join(import.meta.dirname, '../../../../tools/ctxo-roslyn'),        // src/adapters/language/roslyn -> tools/ (dev unbundled)
-    join(process.cwd(), 'node_modules/ctxo-mcp/tools/ctxo-roslyn'),   // npm install in project
+    ...(pkgRoot ? [join(pkgRoot, 'tools/ctxo-roslyn')] : []),          // package root (npx, global, local dev)
+    ...(monorepoRoot ? [join(monorepoRoot, 'tools/ctxo-roslyn')] : []),// monorepo root (pnpm workspace dev)
+    join(import.meta.dirname, '../tools/ctxo-roslyn'),                 // dist/ -> tools/ (tsup bundled, legacy single-pkg)
+    join(import.meta.dirname, '../../../tools/ctxo-roslyn'),           // packages/cli/dist -> monorepo tools/
+    join(import.meta.dirname, '../../../../tools/ctxo-roslyn'),        // src/adapters/language/roslyn -> tools/ (legacy unbundled)
+    join(import.meta.dirname, '../../../../../../tools/ctxo-roslyn'),  // packages/cli/src/adapters/language/roslyn -> monorepo tools/
+    join(process.cwd(), 'node_modules/@ctxo/cli/tools/ctxo-roslyn'),   // pnpm install in project
+    join(process.cwd(), 'node_modules/ctxo-mcp/tools/ctxo-roslyn'),    // legacy npm install in project
     join(process.cwd(), 'tools/ctxo-roslyn'),                          // local repo root
+    join(process.cwd(), '../../tools/ctxo-roslyn'),                    // pnpm filter runs cwd=packages/cli
   ];
 
   for (const candidate of candidates) {
