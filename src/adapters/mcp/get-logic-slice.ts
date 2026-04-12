@@ -44,27 +44,52 @@ export function buildGraphFromStorage(storage: IStoragePort): SymbolGraph {
 }
 
 /**
- * Build graph directly from JSON index files (bypasses SQLite cache).
- * Always reads fresh data from disk — works even if ctxo index ran in another process.
+ * Build graph + return file list from a single JSON index read.
+ * Returning both from one source prevents staleness warnings from diverging
+ * from the graph data (see issue #40).
  */
-export function buildGraphFromJsonIndex(ctxoRoot: string): SymbolGraph {
+export function buildGraphAndFilesFromJsonIndex(
+  ctxoRoot: string,
+): { graph: SymbolGraph; indexedFiles: string[] } {
   const reader = new JsonIndexReader(ctxoRoot);
   const indices = reader.readAll();
 
   const graph = new SymbolGraph();
-  // Phase 1: all nodes
+  const indexedFiles: string[] = [];
+
   for (const fileIndex of indices) {
+    indexedFiles.push(fileIndex.file);
     for (const sym of fileIndex.symbols) {
       graph.addNode(sym);
     }
   }
-  // Phase 2: all edges (fuzzy resolution active since nodes are loaded)
   for (const fileIndex of indices) {
     for (const edge of fileIndex.edges) {
       graph.addEdge(edge);
     }
   }
-  return graph;
+  return { graph, indexedFiles };
+}
+
+/**
+ * Build graph directly from JSON index files (bypasses SQLite cache).
+ * Always reads fresh data from disk — works even if ctxo index ran in another process.
+ */
+export function buildGraphFromJsonIndex(ctxoRoot: string): SymbolGraph {
+  return buildGraphAndFilesFromJsonIndex(ctxoRoot).graph;
+}
+
+/**
+ * Returns graph + indexedFiles from JSON index, falling back to SQLite storage
+ * when JSON is empty. Keeps graph data and staleness check file list aligned.
+ */
+export function getGraphAndFiles(
+  ctxoRoot: string,
+  storage: IStoragePort,
+): { graph: SymbolGraph; indexedFiles: string[] } {
+  const json = buildGraphAndFilesFromJsonIndex(ctxoRoot);
+  if (json.graph.nodeCount > 0) return json;
+  return { graph: buildGraphFromStorage(storage), indexedFiles: storage.listIndexedFiles() };
 }
 
 export interface StalenessCheck {
@@ -82,11 +107,7 @@ export function handleGetLogicSlice(
 
   // Build graph fresh on each call — try JSON index first (always up to date),
   // fall back to SQLite storage (for tests and when JSON not available).
-  const getGraph = () => {
-    const jsonGraph = buildGraphFromJsonIndex(ctxoRoot);
-    if (jsonGraph.nodeCount > 0) return jsonGraph;
-    return buildGraphFromStorage(storage);
-  };
+  const getGraph = () => getGraphAndFiles(ctxoRoot, storage);
 
   const handler = (args: Record<string, unknown>) => {
     try {
@@ -100,7 +121,7 @@ export function handleGetLogicSlice(
       const { symbolId, symbolIds, level, intent } = parsed.data;
       const ids = symbolIds ?? (symbolId ? [symbolId] : []);
 
-      const graph = getGraph();
+      const { graph, indexedFiles } = getGraph();
 
       // Batch support: query multiple symbols
       const results = [];
@@ -130,7 +151,7 @@ export function handleGetLogicSlice(
       // Check staleness
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {
-        const warning = staleness.check(storage.listIndexedFiles());
+        const warning = staleness.check(indexedFiles);
         if (warning) {
           content.push({ type: 'text', text: `⚠️ ${warning.message}` });
         }

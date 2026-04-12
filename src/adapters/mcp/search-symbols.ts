@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import type { StalenessCheck } from './get-logic-slice.js';
-import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
+import { getGraphAndFiles } from './get-logic-slice.js';
 import { wrapResponse } from '../../core/response-envelope.js';
 import { SearchEngine } from '../../core/search/search-engine.js';
 import type { ISearchPort } from '../../ports/i-search-port.js';
@@ -25,11 +25,7 @@ export function handleSearchSymbols(
   const engine: ISearchPort = searchEngine ?? new SearchEngine();
   let lastFtsNodeCount = -1;
 
-  const getGraph = () => {
-    const jsonGraph = buildGraphFromJsonIndex(ctxoRoot);
-    if (jsonGraph.nodeCount > 0) return jsonGraph;
-    return buildGraphFromStorage(storage);
-  };
+  const getGraph = () => getGraphAndFiles(ctxoRoot, storage);
 
   return (args: Record<string, unknown>) => {
     try {
@@ -41,7 +37,7 @@ export function handleSearchSymbols(
       }
 
       const { pattern, kind, filePattern, limit, mode } = parsed.data;
-      const graph = getGraph();
+      const { graph, indexedFiles } = getGraph();
       const allNodes = graph.allNodes();
 
       // FTS mode: use search engine
@@ -86,7 +82,7 @@ export function handleSearchSymbols(
 
         const content: Array<{ type: 'text'; text: string }> = [];
         if (staleness) {
-          const warning = staleness.check(storage.listIndexedFiles());
+          const warning = staleness.check(indexedFiles);
           if (warning) content.push({ type: 'text', text: `⚠️ ${warning.message}` });
         }
         content.push({ type: 'text', text: payload });
@@ -130,7 +126,7 @@ export function handleSearchSymbols(
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {
-        const warning = staleness.check(storage.listIndexedFiles());
+        const warning = staleness.check(indexedFiles);
         if (warning) content.push({ type: 'text', text: `⚠️ ${warning.message}` });
       }
       content.push({ type: 'text', text: payload });

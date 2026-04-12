@@ -5,7 +5,7 @@ import { BlastRadiusCalculator } from '../../core/blast-radius/blast-radius-calc
 import { wrapResponse } from '../../core/response-envelope.js';
 import { filterByIntent } from '../../core/intent-filter.js';
 import type { StalenessCheck } from './get-logic-slice.js';
-import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
+import { getGraphAndFiles } from './get-logic-slice.js';
 
 const InputSchema = z.object({
   symbolId: z.string().min(1),
@@ -20,11 +20,7 @@ export function handleGetBlastRadius(
   ctxoRoot = '.ctxo',
 ) {
   const calculator = new BlastRadiusCalculator();
-  const getGraph = () => {
-    const jsonGraph = buildGraphFromJsonIndex(ctxoRoot);
-    if (jsonGraph.nodeCount > 0) return jsonGraph;
-    return buildGraphFromStorage(storage);
-  };
+  const getGraph = () => getGraphAndFiles(ctxoRoot, storage);
 
   return (args: Record<string, unknown>) => {
     try {
@@ -36,7 +32,7 @@ export function handleGetBlastRadius(
       }
 
       const { symbolId } = parsed.data;
-      const graph = getGraph();
+      const { graph, indexedFiles } = getGraph();
 
       if (!graph.hasNode(symbolId)) {
         return {
@@ -72,7 +68,7 @@ export function handleGetBlastRadius(
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {
-        const warning = staleness.check(storage.listIndexedFiles());
+        const warning = staleness.check(indexedFiles);
         if (warning) content.push({ type: 'text', text: `⚠️ ${warning.message}` });
       }
       content.push({ type: 'text', text: payload });

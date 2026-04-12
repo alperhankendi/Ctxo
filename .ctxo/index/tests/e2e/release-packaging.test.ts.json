@@ -1,10 +1,16 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "c07451a712c76229ff66b3e41247f41b18e6e8bc6d0854b262d523bf2344b98d",
+  "contentHash": "1419c5ca5a1c0b3bf569fe060ff28f395b3f8212ef571cbb6dff9a394132b6af",
   "edges": [],
   "file": "tests/e2e/release-packaging.test.ts",
   "intent": [
+    {
+      "date": "2026-04-12T05:13:41+03:00",
+      "hash": "68186fca0afc0a304ceb626b03a5daf5f2202fda",
+      "kind": "commit",
+      "message": "feat: add ctxo visualize command with interactive dependency graph"
+    },
     {
       "date": "2026-04-12T00:20:34+03:00",
       "hash": "0622a33fc7408c02e31faa08b40ae28e3e5d912a",
@@ -42,6 +48,6 @@
       "message": "Complete Phase 10: Release gate tests"
     }
   ],
-  "lastModified": 1775954146,
+  "lastModified": 1776014230,
   "symbols": []
 }

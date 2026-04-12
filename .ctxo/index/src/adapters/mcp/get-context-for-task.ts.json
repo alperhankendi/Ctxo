@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 7,
+      "cyclomatic": 6,
       "symbolId": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function"
     }
   ],
-  "contentHash": "b75785d4db9f49bf1b33fc917b320eefd2f7b8249882410256bfc3f878cc4c12",
+  "contentHash": "6216a810d358e2be087d8e1c59fec3b98d49db017b30f346528e162743668466",
   "edges": [
     {
       "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
@@ -33,12 +33,7 @@
     {
       "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
-      "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
@@ -54,12 +49,7 @@
     {
       "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
       "kind": "calls",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
-      "kind": "calls",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
@@ -104,12 +94,7 @@
     {
       "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
       "kind": "uses",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
-      "kind": "uses",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
@@ -132,15 +117,15 @@
       "message": "Add context assembly: get_context_for_task + get_ranked_context"
     }
   ],
-  "lastModified": 1775954144,
+  "lastModified": 1776014229,
   "symbols": [
     {
-      "endLine": 69,
-      "endOffset": 2521,
+      "endLine": 65,
+      "endOffset": 2374,
       "kind": "function",
       "name": "handleGetContextForTask",
       "startLine": 17,
-      "startOffset": 756,
+      "startOffset": 726,
       "symbolId": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function"
     }
   ]

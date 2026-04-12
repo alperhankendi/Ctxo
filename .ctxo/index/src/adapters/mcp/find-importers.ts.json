@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 23,
+      "cyclomatic": 22,
       "symbolId": "src/adapters/mcp/find-importers.ts::handleFindImporters::function"
     }
   ],
-  "contentHash": "765bfee3b53390010b9876984826ce51b8bc8382e85c8374a5fb48dd9a17627c",
+  "contentHash": "c4198a39faafeef4addd64b7d41dee8af3f11e45f17f724f220d9d2a3605cdfd",
   "edges": [
     {
       "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
@@ -29,12 +29,7 @@
     {
       "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
-      "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
@@ -49,12 +44,7 @@
     {
       "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
       "kind": "calls",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
-      "kind": "calls",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
@@ -84,12 +74,7 @@
     {
       "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
       "kind": "uses",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
-      "kind": "uses",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/find-importers.ts::handleFindImporters::function",
@@ -129,15 +114,15 @@
       "message": "Add 4 new MCP tools, --max-history limit, and improve test coverage"
     }
   ],
-  "lastModified": 1775954144,
+  "lastModified": 1776014229,
   "symbols": [
     {
-      "endLine": 140,
-      "endOffset": 5152,
+      "endLine": 136,
+      "endOffset": 5005,
       "kind": "function",
       "name": "handleFindImporters",
       "startLine": 16,
-      "startOffset": 829,
+      "startOffset": 799,
       "symbolId": "src/adapters/mcp/find-importers.ts::handleFindImporters::function"
     }
   ]

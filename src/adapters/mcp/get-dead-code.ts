@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { DeadCodeDetector } from '../../core/dead-code/dead-code-detector.js';
-import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
+import { getGraphAndFiles } from './get-logic-slice.js';
 import { wrapResponse } from '../../core/response-envelope.js';
 import { filterByIntent } from '../../core/intent-filter.js';
 import type { StalenessCheck } from './get-logic-slice.js';
@@ -20,11 +20,7 @@ export function handleFindDeadCode(
 ) {
   const detector = new DeadCodeDetector();
 
-  const getGraph = () => {
-    const jsonGraph = buildGraphFromJsonIndex(ctxoRoot);
-    if (jsonGraph.nodeCount > 0) return jsonGraph;
-    return buildGraphFromStorage(storage);
-  };
+  const getGraph = () => getGraphAndFiles(ctxoRoot, storage);
 
   return (args: Record<string, unknown>) => {
     try {
@@ -35,7 +31,7 @@ export function handleFindDeadCode(
         };
       }
 
-      const graph = getGraph();
+      const { graph, indexedFiles } = getGraph();
       const result = detector.detect(graph, { includeTests: parsed.data.includeTests });
 
       // Apply intent filter to deadSymbols if requested
@@ -48,7 +44,7 @@ export function handleFindDeadCode(
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {
-        const warning = staleness.check(storage.listIndexedFiles());
+        const warning = staleness.check(indexedFiles);
         if (warning) content.push({ type: 'text', text: `⚠️ ${warning.message}` });
       }
       content.push({ type: 'text', text: payload });

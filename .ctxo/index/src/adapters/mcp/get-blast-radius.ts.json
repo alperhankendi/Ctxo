@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 8,
+      "cyclomatic": 7,
       "symbolId": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
     }
   ],
-  "contentHash": "675e7ebc3345eeb8fb490d82f3a154227c5adfcf57214dec0f949f1b58431046",
+  "contentHash": "71652cf3022a18f9c1fb2e517e0edd1a99e74dbf56ebeb02452fd492c942dbbb",
   "edges": [
     {
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
@@ -44,22 +44,12 @@
     {
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
-      "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
       "kind": "calls",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
-      "kind": "calls",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
@@ -99,12 +89,7 @@
     {
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
       "kind": "uses",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
-      "kind": "uses",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
@@ -186,15 +171,15 @@
       "message": "Add blast radius calculator and architectural overlay"
     }
   ],
-  "lastModified": 1775954144,
+  "lastModified": 1776014229,
   "symbols": [
     {
-      "endLine": 86,
-      "endOffset": 3313,
+      "endLine": 82,
+      "endOffset": 3166,
       "kind": "function",
       "name": "handleGetBlastRadius",
       "startLine": 15,
-      "startOffset": 780,
+      "startOffset": 750,
       "symbolId": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
     }
   ]

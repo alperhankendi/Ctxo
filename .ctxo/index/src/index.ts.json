@@ -244,6 +244,6 @@
       "message": "Fix MCP tools reading stale data: build graph from JSON index, not SQLite"
     }
   ],
-  "lastModified": 1775954146,
+  "lastModified": 1776014230,
   "symbols": []
 }

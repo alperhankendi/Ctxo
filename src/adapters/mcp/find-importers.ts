@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import type { StalenessCheck } from './get-logic-slice.js';
-import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
+import { getGraphAndFiles } from './get-logic-slice.js';
 import { wrapResponse } from '../../core/response-envelope.js';
 import { filterByIntent } from '../../core/intent-filter.js';
 
@@ -20,11 +20,7 @@ export function handleFindImporters(
   staleness?: StalenessCheck,
   ctxoRoot = '.ctxo',
 ) {
-  const getGraph = () => {
-    const jsonGraph = buildGraphFromJsonIndex(ctxoRoot);
-    if (jsonGraph.nodeCount > 0) return jsonGraph;
-    return buildGraphFromStorage(storage);
-  };
+  const getGraph = () => getGraphAndFiles(ctxoRoot, storage);
 
   return (args: Record<string, unknown>) => {
     try {
@@ -36,7 +32,7 @@ export function handleFindImporters(
       }
 
       const { symbolId, edgeKinds, transitive, maxDepth } = parsed.data;
-      const graph = getGraph();
+      const { graph, indexedFiles } = getGraph();
 
       if (!graph.hasNode(symbolId)) {
         return {
@@ -126,7 +122,7 @@ export function handleFindImporters(
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {
-        const warning = staleness.check(storage.listIndexedFiles());
+        const warning = staleness.check(indexedFiles);
         if (warning) content.push({ type: 'text', text: `⚠️ ${warning.message}` });
       }
       content.push({ type: 'text', text: payload });

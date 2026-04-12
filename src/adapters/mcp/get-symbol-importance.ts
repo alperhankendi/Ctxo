@@ -3,7 +3,7 @@ import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { PageRankCalculator } from '../../core/importance/pagerank-calculator.js';
 import type { StalenessCheck } from './get-logic-slice.js';
-import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
+import { getGraphAndFiles } from './get-logic-slice.js';
 import { wrapResponse } from '../../core/response-envelope.js';
 
 const InputSchema = z.object({
@@ -20,11 +20,7 @@ export function handleGetSymbolImportance(
   ctxoRoot = '.ctxo',
 ) {
   const calculator = new PageRankCalculator();
-  const getGraph = () => {
-    const jsonGraph = buildGraphFromJsonIndex(ctxoRoot);
-    if (jsonGraph.nodeCount > 0) return jsonGraph;
-    return buildGraphFromStorage(storage);
-  };
+  const getGraph = () => getGraphAndFiles(ctxoRoot, storage);
 
   return (args: Record<string, unknown>) => {
     try {
@@ -36,7 +32,7 @@ export function handleGetSymbolImportance(
       }
 
       const { limit, kind, filePattern, damping } = parsed.data;
-      const graph = getGraph();
+      const { graph, indexedFiles } = getGraph();
 
       const result = calculator.calculate(graph, { damping, limit: graph.nodeCount, maxIterations: 100 });
 
@@ -61,7 +57,7 @@ export function handleGetSymbolImportance(
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {
-        const warning = staleness.check(storage.listIndexedFiles());
+        const warning = staleness.check(indexedFiles);
         if (warning) content.push({ type: 'text', text: `⚠️ ${warning.message}` });
       }
       content.push({ type: 'text', text: payload });

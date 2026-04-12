@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 19,
+      "cyclomatic": 18,
       "symbolId": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function"
     }
   ],
-  "contentHash": "a7bb030cc6bcf1e7ad7bbf7c45bab1945290d57653606e304e728473c76394c8",
+  "contentHash": "6d9dfa59b38e2edcd0e841891a5cadcae020f7a8a1951564a74d0507ba53e55a",
   "edges": [
     {
       "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
@@ -28,12 +28,7 @@
     {
       "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
-      "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
@@ -65,12 +60,7 @@
     {
       "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
       "kind": "calls",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
-      "kind": "calls",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
@@ -125,12 +115,7 @@
     {
       "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
       "kind": "uses",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
-      "kind": "uses",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
@@ -159,15 +144,15 @@
       "message": "Add context assembly: get_context_for_task + get_ranked_context"
     }
   ],
-  "lastModified": 1775954144,
+  "lastModified": 1776014229,
   "symbols": [
     {
-      "endLine": 146,
-      "endOffset": 5521,
+      "endLine": 142,
+      "endOffset": 5360,
       "kind": "function",
       "name": "handleGetRankedContext",
       "startLine": 21,
-      "startOffset": 1015,
+      "startOffset": 985,
       "symbolId": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function"
     }
   ]

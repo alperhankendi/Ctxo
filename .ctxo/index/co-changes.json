@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "timestamp": 1775954147,
+  "timestamp": 1776014230,
   "entries": [
     {
       "file1": "src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
@@ -771,12 +771,6 @@
       "frequency": 0.571
     },
     {
-      "file1": "src/cli/cli-router.ts",
-      "file2": "src/cli/index-command.ts",
-      "sharedCommits": 5,
-      "frequency": 0.5
-    },
-    {
       "file1": "src/cli/index-command.ts",
       "file2": "src/core/types.ts",
       "sharedCommits": 4,
@@ -895,6 +889,12 @@
       "file2": "src/cli/index-command.ts",
       "sharedCommits": 3,
       "frequency": 0.429
+    },
+    {
+      "file1": "src/cli/cli-router.ts",
+      "file2": "src/cli/index-command.ts",
+      "sharedCommits": 5,
+      "frequency": 0.417
     },
     {
       "file1": "src/adapters/language/ts-morph-adapter.ts",
@@ -1107,12 +1107,6 @@
       "frequency": 0.214
     },
     {
-      "file1": "src/cli/cli-router.ts",
-      "file2": "src/index.ts",
-      "sharedCommits": 2,
-      "frequency": 0.2
-    },
-    {
       "file1": "src/adapters/language/ts-morph-adapter.ts",
       "file2": "src/adapters/storage/sqlite-storage-adapter.ts",
       "sharedCommits": 2,
@@ -1129,6 +1123,12 @@
       "file2": "src/index.ts",
       "sharedCommits": 3,
       "frequency": 0.176
+    },
+    {
+      "file1": "src/cli/cli-router.ts",
+      "file2": "src/index.ts",
+      "sharedCommits": 2,
+      "frequency": 0.167
     }
   ]
 }

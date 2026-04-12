@@ -3,7 +3,7 @@ import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IGitPort } from '../../ports/i-git-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import type { StalenessCheck } from './get-logic-slice.js';
-import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
+import { getGraphAndFiles } from './get-logic-slice.js';
 import { wrapResponse } from '../../core/response-envelope.js';
 
 const InputSchema = z.object({
@@ -18,11 +18,7 @@ export function handleGetChangedSymbols(
   staleness?: StalenessCheck,
   ctxoRoot = '.ctxo',
 ) {
-  const getGraph = () => {
-    const jsonGraph = buildGraphFromJsonIndex(ctxoRoot);
-    if (jsonGraph.nodeCount > 0) return jsonGraph;
-    return buildGraphFromStorage(storage);
-  };
+  const getGraph = () => getGraphAndFiles(ctxoRoot, storage);
 
   return async (args: Record<string, unknown>) => {
     try {
@@ -35,7 +31,7 @@ export function handleGetChangedSymbols(
 
       const { since, maxFiles } = parsed.data;
       const changedPaths = await git.getChangedFiles(since);
-      const graph = getGraph();
+      const { graph, indexedFiles } = getGraph();
 
       // Index all nodes by file for fast lookup
       const nodesByFile = new Map<string, Array<{ symbolId: string; name: string; kind: string; startLine: number; endLine: number }>>();
@@ -66,7 +62,7 @@ export function handleGetChangedSymbols(
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {
-        const warning = staleness.check(storage.listIndexedFiles());
+        const warning = staleness.check(indexedFiles);
         if (warning) content.push({ type: 'text', text: `⚠️ ${warning.message}` });
       }
       content.push({ type: 'text', text: payload });

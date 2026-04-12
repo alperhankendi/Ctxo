@@ -2,7 +2,8 @@ import { z } from 'zod';
 import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import type { StalenessCheck } from './get-logic-slice.js';
-import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
+import { getGraphAndFiles } from './get-logic-slice.js';
+import type { SymbolGraph } from '../../core/graph/symbol-graph.js';
 import { wrapResponse } from '../../core/response-envelope.js';
 
 const InputSchema = z.object({
@@ -16,11 +17,7 @@ export function handleGetClassHierarchy(
   staleness?: StalenessCheck,
   ctxoRoot = '.ctxo',
 ) {
-  const getGraph = () => {
-    const jsonGraph = buildGraphFromJsonIndex(ctxoRoot);
-    if (jsonGraph.nodeCount > 0) return jsonGraph;
-    return buildGraphFromStorage(storage);
-  };
+  const getGraph = () => getGraphAndFiles(ctxoRoot, storage);
 
   return (args: Record<string, unknown>) => {
     try {
@@ -32,13 +29,13 @@ export function handleGetClassHierarchy(
       }
 
       const { symbolId, direction } = parsed.data;
-      const graph = getGraph();
+      const { graph, indexedFiles } = getGraph();
 
       if (symbolId) {
-        return handleRooted(graph, symbolId, direction, masking, staleness, storage);
+        return handleRooted(graph, symbolId, direction, masking, staleness, indexedFiles);
       }
 
-      return handleFull(graph, masking, staleness, storage);
+      return handleFull(graph, masking, staleness, indexedFiles);
     } catch (err) {
       return {
         content: [{ type: 'text' as const, text: JSON.stringify({ error: true, message: (err as Error).message }) }],
@@ -47,12 +44,12 @@ export function handleGetClassHierarchy(
   };
 
   function handleRooted(
-    graph: ReturnType<typeof getGraph>,
+    graph: SymbolGraph,
     symbolId: string,
     direction: 'ancestors' | 'descendants' | 'both',
     maskingPort: IMaskingPort,
     stalenessCheck: StalenessCheck | undefined,
-    storagePort: IStoragePort,
+    indexedFiles: string[],
   ) {
     if (!graph.hasNode(symbolId)) {
       return {
@@ -131,7 +128,7 @@ export function handleGetClassHierarchy(
     const payload = maskingPort.mask(JSON.stringify(wrapResponse(result)));
     const content: Array<{ type: 'text'; text: string }> = [];
     if (stalenessCheck) {
-      const warning = stalenessCheck.check(storagePort.listIndexedFiles());
+      const warning = stalenessCheck.check(indexedFiles);
       if (warning) content.push({ type: 'text', text: `⚠️ ${warning.message}` });
     }
     content.push({ type: 'text', text: payload });
@@ -140,10 +137,10 @@ export function handleGetClassHierarchy(
   }
 
   function handleFull(
-    graph: ReturnType<typeof getGraph>,
+    graph: SymbolGraph,
     maskingPort: IMaskingPort,
     stalenessCheck: StalenessCheck | undefined,
-    storagePort: IStoragePort,
+    indexedFiles: string[],
   ) {
     const isHierarchyEdge = (kind: string) => kind === 'extends' || kind === 'implements';
     const hierarchyEdges = graph.allEdges().filter((e) => isHierarchyEdge(e.kind));
@@ -205,7 +202,7 @@ export function handleGetClassHierarchy(
 
     const content: Array<{ type: 'text'; text: string }> = [];
     if (stalenessCheck) {
-      const warning = stalenessCheck.check(storagePort.listIndexedFiles());
+      const warning = stalenessCheck.check(indexedFiles);
       if (warning) content.push({ type: 'text', text: `⚠️ ${warning.message}` });
     }
     content.push({ type: 'text', text: payload });

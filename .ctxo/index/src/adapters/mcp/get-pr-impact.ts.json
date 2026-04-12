@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 22,
+      "cyclomatic": 21,
       "symbolId": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
     }
   ],
-  "contentHash": "d6a0285a9914df78523e3c5fac4faff1facd228cfb22fdfeba0478033d9df436",
+  "contentHash": "c48481ab5fe0343ee554fb9fcaa6851d4c432bda14f7a0df8ffb11e9ca76abae",
   "edges": [
     {
       "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
@@ -35,12 +35,7 @@
     {
       "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
-      "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
@@ -72,12 +67,7 @@
     {
       "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
       "kind": "calls",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
-      "kind": "calls",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
@@ -122,12 +112,7 @@
     {
       "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
       "kind": "uses",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
-      "kind": "uses",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
@@ -156,15 +141,15 @@
       "message": "Add co-change analysis and get_pr_impact MCP tool (14th tool)"
     }
   ],
-  "lastModified": 1775954144,
+  "lastModified": 1776014229,
   "symbols": [
     {
-      "endLine": 207,
-      "endOffset": 7388,
+      "endLine": 203,
+      "endOffset": 7237,
       "kind": "function",
       "name": "handleGetPrImpact",
       "startLine": 30,
-      "startOffset": 1355,
+      "startOffset": 1325,
       "symbolId": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
     }
   ]

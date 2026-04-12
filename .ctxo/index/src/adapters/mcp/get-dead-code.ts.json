@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 6,
+      "cyclomatic": 5,
       "symbolId": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function"
     }
   ],
-  "contentHash": "eeaa10b7cdd8fd96ffd8159232236be33e869a6b6a02cb0a7297d27748321d4d",
+  "contentHash": "cc1550913a33ee466217d7a6d852471fce64e30f481707cc73fcad6321f849cc",
   "edges": [
     {
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
@@ -28,12 +28,7 @@
     {
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
-      "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
@@ -54,12 +49,7 @@
     {
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
       "kind": "calls",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
-      "kind": "calls",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
@@ -99,12 +89,7 @@
     {
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
       "kind": "uses",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
-      "kind": "uses",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
@@ -150,15 +135,15 @@
       "message": "Add find_dead_code MCP tool — unreachable symbol and file detection"
     }
   ],
-  "lastModified": 1775954144,
+  "lastModified": 1776014229,
   "symbols": [
     {
-      "endLine": 62,
-      "endOffset": 2398,
+      "endLine": 58,
+      "endOffset": 2251,
       "kind": "function",
       "name": "handleFindDeadCode",
       "startLine": 14,
-      "startOffset": 730,
+      "startOffset": 700,
       "symbolId": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function"
     }
   ]

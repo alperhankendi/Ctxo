@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { ContextAssembler } from '../../core/context-assembly/context-assembler.js';
-import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
+import { getGraphAndFiles } from './get-logic-slice.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 import { wrapResponse } from '../../core/response-envelope.js';
 import { SearchEngine } from '../../core/search/search-engine.js';
@@ -29,11 +29,7 @@ export function handleGetRankedContext(
   const assembler = new ContextAssembler();
   const engine: ISearchPort = searchEngine ?? new SearchEngine();
 
-  const getGraph = () => {
-    const jsonGraph = buildGraphFromJsonIndex(ctxoRoot);
-    if (jsonGraph.nodeCount > 0) return jsonGraph;
-    return buildGraphFromStorage(storage);
-  };
+  const getGraph = () => getGraphAndFiles(ctxoRoot, storage);
 
   let lastNodeCount = -1;
 
@@ -47,7 +43,7 @@ export function handleGetRankedContext(
       }
 
       const { query, tokenBudget, strategy, searchMode } = parsed.data;
-      const graph = getGraph();
+      const { graph, indexedFiles } = getGraph();
 
       // Use new search engine when mode is 'fts'
       if (searchMode === 'fts' && strategy !== 'importance') {
@@ -117,7 +113,7 @@ export function handleGetRankedContext(
 
         const content: Array<{ type: 'text'; text: string }> = [];
         if (staleness) {
-          const warning = staleness.check(storage.listIndexedFiles());
+          const warning = staleness.check(indexedFiles);
           if (warning) content.push({ type: 'text', text: `⚠️ ${warning.message}` });
         }
         content.push({ type: 'text', text: payload });
@@ -132,7 +128,7 @@ export function handleGetRankedContext(
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {
-        const warning = staleness.check(storage.listIndexedFiles());
+        const warning = staleness.check(indexedFiles);
         if (warning) content.push({ type: 'text', text: `⚠️ ${warning.message}` });
       }
       content.push({ type: 'text', text: payload });

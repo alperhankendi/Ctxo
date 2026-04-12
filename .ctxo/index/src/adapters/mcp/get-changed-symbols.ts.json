@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 12,
+      "cyclomatic": 11,
       "symbolId": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function"
     }
   ],
-  "contentHash": "6b4476f162c048312e2a42228bf1ccfc2738e2adc05443455bd5418c0002a252",
+  "contentHash": "05de0da1da4fe00e0de238cf9049d66f137aaf4422226b390c39136e5b160c3b",
   "edges": [
     {
       "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
@@ -35,12 +35,7 @@
     {
       "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
-      "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
@@ -50,12 +45,7 @@
     {
       "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
       "kind": "calls",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
-      "kind": "calls",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
@@ -85,12 +75,7 @@
     {
       "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
       "kind": "uses",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function"
-    },
-    {
-      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
-      "kind": "uses",
-      "to": "src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function"
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
     {
       "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
@@ -113,15 +98,15 @@
       "message": "Add 4 new MCP tools, --max-history limit, and improve test coverage"
     }
   ],
-  "lastModified": 1775954144,
+  "lastModified": 1776014229,
   "symbols": [
     {
-      "endLine": 80,
-      "endOffset": 3027,
+      "endLine": 76,
+      "endOffset": 2880,
       "kind": "function",
       "name": "handleGetChangedSymbols",
       "startLine": 13,
-      "startOffset": 576,
+      "startOffset": 546,
       "symbolId": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function"
     }
   ]

@@ -3,7 +3,7 @@ import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { ContextAssembler } from '../../core/context-assembly/context-assembler.js';
 import { JsonIndexReader } from '../storage/json-index-reader.js';
-import { buildGraphFromJsonIndex, buildGraphFromStorage } from './get-logic-slice.js';
+import { getGraphAndFiles } from './get-logic-slice.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 import { wrapResponse } from '../../core/response-envelope.js';
 
@@ -24,11 +24,7 @@ export function handleGetContextForTask(
   const assembler = new ContextAssembler();
   const indexReader = new JsonIndexReader(ctxoRoot);
 
-  const getGraph = () => {
-    const jsonGraph = buildGraphFromJsonIndex(ctxoRoot);
-    if (jsonGraph.nodeCount > 0) return jsonGraph;
-    return buildGraphFromStorage(storage);
-  };
+  const getGraph = () => getGraphAndFiles(ctxoRoot, storage);
 
   return (args: Record<string, unknown>) => {
     try {
@@ -40,7 +36,7 @@ export function handleGetContextForTask(
       }
 
       const { symbolId, taskType, tokenBudget } = parsed.data;
-      const graph = getGraph();
+      const { graph, indexedFiles } = getGraph();
       const indices = indexReader.readAll();
 
       const result = assembler.assembleForTask(graph, symbolId, taskType, indices, tokenBudget);
@@ -55,7 +51,7 @@ export function handleGetContextForTask(
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {
-        const warning = staleness.check(storage.listIndexedFiles());
+        const warning = staleness.check(indexedFiles);
         if (warning) content.push({ type: 'text', text: `⚠️ ${warning.message}` });
       }
       content.push({ type: 'text', text: payload });
