@@ -14,9 +14,15 @@
     "test:e2e": "pnpm -r test:e2e",
     "typecheck": "pnpm -r typecheck",
     "lint": "pnpm -r lint",
-    "dev": "pnpm --filter @ctxo/cli dev"
+    "dev": "pnpm --filter @ctxo/cli dev",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "pnpm -r build && changeset publish"
   },
   "packageManager": "pnpm@10.9.0",
   "author": "Alper Hankendi",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@changesets/cli": "^2.30.0"
+  }
 }
