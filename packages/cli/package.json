@@ -12,8 +12,6 @@
   "files": [
     "dist/",
     "pages/visualize-template.html",
-    "tools/ctxo-roslyn/ctxo-roslyn.csproj",
-    "tools/ctxo-roslyn/Program.cs",
     "README.md",
     "llms.txt",
     "llms-full.txt"
