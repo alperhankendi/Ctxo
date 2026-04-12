@@ -9,9 +9,6 @@ function pass(id: string, title: string, message: string): CheckResult {
 function warn(id: string, title: string, message: string, fix: string): CheckResult {
   return { id, title, status: 'warn', message, fix };
 }
-function fail(id: string, title: string, message: string, fix: string): CheckResult {
-  return { id, title, status: 'fail', message, fix };
-}
 
 export function checkNodeVersion(version: string): CheckResult {
   const id = 'node_version';
@@ -33,14 +30,19 @@ export class NodeVersionCheck implements IHealthCheck {
 
 export class TsMorphCheck implements IHealthCheck {
   readonly id = 'ts_morph';
-  readonly title = 'ts-morph';
+  readonly title = 'TypeScript plugin (@ctxo/lang-typescript)';
 
   async run(_ctx: CheckContext): Promise<CheckResult> {
     try {
-      require.resolve('ts-morph');
+      require.resolve('@ctxo/lang-typescript');
       return pass(this.id, this.title, 'available');
     } catch {
-      return fail(this.id, this.title, 'ts-morph not installed', 'Run "npm install"');
+      return warn(
+        this.id,
+        this.title,
+        '@ctxo/lang-typescript not installed — TypeScript/JavaScript indexing disabled',
+        'Run "npm install @ctxo/lang-typescript" (or "ctxo install typescript")',
+      );
     }
   }
 }

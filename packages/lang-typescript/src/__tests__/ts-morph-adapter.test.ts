@@ -544,26 +544,11 @@ describe('TsMorphAdapter — uses edge extraction (Faz 3)', () => {
   });
 });
 
-describe('TsMorphAdapter — uses edge + blast radius integration', () => {
-  it('uses edge is classified as likely in blast radius (3-tier model)', async () => {
-    const { SymbolGraph } = await import('../../../core/graph/symbol-graph.js');
-    const { BlastRadiusCalculator } = await import('../../../core/blast-radius/blast-radius-calculator.js');
-
-    const graph = new SymbolGraph();
-    graph.addNode({ symbolId: 'src/a.ts::A::function', name: 'A', kind: 'function', startLine: 0, endLine: 10 });
-    graph.addNode({ symbolId: 'src/b.ts::B::class', name: 'B', kind: 'class', startLine: 0, endLine: 20 });
-    graph.addEdge({ from: 'src/a.ts::A::function', to: 'src/b.ts::B::class', kind: 'uses' });
-
-    const calc = new BlastRadiusCalculator();
-    const result = calc.calculate(graph, 'src/b.ts::B::class');
-
-    expect(result.likelyCount).toBe(1);
-    expect(result.confirmedCount).toBe(0);
-    expect(result.potentialCount).toBe(0);
-    expect(result.impactedSymbols[0]!.confidence).toBe('likely');
-    expect(result.impactedSymbols[0]!.edgeKinds).toEqual(['uses']);
-  });
-});
+// NOTE: The previous `uses edge + blast radius integration` test that lived here
+// reached into cli internals (SymbolGraph, BlastRadiusCalculator). After the
+// Phase A extraction of this plugin, that cross-package integration belongs in
+// cli tests, not in the plugin's own suite. Coverage is retained by the
+// blast-radius unit tests + the cli index-command integration test.
 
 describe('TsMorphAdapter — namespace imports (GAP-3 fix)', () => {
   let adapter: TsMorphAdapter;

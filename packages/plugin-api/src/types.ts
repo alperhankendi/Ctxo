@@ -26,23 +26,23 @@ export type EdgeKind = (typeof EDGE_KINDS)[number];
 export type SymbolId = string;
 
 export interface SymbolNode {
-  readonly symbolId: SymbolId;
-  readonly name: string;
-  readonly kind: SymbolKind;
-  readonly startLine: number;
-  readonly endLine: number;
-  readonly startOffset?: number;
-  readonly endOffset?: number;
+  symbolId: SymbolId;
+  name: string;
+  kind: SymbolKind;
+  startLine: number;
+  endLine: number;
+  startOffset?: number;
+  endOffset?: number;
 }
 
 export interface GraphEdge {
-  readonly from: SymbolId;
-  readonly to: SymbolId;
-  readonly kind: EdgeKind;
-  readonly typeOnly?: boolean;
+  from: SymbolId;
+  to: SymbolId;
+  kind: EdgeKind;
+  typeOnly?: boolean;
 }
 
 export interface ComplexityMetrics {
-  readonly symbolId: SymbolId;
-  readonly cyclomatic: number;
+  symbolId: SymbolId;
+  cyclomatic: number;
 }

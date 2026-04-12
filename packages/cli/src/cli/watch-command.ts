@@ -1,7 +1,7 @@
 import { join, extname, relative } from 'node:path';
 import { readFileSync } from 'node:fs';
-import { TsMorphAdapter } from '../adapters/language/ts-morph-adapter.js';
 import { LanguageAdapterRegistry } from '../adapters/language/language-adapter-registry.js';
+import { loadPlugins } from './plugin-loader.js';
 import { JsonIndexWriter } from '../adapters/storage/json-index-writer.js';
 import { SqliteStorageAdapter } from '../adapters/storage/sqlite-storage-adapter.js';
 import { ChokidarWatcherAdapter } from '../adapters/watcher/chokidar-watcher-adapter.js';
@@ -26,7 +26,12 @@ export class WatchCommand {
     console.error('[ctxo] Starting file watcher...');
 
     const registry = new LanguageAdapterRegistry();
-    registry.register(new TsMorphAdapter());
+
+    // Plugins via discovery (TypeScript et al.)
+    for (const { plugin, adapter } of await loadPlugins(this.projectRoot)) {
+      registry.register(plugin.extensions, adapter);
+      console.error(`[ctxo] Plugin ${plugin.id}@${plugin.version} (${plugin.tier} tier)`);
+    }
 
     // C# - try Roslyn keep-alive, fallback to tree-sitter
     let roslynAdapter: RoslynAdapter | null = null;
@@ -38,7 +43,7 @@ export class WatchCommand {
         // No separate batchIndex - avoid double solution load.
         const started = await roslyn.startKeepAlive();
         if (started) {
-          registry.register(roslyn);
+          registry.register(roslyn.extensions, roslyn);
           roslynAdapter = roslyn;
           console.error('[ctxo] C# watch: Roslyn keep-alive active (full tier, <100ms per change)');
         } else {
@@ -199,7 +204,8 @@ export class WatchCommand {
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { CSharpAdapter } = require('../adapters/language/csharp-adapter.js');
-      registry.register(new CSharpAdapter());
+      const adapter = new CSharpAdapter();
+      registry.register(adapter.extensions, adapter);
     } catch {
       console.error('[ctxo] C# adapter unavailable (tree-sitter-c-sharp not installed)');
     }
@@ -209,7 +215,8 @@ export class WatchCommand {
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { GoAdapter } = require('../adapters/language/go-adapter.js');
-      registry.register(new GoAdapter());
+      const adapter = new GoAdapter();
+      registry.register(adapter.extensions, adapter);
     } catch {
       console.error('[ctxo] Go adapter unavailable (tree-sitter-go not installed)');
     }

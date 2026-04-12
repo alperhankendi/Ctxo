@@ -8,8 +8,14 @@ import {
   ScriptTarget,
 } from 'ts-morph';
 import { extname, dirname, join, normalize } from 'node:path';
-import { type SymbolNode, type GraphEdge, type ComplexityMetrics, type SymbolKind, SYMBOL_KINDS } from '../../core/types.js';
-import type { ILanguageAdapter } from '../../ports/i-language-adapter.js';
+import {
+  type SymbolNode,
+  type GraphEdge,
+  type ComplexityMetrics,
+  type SymbolKind,
+  type ILanguageAdapter,
+  SYMBOL_KINDS,
+} from '@ctxo/plugin-api';
 
 const SUPPORTED_EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx'] as const;
 

@@ -1,34 +1,40 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import type { ILanguageAdapter } from '@ctxo/plugin-api';
 import { LanguageAdapterRegistry } from '../language-adapter-registry.js';
-import { TsMorphAdapter } from '../ts-morph-adapter.js';
+
+function makeMockAdapter(): ILanguageAdapter {
+  return {
+    extractSymbols: async () => [],
+    extractEdges: async () => [],
+    extractComplexity: async () => [],
+    isSupported: (filePath) => /\.(ts|tsx|js|jsx)$/i.test(filePath),
+  };
+}
 
 describe('LanguageAdapterRegistry', () => {
   let registry: LanguageAdapterRegistry;
+  let mock: ILanguageAdapter;
 
   beforeEach(() => {
     registry = new LanguageAdapterRegistry();
-    registry.register(new TsMorphAdapter());
+    mock = makeMockAdapter();
+    registry.register(['.ts', '.tsx', '.js', '.jsx'], mock);
   });
 
-  it('returns TsMorphAdapter for .ts extension', () => {
-    const adapter = registry.getAdapter('src/foo.ts');
-    expect(adapter).toBeDefined();
-    expect(adapter?.tier).toBe('full');
+  it('returns registered adapter for .ts extension', () => {
+    expect(registry.getAdapter('src/foo.ts')).toBe(mock);
   });
 
-  it('returns TsMorphAdapter for .tsx extension', () => {
-    const adapter = registry.getAdapter('src/App.tsx');
-    expect(adapter).toBeDefined();
+  it('returns registered adapter for .tsx extension', () => {
+    expect(registry.getAdapter('src/App.tsx')).toBe(mock);
   });
 
-  it('returns TsMorphAdapter for .js extension', () => {
-    const adapter = registry.getAdapter('src/utils.js');
-    expect(adapter).toBeDefined();
+  it('returns registered adapter for .js extension', () => {
+    expect(registry.getAdapter('src/utils.js')).toBe(mock);
   });
 
-  it('returns TsMorphAdapter for .jsx extension', () => {
-    const adapter = registry.getAdapter('src/Component.jsx');
-    expect(adapter).toBeDefined();
+  it('returns registered adapter for .jsx extension', () => {
+    expect(registry.getAdapter('src/Component.jsx')).toBe(mock);
   });
 
   it('returns undefined for unsupported extension .py', () => {
@@ -44,7 +50,10 @@ describe('LanguageAdapterRegistry', () => {
   });
 
   it('handles case-insensitive extension matching', () => {
-    const adapter = registry.getAdapter('src/foo.TS');
-    expect(adapter).toBeDefined();
+    expect(registry.getAdapter('src/foo.TS')).toBe(mock);
+  });
+
+  it('exposes the set of registered extensions', () => {
+    expect(registry.getSupportedExtensions()).toEqual(new Set(['.ts', '.tsx', '.js', '.jsx']));
   });
 });

@@ -23,6 +23,7 @@
   "author": "Alper Hankendi",
   "license": "MIT",
   "devDependencies": {
-    "@changesets/cli": "^2.30.0"
+    "@changesets/cli": "^2.30.0",
+    "@ctxo/lang-typescript": "workspace:*"
   }
 }

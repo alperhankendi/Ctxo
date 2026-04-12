@@ -1,0 +1,50 @@
+{
+  "name": "@ctxo/lang-typescript",
+  "version": "0.7.0-alpha.0",
+  "description": "Ctxo TypeScript/JavaScript language plugin (ts-morph, full tier)",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist/",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run"
+  },
+  "keywords": [
+    "ctxo",
+    "ctxo-plugin",
+    "language-plugin",
+    "typescript",
+    "javascript",
+    "ts-morph"
+  ],
+  "author": "Alper Hankendi",
+  "license": "MIT",
+  "dependencies": {
+    "ts-morph": "^27.0.2"
+  },
+  "peerDependencies": {
+    "@ctxo/plugin-api": "^0.7.0-alpha.0"
+  },
+  "devDependencies": {
+    "@ctxo/plugin-api": "workspace:*",
+    "@types/node": "^22.15.3",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.3"
+  }
+}

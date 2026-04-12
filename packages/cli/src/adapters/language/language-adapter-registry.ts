@@ -1,11 +1,11 @@
 import { extname } from 'node:path';
-import type { ILanguageAdapter } from '../../ports/i-language-adapter.js';
+import type { ILanguageAdapter } from '@ctxo/plugin-api';
 
 export class LanguageAdapterRegistry {
   private readonly adaptersByExtension = new Map<string, ILanguageAdapter>();
 
-  register(adapter: ILanguageAdapter): void {
-    for (const ext of adapter.extensions) {
+  register(extensions: readonly string[], adapter: ILanguageAdapter): void {
+    for (const ext of extensions) {
       this.adaptersByExtension.set(ext.toLowerCase(), adapter);
     }
   }

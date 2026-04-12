@@ -2,8 +2,13 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync, statSync, readdirSync } from 'node:fs';
 import { join, relative, extname } from 'node:path';
 import { ContentHasher } from '../core/staleness/content-hasher.js';
-import { TsMorphAdapter } from '../adapters/language/ts-morph-adapter.js';
 import { LanguageAdapterRegistry } from '../adapters/language/language-adapter-registry.js';
+import { loadPlugins } from './plugin-loader.js';
+
+interface TsMorphLike {
+  loadProjectSources(sources: Map<string, string>): void;
+  clearProjectSources(): void;
+}
 import { JsonIndexWriter } from '../adapters/storage/json-index-writer.js';
 import { SqliteStorageAdapter } from '../adapters/storage/sqlite-storage-adapter.js';
 import { SchemaManager } from '../adapters/storage/schema-manager.js';
@@ -30,10 +35,9 @@ export class IndexCommand {
       return this.runCheck();
     }
 
-    // Set up adapters
+    // Set up adapters: plugins via discovery, remaining languages wired directly until Steps 15/16
     const registry = new LanguageAdapterRegistry();
-    const tsMorphAdapter = new TsMorphAdapter();
-    registry.register(tsMorphAdapter);
+    const tsMorphLike = await this.registerDiscoveredPlugins(registry);
     const { roslynAdapter, csharpTier } = await this.registerCSharpAdapter(registry);
     this.registerGoAdapter(registry);
     this.supportedExtensions = registry.getSupportedExtensions();
@@ -125,7 +129,7 @@ export class IndexCommand {
     for (const entry of pendingIndices) {
       allSources.set(entry.relativePath, entry.source);
     }
-    tsMorphAdapter.loadProjectSources(allSources);
+    tsMorphLike?.loadProjectSources(allSources);
 
     // Phase 1b: Extract edges (uses symbol registry for correct kind resolution)
     for (const entry of pendingIndices) {
@@ -141,7 +145,7 @@ export class IndexCommand {
     }
 
     // Clean up pre-loaded sources
-    tsMorphAdapter.clearProjectSources();
+    tsMorphLike?.clearProjectSources();
 
     // Phase 2: Batch git history (single git call for all files)
     if (!options.skipHistory && pendingIndices.length > 0) {
@@ -205,12 +209,29 @@ export class IndexCommand {
     if (roslynAdapter) await roslynAdapter.dispose();
   }
 
+  private async registerDiscoveredPlugins(registry: LanguageAdapterRegistry): Promise<TsMorphLike | undefined> {
+    const loaded = await loadPlugins(this.projectRoot);
+    let tsMorphLike: TsMorphLike | undefined;
+    for (const { plugin, adapter } of loaded) {
+      registry.register(plugin.extensions, adapter);
+      console.error(`[ctxo] Plugin ${plugin.id}@${plugin.version} (${plugin.tier} tier) — ${plugin.extensions.join(', ')}`);
+      const candidate = adapter as unknown as Partial<TsMorphLike>;
+      if (
+        typeof candidate.loadProjectSources === 'function' &&
+        typeof candidate.clearProjectSources === 'function'
+      ) {
+        tsMorphLike = candidate as TsMorphLike;
+      }
+    }
+    return tsMorphLike;
+  }
+
   private async registerCSharpAdapter(registry: LanguageAdapterRegistry): Promise<{ roslynAdapter: RoslynAdapter | null; csharpTier: string }> {
     try {
       const roslyn = new RoslynAdapter();
       await roslyn.initialize(this.projectRoot);
       if (roslyn.isReady()) {
-        registry.register(roslyn);
+        registry.register(roslyn.extensions, roslyn);
         return { roslynAdapter: roslyn, csharpTier: 'full' };
       }
     } catch (err) {
@@ -221,7 +242,8 @@ export class IndexCommand {
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { CSharpAdapter } = require('../adapters/language/csharp-adapter.js');
-      registry.register(new CSharpAdapter());
+      const adapter = new CSharpAdapter();
+      registry.register(adapter.extensions, adapter);
       return { roslynAdapter: null, csharpTier: 'syntax' };
     } catch {
       return { roslynAdapter: null, csharpTier: 'unavailable' };
@@ -232,7 +254,8 @@ export class IndexCommand {
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { GoAdapter } = require('../adapters/language/go-adapter.js');
-      registry.register(new GoAdapter());
+      const adapter = new GoAdapter();
+      registry.register(adapter.extensions, adapter);
     } catch {
       console.error('[ctxo] Go adapter unavailable (tree-sitter-go not installed)');
     }
@@ -311,7 +334,7 @@ export class IndexCommand {
 
     // Register adapters so supportedExtensions includes .go/.cs
     const registry = new LanguageAdapterRegistry();
-    registry.register(new TsMorphAdapter());
+    await this.registerDiscoveredPlugins(registry);
     const { roslynAdapter: _roslyn } = await this.registerCSharpAdapter(registry);
     this.registerGoAdapter(registry);
     this.supportedExtensions = registry.getSupportedExtensions();

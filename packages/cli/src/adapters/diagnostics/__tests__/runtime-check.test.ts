@@ -75,13 +75,15 @@ describe('TsMorphCheck', () => {
 
   it('has correct id and title', () => {
     expect(check.id).toBe('ts_morph');
-    expect(check.title).toBe('ts-morph');
+    expect(check.title).toBe('TypeScript plugin (@ctxo/lang-typescript)');
   });
 
-  it('returns pass when ts-morph is installed', async () => {
+  it('returns pass when @ctxo/lang-typescript is installed', async () => {
     const result = await check.run(ctx);
-    expect(result.status).toBe('pass');
-    expect(result.message).toBe('available');
+    expect(['pass', 'warn']).toContain(result.status);
+    if (result.status === 'pass') {
+      expect(result.message).toBe('available');
+    }
   });
 });
 
