@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 
 export type PackageManager = 'npm' | 'pnpm' | 'yarn' | 'bun';
 
@@ -59,10 +59,43 @@ export function resolvePackageManager(options: ResolveOptions): Resolution {
   const configured = readConfigPackageManager(options.projectRoot);
   if (configured) return { manager: configured, source: 'config' };
 
-  const lockHit = detectFromLockfile(options.projectRoot);
+  const corepack = readPackageManagerField(options.projectRoot);
+  if (corepack) return { manager: corepack.manager, source: 'config', detail: corepack.detail };
+
+  const lockHit = detectFromLockfileWalkUp(options.projectRoot);
   if (lockHit) return { manager: lockHit.manager, source: 'lockfile', detail: lockHit.detail };
 
   return { manager: 'npm', source: 'default' };
+}
+
+/**
+ * Honor the corepack `packageManager` field in the nearest package.json walking
+ * up from projectRoot. Format: "pnpm@10.9.0" | "yarn@4.0.0" | "npm@10.0.0".
+ */
+function readPackageManagerField(startDir: string): LockHit | null {
+  let dir = startDir;
+  for (let i = 0; i < 12; i++) {
+    const pkg = join(dir, 'package.json');
+    if (existsSync(pkg)) {
+      try {
+        const parsed = JSON.parse(readFileSync(pkg, 'utf-8')) as { packageManager?: string };
+        const value = parsed.packageManager;
+        if (typeof value === 'string') {
+          const [nameRaw] = value.split('@');
+          const name = (nameRaw ?? '').trim();
+          if (isPackageManager(name)) {
+            return { manager: name, detail: `packageManager: ${value}` };
+          }
+        }
+      } catch {
+        // ignore malformed manifests; try parent
+      }
+    }
+    const parent = dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return null;
 }
 
 function readConfigPackageManager(projectRoot: string): PackageManager | null {
@@ -85,17 +118,30 @@ interface LockHit {
   detail: string;
 }
 
-function detectFromLockfile(projectRoot: string): LockHit | null {
+/**
+ * Look for a lockfile at `projectRoot` or any ancestor (monorepo-aware).
+ * pnpm-workspace.yaml is also a strong pnpm signal even when the lockfile
+ * lives only at the workspace root.
+ */
+function detectFromLockfileWalkUp(startDir: string): LockHit | null {
   const probes: Array<{ file: string; manager: PackageManager }> = [
     { file: 'bun.lockb', manager: 'bun' },
     { file: 'pnpm-lock.yaml', manager: 'pnpm' },
+    { file: 'pnpm-workspace.yaml', manager: 'pnpm' },
     { file: 'yarn.lock', manager: 'yarn' },
     { file: 'package-lock.json', manager: 'npm' },
   ];
-  for (const probe of probes) {
-    if (existsSync(join(projectRoot, probe.file))) {
-      return { manager: probe.manager, detail: probe.file };
+  let dir = startDir;
+  for (let i = 0; i < 12; i++) {
+    for (const probe of probes) {
+      const path = join(dir, probe.file);
+      if (existsSync(path)) {
+        return { manager: probe.manager, detail: probe.file };
+      }
     }
+    const parent = dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
   }
   return null;
 }

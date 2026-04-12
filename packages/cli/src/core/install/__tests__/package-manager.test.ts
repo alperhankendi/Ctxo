@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdtempSync, rmSync, writeFileSync, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import {
   resolvePackageManager,
@@ -90,6 +90,49 @@ describe('resolvePackageManager', () => {
     writeFileSync(join(tmp, 'yarn.lock'), '');
     const result = resolvePackageManager({ projectRoot: tmp, env: {} });
     expect(result.manager).toBe('yarn');
+  });
+
+  it('walks up to a parent lockfile (monorepo subdir case)', () => {
+    const sub = join(tmp, 'packages', 'cli');
+    mkdirSync(sub, { recursive: true });
+    writeFileSync(join(tmp, 'pnpm-lock.yaml'), '');
+    const result = resolvePackageManager({ projectRoot: sub, env: {} });
+    expect(result.manager).toBe('pnpm');
+    expect(result.source).toBe('lockfile');
+  });
+
+  it('treats pnpm-workspace.yaml as a pnpm signal even without a lockfile', () => {
+    const sub = join(tmp, 'packages', 'cli');
+    mkdirSync(sub, { recursive: true });
+    writeFileSync(join(tmp, 'pnpm-workspace.yaml'), 'packages:\n  - packages/*');
+    const result = resolvePackageManager({ projectRoot: sub, env: {} });
+    expect(result.manager).toBe('pnpm');
+  });
+
+  it('honors package.json#packageManager (corepack) field', () => {
+    writeFileSync(
+      join(tmp, 'package.json'),
+      JSON.stringify({ packageManager: 'pnpm@10.9.0' }),
+    );
+    const result = resolvePackageManager({ projectRoot: tmp, env: {} });
+    expect(result.manager).toBe('pnpm');
+    expect(result.source).toBe('config');
+    expect(result.detail).toBe('packageManager: pnpm@10.9.0');
+  });
+
+  it('packageManager field wins over lockfile when both present', () => {
+    writeFileSync(join(tmp, 'package.json'), JSON.stringify({ packageManager: 'yarn@4.0.0' }));
+    writeFileSync(join(tmp, 'pnpm-lock.yaml'), '');
+    const result = resolvePackageManager({ projectRoot: tmp, env: {} });
+    expect(result.manager).toBe('yarn');
+  });
+
+  it('ignores unknown packageManager field and falls through to lockfile', () => {
+    writeFileSync(join(tmp, 'package.json'), JSON.stringify({ packageManager: 'poetry@1.0' }));
+    writeFileSync(join(tmp, 'pnpm-lock.yaml'), '');
+    const result = resolvePackageManager({ projectRoot: tmp, env: {} });
+    expect(result.manager).toBe('pnpm');
+    expect(result.source).toBe('lockfile');
   });
 });
 
