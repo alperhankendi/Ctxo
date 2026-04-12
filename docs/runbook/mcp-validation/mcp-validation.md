@@ -22,7 +22,7 @@ rm -rf .ctxo/.cache/ .ctxo/index/
 ## Step 2: Rebuild Index from Zero
 
 ```Shell
-time npx tsx src/index.ts index
+time pnpm --filter @ctxo/cli exec tsx src/index.ts index
 ```
 
 **Verify:**
@@ -49,7 +49,7 @@ time npx tsx src/index.ts index
 
 ```Shell
 rm -rf .ctxo/.cache/ .ctxo/index/
-time npx tsx src/index.ts index --max-history 5
+time pnpm --filter @ctxo/cli exec tsx src/index.ts index --max-history 5
 ```
 
 **Verify:**
@@ -114,7 +114,7 @@ console.log(JSON.stringify({files:files.length,symbols:s,edges:ed,intents:i,anti
 
 Test with LogicSliceQuery at all 4 levels to verify progressive detail.
 
-**Symbol:** `src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class`
+**Symbol:** `packages/cli/src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class`
 
 | Call   | Level      | Expected                                                                |
 | ------ | ---------- | ----------------------------------------------------------------------- |
@@ -149,7 +149,7 @@ LogicSliceQuery
 
 Test with a high-impact core type to verify multi-depth traversal, risk scoring, and confirmed/potential split.
 
-**Symbol:** `src/core/types.ts::SymbolNode::type`
+**Symbol:** `packages/cli/src/core/types.ts::SymbolNode::type`
 
 ### 5.1 Basic Blast Radius
 
@@ -230,15 +230,15 @@ Call with no parameters for full project scan.
 **Verify:**
 
 * [ ] Response contains `layers` object with up to 6 keys: `Domain`, `Adapter`, `Test`, `Composition`, `Configuration`, `Unknown`
-* [ ] `Domain` includes: `src/core/`, `src/ports/` files
-* [ ] `Adapter` includes: `src/adapters/`, `src/cli/` files
+* [ ] `Domain` includes: `packages/cli/src/core/`, `packages/cli/src/ports/` files
+* [ ] `Adapter` includes: `packages/cli/src/adapters/`, `packages/cli/src/cli/` files
 * [ ] `Test` includes: `__tests__/`, `.test.ts`, `tests/`, `fixtures/` files
-* [ ] `Composition` includes: `src/index.ts`
+* [ ] `Composition` includes: `packages/cli/src/index.ts`
 * [ ] `Configuration` includes: `*.config.ts`, `*.config.js` files
 * [ ] `Unknown` includes: remaining unclassified files
 * [ ] Total file count across all layers matches Step 2 indexed count
-* [ ] No `src/core/` file appears in Adapter layer (hexagonal architecture rule)
-* [ ] No `src/adapters/` file appears in Domain layer
+* [ ] No `packages/cli/src/core/` file appears in Adapter layer (hexagonal architecture rule)
+* [ ] No `packages/cli/src/adapters/` file appears in Domain layer
 
 **Record:**
 
@@ -256,7 +256,7 @@ Call with no parameters for full project scan.
 
 ## Step 7: Test `get_why_context`
 
-**Symbol:** `src/core/masking/masking-pipeline.ts::MaskingPipeline::class`
+**Symbol:** `packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class`
 
 **Verify:**
 
@@ -275,7 +275,7 @@ Call with no parameters for full project scan.
 
 ### 7.1 `maxCommits` Query-Time Limit
 
-Call `get_why_context` with `{ symbolId: "src/core/masking/masking-pipeline.ts::MaskingPipeline::class", maxCommits: 3 }`:
+Call `get_why_context` with `{ symbolId: "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class", maxCommits: 3 }`:
 
 **Verify:**
 
@@ -307,7 +307,7 @@ Call again WITHOUT `maxCommits`:
 
 ## Step 8: Test `get_change_intelligence`
 
-**Symbol:** `src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class`
+**Symbol:** `packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class`
 
 **Verify:**
 
@@ -371,7 +371,7 @@ Call with `{ includeTests: true }`:
 ### 9.5 Edge Cases
 
 * [ ] Circular dependency islands (A→B→C→A, all unreachable from entry points) are detected as dead
-* [ ] Composition root (`src/index.ts`) symbols are NOT dead (they are entry points)
+* [ ] Composition root (`packages/cli/src/index.ts`) symbols are NOT dead (they are entry points)
 * [ ] CLI command symbols are NOT dead (they have outgoing deps)
 
 ### 9.6 Dynamic Entry Point Detection
@@ -432,7 +432,7 @@ Call with `{ includeTests: true }`:
 
 Test task-aware context assembly with different task types.
 
-**Symbol:** `src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class`
+**Symbol:** `packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class`
 
 ### 10.1 Understand Task
 
@@ -744,11 +744,11 @@ Call with `{ since: "HEAD~10", maxFiles: 2 }`:
 
 Test reverse dependency lookup (who imports a given symbol).
 
-**Symbol:** `src/core/types.ts::SymbolNode::type` (widely used across the codebase)
+**Symbol:** `packages/cli/src/core/types.ts::SymbolNode::type` (widely used across the codebase)
 
 ### 14.1 Direct Importers
 
-Call with `{ symbolId: "src/core/types.ts::SymbolNode::type" }`:
+Call with `{ symbolId: "packages/cli/src/core/types.ts::SymbolNode::type" }`:
 
 **Verify:**
 
@@ -761,7 +761,7 @@ Call with `{ symbolId: "src/core/types.ts::SymbolNode::type" }`:
 
 ### 14.2 Transitive Importers
 
-Call with `{ symbolId: "src/core/types.ts::SymbolNode::type", transitive: true }`:
+Call with `{ symbolId: "packages/cli/src/core/types.ts::SymbolNode::type", transitive: true }`:
 
 **Verify:**
 
@@ -772,14 +772,14 @@ Call with `{ symbolId: "src/core/types.ts::SymbolNode::type", transitive: true }
 
 ### 14.3 Edge Kind Filter
 
-Call with `{ symbolId: "src/core/types.ts::SymbolNode::type", edgeKinds: ["implements"] }`:
+Call with `{ symbolId: "packages/cli/src/core/types.ts::SymbolNode::type", edgeKinds: ["implements"] }`:
 
 * [ ] Only importers connected via `implements` edge are returned
 * [ ] `importerCount` <= count from 14.1
 
 ### 14.4 Max Depth Limit
 
-Call with `{ symbolId: "src/core/types.ts::SymbolNode::type", transitive: true, maxDepth: 1 }`:
+Call with `{ symbolId: "packages/cli/src/core/types.ts::SymbolNode::type", transitive: true, maxDepth: 1 }`:
 
 * [ ] All entries have `depth: 1` only
 * [ ] Count matches direct-only result from 14.1
@@ -821,7 +821,7 @@ Call with `{}` (no symbolId — returns all extends/implements trees):
 
 Find a class that implements an interface (e.g., `SqliteStorageAdapter implements IStoragePort`).
 
-Call with `{ symbolId: "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class", direction: "ancestors" }`:
+Call with `{ symbolId: "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class", direction: "ancestors" }`:
 
 **Verify:**
 
@@ -972,7 +972,7 @@ const { GoAdapter } = require('./dist/index.js');
 // Or test directly:
 const fs = require('fs');
 const source = fs.readFileSync('/tmp/ctxo-go-test/main.go', 'utf-8');
-const adapter = new (require('./src/adapters/language/go-adapter.js').GoAdapter)();
+const adapter = new (require('./packages/lang-go/src/go-adapter.js').GoAdapter)();
 const symbols = adapter.extractSymbols('main.go', source);
 const edges = adapter.extractEdges('main.go', source);
 console.log('Symbols:', symbols.map(s => s.name + ' (' + s.kind + ')'));
@@ -1037,10 +1037,10 @@ CSEOF
 
 ```Shell
 node -e "
-const { LanguageAdapterRegistry } = require('./src/adapters/language/language-adapter-registry.js');
-const { TsMorphAdapter } = require('./src/adapters/language/ts-morph-adapter.js');
-const { GoAdapter } = require('./src/adapters/language/go-adapter.js');
-const { CSharpAdapter } = require('./src/adapters/language/csharp-adapter.js');
+const { LanguageAdapterRegistry } = require('./packages/cli/src/adapters/language/language-adapter-registry.js');
+const { TsMorphAdapter } = require('./packages/lang-typescript/src/ts-morph-adapter.js');
+const { GoAdapter } = require('./packages/lang-go/src/go-adapter.js');
+const { CSharpAdapter } = require('./packages/lang-csharp/src/csharp-adapter.js');
 const reg = new LanguageAdapterRegistry();
 reg.register(new TsMorphAdapter());
 reg.register(new GoAdapter());
@@ -1129,8 +1129,8 @@ Test the PR impact analysis tool:
 
 ```Shell
 # Assuming recent changes exist
-npx tsx -e "
-const { handleGetPrImpact } = require('./src/adapters/mcp/get-pr-impact.js');
+pnpm --filter @ctxo/cli exec tsx -e "
+const { handleGetPrImpact } = require('./packages/cli/src/adapters/mcp/get-pr-impact.js');
 // Or call via MCP:
 // get_pr_impact({ since: 'HEAD~3' })
 "
@@ -1217,7 +1217,7 @@ Verify that `intent` parameter filters results across 4 tools.
 
 ### 19c.1 `get_blast_radius` with Intent
 
-Call with `{ symbolId: "src/core/types.ts::SymbolNode::type", intent: "adapter" }`:
+Call with `{ symbolId: "packages/cli/src/core/types.ts::SymbolNode::type", intent: "adapter" }`:
 
 * [ ] Only impacted symbols with "adapter" in symbolId/file/name/kind are returned
 * [ ] `impactScore` reflects filtered count
@@ -1225,7 +1225,7 @@ Call with `{ symbolId: "src/core/types.ts::SymbolNode::type", intent: "adapter" 
 
 ### 19c.2 `find_importers` with Intent
 
-Call with `{ symbolId: "src/core/types.ts::SymbolNode::type", intent: "storage" }`:
+Call with `{ symbolId: "packages/cli/src/core/types.ts::SymbolNode::type", intent: "storage" }`:
 
 * [ ] Only importers with "storage" in symbolId/file/name are returned
 * [ ] `importerCount` reflects filtered count
@@ -1240,7 +1240,7 @@ Call with `{ intent: "function" }`:
 
 ### 19c.4 `get_logic_slice` with Intent
 
-Call with `{ symbolId: "src/core/graph/symbol-graph.ts::SymbolGraph::class", level: 3, intent: "type" }`:
+Call with `{ symbolId: "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class", level: 3, intent: "type" }`:
 
 * [ ] `dependencies` array filtered to only entries matching "type"
 * [ ] Root symbol always included (not filtered)
@@ -1374,7 +1374,7 @@ console.log(intraClassCalls > 0 ? 'PASS: this.method() edges detected' : 'INFO: 
 ## Step 22: Run Unit Tests
 
 ```Shell
-npx vitest run 2>&1 | tail -10
+pnpm --filter @ctxo/cli test:unit 2>&1 | tail -10
 ```
 
 **Verify:**
@@ -1392,8 +1392,8 @@ For each tool, manually replicate the same result using standard AI assistant to
 
 Replicate `get_logic_slice` L3 result manually:
 
-1. **Read** `src/core/logic-slice/logic-slice-query.ts` — note all imports
-2. **Read** each imported file (`src/core/types.ts`, `src/core/graph/symbol-graph.ts`)
+1. **Read** `packages/cli/src/core/logic-slice/logic-slice-query.ts` — note all imports
+2. **Read** each imported file (`packages/cli/src/core/types.ts`, `packages/cli/src/core/graph/symbol-graph.ts`)
 3. For each dependency, **Read** its imports to find transitive deps
 4. Compile the full dependency tree
 
@@ -1433,9 +1433,9 @@ Replicate `get_blast_radius` result manually:
 
 Replicate `get_architectural_overlay` result manually:
 
-1. **Glob** `src/**/*.ts` to list all source files
+1. **Glob** `packages/cli/src/**/*.ts` to list all source files
 2. **Read** each file's imports to determine layer classification
-3. Classify: files importing only from `core/` → Domain; files importing from adapters → Adapter; rest → Unknown
+3. Classify: files importing only from `packages/cli/src/core/` → Domain; files importing from adapters → Adapter; rest → Unknown
 
 **Record:**
 
@@ -1452,9 +1452,9 @@ Replicate `get_architectural_overlay` result manually:
 
 Replicate `get_why_context` result manually:
 
-1. **Bash** `git log --format="%H|%s|%ai" -- src/core/masking/masking-pipeline.ts`
-2. **Bash** `git show [hash] -- src/core/masking/masking-pipeline.ts` for each commit
-3. **Bash** `git log --grep="revert" -i -- src/core/masking/masking-pipeline.ts`
+1. **Bash** `git log --format="%H|%s|%ai" -- packages/cli/src/core/masking/masking-pipeline.ts`
+2. **Bash** `git show [hash] -- packages/cli/src/core/masking/masking-pipeline.ts` for each commit
+3. **Bash** `git log --grep="revert" -i -- packages/cli/src/core/masking/masking-pipeline.ts`
 
 **Record:**
 
@@ -1470,10 +1470,10 @@ Replicate `get_why_context` result manually:
 
 Replicate `get_change_intelligence` result manually:
 
-1. **Read** `src/adapters/storage/sqlite-storage-adapter.ts` fully
+1. **Read** `packages/cli/src/adapters/storage/sqlite-storage-adapter.ts` fully
 2. Count cyclomatic complexity (if/else/switch/catch/&&/||/ternary)
-3. **Bash** `git log --oneline -- src/adapters/storage/sqlite-storage-adapter.ts`
-4. **Bash** `git log --format="%ai" -- src/adapters/storage/sqlite-storage-adapter.ts`
+3. **Bash** `git log --oneline -- packages/cli/src/adapters/storage/sqlite-storage-adapter.ts`
+4. **Bash** `git log --format="%ai" -- packages/cli/src/adapters/storage/sqlite-storage-adapter.ts`
 5. Compute churn rate, normalize, classify band
 
 **Record:**
@@ -1490,7 +1490,7 @@ Replicate `get_change_intelligence` result manually:
 
 Replicate `find_dead_code` result manually:
 
-1. **Glob** `src/**/*.ts` to list all non-test source files
+1. **Glob** `packages/cli/src/**/*.ts` to list all non-test source files
 2. For each file, **Grep** for its exports (functions, classes, interfaces, types)
 3. For each exported symbol, **Grep** across all other files to check if it's imported/referenced
 4. Symbols with zero external references → dead candidates
@@ -1613,7 +1613,7 @@ Fill in after completing both MCP and manual runs:
 
 Replicate `get_symbol_importance` result manually:
 
-1. **Grep** all `import` statements across `src/**/*.ts` files
+1. **Grep** all `import` statements across `packages/cli/src/**/*.ts` files
 2. Count how many files import each symbol (in-degree)
 3. For each symbol, count its own imports (out-degree)
 4. Manually compute iterative PageRank: score = (1-0.85)/N + 0.85 * sum(score(importer)/outDegree(importer))
@@ -1763,18 +1763,18 @@ Run all 14 MCP tool calls automatically via InMemoryTransport:
 
 ```Shell
 # 1. Clean + rebuild index
-rm -rf .ctxo/.cache/ .ctxo/index/ && npx tsx src/index.ts index
+rm -rf .ctxo/.cache/ .ctxo/index/ && pnpm --filter @ctxo/cli exec tsx src/index.ts index
 
 # 2. Run unit tests
-npx vitest run
+pnpm --filter @ctxo/cli test:unit
 
 # 3. Run MCP validation (14 tool calls, expects 14/14 PASS)
-npx tsx docs/runbook/mcp-validation/mcp-validation-test.ts
+pnpm --filter @ctxo/cli exec tsx docs/runbook/mcp-validation/mcp-validation-test.ts
 ```
 
 **What it does:**
 - Boots the full MCP server in-process using `InMemoryTransport` (no stdio)
-- Registers all 14 tools with the same wiring as `src/index.ts`
+- Registers all 14 tools with the same wiring as `packages/cli/src/index.ts`
 - Calls each tool with representative arguments and parses the response
 - Prints `PASS | <key metrics>` or `FAIL` per tool
 - Exits with code 0 if 14/14 pass, code 1 otherwise
@@ -1809,7 +1809,7 @@ get_pr_impact:            PASS | files=N risk=low
 After running the MCP validation (14 tool calls), verify that session recording captured all calls.
 
 ```bash
-npx tsx src/index.ts stats
+pnpm --filter @ctxo/cli exec tsx src/index.ts stats
 ```
 
 **Verify:**
@@ -1819,7 +1819,7 @@ npx tsx src/index.ts stats
 * [ ] No errors during recording (stats output is consistent)
 
 ```bash
-npx tsx src/index.ts stats --json | node -e "
+pnpm --filter @ctxo/cli exec tsx src/index.ts stats --json | node -e "
 const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
 console.log('Total calls:', d.summary.totalCalls, d.summary.totalCalls >= 14 ? 'PASS' : 'FAIL');
 console.log('Tools recorded:', d.topTools.length, d.topTools.length > 0 ? 'PASS' : 'FAIL');
@@ -1838,25 +1838,25 @@ For manual validation without the automated script:
 
 ```Shell
 # 1. Clean + rebuild
-rm -rf .ctxo/.cache/ .ctxo/index/ && npx tsx src/index.ts index
+rm -rf .ctxo/.cache/ .ctxo/index/ && pnpm --filter @ctxo/cli exec tsx src/index.ts index
 
 # 2. Run tests
-npx vitest run
+pnpm --filter @ctxo/cli test:unit
 ```
 
 Then invoke these 14 MCP calls:
 
-* `get_logic_slice` — `src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class`, level 3
-* `get_blast_radius` — `src/core/types.ts::SymbolNode::type`
+* `get_logic_slice` — `packages/cli/src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class`, level 3
+* `get_blast_radius` — `packages/cli/src/core/types.ts::SymbolNode::type`
 * `get_architectural_overlay` — no params
-* `get_why_context` — `src/core/masking/masking-pipeline.ts::MaskingPipeline::class` (also test with `maxCommits: 3`)
-* `get_change_intelligence` — `src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class`
+* `get_why_context` — `packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class` (also test with `maxCommits: 3`)
+* `get_change_intelligence` — `packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class`
 * `find_dead_code` — no params (default: exclude tests)
-* `get_context_for_task` — `src/core/graph/symbol-graph.ts::SymbolGraph::class`, taskType: "understand"
+* `get_context_for_task` — `packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class`, taskType: "understand"
 * `get_ranked_context` — query: "masking", tokenBudget: 2000
 * `search_symbols` — pattern: "^handle", kind: "function"
 * `get_changed_symbols` — since: "HEAD~3"
-* `find_importers` — `src/core/types.ts::SymbolNode::type`, transitive: true
+* `find_importers` — `packages/cli/src/core/types.ts::SymbolNode::type`, transitive: true
 * `get_class_hierarchy` — no params (full project hierarchy)
 * `get_symbol_importance` — limit: 10
 * `get_pr_impact` — since: "HEAD~3"

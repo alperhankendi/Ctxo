@@ -3,7 +3,10 @@
 > **Purpose:** Repeatable end-to-end validation of all `ctxo` CLI commands.
 > **When to run:** After any CLI change, new command, or before release.
 > **Expected duration:** ~3 minutes
+> **Version:** v0.7.0-alpha.0
 > **Prerequisite:** Index must exist (run `ctxo index` first, or follow [MCP Validation Runbook](../mcp-validation/mcp-validation.md) Steps 1-2)
+
+All commands assume the monorepo root as cwd. `.ctxo/` is per-project; when validating the ctxo repo itself it lives at the workspace root. `--file src/X.ts` is interpreted relative to the cwd.
 
 ***
 
@@ -28,7 +31,7 @@
 ### 1.1 Help Output
 
 ```bash
-npx tsx src/index.ts --help
+pnpm --filter @ctxo/cli exec tsx src/index.ts --help
 ```
 
 **Verify:**
@@ -40,7 +43,7 @@ npx tsx src/index.ts --help
 ### 1.2 Unknown Command
 
 ```bash
-npx tsx src/index.ts unknown-command 2>&1; echo "Exit: $?"
+pnpm --filter @ctxo/cli exec tsx src/index.ts unknown-command 2>&1; echo "Exit: $?"
 ```
 
 **Verify:**
@@ -56,7 +59,7 @@ npx tsx src/index.ts unknown-command 2>&1; echo "Exit: $?"
 
 ```bash
 rm -rf .ctxo/.cache/ .ctxo/index/
-time npx tsx src/index.ts index
+time pnpm --filter @ctxo/cli exec tsx src/index.ts index
 ```
 
 **Verify:**
@@ -69,7 +72,7 @@ time npx tsx src/index.ts index
 ### 2.2 `--check` Flag (CI Gate)
 
 ```bash
-npx tsx src/index.ts index --check 2>&1; echo "Exit: $?"
+pnpm --filter @ctxo/cli exec tsx src/index.ts index --check 2>&1; echo "Exit: $?"
 ```
 
 **Verify:**
@@ -81,7 +84,7 @@ npx tsx src/index.ts index --check 2>&1; echo "Exit: $?"
 
 ```bash
 rm -rf .ctxo/.cache/ .ctxo/index/
-time npx tsx src/index.ts index --skip-history
+time pnpm --filter @ctxo/cli exec tsx src/index.ts index --skip-history
 ```
 
 **Verify:**
@@ -94,7 +97,7 @@ time npx tsx src/index.ts index --skip-history
 
 ```bash
 rm -rf .ctxo/.cache/ .ctxo/index/
-npx tsx src/index.ts index --max-history 3
+pnpm --filter @ctxo/cli exec tsx src/index.ts index --max-history 3
 ```
 
 **Verify:**
@@ -115,21 +118,21 @@ console.log('Max intent entries:', maxIntent, maxIntent <= 3 ? 'PASS' : 'FAIL');
 ### 2.5 `--file <path>` Flag (Single File Re-index)
 
 ```bash
-npx tsx src/index.ts index --file src/core/types.ts
+pnpm --filter @ctxo/cli exec tsx src/index.ts index --file packages/cli/src/core/types.ts
 ```
 
 **Verify:**
 
-* [ ] Only `src/core/types.ts` is re-indexed
+* [ ] Only `packages/cli/src/core/types.ts` is re-indexed
 * [ ] Output shows 1 file indexed
 * [ ] Other index files are unchanged
 
 ### 2.6 `--max-history` Invalid Input
 
 ```bash
-npx tsx src/index.ts index --max-history abc 2>&1; echo "Exit: $?"
-npx tsx src/index.ts index --max-history 0 2>&1; echo "Exit: $?"
-npx tsx src/index.ts index --max-history 2>&1; echo "Exit: $?"
+pnpm --filter @ctxo/cli exec tsx src/index.ts index --max-history abc 2>&1; echo "Exit: $?"
+pnpm --filter @ctxo/cli exec tsx src/index.ts index --max-history 0 2>&1; echo "Exit: $?"
+pnpm --filter @ctxo/cli exec tsx src/index.ts index --max-history 2>&1; echo "Exit: $?"
 ```
 
 **Verify:**
@@ -143,7 +146,7 @@ npx tsx src/index.ts index --max-history 2>&1; echo "Exit: $?"
 
 ```bash
 rm -rf .ctxo/.cache/
-npx tsx src/index.ts sync
+pnpm --filter @ctxo/cli exec tsx src/index.ts sync
 ```
 
 **Verify:**
@@ -155,7 +158,7 @@ npx tsx src/index.ts sync
 ### 3.1 Sync When Cache Already Exists
 
 ```bash
-npx tsx src/index.ts sync
+pnpm --filter @ctxo/cli exec tsx src/index.ts sync
 ```
 
 **Verify:**
@@ -167,7 +170,7 @@ npx tsx src/index.ts sync
 ## Step 4: `ctxo status`
 
 ```bash
-npx tsx src/index.ts status
+pnpm --filter @ctxo/cli exec tsx src/index.ts status
 ```
 
 **Verify:**
@@ -183,7 +186,7 @@ npx tsx src/index.ts status
 
 ```bash
 rm -rf .ctxo/index/
-npx tsx src/index.ts status 2>&1
+pnpm --filter @ctxo/cli exec tsx src/index.ts status 2>&1
 ```
 
 **Verify:**
@@ -192,7 +195,7 @@ npx tsx src/index.ts status 2>&1
 
 ```bash
 # Restore index for remaining steps
-npx tsx src/index.ts index
+pnpm --filter @ctxo/cli exec tsx src/index.ts index
 ```
 
 ***
@@ -202,7 +205,7 @@ npx tsx src/index.ts index
 ### 5.1 Fresh Index
 
 ```bash
-npx tsx src/index.ts verify-index 2>&1; echo "Exit: $?"
+pnpm --filter @ctxo/cli exec tsx src/index.ts verify-index 2>&1; echo "Exit: $?"
 ```
 
 **Verify:**
@@ -218,18 +221,18 @@ npx tsx src/index.ts verify-index 2>&1; echo "Exit: $?"
 
 ```bash
 # Add a new exported type to create a symbol diff
-echo 'export type VerifyTestDummy = { x: number };' >> src/core/types.ts
-npx tsx src/index.ts verify-index 2>&1; echo "Exit: $?"
+echo 'export type VerifyTestDummy = { x: number };' >> packages/cli/src/core/types.ts
+pnpm --filter @ctxo/cli exec tsx src/index.ts verify-index 2>&1; echo "Exit: $?"
 ```
 
 **Verify:**
 
-* [ ] Shows `STALE: src/core/types.ts`
+* [ ] Shows `STALE: packages/cli/src/core/types.ts`
 * [ ] Exit code 1
 
 ```bash
 # Restore
-git checkout src/core/types.ts
+git checkout packages/cli/src/core/types.ts
 ```
 
 ### 5.3 Stale Index (mtime-only, via `index --check`)
@@ -237,8 +240,8 @@ git checkout src/core/types.ts
 > **Note:** `index --check` uses fast mtime + content-hash detection without rebuilding.
 
 ```bash
-touch src/core/types.ts
-npx tsx src/index.ts index --check 2>&1; echo "Exit: $?"
+touch packages/cli/src/core/types.ts
+pnpm --filter @ctxo/cli exec tsx src/index.ts index --check 2>&1; echo "Exit: $?"
 ```
 
 **Verify:**
@@ -251,7 +254,7 @@ npx tsx src/index.ts index --check 2>&1; echo "Exit: $?"
 ## Step 6: `ctxo init`
 
 ```bash
-npx tsx src/index.ts init
+pnpm --filter @ctxo/cli exec tsx src/index.ts init
 ```
 
 **Verify:**
@@ -271,7 +274,7 @@ cat .git/hooks/post-merge
 
 ```bash
 # Start watcher in background, wait 3 seconds, then kill
-npx tsx src/index.ts watch &
+pnpm --filter @ctxo/cli exec tsx src/index.ts watch &
 WATCH_PID=$!
 sleep 3
 kill $WATCH_PID 2>/dev/null
@@ -318,7 +321,7 @@ async function seed() {
   db.run('CREATE INDEX IF NOT EXISTS idx_session_tool ON session_events(tool)');
 
   const tools = ['get_logic_slice','get_blast_radius','search_symbols','get_why_context','get_ranked_context'];
-  const symbols = ['src/core/types.ts::SymbolNode::type','src/core/graph/symbol-graph.ts::SymbolGraph::class','src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class',null];
+  const symbols = ['packages/cli/src/core/types.ts::SymbolNode::type','packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class','packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class',null];
   const levels = ['L1','L2','L3','L4',null];
 
   for (let i = 0; i < 50; i++) {
@@ -338,7 +341,7 @@ seed();
 ### 8.1 Default Output (All Time)
 
 ```bash
-npx tsx src/index.ts stats
+pnpm --filter @ctxo/cli exec tsx src/index.ts stats
 ```
 
 **Verify:**
@@ -363,7 +366,7 @@ npx tsx src/index.ts stats
 ### 8.2 `--json` Flag
 
 ```bash
-npx tsx src/index.ts stats --json
+pnpm --filter @ctxo/cli exec tsx src/index.ts stats --json
 ```
 
 **Verify:**
@@ -377,7 +380,7 @@ npx tsx src/index.ts stats --json
 
 ```bash
 # Validate JSON schema
-npx tsx src/index.ts stats --json | node -e "
+pnpm --filter @ctxo/cli exec tsx src/index.ts stats --json | node -e "
 const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
 const checks = [
   ['timeRange exists', !!d.timeRange],
@@ -395,7 +398,7 @@ checks.forEach(([name,ok]) => console.log(ok ? 'PASS' : 'FAIL', name));
 ### 8.3 `--days N` Flag
 
 ```bash
-npx tsx src/index.ts stats --days 7
+pnpm --filter @ctxo/cli exec tsx src/index.ts stats --days 7
 ```
 
 **Verify:**
@@ -404,7 +407,7 @@ npx tsx src/index.ts stats --days 7
 * [ ] Shows data (events were just seeded, so they are within 7 days)
 
 ```bash
-npx tsx src/index.ts stats --days 7 --json | node -e "
+pnpm --filter @ctxo/cli exec tsx src/index.ts stats --days 7 --json | node -e "
 const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
 console.log('daysFilter:', d.timeRange.daysFilter === 7 ? 'PASS' : 'FAIL');
 console.log('from is set:', d.timeRange.from !== null ? 'PASS' : 'FAIL');
@@ -414,8 +417,8 @@ console.log('from is set:', d.timeRange.from !== null ? 'PASS' : 'FAIL');
 ### 8.4 `--days` Invalid Input
 
 ```bash
-npx tsx src/index.ts stats --days 0 2>&1; echo "Exit: $?"
-npx tsx src/index.ts stats --days -5 2>&1; echo "Exit: $?"
+pnpm --filter @ctxo/cli exec tsx src/index.ts stats --days 0 2>&1; echo "Exit: $?"
+pnpm --filter @ctxo/cli exec tsx src/index.ts stats --days -5 2>&1; echo "Exit: $?"
 ```
 
 **Verify:**
@@ -426,7 +429,7 @@ npx tsx src/index.ts stats --days -5 2>&1; echo "Exit: $?"
 ### 8.5 `--clear` Flag
 
 ```bash
-npx tsx src/index.ts stats --clear
+pnpm --filter @ctxo/cli exec tsx src/index.ts stats --clear
 ```
 
 **Verify:**
@@ -434,7 +437,7 @@ npx tsx src/index.ts stats --clear
 * [ ] Shows `Session data cleared.`
 
 ```bash
-npx tsx src/index.ts stats
+pnpm --filter @ctxo/cli exec tsx src/index.ts stats
 ```
 
 * [ ] Shows `No usage data yet. Start using Ctxo MCP tools to collect stats.`
@@ -443,7 +446,7 @@ npx tsx src/index.ts stats
 
 ```bash
 rm -f .ctxo/.cache/symbols.db
-npx tsx src/index.ts stats
+pnpm --filter @ctxo/cli exec tsx src/index.ts stats
 ```
 
 **Verify:**
@@ -452,7 +455,7 @@ npx tsx src/index.ts stats
 * [ ] No crash, no stack trace
 
 ```bash
-npx tsx src/index.ts stats --json
+pnpm --filter @ctxo/cli exec tsx src/index.ts stats --json
 ```
 
 * [ ] Outputs valid JSON with `totalCalls: 0`
@@ -461,7 +464,7 @@ npx tsx src/index.ts stats --json
 
 ```bash
 echo -e "stats:\n  enabled: false" > .ctxo/config.yaml
-npx tsx src/index.ts stats
+pnpm --filter @ctxo/cli exec tsx src/index.ts stats
 ```
 
 **Verify:**
@@ -476,7 +479,7 @@ rm -f .ctxo/config.yaml
 ### 8.8 Restore DB
 
 ```bash
-npx tsx src/index.ts sync
+pnpm --filter @ctxo/cli exec tsx src/index.ts sync
 ```
 
 ***
@@ -486,19 +489,21 @@ npx tsx src/index.ts sync
 ### 9.1 Default Output (Human-Readable)
 
 ```bash
-npx tsx src/index.ts doctor
+pnpm --filter @ctxo/cli exec tsx src/index.ts doctor
 ```
 
 **Expected:**
 - Header: `ctxo doctor — Health Check`
-- 15 check lines with `✓`, `⚠`, or `✗` icons
+- ≥10 check lines with `✓`, `⚠`, or `✗` icons
+- `TsMorphCheck` title is now `TypeScript plugin (@ctxo/lang-typescript)`
+- `TreeSitterCheck` title is now `Go / C# plugins (@ctxo/lang-go, @ctxo/lang-csharp)`
 - Summary line: `N passed, N warnings, N failures`
 - Exit code 0 if no failures: `echo $?` → `0`
 
 ### 9.2 JSON Output
 
 ```bash
-npx tsx src/index.ts doctor --json
+pnpm --filter @ctxo/cli exec tsx src/index.ts doctor --json
 ```
 
 **Expected:**
@@ -511,7 +516,7 @@ npx tsx src/index.ts doctor --json
 ### 9.3 Quiet Output
 
 ```bash
-npx tsx src/index.ts doctor --quiet
+pnpm --filter @ctxo/cli exec tsx src/index.ts doctor --quiet
 ```
 
 **Expected:**
@@ -523,7 +528,7 @@ npx tsx src/index.ts doctor --quiet
 
 ```bash
 rm -rf /tmp/ctxo-test-empty && mkdir /tmp/ctxo-test-empty && cd /tmp/ctxo-test-empty
-npx tsx /path/to/ctxo/src/index.ts doctor --json 2>/dev/null
+pnpm --filter @ctxo/cli exec tsx /path/to/ctxo/packages/cli/src/index.ts doctor --json 2>/dev/null
 ```
 
 **Expected:**
@@ -533,7 +538,7 @@ npx tsx /path/to/ctxo/src/index.ts doctor --json 2>/dev/null
 ### 9.5 Exit Code Verification
 
 ```bash
-npx tsx src/index.ts doctor; echo "Exit: $?"
+pnpm --filter @ctxo/cli exec tsx src/index.ts doctor; echo "Exit: $?"
 ```
 
 **Expected:**
@@ -546,23 +551,23 @@ npx tsx src/index.ts doctor; echo "Exit: $?"
 
 ### 10.1 Index → Status → Verify Round-trip
 
+> Assumes the index from Step 2.1 is still fresh — no rebuild here. Just confirm staleness remains false via `--check` and inspect the round-trip.
+
 ```bash
-rm -rf .ctxo/.cache/ .ctxo/index/
-npx tsx src/index.ts index
-npx tsx src/index.ts status 2>&1 | head -6
-npx tsx src/index.ts verify-index 2>&1; echo "Exit: $?"
+pnpm --filter @ctxo/cli exec tsx src/index.ts index --check 2>&1; echo "Exit: $?"
+pnpm --filter @ctxo/cli exec tsx src/index.ts status 2>&1 | head -6
 ```
 
 **Verify:**
 
-* [ ] Index builds → status shows matching count → verify passes (exit 0)
+* [ ] `--check` exits 0 (index fresh) → status shows matching count from Step 2.1
 
 ### 10.2 Index → Sync → Status Round-trip
 
 ```bash
 rm -rf .ctxo/.cache/
-npx tsx src/index.ts sync
-npx tsx src/index.ts status 2>&1 | grep "SQLite cache"
+pnpm --filter @ctxo/cli exec tsx src/index.ts sync
+pnpm --filter @ctxo/cli exec tsx src/index.ts status 2>&1 | grep "SQLite cache"
 ```
 
 **Verify:**
@@ -574,7 +579,7 @@ npx tsx src/index.ts status 2>&1 | grep "SQLite cache"
 After running MCP validation (see [MCP Validation Runbook](../mcp-validation/mcp-validation.md)), verify that stats were recorded:
 
 ```bash
-npx tsx src/index.ts stats
+pnpm --filter @ctxo/cli exec tsx src/index.ts stats
 ```
 
 **Verify:**
@@ -588,7 +593,7 @@ npx tsx src/index.ts stats
 ## Step 11: Run CLI Unit Tests
 
 ```bash
-npx vitest run src/cli/__tests__/ 2>&1 | tail -5
+pnpm --filter @ctxo/cli exec vitest run packages/cli/src/cli/__tests__/ 2>&1 | tail -5
 ```
 
 **Verify:**
@@ -597,7 +602,7 @@ npx vitest run src/cli/__tests__/ 2>&1 | tail -5
 * [ ] No failures or errors
 
 ```bash
-npx vitest run src/adapters/stats/__tests__/ 2>&1 | tail -5
+pnpm --filter @ctxo/cli exec vitest run packages/cli/src/adapters/stats/__tests__/ 2>&1 | tail -5
 ```
 
 **Verify:**
@@ -636,7 +641,7 @@ cat > docs/runbook/cli-validation/validation-result-vN.md <<'TEMPLATE'
 # CLI Validation Result — vN
 
 > **Date:** YYYY-MM-DD
-> **Ctxo Version:** vX.Y.Z
+> **Ctxo Version:** v0.7.0-alpha.0
 > **Platform:** (OS and shell)
 > **Node.js:** (version)
 > **Result:** **X/54 PASS, Y FAIL, Z NUANCE**
