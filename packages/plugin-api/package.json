@@ -22,7 +22,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit",
-    "test": "echo 'no tests — types-only package'"
+    "test": "vitest run"
   },
   "keywords": [
     "ctxo",
@@ -33,6 +33,7 @@
   "author": "Alper Hankendi",
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.3"
   }
 }

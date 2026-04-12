@@ -285,7 +285,7 @@ describe('ensureMcpConfig', () => {
     const config = JSON.parse(readFileSync(join(dir, '.mcp.json'), 'utf-8'));
     expect(config.mcpServers.ctxo).toBeDefined();
     expect(config.mcpServers.ctxo.command).toBe('npx');
-    expect(config.mcpServers.ctxo.args).toContain('ctxo-mcp');
+    expect(config.mcpServers.ctxo.args).toContain('@ctxo/cli');
   });
 
   it('creates .vscode/mcp.json with type: stdio for copilot', () => {

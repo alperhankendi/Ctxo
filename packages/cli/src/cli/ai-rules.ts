@@ -208,7 +208,7 @@ export function ensureConfig(projectRoot: string): InstallResult {
 /*  MCP server registration                                            */
 /* ------------------------------------------------------------------ */
 
-const CTXO_MCP_ENTRY = { command: 'npx', args: ['-y', 'ctxo-mcp'] };
+const CTXO_MCP_ENTRY = { command: 'npx', args: ['-y', '@ctxo/cli'] };
 
 interface McpConfigTarget {
   file: string;
