@@ -15,6 +15,7 @@
     "typecheck": "pnpm -r typecheck",
     "lint": "pnpm -r lint",
     "dev": "pnpm --filter @ctxo/cli dev",
+    "ctxo": "tsx packages/cli/src/index.ts",
     "changeset": "changeset",
     "version": "changeset version",
     "release": "pnpm -r build && changeset publish"
@@ -26,6 +27,7 @@
     "@changesets/cli": "^2.30.0",
     "@ctxo/lang-csharp": "workspace:*",
     "@ctxo/lang-go": "workspace:*",
-    "@ctxo/lang-typescript": "workspace:*"
+    "@ctxo/lang-typescript": "workspace:*",
+    "tsx": "^4.21.0"
   }
 }
