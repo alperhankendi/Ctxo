@@ -130,7 +130,16 @@ export class CliRouter {
       case 'doctor': {
         const jsonArg = args.includes('--json');
         const quietArg = args.includes('--quiet');
-        await new DoctorCommand(this.projectRoot).run({ json: jsonArg, quiet: quietArg });
+        const fixArg = args.includes('--fix');
+        const dryRunArg = args.includes('--dry-run');
+        const yesArg = args.includes('--yes') || args.includes('-y');
+        await new DoctorCommand(this.projectRoot).run({
+          json: jsonArg,
+          quiet: quietArg,
+          fix: fixArg,
+          dryRun: dryRunArg,
+          yes: yesArg,
+        });
         break;
       }
 

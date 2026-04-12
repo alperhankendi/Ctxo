@@ -20,10 +20,14 @@ import {
 import { SqliteCacheCheck } from '../adapters/diagnostics/checks/storage-check.js';
 import { ConfigFileCheck } from '../adapters/diagnostics/checks/config-check.js';
 import { DiskUsageCheck } from '../adapters/diagnostics/checks/disk-check.js';
+import { applyFixes, formatFixReport } from './doctor-fix.js';
 
 export interface DoctorOptions {
   json?: boolean;
   quiet?: boolean;
+  fix?: boolean;
+  dryRun?: boolean;
+  yes?: boolean;
 }
 
 export class DoctorCommand {
@@ -84,6 +88,22 @@ export class DoctorCommand {
     } else {
       output = reporter.formatHuman(report);
       console.error(output);
+    }
+
+    if (options.fix) {
+      console.error('');
+      console.error(options.dryRun ? '[ctxo] --fix --dry-run: planned actions' : '[ctxo] --fix: applying remediation');
+      const fixReport = await applyFixes(report, {
+        projectRoot: this.projectRoot,
+        ctxoRoot: this.ctxoRoot,
+        yes: options.yes,
+        dryRun: options.dryRun,
+      });
+      console.error(formatFixReport(fixReport));
+      if (fixReport.halted) {
+        process.exitCode = 2;
+      }
+      return;
     }
 
     if (report.exitCode !== 0) {
