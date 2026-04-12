@@ -283,8 +283,10 @@ try {
 
 ## TODO
 
+### Completed
+- [x] C# full-tier: Roslyn Compiler API standalone .NET app (shipped v0.6.0) — [ADR-007](docs/artifacts/adr-007-csharp-roslyn-lsp.md)
+
 ### Remaining
-- [ ] C# full-tier: Roslyn LSP adapter (cross-file resolution, call graph, type-aware) — [ADR-007](docs/architecture/ADR/adr-007-csharp-roslyn-lsp.md)
 - [ ] Go full-tier: gopls MCP composition (type-aware, cross-package)
 - [ ] Epic 8: GitHub/GitLab webhook listener for auto-indexing on push events
 - [ ] Streamable HTTP transport (for remote/cloud MCP usage)
