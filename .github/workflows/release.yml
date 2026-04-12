@@ -49,7 +49,7 @@ jobs:
     needs: [ci-check]
     environment:
       name: npm-production
-      url: https://www.npmjs.com/package/ctxo-mcp
+      url: https://www.npmjs.com/package/@ctxo/cli
     permissions:
       contents: write
       id-token: write
@@ -62,31 +62,35 @@ jobs:
         id: version
         run: |
           TAG_VERSION="${GITHUB_REF_NAME#v}"
-          PKG_VERSION=$(node -p "require('./package.json').version")
+          PKG_VERSION=$(node -p "require('./packages/cli/package.json').version")
           echo "tag=$TAG_VERSION" >> "$GITHUB_OUTPUT"
           echo "pkg=$PKG_VERSION" >> "$GITHUB_OUTPUT"
 
           if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
-            echo "❌ Tag $GITHUB_REF_NAME does not match package.json version $PKG_VERSION" >> $GITHUB_STEP_SUMMARY
+            echo "❌ Tag $GITHUB_REF_NAME does not match packages/cli/package.json version $PKG_VERSION" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
           echo "✅ Version $PKG_VERSION matches tag" >> $GITHUB_STEP_SUMMARY
+
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+        with:
+          version: 10.9.0
 
       - name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
           registry-url: https://registry.npmjs.org
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Check if already published
         id: check
         run: |
           VERSION="${{ steps.version.outputs.pkg }}"
-          if npm view "ctxo-mcp@${VERSION}" version 2>/dev/null; then
+          if npm view "@ctxo/cli@${VERSION}" version 2>/dev/null; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
             echo "⚠️ Version ${VERSION} already published — skipping" >> $GITHUB_STEP_SUMMARY
           else
@@ -95,23 +99,23 @@ jobs:
 
       - name: Build
         if: steps.check.outputs.exists == 'false'
-        run: npm run build
+        run: pnpm -r build
 
       - name: Test
         if: steps.check.outputs.exists == 'false'
-        run: npm run test:coverage
+        run: pnpm --filter @ctxo/cli test:coverage
 
       - name: Publish dry-run
         if: steps.check.outputs.exists == 'false'
         run: |
           echo "## Package dry-run" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          npm publish --dry-run --access public 2>&1 | tee -a $GITHUB_STEP_SUMMARY
+          pnpm --filter @ctxo/cli publish --dry-run --access public --no-git-checks 2>&1 | tee -a $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
 
       - name: Publish to npm
         if: steps.check.outputs.exists == 'false'
-        run: npm publish --access public
+        run: pnpm --filter @ctxo/cli publish --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -122,11 +126,11 @@ jobs:
           echo "Waiting for npm registry propagation..."
           sleep 15
 
-          PUBLISHED=$(npm view "ctxo-mcp@${VERSION}" version 2>/dev/null || echo "")
+          PUBLISHED=$(npm view "@ctxo/cli@${VERSION}" version 2>/dev/null || echo "")
           if [ "$PUBLISHED" = "$VERSION" ]; then
-            echo "✅ Verified: ctxo-mcp@${VERSION} is live on npm" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Verified: @ctxo/cli@${VERSION} is live on npm" >> $GITHUB_STEP_SUMMARY
           else
-            echo "⚠️ Could not verify ctxo-mcp@${VERSION} on npm (may still be propagating)" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ Could not verify @ctxo/cli@${VERSION} on npm (may still be propagating)" >> $GITHUB_STEP_SUMMARY
           fi
 
       - name: Create GitHub Release
@@ -142,6 +146,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Item | Link |" >> $GITHUB_STEP_SUMMARY
           echo "|------|------|" >> $GITHUB_STEP_SUMMARY
-          echo "| npm | https://www.npmjs.com/package/ctxo-mcp/v/${{ steps.version.outputs.pkg }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| npm | https://www.npmjs.com/package/@ctxo/cli/v/${{ steps.version.outputs.pkg }} |" >> $GITHUB_STEP_SUMMARY
           echo "| GitHub | ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Provenance | https://www.npmjs.com/package/ctxo-mcp/v/${{ steps.version.outputs.pkg }}?activeTab=provenance |" >> $GITHUB_STEP_SUMMARY
+          echo "| Provenance | https://www.npmjs.com/package/@ctxo/cli/v/${{ steps.version.outputs.pkg }}?activeTab=provenance |" >> $GITHUB_STEP_SUMMARY
