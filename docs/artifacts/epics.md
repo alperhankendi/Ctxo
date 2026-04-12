@@ -536,7 +536,23 @@ Go and C# codebases can be indexed and queried via tree-sitter syntax-level adap
 - `ctxo status` shows per-language file counts
 - CI matrix: macOS + Linux, Node 18, 20, 22
 
-### Epic 8: Event-Driven Index Updates — GitHub & GitLab Integration (Optional, V1.5)
+### Epic 8: Event-Driven Index Updates — GitHub & GitLab Integration (DONE — architectural pivot)
+
+**Status (2026-04-12):** Superseded by CI-based freshness gating. The original webhook-listener design required teams to host an HTTP server with secrets, rate limiting, and provider-specific auth tokens — overkill for Ctxo's committed-index model where the `post-commit` git hook (installed by `ctxo init`) already keeps the index current locally. The same guarantee — "stale index cannot reach `main`" — is achieved with a ~25-line CI workflow that runs `ctxo index --check` on every PR/MR.
+
+**Delivered instead:**
+- [examples/github-actions/ctxo-check.yml](../../examples/github-actions/ctxo-check.yml) — drop-in GitHub Actions workflow
+- [examples/gitlab-ci/.gitlab-ci.yml](../../examples/gitlab-ci/.gitlab-ci.yml) — drop-in GitLab CI job
+- README "CI Integration" section
+
+**Trade-off accepted:** No auto-reindex on push — authors must run `ctxo index` locally before pushing. In practice the `post-commit` hook makes this automatic, and the CI gate catches anyone who bypasses the hook. Zero server infrastructure, zero secret management, zero bakım maliyeti.
+
+FR29–FR32 are dropped. Stories 8.1–8.5 below are retained for historical context only; do not implement.
+
+---
+
+**Original spec (NOT implemented):**
+
 Ctxo listens for push and pull-request/merge-request events from GitHub/GitLab webhooks and automatically triggers index re-builds and freshness checks — eliminating manual `ctxo index` runs for teams that prefer event-driven automation over scheduled CI jobs.
 **FRs covered:** FR29, FR30, FR31, FR32
 **Dependencies:** Epic 4 (incremental index, `--check` flag), Epic 5 (committed index, CI gate)

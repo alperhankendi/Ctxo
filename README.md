@@ -163,6 +163,15 @@ npx ctxo-mcp stats
   L4: ███░░░░░░░   25%
 ```
 
+## CI Integration
+
+Keep the committed `.ctxo/index/` in sync with the source tree by failing PRs when the index is stale. Drop-in examples:
+
+- GitHub Actions: [examples/github-actions/ctxo-check.yml](examples/github-actions/ctxo-check.yml)
+- GitLab CI: [examples/gitlab-ci/.gitlab-ci.yml](examples/gitlab-ci/.gitlab-ci.yml)
+
+Both run `ctxo index --check` on every PR/MR. If the index is stale, the job fails and the author runs `ctxo index` locally, then commits the refreshed index. Combined with the `post-commit` hook from `ctxo init`, this keeps the index current without any webhook infrastructure.
+
 ## Features
 
 **Response Envelope** All responses include `_meta` with item counts, truncation info, and drill-in hints. Large results auto-truncated at 8KB (configurable via `CTXO_RESPONSE_LIMIT`).

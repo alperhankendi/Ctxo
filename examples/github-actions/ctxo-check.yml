@@ -1,0 +1,34 @@
+# Ctxo Index Freshness Check
+#
+# Drop this file into .github/workflows/ in your repo. It fails the PR if the
+# committed .ctxo/index/ is out of sync with the source tree, prompting the
+# author to run `ctxo index` locally and commit the result.
+#
+# Prerequisites:
+#   - .ctxo/index/ is committed to the repo (see `ctxo init`)
+#   - Node.js 20+
+
+name: Ctxo Index Check
+
+on:
+  pull_request:
+    branches: [main, master]
+  push:
+    branches: [main, master]
+
+jobs:
+  index-freshness:
+    name: Verify ctxo index is up to date
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # ctxo reads git history for intent/anti-patterns
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check index freshness
+        run: npx -y ctxo-mcp index --check

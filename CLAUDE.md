@@ -285,10 +285,10 @@ try {
 
 ### Completed
 - [x] C# full-tier: Roslyn Compiler API standalone .NET app (shipped v0.6.0) — [ADR-007](docs/artifacts/adr-007-csharp-roslyn-lsp.md)
+- [x] Epic 8: Index freshness automation — architectural pivot from webhook listener to CI gate. Delivered drop-in GitHub Actions / GitLab CI examples running `ctxo index --check`; webhook server scrapped as overkill. See [docs/artifacts/epics.md](docs/artifacts/epics.md) Epic 8 note.
 
 ### Remaining
 - [ ] Go full-tier: gopls MCP composition (type-aware, cross-package)
-- [ ] Epic 8: GitHub/GitLab webhook listener for auto-indexing on push events
 - [ ] Streamable HTTP transport (for remote/cloud MCP usage)
 - [ ] Performance benchmarks (p95 latency, startup time, index build time)
 
