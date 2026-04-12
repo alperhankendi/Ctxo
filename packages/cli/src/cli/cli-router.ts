@@ -105,8 +105,9 @@ export class CliRouter {
         const yesArg = args.includes('--yes') || args.includes('-y');
         const rulesOnly = args.includes('--rules');
         const dryRun = args.includes('--dry-run');
+        const noInstall = args.includes('--no-install');
         const tools = toolsArg ? toolsArg.split(',').map(t => t.trim()) : undefined;
-        await new InitCommand(this.projectRoot).run({ tools, yes: yesArg, rulesOnly, dryRun });
+        await new InitCommand(this.projectRoot).run({ tools, yes: yesArg, rulesOnly, dryRun, noInstall });
         break;
       }
 

@@ -1,6 +1,33 @@
 import { join } from 'node:path';
 import { existsSync, readFileSync, writeFileSync, mkdirSync, chmodSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { PLATFORMS, detectPlatforms, installRules, ensureGitignore, ensureConfig, getMcpConfigTargets, ensureMcpConfig } from './ai-rules.js';
+import {
+  detectLanguages,
+  decideNeededLanguages,
+  officialPluginFor,
+  type KnownLanguage,
+} from '../core/detection/detect-languages.js';
+import { InstallCommand } from './install-command.js';
+
+const requireCjs = createRequire(import.meta.url);
+
+function resolveInstalledPlugins(needed: readonly KnownLanguage[]): {
+  installed: KnownLanguage[];
+  missing: KnownLanguage[];
+} {
+  const installed: KnownLanguage[] = [];
+  const missing: KnownLanguage[] = [];
+  for (const lang of needed) {
+    try {
+      requireCjs.resolve(`${officialPluginFor(lang)}/package.json`);
+      installed.push(lang);
+    } catch {
+      missing.push(lang);
+    }
+  }
+  return { installed, missing };
+}
 
 /* ------------------------------------------------------------------ */
 /*  Git hook content                                                   */
@@ -38,6 +65,8 @@ export interface InitOptions {
   yes?: boolean;
   rulesOnly?: boolean;
   dryRun?: boolean;
+  /** Skip language detection prompt + any install invocation. */
+  noInstall?: boolean;
 }
 
 /* ------------------------------------------------------------------ */
@@ -136,7 +165,7 @@ export class InitCommand {
     }
 
     if (options.dryRun) return this.dryRun(options);
-    if (options.yes || options.tools) return this.runNonInteractive(options);
+    if (options.yes || options.tools) return await this.runNonInteractive(options);
     return this.runInteractive(options);
   }
 
@@ -210,6 +239,34 @@ export class InitCommand {
     if (clack.isCancel(selectedTools)) { clack.cancel('Setup cancelled.'); process.exit(0); }
     console.error('');
 
+    // ── Step 2.5: Language plugins (skipped in --rules / --no-install) ──
+    let pluginsToInstall: KnownLanguage[] = [];
+    if (!options.rulesOnly && !options.noInstall) {
+      const detection = detectLanguages(this.projectRoot);
+      const needed = decideNeededLanguages(detection);
+      const { missing } = resolveInstalledPlugins(needed);
+      if (missing.length > 0) {
+        console.error(stepHeader(
+          stepNum + 1,
+          totalSteps + 1,
+          `Language Plugins ${pc.yellow('missing')}`,
+          `Detected: ${missing.join(', ')} — ctxo needs a plugin per language to index it.`,
+          pc,
+        ));
+        console.error('');
+        const confirm = await clack.confirm({
+          message: pc.cyan(`Install ${missing.map(officialPluginFor).join(' ')}?`),
+          initialValue: true,
+        });
+        if (clack.isCancel(confirm)) { clack.cancel('Setup cancelled.'); process.exit(0); }
+        if (confirm) {
+          pluginsToInstall = missing;
+          stepNum++;
+        }
+        console.error('');
+      }
+    }
+
     // ── Step 3: Git hooks ──
     let installGitHooks = false;
     if (!options.rulesOnly) {
@@ -268,6 +325,14 @@ export class InitCommand {
       results.push(`${pc.green('\u2713')} ${pc.bold('post-commit, post-merge')}  ${pc.dim('hooks installed')}`);
     }
 
+    if (pluginsToInstall.length > 0) {
+      s.stop(pc.dim('Installing language plugins...'));
+      const installer = new InstallCommand(this.projectRoot);
+      await installer.run({ languages: pluginsToInstall, yes: true });
+      results.push(`${pc.green('\u2713')} ${pc.bold(pluginsToInstall.map(officialPluginFor).join(', '))}  ${pc.dim('language plugins installed')}`);
+      s.start(pc.dim('Finalizing...'));
+    }
+
     s.stop(pc.green('Done!'));
 
     // ── Summary box ──
@@ -296,7 +361,7 @@ export class InitCommand {
   /*  Non-interactive flow                                             */
   /* ---------------------------------------------------------------- */
 
-  private runNonInteractive(options: InitOptions): void {
+  private async runNonInteractive(options: InitOptions): Promise<void> {
     const toolIds = options.tools ?? [];
 
     for (const id of toolIds) {
@@ -340,6 +405,23 @@ export class InitCommand {
     if (!options.rulesOnly) {
       this.installHooks();
       console.error('[ctxo] \u2713 Git hooks installed');
+    }
+
+    // Language detection + plugin install (skipped under --no-install or --rules)
+    if (!options.rulesOnly && !options.noInstall) {
+      const detection = detectLanguages(this.projectRoot);
+      const needed = decideNeededLanguages(detection);
+      const { missing } = resolveInstalledPlugins(needed);
+      if (missing.length > 0) {
+        if (options.yes) {
+          console.error(`[ctxo] Installing missing plugins: ${missing.join(', ')}`);
+          await new InstallCommand(this.projectRoot).run({ languages: missing, yes: true });
+        } else {
+          console.error(
+            `[ctxo] Detected missing plugins: ${missing.join(', ')}. Run "ctxo install ${missing.join(' ')}" to install.`,
+          );
+        }
+      }
     }
   }
 
