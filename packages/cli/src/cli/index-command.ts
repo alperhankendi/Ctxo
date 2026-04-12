@@ -1,9 +1,20 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync, statSync, readdirSync } from 'node:fs';
 import { join, relative, extname } from 'node:path';
+import { createRequire } from 'node:module';
 import { ContentHasher } from '../core/staleness/content-hasher.js';
 import { LanguageAdapterRegistry } from '../adapters/language/language-adapter-registry.js';
 import { loadPlugins } from './plugin-loader.js';
+import { InstallCommand } from './install-command.js';
+import {
+  detectLanguages,
+  decideNeededLanguages,
+  officialPluginFor,
+  EXTENSION_LANGUAGE,
+  type KnownLanguage,
+} from '../core/detection/detect-languages.js';
+
+const requireCjs = createRequire(import.meta.url);
 import { JsonIndexWriter } from '../adapters/storage/json-index-writer.js';
 import { SqliteStorageAdapter } from '../adapters/storage/sqlite-storage-adapter.js';
 import { SchemaManager } from '../adapters/storage/schema-manager.js';
@@ -45,16 +56,31 @@ export class IndexCommand {
     this.supportedExtensions = new Set(['.ts', '.tsx', '.js', '.jsx', '.go', '.cs']);
   }
 
-  async run(options: { file?: string; check?: boolean; skipSideEffects?: boolean; skipHistory?: boolean; maxHistory?: number } = {}): Promise<void> {
+  async run(options: {
+    file?: string;
+    check?: boolean;
+    skipSideEffects?: boolean;
+    skipHistory?: boolean;
+    maxHistory?: number;
+    installMissing?: boolean;
+  } = {}): Promise<void> {
     if (options.check) {
       // Delegate to verify logic: hash-based freshness check
       return this.runCheck();
+    }
+
+    // Pre-index: detect missing plugins and optionally auto-install
+    if (options.installMissing) {
+      await this.autoInstallMissingPlugins();
     }
 
     // Set up adapters via plugin discovery (TS, Go, C# all plugin-backed)
     const registry = new LanguageAdapterRegistry();
     const { tsMorphLike, roslynAdapter, csharpTier } = await this.registerDiscoveredPlugins(registry);
     this.supportedExtensions = registry.getSupportedExtensions();
+
+    // Emit a language-aware pre-scan so users see the plan before the work runs
+    this.printLanguagePreview();
 
     const writer = new JsonIndexWriter(this.ctxoRoot);
     const schemaManager = new SchemaManager(this.ctxoRoot);
@@ -221,6 +247,36 @@ export class IndexCommand {
 
     // Dispose Roslyn adapter
     if (roslynAdapter) await roslynAdapter.dispose();
+  }
+
+  private async autoInstallMissingPlugins(): Promise<void> {
+    const detection = detectLanguages(this.projectRoot);
+    const needed = decideNeededLanguages(detection);
+    const missing: KnownLanguage[] = [];
+    for (const lang of needed) {
+      try {
+        requireCjs.resolve(`${officialPluginFor(lang)}/package.json`);
+      } catch {
+        missing.push(lang);
+      }
+    }
+    if (missing.length === 0) return;
+    console.error(`[ctxo] --install-missing: installing ${missing.join(', ')}`);
+    await new InstallCommand(this.projectRoot).run({ languages: missing, yes: true });
+  }
+
+  private printLanguagePreview(): void {
+    const detection = detectLanguages(this.projectRoot);
+    const lines: string[] = [];
+    for (const [lang, count] of Object.entries(detection.byExtension)) {
+      const hasPlugin = this.supportedExtensions.size > 0 && Object.entries(EXTENSION_LANGUAGE)
+        .some(([ext, id]) => id === lang && this.supportedExtensions.has(ext));
+      const status = hasPlugin ? 'plugin available' : 'no plugin — skipped';
+      lines.push(`  ${lang.padEnd(10)} ${String(count).padStart(5)} files (${status})`);
+    }
+    if (lines.length === 0) return;
+    console.error('[ctxo] Language scan:');
+    for (const line of lines) console.error(line);
   }
 
   private async registerDiscoveredPlugins(registry: LanguageAdapterRegistry): Promise<{

@@ -72,6 +72,7 @@ export class CliRouter {
         }
         const checkArg = args.includes('--check');
         const skipHistory = args.includes('--skip-history');
+        const installMissing = args.includes('--install-missing');
         const maxHistoryIdx = args.indexOf('--max-history');
         const maxHistoryArg = maxHistoryIdx !== -1 ? Number(args[maxHistoryIdx + 1]) : undefined;
         if (maxHistoryIdx !== -1 && (!maxHistoryArg || isNaN(maxHistoryArg) || maxHistoryArg < 1)) {
@@ -79,7 +80,13 @@ export class CliRouter {
           process.exit(1);
           return;
         }
-        await new IndexCommand(this.projectRoot).run({ file: fileArg, check: checkArg, skipHistory, maxHistory: maxHistoryArg });
+        await new IndexCommand(this.projectRoot).run({
+          file: fileArg,
+          check: checkArg,
+          skipHistory,
+          maxHistory: maxHistoryArg,
+          installMissing,
+        });
         break;
       }
 
