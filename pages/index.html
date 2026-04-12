@@ -10,77 +10,39 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --bg: #0a0a0f;
-    --surface: #12121a;
-    --border: #1e1e2e;
-    --text: #e2e2ef;
-    --text-dim: #6b6b80;
-    --red: #ff4060;
-    --red-soft: rgba(255,64,96,0.1);
-    --red-border: rgba(255,64,96,0.3);
-    --red-bg: rgba(255,64,96,0.04);
-    --red-overflow: rgba(255,64,96,0.15);
-    --green: #00e88f;
-    --green-soft: rgba(0,232,143,0.12);
-    --green-border: rgba(0,232,143,0.3);
-    --green-bg: rgba(0,232,143,0.04);
-    --green-glow: rgba(0,232,143,0.3);
-    --green-badge-bg: rgba(0,232,143,0.1);
-    --green-badge-border: rgba(0,232,143,0.2);
-    --cyan: #00d4ff;
-    --cyan-soft: rgba(0,212,255,0.1);
-    --cyan-border: rgba(0,212,255,0.3);
-    --orange: #ff8a3d;
-    --orange-soft: rgba(255,138,61,0.1);
-    --orange-border: rgba(255,138,61,0.3);
-    --purple: #a78bfa;
-    --purple-soft: rgba(167,139,250,0.1);
-    --purple-border: rgba(167,139,250,0.3);
-    --done-bg: rgba(0,232,143,0.08);
-    --done-border: rgba(0,232,143,0.25);
-    --vs-color: #3a3a50;
-    --shadow: 0 0 30px rgba(0,232,143,0.3);
-    --mcp-bg: rgba(0,212,255,0.05);
-    --mcp-border: rgba(0,212,255,0.15);
-    --mcp-text: #5a5a70;
-  }
-
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #f8f9fc;
-      --surface: #ffffff;
-      --border: #e2e4ea;
-      --text: #1a1a2e;
-      --text-dim: #6e7181;
-      --red: #dc2f4e;
-      --red-soft: rgba(220,47,78,0.07);
-      --red-border: rgba(220,47,78,0.22);
-      --red-bg: rgba(220,47,78,0.04);
-      --red-overflow: rgba(220,47,78,0.08);
-      --green: #059669;
-      --green-soft: rgba(5,150,105,0.08);
-      --green-border: rgba(5,150,105,0.2);
-      --green-bg: rgba(5,150,105,0.04);
-      --green-glow: rgba(5,150,105,0.2);
-      --green-badge-bg: rgba(5,150,105,0.07);
-      --green-badge-border: rgba(5,150,105,0.18);
-      --cyan: #0891b2;
-      --cyan-soft: rgba(8,145,178,0.07);
-      --cyan-border: rgba(8,145,178,0.22);
-      --orange: #d97218;
-      --orange-soft: rgba(217,114,24,0.07);
-      --orange-border: rgba(217,114,24,0.22);
-      --purple: #7c3aed;
-      --purple-soft: rgba(124,58,237,0.07);
-      --purple-border: rgba(124,58,237,0.22);
-      --done-bg: rgba(5,150,105,0.05);
-      --done-border: rgba(5,150,105,0.18);
-      --vs-color: #b0b3c0;
-      --shadow: 0 0 30px rgba(5,150,105,0.2);
-      --mcp-bg: rgba(8,145,178,0.04);
-      --mcp-border: rgba(8,145,178,0.12);
-      --mcp-text: #6e7181;
-    }
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --text-dim: #64748b;
+    --red: #dc2626;
+    --red-soft: rgba(220,38,38,0.07);
+    --red-border: rgba(220,38,38,0.22);
+    --red-bg: rgba(220,38,38,0.04);
+    --red-overflow: rgba(220,38,38,0.08);
+    --green: #0d9488;
+    --green-soft: rgba(13,148,136,0.08);
+    --green-border: rgba(13,148,136,0.25);
+    --green-bg: rgba(13,148,136,0.04);
+    --green-glow: rgba(13,148,136,0.2);
+    --green-badge-bg: rgba(13,148,136,0.08);
+    --green-badge-border: rgba(13,148,136,0.2);
+    --cyan: #0284c7;
+    --cyan-soft: rgba(2,132,199,0.07);
+    --cyan-border: rgba(2,132,199,0.22);
+    --orange: #ea580c;
+    --orange-soft: rgba(234,88,12,0.07);
+    --orange-border: rgba(234,88,12,0.22);
+    --purple: #7c3aed;
+    --purple-soft: rgba(124,58,237,0.07);
+    --purple-border: rgba(124,58,237,0.22);
+    --done-bg: rgba(13,148,136,0.06);
+    --done-border: rgba(13,148,136,0.2);
+    --vs-color: #94a3b8;
+    --shadow: 0 4px 16px rgba(0,0,0,0.06);
+    --mcp-bg: rgba(2,132,199,0.04);
+    --mcp-border: rgba(2,132,199,0.15);
+    --mcp-text: #64748b;
   }
 
   body {
@@ -253,42 +215,132 @@
   .mcp-strip strong { color: var(--text-dim); font-weight: 700; }
 
   .metrics {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
     opacity: 0; animation: fadeUp 0.8s 0.7s ease forwards;
   }
   .metric {
     background: var(--surface); border: 1px solid var(--border);
-    border-radius: 14px; padding: 24px 20px; text-align: center;
+    border-radius: 20px; padding: 28px 24px;
     position: relative; overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
     transition: background 0.3s, border-color 0.3s;
-  }
-  .metric::before {
-    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, var(--green), var(--cyan)); opacity: 0.6;
   }
   .metric__label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
-    color: var(--text-dim); margin-bottom: 12px;
+    color: var(--text-dim); margin-bottom: 16px;
   }
-  .metric__comparison {
-    display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 14px;
+  .metric__bars { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .metric__bar-track {
+    height: 28px; border-radius: 8px; background: rgba(0,0,0,0.02);
+    position: relative; overflow: hidden;
   }
-  .metric__old {
-    font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700;
-    color: var(--red); text-decoration: line-through; opacity: 0.6;
-  }
-  .metric__arrow-icon { color: var(--text-dim); font-size: 14px; }
-  .metric__new {
-    font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 800;
-    color: var(--green);
-  }
-  .metric__badge {
-    display: inline-block; padding: 4px 10px; border-radius: 20px;
+  .metric__bar-fill {
+    height: 100%; border-radius: 8px;
+    display: flex; align-items: center; padding: 0 10px;
     font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
-    background: var(--green-badge-bg); color: var(--green);
-    border: 1px solid var(--green-badge-border);
+    white-space: nowrap;
   }
+  .metric__bar-fill--old {
+    background: linear-gradient(90deg, var(--red-soft), var(--orange-soft));
+    color: var(--red);
+    animation: barGrow 1s ease-out forwards;
+  }
+  .metric__bar-fill--new {
+    background: linear-gradient(90deg, var(--green-soft), var(--cyan-soft));
+    color: var(--green);
+    animation: barGrow 1.2s ease-out forwards;
+  }
+  .metric__number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px; font-weight: 800; color: var(--green);
+    line-height: 1;
+  }
+  .metric__desc {
+    font-size: 13px; color: var(--text-dim); margin-top: 4px;
+  }
+  @keyframes barGrow { from { width: 0 !important; } }
+
+  /* Case Studies */
+  .cases {
+    margin-top: 56px;
+    opacity: 0; animation: fadeUp 0.8s 0.9s ease forwards;
+  }
+  .cases__header { text-align: center; margin-bottom: 32px; }
+  .cases__eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--green); font-weight: 700;
+    display: block; margin-bottom: 8px;
+  }
+  .cases__title {
+    font-size: 24px; font-weight: 700; color: var(--text);
+    margin-bottom: 6px;
+  }
+  .cases__desc {
+    font-size: 14px; color: var(--text-dim); font-weight: 300;
+  }
+  .cases__grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  }
+  .case-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px 24px;
+    text-decoration: none; color: var(--text);
+    position: relative; overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .case-card:hover {
+    border-color: var(--green-border);
+    box-shadow: 0 8px 32px rgba(13,148,136,0.08);
+    transform: translateY(-2px);
+  }
+  .case-card__icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .case-card__icon svg { width: 20px; height: 20px; }
+  .case-card__icon--dead { background: var(--red-soft); color: var(--red); border: 1px solid var(--red-border); }
+  .case-card__icon--blast { background: var(--orange-soft); color: var(--orange); border: 1px solid var(--orange-border); }
+  .case-card:hover .case-card__icon--dead { background: rgba(220,38,38,0.12); }
+  .case-card:hover .case-card__icon--blast { background: rgba(234,88,12,0.12); }
+  .case-card__tool {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700; color: var(--green);
+    letter-spacing: 0.5px;
+  }
+  .case-card__title {
+    font-size: 18px; font-weight: 700; color: var(--text);
+    margin: 0;
+  }
+  .case-card__stats {
+    display: flex; gap: 20px;
+  }
+  .case-card__stat {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .case-card__stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px; font-weight: 800;
+  }
+  .case-card__stat-vs {
+    font-size: 11px; color: var(--text-dim);
+    text-decoration: line-through; text-decoration-color: rgba(100,116,139,0.4);
+  }
+  .case-card__desc {
+    font-size: 13px; color: var(--text-dim); line-height: 1.6;
+    margin: 0;
+  }
+  .case-card__link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 700; color: var(--green);
+    display: flex; align-items: center; gap: 4px;
+    margin-top: auto;
+    transition: gap 0.2s;
+  }
+  .case-card:hover .case-card__link { gap: 8px; }
+  .case-card:hover .case-card__link span { color: var(--green); }
 
   @keyframes fadeUp { from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)} }
   @keyframes chaosAppear { from{opacity:0;transform:scale(0.5)}to{opacity:1;transform:scale(1)} }
@@ -315,13 +367,17 @@
 </head>
 <body>
   <nav style="position:fixed;top:0;right:0;z-index:100;display:flex;gap:0.25rem;padding:1rem 1.5rem;">
+    <a href="index.html" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--green);border:1px solid var(--green-border);border-radius:6px;background:var(--green-bg);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='var(--green-soft)'" onmouseout="this.style.background='var(--green-bg)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      Ctxo
+    </a>
     <div style="position:relative;" onmouseenter="this.querySelector('.lang-dropdown').style.display='flex'" onmouseleave="this.querySelector('.lang-dropdown').style.display='none'">
       <a href="#" onclick="return false" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--green);border:1px solid var(--green-border);border-radius:6px;background:var(--green-bg);text-decoration:none;transition:background 0.2s,border-color 0.2s;" onmouseover="this.style.background='var(--green-soft)'" onmouseout="this.style.background='var(--green-bg)'">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
         Languages
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </a>
-      <div class="lang-dropdown" style="display:none;position:absolute;top:100%;right:0;margin-top:4px;flex-direction:column;gap:2px;min-width:200px;padding:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+      <div class="lang-dropdown" style="display:none;position:absolute;top:100%;right:0;margin-top:4px;flex-direction:column;gap:2px;min-width:200px;padding:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.08);">
         <a href="https://github.com/alperhankendi/Ctxo/blob/master/pages/lang/csharp.md" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:600;color:var(--text);border-radius:6px;text-decoration:none;transition:background 0.15s;" onmouseover="this.style.background='var(--green-soft)'" onmouseout="this.style.background='transparent'">
           <span style="font-size:1rem;">C#</span>
           <span style="flex:1;color:var(--text-dim);font-weight:400;">Full Tier (Roslyn)</span>
@@ -337,19 +393,19 @@
         </a>
       </div>
     </div>
-    <a href="ctxo-visualizer.html" title="Ctxo Index Visualizer" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--cyan);border:1px solid rgba(0,212,255,0.3);border-radius:6px;background:rgba(0,212,255,0.06);text-decoration:none;transition:background 0.2s,border-color 0.2s;" onmouseover="this.style.background='rgba(0,212,255,0.12)'" onmouseout="this.style.background='rgba(0,212,255,0.06)'">
+    <a href="ctxo-visualizer.html" title="Ctxo Index Visualizer" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--cyan);border:1px solid var(--cyan-border);border-radius:6px;background:var(--cyan-soft);text-decoration:none;transition:background 0.2s,border-color 0.2s;" onmouseover="this.style.background='rgba(2,132,199,0.12)'" onmouseout="this.style.background='var(--cyan-soft)'">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/><path d="M2 12h20"/></svg>
       Visualizer
     </a>
-    <a href="https://github.com/alperhankendi/Ctxo" target="_blank" rel="noopener" title="Source Code" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--text-dim);border:1px solid var(--border);border-radius:6px;background:var(--surface);text-decoration:none;transition:border-color 0.2s,color 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">
+    <a href="https://github.com/alperhankendi/Ctxo" target="_blank" rel="noopener" title="Source Code" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--text-dim);border:1px solid var(--border);border-radius:6px;background:var(--surface);text-decoration:none;transition:border-color 0.2s,color 0.2s;" onmouseover="this.style.borderColor='var(--cyan-border)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
       Source
     </a>
-    <a href="https://github.com/alperhankendi/Ctxo/stargazers" target="_blank" rel="noopener" title="Star on GitHub" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--text-dim);border:1px solid var(--border);border-radius:6px;background:var(--surface);text-decoration:none;transition:border-color 0.2s,color 0.2s;" onmouseover="this.style.borderColor='rgba(255,200,50,0.4)';this.style.color='#ffc832'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">
+    <a href="https://github.com/alperhankendi/Ctxo/stargazers" target="_blank" rel="noopener" title="Star on GitHub" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--text-dim);border:1px solid var(--border);border-radius:6px;background:var(--surface);text-decoration:none;transition:border-color 0.2s,color 0.2s;" onmouseover="this.style.borderColor='rgba(234,179,8,0.4)';this.style.color='#ca8a04'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       Star
     </a>
-    <a href="https://github.com/alperhankendi/Ctxo/fork" target="_blank" rel="noopener" title="Fork on GitHub" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--text-dim);border:1px solid var(--border);border-radius:6px;background:var(--surface);text-decoration:none;transition:border-color 0.2s,color 0.2s;" onmouseover="this.style.borderColor='rgba(0,212,255,0.4)';this.style.color='var(--cyan)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">
+    <a href="https://github.com/alperhankendi/Ctxo/fork" target="_blank" rel="noopener" title="Fork on GitHub" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--text-dim);border:1px solid var(--border);border-radius:6px;background:var(--surface);text-decoration:none;transition:border-color 0.2s,color 0.2s;" onmouseover="this.style.borderColor='var(--cyan-border)';this.style.color='var(--cyan)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"/><path d="M12 12v3"/></svg>
       Fork
     </a>
@@ -451,30 +507,78 @@
     <div class="metrics">
       <div class="metric">
         <div class="metric__label">Token Usage</div>
-        <div class="metric__comparison">
-          <span class="metric__old">140K</span>
-          <span class="metric__arrow-icon">→</span>
-          <span class="metric__new">2.9K</span>
+        <div class="metric__bars">
+          <div class="metric__bar-track"><div class="metric__bar-fill metric__bar-fill--old" style="width:100%;">140K</div></div>
+          <div class="metric__bar-track"><div class="metric__bar-fill metric__bar-fill--new" style="width:2%;">2.9K</div></div>
         </div>
-        <div class="metric__badge">48× less</div>
+        <div class="metric__number">48x</div>
+        <div class="metric__desc">less tokens consumed</div>
       </div>
       <div class="metric">
         <div class="metric__label">Tool Calls</div>
-        <div class="metric__comparison">
-          <span class="metric__old">409+</span>
-          <span class="metric__arrow-icon">→</span>
-          <span class="metric__new">8</span>
+        <div class="metric__bars">
+          <div class="metric__bar-track"><div class="metric__bar-fill metric__bar-fill--old" style="width:100%;">409+</div></div>
+          <div class="metric__bar-track"><div class="metric__bar-fill metric__bar-fill--new" style="width:2%;">8</div></div>
         </div>
-        <div class="metric__badge">51× fewer</div>
+        <div class="metric__number">51x</div>
+        <div class="metric__desc">fewer tool calls</div>
       </div>
       <div class="metric">
         <div class="metric__label">Context Free</div>
-        <div class="metric__comparison">
-          <span class="metric__old">Overflow</span>
-          <span class="metric__arrow-icon">→</span>
-          <span class="metric__new">97%</span>
+        <div class="metric__bars">
+          <div class="metric__bar-track"><div class="metric__bar-fill metric__bar-fill--old" style="width:100%;">Overflow</div></div>
+          <div class="metric__bar-track"><div class="metric__bar-fill metric__bar-fill--new" style="width:97%;">97% free</div></div>
         </div>
-        <div class="metric__badge">97% free</div>
+        <div class="metric__number">97%</div>
+        <div class="metric__desc">context window free</div>
+      </div>
+    </div>
+
+    <div class="cases">
+      <div class="cases__header">
+        <span class="cases__eyebrow">Real-World Results</span>
+        <h2 class="cases__title">See the Difference</h2>
+        <p class="cases__desc">Same codebase. Same model. Same question. One uses ctxo. One doesn't.</p>
+      </div>
+      <div class="cases__grid">
+        <a href="dead-code-comparison.html" class="case-card">
+          <div class="case-card__icon case-card__icon--dead">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+          </div>
+          <div class="case-card__tool">find_dead_code</div>
+          <h3 class="case-card__title">Dead Code Analysis</h3>
+          <div class="case-card__stats">
+            <div class="case-card__stat">
+              <span class="case-card__stat-value" style="color:var(--green);">35s</span>
+              <span class="case-card__stat-vs">vs 7 min</span>
+            </div>
+            <div class="case-card__stat">
+              <span class="case-card__stat-value" style="color:var(--green);">2,382</span>
+              <span class="case-card__stat-vs">vs ~200 symbols</span>
+            </div>
+          </div>
+          <p class="case-card__desc">1 call analyzed 2,382 symbols and auto-classified 203 false positives. Manual took 8 rounds and 35 tool calls.</p>
+          <span class="case-card__link">See full comparison <span>→</span></span>
+        </a>
+        <a href="blast-radius-comparison.html" class="case-card">
+          <div class="case-card__icon case-card__icon--blast">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </div>
+          <div class="case-card__tool">get_blast_radius</div>
+          <h3 class="case-card__title">Blast Radius Analysis</h3>
+          <div class="case-card__stats">
+            <div class="case-card__stat">
+              <span class="case-card__stat-value" style="color:var(--green);">17/17</span>
+              <span class="case-card__stat-vs">vs 14/17 found</span>
+            </div>
+            <div class="case-card__stat">
+              <span class="case-card__stat-value" style="color:var(--green);">4 layers</span>
+              <span class="case-card__stat-vs">vs 2 layers deep</span>
+            </div>
+          </div>
+          <p class="case-card__desc">Manual missed 3 subclasses entirely. ctxo found every symbol, risk-scored them, and suggested a 1-file alternative.</p>
+          <span class="case-card__link">See full comparison <span>→</span></span>
+        </a>
       </div>
     </div>
 

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blast Radius Analysis - ctxo vs Manual | Ctxo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8fafc;
+    --white: #ffffff;
+    --text: #0f172a;
+    --text-secondary: #64748b;
+    --text-light: #94a3b8;
+    --accent: #0d9488;
+    --accent-light: #14b8a6;
+    --accent-bg: #f0fdfa;
+    --accent-border: #99f6e4;
+    --accent-gradient: linear-gradient(135deg, #14b8a6, #0284c7);
+    --orange: #ea580c;
+    --orange-bg: #fff7ed;
+    --red: #dc2626;
+    --red-bg: #fef2f2;
+    --info: #0284c7;
+    --border: #e2e8f0;
+    --border-light: #f1f5f9;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+    --shadow: 0 4px 16px rgba(0,0,0,0.06);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.08);
+    --radius: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+
+  /* Hero */
+  .hero {
+    text-align: center;
+    padding: 100px 32px 80px;
+    background: linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-bg);
+    color: var(--accent);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero p { font-size: 18px; color: var(--text-secondary); max-width: 520px; margin: 0 auto; }
+
+  /* Section */
+  .section { margin-bottom: 80px; }
+  .section-eyebrow {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .section-title { font-size: 32px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; margin-bottom: 12px; }
+  .section-desc { color: var(--text-secondary); font-size: 16px; max-width: 600px; margin-bottom: 40px; }
+
+  /* Task Card */
+  .task-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+  .task-card h3 { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
+  .task-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+  .tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 4px;
+    margin-bottom: 8px;
+  }
+  .tag-lang { background: var(--accent-bg); color: var(--accent); }
+  .tag-symbols { background: #f0f9ff; color: var(--info); }
+  .tag-model { background: #f5f3ff; color: #7c3aed; }
+
+  /* Table */
+  .comp-table-wrap {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .comp-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .comp-table thead { background: var(--bg); }
+  .comp-table th {
+    text-align: left;
+    padding: 14px 24px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-light);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+  }
+  .comp-table th.col-ctxo { color: var(--accent); }
+  .comp-table th.col-manual { color: var(--orange); }
+  .comp-table th.col-delta { color: var(--accent); }
+  .comp-table td { padding: 14px 24px; border-bottom: 1px solid var(--border-light); color: var(--text); }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .comp-table td:first-child { color: var(--text-secondary); font-weight: 500; }
+  .comp-table .delta-good { color: var(--accent); font-weight: 600; }
+  .comp-table .delta-bad { color: var(--red); font-weight: 600; }
+
+  /* Quality */
+  .quality-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .quality-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px;
+  }
+  .quality-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-ctxo { background: var(--accent); }
+  .dot-manual { background: var(--orange); }
+  .quality-list { list-style: none; font-size: 14px; }
+  .quality-list li {
+    padding: 7px 0;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.5;
+  }
+  .quality-list li::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #d1d5db;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+  .verdict-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 36px;
+    margin-top: 24px;
+    border-left: 4px solid var(--accent);
+  }
+  .verdict-card h4 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+  .verdict-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.8; }
+
+  /* Conversation */
+  .conv-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .conv-panel {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: 900px;
+  }
+  .conv-tab {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .conv-tab .indicator { width: 8px; height: 8px; border-radius: 50%; }
+  .conv-tab.ctxo .indicator { background: var(--accent); }
+  .conv-tab.manual .indicator { background: var(--orange); }
+  .conv-tab .tab-title { color: var(--text); }
+  .conv-tab .tab-meta { margin-left: auto; font-size: 12px; color: var(--text-light); font-weight: 400; }
+
+  .conv-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+    font-size: 13px;
+    background: #fafbfc;
+  }
+  .conv-body::-webkit-scrollbar { width: 5px; }
+  .conv-body::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+
+  .msg { margin-bottom: 16px; }
+  .msg-row { display: flex; gap: 10px; margin-bottom: 10px; }
+  .msg-avatar {
+    width: 24px; height: 24px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+  .avatar-user { background: var(--accent-bg); color: var(--accent); }
+  .avatar-claude { background: #f5f3ff; color: #7c3aed; }
+  .msg-text { font-size: 13px; color: var(--text); line-height: 1.6; }
+
+  .tool-call {
+    margin: 8px 0; padding: 10px 14px;
+    background: #f5f3ff;
+    border-left: 3px solid #a78bfa;
+    border-radius: 0 10px 10px 0;
+    font-size: 12px;
+  }
+  .tool-call .tool-name { color: #7c3aed; font-weight: 600; }
+  .tool-call .tool-param { color: var(--text-light); font-family: 'JetBrains Mono', monospace; font-size: 11px; margin-top: 2px; }
+
+  .tool-result {
+    margin: 8px 0; padding: 10px 14px;
+    background: var(--accent-bg);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    font-size: 12px;
+  }
+  .tool-result .result-label { color: var(--accent); font-weight: 600; font-size: 11px; }
+  .tool-result code { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-secondary); }
+
+  .round-divider {
+    text-align: center; margin: 16px 0; font-size: 11px; color: var(--text-light); position: relative;
+  }
+  .round-divider::before, .round-divider::after {
+    content: ''; position: absolute; top: 50%; width: 30%; height: 1px; background: var(--border);
+  }
+  .round-divider::before { left: 0; }
+  .round-divider::after { right: 0; }
+
+  .findings-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    margin-top: 10px;
+  }
+  .findings-box .findings-title { font-weight: 600; font-size: 12px; margin-bottom: 6px; }
+  .findings-box ul { list-style: none; padding: 0; }
+  .findings-box li { padding: 2px 0; font-size: 12px; color: var(--text-secondary); }
+  .confirmed { color: var(--red); font-weight: 500; }
+  .likely { color: var(--orange); font-weight: 500; }
+  .potential { color: #b45309; font-weight: 500; }
+
+  .conv-footer {
+    padding: 12px 20px;
+    border-top: 1px solid var(--border-light);
+    display: flex; gap: 16px;
+    font-size: 12px; color: var(--text-light);
+  }
+  .conv-footer .stat-val { font-weight: 700; color: var(--text); }
+
+  /* Footer */
+  .page-footer { text-align: center; padding: 60px 32px; border-top: 1px solid var(--border); margin-top: 40px; }
+  .page-footer p { color: var(--text-light); font-size: 14px; margin-bottom: 8px; }
+  .page-footer .brand { font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .page-footer .tagline { font-size: 13px; color: var(--text-light); font-style: italic; max-width: 480px; margin: 8px auto 0; }
+
+  @media (max-width: 900px) {
+    .task-card, .quality-grid, .conv-container { grid-template-columns: 1fr; }
+    .conv-panel { max-height: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav style="position:fixed;top:0;right:0;z-index:100;display:flex;gap:0.25rem;padding:1rem 1.5rem;">
+  <a href="index.html" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:#0d9488;border:1px solid rgba(13,148,136,0.25);border-radius:6px;background:rgba(13,148,136,0.04);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(13,148,136,0.1)'" onmouseout="this.style.background='rgba(13,148,136,0.04)'">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    Ctxo
+  </a>
+  <div style="position:relative;" onmouseenter="this.querySelector('.lang-dropdown').style.display='flex'" onmouseleave="this.querySelector('.lang-dropdown').style.display='none'">
+    <a href="#" onclick="return false" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:#0d9488;border:1px solid rgba(13,148,136,0.25);border-radius:6px;background:rgba(13,148,136,0.04);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(13,148,136,0.1)'" onmouseout="this.style.background='rgba(13,148,136,0.04)'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      Languages
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </a>
+    <div class="lang-dropdown" style="display:none;position:absolute;top:100%;right:0;margin-top:4px;flex-direction:column;gap:2px;min-width:200px;padding:6px;background:#ffffff;border:1px solid #e2e8f0;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.08);">
+      <a href="https://github.com/alperhankendi/Ctxo/blob/master/pages/lang/csharp.md" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:600;color:#0f172a;border-radius:6px;text-decoration:none;transition:background 0.15s;" onmouseover="this.style.background='rgba(13,148,136,0.08)'" onmouseout="this.style.background='transparent'">
+        <span style="font-size:1rem;">C#</span>
+        <span style="flex:1;color:#64748b;font-weight:400;">Full Tier (Roslyn)</span>
+        <span style="padding:2px 6px;font-size:0.6rem;font-weight:700;background:rgba(13,148,136,0.08);color:#0d9488;border:1px solid rgba(13,148,136,0.2);border-radius:10px;">NEW</span>
+      </a>
+      <a href="#" onclick="return false" style="display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:600;color:#64748b;border-radius:6px;text-decoration:none;cursor:default;">
+        <span style="font-size:1rem;">TS</span>
+        <span style="flex:1;font-weight:400;">Full Tier (ts-morph)</span>
+      </a>
+      <a href="#" onclick="return false" style="display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:600;color:#64748b;border-radius:6px;text-decoration:none;cursor:default;">
+        <span style="font-size:1rem;">Go</span>
+        <span style="flex:1;font-weight:400;">Syntax Tier</span>
+      </a>
+    </div>
+  </div>
+  <a href="ctxo-visualizer.html" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:#0284c7;border:1px solid rgba(2,132,199,0.22);border-radius:6px;background:rgba(2,132,199,0.07);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(2,132,199,0.12)'" onmouseout="this.style.background='rgba(2,132,199,0.07)'">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/><path d="M2 12h20"/></svg>
+    Visualizer
+  </a>
+  <a href="https://github.com/alperhankendi/Ctxo" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:#64748b;border:1px solid #e2e8f0;border-radius:6px;background:#ffffff;text-decoration:none;transition:border-color 0.2s,color 0.2s;" onmouseover="this.style.borderColor='rgba(2,132,199,0.3)';this.style.color='#0f172a'" onmouseout="this.style.borderColor='#e2e8f0';this.style.color='#64748b'">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+    Source
+  </a>
+  <a href="https://github.com/alperhankendi/Ctxo/stargazers" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:#64748b;border:1px solid #e2e8f0;border-radius:6px;background:#ffffff;text-decoration:none;transition:border-color 0.2s,color 0.2s;" onmouseover="this.style.borderColor='rgba(234,179,8,0.4)';this.style.color='#ca8a04'" onmouseout="this.style.borderColor='#e2e8f0';this.style.color='#64748b'">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    Star
+  </a>
+  <a href="https://github.com/alperhankendi/Ctxo/fork" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:#64748b;border:1px solid #e2e8f0;border-radius:6px;background:#ffffff;text-decoration:none;transition:border-color 0.2s,color 0.2s;" onmouseover="this.style.borderColor='rgba(2,132,199,0.4)';this.style.color='#0284c7'" onmouseout="this.style.borderColor='#e2e8f0';this.style.color='#64748b'">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"/><path d="M12 12v3"/></svg>
+    Fork
+  </a>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge">Blast Radius Analysis</div>
+  <h1>ctxo <em>get_blast_radius</em><br>vs Manual Analysis</h1>
+  <p>Modify a base class constructor. How many files break?<br>One call vs five greps to find the answer.</p>
+</section>
+
+<div class="container">
+
+  <!-- Section 1: The Task -->
+  <section class="section">
+    <div class="section-eyebrow">What Was the Task</div>
+    <div class="section-title">Add IMetricsService to BaseSyncJob Constructor</div>
+    <div class="section-desc">
+      A base class with 17 subclasses across sync services, background jobs, and message processing. Adding a constructor parameter ripples through every subclass, every instantiation site, and every caller up the chain. The question: what exactly will break?
+    </div>
+    <div class="task-card">
+      <div>
+        <h3>The Change</h3>
+        <p>
+          <span class="tag tag-lang">Multi-language</span>
+          <span class="tag tag-symbols">35 impacted symbols</span>
+          <span class="tag tag-model">Claude Opus 4.6</span>
+        </p>
+        <p style="margin-top: 12px;">
+          <code style="color: var(--accent); font-size: 13px;">BaseSyncJob</code> is the abstract base for all synchronization jobs. It has 2 constructor overloads, 17 direct subclasses, and is instantiated in scheduling and job tracking services. Adding <code style="color: var(--info); font-size: 13px;">IMetricsService</code> means every <code style="font-size: 13px;">base(...)</code> call and every <code style="font-size: 13px;">new XxxSync(...)</code> must change.
+        </p>
+      </div>
+      <div>
+        <h3>Two Approaches</h3>
+        <p>
+          <strong style="color: var(--accent);">With ctxo:</strong> <code style="color: #7c3aed; font-size: 13px;">search_symbols</code> to find BaseSyncJob, then <code style="color: #7c3aed; font-size: 13px;">get_blast_radius</code> for the full impact graph with confidence tiers and risk scores.
+        </p>
+        <p style="margin-top: 12px;">
+          <strong style="color: var(--orange);">Without ctxo:</strong> Multiple Grep passes for class inheritance patterns, <code style="font-size: 13px;">base(...)</code> calls, and <code style="font-size: 13px;">new Xxx(...)</code> instantiation sites.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Metrics Comparison -->
+  <section class="section">
+    <div class="section-eyebrow">Performance Metrics</div>
+    <div class="section-title">Head-to-Head Comparison</div>
+    <div class="section-desc">
+      Both approaches used the same Claude Opus 4.6 model on the same codebase. The only difference: ctxo's dependency graph vs raw regex scanning.
+    </div>
+
+    <div class="comp-table-wrap">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th class="col-ctxo">With ctxo</th>
+            <th class="col-manual">Without ctxo</th>
+            <th class="col-delta">Delta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Iterations (rounds)</td><td>3</td><td>2</td><td style="color: var(--text-light);">Similar</td></tr>
+          <tr><td>Tool calls</td><td>4</td><td>6</td><td class="delta-good">33% fewer</td></tr>
+          <tr><td>Estimated tokens</td><td>~14K</td><td>~17K</td><td class="delta-good">18% less</td></tr>
+          <tr><td>Execution time</td><td>~15 seconds</td><td>~15 seconds</td><td style="color: var(--text-light);">Same</td></tr>
+          <tr><td>Impact depth</td><td>4 layers (depth 1-4)</td><td>2 layers only</td><td class="delta-good">2x deeper</td></tr>
+          <tr><td>Confidence classification</td><td>3-tier (confirmed / likely / potential)</td><td>Binary (breaks / doesn't)</td><td class="delta-good">Risk-scored</td></tr>
+          <tr><td>Subclasses found</td><td>17 (all)</td><td>14 (missed 3)</td><td class="delta-bad">3 missed = silent compile errors</td></tr>
+          <tr><td>Impacted symbols</td><td>35 (risk-scored, 4 layers deep)</td><td>46 call sites (flat list, no scoring)</td><td class="delta-good">Risk-scored + prioritized</td></tr>
+          <tr><td>Recommendation</td><td>Alternative approach suggested</td><td>Raw list only</td><td class="delta-good">Included</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Section 3: Quality Analysis -->
+  <section class="section">
+    <div class="section-eyebrow">Result Quality</div>
+    <div class="section-title">What Each Approach Revealed</div>
+    <div class="section-desc">
+      Speed was similar. The real difference is depth, completeness, and actionability. Manual analysis gives a shallow snapshot; ctxo gives the full picture.
+    </div>
+
+    <div class="quality-grid">
+      <div class="quality-card">
+        <h4><span class="dot dot-ctxo"></span> ctxo get_blast_radius</h4>
+        <ul class="quality-list">
+          <li><strong style="color: var(--text);">17 of 17 subclasses found</strong> - zero missed, including Message module jobs</li>
+          <li>35 impacted symbols with per-symbol risk scores (0.0 - 1.0)</li>
+          <li>3-tier confidence: 21 confirmed, 8 likely, 6 potential</li>
+          <li>4-depth traversal: subclasses - instantiation - scheduling - API/host</li>
+          <li>Edge kinds revealed (extends, imports, uses, calls)</li>
+          <li>Suggested alternative: resolve via ServiceContainer to touch <strong style="color: var(--accent);">only 1 file</strong> instead of 17</li>
+        </ul>
+      </div>
+      <div class="quality-card">
+        <h4><span class="dot dot-manual"></span> Manual Analysis</h4>
+        <ul class="quality-list">
+          <li><strong style="color: var(--red);">14 of 17 subclasses found - missed 3</strong> (AttachmentDownloadJob, ImageDownloadJob, MessageSyncJob)</li>
+          <li>30 instantiation sites with line numbers (but incomplete without the 3 missing classes)</li>
+          <li>Only 2 layers deep - no visibility into scheduling or API callers</li>
+          <li>No risk scoring - flat list with no priority guidance</li>
+          <li>No transitive callers found (AppHostService, SyncEndpoints invisible)</li>
+          <li>No alternative approach suggested - just "here's what breaks"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="verdict-card">
+      <h4>Verdict: Manual Analysis Is Dangerously Shallow</h4>
+      <p>
+        The manual approach <strong style="color: var(--red);">missed 3 subclasses entirely</strong>. In a real refactor, those 3 files would have compile errors that the developer didn't plan for. Grep-based analysis can only match text patterns it's told to look for - if the inheritance is in a different directory or module, it's invisible.
+      </p>
+      <p style="margin-top: 8px;">
+        <strong>ctxo</strong> found <strong>every single subclass</strong> because it traverses the actual dependency graph, not regex patterns. It went 4 layers deep to reveal that this change ripples all the way to API endpoints and the host service lifecycle. And it suggested an alternative (ServiceContainer resolution) that could <strong style="color: var(--accent);">eliminate the entire ripple effect</strong> - reducing the change from 17 files to 1.
+      </p>
+      <p style="margin-top: 8px;">
+        Manual analysis gives you a partial answer you <em>think</em> is complete. ctxo gives you the full answer with risk-scored priorities, confidence tiers, and actionable alternatives. The difference isn't speed - it's <strong>correctness</strong>.
+      </p>
+    </div>
+  </section>
+
+  <!-- Section 4: Conversation View -->
+  <section class="section">
+    <div class="section-eyebrow">Live Comparison</div>
+    <div class="section-title">Side-by-Side: Claude Code Sessions</div>
+    <div class="section-desc">Two real conversations analyzing the same constructor change. Left uses ctxo's dependency graph. Right does it manually.</div>
+
+    <div class="conv-container">
+      <!-- WITH CTXO -->
+      <div class="conv-panel">
+        <div class="conv-tab ctxo">
+          <span class="indicator"></span>
+          <span class="tab-title">With ctxo</span>
+          <span class="tab-meta">~15 seconds</span>
+        </div>
+        <div class="conv-body">
+          <div class="msg">
+            <div class="msg-row">
+              <div class="msg-avatar avatar-user">U</div>
+              <div class="msg-text">I need to modify the constructor of BaseSyncJob to add a new IMetricsService parameter. What will break?</div>
+            </div>
+          </div>
+          <div class="msg">
+            <div class="msg-row">
+              <div class="msg-avatar avatar-claude">C</div>
+              <div class="msg-text">Let me analyze the blast radius using ctxo.</div>
+            </div>
+            <div class="tool-call">
+              <div class="tool-name">search_symbols (ctxo)</div>
+              <div class="tool-param">query: "BaseSyncJob"</div>
+            </div>
+            <div class="tool-call">
+              <div class="tool-name">get_blast_radius (ctxo)</div>
+              <div class="tool-param">symbolId: "...BaseSyncJob::class"</div>
+            </div>
+            <div class="tool-result">
+              <div class="result-label">Result</div>
+              <code>impactScore: 35 | risk: 1.0 | confirmed: 21 | likely: 8 | potential: 6</code>
+            </div>
+            <div class="tool-call">
+              <div class="tool-name">Read</div>
+              <div class="tool-param">BaseSyncJob.cs (constructor signature)</div>
+            </div>
+
+            <div class="msg-row" style="margin-top: 12px;">
+              <div class="msg-avatar avatar-claude">C</div>
+              <div class="msg-text">
+                <strong>Full blast radius analysis:</strong>
+                <div class="findings-box" style="border-left: 3px solid var(--red);">
+                  <div class="findings-title" style="color: var(--red);">Depth 1 - 17 Subclasses (confirmed)</div>
+                  <ul>
+                    <li><span class="confirmed">UserSync</span>, <span class="confirmed">UserArchiveSync</span>, <span class="confirmed">OrgSync</span></li>
+                    <li><span class="confirmed">ThreadSync</span>, <span class="confirmed">ThreadEventSync</span></li>
+                    <li><span class="confirmed">CalendarCollector</span>, <span class="confirmed">CalendarEnable</span>, <span class="confirmed">OnlineCalendarCollector</span>, <span class="confirmed">CallCollector</span></li>
+                    <li><span class="confirmed">GroupSync</span>, <span class="confirmed">FeedSync</span>, <span class="confirmed">FeedMessages</span>, <span class="confirmed">FeedRetainedMessages</span>, <span class="confirmed">GroupAttachmentDownloader</span></li>
+                    <li><span class="confirmed">AttachmentDownloadJob</span>, <span class="confirmed">ImageDownloadJob</span>, <span class="confirmed">MessageSyncJob</span></li>
+                  </ul>
+                </div>
+                <div class="findings-box" style="border-left: 3px solid var(--orange); margin-top: 8px;">
+                  <div class="findings-title" style="color: var(--orange);">Depth 2 - Instantiation Sites (likely)</div>
+                  <ul>
+                    <li><span class="likely">ScheduleManager</span> - HandleUserSync, HandleGroupSync, HandleCalendar, HandleDownloads, RunManualSync</li>
+                    <li><span class="likely">JobTracker</span> - ExecuteSyncJob, RunPendingJobs</li>
+                    <li><span class="likely">MessagesServiceRegistration</span></li>
+                  </ul>
+                </div>
+                <div class="findings-box" style="border-left: 3px solid #b45309; margin-top: 8px;">
+                  <div class="findings-title" style="color: #b45309;">Depth 3-4 - Transitive Callers (potential)</div>
+                  <ul>
+                    <li><span class="potential">AppHostService.MainLoopAsync</span> - host lifecycle</li>
+                    <li><span class="potential">AppHostService.ExecuteAsync</span> - entry point</li>
+                    <li><span class="potential">SyncEndpoints.MapSyncEndpoints</span> - API layer</li>
+                  </ul>
+                </div>
+                <div class="findings-box" style="border-left: 3px solid var(--accent); margin-top: 8px;">
+                  <div class="findings-title" style="color: var(--accent);">Recommendation</div>
+                  <ul>
+                    <li>Resolve IMetricsService via ServiceContainer inside BaseSyncJob - <strong>touch only 1 file</strong></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="conv-footer">
+          <div>Iterations: <span class="stat-val">3</span></div>
+          <div>Tools: <span class="stat-val">4</span></div>
+          <div>Tokens: <span class="stat-val">~14K</span></div>
+        </div>
+      </div>
+
+      <!-- WITHOUT CTXO -->
+      <div class="conv-panel">
+        <div class="conv-tab manual">
+          <span class="indicator"></span>
+          <span class="tab-title">Without ctxo (Manual)</span>
+          <span class="tab-meta">~15 seconds</span>
+        </div>
+        <div class="conv-body">
+          <div class="msg">
+            <div class="msg-row">
+              <div class="msg-avatar avatar-user">U</div>
+              <div class="msg-text">I need to modify the constructor of BaseSyncJob to add a new IMetricsService parameter. What will break? <strong>DO NOT USE CTXO</strong></div>
+            </div>
+          </div>
+          <div class="msg">
+            <div class="msg-row">
+              <div class="msg-avatar avatar-claude">C</div>
+              <div class="msg-text">Let me find all subclasses and usages with Grep.</div>
+            </div>
+            <div class="tool-call">
+              <div class="tool-name">Grep x3 (parallel)</div>
+              <div class="tool-param">class\s+\w+.*BaseSyncJob | class BaseSyncJob | all refs</div>
+            </div>
+            <div class="tool-result">
+              <div class="result-label">Round 1 Result</div>
+              <code>14 subclasses found, 48 total references</code>
+            </div>
+          </div>
+          <div class="round-divider">Round 2 of 2</div>
+          <div class="msg">
+            <div class="tool-call">
+              <div class="tool-name">Read x1, Grep x2</div>
+              <div class="tool-param">constructor + new Xxx() + base() patterns</div>
+            </div>
+            <div class="msg-row" style="margin-top: 12px;">
+              <div class="msg-avatar avatar-claude">C</div>
+              <div class="msg-text">
+                <strong>Complete blast radius:</strong>
+                <div class="findings-box" style="border-left: 3px solid var(--red);">
+                  <div class="findings-title" style="color: var(--red);">Layer 1 - 14 Subclasses (missed 3!)</div>
+                  <ul>
+                    <li><span class="confirmed">UserSync</span>, <span class="confirmed">UserArchiveSync</span>, <span class="confirmed">OrgSync</span></li>
+                    <li><span class="confirmed">ThreadSync</span>, <span class="confirmed">ThreadEventSync</span></li>
+                    <li><span class="confirmed">GroupSync</span>, <span class="confirmed">FeedSync</span>, <span class="confirmed">FeedMessages</span></li>
+                    <li><span class="confirmed">FeedRetainedMessages</span>, <span class="confirmed">GroupAttachmentDownloader</span></li>
+                    <li><span class="confirmed">CalendarCollector</span>, <span class="confirmed">CalendarEnable</span></li>
+                    <li><span class="confirmed">OnlineCalendarCollector</span>, <span class="confirmed">CallCollector</span></li>
+                    <li style="color: var(--red); font-weight: 600;">AttachmentDownloadJob, ImageDownloadJob, MessageSyncJob - NOT FOUND</li>
+                  </ul>
+                </div>
+                <div class="findings-box" style="border-left: 3px solid var(--orange); margin-top: 8px;">
+                  <div class="findings-title" style="color: var(--orange);">Layer 2 - 30 Instantiation Sites</div>
+                  <ul>
+                    <li><span class="likely">ScheduleManager.cs</span> - 16 calls</li>
+                    <li><span class="likely">JobTracker.cs</span> - 14 calls</li>
+                  </ul>
+                </div>
+                <div class="findings-box" style="border-left: 3px solid #d1d5db; margin-top: 8px;">
+                  <div class="findings-title" style="color: var(--text-light);">Layers 3-4 - Not Reached</div>
+                  <ul>
+                    <li style="color: var(--text-light);">AppHostService, SyncEndpoints - invisible to grep</li>
+                    <li style="color: var(--text-light);">No risk scoring, no alternative suggested</li>
+                  </ul>
+                </div>
+                <div class="findings-box" style="border-left: 3px solid #d1d5db; margin-top: 8px;">
+                  <div class="findings-title">Summary</div>
+                  <ul>
+                    <li>14 of 17 subclasses found (<strong style="color: var(--red);">3 missed</strong>)</li>
+                    <li>30 instantiation sites (incomplete)</li>
+                    <li><strong>Thinks 46 call sites - actual number is higher</strong></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="conv-footer">
+          <div>Iterations: <span class="stat-val">2</span></div>
+          <div>Tools: <span class="stat-val">6</span></div>
+          <div>Tokens: <span class="stat-val">~17K</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Footer -->
+<footer class="page-footer">
+  <p>Built with <span class="brand">ctxo</span></p>
+  <p class="tagline">AI agents don't fail because they can't code. They fail because they code blind. Ctxo gives them the full picture before they write a single line.</p>
+</footer>
+
+</body>
+</html>

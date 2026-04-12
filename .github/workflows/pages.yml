@@ -27,7 +27,7 @@ jobs:
       - name: Prepare site
         run: |
           mkdir -p _site/ctxo-index
-          cp pages/* _site/
+          cp -r pages/* _site/
           cp -r .ctxo/index/* _site/ctxo-index/
           touch _site/.nojekyll
           # Generate manifest of all JSON files for the visualizer
