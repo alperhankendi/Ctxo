@@ -13,7 +13,7 @@ ctxo-index-check:
   variables:
     GIT_DEPTH: 0  # ctxo reads git history for intent/anti-patterns
   script:
-    - npx -y ctxo-mcp index --check
+    - npx -y @ctxo/cli index --check
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

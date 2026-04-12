@@ -110,17 +110,17 @@ describe('installRules', () => {
     const dir = makeTempDir();
     const result = installRules(dir, 'cursor');
 
-    expect(result.file).toBe('.cursor/rules/ctxo-mcp.mdc');
-    expect(existsSync(join(dir, '.cursor', 'rules', 'ctxo-mcp.mdc'))).toBe(true);
+    expect(result.file).toBe('.cursor/rules/ctxo.mdc');
+    expect(existsSync(join(dir, '.cursor', 'rules', 'ctxo.mdc'))).toBe(true);
 
-    const content = readFileSync(join(dir, '.cursor', 'rules', 'ctxo-mcp.mdc'), 'utf-8');
+    const content = readFileSync(join(dir, '.cursor', 'rules', 'ctxo.mdc'), 'utf-8');
     expect(content).toContain('alwaysApply: true');
   });
 
   it('creates nested directories for amazon q', () => {
     const dir = makeTempDir();
     installRules(dir, 'amazonq');
-    expect(existsSync(join(dir, '.amazonq', 'rules', 'ctxo-mcp.md'))).toBe(true);
+    expect(existsSync(join(dir, '.amazonq', 'rules', 'ctxo.md'))).toBe(true);
   });
 
   it('appends a marked section to existing CLAUDE.md', () => {

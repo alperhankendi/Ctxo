@@ -459,7 +459,7 @@ export class InitCommand {
 
   private async getVersion(): Promise<string | undefined> {
     try {
-      const pkgPath = join(this.projectRoot, 'node_modules', 'ctxo-mcp', 'package.json');
+      const pkgPath = join(this.projectRoot, 'node_modules', '@ctxo', 'cli', 'package.json');
       if (existsSync(pkgPath)) {
         return JSON.parse(readFileSync(pkgPath, 'utf-8')).version;
       }

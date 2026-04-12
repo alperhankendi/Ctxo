@@ -31,4 +31,4 @@ jobs:
           node-version: 22
 
       - name: Check index freshness
-        run: npx -y ctxo-mcp index --check
+        run: npx -y @ctxo/cli index --check

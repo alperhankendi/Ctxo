@@ -27,7 +27,7 @@ When you run `ctxo index` on a C# project with .NET SDK 8+ installed, Ctxo deliv
 dotnet --version
 
 # Index your C# project
-npx ctxo-mcp index
+npx @ctxo/cli index
 ```
 
 ## How It Works
@@ -176,7 +176,7 @@ All 14 MCP tools automatically benefit from semantic edges:
 Enterprise C# backend, 166 files, 2 projects:
 
 ```
-$ npx ctxo-mcp index
+$ npx @ctxo/cli index
 [ctxo:roslyn] Roslyn adapter ready: SDK 10.0.201, solution src/CaaSTeamsService.sln
 [ctxo:roslyn] Solution loaded: 2 projects, 167 .cs files
 [ctxo:roslyn] Roslyn batch index: 167 files in 3.7s

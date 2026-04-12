@@ -74,7 +74,7 @@ describe('InitCommand — non-interactive mode', () => {
     await new InitCommand(dir).run({ tools: ['windsurf', 'cursor'], yes: true });
 
     expect(existsSync(join(dir, '.windsurfrules'))).toBe(true);
-    expect(existsSync(join(dir, '.cursor', 'rules', 'ctxo-mcp.mdc'))).toBe(true);
+    expect(existsSync(join(dir, '.cursor', 'rules', 'ctxo.mdc'))).toBe(true);
   });
 
   it('rejects unknown tool IDs', async () => {

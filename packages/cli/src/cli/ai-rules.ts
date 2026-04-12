@@ -22,12 +22,12 @@ export interface Platform {
 
 export const PLATFORMS: Platform[] = [
   { id: 'claude-code',    name: 'Claude Code',        file: 'CLAUDE.md',                      mode: 'append',  detectPaths: ['CLAUDE.md', '.claude'],                    starred: true },
-  { id: 'cursor',         name: 'Cursor',             file: '.cursor/rules/ctxo-mcp.mdc',     mode: 'create',  detectPaths: ['.cursor', '.cursorrules'],                  starred: false },
+  { id: 'cursor',         name: 'Cursor',             file: '.cursor/rules/ctxo.mdc',         mode: 'create',  detectPaths: ['.cursor', '.cursorrules'],                  starred: false },
   { id: 'github-copilot', name: 'GitHub Copilot',     file: '.github/copilot-instructions.md', mode: 'create',  detectPaths: ['.github', '.vscode'],                      starred: false },
   { id: 'windsurf',       name: 'Windsurf',           file: '.windsurfrules',                  mode: 'create',  detectPaths: ['.windsurfrules', '.windsurf'],              starred: false },
   { id: 'antigravity',    name: 'Google Antigravity',  file: 'AGENTS.md',                      mode: 'create',  detectPaths: ['AGENTS.md', 'GEMINI.md', '.gemini'],       starred: false },
   { id: 'augment',        name: 'Augment Code',       file: 'augment-guidelines.md',           mode: 'create',  detectPaths: ['augment-guidelines.md', '.augment'],        starred: false },
-  { id: 'amazonq',        name: 'Amazon Q',           file: '.amazonq/rules/ctxo-mcp.md',     mode: 'create',  detectPaths: ['.amazonq'],                                starred: false },
+  { id: 'amazonq',        name: 'Amazon Q',           file: '.amazonq/rules/ctxo.md',         mode: 'create',  detectPaths: ['.amazonq'],                                starred: false },
 ];
 
 export function detectPlatforms(projectRoot: string): Set<string> {

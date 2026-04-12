@@ -28,7 +28,7 @@ for await (const message of query({
     mcpServers: {
       ctxo: {
         command: "npx",
-        args: ["-y", "ctxo-mcp"]
+        args: ["-y", "@ctxo/cli"]
       }
     },
     allowedTools: ["mcp__ctxo__*"]
@@ -49,7 +49,7 @@ for await (const message of query({
     mcpServers: {
       ctxo: {
         command: "npx",
-        args: ["-y", "ctxo-mcp"]
+        args: ["-y", "@ctxo/cli"]
       },
       github: {
         command: "npx",
@@ -80,7 +80,7 @@ async function reviewPR() {
     `,
     options: {
       mcpServers: {
-        ctxo: { command: "npx", args: ["-y", "ctxo-mcp"] }
+        ctxo: { command: "npx", args: ["-y", "@ctxo/cli"] }
       },
       allowedTools: ["mcp__ctxo__*"],
       permissionMode: "bypassPermissions"
@@ -106,7 +106,7 @@ async def analyze_codebase():
         name="Ctxo Code Intelligence",
         params={
             "command": "npx",
-            "args": ["-y", "ctxo-mcp"]
+            "args": ["-y", "@ctxo/cli"]
         },
         cache_tools_list=True  # Cache tool schemas across runs
     )
@@ -160,7 +160,7 @@ async def get_ctxo_tools():
     client = MultiServerMCPClient({
         "ctxo": {
             "command": "npx",
-            "args": ["-y", "ctxo-mcp"],
+            "args": ["-y", "@ctxo/cli"],
             "transport": "stdio"
         }
     })
@@ -184,7 +184,7 @@ import Anthropic from "@anthropic-ai/sdk";
 // Step 1: Connect to Ctxo
 const transport = new StdioClientTransport({
   command: "npx",
-  args: ["-y", "ctxo-mcp"],
+  args: ["-y", "@ctxo/cli"],
   cwd: "/path/to/target-repo"
 });
 const mcpClient = new Client({ name: "my-agent", version: "1.0.0" });
@@ -331,8 +331,8 @@ Checking if safe to delete?
 ### 1. Always Index First
 Ctxo requires a pre-built index. In CI/CD, add an indexing step:
 ```bash
-npx ctxo-mcp index          # Build index
-npx ctxo-mcp index --check  # CI gate: fail if stale
+npx @ctxo/cli index          # Build index
+npx @ctxo/cli index --check  # CI gate: fail if stale
 ```
 
 ### 2. Use `get_pr_impact` as Entry Point
@@ -350,7 +350,7 @@ MCPServerStdio(..., cache_tools_list=True)
 ### 5. Set Working Directory
 Ctxo operates on the codebase in its working directory. Always set `cwd` when spawning:
 ```typescript
-{ command: "npx", args: ["-y", "ctxo-mcp"], cwd: "/path/to/repo" }
+{ command: "npx", args: ["-y", "@ctxo/cli"], cwd: "/path/to/repo" }
 ```
 
 ### 6. All Tools Are Read-Only
