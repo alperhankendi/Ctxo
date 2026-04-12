@@ -2,6 +2,59 @@
 
 All notable changes to Ctxo MCP Server are documented in this file.
 
+## [0.6.6] - 2026-04-12
+
+### Added
+- UI screenshots in documentation (visualizer previews)
+
+### Changed
+- `ctxo doctor` PRD reformatted for clarity
+
+## [0.6.5] - 2026-04-12
+
+### Added
+- **`ctxo visualize` command** — generates an interactive HTML dependency graph for your codebase index
+- `--max-nodes N` flag to limit rendered symbols by PageRank score
+- `--no-browser` flag to skip auto-opening the browser
+- Languages dropdown in landing page nav (C# full-tier, TypeScript, Go)
+- C# full-tier documentation page (`pages/lang/csharp.md`)
+- Comparison pages (before/after ctxo screenshots)
+
+### Fixed
+- C# language page link points to GitHub-rendered markdown (not raw)
+- Duplicate `ctxo-visualizer.html` removed from `tools/` (canonical version lives in `pages/`)
+
+### Changed
+- Simplified "What You Get" table to show full-tier capabilities only
+- ADR-007 updated with production results, bugs fixed, and lessons learned
+
+## [0.6.4] - 2026-04-12
+
+### Fixed
+- `find_importers` and cross-file graph traversal now rewrite ALL edge `to` paths (not just the current file's edges). Previously, C# edges from files in `CaasBackend/` pointed at `CaasBackend.Tools/` symbols using solution-relative paths, causing lookups to miss.
+
+## [0.6.3] - 2026-04-12
+
+### Added
+- `ctxo --version` flag and version display in `--help` output
+- Version shown in `ctxo doctor` output
+
+### Fixed
+- Path mismatch between ctxo-roslyn output and index pipeline (solution-relative vs project-root-relative)
+- MCP server version now read from `package.json` instead of hardcoded `0.1.0` (PR #39)
+
+## [0.6.2] - 2026-04-12
+
+### Fixed
+- `ctxo-roslyn` discovery via `package.json` root walking (was failing when `npx` invocation happened outside package root)
+
+## [0.6.1] - 2026-04-12
+
+### Fixed
+- `ctxo-roslyn` binary was missing from published npm package — added to `files` array in `package.json`
+- Roslyn project discovery now correctly resolves solution paths from multiple working directories
+- Tarball size limit bumped to 900KB (ctxo-roslyn adds ~25KB)
+
 ## [0.6.0] - 2026-04-12
 
 ### Added
@@ -22,20 +75,6 @@ All notable changes to Ctxo MCP Server are documented in this file.
 - Compiler-generated symbol filtering (angle brackets, implicit record bases)
 - C# fixture project for integration testing (`tests/e2e/fixtures/csharp-sample/`)
 
-**Interactive Setup (`ctxo init`) (since 0.5.1)**
-- Step-by-step interactive installer with ASCII banner, colored boxes, and spinner
-- Auto-detects installed AI tools (Claude Code, Cursor, Copilot, Windsurf, Antigravity, Augment, Amazon Q)
-- Generates MCP tool usage rules for 7 platforms in native format (`.mdc`, `.md`, etc.)
-- Non-interactive mode: `ctxo init --tools claude-code,cursor -y`
-- Dry run preview: `ctxo init --dry-run`
-- Rules-only regeneration: `ctxo init --rules`
-- **Auto-registers ctxo MCP server** in `.mcp.json`, `.vscode/mcp.json`, `.amazonq/mcp.json`
-
-**Health Check (`ctxo doctor`) (since 0.5.1)**
-- `ctxo doctor` command - 15 diagnostic checks across all subsystems
-- `--json` for machine-readable output, `--quiet` for warnings/failures only
-- Health checks via `IHealthCheck` port interface
-
 **Async ILanguageAdapter**
 - Port interface evolved to `Promise<T>` return types for all adapter methods
 - Optional `initialize()` and `dispose()` lifecycle methods for solution-level adapters
@@ -51,16 +90,70 @@ All notable changes to Ctxo MCP Server are documented in this file.
 - Double process spawn avoided in watch mode (keep-alive only, no redundant batch)
 - Integration test isolation (beforeAll + absolute fixture path)
 - Symbol ID regex validation in edge extraction (prevents malformed edges)
-- 5 runtime bugs in doctor command (fs.stat async, exit code handling, check context passing)
-- TypeScript type errors in init-command (clack prompt types)
 
 ### Changed
 - Minimum .NET SDK requirement: 8.0 (for C# full-tier; not required for other languages)
 - `ctxo index` now shows language tier breakdown in summary output
-- `ctxo init` runs full interactive setup instead of just installing git hooks
-- CLI help text updated with new init flags and doctor command
 - ADR-007 rewritten: Roslyn LSP rejected in favor of standalone .NET app approach
 - 1007 total tests (up from 718)
+
+### Production Results (CaasBackend — 166 files, 2 projects)
+
+| Metric | V1.5 (syntax) | V2 (full) |
+|---|---|---|
+| `get_blast_radius("BaseSyncJob")` impact | 0 | **35 symbols, risk 1.0** |
+| Direct dependents | 0 | **17 subclasses** |
+| Transitive depth | — | **4 levels** |
+| `find_importers` results | 0 | **34 importers** |
+| Edge types | `base_list` only | **extends, implements, calls, uses, imports** |
+| extends/implements | I-prefix heuristic | **Semantic** |
+| AI tool calls to reconstruct | 10+ (Read/Grep fallback) | **1** |
+| Total symbols | public only | **2382** |
+
+## [0.5.1] - 2026-04-11
+
+### Added
+- **Auto-registers ctxo MCP server** in the correct config file based on selected tools:
+  - `.mcp.json` for Claude Code, Cursor, Windsurf, Augment, Antigravity
+  - `.vscode/mcp.json` for GitHub Copilot (with `type: "stdio"`)
+  - `.amazonq/mcp.json` for Amazon Q
+  - Merges into existing config (preserves other MCP servers), skips if already registered
+
+## [0.5.0] - 2026-04-11
+
+### Added
+
+**Interactive Setup (`ctxo init`)**
+- Step-by-step interactive installer with ASCII banner, colored boxes, and spinner
+- Auto-detects installed AI tools (Claude Code, Cursor, Copilot, Windsurf, Antigravity, Augment, Amazon Q) via project directory markers
+- Generates MCP tool usage rules for 7 platforms — each in its native format (`.mdc`, `.md`, etc.)
+- Rules instruct AI assistants to always use ctxo tools (blast radius, why-context, etc.) before reading or editing code
+- Pre-selects detected tools, shows Claude Code with a star (★)
+- Non-interactive mode: `ctxo init --tools claude-code,cursor -y`
+- Dry run preview: `ctxo init --dry-run`
+- Rules-only regeneration: `ctxo init --rules`
+- Auto-scaffolds `.gitignore` (ensures `.ctxo/.cache/` is excluded) and `.ctxo/config.yaml` (team config template)
+- `@clack/prompts` for interactive CLI prompts
+- 35 new tests for init feature (ai-rules + init-command)
+
+**Health Check (`ctxo doctor`)**
+- `ctxo doctor` command — runs 15 diagnostic checks across all subsystems
+- Checks: git repo, Node.js version, tree-sitter, index directory, schema version, symbol count, index freshness, SQLite cache, config file, disk usage
+- `--json` flag for machine-readable output (CI pipelines)
+- `--quiet` flag for warnings/failures only (exit code 1 on failure)
+- Health checks registered via `IHealthCheck` port interface
+
+### Fixed
+- 5 runtime bugs in doctor command (fs.stat async, exit code handling, check context passing)
+- TypeScript type errors in init-command (clack prompt types)
+- ESLint no-unused-vars violations in init-command
+
+### Changed
+- `ctxo init` now runs full interactive setup instead of just installing git hooks
+- CLI help text updated with new init flags and doctor command
+- README Quick Start simplified to single `npx ctxo-mcp init` command
+- Landing page hero section includes `npx ctxo-mcp init` install command
+- Tarball size limit bumped to 850KB (new @clack/prompts dependency)
 
 ## [0.4.2] - 2026-04-10
 
