@@ -170,10 +170,10 @@ ctxo doctor — Health Check
 
 ### NFR-1: Performance
 
-| ID      | Requirement                                                                                                                                                                      |
-| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| NFR-1.1 | `ctxo doctor` completes in < 3 seconds for typical codebases                                                                                                                     |
-| NFR-1.2 | Index freshness check in doctor uses mtime only (no content hashing) — fast path                                                                                                 |
+| ID      | Requirement                                                                                                                                                                                 |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| NFR-1.1 | `ctxo doctor` completes in < 3 seconds for typical codebases                                                                                                                                |
+| NFR-1.2 | Index freshness check in doctor uses mtime only (no content hashing) — fast path                                                                                                            |
 | NFR-1.3 | I/O-bound checks run in parallel via `Promise.allSettled()` — fault-tolerant, a failing check never blocks others. CPU-bound checks (Node version) are instant and can run in either order. |
 
 ### NFR-2: Compatibility
@@ -198,9 +198,10 @@ ctxo doctor — Health Check
 **Pattern choice:** Option C (Hybrid) — each check implements a shared `IHealthCheck` interface, but registration is a flat explicit array in `DoctorCommand` (no auto-discovery, no decorators, no DI container). This matches the project's existing convention (manual wiring, no framework magic) while providing type safety and test isolation.
 
 **Key decisions:**
-- `Promise.allSettled()` (not `Promise.all`) — a failing/throwing check never blocks other checks from running and reporting
-- Constructor injection — `HealthChecker` receives `IHealthCheck[]` via constructor, making it trivially testable with mock checks
-- Class-based checks implementing `IHealthCheck` — compile-time contract enforcement via `implements`
+
+* `Promise.allSettled()` (not `Promise.all`) — a failing/throwing check never blocks other checks from running and reporting
+* Constructor injection — `HealthChecker` receives `IHealthCheck[]` via constructor, making it trivially testable with mock checks
+* Class-based checks implementing `IHealthCheck` — compile-time contract enforcement via `implements`
 
 ### 6.2 Doctor Command Architecture
 
@@ -249,27 +250,27 @@ ctxo doctor [--json] [--quiet]
 
 Types live in `core/` (pure data structures, no I/O). Checks live in `adapters/` (they access fs, git, SQLite — adapter-level concerns per hexagonal rules).
 
-| File                                                         | Layer   | Purpose                                                           |
-| ------------------------------------------------------------ | ------- | ----------------------------------------------------------------- |
-| `src/core/diagnostics/types.ts`                              | Core    | `IHealthCheck` interface, `CheckResult`, `CheckStatus`, `CheckContext`, `DoctorReport` types |
-| `src/adapters/diagnostics/health-checker.ts`                 | Adapter | Orchestrator — `constructor(checks: IHealthCheck[])`, runs via `Promise.allSettled()` |
-| `src/adapters/diagnostics/checks/runtime-check.ts`           | Adapter | `NodeVersionCheck`, `TsMorphCheck`, `TreeSitterCheck` classes (`implements IHealthCheck`) |
-| `src/adapters/diagnostics/checks/git-check.ts`               | Adapter | `GitBinaryCheck`, `GitRepoCheck` classes |
+| File                                                         | Layer   | Purpose                                                                                                                                                       |
+| ------------------------------------------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/core/diagnostics/types.ts`                              | Core    | `IHealthCheck` interface, `CheckResult`, `CheckStatus`, `CheckContext`, `DoctorReport` types                                                                  |
+| `src/adapters/diagnostics/health-checker.ts`                 | Adapter | Orchestrator — `constructor(checks: IHealthCheck[])`, runs via `Promise.allSettled()`                                                                         |
+| `src/adapters/diagnostics/checks/runtime-check.ts`           | Adapter | `NodeVersionCheck`, `TsMorphCheck`, `TreeSitterCheck` classes (`implements IHealthCheck`)                                                                     |
+| `src/adapters/diagnostics/checks/git-check.ts`               | Adapter | `GitBinaryCheck`, `GitRepoCheck` classes                                                                                                                      |
 | `src/adapters/diagnostics/checks/index-check.ts`             | Adapter | `IndexDirectoryCheck`, `IndexFreshnessCheck`, `SymbolCountCheck`, `EdgeCountCheck`, `OrphanedFilesCheck`, `CoChangesCacheCheck`, `SchemaVersionCheck` classes |
-| `src/adapters/diagnostics/checks/storage-check.ts`           | Adapter | `SqliteCacheCheck` class |
-| `src/adapters/diagnostics/checks/config-check.ts`            | Adapter | `ConfigFileCheck` class |
-| `src/adapters/diagnostics/checks/disk-check.ts`              | Adapter | `DiskUsageCheck` class |
-| `src/adapters/diagnostics/doctor-reporter.ts`                | Adapter | Human-readable, JSON, and quiet output formatting |
-| `src/cli/doctor-command.ts`                                  | CLI     | Composes `IHealthCheck[]` array, wires `HealthChecker` + `DoctorReporter` |
-| `src/adapters/diagnostics/__tests__/runtime-check.test.ts`   | Test    | Node version, ts-morph, tree-sitter (8 tests)                     |
-| `src/adapters/diagnostics/__tests__/git-check.test.ts`       | Test    | Git binary, .git directory (6 tests)                              |
-| `src/adapters/diagnostics/__tests__/index-check.test.ts`     | Test    | Index exists/empty/fresh/stale/orphaned (12 tests)                |
-| `src/adapters/diagnostics/__tests__/storage-check.test.ts`   | Test    | SQLite exists/missing/corrupt (6 tests)                           |
-| `src/adapters/diagnostics/__tests__/config-check.test.ts`    | Test    | YAML valid/invalid/missing (5 tests)                              |
-| `src/adapters/diagnostics/__tests__/disk-check.test.ts`      | Test    | Size thresholds (5 tests)                                         |
-| `src/adapters/diagnostics/__tests__/health-checker.test.ts`  | Test    | Orchestration, aggregation, exit code (8 tests)                   |
-| `src/adapters/diagnostics/__tests__/doctor-reporter.test.ts` | Test    | Human, JSON, quiet format (8 tests)                               |
-| `src/cli/__tests__/doctor-command.test.ts`                   | Test    | CLI wiring, flag parsing, exit codes                              |
+| `src/adapters/diagnostics/checks/storage-check.ts`           | Adapter | `SqliteCacheCheck` class                                                                                                                                      |
+| `src/adapters/diagnostics/checks/config-check.ts`            | Adapter | `ConfigFileCheck` class                                                                                                                                       |
+| `src/adapters/diagnostics/checks/disk-check.ts`              | Adapter | `DiskUsageCheck` class                                                                                                                                        |
+| `src/adapters/diagnostics/doctor-reporter.ts`                | Adapter | Human-readable, JSON, and quiet output formatting                                                                                                             |
+| `src/cli/doctor-command.ts`                                  | CLI     | Composes `IHealthCheck[]` array, wires `HealthChecker` + `DoctorReporter`                                                                                     |
+| `src/adapters/diagnostics/__tests__/runtime-check.test.ts`   | Test    | Node version, ts-morph, tree-sitter (8 tests)                                                                                                                 |
+| `src/adapters/diagnostics/__tests__/git-check.test.ts`       | Test    | Git binary, .git directory (6 tests)                                                                                                                          |
+| `src/adapters/diagnostics/__tests__/index-check.test.ts`     | Test    | Index exists/empty/fresh/stale/orphaned (12 tests)                                                                                                            |
+| `src/adapters/diagnostics/__tests__/storage-check.test.ts`   | Test    | SQLite exists/missing/corrupt (6 tests)                                                                                                                       |
+| `src/adapters/diagnostics/__tests__/config-check.test.ts`    | Test    | YAML valid/invalid/missing (5 tests)                                                                                                                          |
+| `src/adapters/diagnostics/__tests__/disk-check.test.ts`      | Test    | Size thresholds (5 tests)                                                                                                                                     |
+| `src/adapters/diagnostics/__tests__/health-checker.test.ts`  | Test    | Orchestration, aggregation, exit code (8 tests)                                                                                                               |
+| `src/adapters/diagnostics/__tests__/doctor-reporter.test.ts` | Test    | Human, JSON, quiet format (8 tests)                                                                                                                           |
+| `src/cli/__tests__/doctor-command.test.ts`                   | Test    | CLI wiring, flag parsing, exit codes                                                                                                                          |
 
 ### Modified Files
 
