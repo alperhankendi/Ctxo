@@ -1,6 +1,6 @@
 <div align="center">
 
-[![npm version](https://img.shields.io/npm/v/ctxo-mcp.svg)](https://www.npmjs.com/package/ctxo-mcp)
+[![npm version](https://img.shields.io/npm/v/@ctxo/cli.svg)](https://www.npmjs.com/package/@ctxo/cli)
 [![CI](https://github.com/alperhankendi/Ctxo/actions/workflows/ci.yml/badge.svg)](https://github.com/alperhankendi/Ctxo/actions/workflows/ci.yml)
 [![Release](https://github.com/alperhankendi/Ctxo/actions/workflows/release.yml/badge.svg)](https://github.com/alperhankendi/Ctxo/actions/workflows/release.yml)
 
@@ -39,13 +39,24 @@ Ctxo is an **MCP server** that **enhances** your existing AI tools with dependen
 
 ## Quick Start
 
-One command sets up everything — index directory, MCP server registration, AI tool rules, and git hooks:
+Install the CLI, then run the setup wizard:
 
 ```Shell
-npx ctxo-mcp init
+npm i -g @ctxo/cli
+ctxo init
 ```
 
-That's it. The interactive wizard detects your AI tools, registers the ctxo MCP server in the correct config file (`.mcp.json`, `.vscode/mcp.json`, etc.), and generates usage rules so your assistant knows when to call each tool.
+That's it. The interactive wizard detects your AI tools, registers the ctxo MCP server in the correct config file (`.mcp.json`, `.vscode/mcp.json`, etc.), generates usage rules so your assistant knows when to call each tool, and prompts to install language plugins it detects in your project (pass `--no-install` to skip).
+
+### Language Plugins
+
+As of v0.7, Ctxo discovers language support from npm packages listed in your project's `package.json`. Three official plugins ship today:
+
+```Shell
+npm i -D @ctxo/lang-typescript @ctxo/lang-go @ctxo/lang-csharp
+```
+
+Or install one at a time with the CLI shortcut: `ctxo install typescript` (supports `--yes`, `--global`, `--dry-run`, `--pm`, `--version`). Any package named `@ctxo/lang-*` or `ctxo-lang-*` in your dependencies is auto-loaded.
 
 <details>
 <summary>Manual MCP config (if not using <code>ctxo init</code>)</summary>
@@ -53,25 +64,25 @@ That's it. The interactive wizard detects your AI tools, registers the ctxo MCP 
 **Claude Code / Cursor / Windsurf / Augment / Antigravity** — `.mcp.json`:
 
 ```JSON
-{ "mcpServers": { "ctxo": { "command": "npx", "args": ["-y", "ctxo-mcp"] } } }
+{ "mcpServers": { "ctxo": { "command": "npx", "args": ["-y", "@ctxo/cli"] } } }
 ```
 
 **VS Code (Copilot)** — `.vscode/mcp.json`:
 
 ```JSON
-{ "servers": { "ctxo": { "type": "stdio", "command": "npx", "args": ["-y", "ctxo-mcp"] } } }
+{ "servers": { "ctxo": { "type": "stdio", "command": "npx", "args": ["-y", "@ctxo/cli"] } } }
 ```
 
 **Amazon Q** — `.amazonq/mcp.json`:
 
 ```JSON
-{ "mcpServers": { "ctxo": { "command": "npx", "args": ["-y", "ctxo-mcp"] } } }
+{ "mcpServers": { "ctxo": { "command": "npx", "args": ["-y", "@ctxo/cli"] } } }
 ```
 
 **Zed** — `settings.json`:
 
 ```JSON
-{ "context_servers": { "ctxo": { "command": { "path": "npx", "args": ["-y", "ctxo-mcp"] } } } }
+{ "context_servers": { "ctxo": { "command": { "path": "npx", "args": ["-y", "@ctxo/cli"] } } } }
 ```
 
 </details>
@@ -113,28 +124,39 @@ Onboarding?               → get_architectural_overlay → get_symbol_importanc
 
 ```Shell
 # Setup
-npx ctxo-mcp init                          # Interactive setup (index, AI tool rules, git hooks)
-npx ctxo-mcp init --tools claude-code,cursor -y  # Non-interactive setup
-npx ctxo-mcp init --rules                  # Regenerate AI tool rules only
-npx ctxo-mcp init --dry-run                # Preview what would be created
+ctxo init                                  # Interactive setup (detects languages, prompts to install plugins, writes AI tool rules, git hooks)
+ctxo init --tools claude-code,cursor -y    # Non-interactive setup
+ctxo init --no-install                     # Skip plugin install prompt
+ctxo init --rules                          # Regenerate AI tool rules only
+ctxo init --dry-run                        # Preview what would be created
+
+# Plugins (v0.7+)
+ctxo install                               # Install plugins for all detected languages
+ctxo install typescript go csharp          # Install specific plugins
+ctxo install typescript --yes --pm pnpm    # CI-friendly, pick package manager
+ctxo install typescript --global --version 0.7.0  # Pin version, install globally
 
 # Indexing
-npx ctxo-mcp index                         # Build full codebase index
-npx ctxo-mcp index --check                 # CI gate: fail if index stale
-npx ctxo-mcp index --skip-history          # Fast re-index without git history
-npx ctxo-mcp watch                         # File watcher for incremental re-index
-npx ctxo-mcp sync                          # Rebuild SQLite cache from committed JSON
+ctxo index                                 # Build full codebase index
+ctxo index --install-missing               # Auto-install any missing plugins first
+ctxo index --check                         # CI gate: fail if index stale
+ctxo index --skip-history                  # Fast re-index without git history
+ctxo watch                                 # File watcher for incremental re-index
+ctxo sync                                  # Rebuild SQLite cache from committed JSON
 
 # Diagnostics
-npx ctxo-mcp status                        # Show index manifest
-npx ctxo-mcp doctor                        # Health check all subsystems (--json, --quiet)
-npx ctxo-mcp stats                         # Show usage statistics (--json, --days N, --clear)
+ctxo status                                # Show index manifest
+ctxo doctor                                # Health check all subsystems (--json, --quiet)
+ctxo doctor --fix                          # Dependency-ordered auto-remediation (--dry-run, --yes)
+ctxo stats                                 # Show usage statistics (--json, --days N, --clear)
+ctxo --version                             # Print CLI version (--verbose, --json)
+ctxo version                               # Verbose version subcommand (CLI + plugins + runtime)
 ```
 
 **Example output:**
 
 ```
-npx ctxo-mcp stats
+ctxo stats
 
   Usage Summary (all time)
   ────────────────────────────────────────
@@ -211,7 +233,7 @@ import { query } from "@anthropic-ai/claude-agent-sdk";
 for await (const message of query({
   prompt: "Analyze the blast radius of AuthService",
   options: {
-    mcpServers: { ctxo: { command: "npx", args: ["-y", "ctxo-mcp"] } },
+    mcpServers: { ctxo: { command: "npx", args: ["-y", "@ctxo/cli"] } },
     allowedTools: ["mcp__ctxo__*"]
   }
 })) { /* ... */ }
@@ -223,7 +245,7 @@ for await (const message of query({
 from agents import Agent, Runner
 from agents.mcp import MCPServerStdio
 
-async with MCPServerStdio(params={"command": "npx", "args": ["ctxo-mcp"]}) as ctxo:
+async with MCPServerStdio(params={"command": "npx", "args": ["@ctxo/cli"]}) as ctxo:
     agent = Agent(name="Reviewer", mcp_servers=[ctxo])
     result = await Runner.run(agent, "Review the PR impact")
 ```
@@ -232,11 +254,15 @@ See [Agentic AI Integration Guide](docs/agentic-ai-integration.md) for LangChain
 
 ## Multi-Language Support
 
-| Language              | Parser      | Tier   | Features                                                         |
-| --------------------- | ----------- | ------ | ---------------------------------------------------------------- |
-| TypeScript/JavaScript | ts-morph    | Full   | Type-aware resolution, cross-file imports, `this.method()` calls |
-| Go                    | tree-sitter | Syntax | Structs, interfaces, functions, methods, import edges            |
-| C#                    | tree-sitter | Syntax | Classes, interfaces, methods, enums, namespace qualification     |
+Language support ships as standalone plugins. Install only what your repo needs.
+
+| Language              | Plugin Package        | Parser      | Tier   | Features                                                         |
+| --------------------- | --------------------- | ----------- | ------ | ---------------------------------------------------------------- |
+| TypeScript/JavaScript | `@ctxo/lang-typescript` | ts-morph    | Full   | Type-aware resolution, cross-file imports, `this.method()` calls |
+| Go                    | `@ctxo/lang-go`         | tree-sitter | Syntax | Structs, interfaces, functions, methods, import edges            |
+| C#                    | `@ctxo/lang-csharp`     | tree-sitter | Syntax | Classes, interfaces, methods, enums, namespace qualification     |
+
+Third-party plugins are supported via the `@ctxo/plugin-api` protocol (v1). Any package named `@ctxo/lang-*` or `ctxo-lang-*` declared in your project dependencies is auto-discovered.
 
 ## Index Visualizer
 
@@ -252,6 +278,8 @@ Ctxo ships with an interactive visualizer that renders your codebase index as a 
 
 Ctxo builds a **committed JSON index** (`.ctxo/index/`) that captures symbols, dependency edges, git history, and co-change data. The MCP server reads this index to answer queries no runtime parsing, no external services.
 
+The codebase is a pnpm monorepo with 5 packages: `@ctxo/cli` (this package), `@ctxo/plugin-api` (plugin protocol v1), and three official language plugins (`@ctxo/lang-typescript`, `@ctxo/lang-go`, `@ctxo/lang-csharp`).
+
 ```
 .ctxo/
   index/          ← committed (per-file JSON, reviewable in PRs)
@@ -262,7 +290,7 @@ Ctxo builds a **committed JSON index** (`.ctxo/index/`) that captures symbols, d
 
 ## Links
 
-* [npm](https://www.npmjs.com/package/ctxo-mcp)
+* [npm](https://www.npmjs.com/package/@ctxo/cli)
 * [Changelog](CHANGELOG.md)
 * [LLM Reference](llms-full.txt)
 * [MCP Validation Runbook](docs/runbook/mcp-validation/mcp-validation.md)

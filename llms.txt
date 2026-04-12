@@ -1,15 +1,26 @@
 # Ctxo MCP Server
 
-> Dependency-aware, history-enriched code intelligence for AI coding assistants.
+> AI agents don't fail because they can't code. They fail because they code blind. Ctxo gives them the full picture before they write a single line.
 
 Ctxo is a Model Context Protocol (MCP) server that gives AI agents structured context about codebases: symbol graphs, blast radius, architectural overlays, change intelligence, dead code detection, and PR impact analysis.
 
 ## Quick Start
 
 ```
-npx ctxo-mcp index    # Build codebase index
-npx ctxo-mcp          # Start MCP server (stdio)
+npx @ctxo/cli init     # Detect languages, install plugins, wire MCP
+npx @ctxo/cli index    # Build codebase index
+npx @ctxo/cli          # Start MCP server (stdio)
 ```
+
+## Package Layout (v0.7.0-alpha.0, pnpm monorepo)
+
+- `@ctxo/cli` — CLI + MCP server (formerly `ctxo-mcp`)
+- `@ctxo/plugin-api` — `CtxoLanguagePlugin` v1 interface (apiVersion, id, extensions, tier, createAdapter)
+- `@ctxo/lang-typescript` — ts-morph full-tier plugin
+- `@ctxo/lang-go` — tree-sitter / gopls plugin
+- `@ctxo/lang-csharp` — Roslyn plugin
+
+Language adapters ship as separate npm packages and are discovered by scanning the project `package.json` for `@ctxo/lang-*` or `ctxo-lang-*` dependencies.
 
 ## 14 Tools
 
@@ -39,6 +50,14 @@ npx ctxo-mcp          # Start MCP server (stdio)
 - Finding unused code? -> find_dead_code
 - Safe to delete? -> find_importers
 
+## New in v0.7
+
+- `ctxo install` — install language plugin packages
+- `ctxo init` — project-aware language detection + plugin wiring
+- `ctxo index --install-missing` — auto-install missing plugins during index
+- `ctxo doctor --fix` — repair common issues
+- `ctxo version` subcommand; `ctxo --version --verbose|--json` for plugin/runtime details
+
 ## Key Concepts
 
 - Symbol ID format: "file::name::kind" (e.g., "src/foo.ts::myFn::function")
@@ -48,6 +67,6 @@ npx ctxo-mcp          # Start MCP server (stdio)
 
 ## Links
 
-- npm: https://www.npmjs.com/package/ctxo-mcp
+- npm: https://www.npmjs.com/package/@ctxo/cli
 - GitHub: https://github.com/alperhankendi/Ctxo
 - Full reference: llms-full.txt

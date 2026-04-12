@@ -6,33 +6,44 @@ Ctxo is a **Model Context Protocol (MCP) server** that gives AI coding assistant
 
 - **Type:** npm package / CLI tool / MCP server (stdio transport)
 - **Author:** Alper Hankendi
-- **Status:** v0.3.0 — production (14 MCP tools, 718 tests, published on npm)
+- **Status:** v0.7.0-alpha.0 — 14 MCP tools, pnpm monorepo with 5 packages, 987+ tests
 - **Language:** TypeScript (ESM-first, `"type": "module"`)
 - **Runtime:** Node.js >= 20
 
 ## Quick Reference
 
 ```bash
-# Dev
-tsx src/index.ts              # zero-build dev run
-tsup                          # production build to dist/
-vitest                        # run tests (718 tests)
-vitest run --coverage         # run with coverage report
-npm link                      # local MCP client wiring
+# Dev (pnpm workspace)
+pnpm --filter @ctxo/cli dev       # zero-build dev run
+pnpm -r build                     # build all packages
+pnpm -r test                      # run tests across workspace (987+ tests)
+pnpm -r typecheck                 # typecheck all packages
+pnpm --filter @ctxo/cli test:unit # unit tests only
+pnpm --filter @ctxo/cli test:e2e  # end-to-end tests
+pnpm --filter @ctxo/cli build     # build CLI package to dist/
 
-# Usage
-npx ctxo index                # build codebase index
-npx ctxo index --check        # CI gate: fail if index stale
-npx ctxo index --skip-history # fast re-index without git history
-npx ctxo index --max-history 5 # limit commit history per file
-npx ctxo watch                # file watcher for incremental re-index
-npx ctxo sync                 # rebuild SQLite from committed JSON
-npx ctxo init                 # install git hooks (post-commit, post-merge)
-npx ctxo status               # show index manifest
-npx ctxo doctor               # health check all subsystems (--json, --quiet)
-npx ctxo visualize            # generate interactive dependency graph HTML
-npx ctxo visualize --max-nodes 200  # limit to top 200 symbols by PageRank
-npx ctxo visualize --no-browser     # skip auto-opening browser
+# Usage (consumer)
+npx ctxo install                     # install language plugins (interactive)
+npx ctxo install typescript go --yes # non-interactive install of specific plugins
+npx ctxo install --dry-run --pm pnpm # preview install plan with chosen pm
+npx ctxo index                       # build codebase index
+npx ctxo index --install-missing     # auto-install detected plugins, then index
+npx ctxo index --check               # CI gate: fail if index stale
+npx ctxo index --skip-history        # fast re-index without git history
+npx ctxo index --max-history 5       # limit commit history per file
+npx ctxo watch                       # file watcher for incremental re-index
+npx ctxo sync                        # rebuild SQLite from committed JSON
+npx ctxo init                        # install git hooks + language detection/install prompt
+npx ctxo init --no-install           # init without plugin install prompt
+npx ctxo status                      # show index manifest
+npx ctxo doctor                      # health check all subsystems (--json, --quiet)
+npx ctxo doctor --fix                # dependency-ordered remediation (--dry-run, --yes)
+npx ctxo version                     # verbose version report (default)
+npx ctxo --version --verbose         # version + installed plugins list
+npx ctxo --version --json            # machine-readable version report
+npx ctxo visualize                   # generate interactive dependency graph HTML
+npx ctxo visualize --max-nodes 200   # limit to top 200 symbols by PageRank
+npx ctxo visualize --no-browser      # skip auto-opening browser
 
 # Environment
 DEBUG=ctxo:*                  # enable all debug output
@@ -42,36 +53,51 @@ CTXO_RESPONSE_LIMIT=16384     # response truncation threshold (default 8192)
 
 ## Architecture
 
-**Hexagonal (Ports & Adapters)** — strict dependency direction:
+**pnpm monorepo + Hexagonal (Ports & Adapters)** — strict dependency direction inside `@ctxo/cli`:
 
 ```
-CLI commands → src/index.ts (composition root) → adapters/mcp/ → core/ ← ports/ ← adapters/*
+packages/
+├── cli/              @ctxo/cli             # primary CLI + MCP server (composition root)
+├── plugin-api/       @ctxo/plugin-api      # plugin protocol v1 types (no runtime deps on cli)
+├── lang-typescript/  @ctxo/lang-typescript # ts-morph, full tier
+├── lang-go/          @ctxo/lang-go         # tree-sitter Go
+└── lang-csharp/      @ctxo/lang-csharp     # Roslyn + tree-sitter + tools/ctxo-roslyn
 ```
 
 ### Key Rules
 
-- **`core/` NEVER imports from `adapters/`** — pure domain logic only
-- **`core/` NEVER imports from `ports/`** — ports import from core types
-- **`ports/` NEVER imports from `adapters/`**
-- **`adapters/mcp/` may import from `core/` and `ports/` only**
-- **Composition root (`src/index.ts`)** is the ONLY file that wires adapters to ports
+- **Hexagonal boundaries hold inside `@ctxo/cli`:**
+  - **`core/` NEVER imports from `adapters/`** — pure domain logic only
+  - **`core/` NEVER imports from `ports/`** — ports import from core types
+  - **`ports/` NEVER imports from `adapters/`**
+  - **`adapters/mcp/` may import from `core/` and `ports/` only**
+  - **Composition root (`packages/cli/src/index.ts`)** is the ONLY file that wires adapters to ports
+- **Plugins (`@ctxo/lang-*`) import only from `@ctxo/plugin-api`; never from `@ctxo/cli`.**
 - **No barrel exports** (`index.ts` re-exports) — import directly from source file path
 - **Port-first rule:** every adapter MUST implement a port interface
 
-### Project Structure
+### Project Structure (inside `packages/cli/`)
 
 ```
-src/
+packages/cli/src/
   index.ts                     # composition root + StdioServerTransport
   ports/                       # interfaces only (ILanguageAdapter, IStoragePort, IGitPort, IMaskingPort)
   core/                        # pure domain (graph, logic-slice, blast-radius, overlay, why-context, change-intelligence, masking, detail-levels)
+    detection/detect-languages.ts
+    install/package-manager.ts
   adapters/
-    language/                  # ts-morph (full tier), tree-sitter Go/C# (syntax tier)
+    language/                  # plugin loader facade (ts-morph/Go/C# live in sibling packages)
+      plugin-discovery.ts      # scans project package.json for @ctxo/lang-*, ctxo-lang-*
     storage/                   # SQLite cache + JSON index read/write
     git/                       # simple-git wrapper
     watcher/                   # chokidar file watcher
+    workspace/single-package-workspace.ts
+    diagnostics/checks/        # config, disk, git, index, runtime, storage,
+                               # versions-check.ts, language-coverage-check.ts
     mcp/                       # MCP tool handlers (14 tools)
-  cli/                         # index, init, sync, status, verify, watch, visualize commands
+  cli/                         # index, init, sync, status, verify, watch, visualize,
+                               # version-command.ts, install-command.ts,
+                               # plugin-loader.ts, doctor-fix.ts
 ```
 
 ### Storage (ADR-STORAGE-01)
@@ -95,6 +121,22 @@ src/
 | JSON index fields | camelCase | `lastModified`, `symbolId`, `antiPatterns` |
 | CLI commands | kebab-case | `ctxo index`, `ctxo verify-index` |
 | Symbol IDs | deterministic | `"<relativeFile>::<name>::<kind>"` |
+
+## Plugin Architecture
+
+Language support ships as separate plugin packages discovered at runtime by scanning the consumer project's `package.json` for `@ctxo/lang-*` and `ctxo-lang-*` names. Each plugin implements the protocol v1 contract exported by `@ctxo/plugin-api` (a stable surface with zero runtime dependencies on `@ctxo/cli`). Users opt into languages by adding plugin packages to devDependencies (or running `ctxo install`); `ctxo doctor` surfaces missing plugins and `ctxo index --install-missing` auto-installs them. See [ADR-012](docs/architecture/ADR/adr-012-plugin-architecture-and-monorepo.md).
+
+```json
+// consumer project package.json
+{
+  "devDependencies": {
+    "@ctxo/cli": "^0.7.0-alpha.0",
+    "@ctxo/lang-typescript": "^0.7.0-alpha.0",
+    "@ctxo/lang-go": "^0.7.0-alpha.0",
+    "@ctxo/lang-csharp": "^0.7.0-alpha.0"
+  }
+}
+```
 
 ## MCP Tools (14 total)
 
@@ -220,7 +262,7 @@ Working with class hierarchies?
 
 ## Critical Rules
 
-1. **NEVER use `console.log`** — MCP stdio uses stdout for JSON-RPC. Use `createLogger('ctxo:namespace')` from `src/core/logger.ts`. Debug output controlled via `DEBUG=ctxo:*` env.
+1. **NEVER use `console.log`** — MCP stdio uses stdout for JSON-RPC. Use `createLogger('ctxo:namespace')` from `packages/cli/src/core/logger.ts`. Extracted plugins bundle their own minimal logger (e.g. `packages/lang-csharp/src/logger.ts`) to avoid a runtime dep on `@ctxo/cli`. Debug output controlled via `DEBUG=ctxo:*` env.
 2. **Error handling: warn-and-continue** — adapter boundary catches errors and returns fallback values. Core may throw.
 3. **All MCP responses pass through masking pipeline** before delivery.
 4. **Tests co-located** in `__tests__/` adjacent to source files.
@@ -264,6 +306,7 @@ try {
 | Validation | zod |
 | Testing | vitest + @vitest/coverage-v8 |
 | Dev Runner | tsx |
+| Monorepo | pnpm workspaces + changesets |
 
 ## Index JSON Schema (strict contract)
 
@@ -271,8 +314,8 @@ try {
 {
   "file": "relative/path.ts",
   "lastModified": 1711620000,
-  "symbols": [{ "symbolId": "src/foo.ts::myFn::function", "name": "myFn", "kind": "function", "startLine": 12, "endLine": 45 }],
-  "edges": [{ "from": "src/foo.ts::myFn::function", "to": "src/bar.ts::TokenValidator::class", "kind": "imports" }],
+  "symbols": [{ "symbolId": "packages/cli/src/foo.ts::myFn::function", "name": "myFn", "kind": "function", "startLine": 12, "endLine": 45 }],
+  "edges": [{ "from": "packages/cli/src/foo.ts::myFn::function", "to": "packages/cli/src/bar.ts::TokenValidator::class", "kind": "imports" }],
   "intent": [{ "hash": "abc123", "message": "fix race condition", "date": "2024-03-15", "kind": "commit" }],
   "antiPatterns": [{ "hash": "def456", "message": "revert: remove mutex", "date": "2024-02-01" }]
 }
@@ -286,6 +329,7 @@ try {
 ### Completed
 - [x] C# full-tier: Roslyn Compiler API standalone .NET app (shipped v0.6.0) — [ADR-007](docs/artifacts/adr-007-csharp-roslyn-lsp.md)
 - [x] Epic 8: Index freshness automation — architectural pivot from webhook listener to CI gate. Delivered drop-in GitHub Actions / GitLab CI examples running `ctxo index --check`; webhook server scrapped as overkill. See [docs/artifacts/epics.md](docs/artifacts/epics.md) Epic 8 note.
+- [x] Phase A plugin architecture migration (pnpm monorepo, plugin protocol v1, TS/Go/C# extraction to `@ctxo/lang-*`, language detection, `ctxo install`, `ctxo doctor --fix`, `ctxo version`) — [ADR-012](docs/architecture/ADR/adr-012-plugin-architecture-and-monorepo.md)
 
 ### Remaining
 - [ ] Go full-tier: gopls MCP composition (type-aware, cross-package)

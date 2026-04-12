@@ -1,20 +1,44 @@
 # Ctxo MCP Server — Full Reference
 
-> Dependency-aware, history-enriched code intelligence for AI coding assistants.
-> npm: ctxo-mcp | GitHub: https://github.com/alperhankendi/Ctxo
+> AI agents don't fail because they can't code. They fail because they code blind. Ctxo gives them the full picture before they write a single line.
+> npm: @ctxo/cli (v0.7.0-alpha.0) | GitHub: https://github.com/alperhankendi/Ctxo
 
 ## Setup
 
 ```bash
-npx ctxo-mcp index           # Build codebase index (required once)
-npx ctxo-mcp index --check   # CI gate: fail if index stale
-npx ctxo-mcp                 # Start MCP server (stdio transport)
+npx @ctxo/cli init            # Detect languages + install plugins + wire MCP
+npx @ctxo/cli index           # Build codebase index (required once)
+npx @ctxo/cli index --check   # CI gate: fail if index stale
+npx @ctxo/cli                 # Start MCP server (stdio transport)
 ```
 
 MCP client configuration:
 ```json
-{ "mcpServers": { "ctxo": { "command": "npx", "args": ["-y", "ctxo-mcp"] } } }
+{ "mcpServers": { "ctxo": { "command": "npx", "args": ["-y", "@ctxo/cli"] } } }
 ```
+
+---
+
+## Monorepo & Plugin Architecture (v0.7+)
+
+Ctxo is a pnpm workspace monorepo with five packages:
+
+- `@ctxo/cli` (packages/cli) — CLI entry, composition root, MCP server, tool handlers
+- `@ctxo/plugin-api` (packages/plugin-api) — `CtxoLanguagePlugin` v1 protocol interface
+- `@ctxo/lang-typescript` — ts-morph (full tier) plugin for TS/JS
+- `@ctxo/lang-go` — tree-sitter / gopls plugin for Go
+- `@ctxo/lang-csharp` — Roslyn plugin for C#
+
+Plugin protocol v1 (`CtxoLanguagePlugin`):
+- `apiVersion: 1`
+- `id`: unique plugin identifier
+- `extensions`: file extensions handled (e.g. `['.ts', '.tsx']`)
+- `tier`: `'syntax'` | `'full'`
+- `createAdapter(ctx)`: factory returning an `ILanguageAdapter` instance
+
+Discovery: at startup Ctxo scans the project's `package.json` dependencies for names matching `@ctxo/lang-*` or `ctxo-lang-*` and registers them. `ctxo install` adds plugins; `ctxo index --install-missing` auto-installs plugins required by detected languages. New CLI: `ctxo doctor --fix`, `ctxo version`, and `ctxo --version --verbose|--json` for plugin/runtime diagnostics.
+
+Source paths referenced below live under `packages/cli/src/`.
 
 ---
 
