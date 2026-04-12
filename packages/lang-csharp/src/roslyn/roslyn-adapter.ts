@@ -1,7 +1,6 @@
 import { relative, dirname, resolve } from 'node:path';
-import type { SymbolNode, GraphEdge, ComplexityMetrics, SymbolKind } from '../../../core/types.js';
-import type { ILanguageAdapter } from '../../../ports/i-language-adapter.js';
-import { createLogger } from '../../../core/logger.js';
+import type { SymbolNode, GraphEdge, ComplexityMetrics, SymbolKind, ILanguageAdapter } from '@ctxo/plugin-api';
+import { createLogger } from '../logger.js';
 import { detectDotnetSdk, discoverSolution, findCtxoRoslynProject } from './solution-discovery.js';
 import { runBatchIndex, RoslynKeepAlive, type RoslynBatchResult, type RoslynFileResult } from './roslyn-process.js';
 

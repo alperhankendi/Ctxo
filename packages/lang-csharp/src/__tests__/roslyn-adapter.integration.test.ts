@@ -11,7 +11,7 @@ const HAS_DOTNET = (() => {
 })();
 
 // BUG 2 FIX: Use absolute path to prevent CWD-dependent resolution
-const FIXTURE_DIR = resolve(import.meta.dirname, '../../../../tests/e2e/fixtures/csharp-sample');
+const FIXTURE_DIR = resolve(import.meta.dirname, 'fixtures/csharp-sample');
 
 describe.skipIf(!HAS_DOTNET)('RoslynAdapter integration', () => {
   let adapter: RoslynAdapter;

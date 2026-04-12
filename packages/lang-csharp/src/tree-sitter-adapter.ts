@@ -2,8 +2,7 @@ import Parser from 'tree-sitter';
 import type { Tree, SyntaxNode } from 'tree-sitter';
 type Language = Parameters<InstanceType<typeof Parser>['setLanguage']>[0];
 import { extname } from 'node:path';
-import type { SymbolNode, GraphEdge, ComplexityMetrics, SymbolKind } from '../../core/types.js';
-import type { ILanguageAdapter } from '../../ports/i-language-adapter.js';
+import type { SymbolNode, GraphEdge, ComplexityMetrics, SymbolKind, ILanguageAdapter } from '@ctxo/plugin-api';
 
 export abstract class TreeSitterAdapter implements ILanguageAdapter {
   abstract readonly extensions: readonly string[];

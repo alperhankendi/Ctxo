@@ -1,5 +1,5 @@
 import { spawn, type ChildProcess } from 'node:child_process';
-import { createLogger } from '../../../core/logger.js';
+import { createLogger } from '../logger.js';
 
 const log = createLogger('ctxo:roslyn');
 

@@ -190,7 +190,7 @@ namespace App {
 describe('CSharpAdapter — edge cases', () => {
   it('resolves base type via symbol registry', async () => {
     const adapter = new CSharpAdapter();
-    const registry = new Map<string, import('../../../core/types.js').SymbolKind>();
+    const registry = new Map<string, import('@ctxo/plugin-api').SymbolKind>();
     registry.set('Services/IHandler.cs::Services.IHandler::interface', 'interface');
     adapter.setSymbolRegistry(registry);
 
@@ -212,7 +212,7 @@ namespace Services {
 
   it('resolves base type via registry with unqualified name match', async () => {
     const adapter = new CSharpAdapter();
-    const registry = new Map<string, import('../../../core/types.js').SymbolKind>();
+    const registry = new Map<string, import('@ctxo/plugin-api').SymbolKind>();
     // Registry has BaseService (unqualified) — matches includes check
     registry.set('Core/Base.cs::BaseService::class', 'class');
     adapter.setSymbolRegistry(registry);

@@ -92,7 +92,7 @@ describe('TreeSitterCheck', () => {
 
   it('has correct id and title', () => {
     expect(check.id).toBe('tree_sitter');
-    expect(check.title).toBe('tree-sitter');
+    expect(check.title).toBe('Go / C# plugins (@ctxo/lang-go, @ctxo/lang-csharp)');
   });
 
   it('returns pass or warn (never fail)', async () => {

@@ -4,7 +4,7 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{07C2787E-EAC7-C090-1BA3-A61EC2A24D84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ctxo-roslyn", "tools\ctxo-roslyn\ctxo-roslyn.csproj", "{B6249045-EF2D-1721-EB18-9B59AB148FDE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ctxo-roslyn", "packages\lang-csharp\tools\ctxo-roslyn\ctxo-roslyn.csproj", "{B6249045-EF2D-1721-EB18-9B59AB148FDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

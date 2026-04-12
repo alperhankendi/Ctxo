@@ -4,11 +4,6 @@ import { join, relative, extname } from 'node:path';
 import { ContentHasher } from '../core/staleness/content-hasher.js';
 import { LanguageAdapterRegistry } from '../adapters/language/language-adapter-registry.js';
 import { loadPlugins } from './plugin-loader.js';
-
-interface TsMorphLike {
-  loadProjectSources(sources: Map<string, string>): void;
-  clearProjectSources(): void;
-}
 import { JsonIndexWriter } from '../adapters/storage/json-index-writer.js';
 import { SqliteStorageAdapter } from '../adapters/storage/sqlite-storage-adapter.js';
 import { SchemaManager } from '../adapters/storage/schema-manager.js';
@@ -16,7 +11,28 @@ import { SimpleGitAdapter } from '../adapters/git/simple-git-adapter.js';
 import { RevertDetector } from '../core/why-context/revert-detector.js';
 import { aggregateCoChanges } from '../core/co-change/co-change-analyzer.js';
 import type { FileIndex, SymbolKind } from '../core/types.js';
-import { RoslynAdapter } from '../adapters/language/roslyn/roslyn-adapter.js';
+
+interface TsMorphLike {
+  loadProjectSources(sources: Map<string, string>): void;
+  clearProjectSources(): void;
+}
+
+interface RoslynLike {
+  isReady(): boolean;
+  batchIndex(): Promise<void>;
+  startKeepAlive(): Promise<boolean>;
+  reindexFile(relativePath: string): Promise<{
+    symbols: Array<{ symbolId: string; name: string; kind: string; startLine: number; endLine: number }>;
+    edges: Array<{ from: string; to: string; kind: string }>;
+    complexity: Array<{ symbolId: string; cyclomatic: number }>;
+  } | null>;
+  dispose(): Promise<void>;
+}
+
+interface CSharpCompositeLike {
+  getRoslynDelegate(): RoslynLike | null;
+  getTier(): 'full' | 'syntax' | 'unavailable';
+}
 
 export class IndexCommand {
   private readonly projectRoot: string;
@@ -35,10 +51,9 @@ export class IndexCommand {
       return this.runCheck();
     }
 
-    // Set up adapters: plugins via discovery, C# wired directly until Step 16
+    // Set up adapters via plugin discovery (TS, Go, C# all plugin-backed)
     const registry = new LanguageAdapterRegistry();
-    const tsMorphLike = await this.registerDiscoveredPlugins(registry);
-    const { roslynAdapter, csharpTier } = await this.registerCSharpAdapter(registry);
+    const { tsMorphLike, roslynAdapter, csharpTier } = await this.registerDiscoveredPlugins(registry);
     this.supportedExtensions = registry.getSupportedExtensions();
 
     const writer = new JsonIndexWriter(this.ctxoRoot);
@@ -208,45 +223,53 @@ export class IndexCommand {
     if (roslynAdapter) await roslynAdapter.dispose();
   }
 
-  private async registerDiscoveredPlugins(registry: LanguageAdapterRegistry): Promise<TsMorphLike | undefined> {
+  private async registerDiscoveredPlugins(registry: LanguageAdapterRegistry): Promise<{
+    tsMorphLike: TsMorphLike | undefined;
+    roslynAdapter: RoslynLike | null;
+    csharpTier: string;
+  }> {
     const loaded = await loadPlugins(this.projectRoot);
     let tsMorphLike: TsMorphLike | undefined;
+    let roslynAdapter: RoslynLike | null = null;
+    let csharpTier = 'unavailable';
+
     for (const { plugin, adapter } of loaded) {
+      // Plugins that expose an initialize() lifecycle need it called before register
+      if (typeof adapter.initialize === 'function') {
+        try {
+          await adapter.initialize(this.projectRoot);
+        } catch (err) {
+          console.error(`[ctxo] Plugin ${plugin.id} initialize failed: ${(err as Error).message}`);
+          continue;
+        }
+      }
+
       registry.register(plugin.extensions, adapter);
-      console.error(`[ctxo] Plugin ${plugin.id}@${plugin.version} (${plugin.tier} tier) — ${plugin.extensions.join(', ')}`);
-      const candidate = adapter as unknown as Partial<TsMorphLike>;
+
+      // Duck-type: TsMorphAdapter exposes project-wide preload hooks
+      const tsCandidate = adapter as unknown as Partial<TsMorphLike>;
       if (
-        typeof candidate.loadProjectSources === 'function' &&
-        typeof candidate.clearProjectSources === 'function'
+        typeof tsCandidate.loadProjectSources === 'function' &&
+        typeof tsCandidate.clearProjectSources === 'function'
       ) {
-        tsMorphLike = candidate as TsMorphLike;
+        tsMorphLike = tsCandidate as TsMorphLike;
       }
-    }
-    return tsMorphLike;
-  }
 
-  private async registerCSharpAdapter(registry: LanguageAdapterRegistry): Promise<{ roslynAdapter: RoslynAdapter | null; csharpTier: string }> {
-    try {
-      const roslyn = new RoslynAdapter();
-      await roslyn.initialize(this.projectRoot);
-      if (roslyn.isReady()) {
-        registry.register(roslyn.extensions, roslyn);
-        return { roslynAdapter: roslyn, csharpTier: 'full' };
+      // Duck-type: CSharpCompositeAdapter exposes Roslyn delegate + tier info
+      const csCandidate = adapter as unknown as Partial<CSharpCompositeLike>;
+      if (
+        typeof csCandidate.getRoslynDelegate === 'function' &&
+        typeof csCandidate.getTier === 'function'
+      ) {
+        csharpTier = csCandidate.getTier();
+        roslynAdapter = csCandidate.getRoslynDelegate() ?? null;
       }
-    } catch (err) {
-      console.error(`[ctxo] Roslyn adapter init failed: ${(err as Error).message}`);
+
+      const tierSuffix = plugin.id === 'csharp' && csharpTier !== 'full' ? ` (active: ${csharpTier})` : '';
+      console.error(`[ctxo] Plugin ${plugin.id}@${plugin.version} (${plugin.tier} tier${tierSuffix}) — ${plugin.extensions.join(', ')}`);
     }
 
-    // Fallback to tree-sitter
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { CSharpAdapter } = require('../adapters/language/csharp-adapter.js');
-      const adapter = new CSharpAdapter();
-      registry.register(adapter.extensions, adapter);
-      return { roslynAdapter: null, csharpTier: 'syntax' };
-    } catch {
-      return { roslynAdapter: null, csharpTier: 'unavailable' };
-    }
+    return { tsMorphLike, roslynAdapter, csharpTier };
   }
 
   private discoverFilesIn(root: string): string[] {
@@ -320,10 +343,9 @@ export class IndexCommand {
   private async runCheck(): Promise<void> {
     console.error('[ctxo] Checking index freshness...');
 
-    // Register adapters so supportedExtensions includes .cs / discovered extensions
+    // Register adapters so supportedExtensions includes discovered extensions
     const registry = new LanguageAdapterRegistry();
-    await this.registerDiscoveredPlugins(registry);
-    const { roslynAdapter: _roslyn } = await this.registerCSharpAdapter(registry);
+    const { roslynAdapter: _roslyn } = await this.registerDiscoveredPlugins(registry);
     this.supportedExtensions = registry.getSupportedExtensions();
     if (_roslyn) await _roslyn.dispose();
 

@@ -49,15 +49,35 @@ export class TsMorphCheck implements IHealthCheck {
 
 export class TreeSitterCheck implements IHealthCheck {
   readonly id = 'tree_sitter';
-  readonly title = 'tree-sitter';
+  readonly title = 'Go / C# plugins (@ctxo/lang-go, @ctxo/lang-csharp)';
 
   async run(_ctx: CheckContext): Promise<CheckResult> {
-    try {
-      require.resolve('tree-sitter');
-      require.resolve('tree-sitter-language-pack');
-      return pass(this.id, this.title, 'available');
-    } catch {
-      return warn(this.id, this.title, 'tree-sitter not found — Go/C# indexing disabled', 'Run "npm install tree-sitter tree-sitter-language-pack"');
+    const goOk = tryResolve('@ctxo/lang-go');
+    const csOk = tryResolve('@ctxo/lang-csharp');
+    if (goOk && csOk) return pass(this.id, this.title, 'both plugins available');
+    if (goOk || csOk) {
+      const missing = goOk ? '@ctxo/lang-csharp' : '@ctxo/lang-go';
+      return warn(
+        this.id,
+        this.title,
+        `${missing} not installed`,
+        `Run "npm install ${missing}" (or "ctxo install ${missing === '@ctxo/lang-go' ? 'go' : 'csharp'}")`,
+      );
     }
+    return warn(
+      this.id,
+      this.title,
+      'No Go/C# plugin installed — extended language indexing disabled',
+      'Run "npm install @ctxo/lang-go @ctxo/lang-csharp"',
+    );
+  }
+}
+
+function tryResolve(specifier: string): boolean {
+  try {
+    require.resolve(specifier);
+    return true;
+  } catch {
+    return false;
   }
 }

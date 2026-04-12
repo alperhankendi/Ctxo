@@ -1,7 +1,7 @@
 import CSharpLanguage from 'tree-sitter-c-sharp';
 import type { SyntaxNode } from 'tree-sitter';
 import { TreeSitterAdapter } from './tree-sitter-adapter.js';
-import type { SymbolNode, GraphEdge, ComplexityMetrics, SymbolKind } from '../../core/types.js';
+import type { SymbolNode, GraphEdge, ComplexityMetrics, SymbolKind } from '@ctxo/plugin-api';
 
 const CSHARP_BRANCH_TYPES = [
   'if_statement', 'for_statement', 'foreach_statement',

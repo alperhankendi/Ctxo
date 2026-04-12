@@ -8,10 +8,24 @@ import { ChokidarWatcherAdapter } from '../adapters/watcher/chokidar-watcher-ada
 import { ContentHasher } from '../core/staleness/content-hasher.js';
 import { SimpleGitAdapter } from '../adapters/git/simple-git-adapter.js';
 import { RevertDetector } from '../core/why-context/revert-detector.js';
-import { RoslynAdapter } from '../adapters/language/roslyn/roslyn-adapter.js';
 import type { FileIndex, CommitIntent, AntiPattern } from '../core/types.js';
 
 const DEBOUNCE_MS = 300;
+
+interface RoslynLike {
+  isReady(): boolean;
+  startKeepAlive(): Promise<boolean>;
+  reindexFile(relativePath: string): Promise<{
+    symbols: Array<{ symbolId: string; name: string; kind: string; startLine: number; endLine: number }>;
+    edges: Array<{ from: string; to: string; kind: string }>;
+    complexity: Array<{ symbolId: string; cyclomatic: number }>;
+  } | null>;
+  dispose(): Promise<void>;
+}
+
+interface CSharpCompositeLike {
+  getRoslynDelegate(): RoslynLike | null;
+}
 
 export class WatchCommand {
   private readonly projectRoot: string;
@@ -27,34 +41,34 @@ export class WatchCommand {
 
     const registry = new LanguageAdapterRegistry();
 
-    // Plugins via discovery (TypeScript et al.)
+    // Plugins via discovery
+    let roslynAdapter: RoslynLike | null = null;
     for (const { plugin, adapter } of await loadPlugins(this.projectRoot)) {
-      registry.register(plugin.extensions, adapter);
-      console.error(`[ctxo] Plugin ${plugin.id}@${plugin.version} (${plugin.tier} tier)`);
-    }
-
-    // C# - try Roslyn keep-alive, fallback to tree-sitter
-    let roslynAdapter: RoslynAdapter | null = null;
-    try {
-      const roslyn = new RoslynAdapter();
-      await roslyn.initialize(this.projectRoot);
-      if (roslyn.isReady()) {
-        // BUG 7 FIX: Start keep-alive directly (it loads solution once).
-        // No separate batchIndex - avoid double solution load.
-        const started = await roslyn.startKeepAlive();
-        if (started) {
-          registry.register(roslyn.extensions, roslyn);
-          roslynAdapter = roslyn;
-          console.error('[ctxo] C# watch: Roslyn keep-alive active (full tier, <100ms per change)');
-        } else {
-          await roslyn.dispose();
-          this.registerTreeSitterCSharp(registry);
+      if (typeof adapter.initialize === 'function') {
+        try {
+          await adapter.initialize(this.projectRoot);
+        } catch (err) {
+          console.error(`[ctxo] Plugin ${plugin.id} initialize failed: ${(err as Error).message}`);
+          continue;
         }
-      } else {
-        this.registerTreeSitterCSharp(registry);
       }
-    } catch {
-      this.registerTreeSitterCSharp(registry);
+
+      registry.register(plugin.extensions, adapter);
+
+      // If the plugin exposes a Roslyn delegate, attempt keep-alive for fast re-index
+      const csCandidate = adapter as unknown as Partial<CSharpCompositeLike>;
+      if (typeof csCandidate.getRoslynDelegate === 'function') {
+        const roslyn = csCandidate.getRoslynDelegate();
+        if (roslyn?.isReady()) {
+          const started = await roslyn.startKeepAlive();
+          if (started) {
+            roslynAdapter = roslyn;
+            console.error('[ctxo] C# watch: Roslyn keep-alive active (full tier, <100ms per change)');
+          }
+        }
+      }
+
+      console.error(`[ctxo] Plugin ${plugin.id}@${plugin.version} (${plugin.tier} tier)`);
     }
 
     const supportedExtensions = registry.getSupportedExtensions();
@@ -195,17 +209,6 @@ export class WatchCommand {
 
     process.on('SIGINT', cleanup);
     process.on('SIGTERM', cleanup);
-  }
-
-  private registerTreeSitterCSharp(registry: LanguageAdapterRegistry): void {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { CSharpAdapter } = require('../adapters/language/csharp-adapter.js');
-      const adapter = new CSharpAdapter();
-      registry.register(adapter.extensions, adapter);
-    } catch {
-      console.error('[ctxo] C# adapter unavailable (tree-sitter-c-sharp not installed)');
-    }
   }
 
 }

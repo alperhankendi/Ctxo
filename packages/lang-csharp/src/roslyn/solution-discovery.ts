@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { createLogger } from '../../../core/logger.js';
+import { createLogger } from '../logger.js';
 
 const log = createLogger('ctxo:roslyn');
 
@@ -96,16 +96,19 @@ export function findCtxoRoslynProject(): string | null {
   const pkgRoot = findPackageRoot(import.meta.dirname);
   const monorepoRoot = findMonorepoRoot(import.meta.dirname);
   const candidates = [
-    ...(pkgRoot ? [join(pkgRoot, 'tools/ctxo-roslyn')] : []),          // package root (npx, global, local dev)
-    ...(monorepoRoot ? [join(monorepoRoot, 'tools/ctxo-roslyn')] : []),// monorepo root (pnpm workspace dev)
-    join(import.meta.dirname, '../tools/ctxo-roslyn'),                 // dist/ -> tools/ (tsup bundled, legacy single-pkg)
-    join(import.meta.dirname, '../../../tools/ctxo-roslyn'),           // packages/cli/dist -> monorepo tools/
-    join(import.meta.dirname, '../../../../tools/ctxo-roslyn'),        // src/adapters/language/roslyn -> tools/ (legacy unbundled)
-    join(import.meta.dirname, '../../../../../../tools/ctxo-roslyn'),  // packages/cli/src/adapters/language/roslyn -> monorepo tools/
-    join(process.cwd(), 'node_modules/@ctxo/cli/tools/ctxo-roslyn'),   // pnpm install in project
-    join(process.cwd(), 'node_modules/ctxo-mcp/tools/ctxo-roslyn'),    // legacy npm install in project
-    join(process.cwd(), 'tools/ctxo-roslyn'),                          // local repo root
-    join(process.cwd(), '../../tools/ctxo-roslyn'),                    // pnpm filter runs cwd=packages/cli
+    // Plugin package root — tools/ctxo-roslyn ships inside @ctxo/lang-csharp
+    ...(pkgRoot ? [join(pkgRoot, 'tools/ctxo-roslyn')] : []),
+    // Monorepo dev: packages/lang-csharp/tools/ctxo-roslyn
+    ...(monorepoRoot ? [join(monorepoRoot, 'packages/lang-csharp/tools/ctxo-roslyn')] : []),
+    // Bundled dist: dist/roslyn -> ../tools (tsup preserves relative layout)
+    join(import.meta.dirname, '../tools/ctxo-roslyn'),
+    // Unbundled src layout: src/roslyn -> ../../tools
+    join(import.meta.dirname, '../../tools/ctxo-roslyn'),
+    // Consumer node_modules installs
+    join(process.cwd(), 'node_modules/@ctxo/lang-csharp/tools/ctxo-roslyn'),
+    // Legacy paths kept for migration window
+    join(process.cwd(), 'node_modules/@ctxo/cli/tools/ctxo-roslyn'),
+    join(process.cwd(), 'node_modules/ctxo-mcp/tools/ctxo-roslyn'),
   ];
 
   for (const candidate of candidates) {
