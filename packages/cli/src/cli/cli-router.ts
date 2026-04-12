@@ -9,6 +9,7 @@ import { WatchCommand } from './watch-command.js';
 import { StatsCommand } from './stats-command.js';
 import { DoctorCommand } from './doctor-command.js';
 import { VisualizeCommand } from './visualize-command.js';
+import { VersionCommand } from './version-command.js';
 
 export function getVersion(): string {
   let dir = import.meta.dirname;
@@ -38,7 +39,19 @@ export class CliRouter {
     const command = args[0];
 
     if (command === '--version' || command === '-v' || command === '-V') {
-      console.error(`ctxo ${getVersion()}`);
+      const verbose = args.includes('--verbose');
+      const json = args.includes('--json');
+      await new VersionCommand(this.projectRoot).run({ verbose, json });
+      return;
+    }
+
+    if (command === 'version') {
+      const json = args.includes('--json');
+      const short = args.includes('--short');
+      await new VersionCommand(this.projectRoot).run({
+        verbose: !json && !short,
+        json,
+      });
       return;
     }
 
@@ -156,6 +169,10 @@ Usage:
   ctxo visualize --max-nodes N   Limit to top N symbols by PageRank
   ctxo visualize --output PATH   Write HTML to custom path
   ctxo visualize --no-browser    Skip auto-opening browser
+  ctxo --version                 Print core version
+  ctxo --version --verbose       Print core + plugins + runtime
+  ctxo --version --json          Machine-readable version payload
+  ctxo version                   Subcommand — verbose by default
   ctxo --help               Show this help message
 `.trim());
   }

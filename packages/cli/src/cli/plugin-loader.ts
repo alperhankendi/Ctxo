@@ -33,6 +33,10 @@ function manifestHasPlugins(path: string): boolean {
  *   1. projectRoot/package.json (user's project)
  *   2. cli install location (walk up from __dirname until package.json)
  */
+export function loadManifestPath(projectRoot: string): string | null {
+  return resolveManifestPath(projectRoot);
+}
+
 function resolveManifestPath(projectRoot: string): string | null {
   const projectManifest = join(projectRoot, 'package.json');
   if (existsSync(projectManifest) && manifestHasPlugins(projectManifest)) {
