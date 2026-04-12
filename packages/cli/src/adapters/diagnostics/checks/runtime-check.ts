@@ -33,17 +33,15 @@ export class TsMorphCheck implements IHealthCheck {
   readonly title = 'TypeScript plugin (@ctxo/lang-typescript)';
 
   async run(_ctx: CheckContext): Promise<CheckResult> {
-    try {
-      require.resolve('@ctxo/lang-typescript');
+    if (tryResolve('@ctxo/lang-typescript')) {
       return pass(this.id, this.title, 'available');
-    } catch {
-      return warn(
-        this.id,
-        this.title,
-        '@ctxo/lang-typescript not installed — TypeScript/JavaScript indexing disabled',
-        'Run "npm install @ctxo/lang-typescript" (or "ctxo install typescript")',
-      );
     }
+    return warn(
+      this.id,
+      this.title,
+      '@ctxo/lang-typescript not installed — TypeScript/JavaScript indexing disabled',
+      'Run "npm install @ctxo/lang-typescript" (or "ctxo install typescript")',
+    );
   }
 }
 
@@ -73,9 +71,11 @@ export class TreeSitterCheck implements IHealthCheck {
   }
 }
 
-function tryResolve(specifier: string): boolean {
+function tryResolve(packageName: string): boolean {
   try {
-    require.resolve(specifier);
+    // Resolve package.json instead of the entry so "exports: import-only"
+    // packages (all @ctxo/lang-* plugins) still register as installed.
+    require.resolve(`${packageName}/package.json`);
     return true;
   } catch {
     return false;

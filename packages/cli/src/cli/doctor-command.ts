@@ -5,6 +5,8 @@ import { JsonIndexReader } from '../adapters/storage/json-index-reader.js';
 import { HealthChecker } from '../adapters/diagnostics/health-checker.js';
 import { DoctorReporter } from '../adapters/diagnostics/doctor-reporter.js';
 import { NodeVersionCheck, TsMorphCheck, TreeSitterCheck } from '../adapters/diagnostics/checks/runtime-check.js';
+import { VersionsCheck } from '../adapters/diagnostics/checks/versions-check.js';
+import { LanguageCoverageCheck } from '../adapters/diagnostics/checks/language-coverage-check.js';
 import { GitBinaryCheck, GitRepoCheck } from '../adapters/diagnostics/checks/git-check.js';
 import {
   IndexDirectoryCheck,
@@ -38,6 +40,7 @@ export class DoctorCommand {
     console.error(`ctxo v${getVersion()} — health check\n`);
 
     const checks: IHealthCheck[] = [
+      new VersionsCheck(),
       new NodeVersionCheck(),
       new GitBinaryCheck(),
       new GitRepoCheck(),
@@ -47,6 +50,7 @@ export class DoctorCommand {
       new ConfigFileCheck(),
       new TsMorphCheck(),
       new TreeSitterCheck(),
+      new LanguageCoverageCheck(),
       new DiskUsageCheck(),
       new SymbolCountCheck(),
       new EdgeCountCheck(),
