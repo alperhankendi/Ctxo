@@ -6,6 +6,12 @@
   "file": "tools/ctxo-roslyn/Program.cs",
   "intent": [
     {
+      "date": "2026-04-11T23:58:46+03:00",
+      "hash": "74c678ddbf80c69e9de41294cba8b37535f261a5",
+      "kind": "commit",
+      "message": "chore: refresh ctxo index + harden symbol ID validation"
+    },
+    {
       "date": "2026-04-11T23:50:37+03:00",
       "hash": "39ae069226a0ec724b00bc89475c56d1714a942b",
       "kind": "commit",
@@ -24,7 +30,7 @@
       "message": "feat: add C# full-tier analysis via standalone Roslyn .NET app"
     }
   ],
-  "lastModified": 1775940932,
+  "lastModified": 1775954146,
   "symbols": [
     {
       "endLine": 606,

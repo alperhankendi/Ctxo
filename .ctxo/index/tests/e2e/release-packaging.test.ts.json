@@ -1,10 +1,16 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "dc698caf7f6d1aae3c970fc3aa037c5a693681fac90ed1ed211c2f1689ffbfbc",
+  "contentHash": "c07451a712c76229ff66b3e41247f41b18e6e8bc6d0854b262d523bf2344b98d",
   "edges": [],
   "file": "tests/e2e/release-packaging.test.ts",
   "intent": [
+    {
+      "date": "2026-04-12T00:20:34+03:00",
+      "hash": "0622a33fc7408c02e31faa08b40ae28e3e5d912a",
+      "kind": "commit",
+      "message": "fix: bump tarball size limit to 900KB (ctxo-roslyn adds ~25KB)"
+    },
     {
       "date": "2026-04-11T02:04:39+03:00",
       "hash": "08a10fb91f0a112a4f56dc8779f41e863171cdce",
@@ -36,6 +42,6 @@
       "message": "Complete Phase 10: Release gate tests"
     }
   ],
-  "lastModified": 1775940932,
+  "lastModified": 1775954146,
   "symbols": []
 }

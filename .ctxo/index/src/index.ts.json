@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "c0335526a1eea06ffb6ef0bd7621c90b3e452bdae4431dc4b1c1eef3ad2cca09",
+  "contentHash": "3974b7c1e88b4a712528f1de42a79e53454297ce0b6457962dfaf8b61503098f",
   "edges": [
     {
       "from": "src/index.ts::index::variable",
@@ -124,6 +124,12 @@
   "file": "src/index.ts",
   "intent": [
     {
+      "date": "2026-04-11T08:59:11+03:00",
+      "hash": "f2f8c5db1083d681019a39710696cf86a87b9b5e",
+      "kind": "commit",
+      "message": "fix(mcp): read server version from package.json instead of hardcoded 0.1.0"
+    },
+    {
       "date": "2026-04-10T04:05:00+03:00",
       "hash": "029c8653121c48ae59932583bde81578756ae684",
       "kind": "commit",
@@ -236,14 +242,8 @@
       "hash": "fe25908f1b52456c787f056d764a44307cfc32ba",
       "kind": "commit",
       "message": "Fix MCP tools reading stale data: build graph from JSON index, not SQLite"
-    },
-    {
-      "date": "2026-03-29T17:30:08+03:00",
-      "hash": "a494f9d485aa9268a5e63ad0aad321caecc0e2d8",
-      "kind": "commit",
-      "message": "Add missing CLI tests, wire staleness into all 5 MCP tools, configure npm pack"
     }
   ],
-  "lastModified": 1775940932,
+  "lastModified": 1775954146,
   "symbols": []
 }

@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ctxo Dependency Graph</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f0f1a; --bg2: #1a1a2e; --border: #2a2a4e; --input-bg: #0f0f1a; --input-border: #3a3a5e;
+    --text: #e0e0e0; --text2: #ccc; --text3: #aaa; --text4: #555;
+    --hover: #2a2a4e; --name: #fff; --graph-bg: #0f0f1a;
+    --node-font: #ffffff; --node-highlight: #ffffff;
+    --scrollbar: #2a2a4e;
+  }
+  [data-theme="light"] {
+    --bg: #f5f6f8; --bg2: #ffffff; --border: #dde0e6; --input-bg: #f0f1f4; --input-border: #ccd0d8;
+    --text: #2d3038; --text2: #4a4f5c; --text3: #6b7080; --text4: #9ca0ac;
+    --hover: #ebedf2; --name: #1a1d24; --graph-bg: #f5f6f8;
+    --node-font: #1a1d24; --node-highlight: #ffffff;
+    --scrollbar: #ccd0d8;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; transition: background 0.2s, color 0.2s; }
+
+  /* Graph fills all available space */
+  #graph-wrap { flex: 1; position: relative; overflow: hidden; }
+  #graph { width: 100%; height: 100%; background: var(--graph-bg); transition: background 0.2s; }
+
+  /* Sidebar - right side */
+  #sidebar { width: 280px; background: var(--bg2); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; transition: background 0.2s, border-color 0.2s; }
+
+  /* Theme toggle */
+  #theme-bar { padding: 8px 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  #theme-bar span { font-size: 12px; font-weight: 600; color: var(--text); }
+  .theme-btn { background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 6px; width: 30px; height: 30px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; color: var(--text3); transition: all 0.15s; }
+  .theme-btn:hover { border-color: #4E79A7; color: var(--text); }
+
+  /* Search */
+  #search-wrap { padding: 12px; border-bottom: 1px solid var(--border); }
+  #searchInput { width: 100%; padding: 7px 10px; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 6px; color: var(--text); font-size: 13px; outline: none; transition: border-color 0.15s; }
+  #searchInput:focus { border-color: #4E79A7; }
+  #searchInput::placeholder { color: var(--text4); }
+  #searchResults { max-height: 140px; overflow-y: auto; margin-top: 4px; }
+  .search-item { padding: 5px 8px; font-size: 11px; cursor: pointer; border-radius: 4px; border-left: 3px solid transparent; display: flex; align-items: center; gap: 6px; }
+  .search-item:hover { background: var(--hover); }
+  .search-item .s-name { color: var(--text); font-weight: 500; }
+  .search-item .s-file { color: var(--text4); font-size: 10px; margin-left: auto; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Topbar (filters + stats, below search) */
+  #topbar { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  #filters-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  #stats { font-size: 10px; color: var(--text4); margin-top: 4px; }
+
+  /* Node info panel - fills all remaining sidebar space */
+  #info-panel { flex: 1; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+  .panel-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); margin-bottom: 8px; }
+  .info-header { padding: 10px 12px 0; }
+  .info-name { font-size: 14px; font-weight: 600; color: var(--name); margin-bottom: 2px; word-break: break-all; }
+  .info-file { font-size: 10px; color: var(--text4); font-family: monospace; margin-bottom: 6px; }
+
+  /* Tabs */
+  .info-tabs { display: flex; border-bottom: 1px solid var(--border); padding: 0 12px; gap: 0; }
+  .info-tab { padding: 6px 10px; font-size: 10px; font-weight: 500; color: var(--text4); cursor: pointer; border-bottom: 2px solid transparent; background: none; border-top: none; border-left: none; border-right: none; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.03em; }
+  .info-tab:hover { color: var(--text2); }
+  .info-tab.active { color: #4E79A7; border-bottom-color: #4E79A7; }
+  .info-tab .tab-count { font-size: 9px; background: var(--hover); padding: 0 4px; border-radius: 8px; margin-left: 3px; }
+
+  /* Tab panels */
+  .info-tab-panel { display: none; padding: 10px 12px; overflow-y: auto; flex: 1; min-height: 0; }
+  .info-tab-panel.active { display: block; flex: 1; }
+
+  .info-row { font-size: 11px; color: var(--text3); padding: 2px 0; display: flex; justify-content: space-between; }
+  .info-row span:last-child { color: var(--text); font-weight: 500; }
+  .info-dead { display: inline-block; font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: 600; text-transform: uppercase; background: rgba(225,87,89,0.2); color: #E15759; margin-top: 4px; }
+  .info-blast { margin-top: 8px; padding: 6px 8px; background: rgba(242,142,43,0.1); border: 1px solid rgba(242,142,43,0.3); border-radius: 6px; font-size: 11px; color: #F28E2B; }
+  .neighbor-item { padding: 4px 6px; font-size: 11px; cursor: pointer; border-radius: 4px; border-left: 3px solid transparent; color: var(--text2); }
+  .neighbor-item:hover { background: var(--hover); }
+  .info-empty { color: var(--text4); font-size: 11px; padding: 8px 0; }
+
+  /* (Layers & Edges legend moved to graph overlay chips) */
+
+  /* Git history */
+  .git-section { margin-top: 8px; }
+  .git-commit { padding: 4px 6px; font-size: 10px; border-radius: 4px; margin-bottom: 2px; display: flex; gap: 6px; align-items: flex-start; }
+  .git-commit.normal { background: rgba(78,121,167,0.06); border-left: 3px solid #4E79A7; }
+  .git-commit.anti { background: rgba(225,87,89,0.08); border-left: 3px solid #E15759; }
+  .git-date { color: var(--text4); min-width: 62px; flex-shrink: 0; }
+  .git-msg { color: var(--text2); flex: 1; word-break: break-word; }
+  .git-hash { color: var(--text4); font-family: monospace; font-size: 9px; flex-shrink: 0; }
+
+  /* Anti-pattern indicator */
+  .anti-warn { display: inline-block; font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: 600; text-transform: uppercase; background: rgba(225,87,89,0.15); color: #E15759; margin-top: 4px; margin-right: 4px; }
+
+  /* Complexity badge */
+  .complexity-badge { display: inline-block; font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: 600; margin-top: 4px; }
+  .complexity-low { background: rgba(89,161,79,0.2); color: #59A14F; }
+  .complexity-med { background: rgba(237,201,72,0.2); color: #EDC948; }
+  .complexity-high { background: rgba(225,87,89,0.2); color: #E15759; }
+
+  /* Filter toggles */
+  .filter-toggle { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--text3); cursor: pointer; }
+  .filter-toggle input[type=checkbox] { accent-color: #4E79A7; width: 12px; height: 12px; }
+  .tip-icon { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border-radius: 50%; background: var(--border); color: var(--text4); font-size: 9px; font-weight: 600; cursor: help; flex-shrink: 0; transition: all 0.15s; font-style: normal; }
+  .tip-icon:hover { background: #4E79A7; color: #fff; }
+
+  /* Graph overlay - inline horizontal panels */
+  #graph-overlay { position: absolute; top: 10px; left: 10px; z-index: 5; display: flex; gap: 6px; align-items: flex-start; }
+  .legend-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: all 0.2s; }
+  .legend-header { display: flex; align-items: center; gap: 5px; padding: 6px 10px; font-size: 11px; font-weight: 500; color: var(--text2); cursor: pointer; user-select: none; white-space: nowrap; }
+  .legend-header:hover { color: var(--text); }
+  .legend-header .arrow { font-size: 8px; transition: transform 0.2s; }
+  .legend-header .arrow.open { transform: rotate(180deg); }
+  .legend-body { display: flex; gap: 2px; padding: 0 8px 6px; flex-wrap: wrap; }
+  .legend-body.collapsed { display: none; }
+  .chip-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--text2); padding: 3px 8px; cursor: pointer; border-radius: 12px; transition: opacity 0.15s; background: rgba(255,255,255,0.04); white-space: nowrap; }
+  .chip-item:hover { background: var(--hover); }
+  .chip-item.dimmed { opacity: 0.3; text-decoration: line-through; }
+  .chip-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .chip-line { width: 14px; height: 0; border-top: 2px solid; flex-shrink: 0; }
+  .chip-line.dashed { border-top-style: dashed; }
+  .chip-count { color: var(--text4); font-size: 9px; margin-left: 1px; }
+
+  /* (stats moved into #topbar) */
+
+  /* Banner */
+  .banner { padding: 6px 12px; background: rgba(78,121,167,0.1); border-bottom: 1px solid var(--border); font-size: 11px; color: #4E79A7; display: none; }
+  .banner.visible { display: block; }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div id="graph-wrap">
+  <div id="graph"></div>
+  <div id="graph-overlay">
+    <div class="legend-panel" id="layerPanel">
+      <div class="legend-header" id="layerHeader">
+        Layers <span class="arrow open">&#9660;</span>
+      </div>
+      <div class="legend-body" id="layerBody"></div>
+    </div>
+    <div class="legend-panel" id="edgePanel">
+      <div class="legend-header" id="edgeHeader">
+        Edges <span class="arrow open">&#9660;</span>
+      </div>
+      <div class="legend-body" id="edgeBody"></div>
+    </div>
+  </div>
+</div>
+<div id="sidebar">
+  <div id="theme-bar">
+    <span>Ctxo Graph</span>
+    <button class="theme-btn" id="themeToggle" title="Toggle light/dark">&#9790;</button>
+  </div>
+  <div class="banner" id="banner"></div>
+  <div id="search-wrap">
+    <input id="searchInput" type="text" placeholder="Search symbols..." />
+    <div id="searchResults"></div>
+  </div>
+  <div id="topbar">
+    <div id="filters-row">
+      <label class="filter-toggle" id="antiPatternToggle">
+        <input type="checkbox" />
+        Anti-patterns
+        <span class="tip-icon" title="Show only symbols in files with reverted commits (revert/rollback history)">?</span>
+      </label>
+      <label class="filter-toggle" id="deadCodeToggle">
+        <input type="checkbox" />
+        Dead code
+        <span class="tip-icon" title="Show only unreachable symbols with zero importers or cascading dead dependencies">?</span>
+      </label>
+    </div>
+    <div id="label-row" style="display:flex;align-items:center;gap:6px;margin-top:4px">
+      <span style="font-size:10px;color:var(--text4)">Labels</span>
+      <input type="range" id="labelSlider" min="0" max="100" value="15" style="flex:1;accent-color:#4E79A7;height:14px" />
+      <span id="labelVal" style="font-size:10px;color:var(--text3);min-width:28px;text-align:right">15%</span>
+      <span class="tip-icon" title="Minimum PageRank % to show node labels. 0% = all labels, higher = only important symbols">?</span>
+    </div>
+    <div id="stats"></div>
+  </div>
+  <div id="info-panel">
+    <div class="info-header">
+      <div class="info-name" id="infoName">Click a node to inspect</div>
+      <div class="info-file" id="infoFile"></div>
+    </div>
+    <div class="info-tabs" id="infoTabs" style="display:none">
+      <button class="info-tab active" data-tab="tab-info">Info</button>
+      <button class="info-tab" data-tab="tab-history">History</button>
+      <button class="info-tab" data-tab="tab-deps">Deps</button>
+    </div>
+    <div class="info-tab-panel active" id="tab-info"></div>
+    <div class="info-tab-panel" id="tab-history"></div>
+    <div class="info-tab-panel" id="tab-deps"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<script>
+
+var CTXO_DATA = /*__CTXO_DATA__*/null;
+
+// Tableau 10 inspired palette mapped to architectural layers
+var LAYER_COLORS = {
+  Domain:        '#4E79A7',  // steel blue
+  Adapter:       '#F28E2B',  // orange
+  Test:          '#59A14F',  // green
+  Configuration: '#EDC948',  // gold
+  Composition:   '#B07AA1',  // purple
+  Infrastructure:'#E15759',  // coral red
+  Unknown:       '#BAB0AC'   // grey
+};
+
+var EDGE_COLORS = {
+  imports:    { color: '#4E79A7', opacity: 0.6 },
+  calls:      { color: '#59A14F', opacity: 0.7 },
+  extends:    { color: '#B07AA1', opacity: 0.8 },
+  implements: { color: '#F28E2B', opacity: 0.8 },
+  uses:       { color: '#BAB0AC', opacity: 0.35 }
+};
+
+// DOM helper
+function el(tag, attrs, children) {
+  var e = document.createElement(tag);
+  if (attrs) {
+    for (var k in attrs) {
+      if (k === 'textContent') e.textContent = attrs[k];
+      else if (k === 'className') e.className = attrs[k];
+      else if (k === 'style' && typeof attrs[k] === 'object') Object.assign(e.style, attrs[k]);
+      else e.setAttribute(k, attrs[k]);
+    }
+  }
+  if (children) children.forEach(function(c) {
+    if (typeof c === 'string') e.appendChild(document.createTextNode(c));
+    else if (c) e.appendChild(c);
+  });
+  return e;
+}
+
+var network = null;
+var nodesDataset = null;
+var edgesDataset = null;
+var allNodes = {};    // id -> node data
+var allEdges = [];    // edge data array
+var hiddenLayers = new Set();
+var maxPR = 0.001;
+var labelThreshold = 0.15;
+
+function init() {
+  if (!CTXO_DATA) {
+    document.getElementById('graph').appendChild(
+      el('div', { style: { display:'flex', alignItems:'center', justifyContent:'center', height:'100%', color:'#555' }, textContent: 'No data. Run: ctxo visualize' })
+    );
+    return;
+  }
+
+  var data = CTXO_DATA;
+
+  // Banner
+  if (data.shownSymbols < data.totalSymbols) {
+    var banner = document.getElementById('banner');
+    banner.textContent = 'Showing top ' + data.shownSymbols + ' of ' + data.totalSymbols + ' symbols by PageRank. Use --max-nodes to adjust.';
+    banner.classList.add('visible');
+  }
+
+  // Compute max PageRank for sizing
+  maxPR = 0.001;
+  data.nodes.forEach(function(n) { if (n.pageRank > maxPR) maxPR = n.pageRank; });
+
+  // Build vis.js nodes
+  var visNodes = [];
+  data.nodes.forEach(function(n) {
+    var color = LAYER_COLORS[n.layer] || '#BAB0AC';
+    var size = 10 + 30 * (n.pageRank / maxPR);
+    var prNorm = n.pageRank / maxPR;
+    var showLabel = prNorm >= labelThreshold;
+
+    var nodeObj = {
+      id: n.id,
+      label: showLabel ? n.name : '',
+      title: n.name + '\n' + n.file + '\n' + n.kind + ' | ' + n.layer + '\nPageRank: ' + n.pageRank.toFixed(6) + '\nIn: ' + n.inDegree + ' Out: ' + n.outDegree + (n.isDead ? '\n[DEAD CODE]' : ''),
+      size: size,
+      color: {
+        background: color,
+        border: color,
+        highlight: { background: '#ffffff', border: color },
+        hover: { background: '#ffffff', border: color }
+      },
+      borderWidth: n.isDead ? 3 : 1.5,
+      borderWidthSelected: 3,
+      font: { color: '#ffffff', size: showLabel ? 12 : 0 },
+      // Store metadata
+      _kind: n.kind,
+      _file: n.file,
+      _startLine: n.startLine,
+      _layer: n.layer,
+      _pageRank: n.pageRank,
+      _isDead: n.isDead,
+      _deadConfidence: n.deadConfidence,
+      _deadReason: n.deadReason,
+      _cyclomatic: n.cyclomatic,
+      _hasAntiPattern: n.hasAntiPattern,
+      _inDegree: n.inDegree,
+      _outDegree: n.outDegree,
+      _name: n.name,
+      _prNorm: prNorm
+    };
+
+    if (n.isDead) {
+      nodeObj.shapeProperties = { borderDashes: [6, 3] };
+      nodeObj.color.border = '#E15759';
+      nodeObj.opacity = 0.5;
+    } else if (n.hasAntiPattern) {
+      nodeObj.color.border = '#F28E2B';
+      nodeObj.borderWidth = 2.5;
+    }
+
+    allNodes[n.id] = nodeObj;
+    visNodes.push(nodeObj);
+  });
+
+  // Build vis.js edges
+  data.edges.forEach(function(e, i) {
+    var ec = EDGE_COLORS[e.kind] || EDGE_COLORS.uses;
+    var isWeak = (e.kind === 'uses' || e.kind === 'imports');
+    var edgeObj = {
+      id: 'e' + i,
+      from: e.source,
+      to: e.target,
+      arrows: { to: { enabled: true, scaleFactor: 0.5 } },
+      color: { color: ec.color, opacity: ec.opacity, highlight: ec.color, hover: ec.color },
+      width: isWeak ? 1 : 2,
+      dashes: e.kind === 'uses',
+      smooth: { type: 'continuous', roundness: 0.2 },
+      selectionWidth: 3,
+      _kind: e.kind
+    };
+    allEdges.push(edgeObj);
+  });
+
+  nodesDataset = new vis.DataSet(visNodes);
+  edgesDataset = new vis.DataSet(allEdges);
+
+  // Initialize network
+  network = new vis.Network(
+    document.getElementById('graph'),
+    { nodes: nodesDataset, edges: edgesDataset },
+    {
+      nodes: { shape: 'dot', borderWidth: 1.5 },
+      edges: { smooth: { type: 'continuous', roundness: 0.2 } },
+      physics: {
+        solver: 'forceAtlas2Based',
+        forceAtlas2Based: {
+          gravitationalConstant: -60,
+          centralGravity: 0.005,
+          springLength: 120,
+          springConstant: 0.08,
+          damping: 0.4,
+          avoidOverlap: 0.8
+        },
+        stabilization: { iterations: 200, fit: true }
+      },
+      interaction: {
+        hover: true,
+        tooltipDelay: 100,
+        hideEdgesOnDrag: true,
+        navigationButtons: false,
+        keyboard: false
+      },
+      layout: { improvedLayout: true }
+    }
+  );
+
+  // Disable physics after stabilization for crisp feel
+  network.once('stabilizationIterationsDone', function() {
+    network.setOptions({ physics: { enabled: false } });
+  });
+
+  // Click handler - show node info + blast radius
+  network.on('click', function(params) {
+    if (params.nodes.length > 0) {
+      var nodeId = params.nodes[0];
+      showNodeInfo(nodeId);
+    } else {
+      clearNodeInfo();
+    }
+  });
+
+  // Hover handler
+  network.on('hoverNode', function(params) {
+    document.getElementById('graph').style.cursor = 'pointer';
+  });
+  network.on('blurNode', function() {
+    document.getElementById('graph').style.cursor = 'grab';
+  });
+
+  // Build UI
+  buildLayerLegend(data);
+  buildEdgeLegend();
+  setupSearch(data);
+  updateStats();
+
+  // Theme toggle
+  document.getElementById('themeToggle').addEventListener('click', function() {
+    var current = document.documentElement.getAttribute('data-theme');
+    var isLight = current === 'light';
+    var next = isLight ? null : 'light';
+    if (next) document.documentElement.setAttribute('data-theme', next);
+    else document.documentElement.removeAttribute('data-theme');
+    this.textContent = next ? '\u2600' : '\u263E';
+
+    // Update vis.js background + node font colors
+    var fontColor = next ? '#1a1d24' : '#ffffff';
+    var bgColor = next ? '#f5f6f8' : '#0f0f1a';
+    var updates = [];
+    for (var id in allNodes) {
+      allNodes[id].font = { color: fontColor, size: allNodes[id].font.size };
+      updates.push({ id: id, font: allNodes[id].font });
+    }
+    nodesDataset.update(updates);
+    network.setOptions({ nodes: { font: { color: fontColor } } });
+    document.getElementById('graph').style.background = bgColor;
+  });
+
+  // Anti-pattern filter
+  document.getElementById('antiPatternToggle').querySelector('input').addEventListener('change', function() {
+    applyNodeFilters();
+  });
+
+  // Dead code filter
+  document.getElementById('deadCodeToggle').querySelector('input').addEventListener('change', function() {
+    applyNodeFilters();
+  });
+
+  // Label threshold slider
+  document.getElementById('labelSlider').addEventListener('input', function() {
+    labelThreshold = parseInt(this.value) / 100;
+    document.getElementById('labelVal').textContent = this.value + '%';
+    updateLabels();
+  });
+}
+
+function showNodeInfo(nodeId) {
+  var n = allNodes[nodeId];
+  if (!n) return;
+
+  // Header
+  document.getElementById('infoName').textContent = n._name;
+  document.getElementById('infoFile').textContent = n._file + ':' + n._startLine + '  |  ' + n._kind;
+
+  // Show tabs
+  document.getElementById('infoTabs').style.display = '';
+
+  // Wire tab switching
+  var tabs = document.querySelectorAll('.info-tab');
+  tabs.forEach(function(tab) {
+    tab.onclick = function() {
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      document.querySelectorAll('.info-tab-panel').forEach(function(p) { p.classList.remove('active'); });
+      document.getElementById(tab.dataset.tab).classList.add('active');
+    };
+  });
+
+  // ── TAB 1: Info ──
+  var infoPanel = document.getElementById('tab-info');
+  while (infoPanel.firstChild) infoPanel.removeChild(infoPanel.firstChild);
+
+  var rows = [
+    ['Layer', n._layer],
+    ['PageRank', n._pageRank.toFixed(6)],
+    ['In-degree', String(n._inDegree)],
+    ['Out-degree', String(n._outDegree)]
+  ];
+  rows.forEach(function(r) {
+    infoPanel.appendChild(el('div', { className: 'info-row' }, [
+      el('span', { textContent: r[0] }),
+      el('span', { textContent: r[1] })
+    ]));
+  });
+
+  // Badges
+  var badgesDiv = el('div', { style: { marginTop: '6px', display: 'flex', flexWrap: 'wrap', gap: '4px' } });
+  if (n._cyclomatic != null) {
+    var cClass = n._cyclomatic <= 5 ? 'complexity-low' : n._cyclomatic <= 15 ? 'complexity-med' : 'complexity-high';
+    badgesDiv.appendChild(el('span', { className: 'complexity-badge ' + cClass, textContent: 'complexity: ' + n._cyclomatic }));
+  }
+  if (n._isDead) {
+    badgesDiv.appendChild(el('span', { className: 'info-dead', textContent: 'DEAD' + (n._deadConfidence != null ? ' (' + (n._deadConfidence * 100) + '%)' : '') }));
+  }
+  if (n._hasAntiPattern) {
+    badgesDiv.appendChild(el('span', { className: 'anti-warn', textContent: 'HAS REVERTS' }));
+  }
+  if (badgesDiv.childNodes.length > 0) infoPanel.appendChild(badgesDiv);
+
+  if (n._isDead && n._deadReason) {
+    infoPanel.appendChild(el('div', { style: { fontSize: '10px', color: '#E15759', marginTop: '4px', fontStyle: 'italic' }, textContent: n._deadReason }));
+  }
+
+  // Blast radius
+  var visited = {};
+  visited[nodeId] = true;
+  var queue = [nodeId];
+  while (queue.length > 0) {
+    var current = queue.shift();
+    allEdges.forEach(function(e) {
+      if (e.to === current && !visited[e.from]) {
+        visited[e.from] = true;
+        queue.push(e.from);
+      }
+    });
+  }
+  var blastCount = Object.keys(visited).length - 1;
+  if (blastCount > 0) {
+    infoPanel.appendChild(el('div', { className: 'info-blast', textContent: blastCount + ' symbols impacted (blast radius)' }));
+  }
+
+  // ── TAB 2: History ──
+  var histPanel = document.getElementById('tab-history');
+  while (histPanel.firstChild) histPanel.removeChild(histPanel.firstChild);
+
+  var fileInfo = null;
+  if (CTXO_DATA.files) {
+    for (var i = 0; i < CTXO_DATA.files.length; i++) {
+      if (CTXO_DATA.files[i].file === n._file) { fileInfo = CTXO_DATA.files[i]; break; }
+    }
+  }
+
+  var histCount = 0;
+  if (fileInfo) {
+    if (fileInfo.antiPatterns.length > 0) {
+      histPanel.appendChild(el('div', { className: 'panel-title', textContent: 'ANTI-PATTERNS (' + fileInfo.antiPatterns.length + ')' }));
+      fileInfo.antiPatterns.forEach(function(ap) {
+        histPanel.appendChild(el('div', { className: 'git-commit anti' }, [
+          el('span', { className: 'git-date', textContent: ap.date }),
+          el('span', { className: 'git-msg', textContent: ap.message }),
+          el('span', { className: 'git-hash', textContent: ap.hash.substring(0, 7) })
+        ]));
+      });
+      histCount += fileInfo.antiPatterns.length;
+    }
+    if (fileInfo.intent.length > 0) {
+      histPanel.appendChild(el('div', { className: 'panel-title', style: { marginTop: fileInfo.antiPatterns.length > 0 ? '10px' : '0' }, textContent: 'COMMITS (' + fileInfo.intent.length + ')' }));
+      fileInfo.intent.forEach(function(ci) {
+        histPanel.appendChild(el('div', { className: 'git-commit normal' }, [
+          el('span', { className: 'git-date', textContent: ci.date }),
+          el('span', { className: 'git-msg', textContent: ci.message }),
+          el('span', { className: 'git-hash', textContent: ci.hash.substring(0, 7) })
+        ]));
+      });
+      histCount += fileInfo.intent.length;
+    }
+  }
+  if (histCount === 0) {
+    histPanel.appendChild(el('div', { className: 'info-empty', textContent: 'No git history available' }));
+  }
+
+  // Update history tab count
+  var histTab = document.querySelector('[data-tab="tab-history"]');
+  histTab.textContent = 'History';
+  if (histCount > 0) {
+    histTab.appendChild(el('span', { className: 'tab-count', textContent: String(histCount) }));
+  }
+
+  // ── TAB 3: Deps ──
+  var depsPanel = document.getElementById('tab-deps');
+  while (depsPanel.firstChild) depsPanel.removeChild(depsPanel.firstChild);
+
+  var neighborIds = network.getConnectedNodes(nodeId);
+  if (neighborIds.length > 0) {
+    // Split into dependents (reverse) and dependencies (forward)
+    var dependents = [];
+    var dependencies = [];
+    allEdges.forEach(function(e) {
+      if (e.to === nodeId && allNodes[e.from]) dependents.push({ id: e.from, kind: e._kind });
+      if (e.from === nodeId && allNodes[e.to]) dependencies.push({ id: e.to, kind: e._kind });
+    });
+
+    if (dependencies.length > 0) {
+      depsPanel.appendChild(el('div', { className: 'panel-title', textContent: 'DEPENDS ON (' + dependencies.length + ')' }));
+      dependencies.forEach(function(dep) {
+        var nn = allNodes[dep.id];
+        var color = LAYER_COLORS[nn._layer] || '#BAB0AC';
+        var item = el('div', { className: 'neighbor-item', style: { borderLeftColor: color } }, [
+          el('span', { textContent: nn._name }),
+          el('span', { style: { marginLeft: 'auto', fontSize: '9px', color: 'var(--text4)' }, textContent: dep.kind })
+        ]);
+        item.onclick = function() {
+          network.focus(dep.id, { scale: 1.4, animation: true });
+          network.selectNodes([dep.id]);
+          showNodeInfo(dep.id);
+        };
+        depsPanel.appendChild(item);
+      });
+    }
+
+    if (dependents.length > 0) {
+      depsPanel.appendChild(el('div', { className: 'panel-title', style: { marginTop: dependencies.length > 0 ? '10px' : '0' }, textContent: 'USED BY (' + dependents.length + ')' }));
+      dependents.forEach(function(dep) {
+        var nn = allNodes[dep.id];
+        var color = LAYER_COLORS[nn._layer] || '#BAB0AC';
+        var item = el('div', { className: 'neighbor-item', style: { borderLeftColor: color } }, [
+          el('span', { textContent: nn._name }),
+          el('span', { style: { marginLeft: 'auto', fontSize: '9px', color: 'var(--text4)' }, textContent: dep.kind })
+        ]);
+        item.onclick = function() {
+          network.focus(dep.id, { scale: 1.4, animation: true });
+          network.selectNodes([dep.id]);
+          showNodeInfo(dep.id);
+        };
+        depsPanel.appendChild(item);
+      });
+    }
+  } else {
+    depsPanel.appendChild(el('div', { className: 'info-empty', textContent: 'No dependencies' }));
+  }
+
+  // Update deps tab count
+  var depsTab = document.querySelector('[data-tab="tab-deps"]');
+  depsTab.textContent = 'Deps';
+  if (neighborIds.length > 0) {
+    depsTab.appendChild(el('span', { className: 'tab-count', textContent: String(neighborIds.length) }));
+  }
+
+  // Reset to Info tab
+  tabs.forEach(function(t) { t.classList.remove('active'); });
+  document.querySelector('[data-tab="tab-info"]').classList.add('active');
+  document.querySelectorAll('.info-tab-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('tab-info').classList.add('active');
+}
+
+function clearNodeInfo() {
+  document.getElementById('infoName').textContent = 'Click a node to inspect';
+  document.getElementById('infoFile').textContent = '';
+  document.getElementById('infoTabs').style.display = 'none';
+  ['tab-info', 'tab-history', 'tab-deps'].forEach(function(id) {
+    var p = document.getElementById(id);
+    while (p.firstChild) p.removeChild(p.firstChild);
+  });
+}
+
+function buildLayerLegend(data) {
+  var body = document.getElementById('layerBody');
+  var header = document.getElementById('layerHeader');
+
+  var layerCounts = {};
+  data.nodes.forEach(function(n) {
+    layerCounts[n.layer] = (layerCounts[n.layer] || 0) + 1;
+  });
+
+  Object.keys(LAYER_COLORS).forEach(function(layer) {
+    var count = layerCounts[layer];
+    if (!count) return;
+    var color = LAYER_COLORS[layer];
+    var item = el('div', { className: 'chip-item' }, [
+      el('span', { className: 'chip-dot', style: { background: color } }),
+      el('span', { textContent: layer }),
+      el('span', { className: 'chip-count', textContent: String(count) })
+    ]);
+    item.onclick = function() {
+      if (hiddenLayers.has(layer)) {
+        hiddenLayers.delete(layer);
+        item.classList.remove('dimmed');
+      } else {
+        hiddenLayers.add(layer);
+        item.classList.add('dimmed');
+      }
+      applyLayerFilter();
+    };
+    body.appendChild(item);
+  });
+
+  header.onclick = function() {
+    body.classList.toggle('collapsed');
+    header.querySelector('.arrow').classList.toggle('open');
+  };
+}
+
+function buildEdgeLegend() {
+  var body = document.getElementById('edgeBody');
+  var header = document.getElementById('edgeHeader');
+
+  var edgeKinds = [
+    { name: 'imports', dashed: false },
+    { name: 'calls', dashed: false },
+    { name: 'extends', dashed: false },
+    { name: 'implements', dashed: false },
+    { name: 'uses', dashed: true }
+  ];
+  edgeKinds.forEach(function(ek) {
+    var ec = EDGE_COLORS[ek.name];
+    var lineClass = 'chip-line' + (ek.dashed ? ' dashed' : '');
+    body.appendChild(el('div', { className: 'chip-item' }, [
+      el('span', { className: lineClass, style: { borderColor: ec.color } }),
+      el('span', { textContent: ek.name })
+    ]));
+  });
+
+  header.onclick = function() {
+    body.classList.toggle('collapsed');
+    header.querySelector('.arrow').classList.toggle('open');
+  };
+}
+
+function applyLayerFilter() {
+  applyNodeFilters();
+}
+
+function applyNodeFilters() {
+  var antiOnly = document.getElementById('antiPatternToggle').querySelector('input').checked;
+  var deadOnly = document.getElementById('deadCodeToggle').querySelector('input').checked;
+  var updates = [];
+  for (var id in allNodes) {
+    var n = allNodes[id];
+    var hidden = false;
+    if (hiddenLayers.has(n._layer)) hidden = true;
+    if (antiOnly && !n._hasAntiPattern) hidden = true;
+    if (deadOnly && !n._isDead) hidden = true;
+    updates.push({ id: id, hidden: hidden });
+  }
+  nodesDataset.update(updates);
+  updateStats();
+}
+
+function updateLabels() {
+  var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  var fontColor = isLight ? '#1a1d24' : '#ffffff';
+  var updates = [];
+  for (var id in allNodes) {
+    var n = allNodes[id];
+    var show = n._prNorm >= labelThreshold;
+    n.label = show ? n._name : '';
+    n.font = { color: fontColor, size: show ? 12 : 0 };
+    updates.push({ id: id, label: n.label, font: n.font });
+  }
+  nodesDataset.update(updates);
+}
+
+function setupSearch(data) {
+  var input = document.getElementById('searchInput');
+  var resultsEl = document.getElementById('searchResults');
+  var timeout;
+
+  input.addEventListener('input', function() {
+    clearTimeout(timeout);
+    var val = this.value;
+    timeout = setTimeout(function() {
+      while (resultsEl.firstChild) resultsEl.removeChild(resultsEl.firstChild);
+      if (!val.trim()) return;
+      var q = val.toLowerCase();
+      var matches = data.nodes.filter(function(n) {
+        return n.name.toLowerCase().indexOf(q) !== -1 || n.file.toLowerCase().indexOf(q) !== -1;
+      }).slice(0, 15);
+
+      matches.forEach(function(n) {
+        var color = LAYER_COLORS[n.layer] || '#BAB0AC';
+        var item = el('div', { className: 'search-item', style: { borderLeftColor: color } }, [
+          el('span', { className: 's-name', textContent: n.name }),
+          el('span', { className: 's-file', textContent: n.file })
+        ]);
+        item.onclick = function() {
+          network.focus(n.id, { scale: 1.5, animation: true });
+          network.selectNodes([n.id]);
+          showNodeInfo(n.id);
+        };
+        resultsEl.appendChild(item);
+      });
+    }, 150);
+  });
+}
+
+function updateStats() {
+  var visibleCount = 0;
+  for (var id in allNodes) {
+    if (!allNodes[id].hidden) visibleCount++;
+  }
+  var layerCount = Object.keys(LAYER_COLORS).filter(function(l) { return !hiddenLayers.has(l); }).length;
+  document.getElementById('stats').textContent =
+    visibleCount + ' nodes - ' + allEdges.length + ' edges - ' + layerCount + ' layers';
+}
+
+init();
+</script>
+</body>
+</html>

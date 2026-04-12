@@ -85,26 +85,6 @@
   .kind-type { background: rgba(20,184,166,0.15); color: #5eead4; }
   .vscode-link { color: var(--accent2); text-decoration: none; font-size: 11px; opacity: 0.7; transition: opacity 0.15s; }
   .vscode-link:hover { opacity: 1; text-decoration: underline; }
-  .graph-container { flex: 1; position: relative; overflow: hidden; }
-  .graph-container canvas { display: block; width: 100%; height: 100%; }
-  .graph-tooltip { position: absolute; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; font-size: 11px; pointer-events: none; display: none; z-index: 10; max-width: 350px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
-  .graph-legend { position: absolute; bottom: 12px; left: 12px; background: rgba(15,17,23,0.85); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; font-size: 10px; display: flex; flex-direction: column; gap: 3px; }
-  [data-theme="light"] .graph-legend { background: rgba(255,255,255,0.92); }
-  .graph-legend .leg-item { display: flex; align-items: center; gap: 6px; color: var(--text2); }
-  .graph-legend .leg-dot { width: 10px; height: 10px; border-radius: 50%; }
-  .graph-legend .leg-line { width: 20px; height: 2px; }
-  .graph-controls { position: absolute; top: 12px; right: 12px; display: flex; flex-direction: column; gap: 4px; z-index: 5; }
-  .graph-controls button { width: 32px; height: 32px; background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  .graph-controls button:hover { background: var(--bg3); border-color: var(--accent); }
-  .graph-controls button.active { background: var(--accent); color: white; border-color: var(--accent); }
-  .graph-info { position: absolute; top: 12px; left: 12px; background: rgba(15,17,23,0.9); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; font-size: 11px; z-index: 5; max-width: 280px; display: none; }
-  [data-theme="light"] .graph-info { background: rgba(255,255,255,0.95); }
-  .graph-info h4 { font-size: 13px; color: var(--accent2); margin-bottom: 6px; }
-  .graph-info .gi-row { display: flex; align-items: center; gap: 6px; padding: 2px 0; color: var(--text2); }
-  .graph-info .gi-close { position: absolute; top: 6px; right: 8px; cursor: pointer; color: var(--text3); background: none; border: none; font-size: 14px; }
-  .graph-cluster-toggle { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 5; display: flex; gap: 2px; background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; padding: 2px; }
-  .graph-cluster-toggle button { padding: 4px 10px; font-size: 11px; border: none; background: none; color: var(--text2); cursor: pointer; border-radius: 4px; transition: all 0.15s; }
-  .graph-cluster-toggle button.active { background: var(--accent); color: white; }
   .heatmap-container { flex: 1; overflow-y: auto; padding: 16px; }
   .heatmap-mode-toggle { display: flex; gap: 2px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 2px; margin-bottom: 12px; }
   .heatmap-mode-toggle button { flex: 1; padding: 5px 10px; font-size: 11px; border: none; background: none; color: var(--text2); cursor: pointer; border-radius: 4px; transition: all 0.15s; font-weight: 500; }
@@ -187,14 +167,6 @@
   .url-load button:disabled { opacity: 0.5; cursor: not-allowed; }
   .url-status { font-size: 10px; color: var(--text3); margin-top: 4px; }
 
-  /* 3D Graph */
-  .graph3d-container { flex: 1; position: relative; overflow: hidden; background: #f0f2f8; min-height: 0; }
-  [data-theme="dark"] .graph3d-container { background: #0a0c10; }
-  .graph3d-container canvas { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; }
-  .graph3d-info { position: absolute; top: 12px; left: 12px; background: rgba(15,17,23,0.9); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; font-size: 11px; color: var(--text2); z-index: 5; }
-  [data-theme="light"] .graph3d-info { background: rgba(255,255,255,0.95); }
-  #panel-graph3d .empty-state { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
-
   /* Diff View */
   .diff-container { flex: 1; overflow-y: auto; padding: 16px; }
   .diff-slots { display: flex; gap: 12px; margin-bottom: 16px; }
@@ -225,7 +197,6 @@
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
 </style>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 </head>
 <body>
 <div class="app">
@@ -285,12 +256,10 @@
     <div class="tabs">
       <button class="tab active" data-tab="dashboard">Dashboard</button>
       <button class="tab" data-tab="tree">File Tree<span class="badge" id="treeBadge">0</span></button>
-      <button class="tab" data-tab="graph">Graph<span class="badge" id="graphBadge">0</span></button>
       <button class="tab" data-tab="heatmap">Heatmap<span class="badge" id="heatmapBadge">0</span></button>
       <button class="tab" data-tab="cochanges">Co-Changes<span class="badge" id="cochangeBadge">0</span></button>
       <button class="tab" data-tab="timeline">Timeline</button>
       <button class="tab" data-tab="mcpexplorer">MCP Explorer</button>
-      <button class="tab" data-tab="graph3d">3D Graph</button>
       <button class="tab" data-tab="diff">Diff</button>
     </div>
     <div class="panel active" id="panel-dashboard">
@@ -303,31 +272,6 @@
         <div class="empty-state"><div class="es-icon">&#127794;</div><p>Load JSON files to see the file tree</p></div>
       </div>
       <div class="file-detail" id="fileDetail" style="display:none"></div>
-    </div>
-    <div class="panel" id="panel-graph">
-      <div class="export-bar" id="graphExportBar" style="display:none">
-        <span>Export:</span>
-        <button class="export-btn" id="exportGraphPng">PNG</button>
-        <button class="export-btn" id="exportGraphSvg">SVG</button>
-      </div>
-      <div class="graph-container" id="graphContainer">
-        <canvas id="graphCanvas"></canvas>
-        <div class="graph-tooltip" id="graphTooltip"></div>
-        <div class="graph-cluster-toggle" id="graphClusterToggle" style="display:none">
-          <button class="active" data-mode="flat">Flat</button>
-          <button data-mode="directory">By Directory</button>
-        </div>
-        <div class="graph-controls" id="graphControls" style="display:none">
-          <button id="zoomIn" title="Zoom In">+</button>
-          <button id="zoomOut" title="Zoom Out">&minus;</button>
-          <button id="zoomFit" title="Fit All">&#8214;</button>
-          <button id="zoomReset" title="Reset View">&#8634;</button>
-          <button id="blastRadiusBtn" title="Blast Radius Mode">&#9881;</button>
-        </div>
-        <div class="graph-info" id="graphInfo"></div>
-        <div class="graph-legend" id="graphLegend" style="display:none"></div>
-        <div class="empty-state" id="graphEmpty"><div class="es-icon">&#128279;</div><p>Load JSON files to see the dependency graph</p></div>
-      </div>
     </div>
     <div class="panel" id="panel-heatmap">
       <div class="export-bar" id="heatmapExportBar" style="display:none">
@@ -374,18 +318,6 @@
           <span id="mcpToolStatus" style="font-size:11px;color:var(--text3)"></span>
         </div>
         <div id="mcpToolResult" style="flex:1;overflow:auto;padding:12px;font-family:'Cascadia Code','Fira Code',monospace;font-size:11px;white-space:pre-wrap;color:var(--text2);background:var(--bg)"></div>
-      </div>
-    </div>
-    <div class="panel" id="panel-graph3d">
-      <div class="graph3d-container" id="graph3dContainer">
-        <div class="graph3d-info" id="graph3dInfo" style="display:none">Scroll to zoom, drag to rotate, right-drag to pan. Click node for details.</div>
-        <div class="graph-controls" id="graph3dControls" style="display:none">
-          <button id="zoom3dIn" title="Zoom In">+</button>
-          <button id="zoom3dOut" title="Zoom Out">&minus;</button>
-          <button id="zoom3dFit" title="Fit All">&#8214;</button>
-          <button id="zoom3dReset" title="Reset View">&#8634;</button>
-        </div>
-        <div class="empty-state" id="graph3dEmpty"><div class="es-icon">&#127760;</div><p>Load JSON files to see the 3D dependency graph</p></div>
       </div>
     </div>
     <div class="panel" id="panel-diff">
@@ -442,7 +374,6 @@ const state = {
   kindFilter: { function: true, class: true, interface: true, method: true, variable: true, type: true },
   edgeFilter: { imports: true, calls: true, extends: true, implements: true, uses: true },
   minComplexity: 0, selectedFile: null,
-  graphCluster: 'flat', blastRadius: false,
   heatmapMode: 'symbol', theme: 'light',
 };
 
@@ -454,7 +385,6 @@ const EDGE_STYLES = {
   implements: { color: '#22c55e', dash: [3,3], width: 1.5 },
   uses:    { color: '#9ca3b8', dash: [2,2], width: 1 },
 };
-const CLUSTER_PALETTE = ['#6366f1','#22c55e','#f97316','#3b82f6','#a855f7','#ef4444','#eab308','#14b8a6','#ec4899','#8b5cf6','#06b6d4','#84cc16'];
 
 // ─── Helpers ───
 function getAllSymbols() {
@@ -525,22 +455,6 @@ function filterSymbols(syms) {
     return true;
   });
 }
-function getDir(fp) { const p = fp.split('/'); return p.length > 1 ? p.slice(0,-1).join('/') : '.'; }
-
-// Transitive deps (BFS) for blast radius
-function getTransitiveDeps(startId, edges) {
-  const visited = new Set([startId]);
-  const queue = [startId];
-  while (queue.length) {
-    const id = queue.shift();
-    edges.forEach(e => {
-      if (e.from === id && !visited.has(e.to)) { visited.add(e.to); queue.push(e.to); }
-      if (e.to === id && !visited.has(e.from)) { visited.add(e.from); queue.push(e.from); }
-    });
-  }
-  return visited;
-}
-
 // ═══════════════════════════════════════
 // THEME
 // ═══════════════════════════════════════
@@ -683,19 +597,15 @@ document.getElementById('complexitySlider').addEventListener('input', e => { sta
 // ─── Update All ───
 function updateAll() {
   const syms = getAllSymbols();
-  const edges = getAllEdges();
   document.getElementById('treeBadge').textContent = state.files.length;
-  document.getElementById('graphBadge').textContent = edges.length;
   document.getElementById('heatmapBadge').textContent = syms.filter(s => s.cyclomatic != null).length;
   document.getElementById('cochangeBadge').textContent = state.coChanges.length;
 
   if (state.activeTab === 'dashboard') renderDashboard();
   else if (state.activeTab === 'tree') renderFileTree();
-  else if (state.activeTab === 'graph') renderGraph();
   else if (state.activeTab === 'heatmap') renderHeatmap();
   else if (state.activeTab === 'cochanges') renderCoChanges();
   else if (state.activeTab === 'timeline') renderTimeline();
-  else if (state.activeTab === 'graph3d') renderGraph3D();
   updatePrompt();
 }
 
@@ -899,290 +809,6 @@ function showFileDetail(f) {
     f.antiPatterns.forEach(a => { section.appendChild(el('div', { className: 'detail-item', style: { fontSize: '11px', color: 'var(--orange)' } }, [a.message.substring(0,60)])); });
     detail.appendChild(section);
   }
-}
-
-// ═══════════════════════════════════════
-// DEPENDENCY GRAPH
-// ═══════════════════════════════════════
-let graphNodes = [], graphEdgesArr = [], graphAnim = null, graphNodeMap = {};
-let graphZoom = 1, graphPanX = 0, graphPanY = 0;
-let dragNode = null, dragOffX = 0, dragOffY = 0, didDrag = false;
-let isPanning = false, panStartX = 0, panStartY = 0;
-let selectedNode = null, graphW = 0, graphH = 0;
-let graphStabilized = false, graphFrameCount = 0, clusterHulls = [];
-
-function renderGraph() {
-  const canvas = document.getElementById('graphCanvas');
-  const emptyEl = document.getElementById('graphEmpty');
-  const legendEl = document.getElementById('graphLegend');
-  const controlsEl = document.getElementById('graphControls');
-  const clusterToggle = document.getElementById('graphClusterToggle');
-  const exportBar = document.getElementById('graphExportBar');
-  const allSyms = filterSymbols(getAllSymbols());
-  const allEdges = getAllEdges().filter(e => state.edgeFilter[e.kind]);
-
-  if (!allSyms.length) { emptyEl.style.display=''; legendEl.style.display='none'; controlsEl.style.display='none'; clusterToggle.style.display='none'; exportBar.style.display='none'; if (graphAnim) { cancelAnimationFrame(graphAnim); graphAnim=null; } return; }
-  emptyEl.style.display='none'; legendEl.style.display=''; controlsEl.style.display=''; clusterToggle.style.display=''; exportBar.style.display='';
-
-  // Update blast radius button state
-  document.getElementById('blastRadiusBtn').classList.toggle('active', state.blastRadius);
-
-  // Legend
-  legendEl.textContent = '';
-  if (state.graphCluster === 'flat') {
-    legendEl.appendChild(el('div', { textContent: 'Nodes', style: { fontWeight: '600', marginBottom: '2px', color: 'var(--text)' } }));
-    Object.entries(KIND_COLORS).forEach(([k,c]) => { legendEl.appendChild(el('div', { className: 'leg-item' }, [el('span', { className: 'leg-dot', style: { background: c } }), k])); });
-  } else {
-    legendEl.appendChild(el('div', { textContent: 'Directories', style: { fontWeight: '600', marginBottom: '2px', color: 'var(--text)' } }));
-    [...new Set(allSyms.map(s=>getDir(s.file)))].sort().slice(0,12).forEach((d,i) => { legendEl.appendChild(el('div', { className: 'leg-item' }, [el('span', { className: 'leg-dot', style: { background: CLUSTER_PALETTE[i%CLUSTER_PALETTE.length] } }), d.split('/').slice(-2).join('/')])); });
-  }
-  if (state.blastRadius) {
-    legendEl.appendChild(el('div', { textContent: 'Blast Radius', style: { fontWeight: '600', marginTop: '4px', marginBottom: '2px', color: 'var(--orange)' } }));
-    legendEl.appendChild(el('div', { className: 'leg-item' }, [el('span', { className: 'leg-dot', style: { background: 'var(--orange)' } }), 'Click node to show impact']));
-  }
-  legendEl.appendChild(el('div', { textContent: 'Edges', style: { fontWeight: '600', marginTop: '4px', marginBottom: '2px', color: 'var(--text)' } }));
-  Object.entries(EDGE_STYLES).forEach(([k,s]) => {
-    const ls = s.dash.length ? { width: '20px', height: '0', borderTop: '2px dashed '+s.color, background: 'none' } : { background: s.color };
-    legendEl.appendChild(el('div', { className: 'leg-item' }, [el('span', { className: 'leg-line', style: ls }), k]));
-  });
-
-  const dirSet = [...new Set(allSyms.map(s=>getDir(s.file)))].sort();
-  const dirColorMap = {}; dirSet.forEach((d,i) => { dirColorMap[d] = CLUSTER_PALETTE[i%CLUSTER_PALETTE.length]; });
-
-  const existingMap = {}; graphNodes.forEach(n => { existingMap[n.id] = n; });
-  graphW = canvas.parentElement.clientWidth; graphH = canvas.parentElement.clientHeight;
-
-  const clusterCenters = {};
-  if (state.graphCluster === 'directory') {
-    const as = (2*Math.PI)/dirSet.length, r = Math.min(graphW,graphH)*0.3;
-    dirSet.forEach((d,i) => { clusterCenters[d] = { x: graphW/2+Math.cos(as*i)*r, y: graphH/2+Math.sin(as*i)*r }; });
-  }
-
-  graphNodes = allSyms.map(s => {
-    const dir = getDir(s.file);
-    if (existingMap[s.symbolId]) { const ex = existingMap[s.symbolId]; return { ...ex, ...s, id: s.symbolId, dir, clusterColor: dirColorMap[dir] }; }
-    const cc = state.graphCluster==='directory' && clusterCenters[dir];
-    return { ...s, id: s.symbolId, dir, clusterColor: dirColorMap[dir],
-      x: cc ? cc.x+(Math.random()-0.5)*80 : graphW/2+(Math.random()-0.5)*graphW*0.6,
-      y: cc ? cc.y+(Math.random()-0.5)*80 : graphH/2+(Math.random()-0.5)*graphH*0.6,
-      vx: 0, vy: 0, radius: Math.min(6+(s.cyclomatic||1)*0.5, 18), pinned: false };
-  });
-
-  graphNodeMap = {}; graphNodes.forEach(n => { graphNodeMap[n.id] = n; });
-  graphEdgesArr = allEdges.filter(e => graphNodeMap[e.from] && graphNodeMap[e.to]);
-
-  canvas.width = graphW*devicePixelRatio; canvas.height = graphH*devicePixelRatio;
-  canvas.style.width = graphW+'px'; canvas.style.height = graphH+'px';
-  if (!Object.keys(existingMap).length) { graphZoom=1; graphPanX=0; graphPanY=0; }
-  if (graphAnim) cancelAnimationFrame(graphAnim);
-  graphFrameCount = 0; graphStabilized = false;
-  startGraphLoop(); setupGraphInteractions();
-}
-
-// Cluster toggle
-document.getElementById('graphClusterToggle').addEventListener('click', e => {
-  const btn = e.target.closest('button'); if (!btn || !btn.dataset.mode) return;
-  document.querySelectorAll('#graphClusterToggle button').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active'); state.graphCluster = btn.dataset.mode; graphNodes = []; renderGraph();
-});
-
-// Blast radius toggle
-document.getElementById('blastRadiusBtn').addEventListener('click', () => {
-  state.blastRadius = !state.blastRadius;
-  document.getElementById('blastRadiusBtn').classList.toggle('active', state.blastRadius);
-  if (!state.blastRadius) selectedNode = null;
-  renderGraph();
-});
-
-// Export PNG
-document.getElementById('exportGraphPng').addEventListener('click', () => {
-  const canvas = document.getElementById('graphCanvas');
-  const link = document.createElement('a'); link.download = 'ctxo-graph.png'; link.href = canvas.toDataURL('image/png'); link.click();
-});
-
-// Export SVG (simplified)
-document.getElementById('exportGraphSvg').addEventListener('click', () => {
-  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${graphW}" height="${graphH}" style="background:#0f1117">`;
-  graphEdgesArr.forEach(e => {
-    const a = graphNodeMap[e.from], b = graphNodeMap[e.to]; if (!a||!b) return;
-    const s = EDGE_STYLES[e.kind]||EDGE_STYLES.uses;
-    svg += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${s.color}" stroke-width="${s.width}" opacity="0.6"${s.dash.length ? ' stroke-dasharray="'+s.dash.join(',')+'"' : ''}/>`;
-  });
-  graphNodes.forEach(n => {
-    const c = state.graphCluster==='directory' ? n.clusterColor : KIND_COLORS[n.kind]||'#888';
-    svg += `<circle cx="${n.x}" cy="${n.y}" r="${n.radius}" fill="${c}"/>`;
-    svg += `<text x="${n.x}" y="${n.y+n.radius+12}" text-anchor="middle" fill="#c8ccd8" font-size="10" font-family="sans-serif">${n.name.length>24?n.name.substring(0,22)+'...':n.name}</text>`;
-  });
-  svg += '</svg>';
-  const blob = new Blob([svg], { type: 'image/svg+xml' });
-  const link = document.createElement('a'); link.download = 'ctxo-graph.svg'; link.href = URL.createObjectURL(blob); link.click();
-});
-
-function startGraphLoop() {
-  const canvas = document.getElementById('graphCanvas');
-  const ctx = canvas.getContext('2d');
-  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-
-  const dirSet = [...new Set(graphNodes.map(n=>n.dir))].sort();
-  const cc = {};
-  if (state.graphCluster === 'directory') {
-    const as = (2*Math.PI)/dirSet.length, r = Math.min(graphW,graphH)*0.3;
-    dirSet.forEach((d,i) => { cc[d] = { x: graphW/2+Math.cos(as*i)*r, y: graphH/2+Math.sin(as*i)*r }; });
-  }
-
-  function simulate() {
-    graphAnim = requestAnimationFrame(simulate);
-    graphFrameCount++;
-    if (!graphStabilized) {
-      const alpha = Math.max(0, 1-graphFrameCount/200);
-      if (alpha < 0.005) graphStabilized = true;
-      for (let i=0; i<graphNodes.length; i++) { for (let j=i+1; j<graphNodes.length; j++) {
-        const a=graphNodes[i], b=graphNodes[j]; let dx=b.x-a.x, dy=b.y-a.y, dist=Math.sqrt(dx*dx+dy*dy)||1;
-        let force=Math.min(1200/(dist*dist),4)*alpha; const fx=dx/dist*force, fy=dy/dist*force;
-        if (!a.pinned){a.vx-=fx;a.vy-=fy;} if (!b.pinned){b.vx+=fx;b.vy+=fy;}
-      }}
-      graphEdgesArr.forEach(e => {
-        const a=graphNodeMap[e.from], b=graphNodeMap[e.to]; if (!a||!b) return;
-        let dx=b.x-a.x, dy=b.y-a.y, dist=Math.sqrt(dx*dx+dy*dy)||1;
-        let force=(dist-150)*0.004*alpha; const fx=dx/dist*force, fy=dy/dist*force;
-        if (!a.pinned){a.vx+=fx;a.vy+=fy;} if (!b.pinned){b.vx-=fx;b.vy-=fy;}
-      });
-      graphNodes.forEach(n => {
-        if (n.pinned) return;
-        if (state.graphCluster==='directory' && cc[n.dir]) { n.vx+=(cc[n.dir].x-n.x)*0.003*alpha; n.vy+=(cc[n.dir].y-n.y)*0.003*alpha; }
-        else { n.vx+=(graphW/2-n.x)*0.0003*alpha; n.vy+=(graphH/2-n.y)*0.0003*alpha; }
-      });
-      graphNodes.forEach(n => { if (n===dragNode||n.pinned) return; n.vx*=0.7; n.vy*=0.7; n.x+=n.vx; n.y+=n.vy; });
-    }
-    if (state.graphCluster==='directory') {
-      clusterHulls = []; const groups = {};
-      graphNodes.forEach(n => { if (!groups[n.dir]) groups[n.dir]=[]; groups[n.dir].push(n); });
-      Object.entries(groups).forEach(([dir,nodes]) => { if (nodes.length<2) return; clusterHulls.push({ dir, nodes, color: nodes[0].clusterColor }); });
-    } else { clusterHulls = []; }
-    drawGraph(ctx);
-  }
-  simulate();
-}
-
-function drawGraph(ctx) {
-  const w=graphW, h=graphH;
-  // Determine highlighted set
-  let highlightIds = null;
-  if (selectedNode) {
-    if (state.blastRadius) { highlightIds = getTransitiveDeps(selectedNode.id, graphEdgesArr); }
-    else { highlightIds = new Set([selectedNode.id]); graphEdgesArr.forEach(e => { if (e.from===selectedNode.id||e.to===selectedNode.id) { highlightIds.add(e.from); highlightIds.add(e.to); } }); }
-  }
-  const connectedEdges = new Set();
-  if (highlightIds) { graphEdgesArr.forEach((e,i) => { if (highlightIds.has(e.from) && highlightIds.has(e.to)) connectedEdges.add(i); }); }
-
-  ctx.save(); ctx.clearRect(0,0,w,h); ctx.translate(graphPanX, graphPanY); ctx.scale(graphZoom, graphZoom);
-
-  // Cluster backgrounds
-  clusterHulls.forEach(hull => {
-    let cx=0, cy=0, maxR=0;
-    hull.nodes.forEach(n => { cx+=n.x; cy+=n.y; }); cx/=hull.nodes.length; cy/=hull.nodes.length;
-    hull.nodes.forEach(n => { const d=Math.sqrt((n.x-cx)**2+(n.y-cy)**2)+n.radius; if (d>maxR) maxR=d; });
-    ctx.beginPath(); ctx.arc(cx,cy,maxR+25,0,Math.PI*2);
-    ctx.fillStyle=hull.color; ctx.globalAlpha=0.06; ctx.fill();
-    ctx.strokeStyle=hull.color; ctx.globalAlpha=0.15; ctx.lineWidth=1; ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha=1;
-    if (graphZoom>0.2) { ctx.fillStyle=hull.color; ctx.globalAlpha=0.4; ctx.font=Math.max(10,12/graphZoom)+'px sans-serif'; ctx.textAlign='center'; ctx.fillText(hull.dir.split('/').slice(-2).join('/'),cx,cy-maxR-8); ctx.globalAlpha=1; }
-  });
-
-  // Edges
-  graphEdgesArr.forEach((e,idx) => {
-    const a=graphNodeMap[e.from], b=graphNodeMap[e.to]; if (!a||!b) return;
-    const style=EDGE_STYLES[e.kind]||EDGE_STYLES.uses;
-    const dimmed = highlightIds && !connectedEdges.has(idx);
-    ctx.beginPath(); ctx.setLineDash(style.dash);
-    ctx.lineWidth = dimmed ? style.width*0.5 : (connectedEdges.has(idx) ? style.width*2 : style.width);
-    ctx.strokeStyle = (state.blastRadius && connectedEdges.has(idx)) ? 'var(--orange)' : style.color;
-    ctx.globalAlpha = dimmed ? 0.08 : (connectedEdges.has(idx) ? 1 : 0.6);
-    ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
-    if (!dimmed) {
-      const angle=Math.atan2(b.y-a.y,b.x-a.x), ad=b.radius+5;
-      ctx.beginPath(); ctx.setLineDash([]); ctx.fillStyle=style.color;
-      ctx.moveTo(b.x-Math.cos(angle)*ad, b.y-Math.sin(angle)*ad);
-      ctx.lineTo(b.x-Math.cos(angle)*ad-7*Math.cos(angle-0.35), b.y-Math.sin(angle)*ad-7*Math.sin(angle-0.35));
-      ctx.lineTo(b.x-Math.cos(angle)*ad-7*Math.cos(angle+0.35), b.y-Math.sin(angle)*ad-7*Math.sin(angle+0.35));
-      ctx.fill();
-    }
-  });
-  ctx.setLineDash([]); ctx.globalAlpha=1;
-
-  // Nodes
-  graphNodes.forEach(n => {
-    const isSelected = selectedNode && selectedNode.id===n.id;
-    const isHighlighted = highlightIds && highlightIds.has(n.id);
-    const dimmed = highlightIds && !isHighlighted;
-    ctx.globalAlpha = dimmed ? 0.12 : 1;
-
-    if (isSelected) {
-      ctx.beginPath(); ctx.arc(n.x,n.y,n.radius+6,0,Math.PI*2);
-      ctx.fillStyle = state.blastRadius ? '#f97316' : ((state.graphCluster==='directory' ? n.clusterColor : KIND_COLORS[n.kind])||'#888');
-      ctx.globalAlpha=0.3; ctx.fill(); ctx.globalAlpha = dimmed ? 0.12 : 1;
-    }
-    ctx.beginPath(); ctx.arc(n.x,n.y,n.radius,0,Math.PI*2);
-    ctx.fillStyle = (state.graphCluster==='directory' ? n.clusterColor : KIND_COLORS[n.kind])||'#888';
-    ctx.fill();
-    ctx.strokeStyle = isSelected ? '#fff' : (isHighlighted ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.1)');
-    ctx.lineWidth = isSelected ? 2.5 : 1; ctx.stroke();
-
-    if (n.pinned) { ctx.beginPath(); ctx.arc(n.x,n.y-n.radius-4,2.5,0,Math.PI*2); ctx.fillStyle='#ef4444'; ctx.fill(); }
-    if (graphZoom>0.35 && !dimmed) {
-      ctx.fillStyle = isSelected ? '#fff' : '#c8ccd8';
-      ctx.font = (isSelected?'bold ':'')+Math.max(9,11/graphZoom)+'px sans-serif'; ctx.textAlign='center';
-      ctx.fillText(n.name.length>24?n.name.substring(0,22)+'\u2026':n.name, n.x, n.y+n.radius+14);
-    }
-  });
-  ctx.globalAlpha=1; ctx.restore();
-}
-
-function showNodeInfo(n) {
-  const info = document.getElementById('graphInfo');
-  info.style.display = 'block'; info.textContent = '';
-  info.appendChild(el('button', { className: 'gi-close', textContent: '\u2715', onClick: () => { selectedNode=null; info.style.display='none'; } }));
-  info.appendChild(el('h4', { textContent: n.name }));
-  const rows = [['Kind',n.kind],['File',n.file],['Lines',n.startLine+' - '+n.endLine]];
-  if (n.cyclomatic!=null) rows.push(['Complexity',String(n.cyclomatic)]);
-  if (state.blastRadius) {
-    const deps = getTransitiveDeps(n.id, graphEdgesArr);
-    rows.push(['Blast Radius', (deps.size-1)+' symbols']);
-  }
-  rows.forEach(([l,v]) => { info.appendChild(el('div', { className: 'gi-row' }, [el('span', { textContent: l+':', style: { color: 'var(--text3)', minWidth: '80px' } }), el('span', { textContent: v })])); });
-
-  // VSCode link
-  info.appendChild(el('div', { style: { marginTop: '6px' } }, [el('a', { className: 'vscode-link', href: 'vscode://file/'+n.file+':'+n.startLine, textContent: 'Open in VSCode \u2197' })]));
-
-  const incoming = graphEdgesArr.filter(e=>e.to===n.id), outgoing = graphEdgesArr.filter(e=>e.from===n.id);
-  if (outgoing.length) {
-    info.appendChild(el('div', { textContent: 'Depends on ('+outgoing.length+'):', style: { color: 'var(--text3)', marginTop: '6px', fontSize: '10px', textTransform: 'uppercase' } }));
-    outgoing.slice(0,8).forEach(e => { info.appendChild(el('div', { className: 'gi-row' }, [el('span', { textContent: e.kind, style: { color: (EDGE_STYLES[e.kind]||{}).color||'#888', fontSize: '10px', minWidth: '70px' } }), el('span', { textContent: e.to.split('::')[1]||e.to, style: { fontSize: '11px' } })])); });
-  }
-  if (incoming.length) {
-    info.appendChild(el('div', { textContent: 'Used by ('+incoming.length+'):', style: { color: 'var(--text3)', marginTop: '6px', fontSize: '10px', textTransform: 'uppercase' } }));
-    incoming.slice(0,8).forEach(e => { info.appendChild(el('div', { className: 'gi-row' }, [el('span', { textContent: e.kind, style: { color: (EDGE_STYLES[e.kind]||{}).color||'#888', fontSize: '10px', minWidth: '70px' } }), el('span', { textContent: e.from.split('::')[1]||e.from, style: { fontSize: '11px' } })])); });
-  }
-}
-
-function setupGraphInteractions() {
-  const canvas = document.getElementById('graphCanvas');
-  const tooltip = document.getElementById('graphTooltip');
-  function canvasXY(e) { const r=canvas.getBoundingClientRect(); return { x: (e.clientX-r.left-graphPanX)/graphZoom, y: (e.clientY-r.top-graphPanY)/graphZoom }; }
-  function findNode(mx,my) { for (let i=graphNodes.length-1;i>=0;i--) { const n=graphNodes[i],dx=n.x-mx,dy=n.y-my; if (dx*dx+dy*dy<(n.radius+6)**2) return n; } return null; }
-  function applyZoom(f,cx,cy) { if (cx===undefined){cx=graphW/2;cy=graphH/2;} graphPanX=cx-(cx-graphPanX)*f; graphPanY=cy-(cy-graphPanY)*f; graphZoom=Math.max(0.05,Math.min(8,graphZoom*f)); }
-  function fitAll() { if (!graphNodes.length) return; let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity; graphNodes.forEach(n=>{minX=Math.min(minX,n.x-n.radius);maxX=Math.max(maxX,n.x+n.radius);minY=Math.min(minY,n.y-n.radius);maxY=Math.max(maxY,n.y+n.radius);}); const p=60,rx=maxX-minX+p*2,ry=maxY-minY+p*2; graphZoom=Math.min(graphW/rx,graphH/ry,2); graphPanX=graphW/2-(minX+maxX)/2*graphZoom; graphPanY=graphH/2-(minY+maxY)/2*graphZoom; }
-
-  document.getElementById('zoomIn').onclick=()=>applyZoom(1.3);
-  document.getElementById('zoomOut').onclick=()=>applyZoom(0.7);
-  document.getElementById('zoomFit').onclick=fitAll;
-  document.getElementById('zoomReset').onclick=()=>{graphZoom=1;graphPanX=0;graphPanY=0;};
-
-  canvas.onmousedown=e=>{const{x,y}=canvasXY(e);const n=findNode(x,y);if(n){dragNode=n;dragOffX=n.x-x;dragOffY=n.y-y;didDrag=false;}else{isPanning=true;panStartX=e.clientX-graphPanX;panStartY=e.clientY-graphPanY;}};
-  canvas.onmousemove=e=>{const{x,y}=canvasXY(e);if(dragNode){const dx=(x+dragOffX)-dragNode.x,dy=(y+dragOffY)-dragNode.y;if(dx*dx+dy*dy>4)didDrag=true;dragNode.x=x+dragOffX;dragNode.y=y+dragOffY;dragNode.vx=0;dragNode.vy=0;}else if(isPanning){graphPanX=e.clientX-panStartX;graphPanY=e.clientY-panStartY;}else{const n=findNode(x,y);if(n){tooltip.style.display='block';tooltip.style.left=(e.clientX+14)+'px';tooltip.style.top=(e.clientY-8)+'px';tooltip.textContent='';tooltip.appendChild(el('div',{className:'tt-name',textContent:n.name}));tooltip.appendChild(el('div',{className:'tt-detail',textContent:n.kind+' \u00B7 '+n.file+':'+n.startLine+'-'+n.endLine+(n.cyclomatic!=null?' | C:'+n.cyclomatic:'')}));canvas.style.cursor='pointer';}else{tooltip.style.display='none';canvas.style.cursor=isPanning?'grabbing':'grab';}}};
-  canvas.onmouseup=e=>{if(dragNode&&!didDrag){if(selectedNode&&selectedNode.id===dragNode.id){selectedNode=null;document.getElementById('graphInfo').style.display='none';}else{selectedNode=dragNode;showNodeInfo(dragNode);}}else if(dragNode&&didDrag){dragNode.pinned=true;}else if(!isPanning){selectedNode=null;document.getElementById('graphInfo').style.display='none';}dragNode=null;isPanning=false;didDrag=false;};
-  canvas.onmouseleave=()=>{dragNode=null;isPanning=false;tooltip.style.display='none';};
-  canvas.onwheel=e=>{e.preventDefault();const f=e.deltaY>0?0.88:1.14;const r=canvas.getBoundingClientRect();applyZoom(f,e.clientX-r.left,e.clientY-r.top);};
-  canvas.ondblclick=e=>{const{x,y}=canvasXY(e);const n=findNode(x,y);if(n){n.pinned=false;graphStabilized=false;graphFrameCount=Math.max(graphFrameCount,150);}};
 }
 
 // ═══════════════════════════════════════
@@ -1469,298 +1095,6 @@ document.getElementById('urlLoadBtn').addEventListener('click', async () => {
   }
   btn.disabled = false; btn.textContent = 'Fetch';
 });
-
-// ═══════════════════════════════════════
-// 3D DEPENDENCY GRAPH (Three.js)
-// ═══════════════════════════════════════
-let scene3d = null, camera3d = null, renderer3d = null, controls3d = null;
-let graph3dObjects = []; // all scene objects we added (meshes, lines, sprites)
-let graph3dMeshes = new Map();
-let graph3dInitialized = false, graph3dAnim = null;
-
-function makeTextSprite(text, color) {
-  const THREE = window._THREE;
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  const fontSize = 48;
-  ctx.font = '500 ' + fontSize + 'px -apple-system, BlinkMacSystemFont, sans-serif';
-  const metrics = ctx.measureText(text);
-  const w = Math.ceil(metrics.width) + 16;
-  const h = fontSize + 16;
-  canvas.width = w; canvas.height = h;
-  ctx.font = '500 ' + fontSize + 'px -apple-system, BlinkMacSystemFont, sans-serif';
-  ctx.fillStyle = color;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(text, w / 2, h / 2);
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.minFilter = THREE.LinearFilter;
-  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false });
-  const sprite = new THREE.Sprite(mat);
-  sprite.scale.set(w / 8, h / 8, 1);
-  return sprite;
-}
-
-async function renderGraph3D() {
-  const container = document.getElementById('graph3dContainer');
-  const emptyEl = document.getElementById('graph3dEmpty');
-  const infoEl = document.getElementById('graph3dInfo');
-  const ctrlsEl = document.getElementById('graph3dControls');
-  const allSyms = filterSymbols(getAllSymbols());
-  const allEdges = getAllEdges().filter(e => state.edgeFilter[e.kind]);
-
-  if (!allSyms.length) { emptyEl.style.display = ''; infoEl.style.display = 'none'; ctrlsEl.style.display = 'none'; return; }
-  emptyEl.style.display = 'none'; infoEl.style.display = ''; ctrlsEl.style.display = '';
-
-  if (!graph3dInitialized) {
-    await new Promise(r => requestAnimationFrame(r));
-    try {
-      const THREE = await import('three');
-      const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
-      let w = container.clientWidth || 800, h = container.clientHeight || 600;
-
-      scene3d = new THREE.Scene();
-      const bgColor = state.theme === 'light' ? 0xf0f2f8 : 0x0a0c10;
-      scene3d.background = new THREE.Color(bgColor);
-
-      camera3d = new THREE.PerspectiveCamera(55, w / h, 0.1, 10000);
-      camera3d.position.set(0, 100, 500);
-
-      renderer3d = new THREE.WebGLRenderer({ antialias: true });
-      renderer3d.setSize(w, h);
-      renderer3d.setPixelRatio(Math.min(devicePixelRatio, 2));
-      renderer3d.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer3d.toneMappingExposure = 1.2;
-
-      container.querySelectorAll('canvas').forEach(c => c.remove());
-      container.appendChild(renderer3d.domElement);
-
-      controls3d = new OrbitControls(camera3d, renderer3d.domElement);
-      controls3d.enableDamping = true;
-      controls3d.dampingFactor = 0.06;
-      controls3d.enableZoom = true;
-      controls3d.zoomSpeed = 1.0;
-      controls3d.enablePan = true;
-      controls3d.panSpeed = 0.8;
-      controls3d.rotateSpeed = 0.5;
-      controls3d.minDistance = 20;
-      controls3d.maxDistance = 4000;
-      controls3d.autoRotate = true;
-      controls3d.autoRotateSpeed = 0.3;
-
-      // Lighting
-      scene3d.add(new THREE.AmbientLight(0xffffff, 0.8));
-      const key = new THREE.DirectionalLight(0xffffff, 1.2);
-      key.position.set(400, 500, 300); scene3d.add(key);
-      const fill = new THREE.DirectionalLight(0xaaccff, 0.5);
-      fill.position.set(-300, -200, -200); scene3d.add(fill);
-      const rim = new THREE.DirectionalLight(0xffeedd, 0.3);
-      rim.position.set(0, -400, 200); scene3d.add(rim);
-
-      // Grid helper
-      const gridColor = state.theme === 'light' ? 0xd0d5dd : 0x1a1d27;
-      const grid = new THREE.GridHelper(600, 30, gridColor, gridColor);
-      grid.position.y = -200;
-      grid.material.opacity = 0.3;
-      grid.material.transparent = true;
-      scene3d.add(grid);
-
-      const ro = new ResizeObserver(() => {
-        const w2 = container.clientWidth, h2 = container.clientHeight;
-        if (w2 > 0 && h2 > 0) { camera3d.aspect = w2/h2; camera3d.updateProjectionMatrix(); renderer3d.setSize(w2, h2); }
-      });
-      ro.observe(container);
-
-      graph3dInitialized = true;
-      window._THREE = THREE;
-
-      // Hover detection
-      const raycaster = new THREE.Raycaster();
-      const mouse = new THREE.Vector2();
-      let hoveredMesh = null;
-
-      renderer3d.domElement.addEventListener('mousemove', e => {
-        const rect = renderer3d.domElement.getBoundingClientRect();
-        mouse.x = ((e.clientX-rect.left)/rect.width)*2-1;
-        mouse.y = -((e.clientY-rect.top)/rect.height)*2+1;
-        raycaster.setFromCamera(mouse, camera3d);
-        const hits = raycaster.intersectObjects(Array.from(graph3dMeshes.values()));
-        if (hoveredMesh && hoveredMesh !== (hits[0] && hits[0].object)) {
-          hoveredMesh.material.emissiveIntensity = 0.15;
-          hoveredMesh.scale.setScalar(1);
-          hoveredMesh = null;
-          renderer3d.domElement.style.cursor = 'grab';
-        }
-        if (hits.length) {
-          hoveredMesh = hits[0].object;
-          hoveredMesh.material.emissiveIntensity = 0.6;
-          hoveredMesh.scale.setScalar(1.3);
-          renderer3d.domElement.style.cursor = 'pointer';
-          const sym = hoveredMesh.userData.symbol;
-          infoEl.textContent = sym.name + '  |  ' + sym.kind + '  |  ' + sym.file + ':' + sym.startLine + (sym.cyclomatic != null ? '  |  complexity: ' + sym.cyclomatic : '');
-        }
-      });
-
-      renderer3d.domElement.addEventListener('click', e => {
-        const rect = renderer3d.domElement.getBoundingClientRect();
-        mouse.x = ((e.clientX-rect.left)/rect.width)*2-1;
-        mouse.y = -((e.clientY-rect.top)/rect.height)*2+1;
-        raycaster.setFromCamera(mouse, camera3d);
-        const hits = raycaster.intersectObjects(Array.from(graph3dMeshes.values()));
-        if (hits.length) {
-          // Stop auto-rotate on click
-          controls3d.autoRotate = false;
-          const pos = hits[0].object.position;
-          controls3d.target.lerp(pos, 0.5);
-        }
-      });
-
-      function animate() {
-        graph3dAnim = requestAnimationFrame(animate);
-        controls3d.update();
-        // Make sprites face camera
-        graph3dObjects.forEach(obj => { if (obj.isSprite) return; }); // sprites auto-face
-        renderer3d.render(scene3d, camera3d);
-      }
-      animate();
-    } catch (err) {
-      emptyEl.style.display = '';
-      emptyEl.querySelector('p').textContent = 'Three.js error: ' + err.message;
-      console.error('3D Graph error:', err);
-      return;
-    }
-  }
-
-  const THREE = window._THREE;
-
-  // Clear previous objects
-  graph3dObjects.forEach(o => scene3d.remove(o));
-  graph3dObjects = [];
-  graph3dMeshes.clear();
-
-  // Update background for current theme
-  scene3d.background = new THREE.Color(state.theme === 'light' ? 0xf0f2f8 : 0x0a0c10);
-
-  // Create nodes
-  const nodeMap = {};
-  const spread = Math.max(120, Math.min(600, allSyms.length * 3));
-  allSyms.forEach((s, i) => {
-    const phi = Math.acos(-1 + (2 * i) / allSyms.length);
-    const theta = Math.sqrt(allSyms.length * Math.PI) * phi;
-    const r = spread * 0.8;
-    const pos = {
-      x: r * Math.cos(theta) * Math.sin(phi) + (Math.random()-0.5) * 30,
-      y: r * Math.sin(theta) * Math.sin(phi) + (Math.random()-0.5) * 30,
-      z: r * Math.cos(phi) + (Math.random()-0.5) * 30,
-    };
-    const colorHex = KIND_COLORS[s.kind] || '#888888';
-    const radius = Math.min(3.5 + (s.cyclomatic || 1) * 0.4, 12);
-
-    // Node sphere
-    const geo = new THREE.SphereGeometry(radius, 16, 16);
-    const mat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(colorHex),
-      emissive: new THREE.Color(colorHex),
-      emissiveIntensity: 0.15,
-      roughness: 0.35,
-      metalness: 0.1,
-    });
-    const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(pos.x, pos.y, pos.z);
-    mesh.userData = { symbol: s };
-    scene3d.add(mesh);
-    graph3dObjects.push(mesh);
-    graph3dMeshes.set(s.symbolId, mesh);
-
-    // Glow ring
-    const glowGeo = new THREE.RingGeometry(radius * 1.1, radius * 1.5, 24);
-    const glowMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(colorHex), transparent: true, opacity: 0.08, side: THREE.DoubleSide });
-    const glow = new THREE.Mesh(glowGeo, glowMat);
-    glow.position.copy(mesh.position);
-    glow.lookAt(camera3d.position);
-    scene3d.add(glow);
-    graph3dObjects.push(glow);
-
-    // Text label sprite
-    const shortName = s.name.length > 20 ? s.name.substring(0, 18) + '..' : s.name;
-    const labelColor = state.theme === 'light' ? '#374151' : '#d1d5db';
-    const sprite = makeTextSprite(shortName, labelColor);
-    sprite.position.set(pos.x, pos.y - radius - 5, pos.z);
-    scene3d.add(sprite);
-    graph3dObjects.push(sprite);
-
-    nodeMap[s.symbolId] = { ...s, ...pos, vx: 0, vy: 0, vz: 0, mesh, glow, sprite, radius };
-  });
-
-  // Edges — tube lines for thickness
-  const filteredEdges = allEdges.filter(e => nodeMap[e.from] && nodeMap[e.to]);
-  filteredEdges.forEach(e => {
-    const a = nodeMap[e.from], b = nodeMap[e.to];
-    const edgeColor = (EDGE_STYLES[e.kind] || EDGE_STYLES.uses).color;
-    const pts = [new THREE.Vector3(a.x,a.y,a.z), new THREE.Vector3(b.x,b.y,b.z)];
-    const geo = new THREE.BufferGeometry().setFromPoints(pts);
-    const mat = new THREE.LineBasicMaterial({ color: new THREE.Color(edgeColor), opacity: 0.25, transparent: true, linewidth: 1 });
-    const line = new THREE.Line(geo, mat);
-    line.userData = { nodeA: a, nodeB: b };
-    scene3d.add(line);
-    graph3dObjects.push(line);
-  });
-
-  // Force simulation (pre-compute 120 iterations)
-  const nodes3d = Object.values(nodeMap);
-  for (let iter = 0; iter < 120; iter++) {
-    const alpha = Math.max(0, 1 - iter / 120);
-    for (let i = 0; i < nodes3d.length; i++) {
-      for (let j = i + 1; j < nodes3d.length; j++) {
-        const a = nodes3d[i], b = nodes3d[j];
-        let dx=b.x-a.x, dy=b.y-a.y, dz=b.z-a.z, dist=Math.sqrt(dx*dx+dy*dy+dz*dz)||1;
-        let force=Math.min(1000/(dist*dist),4)*alpha;
-        a.vx-=dx/dist*force; a.vy-=dy/dist*force; a.vz-=dz/dist*force;
-        b.vx+=dx/dist*force; b.vy+=dy/dist*force; b.vz+=dz/dist*force;
-      }
-    }
-    filteredEdges.forEach(e => {
-      const a=nodeMap[e.from], b=nodeMap[e.to]; if(!a||!b) return;
-      let dx=b.x-a.x, dy=b.y-a.y, dz=b.z-a.z, dist=Math.sqrt(dx*dx+dy*dy+dz*dz)||1;
-      let f=(dist-100)*0.004*alpha;
-      a.vx+=dx/dist*f; a.vy+=dy/dist*f; a.vz+=dz/dist*f;
-      b.vx-=dx/dist*f; b.vy-=dy/dist*f; b.vz-=dz/dist*f;
-    });
-    nodes3d.forEach(n => { n.vx*=0.65; n.vy*=0.65; n.vz*=0.65; n.x+=n.vx; n.y+=n.vy; n.z+=n.vz; });
-  }
-
-  // Update all positions
-  nodes3d.forEach(n => {
-    n.mesh.position.set(n.x, n.y, n.z);
-    n.glow.position.set(n.x, n.y, n.z);
-    n.sprite.position.set(n.x, n.y - n.radius - 6, n.z);
-  });
-  graph3dObjects.forEach(obj => {
-    if (obj.userData && obj.userData.nodeA) {
-      const a = obj.userData.nodeA, b = obj.userData.nodeB;
-      const pos = obj.geometry.attributes.position;
-      pos.setXYZ(0,a.x,a.y,a.z); pos.setXYZ(1,b.x,b.y,b.z); pos.needsUpdate = true;
-    }
-  });
-
-  // Fit camera
-  const box = new THREE.Box3();
-  nodes3d.forEach(n => box.expandByPoint(new THREE.Vector3(n.x,n.y,n.z)));
-  const center = box.getCenter(new THREE.Vector3());
-  const size = box.getSize(new THREE.Vector3()).length();
-  camera3d.position.set(center.x + size * 0.4, center.y + size * 0.3, center.z + size * 1.0);
-  controls3d.target.copy(center);
-  controls3d.autoRotate = true;
-  controls3d.update();
-
-  window._graph3dFitData = { center, size };
-
-  // Button handlers
-  document.getElementById('zoom3dIn').onclick = () => { camera3d.position.lerp(controls3d.target, 0.25); };
-  document.getElementById('zoom3dOut').onclick = () => { const d=camera3d.position.clone().sub(controls3d.target).normalize(); camera3d.position.add(d.multiplyScalar(60)); };
-  document.getElementById('zoom3dFit').onclick = () => { const d=window._graph3dFitData; if(!d) return; camera3d.position.set(d.center.x+d.size*0.4,d.center.y+d.size*0.3,d.center.z+d.size*1.0); controls3d.target.copy(d.center); controls3d.autoRotate=true; };
-  document.getElementById('zoom3dReset').onclick = () => { camera3d.position.set(0,100,500); controls3d.target.set(0,0,0); controls3d.autoRotate=true; };
-}
 
 // ═══════════════════════════════════════
 // DIFF VIEW

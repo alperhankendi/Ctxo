@@ -8,6 +8,7 @@ import { InitCommand } from './init-command.js';
 import { WatchCommand } from './watch-command.js';
 import { StatsCommand } from './stats-command.js';
 import { DoctorCommand } from './doctor-command.js';
+import { VisualizeCommand } from './visualize-command.js';
 
 export function getVersion(): string {
   let dir = import.meta.dirname;
@@ -111,6 +112,21 @@ export class CliRouter {
         break;
       }
 
+      case 'visualize': {
+        const outputIdx = args.indexOf('--output');
+        const outputArg = outputIdx !== -1 ? args[outputIdx + 1] : undefined;
+        const maxNodesIdx = args.indexOf('--max-nodes');
+        const maxNodesArg = maxNodesIdx !== -1 ? Number(args[maxNodesIdx + 1]) : undefined;
+        const noBrowser = args.includes('--no-browser');
+        if (maxNodesIdx !== -1 && (!maxNodesArg || isNaN(maxNodesArg) || maxNodesArg < 1)) {
+          console.error('[ctxo] --max-nodes requires a positive integer');
+          process.exit(1);
+          return;
+        }
+        await new VisualizeCommand(this.projectRoot).run({ output: outputArg, maxNodes: maxNodesArg, noBrowser });
+        break;
+      }
+
       default:
         console.error(`[ctxo] Unknown command: "${command}". Run "ctxo --help" for usage.`);
         process.exit(1);
@@ -136,6 +152,7 @@ Usage:
   ctxo init --dry-run       Preview what would be created
   ctxo stats                Show usage statistics (--json, --days N, --clear)
   ctxo doctor               Health check all subsystems (--json, --quiet)
+  ctxo visualize            Generate interactive dependency graph HTML
   ctxo --help               Show this help message
 `.trim());
   }
