@@ -289,7 +289,7 @@ try {
 | git not found | intent/antiPatterns return `[]` |
 | SQLite corrupt | Delete and rebuild from JSON index |
 | Symbol not in index | `{ found: false, hint: "run ctxo index" }` |
-| gopls/Roslyn missing | Graceful degradation to tree-sitter |
+| ctxo-go-analyzer / Roslyn missing | Graceful degradation to tree-sitter |
 
 ## Tech Stack
 

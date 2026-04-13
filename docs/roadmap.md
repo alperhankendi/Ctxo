@@ -16,7 +16,6 @@ Items on deck for v0.7.x / v0.8. No strict ordering — picked by impact + readi
 
 ### Code intelligence
 
-- **Go full-tier via gopls MCP composition** — currently tree-sitter syntax-only; upgrade to type-aware cross-package resolution. Tracked under CLAUDE.md "Remaining".
 - **Community detection / graph clustering** — Leiden/Louvain on the symbol graph to enrich `get_architectural_overlay` with data-driven layer detection and expose "god nodes" + "surprising connections" (cross-cluster edges). Complements PageRank; surfaces hidden coupling and architectural drift. Source: graphify competitive learnings.
 
 ### Platform & transport
@@ -50,7 +49,7 @@ Work that's been scoped and explicitly parked. Each has a known trigger to react
 | **Framework-aware analysis** (Spring / Django ORM) | [prd.md § Phase 2](artifacts/prd.md#phase-2-plugin-architecture--language-expansion) | Requires plugin protocol v2 (semantic hooks); out of scope until multiple plugins exist. |
 | **Community plugin registry** | [prd.md § Phase 2](artifacts/prd.md#phase-2-plugin-architecture--language-expansion) | v0.8+; gate on first third-party plugin request. |
 | **Automated release pipeline** | [prd.md § Phase 2](artifacts/prd.md#phase-2-plugin-architecture--language-expansion) | Currently using changesets + manual tag; automate when release cadence exceeds ~monthly. |
-| **Go deep analysis / C# beyond current full-tier** | prd.md Language Matrix | After Go gopls composition lands (see Active). |
+| **C# beyond current full-tier** | prd.md Language Matrix | Roslyn + tree-sitter composite covers v0.8 needs; revisit if users request features Roslyn does not already expose. |
 
 ---
 

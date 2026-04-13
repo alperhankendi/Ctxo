@@ -67,7 +67,7 @@ Current `ILanguageAdapter` is **synchronous and file-scoped**. LSP is **asynchro
 | Edge target accuracy | ~900 LOC + runtime dep | Multi-file ts-morph Project | **~50 LOC** |
 | `this.method()` call edges | ~900 LOC + runtime dep | Multi-file ts-morph Project | **~80 LOC** |
 | Go syntax-tier | gopls LSP adapter ~1000 LOC | tree-sitter adapter (V1.5) | **~400 LOC** |
-| Go semantic-tier | Embedded LSP client | gopls MCP composition (zero new Ctxo code) | **~200 LOC** |
+| Go semantic-tier | Embedded LSP client / gopls MCP | Standalone `ctxo-go-analyzer` binary using `go/packages` + `x/tools/go/ssa` + `callgraph/cha` (delivered v0.8.0-alpha.0) | **~1500 LOC** |
 | C# syntax-tier | omnisharp LSP ~1000 LOC | tree-sitter adapter (V1.5) | **~350 LOC** |
 
 ### Recommended Path Forward
@@ -79,7 +79,7 @@ Current `ILanguageAdapter` is **synchronous and file-scoped**. LSP is **asynchro
 
 **Medium Term (V1.5):** Tree-sitter adapter for Go/C# syntax-tier analysis — symbol inventory + import edges.
 
-**Long Term (V2):** Go semantic-tier via **gopls MCP composition** — peer-to-peer communication over MCP protocol instead of embedding an LSP client. Zero new dependencies in Ctxo.
+**Long Term (V2): Delivered in v0.8.0-alpha.0** via a standalone `ctxo-go-analyzer` Go binary bundled inside `@ctxo/lang-go` (see [ADR-013](architecture/ADR/adr-013-go-full-tier-via-ctxo-go-analyzer-binary.md)). Originally scoped as gopls MCP composition; pivoted to an in-process binary because gopls' MCP surface lacked the batch-analysis capabilities required and its LSP surface would have been N+1 over hundreds of files.
 
 ---
 
@@ -151,5 +151,5 @@ Without AST, Ctxo cannot extract symbols, build dependency graphs, calculate bla
 - [x] **P1:** Remove `useInMemoryFileSystem: true` from TsMorphAdapter — multi-file Project with `loadProjectSources`/`clearProjectSources` — fixed in `2e33cdc`
 - [x] **P1:** Enable `this.method()` call edge extraction — `resolveThisMethodCall` helper — fixed in `2e33cdc`
 - [x] **P2:** Tree-sitter adapter for Go/C# — `GoAdapter`, `CSharpAdapter` with graceful degradation — fixed in `e43db17`
-- [ ] **P3:** Evaluate gopls MCP composition for Go semantic-tier (V2)
+- [x] **P3:** Go semantic-tier — delivered v0.8.0-alpha.0 via standalone `ctxo-go-analyzer` binary (ADR-013); gopls MCP composition was rejected after evaluation (batch-unfriendly)
 - [ ] **P3:** Evaluate OmniSharp LSP adapter for C# semantic-tier only if tree-sitter proves insufficient based on user feedback

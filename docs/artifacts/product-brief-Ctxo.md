@@ -103,7 +103,7 @@ Logic-Slice, Blast Radius, Architectural Overlay, Why-Context + Anti-Pattern Mem
 Go + C# via tree-sitter. Same five tools, AST-level analysis (no type inference). Addresses the backend and enterprise polyglot developer segment.
 
 **V2 — Deep language analysis:**
-Go: compose with gopls MCP server for type-aware analysis. C#: Roslyn LSP adapter (requires dotnet SDK, pre-installed in C# environments).
+Go: standalone `ctxo-go-analyzer` Go binary bundled inside `@ctxo/lang-go` (go/packages + types + SSA + CHA); delivered v0.8. C#: `ctxo-roslyn` .NET host bundled inside `@ctxo/lang-csharp`; delivered v0.6. Both require their respective toolchains on PATH; graceful tree-sitter fallback otherwise.
 
 **Explicitly out of scope for V1:** Python support, cloud sync, SaaS model, standalone IDE plugin, remote index hosting, telemetry.
 

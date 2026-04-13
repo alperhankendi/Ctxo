@@ -94,7 +94,7 @@ Go + C# syntax-level support via tree-sitter adapters. `npx ctxo init` auto-conf
 
 ### V2+ — Vision
 
-Go deep analysis via gopls MCP composition. C# deep analysis via Roslyn LSP. Multi-repo / cross-service dependency graphs. Natural language query interface. Python support (demand-gated). Opt-in team analytics. Ctxo becomes the default context layer — `.ctxo/index/` as unremarkable as `.github/workflows/`.
+Multi-repo / cross-service dependency graphs. Natural language query interface. Python support (demand-gated). Opt-in team analytics. Ctxo becomes the default context layer — `.ctxo/index/` as unremarkable as `.github/workflows/`. (Go deep analysis delivered in v0.8; C# deep analysis delivered in v0.6 via Roslyn.)
 
 ## User Journeys
 
@@ -218,8 +218,8 @@ Ctxo is an npm package distributed via `npx`, exposing an MCP server over stdio 
 | TSX / JSX | All | Full (tree-sitter TSX grammar) | V1 |
 | Go | All | Syntax-level (tree-sitter) | V1.5 |
 | C# | All | Syntax-level (tree-sitter) | V1.5 |
-| Go (deep) | All | Type-aware (gopls MCP composition) | V2 |
-| C# (deep) | All | Type-aware (Roslyn LSP) | V2 |
+| Go (deep) | All | Type-aware (`ctxo-go-analyzer` — go/packages + go/types + ssa + callgraph/cha) | V0.8 ✅ |
+| C# (deep) | All | Type-aware (`ctxo-roslyn` — Roslyn Compiler API) | V0.6 ✅ |
 
 ### Installation Methods
 
@@ -426,6 +426,15 @@ Phase PRDs consolidated into this document on 2026-04-13. Originals preserved in
 - **Not delivered / deferred:** Python/Java plugins (Phase B, v0.7.x); framework-aware analysis (Spring/Django ORM); full-tier analysis beyond C#; community plugin registry (v0.8+); automated release pipeline
 - **Key artifacts:** [ADR-012](../architecture/ADR/adr-012-plugin-architecture-and-monorepo.md); `plugin-discovery.ts`, `language-coverage-check.ts`, `version-command.ts`, `install-command.ts`, `doctor-fix.ts`, `plugin-loader.ts`; 987+ tests across 5 packages
 - **Archive:** [prd-plugin-architecture-and-language-expansion.md](../archive/prd/prd-plugin-architecture-and-language-expansion.md)
+
+### Phase: Go Full-Tier via `ctxo-go-analyzer`
+
+- **Status:** Delivered in v0.8.0-alpha.0
+- **Delivered on:** 2026-04-13
+- **Goal:** Lift `@ctxo/lang-go` from tree-sitter syntax tier to full type-aware semantic analysis — cross-package symbol resolution, `implements`, `extends`, `calls`, `uses` edges, dead-code detection.
+- **Scope delivered:** Standalone Go binary `tools/ctxo-go-analyzer` bundled inside `@ctxo/lang-go` using `go/packages` + `go/types` + `x/tools/go/ssa` + `callgraph/cha`; `GoCompositeAdapter` picks full vs syntax tier at init; reflect-safe dead-code heuristics (reflect.{TypeOf,ValueOf,New} + json.{Marshal,Unmarshal,NewDecoder,NewEncoder}); generic `typeArgs` preserved on edge metadata; lazy binary build into `~/.cache/ctxo/lang-go-analyzer/<sourceHash-goVersion>/`; subdir fallback loader recovers partial results when the module graph has a fatal conflict; integration fixture + 47 tests (6 Go + 41 vitest) + E2E in `packages/cli/tests/e2e/go-full-tier.test.ts`.
+- **Not delivered / deferred:** Prebuilt binary distribution (decided against — Go toolchain assumption acceptable for Go-project users; revisit if telemetry shows friction); RTA-based reachability (swapped for CHA because `rta.Analyze` panics on generic code in current `x/tools`).
+- **Key artifacts:** [ADR-013](../architecture/ADR/adr-013-go-full-tier-via-ctxo-go-analyzer-binary.md); `packages/lang-go/tools/ctxo-go-analyzer/` (7 Go packages); `packages/lang-go/src/analyzer/` (composite + adapter + process + discovery + toolchain + binary-build); `packages/lang-go/src/composite-adapter.ts`.
 
 ### Phase 3: Monorepo Workspace Support
 

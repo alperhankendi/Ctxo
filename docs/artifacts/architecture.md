@@ -102,8 +102,8 @@ _This document builds collaboratively through step-by-step discovery. Sections a
 
 - **Node.js ≥ 20** — required by Chokidar v5 (ESM-only) and OTel --import flag
 - **ts-morph** — TypeScript/JS only; tree-sitter fills the gap for other languages
-- **gopls** (optional, V2) — must be installed for Go deep analysis; graceful degradation to syntax-level
-- **dotnet SDK** (optional, V2) — must be installed for C# deep analysis; graceful degradation to syntax-level
+- **Go toolchain ≥ 1.22** (optional) — must be on PATH for Go full-tier via `ctxo-go-analyzer`; graceful degradation to tree-sitter syntax tier otherwise
+- **dotnet SDK ≥ 8** (optional) — must be on PATH for C# full-tier via `ctxo-roslyn`; graceful degradation to tree-sitter syntax tier otherwise
 - **git** — required; simple-git wraps the system git binary
 
 ### Cross-Cutting Concerns
@@ -304,7 +304,7 @@ type ComplexityMetrics = {
 ```
 
 Adapters lazy-loaded per file extension. Parser failure = skip file + stderr warning.
-Graceful degradation: gopls/Roslyn unavailable → fall back to tree-sitter syntax tier.
+Graceful degradation: `ctxo-go-analyzer` or `ctxo-roslyn` unavailable → fall back to tree-sitter syntax tier.
 
 ### Error Handling Strategy
 
@@ -316,7 +316,7 @@ Warn-and-continue at every boundary:
 | git binary not found | `intent`/`antiPatterns` return `[]`, no crash |
 | `symbols.db` corrupt | Delete and rebuild from JSON index |
 | Symbol not in index | `{ found: false, hint: "run ctxo index to rebuild" }` |
-| gopls/Roslyn not installed | Graceful degradation to tree-sitter syntax tier |
+| ctxo-go-analyzer / Roslyn toolchain missing | Graceful degradation to tree-sitter syntax tier |
 
 ### Infrastructure & Deployment
 
