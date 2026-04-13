@@ -5,7 +5,10 @@ package load
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"golang.org/x/tools/go/packages"
 )
@@ -24,18 +27,39 @@ const Mode = packages.NeedName |
 	packages.NeedTypesSizes |
 	packages.NeedModule
 
+// skippedDirs are filesystem entries we never descend into during subdir
+// fallback. vendor and node_modules avoid double-loading deps; hidden
+// directories tend to be tooling state, not source.
+var skippedDirs = map[string]bool{
+	"vendor":       true,
+	".git":         true,
+	".ctxo":        true,
+	"node_modules": true,
+	"testdata":     true,
+}
+
 // LoadResult bundles the loaded package set with any non-fatal errors so the
 // caller can decide whether to surface them as warnings.
 type LoadResult struct {
 	Packages []*packages.Package
-	// Errors are package-level Errors collected from packages.PrintErrors-style
-	// traversal. Returned for visibility — the loader does not fail the run.
+	// Errors are package-level Errors collected from a Visit traversal.
+	// Returned for visibility — the loader does not fail the run on these.
 	Errors []packages.Error
+	// FatalError is set when packages.Load returned a top-level error (e.g.,
+	// module-graph conflict). The caller may still get partial Packages.
+	FatalError error
+	// FallbackUsed is true when the root pattern failed and per-subdir
+	// recovery was used to gather whatever packages still loaded cleanly.
+	FallbackUsed bool
 }
 
 // Packages loads "./..." rooted at dir. Patterns can override the default
 // for tests that want to scope analysis to a single sub-package.
-func Packages(dir string, patterns ...string) (*LoadResult, error) {
+//
+// Failure mode: returns a LoadResult (possibly with empty Packages) and
+// sets FatalError. The caller should surface the error but continue —
+// degraded analysis beats no analysis when consumers have a flaky module.
+func Packages(dir string, patterns ...string) *LoadResult {
 	if len(patterns) == 0 {
 		patterns = []string{"./..."}
 	}
@@ -54,14 +78,85 @@ func Packages(dir string, patterns ...string) (*LoadResult, error) {
 	}
 
 	pkgs, err := packages.Load(cfg, patterns...)
+	res := &LoadResult{Packages: pkgs}
 	if err != nil {
-		return nil, fmt.Errorf("load: %w", err)
+		res.FatalError = fmt.Errorf("load: %w", err)
 	}
 
-	var errs []packages.Error
 	packages.Visit(pkgs, nil, func(p *packages.Package) {
-		errs = append(errs, p.Errors...)
+		res.Errors = append(res.Errors, p.Errors...)
 	})
+	return res
+}
 
-	return &LoadResult{Packages: pkgs, Errors: errs}, nil
+// PackagesWithFallback tries to load the whole module first; if that yields
+// zero packages (typical when the module graph has a fatal conflict), it
+// walks top-level subdirectories and loads each independently. Subdirs that
+// transitively avoid the conflicting imports still produce full type info.
+func PackagesWithFallback(dir string) *LoadResult {
+	primary := Packages(dir)
+	if len(primary.Packages) > 0 {
+		return primary
+	}
+
+	subdirs := topLevelGoSubdirs(dir)
+	if len(subdirs) == 0 {
+		return primary
+	}
+
+	merged := &LoadResult{
+		FatalError:   primary.FatalError,
+		FallbackUsed: true,
+	}
+	for _, sub := range subdirs {
+		pattern := "./" + filepath.ToSlash(sub) + "/..."
+		subRes := Packages(dir, pattern)
+		if len(subRes.Packages) == 0 {
+			continue
+		}
+		merged.Packages = append(merged.Packages, subRes.Packages...)
+		merged.Errors = append(merged.Errors, subRes.Errors...)
+	}
+	return merged
+}
+
+// topLevelGoSubdirs returns immediate subdirectories of root that contain at
+// least one .go file (recursively). Skips vendor, .git, hidden dirs, etc.
+func topLevelGoSubdirs(root string) []string {
+	entries, err := os.ReadDir(root)
+	if err != nil {
+		return nil
+	}
+	var out []string
+	for _, e := range entries {
+		if !e.IsDir() {
+			continue
+		}
+		name := e.Name()
+		if skippedDirs[name] || strings.HasPrefix(name, ".") {
+			continue
+		}
+		if hasGoFile(filepath.Join(root, name)) {
+			out = append(out, name)
+		}
+	}
+	return out
+}
+
+func hasGoFile(dir string) bool {
+	found := false
+	_ = filepath.WalkDir(dir, func(_ string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return nil
+		}
+		if d.IsDir() && skippedDirs[d.Name()] {
+			return fs.SkipDir
+		}
+		if !d.IsDir() && strings.HasSuffix(d.Name(), ".go") {
+			found = true
+			return fs.SkipAll
+		}
+		return nil
+	})
+	return found
 }

@@ -47,9 +47,9 @@ func (u User) ID() string { return u.Name }
 `,
 	})
 
-	res, err := load.Packages(dir)
-	if err != nil {
-		t.Fatalf("Packages: %v", err)
+	res := load.Packages(dir)
+	if res.FatalError != nil {
+		t.Fatalf("Packages: %v", res.FatalError)
 	}
 	if len(res.Packages) == 0 {
 		t.Fatal("no packages loaded")
@@ -123,9 +123,9 @@ type Box[T any] struct{ v T }
 func (b *Box[T]) Get() T { return b.v }
 `,
 	})
-	res, err := load.Packages(dir)
-	if err != nil {
-		t.Fatal(err)
+	res := load.Packages(dir)
+	if res.FatalError != nil {
+		t.Fatal(res.FatalError)
 	}
 
 	found := false

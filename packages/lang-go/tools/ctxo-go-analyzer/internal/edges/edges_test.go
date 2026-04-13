@@ -81,9 +81,9 @@ func main() { _ = ID[int](1) }
 `,
 	})
 
-	res, err := load.Packages(dir)
-	if err != nil {
-		t.Fatal(err)
+	res := load.Packages(dir)
+	if res.FatalError != nil {
+		t.Fatal(res.FatalError)
 	}
 	ext := NewExtractor(dir, res.Packages)
 
@@ -127,9 +127,9 @@ func main() { _ = strings.ToUpper("hi") }
 
 func extractAllEdges(t *testing.T, dir string) map[string]bool {
 	t.Helper()
-	res, err := load.Packages(dir)
-	if err != nil {
-		t.Fatal(err)
+	res := load.Packages(dir)
+	if res.FatalError != nil {
+		t.Fatal(res.FatalError)
 	}
 	ext := NewExtractor(dir, res.Packages)
 	out := map[string]bool{}

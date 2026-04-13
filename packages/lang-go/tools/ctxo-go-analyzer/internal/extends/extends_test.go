@@ -103,9 +103,9 @@ type Guarded struct {
 
 func extractAll(t *testing.T, dir string) map[string]bool {
 	t.Helper()
-	res, err := load.Packages(dir)
-	if err != nil {
-		t.Fatal(err)
+	res := load.Packages(dir)
+	if res.FatalError != nil {
+		t.Fatal(res.FatalError)
 	}
 	out := map[string]bool{}
 	for _, list := range Extract(dir, res.Packages) {

@@ -119,9 +119,9 @@ func main() {
 
 func analyze(t *testing.T, dir string) *Result {
 	t.Helper()
-	res, err := load.Packages(dir)
-	if err != nil {
-		t.Fatal(err)
+	res := load.Packages(dir)
+	if res.FatalError != nil {
+		t.Fatal(res.FatalError)
 	}
 	return Analyze(dir, res.Packages, 30*time.Second)
 }

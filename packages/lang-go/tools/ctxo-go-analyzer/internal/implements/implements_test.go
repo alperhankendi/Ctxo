@@ -39,9 +39,9 @@ type LoudGreeter interface {
 `,
 	})
 
-	res, err := load.Packages(dir)
-	if err != nil {
-		t.Fatal(err)
+	res := load.Packages(dir)
+	if res.FatalError != nil {
+		t.Fatal(res.FatalError)
 	}
 
 	out := Extract(dir, res.Packages)
@@ -93,9 +93,9 @@ func (i ID) String() string { return string(i) }
 `,
 	})
 
-	res, err := load.Packages(dir)
-	if err != nil {
-		t.Fatal(err)
+	res := load.Packages(dir)
+	if res.FatalError != nil {
+		t.Fatal(res.FatalError)
 	}
 	out := Extract(dir, res.Packages)
 

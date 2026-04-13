@@ -66,9 +66,12 @@ func run(root string, stdout *os.File) error {
 		return err
 	}
 
-	res, err := load.Packages(root)
-	if err != nil {
-		return fmt.Errorf("load packages: %w", err)
+	res := load.PackagesWithFallback(root)
+	if res.FatalError != nil {
+		_ = w.Progress(fmt.Sprintf("module load returned a fatal error (degrading): %v", res.FatalError))
+	}
+	if res.FallbackUsed {
+		_ = w.Progress(fmt.Sprintf("root pattern failed; per-subdir fallback recovered %d packages", len(res.Packages)))
 	}
 	if len(res.Errors) > 0 {
 		_ = w.Progress(fmt.Sprintf("load reported %d package-level errors (continuing)", len(res.Errors)))
