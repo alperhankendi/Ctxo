@@ -2,150 +2,77 @@ name: Release
 
 on:
   push:
-    tags: ['v*']
+    branches: [master]
 
-permissions: {}
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
 
 jobs:
-  ci-check:
-    name: Verify CI passed
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    permissions:
-      contents: read
-      actions: read
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Check CI status for this commit
-        run: |
-          SHA=$(git rev-parse HEAD)
-          echo "Checking CI status for $SHA..."
-
-          for i in $(seq 1 30); do
-            STATUS=$(gh run list --commit "$SHA" --workflow ci.yml --json conclusion --jq '.[0].conclusion // "pending"')
-            echo "Attempt $i: CI status = $STATUS"
-
-            if [ "$STATUS" = "success" ]; then
-              echo "✅ CI passed for $SHA" >> $GITHUB_STEP_SUMMARY
-              exit 0
-            elif [ "$STATUS" = "failure" ]; then
-              echo "❌ CI failed for this commit — aborting release" >> $GITHUB_STEP_SUMMARY
-              exit 1
-            fi
-
-            sleep 10
-          done
-
-          echo "⚠️ CI did not complete in time — aborting release" >> $GITHUB_STEP_SUMMARY
-          exit 1
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   release:
-    name: Release & Publish
+    name: Version & Publish
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: [ci-check]
-    environment:
-      name: npm-production
-      url: https://www.npmjs.com/package/@ctxo/cli
-    permissions:
-      contents: write
-      id-token: write
-      attestations: write
-
+    timeout-minutes: 15
+    # Skip on the bot's own "Version Packages" PR merge commit chain; the action
+    # handles re-runs internally and we don't want an infinite trigger loop.
+    if: github.repository == 'alperhankendi/Ctxo'
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Verify version matches tag
-        id: version
-        run: |
-          TAG_VERSION="${GITHUB_REF_NAME#v}"
-          PKG_VERSION=$(node -p "require('./packages/cli/package.json').version")
-          echo "tag=$TAG_VERSION" >> "$GITHUB_OUTPUT"
-          echo "pkg=$PKG_VERSION" >> "$GITHUB_OUTPUT"
-
-          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
-            echo "❌ Tag $GITHUB_REF_NAME does not match packages/cli/package.json version $PKG_VERSION" >> $GITHUB_STEP_SUMMARY
-            exit 1
-          fi
-          echo "✅ Version $PKG_VERSION matches tag" >> $GITHUB_STEP_SUMMARY
+        with:
+          # Full history so changesets can diff since the last release commit.
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
         with:
           version: 10.9.0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: 22
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile
 
-      - name: Check if already published
-        id: check
-        run: |
-          VERSION="${{ steps.version.outputs.pkg }}"
-          if npm view "@ctxo/cli@${VERSION}" version 2>/dev/null; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-            echo "⚠️ Version ${VERSION} already published — skipping" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Build
-        if: steps.check.outputs.exists == 'false'
+      # Build every package so the npm tarballs carry dist/ and so the pnpm
+      # publish step sees up-to-date workspace:* dependency resolution.
+      - name: Build workspace packages
         run: pnpm -r build
 
-      - name: Test
-        if: steps.check.outputs.exists == 'false'
-        run: pnpm --filter @ctxo/cli test:coverage
-
-      - name: Publish dry-run
-        if: steps.check.outputs.exists == 'false'
-        run: |
-          echo "## Package dry-run" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          pnpm --filter @ctxo/cli publish --dry-run --access public --no-git-checks 2>&1 | tee -a $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-
-      - name: Publish to npm
-        if: steps.check.outputs.exists == 'false'
-        run: pnpm --filter @ctxo/cli publish --access public --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Post-publish verification
-        if: steps.check.outputs.exists == 'false'
-        run: |
-          VERSION="${{ steps.version.outputs.pkg }}"
-          echo "Waiting for npm registry propagation..."
-          sleep 15
-
-          PUBLISHED=$(npm view "@ctxo/cli@${VERSION}" version 2>/dev/null || echo "")
-          if [ "$PUBLISHED" = "$VERSION" ]; then
-            echo "✅ Verified: @ctxo/cli@${VERSION} is live on npm" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "⚠️ Could not verify @ctxo/cli@${VERSION} on npm (may still be propagating)" >> $GITHUB_STEP_SUMMARY
-          fi
-
-      - name: Create GitHub Release
-        if: steps.check.outputs.exists == 'false'
-        uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
+      - name: Create Release Pull Request or Publish
+        id: changesets
+        uses: changesets/action@c2b8420a5a81b34e3a10e77a60e7a72cd7bb9e4c # v1.5.3
         with:
-          generate_release_notes: true
+          # `pnpm release` runs `pnpm -r build && changeset publish` per root
+          # package.json. changesets/action calls this only when no pending
+          # changeset files remain (i.e. after the "Version Packages" PR merge).
+          publish: pnpm release
+          # Title/commit for the bot-opened "Version Packages" PR.
+          title: 'chore(release): version packages'
+          commit: 'chore(release): version packages'
+          # Tag dist-tag for published packages. Override per-package via
+          # .changeset/pre.json if we want a global prerelease channel.
+          # Omitting uses `latest` by default.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # provenance attestation requires id-token: write above.
+          NPM_CONFIG_PROVENANCE: 'true'
 
-      - name: Release Summary
+      - name: Release summary
         if: always()
         run: |
-          echo "## Release ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "## Release run" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Item | Link |" >> $GITHUB_STEP_SUMMARY
-          echo "|------|------|" >> $GITHUB_STEP_SUMMARY
-          echo "| npm | https://www.npmjs.com/package/@ctxo/cli/v/${{ steps.version.outputs.pkg }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| GitHub | ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Provenance | https://www.npmjs.com/package/@ctxo/cli/v/${{ steps.version.outputs.pkg }}?activeTab=provenance |" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.changesets.outputs.published }}" = "true" ]; then
+            echo "✅ Packages published: ${{ steps.changesets.outputs.publishedPackages }}" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ steps.changesets.outputs.hasChangesets }}" = "true" ]; then
+            echo "📝 Version Packages PR opened or updated" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️ No changesets pending; nothing to do" >> $GITHUB_STEP_SUMMARY
+          fi
