@@ -183,4 +183,52 @@ describe('GetContextForTaskHandler', () => {
 
     expect(payload.error).toBe(true);
   });
+
+  it('populates context when reverse edges come from files without exported symbols', () => {
+    // Regression for a bug where a symbol imported only by test/config files
+    // (which have no exported symbols themselves) produced context=[] because
+    // the edge source nodes were missing from symbols[]. BlastRadius now
+    // keeps orphan edge sources and ContextAssembler synthesizes a placeholder
+    // node from the symbolId so they still land in the scored candidate pool.
+    const writer = new JsonIndexWriter(tempDir);
+
+    writer.write({
+      file: 'src/target.ts',
+      lastModified: 1,
+      symbols: [{ symbolId: 'src/target.ts::WellConnected::class', name: 'WellConnected', kind: 'class', startLine: 0, endLine: 50 }],
+      edges: [],
+      intent: [],
+      antiPatterns: [],
+    });
+
+    // Three spec files that only import WellConnected — each ships an edge
+    // whose `from` is a synthetic file-module symbolId that never lands in any
+    // symbols[] array. Exactly the ts-morph shape that caused the original bug.
+    for (const n of [1, 2, 3]) {
+      writer.write({
+        file: `tests/spec${n}.ts`,
+        lastModified: 1,
+        symbols: [],
+        edges: [
+          {
+            from: `tests/spec${n}.ts::spec${n}::variable`,
+            to: 'src/target.ts::WellConnected::class',
+            kind: 'imports',
+          },
+        ],
+        intent: [],
+        antiPatterns: [],
+      });
+    }
+
+    const handler = handleGetContextForTask(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = handler({ symbolId: 'src/target.ts::WellConnected::class', taskType: 'understand' });
+    const payload = JSON.parse(result.content[result.content.length - 1]!.text);
+
+    expect(payload.target.name).toBe('WellConnected');
+    expect(payload.context.length).toBeGreaterThan(0);
+    expect(payload.totalTokens).toBeGreaterThan(0);
+    const specEntries = payload.context.filter((c: { file: string }) => c.file.startsWith('tests/spec'));
+    expect(specEntries.length).toBeGreaterThanOrEqual(1);
+  });
 });

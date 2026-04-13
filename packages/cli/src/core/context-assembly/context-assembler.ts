@@ -76,9 +76,12 @@ export class ContextAssembler {
       }
     }
 
-    // Reverse dependents (blast radius)
+    // Reverse dependents (blast radius) — fall back to a synthetic node when
+    // the edge source has no matching symbols[] entry (e.g. test files that
+    // only import). Without this, symbols whose importers are all such files
+    // would produce an empty context even when reverse edges clearly exist.
     for (const entry of blastResult.impactedSymbols) {
-      const node = graph.getNode(entry.symbolId);
+      const node = graph.getNode(entry.symbolId) ?? synthesizeNodeFromId(entry.symbolId);
       if (!node) continue;
 
       const existing = candidateMap.get(entry.symbolId);
@@ -260,4 +263,23 @@ interface Signals {
   isDependent: boolean;
   complexity: number;
   hasAntiPattern: boolean;
+}
+
+const VALID_SYMBOL_KINDS = new Set<SymbolKind>([
+  'function', 'class', 'interface', 'method', 'variable', 'type',
+]);
+
+/**
+ * Build a minimal SymbolNode from a symbolId string. Used when a blast-radius
+ * entry points at an orphan edge source (no matching symbols[] entry in the
+ * index). startLine/endLine are 0 so token estimation falls back to a small
+ * default without over-counting missing source ranges.
+ */
+function synthesizeNodeFromId(symbolId: string): SymbolNode | undefined {
+  const parts = symbolId.split('::');
+  if (parts.length !== 3) return undefined;
+  const [file, name, kindRaw] = parts;
+  if (!file || !name || !kindRaw) return undefined;
+  const kind = VALID_SYMBOL_KINDS.has(kindRaw as SymbolKind) ? (kindRaw as SymbolKind) : 'variable';
+  return { symbolId, name, kind, startLine: 0, endLine: 0 };
 }

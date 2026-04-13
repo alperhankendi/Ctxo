@@ -75,7 +75,10 @@ export class BlastRadiusCalculator {
 
       for (const [nodeId, info] of bestByNode) {
         visited.add(nodeId);
-        if (!graph.hasNode(nodeId)) continue;
+        // Keep orphan edge sources (common for test/config files that only
+        // import — ts-morph writes their synthetic "file-module" symbolId to
+        // the edge's `from` but never to the file's symbols[] array). BFS
+        // into an orphan terminates naturally since getReverseEdges returns [].
 
         const depth = current.depth + 1;
         const riskScore = 1 / Math.pow(depth, 0.7);
