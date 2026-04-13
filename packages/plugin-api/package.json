@@ -1,6 +1,6 @@
 {
   "name": "@ctxo/plugin-api",
-  "version": "0.7.0-alpha.1",
+  "version": "0.7.0",
   "description": "Plugin protocol contracts for Ctxo language plugins",
   "type": "module",
   "engines": {

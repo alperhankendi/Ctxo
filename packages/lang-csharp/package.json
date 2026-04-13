@@ -1,6 +1,6 @@
 {
   "name": "@ctxo/lang-csharp",
-  "version": "0.7.0-alpha.0",
+  "version": "0.7.0",
   "description": "Ctxo C# language plugin (Roslyn full tier, tree-sitter syntax fallback)",
   "type": "module",
   "engines": {
@@ -43,7 +43,7 @@
     "tree-sitter-c-sharp": "^0.23.1"
   },
   "peerDependencies": {
-    "@ctxo/plugin-api": "^0.7.0-alpha.0"
+    "@ctxo/plugin-api": "^0.7.0"
   },
   "devDependencies": {
     "@ctxo/plugin-api": "workspace:*",
