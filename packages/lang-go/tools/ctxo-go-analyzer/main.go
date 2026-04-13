@@ -1,10 +1,10 @@
 // ctxo-go-analyzer is the full-tier Go analysis binary bundled inside the
-// @ctxo/lang-go npm package. It accepts a module root on stdin/argv, uses
-// go/packages + go/types + x/tools/go/ssa + callgraph/rta to produce
-// semantic symbols and edges, and emits JSONL on stdout.
+// @ctxo/lang-go npm package. It loads a module via golang.org/x/tools/go/packages,
+// walks ASTs with full type info, and emits JSONL describing symbols, edges,
+// and reachability on stdout.
 //
-// This file currently implements the skeleton and argv plumbing. Successive
-// commits fill in loader, symbols, edges, and reachability phases.
+// The TypeScript composite adapter in packages/lang-go/src/analyzer/ spawns
+// this binary in batch mode per index run.
 package main
 
 import (
@@ -14,6 +14,8 @@ import (
 	"time"
 
 	"github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/emit"
+	"github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/load"
+	"github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/symbols"
 )
 
 const version = "0.8.0-alpha.0"
@@ -43,14 +45,32 @@ func run(root string, stdout *os.File) error {
 	w := emit.NewWriter(stdout)
 	start := time.Now()
 
-	if err := w.Progress(fmt.Sprintf("analyzer v%s starting on %s", version, root)); err != nil {
+	if err := w.Progress(fmt.Sprintf("analyzer v%s loading %s", version, root)); err != nil {
 		return err
 	}
 
-	// Loader, symbol extraction, edge extraction, and reachability phases
-	// land in subsequent commits. Skeleton emits a summary only so the
-	// TypeScript spawn path can be exercised end-to-end today.
+	res, err := load.Packages(root)
+	if err != nil {
+		return fmt.Errorf("load packages: %w", err)
+	}
+
+	if len(res.Errors) > 0 {
+		// Non-fatal — surface as progress so the TS side can log.
+		_ = w.Progress(fmt.Sprintf("load reported %d package-level errors (continuing)", len(res.Errors)))
+	}
+
 	totalFiles := 0
+	for _, pkg := range res.Packages {
+		for _, fs := range symbols.Extract(pkg, root) {
+			if err := w.File(emit.FileRecord{
+				File:    fs.RelPath,
+				Symbols: fs.Symbols,
+			}); err != nil {
+				return err
+			}
+			totalFiles++
+		}
+	}
 
 	return w.Summary(emit.Summary{
 		TotalFiles: totalFiles,
