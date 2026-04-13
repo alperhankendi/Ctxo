@@ -32,6 +32,11 @@ This folder contains historical documents that are preserved for traceability bu
 | [prd/prd-phase1-search-quality.md](prd/prd-phase1-search-quality.md) | `docs/artifacts/` | Phase PRD | Consolidated into [prd.md "Phase 1: Search Quality Upgrade"](../artifacts/prd.md#phase-1-search-quality-upgrade) on 2026-04-13 |
 | [prd/prd-plugin-architecture-and-language-expansion.md](prd/prd-plugin-architecture-and-language-expansion.md) | `docs/artifacts/` | Phase PRD | Consolidated into [prd.md "Phase 2: Plugin Architecture & Language Expansion"](../artifacts/prd.md#phase-2-plugin-architecture--language-expansion) on 2026-04-13 |
 | [prd/prd-monorepo-workspace-support.md](prd/prd-monorepo-workspace-support.md) | `docs/artifacts/` | Phase PRD (deferred) | Consolidated into [prd.md "Phase 3: Monorepo Workspace Support"](../artifacts/prd.md#phase-3-monorepo-workspace-support) on 2026-04-13 |
+| [todo/visibility-todo.md](todo/visibility-todo.md) | `docs/todo-visibility.md` | TODO list | Merged into [roadmap.md § Visibility & ecosystem](../roadmap.md#visibility--ecosystem-marketing--outreach) on 2026-04-13 |
+
+## Note: `todo.md` (root, gitignored)
+
+The root-level `todo.md` scratch pad was never tracked (see `.gitignore` line 47, commit `6b029ee`). Its content (competitive analysis + Phase 1-5 implementation plan) was consolidated into [roadmap.md](../roadmap.md) on 2026-04-13. The local file remains on disk as an ephemeral scratch and is not part of this archive.
 
 ## Rules
 

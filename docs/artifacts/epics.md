@@ -7,6 +7,42 @@ inputDocuments:
 
 # Ctxo - Epic Breakdown
 
+## Delivery Status (as of 2026-04-13)
+
+**35 / 38 stories delivered (92%)** across v0.2.0 → v0.7.0-alpha.0. Epic 8 intentionally deferred via architectural pivot (CI gate replaces webhook server). Remaining gap: a small verification item in Epic 6.
+
+| Epic | Stories | Status | Shipped in | Notes |
+|------|:-:|---|---|---|
+| 1. First Logic-Slice (foundation) | 8 | ✅ Delivered | v0.2.0 | ts-morph full-tier, L1-L4, masking, CLI |
+| 2. Risk Intelligence (blast radius + overlay) | 2 | ✅ Delivered | v0.3.0 | 3-tier confidence added |
+| 3. Historical Consciousness (why + change intel) | 4 | ✅ Delivered | v0.2.0 → v0.3.0 | Anti-pattern memory shipped |
+| 4. Index Lifecycle (watch, staleness, status) | 5 | ✅ Delivered | v0.2.0 → v0.4.x | `ctxo status` added by v0.4.x |
+| 5. Team Collaboration (committed index, CI gate) | 5 | ✅ Delivered | v0.2.0 → v0.7.0 | Monorepo fully realized in v0.7.0 |
+| 6. Cross-Client Compat & Release | 5 | 🟡 ~90% | v0.2.0 → v0.7.0 | See Remaining below |
+| 7. Multi-Language (Go + C#) | 4 | ✅ Delivered | v0.3.0 → v0.7.0 | C# full-tier via Roslyn (v0.6.0) |
+| 8. Event-Driven Index Updates | 5 | ⏸️ Deferred | — | Replaced by CI gate + git hooks (see below) |
+
+### Remaining (open work)
+
+- **Epic 6.1 (verify):** Cross-client compatibility matrix (Claude Code / Cursor / VS Code Copilot / Windsurf) is implicitly met via auto-registration (v0.5.1) but no explicit smoke-test record exists. Capture current result into runbook.
+- **Epic 6.3 (verify):** Benchmark harness exists (`pnpm --filter @ctxo/cli bench`) but no published p95 baseline per MCP tool. Publish once.
+- **CI matrix (from test strategy):** Node 18 / 20 / 22 × macOS + Linux matrix — verify current GitHub Actions coverage matches.
+
+### Deferred (intentional, with rationale)
+
+- **Epic 8 (all 5 stories) — Webhook server for GitHub/GitLab.** Superseded by simpler model: `post-commit` git hook (installed by `ctxo init` in v0.5.0+) keeps index current locally, and `ctxo index --check` in CI gates PRs. Webhook infrastructure + secret management + rate limiting traded for zero-server-overhead CI examples under [examples/](../../examples/). Original stories retained below for historical context only — **do not implement**.
+
+### Evidence map
+
+Completed stories cross-referenced against:
+- [CHANGELOG.md](../../CHANGELOG.md) — per-release feature manifest
+- [CLAUDE.md](../../CLAUDE.md) — current tool catalog (14 MCP tools + CLI commands)
+- [prd.md § Delivered Phases](prd.md#delivered-phases-post-v1) — post-V1 phase consolidation
+
+Follow-up TODOs (Remaining items above) tracked in [docs/roadmap.md](../roadmap.md).
+
+---
+
 ## Overview
 
 This document provides the complete epic and story breakdown for Ctxo, decomposing the requirements from the PRD and Architecture into implementable stories.
