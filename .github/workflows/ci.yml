@@ -157,13 +157,17 @@ jobs:
           path: packages/cli/dist/
           retention-days: 1
 
-      - name: Pack dry-run
+      - name: Pack dry-run (all publishable packages)
         run: |
           echo "## Package Contents" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          pnpm --filter @ctxo/cli pack --dry-run 2>&1 | tee -a $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          for pkg in @ctxo/plugin-api @ctxo/cli @ctxo/lang-typescript @ctxo/lang-go @ctxo/lang-csharp; do
+            echo "### $pkg" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            pnpm --filter "$pkg" pack --dry-run 2>&1 | grep -E "^npm notice" | tee -a $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          done
 
   e2e-tests:
     name: E2E Tests

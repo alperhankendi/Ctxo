@@ -3,6 +3,10 @@ name: Release
 on:
   push:
     branches: [master]
+  # Allow maintainers to trigger a release run manually from the Actions tab
+  # when needed (e.g. recovering from a failed auto-run or cutting a release
+  # without a merged Version Packages PR).
+  workflow_dispatch: {}
 
 concurrency:
   group: release-${{ github.ref }}
@@ -55,6 +59,9 @@ jobs:
           # Title/commit for the bot-opened "Version Packages" PR.
           title: 'chore(release): version packages'
           commit: 'chore(release): version packages'
+          # Create a GitHub Release per published package with notes drawn
+          # from its CHANGELOG entry. Landing page auto-updates via pages.yml.
+          createGithubReleases: true
           # Tag dist-tag for published packages. Override per-package via
           # .changeset/pre.json if we want a global prerelease channel.
           # Omitting uses `latest` by default.
