@@ -24,8 +24,11 @@ import (
 	"github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/extends"
 	"github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/implements"
 	"github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/load"
+	"github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/reach"
 	"github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/symbols"
 )
+
+const reachDeadline = 60 * time.Second
 
 const version = "0.8.0-alpha.0"
 
@@ -122,10 +125,43 @@ func run(root string, stdout *os.File) error {
 		}
 	}
 
+	reachRes := reach.Analyze(root, res.Packages, reachDeadline)
+	deadIDs := collectDead(byFile, reachRes.Reachable)
+	if err := w.Dead(emit.Dead{
+		SymbolIDs: deadIDs,
+		HasMain:   reachRes.HasMain,
+		Timeout:   reachRes.Timeout,
+	}); err != nil {
+		return err
+	}
+	if reachRes.Timeout {
+		_ = w.Progress("reachability analysis exceeded deadline; dead-code precision degraded")
+	}
+
 	return w.Summary(emit.Summary{
 		TotalFiles: len(paths),
 		Elapsed:    time.Since(start).String(),
 	})
+}
+
+// collectDead walks every function/method symbol across the module and
+// returns the subset not present in the reachable set. Non-callable kinds
+// (type/variable/class/interface) are excluded — CHA gives us liveness for
+// callable symbols only.
+func collectDead(byFile map[string]*fileAggregate, reachable map[string]bool) []string {
+	var dead []string
+	for _, agg := range byFile {
+		for _, s := range agg.symbols {
+			if s.Kind != "function" && s.Kind != "method" {
+				continue
+			}
+			if !reachable[s.SymbolID] {
+				dead = append(dead, s.SymbolID)
+			}
+		}
+	}
+	sort.Strings(dead)
+	return dead
 }
 
 func relativeFile(pkg *packages.Package, file *ast.File, root string) string {

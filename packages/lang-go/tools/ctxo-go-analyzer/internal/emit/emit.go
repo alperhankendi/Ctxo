@@ -82,6 +82,17 @@ type Progress struct {
 	Message string `json:"message"`
 }
 
+// Dead is emitted once per run, listing function/method symbol ids that are
+// not reachable from the module's entry points. HasMain=false means library
+// mode (reachability approximated via exported API). Timeout=true means the
+// reach analysis exceeded its deadline and dead-code precision is degraded.
+type Dead struct {
+	Type      string   `json:"type"`
+	SymbolIDs []string `json:"symbolIds"`
+	HasMain   bool     `json:"hasMain"`
+	Timeout   bool     `json:"timeout,omitempty"`
+}
+
 // Writer serializes records to JSONL. Writes are serialized internally so a
 // single Writer is safe to share across goroutines.
 type Writer struct {
@@ -118,6 +129,15 @@ func (w *Writer) Project(rec ProjectRecord) error {
 	}
 	if rec.Edges == nil {
 		rec.Edges = []ProjectEdge{}
+	}
+	return w.writeJSON(rec)
+}
+
+// Dead emits the unreachable-symbols record.
+func (w *Writer) Dead(rec Dead) error {
+	rec.Type = "dead"
+	if rec.SymbolIDs == nil {
+		rec.SymbolIDs = []string{}
 	}
 	return w.writeJSON(rec)
 }
