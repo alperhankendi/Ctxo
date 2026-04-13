@@ -324,30 +324,23 @@ try {
 - Valid symbol kinds: `function | class | interface | method | variable | type`
 - Valid edge kinds: `imports | calls | extends | implements | uses`
 
-## TODO
+## Roadmap & TODO
 
-### Completed
-- [x] C# full-tier: Roslyn Compiler API standalone .NET app (shipped v0.6.0) — [ADR-007](docs/artifacts/adr-007-csharp-roslyn-lsp.md)
-- [x] Epic 8: Index freshness automation — architectural pivot from webhook listener to CI gate. Delivered drop-in GitHub Actions / GitLab CI examples running `ctxo index --check`; webhook server scrapped as overkill. See [docs/artifacts/epics.md](docs/artifacts/epics.md) Epic 8 note.
-- [x] Phase A plugin architecture migration (pnpm monorepo, plugin protocol v1, TS/Go/C# extraction to `@ctxo/lang-*`, language detection, `ctxo install`, `ctxo doctor --fix`, `ctxo version`) — [ADR-012](docs/architecture/ADR/adr-012-plugin-architecture-and-monorepo.md)
-
-### Remaining
-- [ ] Go full-tier: gopls MCP composition (type-aware, cross-package)
-- [ ] Streamable HTTP transport (for remote/cloud MCP usage)
-- [ ] Performance benchmarks (p95 latency, startup time, index build time)
+Open work and deferred/rejected decisions live in **[docs/roadmap.md](docs/roadmap.md)** (single source of truth). Shipped work is in [CHANGELOG.md](CHANGELOG.md) and [docs/artifacts/prd.md § Delivered Phases](docs/artifacts/prd.md#delivered-phases-post-v1). Per-story delivery status: [docs/artifacts/epics.md § Delivery Status](docs/artifacts/epics.md#delivery-status-as-of-2026-04-13).
 
 ## Documentation
 
+Start at **[docs/index.md](docs/index.md)** — single entry point listing all active docs. Historical content (walkthroughs, old validation results, BMad sessions, consolidated phase PRDs) is preserved in [docs/archive/](docs/archive/README.md).
+
+Frequently needed:
 - [Project Idea](docs/Project-Idea.md) — vision and feature overview
-- [Product Brief](docs/artifacts/product-brief-Ctxo.md) — detailed product brief
-- [PRD](docs/artifacts/prd.md) — full product requirements
-- [Architecture](docs/artifacts/architecture.md) — architecture decisions and structure
-- [Epics](docs/artifacts/epics.md) — implementation epics breakdown
-- [V1 Walkthrough](docs/walkthrough-v1.md) — V1 implementation log
-- [V1.1 Walkthrough](docs/walkthrough-v1.1.md) — V1.1 features: cross-file resolution, Go/C#, 3-tier blast radius
+- [PRD](docs/artifacts/prd.md) — product requirements + delivered phases
+- [Roadmap](docs/roadmap.md) — open work, deferred, rejected
+- [Architecture](docs/artifacts/architecture.md) — hexagonal layout + tech stack
+- [Epics](docs/artifacts/epics.md) — 8 epics × 38 stories + delivery status
 - [Agentic AI Integration](docs/agentic-ai-integration.md) — Claude Agent SDK, OpenAI Agents SDK, LangChain, raw MCP client usage
-- [Changelog](CHANGELOG.md) — version history (v0.2.0, v0.3.0)
-- [Validation Runbook](docs/runbook/mcp-validation/mcp-validation.md) — 86-check end-to-end validation
+- [Changelog](CHANGELOG.md) — version history
+- [MCP Validation Runbook](docs/runbook/mcp-validation/mcp-validation.md) — end-to-end validation
 - [llms.txt](llms.txt) / [llms-full.txt](llms-full.txt) — LLM-friendly project documentation
 
 <!-- ctxo-rules-start -->

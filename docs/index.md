@@ -1,27 +1,47 @@
 # Documentation Index
 
-## Files
+> Start here. This index lists only active documents — historical content lives in [archive/](./archive/README.md).
 
-* **[Project-Idea.md](./Project-Idea.md)** - Original vision and core features for Ctxo MCP server
-* **[walkthrough-v1.md](./walkthrough-v1.md)** - V1 implementation log (Phases 1-10, 354 tests)
-* **[walkthrough-v1.1.md](./walkthrough-v1.1.md)** - V1.1 feature development: multi-file resolution, tree-sitter Go/C#, 3-tier blast radius
-* **[research-needed.md](./research-needed.md)** - LSP integration and AST research analysis
+## Start here
 
-## Subdirectories
+- **[Project-Idea.md](./Project-Idea.md)** — vision and core features
+- **[artifacts/product-brief-Ctxo.md](./artifacts/product-brief-Ctxo.md)** — executive product brief
+- **[artifacts/prd.md](./artifacts/prd.md)** — product requirements (V1 + delivered phases)
+- **[roadmap.md](./roadmap.md)** — single source of truth for open work (Active / Deferred / Rejected / Visibility)
 
-### artifacts/
+## Planning & design
 
-* **[architecture.md](./artifacts/architecture.md)** - Architecture decision document with technical design choices
-* **[epics.md](./artifacts/epics.md)** - Epic and user story breakdown from PRD and architecture
-* **[prd.md](./artifacts/prd.md)** - Product requirements document for Ctxo
-* **[product-brief-Ctxo.md](./artifacts/product-brief-Ctxo.md)** - Executive product brief with context problem framing
-* **[technical-ctxo-core-stack-research-2026-03-28.md](./artifacts/technical-ctxo-core-stack-research-2026-03-28.md)** - Technical research on AST parsers, MCP SDK, and dependency graphs
+- **[artifacts/epics.md](./artifacts/epics.md)** — 8 epics × 38 stories + delivery status (as of 2026-04-13)
+- **[artifacts/architecture.md](./artifacts/architecture.md)** — hexagonal architecture + tech stack
+- **[architecture/ADR/](./architecture/ADR/)** — 6 architecture decision records (immutable)
 
-### bmad-conversation-sessions/
+## Conventions
 
-* **[bmad-agent-architect-session.md](./bmad-conversation-sessions/bmad-agent-architect-session.md)** - Architecture workflow and epics/stories creation session
-* **[bmad-create-prd-session.md](./bmad-conversation-sessions/bmad-create-prd-session.md)** - Full 12-step PRD creation workflow session
-* **[brainstorming-session-2026-03-28-1400.md](./bmad-conversation-sessions/brainstorming-session-2026-03-28-1400.md)** - Brainstorming session with 111 ideas across three techniques
-* **[product-brief-session.md](./bmad-conversation-sessions/product-brief-session.md)** - Product brief creation and review panel findings
-* **[session-log-architecture-2026-03-28.md](./bmad-conversation-sessions/session-log-architecture-2026-03-28.md)** - Architecture decisions, tech stack, and project structure
+- **[conventions/anti-patterns.md](./conventions/anti-patterns.md)** — forbidden patterns
+- **[conventions/software-design.md](./conventions/software-design.md)** — SD-001 to SD-008 design rules
+- **[conventions/standard-patterns.md](./conventions/standard-patterns.md)** — SP-001 (Zod), SP-002 (Discriminated Unions)
+- **[conventions/testing.md](./conventions/testing.md)** — TS-001 to TS-014 test rules
+- **[conventions/review-feedback-checks.md](./conventions/review-feedback-checks.md)** — CodeRabbit feedback patterns
 
+## Product & ecosystem
+
+- **[branding.md](./branding.md)** — brand palette + visual guide
+- **[plugins.md](./plugins.md)** — official plugins and community plugin template
+- **[agentic-ai-integration.md](./agentic-ai-integration.md)** — Claude Agent SDK / OpenAI Agents SDK / LangChain / raw MCP usage
+
+## Runbooks
+
+- **[runbook/cli-validation/cli-validation.md](./runbook/cli-validation/cli-validation.md)** — full CLI validation runbook
+- **[runbook/cli-validation/validation-result-v3.md](./runbook/cli-validation/validation-result-v3.md)** — latest CLI validation result
+- **[runbook/mcp-validation/mcp-validation.md](./runbook/mcp-validation/mcp-validation.md)** — full MCP validation runbook
+- **[runbook/mcp-validation/validation-result-v14.md](./runbook/mcp-validation/validation-result-v14.md)** — latest MCP validation result
+- **[runbook/mcp-validation/test-sessions/](./runbook/mcp-validation/test-sessions/)** — append-only MCP session logs
+- **[runbook/real-world-validation/real-world-validation.md](./runbook/real-world-validation/real-world-validation.md)** — open-source project validation procedure
+
+## Research (active)
+
+- **[research-needed.md](./research-needed.md)** — LSP integration and AST research (open questions)
+
+## Archive
+
+- **[archive/README.md](./archive/README.md)** — traceability index for all historical documents (walkthroughs, old validation results, BMad sessions, consolidated phase PRDs, consolidated TODOs)
