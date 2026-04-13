@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "3c6afc35982ceee5511850dc5aa5367703c6a4525d10b1a1b01780011022b34f",
+  "contentHash": "a3c40d478896147fa2d3b509bf26600580e3cb87e68a02830161cd75c4e2d252",
   "edges": [
     {
       "from": "packages/cli/src/cli/__tests__/ai-rules.test.ts::ai-rules.test::variable",
@@ -47,6 +47,12 @@
   "file": "packages/cli/src/cli/__tests__/ai-rules.test.ts",
   "intent": [
     {
+      "date": "2026-04-14T00:09:00+03:00",
+      "hash": "6cd9f99085f9b5f1f71eb1d54a2baa953d18449c",
+      "kind": "commit",
+      "message": "feat(init): include commented index.ignore/ignoreProjects in generated config.yaml"
+    },
+    {
       "date": "2026-04-13T02:49:34+03:00",
       "hash": "d1b4329ed3b1df55acc21898505331c33407be12",
       "kind": "commit",
@@ -65,6 +71,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776040427,
+  "lastModified": 1776115134,
   "symbols": []
 }

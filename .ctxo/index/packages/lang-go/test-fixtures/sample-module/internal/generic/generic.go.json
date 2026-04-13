@@ -1,0 +1,67 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/generic/generic.go::New::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/generic/generic.go::List[T].Add::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/generic/generic.go::List[T].Len::method"
+    }
+  ],
+  "contentHash": "2c1efa836644fc4394b43aa0d668ed7026af1bc86018e1091f20af2fc6d8dcd5",
+  "edges": [],
+  "file": "packages/lang-go/test-fixtures/sample-module/internal/generic/generic.go",
+  "intent": [
+    {
+      "date": "2026-04-13T22:15:35+03:00",
+      "hash": "136fd2a448c02c8f252458548c73c0efeca12b2c",
+      "kind": "commit",
+      "message": "test(lang-go): integration fixture sample-module exercising every analyzer feature"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 7,
+      "endOffset": 271,
+      "kind": "class",
+      "name": "List",
+      "startLine": 5,
+      "startOffset": 238,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/generic/generic.go::List::class"
+    },
+    {
+      "endLine": 11,
+      "endOffset": 322,
+      "kind": "function",
+      "name": "New",
+      "startLine": 9,
+      "startOffset": 273,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/generic/generic.go::New::function"
+    },
+    {
+      "endLine": 15,
+      "endOffset": 384,
+      "kind": "method",
+      "name": "List[T].Add",
+      "startLine": 13,
+      "startOffset": 324,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/generic/generic.go::List[T].Add::method"
+    },
+    {
+      "endLine": 19,
+      "endOffset": 438,
+      "kind": "method",
+      "name": "List[T].Len",
+      "startLine": 17,
+      "startOffset": 386,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/generic/generic.go::List[T].Len::method"
+    }
+  ]
+}

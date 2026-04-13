@@ -1,0 +1,124 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::TestStructEmbedding::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::TestInterfaceEmbedding::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::TestSkipStdlibEmbedding::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::extractAll::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::writeFixture::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::contains::function"
+    }
+  ],
+  "contentHash": "fe31e815f72f1c849bd2c1692e593c138547558807cf3d0267331b45176a3cd6",
+  "edges": [
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::TestStructEmbedding::function",
+      "kind": "imports",
+      "to": "os::os::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::TestStructEmbedding::function",
+      "kind": "imports",
+      "to": "path/filepath::filepath::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::TestStructEmbedding::function",
+      "kind": "imports",
+      "to": "testing::testing::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::TestStructEmbedding::function",
+      "kind": "imports",
+      "to": "github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/load::load::variable"
+    }
+  ],
+  "file": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go",
+  "intent": [
+    {
+      "date": "2026-04-13T22:58:19+03:00",
+      "hash": "259c43751565ab18e791fdde6aa2abfd5231a712",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): subdir resilience for module-graph conflicts"
+    },
+    {
+      "date": "2026-04-13T21:54:16+03:00",
+      "hash": "33f7b71bce01b2a2e897dc21ddf097f4418114c5",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): extends edges for struct + interface embedding"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 51,
+      "endOffset": 981,
+      "kind": "function",
+      "name": "TestStructEmbedding",
+      "startLine": 10,
+      "startOffset": 144,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::TestStructEmbedding::function"
+    },
+    {
+      "endLine": 79,
+      "endOffset": 1582,
+      "kind": "function",
+      "name": "TestInterfaceEmbedding",
+      "startLine": 53,
+      "startOffset": 985,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::TestInterfaceEmbedding::function"
+    },
+    {
+      "endLine": 99,
+      "endOffset": 1988,
+      "kind": "function",
+      "name": "TestSkipStdlibEmbedding",
+      "startLine": 81,
+      "startOffset": 1586,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::TestSkipStdlibEmbedding::function"
+    },
+    {
+      "endLine": 116,
+      "endOffset": 2355,
+      "kind": "function",
+      "name": "extractAll",
+      "startLine": 103,
+      "startOffset": 2012,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::extractAll::function"
+    },
+    {
+      "endLine": 131,
+      "endOffset": 2725,
+      "kind": "function",
+      "name": "writeFixture",
+      "startLine": 118,
+      "startOffset": 2359,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::writeFixture::function"
+    },
+    {
+      "endLine": 140,
+      "endOffset": 2880,
+      "kind": "function",
+      "name": "contains",
+      "startLine": 133,
+      "startOffset": 2729,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::contains::function"
+    }
+  ]
+}

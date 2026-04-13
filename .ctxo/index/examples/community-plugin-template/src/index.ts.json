@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "b4b2b0bbd4ec70e61917962320d287ae6041636a19e17826e655f9bc82fe3479",
+  "edges": [
+    {
+      "from": "examples/community-plugin-template/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "examples/community-plugin-template/src/adapter.ts::ExampleAdapter::class"
+    }
+  ],
+  "file": "examples/community-plugin-template/src/index.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T03:56:15+03:00",
+      "hash": "019fc189d482fd99e1cbd0c17654341f13620c5b",
+      "kind": "commit",
+      "message": "feat(community): plugin template scaffold (Phase C Step 37)"
+    }
+  ],
+  "lastModified": 1776115133,
+  "symbols": []
+}

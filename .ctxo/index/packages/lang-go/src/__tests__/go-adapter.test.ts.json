@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "7e70f35dffb750e0a5a5514d5730808148479876bfc26bee50b9d742995a6629",
+  "contentHash": "73150e7c5bd9576c2e961f0c487a15e709fa33901e91f3b52346df4faf19f82b",
   "edges": [
     {
       "from": "packages/lang-go/src/__tests__/go-adapter.test.ts::go-adapter.test::variable",
@@ -12,12 +12,18 @@
   "file": "packages/lang-go/src/__tests__/go-adapter.test.ts",
   "intent": [
     {
+      "date": "2026-04-13T23:00:48+03:00",
+      "hash": "3918762bd41d32d2cc41c2fde79c9f506846ab75",
+      "kind": "commit",
+      "message": "test(lang-go): vitest specs for TS analyzer layer + update for unexported symbols"
+    },
+    {
       "date": "2026-04-13T01:52:29+03:00",
       "hash": "00cff73ddde2917c6dca764478fd0747633c1032",
       "kind": "commit",
       "message": "feat(lang-go): extract Go adapter as @ctxo/lang-go plugin"
     }
   ],
-  "lastModified": 1776040428,
+  "lastModified": 1776115134,
   "symbols": []
 }

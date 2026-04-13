@@ -1,0 +1,396 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.isSupported::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.isReady::method"
+    },
+    {
+      "cyclomatic": 9,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.initialize::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.getDeadSymbolIds::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.reachabilityHasMain::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.reachabilityTimedOut::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.extractSymbols::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.extractEdges::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.extractComplexity::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.dispose::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.ensureBatch::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.runBatch::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.absorbBatch::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.normalizePath::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.buildPathRewriter::method"
+    }
+  ],
+  "contentHash": "835f517126b8519ac8a4b0957025456741c265c9484292240997f13b5c9ed745",
+  "edges": [
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-go/src/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-go/src/analyzer/toolchain-detect.ts::detectGoToolchain::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-go/src/analyzer/module-discovery.ts::discoverGoModule::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-go/src/analyzer/module-discovery.ts::findCtxoGoAnalyzerSource::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-go/src/analyzer/binary-build.ts::ensureAnalyzerBinary::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-go/src/analyzer/analyzer-process.ts::runBatchAnalyze::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-go/src/analyzer/analyzer-process.ts::AnalyzerFileResult::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-go/src/analyzer/analyzer-process.ts::AnalyzerBatchResult::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class",
+      "kind": "implements",
+      "to": "/packages/lang-go/src/analyzer/analyzer-adapter.ts::ILanguageAdapter::interface"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.initialize::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/toolchain-detect.ts::detectGoToolchain::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.initialize::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/module-discovery.ts::discoverGoModule::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.initialize::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/module-discovery.ts::findCtxoGoAnalyzerSource::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.initialize::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/binary-build.ts::ensureAnalyzerBinary::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.isReady::method"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.ensureBatch::method"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.normalizePath::method"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.isReady::method"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.ensureBatch::method"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.normalizePath::method"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.ensureBatch::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.runBatch::method"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.runBatch::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/analyzer-process.ts::runBatchAnalyze::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.runBatch::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.absorbBatch::method"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.absorbBatch::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.buildPathRewriter::method"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.absorbBatch::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/analyzer-adapter.ts::rewriteId::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.absorbBatch::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/analyzer-adapter.ts::rewriteId::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.absorbBatch::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/analyzer-adapter.ts::rewriteIdAcrossModule::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.absorbBatch::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/analyzer-adapter.ts::rewriteIdAcrossModule::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-go/src/analyzer/analyzer-process.ts::AnalyzerFileResult::interface"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-go/src/analyzer/toolchain-detect.ts::detectGoToolchain::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-go/src/analyzer/module-discovery.ts::discoverGoModule::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-go/src/analyzer/module-discovery.ts::findCtxoGoAnalyzerSource::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-go/src/analyzer/binary-build.ts::ensureAnalyzerBinary::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-go/src/analyzer/analyzer-process.ts::runBatchAnalyze::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-go/src/analyzer/analyzer-process.ts::AnalyzerBatchResult::interface"
+    }
+  ],
+  "file": "packages/lang-go/src/analyzer/analyzer-adapter.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T22:12:52+03:00",
+      "hash": "09870f90da437c0934e3db63cb475923c7dc960b",
+      "kind": "commit",
+      "message": "feat(lang-go): full-tier composite adapter wiring ctxo-go-analyzer"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 186,
+      "endOffset": 6523,
+      "kind": "class",
+      "name": "GoAnalyzerAdapter",
+      "startLine": 20,
+      "startOffset": 1008,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class"
+    },
+    {
+      "endLine": 36,
+      "endOffset": 1593,
+      "kind": "method",
+      "name": "GoAnalyzerAdapter.isSupported",
+      "startLine": 34,
+      "startOffset": 1512,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.isSupported::method"
+    },
+    {
+      "endLine": 40,
+      "endOffset": 1706,
+      "kind": "method",
+      "name": "GoAnalyzerAdapter.isReady",
+      "startLine": 38,
+      "startOffset": 1597,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.isReady::method"
+    },
+    {
+      "endLine": 73,
+      "endOffset": 2789,
+      "kind": "method",
+      "name": "GoAnalyzerAdapter.initialize",
+      "startLine": 42,
+      "startOffset": 1710,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.initialize::method"
+    },
+    {
+      "endLine": 82,
+      "endOffset": 3081,
+      "kind": "method",
+      "name": "GoAnalyzerAdapter.getDeadSymbolIds",
+      "startLine": 80,
+      "startOffset": 3013,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.getDeadSymbolIds::method"
+    },
+    {
+      "endLine": 87,
+      "endOffset": 3218,
+      "kind": "method",
+      "name": "GoAnalyzerAdapter.reachabilityHasMain",
+      "startLine": 85,
+      "startOffset": 3157,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.reachabilityHasMain::method"
+    },
+    {
+      "endLine": 92,
+      "endOffset": 3363,
+      "kind": "method",
+      "name": "GoAnalyzerAdapter.reachabilityTimedOut",
+      "startLine": 90,
+      "startOffset": 3300,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.reachabilityTimedOut::method"
+    },
+    {
+      "endLine": 110,
+      "endOffset": 4007,
+      "kind": "method",
+      "name": "GoAnalyzerAdapter.extractSymbols",
+      "startLine": 94,
+      "startOffset": 3367,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.extractSymbols::method"
+    },
+    {
+      "endLine": 124,
+      "endOffset": 4465,
+      "kind": "method",
+      "name": "GoAnalyzerAdapter.extractEdges",
+      "startLine": 112,
+      "startOffset": 4011,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.extractEdges::method"
+    },
+    {
+      "endLine": 130,
+      "endOffset": 4732,
+      "kind": "method",
+      "name": "GoAnalyzerAdapter.extractComplexity",
+      "startLine": 126,
+      "startOffset": 4469,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.extractComplexity::method"
+    },
+    {
+      "endLine": 137,
+      "endOffset": 4888,
+      "kind": "method",
+      "name": "GoAnalyzerAdapter.dispose",
+      "startLine": 132,
+      "startOffset": 4736,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.dispose::method"
+    },
+    {
+      "endLine": 143,
+      "endOffset": 5064,
+      "kind": "method",
+      "name": "GoAnalyzerAdapter.ensureBatch",
+      "startLine": 139,
+      "startOffset": 4892,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.ensureBatch::method"
+    },
+    {
+      "endLine": 150,
+      "endOffset": 5385,
+      "kind": "method",
+      "name": "GoAnalyzerAdapter.runBatch",
+      "startLine": 145,
+      "startOffset": 5068,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.runBatch::method"
+    },
+    {
+      "endLine": 175,
+      "endOffset": 6226,
+      "kind": "method",
+      "name": "GoAnalyzerAdapter.absorbBatch",
+      "startLine": 152,
+      "startOffset": 5389,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.absorbBatch::method"
+    },
+    {
+      "endLine": 179,
+      "endOffset": 6324,
+      "kind": "method",
+      "name": "GoAnalyzerAdapter.normalizePath",
+      "startLine": 177,
+      "startOffset": 6230,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.normalizePath::method"
+    },
+    {
+      "endLine": 185,
+      "endOffset": 6521,
+      "kind": "method",
+      "name": "GoAnalyzerAdapter.buildPathRewriter",
+      "startLine": 181,
+      "startOffset": 6328,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.buildPathRewriter::method"
+    }
+  ]
+}

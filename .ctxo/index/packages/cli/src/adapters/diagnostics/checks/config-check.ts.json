@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 5,
+      "cyclomatic": 8,
       "symbolId": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck.run::method"
     }
   ],
-  "contentHash": "297269761a033d80307229158f5347fa15e9f5adb291111f3207344b37d620b0",
+  "contentHash": "48a8bd242061011d2218258f0f90a500ffd0174ae16af07e89c911ef1a28f92d",
   "edges": [
     {
       "from": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck::class",
@@ -28,8 +28,18 @@
     },
     {
       "from": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck::class",
       "kind": "implements",
       "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
     },
     {
       "from": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck::class",
@@ -45,10 +55,21 @@
       "from": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck::class",
       "kind": "uses",
       "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
     }
   ],
   "file": "packages/cli/src/adapters/diagnostics/checks/config-check.ts",
   "intent": [
+    {
+      "date": "2026-04-14T00:07:20+03:00",
+      "hash": "30d5459eca9bc79be5a8f6814cbbfb4ed5c3bc14",
+      "kind": "commit",
+      "message": "feat(config): add index.ignore and index.ignoreProjects to .ctxo/config.yaml"
+    },
     {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
@@ -56,24 +77,24 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776040427,
+  "lastModified": 1776115133,
   "symbols": [
     {
-      "endLine": 28,
-      "endOffset": 1407,
+      "endLine": 49,
+      "endOffset": 2275,
       "kind": "class",
       "name": "ConfigFileCheck",
-      "startLine": 4,
-      "startOffset": 186,
+      "startLine": 5,
+      "startOffset": 252,
       "symbolId": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck::class"
     },
     {
-      "endLine": 27,
-      "endOffset": 1405,
+      "endLine": 48,
+      "endOffset": 2273,
       "kind": "method",
       "name": "ConfigFileCheck.run",
-      "startLine": 8,
-      "startOffset": 309,
+      "startLine": 9,
+      "startOffset": 375,
       "symbolId": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck.run::method"
     }
   ]

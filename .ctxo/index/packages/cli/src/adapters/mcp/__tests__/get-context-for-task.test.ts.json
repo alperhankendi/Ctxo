@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "d538a5733c19a652d05d8a54412c5727614ebc8b2233e5bb8cf43bf1e73b7f07",
+  "contentHash": "a99031aadbcd7bfa7122a866c7b850b7a73ed22b12a28cf46cb5f525198c6a76",
   "edges": [
     {
       "from": "packages/cli/src/adapters/mcp/__tests__/get-context-for-task.test.ts::get-context-for-task.test::variable",
@@ -33,12 +33,18 @@
   "file": "packages/cli/src/adapters/mcp/__tests__/get-context-for-task.test.ts",
   "intent": [
     {
+      "date": "2026-04-13T03:49:23+03:00",
+      "hash": "83a89a037c0adfe081643574eefa475cb8847fd2",
+      "kind": "commit",
+      "message": "fix(blast-radius, context-assembler): include orphan edge sources"
+    },
+    {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
       "kind": "commit",
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776040427,
+  "lastModified": 1776115134,
   "symbols": []
 }

@@ -1,0 +1,66 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-go/src/analyzer/module-discovery.ts::discoverGoModule::function"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/lang-go/src/analyzer/module-discovery.ts::findCtxoGoAnalyzerSource::function"
+    }
+  ],
+  "contentHash": "805fa966b5cabfd32669f3b2193ecf243dbd3e49cfd22c6d8b4e33822735339a",
+  "edges": [
+    {
+      "from": "packages/lang-go/src/analyzer/module-discovery.ts::discoverGoModule::function",
+      "kind": "imports",
+      "to": "packages/lang-go/src/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/module-discovery.ts::discoverGoModule::function",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/module-discovery.ts::findShallow::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/module-discovery.ts::findCtxoGoAnalyzerSource::function",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/module-discovery.ts::findPackageRoot::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/module-discovery.ts::findCtxoGoAnalyzerSource::function",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/module-discovery.ts::findMonorepoRoot::function"
+    }
+  ],
+  "file": "packages/lang-go/src/analyzer/module-discovery.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T22:12:52+03:00",
+      "hash": "09870f90da437c0934e3db63cb475923c7dc960b",
+      "kind": "commit",
+      "message": "feat(lang-go): full-tier composite adapter wiring ctxo-go-analyzer"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 22,
+      "endOffset": 869,
+      "kind": "function",
+      "name": "discoverGoModule",
+      "startLine": 12,
+      "startOffset": 511,
+      "symbolId": "packages/lang-go/src/analyzer/module-discovery.ts::discoverGoModule::function"
+    },
+    {
+      "endLine": 91,
+      "endOffset": 3197,
+      "kind": "function",
+      "name": "findCtxoGoAnalyzerSource",
+      "startLine": 72,
+      "startOffset": 2306,
+      "symbolId": "packages/lang-go/src/analyzer/module-discovery.ts::findCtxoGoAnalyzerSource::function"
+    }
+  ]
+}

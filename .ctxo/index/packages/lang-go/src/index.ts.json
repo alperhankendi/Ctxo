@@ -1,16 +1,22 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "914ef8166f43c5f47fc52473455c91b0d865fe5ea05cfeed90c7fc2f93380653",
+  "contentHash": "a763608a1c11ccff4c45b1c32a95b94157cf334500df7e7de556771ea38c8eaf",
   "edges": [
     {
       "from": "packages/lang-go/src/index.ts::plugin::variable",
       "kind": "imports",
-      "to": "packages/lang-go/src/go-adapter.ts::GoAdapter::class"
+      "to": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter::class"
     }
   ],
   "file": "packages/lang-go/src/index.ts",
   "intent": [
+    {
+      "date": "2026-04-13T22:12:52+03:00",
+      "hash": "09870f90da437c0934e3db63cb475923c7dc960b",
+      "kind": "commit",
+      "message": "feat(lang-go): full-tier composite adapter wiring ctxo-go-analyzer"
+    },
     {
       "date": "2026-04-13T01:52:29+03:00",
       "hash": "00cff73ddde2917c6dca764478fd0747633c1032",
@@ -18,15 +24,15 @@
       "message": "feat(lang-go): extract Go adapter as @ctxo/lang-go plugin"
     }
   ],
-  "lastModified": 1776040428,
+  "lastModified": 1776115134,
   "symbols": [
     {
-      "endLine": 18,
-      "endOffset": 536,
+      "endLine": 20,
+      "endOffset": 707,
       "kind": "variable",
       "name": "plugin",
-      "startLine": 8,
-      "startOffset": 294,
+      "startLine": 10,
+      "startOffset": 439,
       "symbolId": "packages/lang-go/src/index.ts::plugin::variable"
     }
   ]

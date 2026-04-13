@@ -1,0 +1,168 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::TestExtractCallsAndUses::function"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::TestCrossPackageCalls::function"
+    },
+    {
+      "cyclomatic": 8,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::TestGenericCallCarriesTypeArgs::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::TestNoEdgesToStdlib::function"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::extractAllEdges::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::formatEdge::function"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::sortedKeys::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::containsStdlib::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::writeFixture::function"
+    }
+  ],
+  "contentHash": "59d0e8dcc76f371438645145f65aaff6cff1b8b5c958a63b7341bb12c514f6ab",
+  "edges": [
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::TestExtractCallsAndUses::function",
+      "kind": "imports",
+      "to": "os::os::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::TestExtractCallsAndUses::function",
+      "kind": "imports",
+      "to": "path/filepath::filepath::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::TestExtractCallsAndUses::function",
+      "kind": "imports",
+      "to": "testing::testing::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::TestExtractCallsAndUses::function",
+      "kind": "imports",
+      "to": "github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/emit::emit::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::TestExtractCallsAndUses::function",
+      "kind": "imports",
+      "to": "github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/load::load::variable"
+    }
+  ],
+  "file": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go",
+  "intent": [
+    {
+      "date": "2026-04-13T22:58:19+03:00",
+      "hash": "259c43751565ab18e791fdde6aa2abfd5231a712",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): subdir resilience for module-graph conflicts"
+    },
+    {
+      "date": "2026-04-13T21:51:39+03:00",
+      "hash": "89f8556483703b507a1ea38832ef376f779903a6",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): type-resolved calls + uses edges"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 47,
+      "endOffset": 1238,
+      "kind": "function",
+      "name": "TestExtractCallsAndUses",
+      "startLine": 11,
+      "startOffset": 213,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::TestExtractCallsAndUses::function"
+    },
+    {
+      "endLine": 70,
+      "endOffset": 1776,
+      "kind": "function",
+      "name": "TestCrossPackageCalls",
+      "startLine": 49,
+      "startOffset": 1242,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::TestCrossPackageCalls::function"
+    },
+    {
+      "endLine": 105,
+      "endOffset": 2614,
+      "kind": "function",
+      "name": "TestGenericCallCarriesTypeArgs",
+      "startLine": 72,
+      "startOffset": 1780,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::TestGenericCallCarriesTypeArgs::function"
+    },
+    {
+      "endLine": 123,
+      "endOffset": 3000,
+      "kind": "function",
+      "name": "TestNoEdgesToStdlib",
+      "startLine": 107,
+      "startOffset": 2618,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::TestNoEdgesToStdlib::function"
+    },
+    {
+      "endLine": 143,
+      "endOffset": 3446,
+      "kind": "function",
+      "name": "extractAllEdges",
+      "startLine": 127,
+      "startOffset": 3024,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::extractAllEdges::function"
+    },
+    {
+      "endLine": 147,
+      "endOffset": 3544,
+      "kind": "function",
+      "name": "formatEdge",
+      "startLine": 145,
+      "startOffset": 3450,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::formatEdge::function"
+    },
+    {
+      "endLine": 155,
+      "endOffset": 3697,
+      "kind": "function",
+      "name": "sortedKeys",
+      "startLine": 149,
+      "startOffset": 3548,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::sortedKeys::function"
+    },
+    {
+      "endLine": 164,
+      "endOffset": 3924,
+      "kind": "function",
+      "name": "containsStdlib",
+      "startLine": 157,
+      "startOffset": 3701,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::containsStdlib::function"
+    },
+    {
+      "endLine": 179,
+      "endOffset": 4294,
+      "kind": "function",
+      "name": "writeFixture",
+      "startLine": 166,
+      "startOffset": 3928,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::writeFixture::function"
+    }
+  ]
+}

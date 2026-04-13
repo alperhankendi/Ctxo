@@ -1,0 +1,62 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/logger.ts::createLogger::function"
+    }
+  ],
+  "contentHash": "79af2ad3bf88f9b998bf8266d06a0cb7120391eb5f4263b6d342b1f847a5a57c",
+  "edges": [
+    {
+      "from": "packages/lang-go/src/logger.ts::createLogger::function",
+      "kind": "calls",
+      "to": "packages/lang-go/src/logger.ts::emit::function"
+    },
+    {
+      "from": "packages/lang-go/src/logger.ts::createLogger::function",
+      "kind": "calls",
+      "to": "packages/lang-go/src/logger.ts::emit::function"
+    },
+    {
+      "from": "packages/lang-go/src/logger.ts::createLogger::function",
+      "kind": "calls",
+      "to": "packages/lang-go/src/logger.ts::emit::function"
+    },
+    {
+      "from": "packages/lang-go/src/logger.ts::createLogger::function",
+      "kind": "calls",
+      "to": "packages/lang-go/src/logger.ts::emit::function"
+    }
+  ],
+  "file": "packages/lang-go/src/logger.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T22:12:52+03:00",
+      "hash": "09870f90da437c0934e3db63cb475923c7dc960b",
+      "kind": "commit",
+      "message": "feat(lang-go): full-tier composite adapter wiring ctxo-go-analyzer"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 39,
+      "endOffset": 1493,
+      "kind": "function",
+      "name": "createLogger",
+      "startLine": 32,
+      "startOffset": 1158,
+      "symbolId": "packages/lang-go/src/logger.ts::createLogger::function"
+    },
+    {
+      "endLine": 12,
+      "endOffset": 376,
+      "kind": "interface",
+      "name": "Logger",
+      "startLine": 7,
+      "startOffset": 287,
+      "symbolId": "packages/lang-go/src/logger.ts::Logger::interface"
+    }
+  ]
+}

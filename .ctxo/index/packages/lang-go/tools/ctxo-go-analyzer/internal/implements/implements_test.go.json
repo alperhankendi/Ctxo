@@ -1,0 +1,111 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 10,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::TestExtractSatisfiesInterface::function"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::TestNonStructNamedType::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::writeFixture::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::containsSubstring::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::indexOf::function"
+    }
+  ],
+  "contentHash": "130238e754f254d1488ac07abd734529cabfe2c8866ca7e10e84c433b5ee1fab",
+  "edges": [
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::TestExtractSatisfiesInterface::function",
+      "kind": "imports",
+      "to": "os::os::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::TestExtractSatisfiesInterface::function",
+      "kind": "imports",
+      "to": "path/filepath::filepath::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::TestExtractSatisfiesInterface::function",
+      "kind": "imports",
+      "to": "testing::testing::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::TestExtractSatisfiesInterface::function",
+      "kind": "imports",
+      "to": "github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/load::load::variable"
+    }
+  ],
+  "file": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go",
+  "intent": [
+    {
+      "date": "2026-04-13T22:58:19+03:00",
+      "hash": "259c43751565ab18e791fdde6aa2abfd5231a712",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): subdir resilience for module-graph conflicts"
+    },
+    {
+      "date": "2026-04-13T21:53:15+03:00",
+      "hash": "62fc8f3c3f7ee2d738bd36d2dad44a5b96b20725",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): implements edges via types.Implements"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 79,
+      "endOffset": 1782,
+      "kind": "function",
+      "name": "TestExtractSatisfiesInterface",
+      "startLine": 10,
+      "startOffset": 147,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::TestExtractSatisfiesInterface::function"
+    },
+    {
+      "endLine": 112,
+      "endOffset": 2570,
+      "kind": "function",
+      "name": "TestNonStructNamedType",
+      "startLine": 81,
+      "startOffset": 1786,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::TestNonStructNamedType::function"
+    },
+    {
+      "endLine": 127,
+      "endOffset": 2940,
+      "kind": "function",
+      "name": "writeFixture",
+      "startLine": 114,
+      "startOffset": 2574,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::writeFixture::function"
+    },
+    {
+      "endLine": 131,
+      "endOffset": 3062,
+      "kind": "function",
+      "name": "containsSubstring",
+      "startLine": 129,
+      "startOffset": 2944,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::containsSubstring::function"
+    },
+    {
+      "endLine": 140,
+      "endOffset": 3209,
+      "kind": "function",
+      "name": "indexOf",
+      "startLine": 133,
+      "startOffset": 3066,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::indexOf::function"
+    }
+  ]
+}

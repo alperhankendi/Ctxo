@@ -10,7 +10,7 @@
       "symbolId": "packages/cli/src/cli/doctor-fix.ts::formatFixReport::function"
     }
   ],
-  "contentHash": "363551408fdae0b15c28e4d2d32872b3e43e77034d2ccabd7ce2a1359253dcda",
+  "contentHash": "359f84f0ebe6cb25b08b821e794a233ee44538b7cbdc3ace7c90b3ac7f46cb5e",
   "edges": [
     {
       "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
@@ -158,6 +158,12 @@
   "file": "packages/cli/src/cli/doctor-fix.ts",
   "intent": [
     {
+      "date": "2026-04-13T03:41:01+03:00",
+      "hash": "66563a4009d7049771020d65d812dc788de71187",
+      "kind": "commit",
+      "message": "fix(cli): use ESM createRequire import instead of forbidden require()"
+    },
+    {
       "date": "2026-04-13T03:04:03+03:00",
       "hash": "83f5211b9dcaa67bd833cd320ab7a546092e0ce6",
       "kind": "commit",
@@ -170,51 +176,51 @@
       "message": "feat(doctor): implement --fix with dependency-ordered execution"
     }
   ],
-  "lastModified": 1776040428,
+  "lastModified": 1776115134,
   "symbols": [
     {
-      "endLine": 153,
-      "endOffset": 4806,
+      "endLine": 154,
+      "endOffset": 4851,
       "kind": "function",
       "name": "applyFixes",
-      "startLine": 57,
-      "startOffset": 1969,
+      "startLine": 58,
+      "startOffset": 2014,
       "symbolId": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function"
     },
     {
-      "endLine": 335,
-      "endOffset": 10355,
+      "endLine": 336,
+      "endOffset": 10335,
       "kind": "function",
       "name": "formatFixReport",
-      "startLine": 323,
-      "startOffset": 9808,
+      "startLine": 324,
+      "startOffset": 9788,
       "symbolId": "packages/cli/src/cli/doctor-fix.ts::formatFixReport::function"
     },
     {
-      "endLine": 22,
-      "endOffset": 863,
+      "endLine": 23,
+      "endOffset": 908,
       "kind": "interface",
       "name": "FixOptions",
-      "startLine": 17,
-      "startOffset": 716,
+      "startLine": 18,
+      "startOffset": 761,
       "symbolId": "packages/cli/src/cli/doctor-fix.ts::FixOptions::interface"
     },
     {
-      "endLine": 30,
-      "endOffset": 1072,
+      "endLine": 31,
+      "endOffset": 1117,
       "kind": "interface",
       "name": "FixAttempt",
-      "startLine": 24,
-      "startOffset": 865,
+      "startLine": 25,
+      "startOffset": 910,
       "symbolId": "packages/cli/src/cli/doctor-fix.ts::FixAttempt::interface"
     },
     {
-      "endLine": 36,
-      "endOffset": 1204,
+      "endLine": 37,
+      "endOffset": 1249,
       "kind": "interface",
       "name": "FixReport",
-      "startLine": 32,
-      "startOffset": 1074,
+      "startLine": 33,
+      "startOffset": 1119,
       "symbolId": "packages/cli/src/cli/doctor-fix.ts::FixReport::interface"
     }
   ]

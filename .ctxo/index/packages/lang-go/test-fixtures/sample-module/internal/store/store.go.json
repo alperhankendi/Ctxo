@@ -1,0 +1,111 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::NewMemoryStore::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::MemoryStore.Get::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::MemoryStore.Put::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::LoggingStore.Get::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::LoggingStore.Put::method"
+    }
+  ],
+  "contentHash": "9c2e315765808bbf247281b5ae676d0b358101b15fdd1e26cb1023d40b4e23d8",
+  "edges": [],
+  "file": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go",
+  "intent": [
+    {
+      "date": "2026-04-13T22:15:35+03:00",
+      "hash": "136fd2a448c02c8f252458548c73c0efeca12b2c",
+      "kind": "commit",
+      "message": "test(lang-go): integration fixture sample-module exercising every analyzer feature"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 8,
+      "endOffset": 257,
+      "kind": "interface",
+      "name": "Store",
+      "startLine": 5,
+      "startOffset": 182,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::Store::interface"
+    },
+    {
+      "endLine": 13,
+      "endOffset": 370,
+      "kind": "class",
+      "name": "MemoryStore",
+      "startLine": 11,
+      "startOffset": 324,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::MemoryStore::class"
+    },
+    {
+      "endLine": 17,
+      "endOffset": 462,
+      "kind": "function",
+      "name": "NewMemoryStore",
+      "startLine": 15,
+      "startOffset": 372,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::NewMemoryStore::function"
+    },
+    {
+      "endLine": 22,
+      "endOffset": 556,
+      "kind": "method",
+      "name": "MemoryStore.Get",
+      "startLine": 19,
+      "startOffset": 464,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::MemoryStore.Get::method"
+    },
+    {
+      "endLine": 26,
+      "endOffset": 627,
+      "kind": "method",
+      "name": "MemoryStore.Put",
+      "startLine": 24,
+      "startOffset": 558,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::MemoryStore.Put::method"
+    },
+    {
+      "endLine": 31,
+      "endOffset": 749,
+      "kind": "class",
+      "name": "LoggingStore",
+      "startLine": 29,
+      "startOffset": 713,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::LoggingStore::class"
+    },
+    {
+      "endLine": 35,
+      "endOffset": 833,
+      "kind": "method",
+      "name": "LoggingStore.Get",
+      "startLine": 33,
+      "startOffset": 751,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::LoggingStore.Get::method"
+    },
+    {
+      "endLine": 39,
+      "endOffset": 909,
+      "kind": "method",
+      "name": "LoggingStore.Put",
+      "startLine": 37,
+      "startOffset": 835,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::LoggingStore.Put::method"
+    }
+  ]
+}

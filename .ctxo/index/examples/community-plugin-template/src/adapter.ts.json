@@ -1,0 +1,99 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "examples/community-plugin-template/src/adapter.ts::ExampleAdapter.setSymbolRegistry::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "examples/community-plugin-template/src/adapter.ts::ExampleAdapter.isSupported::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "examples/community-plugin-template/src/adapter.ts::ExampleAdapter.extractSymbols::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "examples/community-plugin-template/src/adapter.ts::ExampleAdapter.extractEdges::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "examples/community-plugin-template/src/adapter.ts::ExampleAdapter.extractComplexity::method"
+    }
+  ],
+  "contentHash": "1bad48bf7640b95a66221405f4c1c6451acffd090123302d7040ee9932571962",
+  "edges": [
+    {
+      "from": "examples/community-plugin-template/src/adapter.ts::ExampleAdapter::class",
+      "kind": "implements",
+      "to": "/examples/community-plugin-template/src/adapter.ts::ILanguageAdapter::interface"
+    }
+  ],
+  "file": "examples/community-plugin-template/src/adapter.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T03:56:15+03:00",
+      "hash": "019fc189d482fd99e1cbd0c17654341f13620c5b",
+      "kind": "commit",
+      "message": "feat(community): plugin template scaffold (Phase C Step 37)"
+    }
+  ],
+  "lastModified": 1776115133,
+  "symbols": [
+    {
+      "endLine": 65,
+      "endOffset": 2381,
+      "kind": "class",
+      "name": "ExampleAdapter",
+      "startLine": 17,
+      "startOffset": 567,
+      "symbolId": "examples/community-plugin-template/src/adapter.ts::ExampleAdapter::class"
+    },
+    {
+      "endLine": 27,
+      "endOffset": 1002,
+      "kind": "method",
+      "name": "ExampleAdapter.setSymbolRegistry",
+      "startLine": 25,
+      "startOffset": 902,
+      "symbolId": "examples/community-plugin-template/src/adapter.ts::ExampleAdapter.setSymbolRegistry::method"
+    },
+    {
+      "endLine": 31,
+      "endOffset": 1092,
+      "kind": "method",
+      "name": "ExampleAdapter.isSupported",
+      "startLine": 29,
+      "startOffset": 1006,
+      "symbolId": "examples/community-plugin-template/src/adapter.ts::ExampleAdapter.isSupported::method"
+    },
+    {
+      "endLine": 52,
+      "endOffset": 1853,
+      "kind": "method",
+      "name": "ExampleAdapter.extractSymbols",
+      "startLine": 33,
+      "startOffset": 1096,
+      "symbolId": "examples/community-plugin-template/src/adapter.ts::ExampleAdapter.extractSymbols::method"
+    },
+    {
+      "endLine": 58,
+      "endOffset": 2105,
+      "kind": "method",
+      "name": "ExampleAdapter.extractEdges",
+      "startLine": 54,
+      "startOffset": 1857,
+      "symbolId": "examples/community-plugin-template/src/adapter.ts::ExampleAdapter.extractEdges::method"
+    },
+    {
+      "endLine": 64,
+      "endOffset": 2379,
+      "kind": "method",
+      "name": "ExampleAdapter.extractComplexity",
+      "startLine": 60,
+      "startOffset": 2109,
+      "symbolId": "examples/community-plugin-template/src/adapter.ts::ExampleAdapter.extractComplexity::method"
+    }
+  ]
+}

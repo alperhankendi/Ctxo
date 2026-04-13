@@ -1,0 +1,32 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/cmd/app/main.go::main::function"
+    }
+  ],
+  "contentHash": "2d83f3d183088e885ae07e075f772ec514a31c02a8e3d7c8f9a0447fa29ed3f9",
+  "edges": [],
+  "file": "packages/lang-go/test-fixtures/sample-module/cmd/app/main.go",
+  "intent": [
+    {
+      "date": "2026-04-13T22:15:35+03:00",
+      "hash": "136fd2a448c02c8f252458548c73c0efeca12b2c",
+      "kind": "commit",
+      "message": "test(lang-go): integration fixture sample-module exercising every analyzer feature"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 25,
+      "endOffset": 500,
+      "kind": "function",
+      "name": "main",
+      "startLine": 11,
+      "startOffset": 175,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/cmd/app/main.go::main::function"
+    }
+  ]
+}

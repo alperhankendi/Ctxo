@@ -1,5 +1,312 @@
 {
   "version": 1,
-  "timestamp": 1776040437,
-  "entries": []
+  "timestamp": 1776115135,
+  "entries": [
+    {
+      "file1": "packages/cli/src/cli/__tests__/ai-rules.test.ts",
+      "file2": "packages/cli/src/cli/ai-rules.ts",
+      "sharedCommits": 4,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/index-command.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 4,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/runtime-check.test.ts",
+      "file2": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts",
+      "sharedCommits": 3,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/runtime-check.test.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 3,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/runtime-check.test.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 3,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/runtime-check.test.ts",
+      "file2": "packages/cli/src/adapters/language/__tests__/language-adapter-registry.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/runtime-check.test.ts",
+      "file2": "packages/cli/src/adapters/language/language-adapter-registry.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/runtime-check.test.ts",
+      "file2": "packages/cli/src/ports/i-language-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/checks/config-check.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/checks/config-check.ts",
+      "file2": "packages/cli/src/index.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts",
+      "file2": "packages/cli/src/adapters/language/__tests__/language-adapter-registry.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts",
+      "file2": "packages/cli/src/adapters/language/language-adapter-registry.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts",
+      "file2": "packages/cli/src/ports/i-language-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/language/__tests__/language-adapter-registry.test.ts",
+      "file2": "packages/cli/src/adapters/language/language-adapter-registry.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/language/__tests__/language-adapter-registry.test.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/language/__tests__/language-adapter-registry.test.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/language/__tests__/language-adapter-registry.test.ts",
+      "file2": "packages/cli/src/ports/i-language-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/language/language-adapter-registry.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/language/language-adapter-registry.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/language/language-adapter-registry.ts",
+      "file2": "packages/cli/src/ports/i-language-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-context-for-task.test.ts",
+      "file2": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-context-for-task.test.ts",
+      "file2": "packages/cli/src/core/context-assembly/context-assembler.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/__tests__/ai-rules.test.ts",
+      "file2": "packages/cli/src/cli/__tests__/init-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/__tests__/init-command.test.ts",
+      "file2": "packages/cli/src/cli/ai-rules.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/__tests__/init-command.test.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/index-command.ts",
+      "file2": "packages/cli/src/ports/i-language-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/watch-command.ts",
+      "file2": "packages/cli/src/ports/i-language-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts",
+      "file2": "packages/cli/src/core/context-assembly/context-assembler.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/core/response-envelope.ts",
+      "file2": "packages/cli/src/index.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/language/plugin-discovery.ts",
+      "file2": "packages/cli/src/index.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/__tests__/doctor-fix.test.ts",
+      "file2": "packages/cli/src/cli/doctor-fix.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/core/install/__tests__/package-manager.test.ts",
+      "file2": "packages/cli/src/core/install/package-manager.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/lang-go/src/go-adapter.ts",
+      "file2": "packages/lang-go/src/index.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go",
+      "file2": "packages/lang-go/tools/ctxo-go-analyzer/main.go",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go",
+      "file2": "packages/lang-go/tools/ctxo-go-analyzer/main.go",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go",
+      "file2": "packages/lang-go/tools/ctxo-go-analyzer/main.go",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go",
+      "file2": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols_test.go",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go",
+      "file2": "packages/lang-go/tools/ctxo-go-analyzer/main.go",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols_test.go",
+      "file2": "packages/lang-go/tools/ctxo-go-analyzer/main.go",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go",
+      "file2": "packages/lang-go/tools/ctxo-go-analyzer/main.go",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 3,
+      "frequency": 0.75
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 3,
+      "frequency": 0.75
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts",
+      "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/cli/cli-router.ts",
+      "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/cli/index-command.ts",
+      "file2": "packages/cli/src/index.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/cli/index-command.ts",
+      "file2": "packages/cli/src/cli/plugin-loader.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go",
+      "file2": "packages/lang-go/tools/ctxo-go-analyzer/main.go",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/cli/cli-router.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 3,
+      "frequency": 0.6
+    },
+    {
+      "file1": "packages/cli/src/cli/__tests__/ai-rules.test.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 0.5
+    },
+    {
+      "file1": "packages/cli/src/cli/ai-rules.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 0.5
+    },
+    {
+      "file1": "packages/cli/src/cli/cli-router.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 0.286
+    }
+  ]
 }

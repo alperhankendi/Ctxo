@@ -1,0 +1,17 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "89c6aaf374dc878f4e56fdc7b6a9fadba30c8ba5f7c4a7a19626a23ba9192fa5",
+  "edges": [],
+  "file": "examples/community-plugin-template/tsup.config.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T03:56:15+03:00",
+      "hash": "019fc189d482fd99e1cbd0c17654341f13620c5b",
+      "kind": "commit",
+      "message": "feat(community): plugin template scaffold (Phase C Step 37)"
+    }
+  ],
+  "lastModified": 1776115133,
+  "symbols": []
+}

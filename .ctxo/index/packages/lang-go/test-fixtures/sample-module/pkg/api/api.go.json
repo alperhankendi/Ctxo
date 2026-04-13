@@ -1,0 +1,60 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/pkg/api/api.go::NewService::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/pkg/api/api.go::Service.Lookup::method"
+    }
+  ],
+  "contentHash": "6ff84e8ec1341b4358d8bbbfdf724247365ab6fd3cbc41b0757945028d9429b9",
+  "edges": [
+    {
+      "from": "packages/lang-go/test-fixtures/sample-module/pkg/api/api.go::Service::class",
+      "kind": "imports",
+      "to": "sample/internal/store::store::variable"
+    }
+  ],
+  "file": "packages/lang-go/test-fixtures/sample-module/pkg/api/api.go",
+  "intent": [
+    {
+      "date": "2026-04-13T22:15:35+03:00",
+      "hash": "136fd2a448c02c8f252458548c73c0efeca12b2c",
+      "kind": "commit",
+      "message": "test(lang-go): integration fixture sample-module exercising every analyzer feature"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 8,
+      "endOffset": 191,
+      "kind": "class",
+      "name": "Service",
+      "startLine": 6,
+      "startOffset": 152,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/pkg/api/api.go::Service::class"
+    },
+    {
+      "endLine": 12,
+      "endOffset": 265,
+      "kind": "function",
+      "name": "NewService",
+      "startLine": 10,
+      "startOffset": 193,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/pkg/api/api.go::NewService::function"
+    },
+    {
+      "endLine": 17,
+      "endOffset": 352,
+      "kind": "method",
+      "name": "Service.Lookup",
+      "startLine": 14,
+      "startOffset": 267,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/pkg/api/api.go::Service.Lookup::method"
+    }
+  ]
+}

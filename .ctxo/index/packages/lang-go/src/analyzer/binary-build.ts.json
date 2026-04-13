@@ -1,0 +1,43 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/src/analyzer/binary-build.ts::ensureAnalyzerBinary::function"
+    }
+  ],
+  "contentHash": "e23c3b6d6fe24586e7a76e958b53327f32f3e6705065284f2c4176e4bfb21b32",
+  "edges": [
+    {
+      "from": "packages/lang-go/src/analyzer/binary-build.ts::ensureAnalyzerBinary::function",
+      "kind": "imports",
+      "to": "packages/lang-go/src/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/lang-go/src/analyzer/binary-build.ts::ensureAnalyzerBinary::function",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/binary-build.ts::hashSourceTree::function"
+    }
+  ],
+  "file": "packages/lang-go/src/analyzer/binary-build.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T22:12:52+03:00",
+      "hash": "09870f90da437c0934e3db63cb475923c7dc960b",
+      "kind": "commit",
+      "message": "feat(lang-go): full-tier composite adapter wiring ctxo-go-analyzer"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 39,
+      "endOffset": 1582,
+      "kind": "function",
+      "name": "ensureAnalyzerBinary",
+      "startLine": 17,
+      "startOffset": 732,
+      "symbolId": "packages/lang-go/src/analyzer/binary-build.ts::ensureAnalyzerBinary::function"
+    }
+  ]
+}

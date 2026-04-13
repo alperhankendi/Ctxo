@@ -1,0 +1,123 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::TestPackagesOnHealthyModule::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::TestPackagesWithFallbackRecoversPartial::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::TestTopLevelGoSubdirsSkipsHidden::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::writeFixture::function"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::pkgNames::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::pkgListContainsName::function"
+    }
+  ],
+  "contentHash": "646437f61ab9b05d842f453a51995657a8d0bf247acb9fec2cd7e2e3f759864e",
+  "edges": [
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::TestPackagesOnHealthyModule::function",
+      "kind": "imports",
+      "to": "os::os::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::TestPackagesOnHealthyModule::function",
+      "kind": "imports",
+      "to": "path/filepath::filepath::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::TestPackagesOnHealthyModule::function",
+      "kind": "imports",
+      "to": "sort::sort::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::TestPackagesOnHealthyModule::function",
+      "kind": "imports",
+      "to": "testing::testing::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::TestPackagesOnHealthyModule::function",
+      "kind": "imports",
+      "to": "golang.org/x/tools/go/packages::packages::variable"
+    }
+  ],
+  "file": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go",
+  "intent": [
+    {
+      "date": "2026-04-13T22:58:19+03:00",
+      "hash": "259c43751565ab18e791fdde6aa2abfd5231a712",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): subdir resilience for module-graph conflicts"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 23,
+      "endOffset": 490,
+      "kind": "function",
+      "name": "TestPackagesOnHealthyModule",
+      "startLine": 11,
+      "startOffset": 103,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::TestPackagesOnHealthyModule::function"
+    },
+    {
+      "endLine": 41,
+      "endOffset": 1280,
+      "kind": "function",
+      "name": "TestPackagesWithFallbackRecoversPartial",
+      "startLine": 25,
+      "startOffset": 492,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::TestPackagesWithFallbackRecoversPartial::function"
+    },
+    {
+      "endLine": 61,
+      "endOffset": 1778,
+      "kind": "function",
+      "name": "TestTopLevelGoSubdirsSkipsHidden",
+      "startLine": 43,
+      "startOffset": 1282,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::TestTopLevelGoSubdirsSkipsHidden::function"
+    },
+    {
+      "endLine": 78,
+      "endOffset": 2151,
+      "kind": "function",
+      "name": "writeFixture",
+      "startLine": 65,
+      "startOffset": 1798,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::writeFixture::function"
+    },
+    {
+      "endLine": 86,
+      "endOffset": 2311,
+      "kind": "function",
+      "name": "pkgNames",
+      "startLine": 80,
+      "startOffset": 2153,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::pkgNames::function"
+    },
+    {
+      "endLine": 95,
+      "endOffset": 2469,
+      "kind": "function",
+      "name": "pkgListContainsName",
+      "startLine": 88,
+      "startOffset": 2313,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::pkgListContainsName::function"
+    }
+  ]
+}

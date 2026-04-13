@@ -10,7 +10,7 @@
       "symbolId": "packages/cli/src/cli/install-command.ts::InstallCommand.resolveLanguages::method"
     }
   ],
-  "contentHash": "a94a468e757ada2fa2e5ce9ba2afda4c817c32674bb41d2fae99b5ef7bb9b308",
+  "contentHash": "9ac3270e5aacc469a60ad23c7faaf2899f71afe7f7d2f0ae041da00c4a50f273",
   "edges": [
     {
       "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
@@ -169,57 +169,63 @@
   "file": "packages/cli/src/cli/install-command.ts",
   "intent": [
     {
+      "date": "2026-04-13T03:41:01+03:00",
+      "hash": "66563a4009d7049771020d65d812dc788de71187",
+      "kind": "commit",
+      "message": "fix(cli): use ESM createRequire import instead of forbidden require()"
+    },
+    {
       "date": "2026-04-13T02:23:19+03:00",
       "hash": "7133c839ca5e6c29eaf0d95f55466668b0d02649",
       "kind": "commit",
       "message": "feat(cli): add ctxo install command for language plugin management"
     }
   ],
-  "lastModified": 1776040428,
+  "lastModified": 1776115134,
   "symbols": [
     {
-      "endLine": 141,
-      "endOffset": 4645,
+      "endLine": 142,
+      "endOffset": 4690,
       "kind": "class",
       "name": "InstallCommand",
-      "startLine": 39,
-      "startOffset": 1006,
+      "startLine": 40,
+      "startOffset": 1051,
       "symbolId": "packages/cli/src/cli/install-command.ts::InstallCommand::class"
     },
     {
-      "endLine": 109,
-      "endOffset": 3501,
+      "endLine": 110,
+      "endOffset": 3546,
       "kind": "method",
       "name": "InstallCommand.run",
-      "startLine": 42,
-      "startOffset": 1094,
+      "startLine": 43,
+      "startOffset": 1139,
       "symbolId": "packages/cli/src/cli/install-command.ts::InstallCommand.run::method"
     },
     {
-      "endLine": 140,
-      "endOffset": 4643,
+      "endLine": 141,
+      "endOffset": 4688,
       "kind": "method",
       "name": "InstallCommand.resolveLanguages",
-      "startLine": 111,
-      "startOffset": 3505,
+      "startLine": 112,
+      "startOffset": 3550,
       "symbolId": "packages/cli/src/cli/install-command.ts::InstallCommand.resolveLanguages::method"
     },
     {
-      "endLine": 27,
-      "endOffset": 706,
+      "endLine": 28,
+      "endOffset": 751,
       "kind": "interface",
       "name": "InstallOptions",
-      "startLine": 19,
-      "startOffset": 464,
+      "startLine": 20,
+      "startOffset": 509,
       "symbolId": "packages/cli/src/cli/install-command.ts::InstallOptions::interface"
     },
     {
-      "endLine": 37,
-      "endOffset": 1004,
+      "endLine": 38,
+      "endOffset": 1049,
       "kind": "interface",
       "name": "InstallPlan",
-      "startLine": 29,
-      "startOffset": 708,
+      "startLine": 30,
+      "startOffset": 753,
       "symbolId": "packages/cli/src/cli/install-command.ts::InstallPlan::interface"
     }
   ]

@@ -1,0 +1,123 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::Packages::function"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::PackagesWithFallback::function"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::topLevelGoSubdirs::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::hasGoFile::function"
+    }
+  ],
+  "contentHash": "4001bf559db42ca4c0dc911dc33647c8942d64ff117e92f31134ad5d71724de1",
+  "edges": [
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::LoadResult::class",
+      "kind": "imports",
+      "to": "fmt::fmt::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::LoadResult::class",
+      "kind": "imports",
+      "to": "io/fs::fs::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::LoadResult::class",
+      "kind": "imports",
+      "to": "os::os::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::LoadResult::class",
+      "kind": "imports",
+      "to": "path/filepath::filepath::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::LoadResult::class",
+      "kind": "imports",
+      "to": "strings::strings::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::LoadResult::class",
+      "kind": "imports",
+      "to": "golang.org/x/tools/go/packages::packages::variable"
+    }
+  ],
+  "file": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go",
+  "intent": [
+    {
+      "date": "2026-04-13T22:58:19+03:00",
+      "hash": "259c43751565ab18e791fdde6aa2abfd5231a712",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): subdir resilience for module-graph conflicts"
+    },
+    {
+      "date": "2026-04-13T22:35:41+03:00",
+      "hash": "350314507530f2881982b8fb4df293a955230a0b",
+      "kind": "commit",
+      "message": "fix(lang-go/analyzer): set GOFLAGS=-mod=mod -e for resilient package load"
+    },
+    {
+      "date": "2026-04-13T21:48:01+03:00",
+      "hash": "1b3766b92bade9a1c7780b82873580afea3338ac",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): add go/packages loader + AST symbol extraction"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 53,
+      "endOffset": 1805,
+      "kind": "class",
+      "name": "LoadResult",
+      "startLine": 42,
+      "startOffset": 1262,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::LoadResult::class"
+    },
+    {
+      "endLine": 89,
+      "endOffset": 3107,
+      "kind": "function",
+      "name": "Packages",
+      "startLine": 61,
+      "startOffset": 2170,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::Packages::function"
+    },
+    {
+      "endLine": 120,
+      "endOffset": 4016,
+      "kind": "function",
+      "name": "PackagesWithFallback",
+      "startLine": 95,
+      "startOffset": 3413,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::PackagesWithFallback::function"
+    },
+    {
+      "endLine": 143,
+      "endOffset": 4549,
+      "kind": "function",
+      "name": "topLevelGoSubdirs",
+      "startLine": 124,
+      "startOffset": 4171,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::topLevelGoSubdirs::function"
+    },
+    {
+      "endLine": 161,
+      "endOffset": 4909,
+      "kind": "function",
+      "name": "hasGoFile",
+      "startLine": 145,
+      "startOffset": 4551,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::hasGoFile::function"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/dead/dead.go::TrulyDead::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/dead/dead.go::LiveHelper::function"
+    }
+  ],
+  "contentHash": "e78c848bc6abe89e7ab0b129ecc0d2d52f1133c4de6f03b214449d8f797b976b",
+  "edges": [],
+  "file": "packages/lang-go/test-fixtures/sample-module/internal/dead/dead.go",
+  "intent": [
+    {
+      "date": "2026-04-13T22:15:35+03:00",
+      "hash": "136fd2a448c02c8f252458548c73c0efeca12b2c",
+      "kind": "commit",
+      "message": "test(lang-go): integration fixture sample-module exercising every analyzer feature"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 7,
+      "endOffset": 269,
+      "kind": "function",
+      "name": "TrulyDead",
+      "startLine": 5,
+      "startOffset": 216,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/dead/dead.go::TrulyDead::function"
+    },
+    {
+      "endLine": 13,
+      "endOffset": 441,
+      "kind": "function",
+      "name": "LiveHelper",
+      "startLine": 11,
+      "startOffset": 405,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/dead/dead.go::LiveHelper::function"
+    }
+  ]
+}

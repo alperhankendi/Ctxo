@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "f5cbe341f1a909887acf21ce4b2c91b14ab8970ec3e9c096e60ac94f3637db64",
+  "contentHash": "79cef8f5b3edc19332d54a5a966482d0890a73c59133a6d7bd6d262f699a5681",
   "edges": [
     {
       "from": "packages/cli/src/index.ts::index::variable",
@@ -129,10 +129,26 @@
       "from": "packages/cli/src/index.ts::index::variable",
       "kind": "imports",
       "to": "packages/cli/src/core/response-envelope.ts::setWorkspaceMeta::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/load-config.ts::statsEnabled::function"
     }
   ],
   "file": "packages/cli/src/index.ts",
   "intent": [
+    {
+      "date": "2026-04-14T00:07:20+03:00",
+      "hash": "30d5459eca9bc79be5a8f6814cbbfb4ed5c3bc14",
+      "kind": "commit",
+      "message": "feat(config): add index.ignore and index.ignoreProjects to .ctxo/config.yaml"
+    },
     {
       "date": "2026-04-13T01:35:07+03:00",
       "hash": "dc578b8fcb106b7805e15f3ef22f4f1522c88451",
@@ -146,6 +162,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776040428,
+  "lastModified": 1776115134,
   "symbols": []
 }

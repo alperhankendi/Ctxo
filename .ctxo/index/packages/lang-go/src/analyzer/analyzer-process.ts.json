@@ -1,0 +1,74 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 15,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-process.ts::runBatchAnalyze::function"
+    }
+  ],
+  "contentHash": "94120dd9d758e2f98868f0eb53c6a802220fcd15812615a303bb9e9fb2f9fc3f",
+  "edges": [
+    {
+      "from": "packages/lang-go/src/analyzer/analyzer-process.ts::runBatchAnalyze::function",
+      "kind": "imports",
+      "to": "packages/lang-go/src/logger.ts::createLogger::function"
+    }
+  ],
+  "file": "packages/lang-go/src/analyzer/analyzer-process.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T22:12:52+03:00",
+      "hash": "09870f90da437c0934e3db63cb475923c7dc960b",
+      "kind": "commit",
+      "message": "feat(lang-go): full-tier composite adapter wiring ctxo-go-analyzer"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 117,
+      "endOffset": 3148,
+      "kind": "function",
+      "name": "runBatchAnalyze",
+      "startLine": 44,
+      "startOffset": 929,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-process.ts::runBatchAnalyze::function"
+    },
+    {
+      "endLine": 13,
+      "endOffset": 306,
+      "kind": "interface",
+      "name": "AnalyzerSymbol",
+      "startLine": 5,
+      "startOffset": 133,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-process.ts::AnalyzerSymbol::interface"
+    },
+    {
+      "endLine": 20,
+      "endOffset": 410,
+      "kind": "interface",
+      "name": "AnalyzerEdge",
+      "startLine": 15,
+      "startOffset": 308,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-process.ts::AnalyzerEdge::interface"
+    },
+    {
+      "endLine": 28,
+      "endOffset": 562,
+      "kind": "interface",
+      "name": "AnalyzerFileResult",
+      "startLine": 22,
+      "startOffset": 412,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-process.ts::AnalyzerFileResult::interface"
+    },
+    {
+      "endLine": 37,
+      "endOffset": 734,
+      "kind": "interface",
+      "name": "AnalyzerBatchResult",
+      "startLine": 30,
+      "startOffset": 564,
+      "symbolId": "packages/lang-go/src/analyzer/analyzer-process.ts::AnalyzerBatchResult::interface"
+    }
+  ]
+}

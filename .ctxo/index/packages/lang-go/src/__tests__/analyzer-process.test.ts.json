@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "9f1163347d506adedfab92f1cd9595255f24d76963c25122454c689e06691c67",
+  "edges": [
+    {
+      "from": "packages/lang-go/src/__tests__/analyzer-process.test.ts::analyzer-process.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-go/src/analyzer/analyzer-process.ts::runBatchAnalyze::function"
+    }
+  ],
+  "file": "packages/lang-go/src/__tests__/analyzer-process.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T23:00:48+03:00",
+      "hash": "3918762bd41d32d2cc41c2fde79c9f506846ab75",
+      "kind": "commit",
+      "message": "test(lang-go): vitest specs for TS analyzer layer + update for unexported symbols"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": []
+}

@@ -1,0 +1,17 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "3da82b4b971e4b1c745de16c942e62767cf246c0c92ea0bbcd6c22706f63bc36",
+  "edges": [],
+  "file": "packages/cli/tests/e2e/go-full-tier.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T23:36:54+03:00",
+      "hash": "3599ee0f5075ba52cfef1cdfe29689dafe2b26aa",
+      "kind": "commit",
+      "message": "test(cli/e2e): Story 7.5 Go full-tier smoke over sample-module fixture"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": []
+}

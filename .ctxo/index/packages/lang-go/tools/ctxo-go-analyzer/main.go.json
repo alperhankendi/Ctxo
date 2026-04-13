@@ -1,0 +1,107 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/main.go::main::function"
+    },
+    {
+      "cyclomatic": 18,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/main.go::run::function"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/main.go::collectDead::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/main.go::relativeFile::function"
+    }
+  ],
+  "contentHash": "46327113c957005f12d30d4374388309a52a023fad91d0b3047cee5ce3ca28bd",
+  "edges": [],
+  "file": "packages/lang-go/tools/ctxo-go-analyzer/main.go",
+  "intent": [
+    {
+      "date": "2026-04-13T22:58:19+03:00",
+      "hash": "259c43751565ab18e791fdde6aa2abfd5231a712",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): subdir resilience for module-graph conflicts"
+    },
+    {
+      "date": "2026-04-13T22:00:43+03:00",
+      "hash": "5ed71639da45f9c489d1a640c0b08e1d61164f9b",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): SSA + CHA reachability with reflect-safe heuristics"
+    },
+    {
+      "date": "2026-04-13T21:54:16+03:00",
+      "hash": "33f7b71bce01b2a2e897dc21ddf097f4418114c5",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): extends edges for struct + interface embedding"
+    },
+    {
+      "date": "2026-04-13T21:53:15+03:00",
+      "hash": "62fc8f3c3f7ee2d738bd36d2dad44a5b96b20725",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): implements edges via types.Implements"
+    },
+    {
+      "date": "2026-04-13T21:51:39+03:00",
+      "hash": "89f8556483703b507a1ea38832ef376f779903a6",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): type-resolved calls + uses edges"
+    },
+    {
+      "date": "2026-04-13T21:48:01+03:00",
+      "hash": "1b3766b92bade9a1c7780b82873580afea3338ac",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): add go/packages loader + AST symbol extraction"
+    },
+    {
+      "date": "2026-04-13T21:40:52+03:00",
+      "hash": "082b80be90adc99a9887e6a200484a256f32fdea",
+      "kind": "commit",
+      "message": "feat(lang-go): scaffold ctxo-go-analyzer binary (emit package + skeleton main)"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 53,
+      "endOffset": 1547,
+      "kind": "function",
+      "name": "main",
+      "startLine": 34,
+      "startOffset": 1106,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/main.go::main::function"
+    },
+    {
+      "endLine": 147,
+      "endOffset": 3957,
+      "kind": "function",
+      "name": "run",
+      "startLine": 60,
+      "startOffset": 1624,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/main.go::run::function"
+    },
+    {
+      "endLine": 167,
+      "endOffset": 4562,
+      "kind": "function",
+      "name": "collectDead",
+      "startLine": 153,
+      "startOffset": 4208,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/main.go::collectDead::function"
+    },
+    {
+      "endLine": 182,
+      "endOffset": 4882,
+      "kind": "function",
+      "name": "relativeFile",
+      "startLine": 169,
+      "startOffset": 4564,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/main.go::relativeFile::function"
+    }
+  ]
+}

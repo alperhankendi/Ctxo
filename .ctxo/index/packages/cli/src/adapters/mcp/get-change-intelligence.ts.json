@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 11,
+      "cyclomatic": 13,
       "symbolId": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function"
     }
   ],
-  "contentHash": "21bd97678a0e20cae8d54616e14d72c6956992c8b01934ff9a75c9cbe6bd0b89",
+  "contentHash": "3f85c33f226105e1a0105587b63550d32176d30df1eb493b83159ca3f03f2c99",
   "edges": [
     {
       "from": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
@@ -107,11 +107,11 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776040427,
+  "lastModified": 1776115134,
   "symbols": [
     {
-      "endLine": 93,
-      "endOffset": 3740,
+      "endLine": 103,
+      "endOffset": 4278,
       "kind": "function",
       "name": "handleGetChangeIntelligence",
       "startLine": 13,

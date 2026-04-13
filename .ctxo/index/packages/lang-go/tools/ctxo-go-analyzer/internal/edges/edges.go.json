@@ -1,0 +1,238 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::NewExtractor::function"
+    },
+    {
+      "cyclomatic": 19,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor.Extract::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor.emitCallEdge::method"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor.emitUsesFromIdent::method"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor.symbolIDForObject::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::objectName::function"
+    },
+    {
+      "cyclomatic": 9,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::objectKind::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::receiverTypeName::function"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::calleeIdent::function"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::typeArgsFor::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::funcDeclSymbolID::function"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::receiverASTName::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::relativeFile::function"
+    }
+  ],
+  "contentHash": "3a295d02fe9929f98f3a9b501bfc3cecaa9383bd8d2c18946dba97adbcc1abef",
+  "edges": [
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor::class",
+      "kind": "imports",
+      "to": "go/ast::ast::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor::class",
+      "kind": "imports",
+      "to": "go/token::token::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor::class",
+      "kind": "imports",
+      "to": "go/types::types::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor::class",
+      "kind": "imports",
+      "to": "path/filepath::filepath::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor::class",
+      "kind": "imports",
+      "to": "strings::strings::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor::class",
+      "kind": "imports",
+      "to": "golang.org/x/tools/go/packages::packages::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor::class",
+      "kind": "imports",
+      "to": "github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/emit::emit::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor::class",
+      "kind": "imports",
+      "to": "github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/symbols::symbols::variable"
+    }
+  ],
+  "file": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go",
+  "intent": [
+    {
+      "date": "2026-04-13T21:51:39+03:00",
+      "hash": "89f8556483703b507a1ea38832ef376f779903a6",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): type-resolved calls + uses edges"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 26,
+      "endOffset": 904,
+      "kind": "class",
+      "name": "Extractor",
+      "startLine": 23,
+      "startOffset": 826,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor::class"
+    },
+    {
+      "endLine": 38,
+      "endOffset": 1333,
+      "kind": "function",
+      "name": "NewExtractor",
+      "startLine": 30,
+      "startOffset": 1053,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::NewExtractor::function"
+    },
+    {
+      "endLine": 112,
+      "endOffset": 3099,
+      "kind": "method",
+      "name": "Extractor.Extract",
+      "startLine": 43,
+      "startOffset": 1537,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor.Extract::method"
+    },
+    {
+      "endLine": 135,
+      "endOffset": 3611,
+      "kind": "method",
+      "name": "Extractor.emitCallEdge",
+      "startLine": 118,
+      "startOffset": 3159,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor.emitCallEdge::method"
+    },
+    {
+      "endLine": 158,
+      "endOffset": 4243,
+      "kind": "method",
+      "name": "Extractor.emitUsesFromIdent",
+      "startLine": 137,
+      "startOffset": 3613,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor.emitUsesFromIdent::method"
+    },
+    {
+      "endLine": 186,
+      "endOffset": 5146,
+      "kind": "method",
+      "name": "Extractor.symbolIDForObject",
+      "startLine": 164,
+      "startOffset": 4534,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor.symbolIDForObject::method"
+    },
+    {
+      "endLine": 197,
+      "endOffset": 5431,
+      "kind": "function",
+      "name": "objectName",
+      "startLine": 188,
+      "startOffset": 5148,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::objectName::function"
+    },
+    {
+      "endLine": 219,
+      "endOffset": 5884,
+      "kind": "function",
+      "name": "objectKind",
+      "startLine": 199,
+      "startOffset": 5433,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::objectKind::function"
+    },
+    {
+      "endLine": 229,
+      "endOffset": 6062,
+      "kind": "function",
+      "name": "receiverTypeName",
+      "startLine": 221,
+      "startOffset": 5886,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::receiverTypeName::function"
+    },
+    {
+      "endLine": 245,
+      "endOffset": 6369,
+      "kind": "function",
+      "name": "calleeIdent",
+      "startLine": 231,
+      "startOffset": 6064,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::calleeIdent::function"
+    },
+    {
+      "endLine": 264,
+      "endOffset": 6774,
+      "kind": "function",
+      "name": "typeArgsFor",
+      "startLine": 247,
+      "startOffset": 6371,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::typeArgsFor::function"
+    },
+    {
+      "endLine": 273,
+      "endOffset": 7089,
+      "kind": "function",
+      "name": "funcDeclSymbolID",
+      "startLine": 266,
+      "startOffset": 6776,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::funcDeclSymbolID::function"
+    },
+    {
+      "endLine": 290,
+      "endOffset": 7353,
+      "kind": "function",
+      "name": "receiverASTName",
+      "startLine": 275,
+      "startOffset": 7091,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::receiverASTName::function"
+    },
+    {
+      "endLine": 302,
+      "endOffset": 7636,
+      "kind": "function",
+      "name": "relativeFile",
+      "startLine": 292,
+      "startOffset": 7355,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::relativeFile::function"
+    }
+  ]
+}

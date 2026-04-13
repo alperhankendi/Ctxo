@@ -1,0 +1,181 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.initialize::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.dispose::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.extractSymbols::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.extractEdges::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.extractComplexity::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.isSupported::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.setSymbolRegistry::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.getAnalyzerDelegate::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.getTier::method"
+    }
+  ],
+  "contentHash": "8f55f8beb398e2175bc24dae77f79c1bd5bedf6d6c0c03b99ee1a0726ed6545a",
+  "edges": [
+    {
+      "from": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class"
+    },
+    {
+      "from": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-go/src/go-adapter.ts::GoAdapter::class"
+    },
+    {
+      "from": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-go/src/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter::class",
+      "kind": "implements",
+      "to": "/packages/lang-go/src/composite-adapter.ts::ILanguageAdapter::interface"
+    },
+    {
+      "from": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.initialize::method",
+      "kind": "calls",
+      "to": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class"
+    },
+    {
+      "from": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class"
+    },
+    {
+      "from": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-go/src/go-adapter.ts::GoAdapter::class"
+    }
+  ],
+  "file": "packages/lang-go/src/composite-adapter.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T22:12:52+03:00",
+      "hash": "09870f90da437c0934e3db63cb475923c7dc960b",
+      "kind": "commit",
+      "message": "feat(lang-go): full-tier composite adapter wiring ctxo-go-analyzer"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 72,
+      "endOffset": 2518,
+      "kind": "class",
+      "name": "GoCompositeAdapter",
+      "startLine": 13,
+      "startOffset": 601,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter::class"
+    },
+    {
+      "endLine": 35,
+      "endOffset": 1344,
+      "kind": "method",
+      "name": "GoCompositeAdapter.initialize",
+      "startLine": 21,
+      "startOffset": 814,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.initialize::method"
+    },
+    {
+      "endLine": 39,
+      "endOffset": 1438,
+      "kind": "method",
+      "name": "GoCompositeAdapter.dispose",
+      "startLine": 37,
+      "startOffset": 1348,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.dispose::method"
+    },
+    {
+      "endLine": 43,
+      "endOffset": 1599,
+      "kind": "method",
+      "name": "GoCompositeAdapter.extractSymbols",
+      "startLine": 41,
+      "startOffset": 1442,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.extractSymbols::method"
+    },
+    {
+      "endLine": 47,
+      "endOffset": 1755,
+      "kind": "method",
+      "name": "GoCompositeAdapter.extractEdges",
+      "startLine": 45,
+      "startOffset": 1603,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.extractEdges::method"
+    },
+    {
+      "endLine": 52,
+      "endOffset": 1981,
+      "kind": "method",
+      "name": "GoCompositeAdapter.extractComplexity",
+      "startLine": 49,
+      "startOffset": 1759,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.extractComplexity::method"
+    },
+    {
+      "endLine": 56,
+      "endOffset": 2080,
+      "kind": "method",
+      "name": "GoCompositeAdapter.isSupported",
+      "startLine": 54,
+      "startOffset": 1985,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.isSupported::method"
+    },
+    {
+      "endLine": 60,
+      "endOffset": 2199,
+      "kind": "method",
+      "name": "GoCompositeAdapter.setSymbolRegistry",
+      "startLine": 58,
+      "startOffset": 2084,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.setSymbolRegistry::method"
+    },
+    {
+      "endLine": 65,
+      "endOffset": 2356,
+      "kind": "method",
+      "name": "GoCompositeAdapter.getAnalyzerDelegate",
+      "startLine": 63,
+      "startOffset": 2277,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.getAnalyzerDelegate::method"
+    },
+    {
+      "endLine": 71,
+      "endOffset": 2516,
+      "kind": "method",
+      "name": "GoCompositeAdapter.getTier",
+      "startLine": 67,
+      "startOffset": 2360,
+      "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.getTier::method"
+    }
+  ]
+}

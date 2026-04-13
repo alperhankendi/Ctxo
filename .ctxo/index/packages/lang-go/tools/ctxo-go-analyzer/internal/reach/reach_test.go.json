@@ -1,0 +1,129 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::TestBinaryReachability::function"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::TestLibraryMode::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::TestReflectSafe::function"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::TestJSONUnmarshalSafe::function"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::analyze::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::writeFixture::function"
+    }
+  ],
+  "contentHash": "33e6963e329e2a2e1f46f339908cc62ddf2a92c1723dfb0e6261dc40b8772c8e",
+  "edges": [
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::TestBinaryReachability::function",
+      "kind": "imports",
+      "to": "os::os::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::TestBinaryReachability::function",
+      "kind": "imports",
+      "to": "path/filepath::filepath::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::TestBinaryReachability::function",
+      "kind": "imports",
+      "to": "testing::testing::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::TestBinaryReachability::function",
+      "kind": "imports",
+      "to": "time::time::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::TestBinaryReachability::function",
+      "kind": "imports",
+      "to": "github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/load::load::variable"
+    }
+  ],
+  "file": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go",
+  "intent": [
+    {
+      "date": "2026-04-13T22:58:19+03:00",
+      "hash": "259c43751565ab18e791fdde6aa2abfd5231a712",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): subdir resilience for module-graph conflicts"
+    },
+    {
+      "date": "2026-04-13T22:00:43+03:00",
+      "hash": "5ed71639da45f9c489d1a640c0b08e1d61164f9b",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): SSA + CHA reachability with reflect-safe heuristics"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 36,
+      "endOffset": 816,
+      "kind": "function",
+      "name": "TestBinaryReachability",
+      "startLine": 11,
+      "startOffset": 151,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::TestBinaryReachability::function"
+    },
+    {
+      "endLine": 70,
+      "endOffset": 1908,
+      "kind": "function",
+      "name": "TestLibraryMode",
+      "startLine": 38,
+      "startOffset": 820,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::TestLibraryMode::function"
+    },
+    {
+      "endLine": 93,
+      "endOffset": 2570,
+      "kind": "function",
+      "name": "TestReflectSafe",
+      "startLine": 72,
+      "startOffset": 1912,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::TestReflectSafe::function"
+    },
+    {
+      "endLine": 115,
+      "endOffset": 3081,
+      "kind": "function",
+      "name": "TestJSONUnmarshalSafe",
+      "startLine": 95,
+      "startOffset": 2574,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::TestJSONUnmarshalSafe::function"
+    },
+    {
+      "endLine": 126,
+      "endOffset": 3309,
+      "kind": "function",
+      "name": "analyze",
+      "startLine": 119,
+      "startOffset": 3105,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::analyze::function"
+    },
+    {
+      "endLine": 141,
+      "endOffset": 3679,
+      "kind": "function",
+      "name": "writeFixture",
+      "startLine": 128,
+      "startOffset": 3313,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::writeFixture::function"
+    }
+  ]
+}

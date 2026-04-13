@@ -1,0 +1,47 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/lang-go/src/analyzer/toolchain-detect.ts::detectGoToolchain::function"
+    }
+  ],
+  "contentHash": "d35f12b29ff96514d9cd20cbf595cda4e41745c78ac4f915b077b8baf85d4f88",
+  "edges": [
+    {
+      "from": "packages/lang-go/src/analyzer/toolchain-detect.ts::detectGoToolchain::function",
+      "kind": "imports",
+      "to": "packages/lang-go/src/logger.ts::createLogger::function"
+    }
+  ],
+  "file": "packages/lang-go/src/analyzer/toolchain-detect.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T22:12:52+03:00",
+      "hash": "09870f90da437c0934e3db63cb475923c7dc960b",
+      "kind": "commit",
+      "message": "feat(lang-go): full-tier composite adapter wiring ctxo-go-analyzer"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 37,
+      "endOffset": 1266,
+      "kind": "function",
+      "name": "detectGoToolchain",
+      "startLine": 18,
+      "startOffset": 459,
+      "symbolId": "packages/lang-go/src/analyzer/toolchain-detect.ts::detectGoToolchain::function"
+    },
+    {
+      "endLine": 8,
+      "endOffset": 218,
+      "kind": "interface",
+      "name": "GoToolchainInfo",
+      "startLine": 5,
+      "startOffset": 140,
+      "symbolId": "packages/lang-go/src/analyzer/toolchain-detect.ts::GoToolchainInfo::interface"
+    }
+  ]
+}

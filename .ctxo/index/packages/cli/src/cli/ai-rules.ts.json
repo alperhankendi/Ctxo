@@ -30,7 +30,7 @@
       "symbolId": "packages/cli/src/cli/ai-rules.ts::ensureMcpConfig::function"
     }
   ],
-  "contentHash": "a77745546332d67dd2c58b8704007ad9bde2e8a3cccb60e1205c3711b53fa4fd",
+  "contentHash": "f100d1719c203f6888ec4ac4b5ede3e97b3a9db3b337f158ac8781b68d4eada0",
   "edges": [
     {
       "from": "packages/cli/src/cli/ai-rules.ts::generateRules::function",
@@ -61,6 +61,12 @@
   "file": "packages/cli/src/cli/ai-rules.ts",
   "intent": [
     {
+      "date": "2026-04-14T00:09:00+03:00",
+      "hash": "6cd9f99085f9b5f1f71eb1d54a2baa953d18449c",
+      "kind": "commit",
+      "message": "feat(init): include commented index.ignore/ignoreProjects in generated config.yaml"
+    },
+    {
       "date": "2026-04-13T02:49:34+03:00",
       "hash": "d1b4329ed3b1df55acc21898505331c33407be12",
       "kind": "commit",
@@ -79,7 +85,7 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776040427,
+  "lastModified": 1776115134,
   "symbols": [
     {
       "endLine": 40,
@@ -118,30 +124,30 @@
       "symbolId": "packages/cli/src/cli/ai-rules.ts::ensureGitignore::function"
     },
     {
-      "endLine": 204,
-      "endOffset": 8636,
+      "endLine": 219,
+      "endOffset": 9110,
       "kind": "function",
       "name": "ensureConfig",
-      "startLine": 192,
-      "startOffset": 8203,
+      "startLine": 207,
+      "startOffset": 8677,
       "symbolId": "packages/cli/src/cli/ai-rules.ts::ensureConfig::function"
     },
     {
-      "endLine": 247,
-      "endOffset": 10122,
+      "endLine": 262,
+      "endOffset": 10596,
       "kind": "function",
       "name": "getMcpConfigTargets",
-      "startLine": 224,
-      "startOffset": 9293,
+      "startLine": 239,
+      "startOffset": 9767,
       "symbolId": "packages/cli/src/cli/ai-rules.ts::getMcpConfigTargets::function"
     },
     {
-      "endLine": 284,
-      "endOffset": 11450,
+      "endLine": 299,
+      "endOffset": 11924,
       "kind": "function",
       "name": "ensureMcpConfig",
-      "startLine": 249,
-      "startOffset": 10124,
+      "startLine": 264,
+      "startOffset": 10598,
       "symbolId": "packages/cli/src/cli/ai-rules.ts::ensureMcpConfig::function"
     },
     {

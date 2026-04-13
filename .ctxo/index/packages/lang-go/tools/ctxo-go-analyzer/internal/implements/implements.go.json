@@ -1,0 +1,94 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 14,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements.go::Extract::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements.go::kindOf::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements.go::relFile::function"
+    }
+  ],
+  "contentHash": "28b43c096d6331c9d0f6eb474c875b44c60e73634257897873235b1ba9dc62eb",
+  "edges": [
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements.go::Extract::function",
+      "kind": "imports",
+      "to": "go/token::token::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements.go::Extract::function",
+      "kind": "imports",
+      "to": "go/types::types::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements.go::Extract::function",
+      "kind": "imports",
+      "to": "path/filepath::filepath::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements.go::Extract::function",
+      "kind": "imports",
+      "to": "strings::strings::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements.go::Extract::function",
+      "kind": "imports",
+      "to": "golang.org/x/tools/go/packages::packages::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements.go::Extract::function",
+      "kind": "imports",
+      "to": "github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/emit::emit::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements.go::Extract::function",
+      "kind": "imports",
+      "to": "github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/symbols::symbols::variable"
+    }
+  ],
+  "file": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements.go",
+  "intent": [
+    {
+      "date": "2026-04-13T21:53:15+03:00",
+      "hash": "62fc8f3c3f7ee2d738bd36d2dad44a5b96b20725",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): implements edges via types.Implements"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 91,
+      "endOffset": 2632,
+      "kind": "function",
+      "name": "Extract",
+      "startLine": 21,
+      "startOffset": 787,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements.go::Extract::function"
+    },
+    {
+      "endLine": 102,
+      "endOffset": 2816,
+      "kind": "function",
+      "name": "kindOf",
+      "startLine": 93,
+      "startOffset": 2634,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements.go::kindOf::function"
+    },
+    {
+      "endLine": 114,
+      "endOffset": 3093,
+      "kind": "function",
+      "name": "relFile",
+      "startLine": 104,
+      "startOffset": 2818,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements.go::relFile::function"
+    }
+  ]
+}

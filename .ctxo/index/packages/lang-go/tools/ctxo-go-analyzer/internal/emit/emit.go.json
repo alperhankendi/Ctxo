@@ -1,0 +1,254 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::NewWriter::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.File::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.Project::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.Dead::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.Summary::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.Progress::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.Flush::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.writeJSON::method"
+    }
+  ],
+  "contentHash": "5a365ac97cccf99ee4b4c6f70edfd24ce24b381eb29092e970e4af40eb3aa234",
+  "edges": [
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Symbol::class",
+      "kind": "imports",
+      "to": "bufio::bufio::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Symbol::class",
+      "kind": "imports",
+      "to": "encoding/json::json::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Symbol::class",
+      "kind": "imports",
+      "to": "fmt::fmt::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Symbol::class",
+      "kind": "imports",
+      "to": "io::io::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Symbol::class",
+      "kind": "imports",
+      "to": "sync::sync::variable"
+    }
+  ],
+  "file": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go",
+  "intent": [
+    {
+      "date": "2026-04-13T22:00:43+03:00",
+      "hash": "5ed71639da45f9c489d1a640c0b08e1d61164f9b",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): SSA + CHA reachability with reflect-safe heuristics"
+    },
+    {
+      "date": "2026-04-13T21:40:52+03:00",
+      "hash": "082b80be90adc99a9887e6a200484a256f32fdea",
+      "kind": "commit",
+      "message": "feat(lang-go): scaffold ctxo-go-analyzer binary (emit package + skeleton main)"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 23,
+      "endOffset": 743,
+      "kind": "class",
+      "name": "Symbol",
+      "startLine": 15,
+      "startOffset": 436,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Symbol::class"
+    },
+    {
+      "endLine": 33,
+      "endOffset": 1115,
+      "kind": "class",
+      "name": "Edge",
+      "startLine": 28,
+      "startOffset": 951,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Edge::class"
+    },
+    {
+      "endLine": 40,
+      "endOffset": 1353,
+      "kind": "class",
+      "name": "Complexity",
+      "startLine": 37,
+      "startOffset": 1253,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Complexity::class"
+    },
+    {
+      "endLine": 49,
+      "endOffset": 1651,
+      "kind": "class",
+      "name": "FileRecord",
+      "startLine": 43,
+      "startOffset": 1419,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::FileRecord::class"
+    },
+    {
+      "endLine": 56,
+      "endOffset": 1890,
+      "kind": "class",
+      "name": "ProjectRecord",
+      "startLine": 52,
+      "startOffset": 1734,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::ProjectRecord::class"
+    },
+    {
+      "endLine": 61,
+      "endOffset": 1979,
+      "kind": "class",
+      "name": "ProjectEntry",
+      "startLine": 58,
+      "startOffset": 1899,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::ProjectEntry::class"
+    },
+    {
+      "endLine": 67,
+      "endOffset": 2093,
+      "kind": "class",
+      "name": "ProjectEdge",
+      "startLine": 63,
+      "startOffset": 1988,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::ProjectEdge::class"
+    },
+    {
+      "endLine": 75,
+      "endOffset": 2341,
+      "kind": "class",
+      "name": "Summary",
+      "startLine": 70,
+      "startOffset": 2167,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Summary::class"
+    },
+    {
+      "endLine": 82,
+      "endOffset": 2570,
+      "kind": "class",
+      "name": "Progress",
+      "startLine": 79,
+      "startOffset": 2485,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Progress::class"
+    },
+    {
+      "endLine": 93,
+      "endOffset": 3068,
+      "kind": "class",
+      "name": "Dead",
+      "startLine": 88,
+      "startOffset": 2891,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Dead::class"
+    },
+    {
+      "endLine": 101,
+      "endOffset": 3276,
+      "kind": "class",
+      "name": "Writer",
+      "startLine": 97,
+      "startOffset": 3209,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer::class"
+    },
+    {
+      "endLine": 106,
+      "endOffset": 3414,
+      "kind": "function",
+      "name": "NewWriter",
+      "startLine": 104,
+      "startOffset": 3333,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::NewWriter::function"
+    },
+    {
+      "endLine": 121,
+      "endOffset": 3727,
+      "kind": "method",
+      "name": "Writer.File",
+      "startLine": 109,
+      "startOffset": 3455,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.File::method"
+    },
+    {
+      "endLine": 133,
+      "endOffset": 4008,
+      "kind": "method",
+      "name": "Writer.Project",
+      "startLine": 124,
+      "startOffset": 3775,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.Project::method"
+    },
+    {
+      "endLine": 142,
+      "endOffset": 4209,
+      "kind": "method",
+      "name": "Writer.Dead",
+      "startLine": 136,
+      "startOffset": 4059,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.Dead::method"
+    },
+    {
+      "endLine": 151,
+      "endOffset": 4423,
+      "kind": "method",
+      "name": "Writer.Summary",
+      "startLine": 145,
+      "startOffset": 4272,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.Summary::method"
+    },
+    {
+      "endLine": 156,
+      "endOffset": 4591,
+      "kind": "method",
+      "name": "Writer.Progress",
+      "startLine": 154,
+      "startOffset": 4472,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.Progress::method"
+    },
+    {
+      "endLine": 166,
+      "endOffset": 4769,
+      "kind": "method",
+      "name": "Writer.Flush",
+      "startLine": 159,
+      "startOffset": 4636,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.Flush::method"
+    },
+    {
+      "endLine": 188,
+      "endOffset": 5180,
+      "kind": "method",
+      "name": "Writer.writeJSON",
+      "startLine": 168,
+      "startOffset": 4773,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.writeJSON::method"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 16,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols_test.go::TestExtract::function"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols_test.go::TestReceiverTypeName::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols_test.go::writeFixture::function"
+    }
+  ],
+  "contentHash": "eeff759598d73aee939a24f39f681ac08790dc5cb6ded3fa3afcf057129f0fcb",
+  "edges": [
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols_test.go::TestExtract::function",
+      "kind": "imports",
+      "to": "os::os::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols_test.go::TestExtract::function",
+      "kind": "imports",
+      "to": "path/filepath::filepath::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols_test.go::TestExtract::function",
+      "kind": "imports",
+      "to": "strings::strings::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols_test.go::TestExtract::function",
+      "kind": "imports",
+      "to": "testing::testing::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols_test.go::TestExtract::function",
+      "kind": "imports",
+      "to": "github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/load::load::variable"
+    }
+  ],
+  "file": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols_test.go",
+  "intent": [
+    {
+      "date": "2026-04-13T22:58:19+03:00",
+      "hash": "259c43751565ab18e791fdde6aa2abfd5231a712",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): subdir resilience for module-graph conflicts"
+    },
+    {
+      "date": "2026-04-13T21:48:01+03:00",
+      "hash": "1b3766b92bade9a1c7780b82873580afea3338ac",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): add go/packages loader + AST symbol extraction"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 113,
+      "endOffset": 2431,
+      "kind": "function",
+      "name": "TestExtract",
+      "startLine": 11,
+      "startOffset": 145,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols_test.go::TestExtract::function"
+    },
+    {
+      "endLine": 143,
+      "endOffset": 3042,
+      "kind": "function",
+      "name": "TestReceiverTypeName",
+      "startLine": 115,
+      "startOffset": 2433,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols_test.go::TestReceiverTypeName::function"
+    },
+    {
+      "endLine": 158,
+      "endOffset": 3397,
+      "kind": "function",
+      "name": "writeFixture",
+      "startLine": 145,
+      "startOffset": 3044,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols_test.go::writeFixture::function"
+    }
+  ]
+}

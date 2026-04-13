@@ -6,11 +6,11 @@
       "symbolId": "packages/cli/src/cli/plugin-loader.ts::loadManifestPath::function"
     },
     {
-      "cyclomatic": 4,
+      "cyclomatic": 6,
       "symbolId": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function"
     }
   ],
-  "contentHash": "ce0e71442554d24362de7839dd000fa259911bd350f68d34c87539a95ad9f4d7",
+  "contentHash": "4a8a5156ede7d84d1bb3b1c037c4b097fb6196234fe438989a48682182f25b51",
   "edges": [
     {
       "from": "packages/cli/src/cli/plugin-loader.ts::loadManifestPath::function",
@@ -35,6 +35,11 @@
     },
     {
       "from": "packages/cli/src/cli/plugin-loader.ts::loadManifestPath::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/load-config.ts::makeGlobMatcher::function"
+    },
+    {
+      "from": "packages/cli/src/cli/plugin-loader.ts::loadManifestPath::function",
       "kind": "calls",
       "to": "packages/cli/src/cli/plugin-loader.ts::resolveManifestPath::function"
     },
@@ -47,6 +52,11 @@
       "from": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function",
       "kind": "calls",
       "to": "packages/cli/src/adapters/workspace/single-package-workspace.ts::detectWorkspace::function"
+    },
+    {
+      "from": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/config/load-config.ts::makeGlobMatcher::function"
     },
     {
       "from": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function",
@@ -66,6 +76,11 @@
     {
       "from": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function",
       "kind": "uses",
+      "to": "packages/cli/src/core/config/load-config.ts::makeGlobMatcher::function"
+    },
+    {
+      "from": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function",
+      "kind": "uses",
       "to": "packages/cli/src/adapters/language/plugin-discovery.ts::discoverPlugins::function"
     },
     {
@@ -76,6 +91,12 @@
   ],
   "file": "packages/cli/src/cli/plugin-loader.ts",
   "intent": [
+    {
+      "date": "2026-04-14T00:07:20+03:00",
+      "hash": "30d5459eca9bc79be5a8f6814cbbfb4ed5c3bc14",
+      "kind": "commit",
+      "message": "feat(config): add index.ignore and index.ignoreProjects to .ctxo/config.yaml"
+    },
     {
       "date": "2026-04-13T02:12:22+03:00",
       "hash": "08f95346bc84fdb9fa9d4c23b5730254a39827a2",
@@ -89,34 +110,43 @@
       "message": "feat(lang-typescript): extract TypeScript adapter as @ctxo/lang-typescript plugin"
     }
   ],
-  "lastModified": 1776040428,
+  "lastModified": 1776115134,
   "symbols": [
     {
-      "endLine": 37,
-      "endOffset": 1459,
+      "endLine": 38,
+      "endOffset": 1524,
       "kind": "function",
       "name": "loadManifestPath",
-      "startLine": 35,
-      "startOffset": 1344,
+      "startLine": 36,
+      "startOffset": 1409,
       "symbolId": "packages/cli/src/cli/plugin-loader.ts::loadManifestPath::function"
     },
     {
-      "endLine": 94,
-      "endOffset": 3445,
+      "endLine": 111,
+      "endOffset": 4080,
       "kind": "function",
       "name": "loadPlugins",
-      "startLine": 73,
-      "startOffset": 2658,
+      "startLine": 83,
+      "startOffset": 3034,
       "symbolId": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function"
     },
     {
-      "endLine": 13,
-      "endOffset": 624,
+      "endLine": 14,
+      "endOffset": 689,
       "kind": "interface",
       "name": "LoadedPlugin",
-      "startLine": 9,
-      "startOffset": 484,
+      "startLine": 10,
+      "startOffset": 549,
       "symbolId": "packages/cli/src/cli/plugin-loader.ts::LoadedPlugin::interface"
+    },
+    {
+      "endLine": 81,
+      "endOffset": 3032,
+      "kind": "interface",
+      "name": "LoadPluginsOptions",
+      "startLine": 74,
+      "startOffset": 2723,
+      "symbolId": "packages/cli/src/cli/plugin-loader.ts::LoadPluginsOptions::interface"
     }
   ]
 }

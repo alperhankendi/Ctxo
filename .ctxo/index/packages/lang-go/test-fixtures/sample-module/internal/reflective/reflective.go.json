@@ -1,0 +1,73 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/reflective/reflective.go::Plugin.Run::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/reflective/reflective.go::Plugin.Validate::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/reflective/reflective.go::Inspect::function"
+    }
+  ],
+  "contentHash": "57576d98f6b3035ba06222e3f8b58a401a4274d14ad6d7491b140ddeb2181117",
+  "edges": [
+    {
+      "from": "packages/lang-go/test-fixtures/sample-module/internal/reflective/reflective.go::Plugin::class",
+      "kind": "imports",
+      "to": "reflect::reflect::variable"
+    }
+  ],
+  "file": "packages/lang-go/test-fixtures/sample-module/internal/reflective/reflective.go",
+  "intent": [
+    {
+      "date": "2026-04-13T22:15:35+03:00",
+      "hash": "136fd2a448c02c8f252458548c73c0efeca12b2c",
+      "kind": "commit",
+      "message": "test(lang-go): integration fixture sample-module exercising every analyzer feature"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 8,
+      "endOffset": 224,
+      "kind": "class",
+      "name": "Plugin",
+      "startLine": 6,
+      "startOffset": 194,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/reflective/reflective.go::Plugin::class"
+    },
+    {
+      "endLine": 12,
+      "endOffset": 286,
+      "kind": "method",
+      "name": "Plugin.Run",
+      "startLine": 10,
+      "startOffset": 226,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/reflective/reflective.go::Plugin.Run::method"
+    },
+    {
+      "endLine": 16,
+      "endOffset": 344,
+      "kind": "method",
+      "name": "Plugin.Validate",
+      "startLine": 14,
+      "startOffset": 288,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/reflective/reflective.go::Plugin.Validate::method"
+    },
+    {
+      "endLine": 22,
+      "endOffset": 515,
+      "kind": "function",
+      "name": "Inspect",
+      "startLine": 20,
+      "startOffset": 450,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/reflective/reflective.go::Inspect::function"
+    }
+  ]
+}

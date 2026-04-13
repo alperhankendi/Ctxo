@@ -1,0 +1,142 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 22,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::Extract::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::SymbolID::function"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::receiverTypeName::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::typeSpecKind::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::makeSymbol::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::relativeFile::function"
+    }
+  ],
+  "contentHash": "ae2544c5ee9f63569c26e6157c0b28e18accf777749ceb1f50235da23b6a4749",
+  "edges": [
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::FileSymbols::class",
+      "kind": "imports",
+      "to": "go/ast::ast::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::FileSymbols::class",
+      "kind": "imports",
+      "to": "go/token::token::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::FileSymbols::class",
+      "kind": "imports",
+      "to": "path/filepath::filepath::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::FileSymbols::class",
+      "kind": "imports",
+      "to": "sort::sort::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::FileSymbols::class",
+      "kind": "imports",
+      "to": "strings::strings::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::FileSymbols::class",
+      "kind": "imports",
+      "to": "golang.org/x/tools/go/packages::packages::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::FileSymbols::class",
+      "kind": "imports",
+      "to": "github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/emit::emit::variable"
+    }
+  ],
+  "file": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go",
+  "intent": [
+    {
+      "date": "2026-04-13T21:48:01+03:00",
+      "hash": "1b3766b92bade9a1c7780b82873580afea3338ac",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): add go/packages loader + AST symbol extraction"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 23,
+      "endOffset": 717,
+      "kind": "class",
+      "name": "FileSymbols",
+      "startLine": 20,
+      "startOffset": 656,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::FileSymbols::class"
+    },
+    {
+      "endLine": 105,
+      "endOffset": 2894,
+      "kind": "function",
+      "name": "Extract",
+      "startLine": 28,
+      "startOffset": 896,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::Extract::function"
+    },
+    {
+      "endLine": 110,
+      "endOffset": 3054,
+      "kind": "function",
+      "name": "SymbolID",
+      "startLine": 108,
+      "startOffset": 2958,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::SymbolID::function"
+    },
+    {
+      "endLine": 130,
+      "endOffset": 3616,
+      "kind": "function",
+      "name": "receiverTypeName",
+      "startLine": 115,
+      "startOffset": 3265,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::receiverTypeName::function"
+    },
+    {
+      "endLine": 141,
+      "endOffset": 3799,
+      "kind": "function",
+      "name": "typeSpecKind",
+      "startLine": 132,
+      "startOffset": 3618,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::typeSpecKind::function"
+    },
+    {
+      "endLine": 157,
+      "endOffset": 4241,
+      "kind": "function",
+      "name": "makeSymbol",
+      "startLine": 143,
+      "startOffset": 3801,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::makeSymbol::function"
+    },
+    {
+      "endLine": 171,
+      "endOffset": 4607,
+      "kind": "function",
+      "name": "relativeFile",
+      "startLine": 159,
+      "startOffset": 4243,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::relativeFile::function"
+    }
+  ]
+}

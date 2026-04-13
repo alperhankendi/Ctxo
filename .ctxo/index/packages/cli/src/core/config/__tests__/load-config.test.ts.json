@@ -1,0 +1,43 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "d00466038436f98e15e75bec4af71644b808c426894673f07bef9ff2f045061d",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/config/__tests__/load-config.test.ts::load-config.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
+    },
+    {
+      "from": "packages/cli/src/core/config/__tests__/load-config.test.ts::load-config.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/load-config.ts::statsEnabled::function"
+    },
+    {
+      "from": "packages/cli/src/core/config/__tests__/load-config.test.ts::load-config.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/load-config.ts::indexIgnorePatterns::function"
+    },
+    {
+      "from": "packages/cli/src/core/config/__tests__/load-config.test.ts::load-config.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/load-config.ts::indexIgnoreProjectPatterns::function"
+    },
+    {
+      "from": "packages/cli/src/core/config/__tests__/load-config.test.ts::load-config.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/load-config.ts::makeGlobMatcher::function"
+    }
+  ],
+  "file": "packages/cli/src/core/config/__tests__/load-config.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-14T00:07:20+03:00",
+      "hash": "30d5459eca9bc79be5a8f6814cbbfb4ed5c3bc14",
+      "kind": "commit",
+      "message": "feat(config): add index.ignore and index.ignoreProjects to .ctxo/config.yaml"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": []
+}

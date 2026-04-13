@@ -1,0 +1,75 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "ab3f786f1b53d838e3379b2647390dcaa56949e81b689aa0cb9848103d8e3ab0",
+  "edges": [
+    {
+      "from": "packages/cli/benchmarks/benchmark-runner.ts::benchmark-runner::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/benchmarks/benchmark-runner.ts::benchmark-runner::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "packages/cli/benchmarks/benchmark-runner.ts::benchmark-runner::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "packages/cli/benchmarks/benchmark-runner.ts::benchmark-runner::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function"
+    },
+    {
+      "from": "packages/cli/benchmarks/benchmark-runner.ts::benchmark-runner::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
+    },
+    {
+      "from": "packages/cli/benchmarks/benchmark-runner.ts::benchmark-runner::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function"
+    },
+    {
+      "from": "packages/cli/benchmarks/benchmark-runner.ts::benchmark-runner::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function"
+    },
+    {
+      "from": "packages/cli/benchmarks/benchmark-runner.ts::benchmark-runner::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function"
+    },
+    {
+      "from": "packages/cli/benchmarks/benchmark-runner.ts::benchmark-runner::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function"
+    },
+    {
+      "from": "packages/cli/benchmarks/benchmark-runner.ts::benchmark-runner::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/benchmarks/benchmark-runner.ts::benchmark-runner::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/benchmarks/benchmark-runner.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T03:58:16+03:00",
+      "hash": "a2d810f64494c2bce3ce667cae5e878304d2b5e1",
+      "kind": "commit",
+      "message": "feat(bench): NFR-1 performance harness (Phase C Step 39)"
+    }
+  ],
+  "lastModified": 1776115133,
+  "symbols": []
+}

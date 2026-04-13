@@ -38,7 +38,7 @@
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractComplexity::method"
     }
   ],
-  "contentHash": "fda0f5b054454d5a513531f6e8604246ed32e974c5116d8dd4f7e473c0843bb5",
+  "contentHash": "88bd28e4d6aa20e4d7831dd0699b1d812d5c755463265215b78a392f41b063ea",
   "edges": [
     {
       "from": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter::class",
@@ -49,102 +49,108 @@
   "file": "packages/lang-csharp/src/tree-sitter-adapter.ts",
   "intent": [
     {
+      "date": "2026-04-13T17:36:36+03:00",
+      "hash": "6524dde0f20b7acef9fa69d2daa4c22e9fc0f532",
+      "kind": "commit",
+      "message": "deps(tree-sitter): bump to 0.25 + relax adapter Language type"
+    },
+    {
       "date": "2026-04-13T02:01:42+03:00",
       "hash": "777ffddd20b586a9a44711ca77b43ea210f69d7b",
       "kind": "commit",
       "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
     }
   ],
-  "lastModified": 1776040428,
+  "lastModified": 1776115134,
   "symbols": [
     {
-      "endLine": 66,
-      "endOffset": 2095,
+      "endLine": 71,
+      "endOffset": 2534,
       "kind": "class",
       "name": "TreeSitterAdapter",
-      "startLine": 6,
-      "startOffset": 312,
+      "startLine": 10,
+      "startOffset": 616,
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter::class"
     },
     {
-      "endLine": 21,
-      "endOffset": 832,
+      "endLine": 26,
+      "endOffset": 1226,
       "kind": "method",
       "name": "TreeSitterAdapter.isSupported",
-      "startLine": 18,
-      "startOffset": 674,
+      "startLine": 23,
+      "startOffset": 1065,
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.isSupported::method"
     },
     {
-      "endLine": 25,
-      "endOffset": 936,
+      "endLine": 30,
+      "endOffset": 1334,
       "kind": "method",
       "name": "TreeSitterAdapter.setSymbolRegistry",
-      "startLine": 23,
-      "startOffset": 836,
+      "startLine": 28,
+      "startOffset": 1232,
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.setSymbolRegistry::method"
     },
     {
-      "endLine": 29,
-      "endOffset": 1021,
+      "endLine": 34,
+      "endOffset": 1423,
       "kind": "method",
       "name": "TreeSitterAdapter.parse",
-      "startLine": 27,
-      "startOffset": 940,
+      "startLine": 32,
+      "startOffset": 1340,
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.parse::method"
     },
     {
-      "endLine": 33,
-      "endOffset": 1156,
+      "endLine": 38,
+      "endOffset": 1562,
       "kind": "method",
       "name": "TreeSitterAdapter.buildSymbolId",
-      "startLine": 31,
-      "startOffset": 1025,
+      "startLine": 36,
+      "startOffset": 1429,
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.buildSymbolId::method"
     },
     {
-      "endLine": 47,
-      "endOffset": 1474,
+      "endLine": 52,
+      "endOffset": 1894,
       "kind": "method",
       "name": "TreeSitterAdapter.nodeToLineRange",
-      "startLine": 35,
-      "startOffset": 1160,
+      "startLine": 40,
+      "startOffset": 1568,
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.nodeToLineRange::method"
     },
     {
-      "endLine": 61,
-      "endOffset": 1833,
+      "endLine": 66,
+      "endOffset": 2267,
       "kind": "method",
       "name": "TreeSitterAdapter.countCyclomaticComplexity",
-      "startLine": 49,
-      "startOffset": 1478,
+      "startLine": 54,
+      "startOffset": 1900,
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.countCyclomaticComplexity::method"
     },
     {
-      "endLine": 63,
-      "endOffset": 1918,
+      "endLine": 68,
+      "endOffset": 2354,
       "kind": "method",
       "name": "TreeSitterAdapter.extractSymbols",
-      "startLine": 63,
-      "startOffset": 1837,
+      "startLine": 68,
+      "startOffset": 2273,
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractSymbols::method"
     },
     {
-      "endLine": 64,
-      "endOffset": 1999,
+      "endLine": 69,
+      "endOffset": 2436,
       "kind": "method",
       "name": "TreeSitterAdapter.extractEdges",
-      "startLine": 64,
-      "startOffset": 1921,
+      "startLine": 69,
+      "startOffset": 2358,
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractEdges::method"
     },
     {
-      "endLine": 65,
-      "endOffset": 2093,
+      "endLine": 70,
+      "endOffset": 2531,
       "kind": "method",
       "name": "TreeSitterAdapter.extractComplexity",
-      "startLine": 65,
-      "startOffset": 2002,
+      "startLine": 70,
+      "startOffset": 2440,
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractComplexity::method"
     }
   ]

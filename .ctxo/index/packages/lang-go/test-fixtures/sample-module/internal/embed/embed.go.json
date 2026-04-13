@@ -1,0 +1,59 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/embed/embed.go::Base.Identifier::method"
+    }
+  ],
+  "contentHash": "1d26c06d2a78b8bd817818ab9e83f3f29a666a6f19d7901787cb48456a72bad0",
+  "edges": [],
+  "file": "packages/lang-go/test-fixtures/sample-module/internal/embed/embed.go",
+  "intent": [
+    {
+      "date": "2026-04-13T22:15:35+03:00",
+      "hash": "136fd2a448c02c8f252458548c73c0efeca12b2c",
+      "kind": "commit",
+      "message": "test(lang-go): integration fixture sample-module exercising every analyzer feature"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 6,
+      "endOffset": 186,
+      "kind": "class",
+      "name": "Base",
+      "startLine": 4,
+      "startOffset": 160,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/embed/embed.go::Base::class"
+    },
+    {
+      "endLine": 10,
+      "endOffset": 239,
+      "kind": "method",
+      "name": "Base.Identifier",
+      "startLine": 8,
+      "startOffset": 188,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/embed/embed.go::Base.Identifier::method"
+    },
+    {
+      "endLine": 16,
+      "endOffset": 341,
+      "kind": "class",
+      "name": "ChildJob",
+      "startLine": 13,
+      "startOffset": 302,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/embed/embed.go::ChildJob::class"
+    },
+    {
+      "endLine": 22,
+      "endOffset": 421,
+      "kind": "class",
+      "name": "Variant",
+      "startLine": 19,
+      "startOffset": 384,
+      "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/embed/embed.go::Variant::class"
+    }
+  ]
+}

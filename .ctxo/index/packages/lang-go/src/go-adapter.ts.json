@@ -2,7 +2,7 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 11,
+      "cyclomatic": 9,
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractSymbols::method"
     },
     {
@@ -10,7 +10,7 @@
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractEdges::method"
     },
     {
-      "cyclomatic": 10,
+      "cyclomatic": 8,
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractComplexity::method"
     },
     {
@@ -34,7 +34,7 @@
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.findFirstExportedSymbolId::method"
     }
   ],
-  "contentHash": "bd50cb41c58a900d39480312bbadf0a87881ddf62fa3e4a9250abdcbd0e4d729",
+  "contentHash": "cef71514b8cea031bda57ec431931747d9d71eba18b15a03082f959a9827f0c2",
   "edges": [
     {
       "from": "packages/lang-go/src/go-adapter.ts::GoAdapter::class",
@@ -43,18 +43,13 @@
     },
     {
       "from": "packages/lang-go/src/go-adapter.ts::GoAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-go/src/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/lang-go/src/go-adapter.ts::GoAdapter::class",
       "kind": "extends",
       "to": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter::class"
-    },
-    {
-      "from": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractSymbols::method",
-      "kind": "calls",
-      "to": "packages/lang-go/src/go-adapter.ts::GoAdapter.isExported::method"
-    },
-    {
-      "from": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractSymbols::method",
-      "kind": "calls",
-      "to": "packages/lang-go/src/go-adapter.ts::GoAdapter.isExported::method"
     },
     {
       "from": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractSymbols::method",
@@ -75,16 +70,6 @@
       "from": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractEdges::method",
       "kind": "calls",
       "to": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractImportEdges::method"
-    },
-    {
-      "from": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractComplexity::method",
-      "kind": "calls",
-      "to": "packages/lang-go/src/go-adapter.ts::GoAdapter.isExported::method"
-    },
-    {
-      "from": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractComplexity::method",
-      "kind": "calls",
-      "to": "packages/lang-go/src/go-adapter.ts::GoAdapter.isExported::method"
     },
     {
       "from": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractComplexity::method",
@@ -115,93 +100,99 @@
   "file": "packages/lang-go/src/go-adapter.ts",
   "intent": [
     {
+      "date": "2026-04-13T22:12:52+03:00",
+      "hash": "09870f90da437c0934e3db63cb475923c7dc960b",
+      "kind": "commit",
+      "message": "feat(lang-go): full-tier composite adapter wiring ctxo-go-analyzer"
+    },
+    {
       "date": "2026-04-13T01:52:29+03:00",
       "hash": "00cff73ddde2917c6dca764478fd0747633c1032",
       "kind": "commit",
       "message": "feat(lang-go): extract Go adapter as @ctxo/lang-go plugin"
     }
   ],
-  "lastModified": 1776040428,
+  "lastModified": 1776115134,
   "symbols": [
     {
-      "endLine": 221,
-      "endOffset": 7750,
+      "endLine": 224,
+      "endOffset": 7679,
       "kind": "class",
       "name": "GoAdapter",
-      "startLine": 12,
-      "startOffset": 434,
+      "startLine": 15,
+      "startOffset": 521,
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter::class"
     },
     {
-      "endLine": 63,
-      "endOffset": 2165,
+      "endLine": 66,
+      "endOffset": 2180,
       "kind": "method",
       "name": "GoAdapter.extractSymbols",
-      "startLine": 19,
-      "startOffset": 576,
+      "startLine": 22,
+      "startOffset": 663,
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractSymbols::method"
     },
     {
-      "endLine": 85,
-      "endOffset": 2890,
+      "endLine": 88,
+      "endOffset": 2891,
       "kind": "method",
       "name": "GoAdapter.extractEdges",
-      "startLine": 65,
-      "startOffset": 2169,
+      "startLine": 68,
+      "startOffset": 2184,
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractEdges::method"
     },
     {
-      "endLine": 121,
-      "endOffset": 4286,
+      "endLine": 124,
+      "endOffset": 4215,
       "kind": "method",
       "name": "GoAdapter.extractComplexity",
-      "startLine": 87,
-      "startOffset": 2894,
+      "startLine": 90,
+      "startOffset": 2895,
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractComplexity::method"
     },
     {
-      "endLine": 127,
-      "endOffset": 4510,
+      "endLine": 130,
+      "endOffset": 4439,
       "kind": "method",
       "name": "GoAdapter.isExported",
-      "startLine": 125,
-      "startOffset": 4357,
+      "startLine": 128,
+      "startOffset": 4286,
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.isExported::method"
     },
     {
-      "endLine": 146,
-      "endOffset": 5185,
+      "endLine": 149,
+      "endOffset": 5114,
       "kind": "method",
       "name": "GoAdapter.extractReceiverType",
-      "startLine": 129,
-      "startOffset": 4514,
+      "startLine": 132,
+      "startOffset": 4443,
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractReceiverType::method"
     },
     {
-      "endLine": 170,
-      "endOffset": 6019,
+      "endLine": 173,
+      "endOffset": 5948,
       "kind": "method",
       "name": "GoAdapter.extractTypeSymbols",
-      "startLine": 148,
-      "startOffset": 5189,
+      "startLine": 151,
+      "startOffset": 5118,
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractTypeSymbols::method"
     },
     {
-      "endLine": 195,
-      "endOffset": 6716,
+      "endLine": 198,
+      "endOffset": 6645,
       "kind": "method",
       "name": "GoAdapter.extractImportEdges",
-      "startLine": 172,
-      "startOffset": 6023,
+      "startLine": 175,
+      "startOffset": 5952,
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractImportEdges::method"
     },
     {
-      "endLine": 220,
-      "endOffset": 7748,
+      "endLine": 223,
+      "endOffset": 7677,
       "kind": "method",
       "name": "GoAdapter.findFirstExportedSymbolId",
-      "startLine": 197,
-      "startOffset": 6720,
+      "startLine": 200,
+      "startOffset": 6649,
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.findFirstExportedSymbolId::method"
     }
   ]

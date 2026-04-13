@@ -1,0 +1,79 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 9,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit_test.go::TestWriterEmitsJSONLWithTypeTag::function"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit_test.go::TestFileRecordDefaultsEmptySlices::function"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit_test.go::TestEdgeTypeArgsOmitEmpty::function"
+    }
+  ],
+  "contentHash": "2308bd496b07b0b745fc59aa10c2aadd40fd8dcb73df113b277ffeae879b0e37",
+  "edges": [
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit_test.go::TestWriterEmitsJSONLWithTypeTag::function",
+      "kind": "imports",
+      "to": "bytes::bytes::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit_test.go::TestWriterEmitsJSONLWithTypeTag::function",
+      "kind": "imports",
+      "to": "encoding/json::json::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit_test.go::TestWriterEmitsJSONLWithTypeTag::function",
+      "kind": "imports",
+      "to": "strings::strings::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit_test.go::TestWriterEmitsJSONLWithTypeTag::function",
+      "kind": "imports",
+      "to": "testing::testing::variable"
+    }
+  ],
+  "file": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit_test.go",
+  "intent": [
+    {
+      "date": "2026-04-13T21:40:52+03:00",
+      "hash": "082b80be90adc99a9887e6a200484a256f32fdea",
+      "kind": "commit",
+      "message": "feat(lang-go): scaffold ctxo-go-analyzer binary (emit package + skeleton main)"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 41,
+      "endOffset": 1113,
+      "kind": "function",
+      "name": "TestWriterEmitsJSONLWithTypeTag",
+      "startLine": 9,
+      "startOffset": 83,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit_test.go::TestWriterEmitsJSONLWithTypeTag::function"
+    },
+    {
+      "endLine": 65,
+      "endOffset": 1737,
+      "kind": "function",
+      "name": "TestFileRecordDefaultsEmptySlices",
+      "startLine": 43,
+      "startOffset": 1117,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit_test.go::TestFileRecordDefaultsEmptySlices::function"
+    },
+    {
+      "endLine": 83,
+      "endOffset": 2246,
+      "kind": "function",
+      "name": "TestEdgeTypeArgsOmitEmpty",
+      "startLine": 67,
+      "startOffset": 1741,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit_test.go::TestEdgeTypeArgsOmitEmpty::function"
+    }
+  ]
+}

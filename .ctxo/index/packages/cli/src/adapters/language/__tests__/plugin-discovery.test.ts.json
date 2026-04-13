@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "a957dc1731378d01c41914bd8225f447b7298dba493afe4022564fc936384652",
+  "contentHash": "5b4f73b6f579b7cbb3e0edf4964492aa7de3dafc877ddd3aba082fe61b8e765a",
   "edges": [
     {
       "from": "packages/cli/src/adapters/language/__tests__/plugin-discovery.test.ts::plugin-discovery.test::variable",
@@ -12,12 +12,18 @@
   "file": "packages/cli/src/adapters/language/__tests__/plugin-discovery.test.ts",
   "intent": [
     {
+      "date": "2026-04-14T00:07:20+03:00",
+      "hash": "30d5459eca9bc79be5a8f6814cbbfb4ed5c3bc14",
+      "kind": "commit",
+      "message": "feat(config): add index.ignore and index.ignoreProjects to .ctxo/config.yaml"
+    },
+    {
       "date": "2026-04-13T02:44:06+03:00",
       "hash": "bacd0be38ebd8798e5a3e1a2df894d356aba3139",
       "kind": "commit",
       "message": "test(cli): audit cleanup — add plugin protocol coverage, fix ctxo-mcp drift"
     }
   ],
-  "lastModified": 1776040427,
+  "lastModified": 1776115134,
   "symbols": []
 }

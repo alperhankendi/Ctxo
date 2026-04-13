@@ -1,0 +1,232 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 8,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::Analyze::function"
+    },
+    {
+      "cyclomatic": 8,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::reachableFromGraph::function"
+    },
+    {
+      "cyclomatic": 17,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::collectRoots::function"
+    },
+    {
+      "cyclomatic": 11,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::applyReflectSafe::function"
+    },
+    {
+      "cyclomatic": 11,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::isReflectOrJSONCall::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::addMethodsToReachable::function"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::ssaFuncSymbolID::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::receiverName::function"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::inModule::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::isExported::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::relFile::function"
+    }
+  ],
+  "contentHash": "8dfa9f89f3bdb4f56dd4e42558ff0cdcc1c1fed638edb3b0acbb68eaf2f3e5ca",
+  "edges": [
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::Result::class",
+      "kind": "imports",
+      "to": "go/ast::ast::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::Result::class",
+      "kind": "imports",
+      "to": "go/token::token::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::Result::class",
+      "kind": "imports",
+      "to": "go/types::types::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::Result::class",
+      "kind": "imports",
+      "to": "path/filepath::filepath::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::Result::class",
+      "kind": "imports",
+      "to": "strings::strings::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::Result::class",
+      "kind": "imports",
+      "to": "time::time::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::Result::class",
+      "kind": "imports",
+      "to": "golang.org/x/tools/go/callgraph::callgraph::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::Result::class",
+      "kind": "imports",
+      "to": "golang.org/x/tools/go/callgraph/cha::cha::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::Result::class",
+      "kind": "imports",
+      "to": "golang.org/x/tools/go/packages::packages::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::Result::class",
+      "kind": "imports",
+      "to": "golang.org/x/tools/go/ssa::ssa::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::Result::class",
+      "kind": "imports",
+      "to": "golang.org/x/tools/go/ssa/ssautil::ssautil::variable"
+    },
+    {
+      "from": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::Result::class",
+      "kind": "imports",
+      "to": "github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/symbols::symbols::variable"
+    }
+  ],
+  "file": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go",
+  "intent": [
+    {
+      "date": "2026-04-13T22:00:43+03:00",
+      "hash": "5ed71639da45f9c489d1a640c0b08e1d61164f9b",
+      "kind": "commit",
+      "message": "feat(lang-go/analyzer): SSA + CHA reachability with reflect-safe heuristics"
+    }
+  ],
+  "lastModified": 1776115134,
+  "symbols": [
+    {
+      "endLine": 42,
+      "endOffset": 1516,
+      "kind": "class",
+      "name": "Result",
+      "startLine": 37,
+      "startOffset": 1415,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::Result::class"
+    },
+    {
+      "endLine": 87,
+      "endOffset": 2750,
+      "kind": "function",
+      "name": "Analyze",
+      "startLine": 46,
+      "startOffset": 1669,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::Analyze::function"
+    },
+    {
+      "endLine": 117,
+      "endOffset": 3509,
+      "kind": "function",
+      "name": "reachableFromGraph",
+      "startLine": 91,
+      "startOffset": 2901,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::reachableFromGraph::function"
+    },
+    {
+      "endLine": 182,
+      "endOffset": 5334,
+      "kind": "function",
+      "name": "collectRoots",
+      "startLine": 122,
+      "startOffset": 3721,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::collectRoots::function"
+    },
+    {
+      "endLine": 223,
+      "endOffset": 6429,
+      "kind": "function",
+      "name": "applyReflectSafe",
+      "startLine": 187,
+      "startOffset": 5556,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::applyReflectSafe::function"
+    },
+    {
+      "endLine": 253,
+      "endOffset": 6991,
+      "kind": "function",
+      "name": "isReflectOrJSONCall",
+      "startLine": 225,
+      "startOffset": 6431,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::isReflectOrJSONCall::function"
+    },
+    {
+      "endLine": 269,
+      "endOffset": 7452,
+      "kind": "function",
+      "name": "addMethodsToReachable",
+      "startLine": 255,
+      "startOffset": 6993,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::addMethodsToReachable::function"
+    },
+    {
+      "endLine": 297,
+      "endOffset": 8310,
+      "kind": "function",
+      "name": "ssaFuncSymbolID",
+      "startLine": 274,
+      "startOffset": 7658,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::ssaFuncSymbolID::function"
+    },
+    {
+      "endLine": 307,
+      "endOffset": 8484,
+      "kind": "function",
+      "name": "receiverName",
+      "startLine": 299,
+      "startOffset": 8312,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::receiverName::function"
+    },
+    {
+      "endLine": 315,
+      "endOffset": 8690,
+      "kind": "function",
+      "name": "inModule",
+      "startLine": 309,
+      "startOffset": 8486,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::inModule::function"
+    },
+    {
+      "endLine": 319,
+      "endOffset": 8784,
+      "kind": "function",
+      "name": "isExported",
+      "startLine": 317,
+      "startOffset": 8692,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::isExported::function"
+    },
+    {
+      "endLine": 331,
+      "endOffset": 9061,
+      "kind": "function",
+      "name": "relFile",
+      "startLine": 321,
+      "startOffset": 8786,
+      "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::relFile::function"
+    }
+  ]
+}
