@@ -1,6 +1,6 @@
 {
   "name": "@ctxo/lang-typescript",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Ctxo TypeScript/JavaScript language plugin (ts-morph, full tier)",
   "type": "module",
   "engines": {
@@ -39,7 +39,7 @@
     "ts-morph": "^28.0.0"
   },
   "peerDependencies": {
-    "@ctxo/plugin-api": "^0.7.0"
+    "@ctxo/plugin-api": "^0.7.1"
   },
   "devDependencies": {
     "@ctxo/plugin-api": "workspace:*",

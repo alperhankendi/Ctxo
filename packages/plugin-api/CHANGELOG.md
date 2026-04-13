@@ -1,6 +1,6 @@
-# @ctxo/cli
+# @ctxo/plugin-api
 
-## 0.7.2
+## 0.7.1
 
 ### Patch Changes
 
@@ -11,12 +11,3 @@
   - After publish, automatically fixes npm dist-tags so prerelease versions (`-alpha`, `-beta`, `-rc`, `-next`) move to the matching channel tag and `latest` stays pinned to the highest stable version.
   - All public packages now declare `publishConfig.access: public` and `publishConfig.provenance: true` so per-package npm publishes (manual or automated) keep provenance and visibility consistent.
   - New `dist-tag-repair` workflow available from the Actions tab to manually re-align dist-tags for any package, with a `dry_run` switch.
-
-- Updated dependencies [5b1ea92]
-  - @ctxo/plugin-api@0.7.1
-
-## 0.7.1
-
-### Patch Changes
-
-- 35659c8: Improve GitHub Releases format. Per-package releases are replaced with a single umbrella release per published run, listing every package version published, the full compatible-set matrix across all `@ctxo/*` packages, and per-package CHANGELOG excerpts. Plugin-only releases also produce an umbrella entry. Alpha/beta/rc/next versions are auto-marked as pre-release.
