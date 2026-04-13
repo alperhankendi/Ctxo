@@ -54,16 +54,16 @@ jobs:
             exit 1
           fi
 
+      # Build first: cross-package typecheck needs sibling packages' dist/
+      # to be present (workspace:* deps point at built type declarations).
+      - name: Build workspace packages
+        run: pnpm -r build
+
       - name: Typecheck workspace
         run: pnpm -r typecheck
 
       - name: Test workspace
         run: pnpm -r test
-
-      # Build every package so the npm tarballs carry dist/ and so the pnpm
-      # publish step sees up-to-date workspace:* dependency resolution.
-      - name: Build workspace packages
-        run: pnpm -r build
 
       - name: Create Release Pull Request or Publish
         id: changesets
