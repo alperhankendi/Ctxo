@@ -1,4 +1,4 @@
-import { join, dirname } from 'node:path';
+import { join } from 'node:path';
 import { existsSync, readFileSync, writeFileSync, mkdirSync, chmodSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { PLATFORMS, detectPlatforms, installRules, ensureGitignore, ensureConfig, getMcpConfigTargets, ensureMcpConfig } from './ai-rules.js';
@@ -11,17 +11,6 @@ import {
 import { InstallCommand } from './install-command.js';
 
 const requireCjs = createRequire(import.meta.url);
-
-function locateGitRoot(startDir: string): string | null {
-  let dir = startDir;
-  for (let i = 0; i < 12; i++) {
-    if (existsSync(join(dir, '.git'))) return dir;
-    const parent = dirname(dir);
-    if (parent === dir) break;
-    dir = parent;
-  }
-  return null;
-}
 
 function resolveInstalledPlugins(needed: readonly KnownLanguage[]): {
   installed: KnownLanguage[];
@@ -159,10 +148,8 @@ export class InitCommand {
   private readonly projectRoot: string;
 
   constructor(projectRoot: string) {
-    // If cwd sits below the repo root (e.g. pnpm --filter sets cwd to packages/cli
-    // inside a monorepo), walk up to the nearest ancestor that contains .git so
-    // init operates on the correct project.
-    this.projectRoot = locateGitRoot(projectRoot) ?? projectRoot;
+    // Router now resolves this; kept as a defensive copy for direct construction.
+    this.projectRoot = projectRoot;
   }
 
   installHooks(): void {
