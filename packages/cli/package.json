@@ -29,7 +29,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src/",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "bench": "tsx benchmarks/benchmark-runner.ts"
   },
   "keywords": [
     "mcp",

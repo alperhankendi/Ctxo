@@ -1,0 +1,63 @@
+name: Benchmark
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      # Re-run only when code that can move latency changed. Doc-only PRs stay fast.
+      - 'packages/cli/src/**'
+      - 'packages/lang-*/src/**'
+      - 'packages/plugin-api/src/**'
+      - 'packages/cli/benchmarks/**'
+      - '.github/workflows/benchmark.yml'
+  workflow_dispatch:
+    inputs:
+      size:
+        description: 'Synthetic index size (symbols)'
+        required: false
+        default: '1000'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  bench:
+    name: MCP tool benchmarks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+        with:
+          version: 10.9.0
+
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - name: Build workspace packages
+        run: pnpm -r build
+
+      - name: Run benchmarks
+        id: bench
+        env:
+          BENCH_SIZE: ${{ github.event.inputs.size || '1000' }}
+          BENCH_JSON: '1'
+        run: |
+          {
+            echo "## Benchmark results (size=$BENCH_SIZE)"
+            echo ""
+            pnpm --filter @ctxo/cli bench
+          } | tee -a $GITHUB_STEP_SUMMARY
+
+      - name: Upload benchmark JSON
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        if: always()
+        with:
+          name: benchmark-results
+          path: benchmark-results/latest.json
+          retention-days: 30
