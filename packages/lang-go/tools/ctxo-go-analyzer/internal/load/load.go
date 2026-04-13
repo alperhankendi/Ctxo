@@ -5,6 +5,7 @@ package load
 
 import (
 	"fmt"
+	"os"
 
 	"golang.org/x/tools/go/packages"
 )
@@ -43,6 +44,13 @@ func Packages(dir string, patterns ...string) (*LoadResult, error) {
 		Mode:  Mode,
 		Dir:   dir,
 		Tests: false,
+		// GOFLAGS=-mod=mod lets `go list` automatically add missing module
+		// entries (matches what `go build` does) instead of failing with
+		// "go: updates to go.mod needed; to update it: go mod tidy".
+		// Users get analysis without being forced to run `go mod tidy` first;
+		// go.mod/go.sum may gain entries — same side effect as a normal build.
+		// `-e` keeps loading even when individual packages have type errors.
+		Env: append(os.Environ(), "GOFLAGS=-mod=mod -e"),
 	}
 
 	pkgs, err := packages.Load(cfg, patterns...)
