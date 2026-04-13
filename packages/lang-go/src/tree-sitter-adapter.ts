@@ -1,6 +1,10 @@
 import Parser from 'tree-sitter';
 import type { Tree, SyntaxNode } from 'tree-sitter';
-type Language = Parameters<InstanceType<typeof Parser>['setLanguage']>[0];
+// Grammars (tree-sitter-go etc.) ship their own Language type which can drift
+// against tree-sitter's parameter type across major versions. Accept any
+// structurally compatible value and hand it to the parser as the runtime API
+// expects (the parser does its own validation).
+type Language = Parameters<InstanceType<typeof Parser>['setLanguage']>[0] | object;
 import { extname } from 'node:path';
 import type { SymbolNode, GraphEdge, ComplexityMetrics, SymbolKind, ILanguageAdapter } from '@ctxo/plugin-api';
 
@@ -13,7 +17,8 @@ export abstract class TreeSitterAdapter implements ILanguageAdapter {
 
   constructor(language: Language) {
     this.parser = new Parser();
-    this.parser.setLanguage(language);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.parser.setLanguage(language as any);
   }
 
   isSupported(filePath: string): boolean {
