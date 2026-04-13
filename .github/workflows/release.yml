@@ -50,7 +50,7 @@ jobs:
 
       - name: Create Release Pull Request or Publish
         id: changesets
-        uses: changesets/action@c2b8420a5a81b34e3a10e77a60e7a72cd7bb9e4c # v1.5.3
+        uses: changesets/action@e0145edc7d9d8679003495b11f87bd8ef63c0cba # v1.5.3
         with:
           # `pnpm release` runs `pnpm -r build && changeset publish` per root
           # package.json. changesets/action calls this only when no pending
