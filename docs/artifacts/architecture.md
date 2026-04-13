@@ -39,7 +39,7 @@ _This document builds collaboratively through step-by-step discovery. Sections a
 | FR-10 | Lazy indexing: zero-setup, index builds on first request | V1 |
 | FR-11 | Incremental updates: file watcher (dev-time) + git post-commit hook | V1 |
 | FR-12 | Multi-language: Go + C# via tree-sitter syntax adapters | V1.5 |
-| FR-13 | Go deep analysis: compose with gopls MCP server | V2 |
+| FR-13 | Go deep analysis: standalone `ctxo-go-analyzer` binary inside `@ctxo/lang-go` (go/packages + go/types + ssa + callgraph/cha + reflect-safe) | V0.8 ✅ |
 | FR-14 | C# deep analysis: Roslyn LSP adapter (dotnet pre-installed) | V2 |
 | FR-15 | Change Intelligence: code complexity scoring (cyclomatic, cognitive, nesting, param count) + change tracing (churn rate, change frequency, logical coupling) + composite health score per symbol/file | V1 |
 
@@ -671,7 +671,7 @@ compatible with all dependencies including native addons.
 | FR-10 | Lazy indexing | ✅ startup check in `src/index.ts` |
 | FR-11 | Incremental updates | ✅ chokidar + `cli/index-command.ts` |
 | FR-12 | Multi-language (V1.5) | ✅ deferred — tree-sitter adapter |
-| FR-13 | Go deep analysis (V2) | ✅ deferred — gopls MCP composition |
+| FR-13 | Go deep analysis | ✅ v0.8 — `ctxo-go-analyzer` binary in `@ctxo/lang-go`; see [ADR-013](../architecture/ADR/adr-013-go-full-tier-via-ctxo-go-analyzer-binary.md) |
 | FR-14 | C# deep analysis (V2) | ✅ deferred — Roslyn LSP |
 | FR-15 | Change Intelligence | ✅ `core/change-intelligence/` — formula TBD in story |
 | NFR-1 | Startup < 100ms | ✅ lazy init, no index load at startup |
