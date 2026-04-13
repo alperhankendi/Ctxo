@@ -21,6 +21,7 @@ import (
 
 	"github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/edges"
 	"github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/emit"
+	"github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/extends"
 	"github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/implements"
 	"github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/load"
 	"github.com/alperhankendi/ctxo/tools/ctxo-go-analyzer/internal/symbols"
@@ -99,6 +100,10 @@ func run(root string, stdout *os.File) error {
 
 	for rel, implEdges := range implements.Extract(root, res.Packages) {
 		get(rel).edges = append(get(rel).edges, implEdges...)
+	}
+
+	for rel, extEdges := range extends.Extract(root, res.Packages) {
+		get(rel).edges = append(get(rel).edges, extEdges...)
 	}
 
 	paths := make([]string, 0, len(byFile))
