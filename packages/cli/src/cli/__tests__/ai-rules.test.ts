@@ -217,6 +217,17 @@ describe('ensureConfig', () => {
     expect(existsSync(join(dir, '.ctxo', 'config.yaml'))).toBe(true);
     const content = readFileSync(join(dir, '.ctxo', 'config.yaml'), 'utf-8');
     expect(content).toContain('version');
+    expect(content).toContain('ignore: []');
+    expect(content).toContain('ignoreProjects: []');
+  });
+
+  it('generated config.yaml passes the loader and doctor checks', async () => {
+    const dir = makeTempDir();
+    ensureConfig(dir);
+    const { loadConfig } = await import('../../core/config/load-config.js');
+    const loaded = loadConfig(join(dir, '.ctxo'));
+    expect(loaded.errors).toEqual([]);
+    expect(loaded.invalidGlobs).toEqual([]);
   });
 
   it('skips if config.yaml already exists', () => {

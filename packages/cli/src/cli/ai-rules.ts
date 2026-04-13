@@ -188,6 +188,21 @@ export function ensureGitignore(projectRoot: string): InstallResult {
 const DEFAULT_CONFIG = `# ctxo project configuration
 # Docs: https://github.com/alperhankendi/Ctxo
 version: "1.0"
+
+# Exclude files and workspaces from indexing.
+# Uncomment and edit to activate — both fields accept picomatch globs
+# (forward-slash paths relative to repo root).
+index:
+  # Per-file filter applied after \`git ls-files\`.
+  ignore: []
+  # - "packages/**/fixtures/**"
+  # - "tools/legacy-*/**"
+
+  # Workspace filter — matching workspaces are skipped entirely
+  # (no plugin load, no file enumeration).
+  ignoreProjects: []
+  # - "packages/experimental-*"
+  # - "examples/*"
 `;
 
 export function ensureConfig(projectRoot: string): InstallResult {
