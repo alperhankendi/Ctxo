@@ -1,0 +1,67 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "8c0ff6964daddeb3aec5cb9e49ffcf69e613346f767db889f35b966c0e6cbdf2",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/graph/visualization-payload.ts::VisNode::interface",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolKind::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/graph/visualization-payload.ts::VisNode::interface",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::EdgeKind::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/core/graph/visualization-payload.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 17,
+      "endOffset": 496,
+      "kind": "interface",
+      "name": "VisNode",
+      "startLine": 2,
+      "startOffset": 58,
+      "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisNode::interface"
+    },
+    {
+      "endLine": 23,
+      "endOffset": 607,
+      "kind": "interface",
+      "name": "VisEdge",
+      "startLine": 19,
+      "startOffset": 498,
+      "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisEdge::interface"
+    },
+    {
+      "endLine": 29,
+      "endOffset": 830,
+      "kind": "interface",
+      "name": "VisFileInfo",
+      "startLine": 25,
+      "startOffset": 609,
+      "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisFileInfo::interface"
+    },
+    {
+      "endLine": 40,
+      "endOffset": 1139,
+      "kind": "interface",
+      "name": "VisualizationPayload",
+      "startLine": 31,
+      "startOffset": 832,
+      "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisualizationPayload::interface"
+    }
+  ]
+}

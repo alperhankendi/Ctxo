@@ -1,0 +1,45 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "5df4291601f673907ad1a58354aaab8756d5c22614f860d979ded99a2b6b8230",
+  "edges": [],
+  "file": "packages/cli/src/ports/i-watcher-port.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 7,
+      "endOffset": 246,
+      "kind": "interface",
+      "name": "IWatcherPort",
+      "startLine": 4,
+      "startOffset": 145,
+      "symbolId": "packages/cli/src/ports/i-watcher-port.ts::IWatcherPort::interface"
+    },
+    {
+      "endLine": 0,
+      "endOffset": 58,
+      "kind": "type",
+      "name": "FileChangeEvent",
+      "startLine": 0,
+      "startOffset": 0,
+      "symbolId": "packages/cli/src/ports/i-watcher-port.ts::FileChangeEvent::type"
+    },
+    {
+      "endLine": 2,
+      "endOffset": 143,
+      "kind": "type",
+      "name": "FileChangeHandler",
+      "startLine": 2,
+      "startOffset": 60,
+      "symbolId": "packages/cli/src/ports/i-watcher-port.ts::FileChangeHandler::type"
+    }
+  ]
+}

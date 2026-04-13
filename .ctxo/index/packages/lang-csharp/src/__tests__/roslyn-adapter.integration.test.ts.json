@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "5d789eb7076a995152b4ae47556ef265bf8fd4c731698f92af3a09e343f9a809",
+  "edges": [
+    {
+      "from": "packages/lang-csharp/src/__tests__/roslyn-adapter.integration.test.ts::roslyn-adapter.integration.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter::class"
+    }
+  ],
+  "file": "packages/lang-csharp/src/__tests__/roslyn-adapter.integration.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:01:42+03:00",
+      "hash": "777ffddd20b586a9a44711ca77b43ea210f69d7b",
+      "kind": "commit",
+      "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

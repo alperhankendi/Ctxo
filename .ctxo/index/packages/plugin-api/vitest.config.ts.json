@@ -1,0 +1,17 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "5a72f9c917b13ede29c1ca04b85f84b2e67db9859693e74f064812e8e53a6c5e",
+  "edges": [],
+  "file": "packages/plugin-api/vitest.config.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:44:06+03:00",
+      "hash": "bacd0be38ebd8798e5a3e1a2df894d356aba3139",
+      "kind": "commit",
+      "message": "test(cli): audit cleanup — add plugin protocol coverage, fix ctxo-mcp drift"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

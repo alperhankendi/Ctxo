@@ -1,0 +1,96 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 15,
+      "symbolId": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator.calculate::method"
+    }
+  ],
+  "contentHash": "60f81a5523c5796ba5420d155d404bfd1d525cfe4b2a0722f5841997eb2813b1",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CoChangeEntry::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator.calculate::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::edgeKindToConfidence::function"
+    },
+    {
+      "from": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::CoChangeEntry::interface"
+    }
+  ],
+  "file": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 136,
+      "endOffset": 5116,
+      "kind": "class",
+      "name": "BlastRadiusCalculator",
+      "startLine": 39,
+      "startOffset": 1130,
+      "symbolId": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "endLine": 135,
+      "endOffset": 5114,
+      "kind": "method",
+      "name": "BlastRadiusCalculator.calculate",
+      "startLine": 40,
+      "startOffset": 1169,
+      "symbolId": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator.calculate::method"
+    },
+    {
+      "endLine": 13,
+      "endOffset": 451,
+      "kind": "interface",
+      "name": "BlastRadiusEntry",
+      "startLine": 5,
+      "startOffset": 182,
+      "symbolId": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusEntry::interface"
+    },
+    {
+      "endLine": 22,
+      "endOffset": 720,
+      "kind": "interface",
+      "name": "BlastRadiusResult",
+      "startLine": 15,
+      "startOffset": 453,
+      "symbolId": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusResult::interface"
+    },
+    {
+      "endLine": 3,
+      "endOffset": 180,
+      "kind": "type",
+      "name": "ImpactConfidence",
+      "startLine": 3,
+      "startOffset": 112,
+      "symbolId": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::ImpactConfidence::type"
+    }
+  ]
+}

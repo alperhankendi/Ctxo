@@ -1,0 +1,44 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "89c5c1a444a4fdeefde724a53f4cb59553033c6ca01059a645270a38ff68e4b1",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/install/__tests__/package-manager.test.ts::package-manager.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/install/package-manager.ts::resolvePackageManager::function"
+    },
+    {
+      "from": "packages/cli/src/core/install/__tests__/package-manager.test.ts::package-manager.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/install/package-manager.ts::buildInstallCommand::function"
+    },
+    {
+      "from": "packages/cli/src/core/install/__tests__/package-manager.test.ts::package-manager.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/install/package-manager.ts::isPackageManager::function"
+    },
+    {
+      "from": "packages/cli/src/core/install/__tests__/package-manager.test.ts::package-manager.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/install/package-manager.ts::PACKAGE_MANAGERS::variable"
+    }
+  ],
+  "file": "packages/cli/src/core/install/__tests__/package-manager.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:54:21+03:00",
+      "hash": "976fe9d1f2bc286792149dda4b40d1397ad50c13",
+      "kind": "commit",
+      "message": "fix(install): detect package manager from monorepo parent + corepack field"
+    },
+    {
+      "date": "2026-04-13T02:23:19+03:00",
+      "hash": "7133c839ca5e6c29eaf0d95f55466668b0d02649",
+      "kind": "commit",
+      "message": "feat(cli): add ctxo install command for language plugin management"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

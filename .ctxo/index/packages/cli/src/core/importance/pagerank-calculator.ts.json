@@ -1,0 +1,80 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 32,
+      "symbolId": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator.calculate::method"
+    }
+  ],
+  "contentHash": "6c4ac9a9df5f9feff027b9bc78ddda6156cc36e4607ae5a59494ba619926edbe",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    }
+  ],
+  "file": "packages/cli/src/core/importance/pagerank-calculator.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 138,
+      "endOffset": 4385,
+      "kind": "class",
+      "name": "PageRankCalculator",
+      "startLine": 31,
+      "startOffset": 742,
+      "symbolId": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class"
+    },
+    {
+      "endLine": 137,
+      "endOffset": 4383,
+      "kind": "method",
+      "name": "PageRankCalculator.calculate",
+      "startLine": 32,
+      "startOffset": 778,
+      "symbolId": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator.calculate::method"
+    },
+    {
+      "endLine": 10,
+      "endOffset": 285,
+      "kind": "interface",
+      "name": "PageRankEntry",
+      "startLine": 2,
+      "startOffset": 62,
+      "symbolId": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankEntry::interface"
+    },
+    {
+      "endLine": 17,
+      "endOffset": 455,
+      "kind": "interface",
+      "name": "PageRankResult",
+      "startLine": 12,
+      "startOffset": 287,
+      "symbolId": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankResult::interface"
+    },
+    {
+      "endLine": 24,
+      "endOffset": 615,
+      "kind": "interface",
+      "name": "PageRankOptions",
+      "startLine": 19,
+      "startOffset": 457,
+      "symbolId": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankOptions::interface"
+    }
+  ]
+}

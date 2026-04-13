@@ -1,0 +1,80 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/storage-check.ts::SqliteCacheCheck.run::method"
+    }
+  ],
+  "contentHash": "77b7867f3642ad7fecc8e9a3ae5d53ab20bd6c84137391b5ba691ef48f41359f",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/storage-check.ts::SqliteCacheCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/storage-check.ts::SqliteCacheCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/storage-check.ts::SqliteCacheCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/storage-check.ts::SqliteCacheCheck::class",
+      "kind": "implements",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/storage-check.ts::SqliteCacheCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/storage-check.ts::SqliteCacheCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/storage-check.ts::SqliteCacheCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface"
+    }
+  ],
+  "file": "packages/cli/src/adapters/diagnostics/checks/storage-check.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": [
+    {
+      "endLine": 31,
+      "endOffset": 1457,
+      "kind": "class",
+      "name": "SqliteCacheCheck",
+      "startLine": 4,
+      "startOffset": 190,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/storage-check.ts::SqliteCacheCheck::class"
+    },
+    {
+      "endLine": 30,
+      "endOffset": 1454,
+      "kind": "method",
+      "name": "SqliteCacheCheck.run",
+      "startLine": 8,
+      "startOffset": 320,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/storage-check.ts::SqliteCacheCheck.run::method"
+    }
+  ]
+}

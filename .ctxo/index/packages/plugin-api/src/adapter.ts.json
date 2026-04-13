@@ -1,0 +1,52 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "473da7e18ad5ce8cb58c30db410646625b4c9985b01081032673f1b79209b60d",
+  "edges": [
+    {
+      "from": "packages/plugin-api/src/adapter.ts::ILanguageAdapter::interface",
+      "kind": "imports",
+      "to": "packages/plugin-api/src/types.ts::SymbolNode::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/plugin-api/src/adapter.ts::ILanguageAdapter::interface",
+      "kind": "imports",
+      "to": "packages/plugin-api/src/types.ts::GraphEdge::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/plugin-api/src/adapter.ts::ILanguageAdapter::interface",
+      "kind": "imports",
+      "to": "packages/plugin-api/src/types.ts::ComplexityMetrics::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/plugin-api/src/adapter.ts::ILanguageAdapter::interface",
+      "kind": "imports",
+      "to": "packages/plugin-api/src/types.ts::SymbolKind::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/plugin-api/src/adapter.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:35:07+03:00",
+      "hash": "dc578b8fcb106b7805e15f3ef22f4f1522c88451",
+      "kind": "commit",
+      "message": "feat(plugin-api): introduce plugin protocol v1 + workspace abstraction"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 34,
+      "endOffset": 1449,
+      "kind": "interface",
+      "name": "ILanguageAdapter",
+      "startLine": 7,
+      "startOffset": 316,
+      "symbolId": "packages/plugin-api/src/adapter.ts::ILanguageAdapter::interface"
+    }
+  ]
+}

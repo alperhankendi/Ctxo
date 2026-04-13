@@ -1,0 +1,17 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "1419c5ca5a1c0b3bf569fe060ff28f395b3f8212ef571cbb6dff9a394132b6af",
+  "edges": [],
+  "file": "packages/cli/tests/e2e/release-packaging.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

@@ -1,0 +1,39 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "723861119e6792137210767a949c5aa2591c76377861ca200ee653a65be39f9f",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/search-symbols.test.ts::search-symbols.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/search-symbols.test.ts::search-symbols.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/search-symbols.test.ts::search-symbols.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/search-symbols.test.ts::search-symbols.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/adapters/mcp/__tests__/search-symbols.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

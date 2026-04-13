@@ -1,0 +1,84 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/cli/src/adapters/language/plugin-discovery.ts::discoverPlugins::function"
+    }
+  ],
+  "contentHash": "ae09d99d7cf2665244c8c089274ee32f71bde517c892250433e52c9562f80280",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/language/plugin-discovery.ts::discoverPlugins::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/language/plugin-discovery.ts::discoverPlugins::function",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/language/plugin-discovery.ts::readManifestDeps::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/language/plugin-discovery.ts::discoverPlugins::function",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/language/plugin-discovery.ts::tryLoad::function"
+    }
+  ],
+  "file": "packages/cli/src/adapters/language/plugin-discovery.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:35:07+03:00",
+      "hash": "dc578b8fcb106b7805e15f3ef22f4f1522c88451",
+      "kind": "commit",
+      "message": "feat(plugin-api): introduce plugin protocol v1 + workspace abstraction"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": [
+    {
+      "endLine": 131,
+      "endOffset": 4295,
+      "kind": "function",
+      "name": "discoverPlugins",
+      "startLine": 107,
+      "startOffset": 3483,
+      "symbolId": "packages/cli/src/adapters/language/plugin-discovery.ts::discoverPlugins::function"
+    },
+    {
+      "endLine": 21,
+      "endOffset": 866,
+      "kind": "interface",
+      "name": "DiscoverOptions",
+      "startLine": 12,
+      "startOffset": 455,
+      "symbolId": "packages/cli/src/adapters/language/plugin-discovery.ts::DiscoverOptions::interface"
+    },
+    {
+      "endLine": 26,
+      "endOffset": 974,
+      "kind": "interface",
+      "name": "DiscoveredPlugin",
+      "startLine": 23,
+      "startOffset": 868,
+      "symbolId": "packages/cli/src/adapters/language/plugin-discovery.ts::DiscoveredPlugin::interface"
+    },
+    {
+      "endLine": 31,
+      "endOffset": 1071,
+      "kind": "interface",
+      "name": "PluginLoadFailure",
+      "startLine": 28,
+      "startOffset": 976,
+      "symbolId": "packages/cli/src/adapters/language/plugin-discovery.ts::PluginLoadFailure::interface"
+    },
+    {
+      "endLine": 36,
+      "endOffset": 1209,
+      "kind": "interface",
+      "name": "DiscoveryResult",
+      "startLine": 33,
+      "startOffset": 1073,
+      "symbolId": "packages/cli/src/adapters/language/plugin-discovery.ts::DiscoveryResult::interface"
+    }
+  ]
+}

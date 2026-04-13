@@ -1,0 +1,57 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/tests/e2e/fixtures/credential-fixture/src/service.ts::PaymentService.process::method"
+    }
+  ],
+  "contentHash": "93867b530a61ed941b8ee85a6c0f0011116a9916f3db0222026d6246fca36853",
+  "edges": [
+    {
+      "from": "packages/cli/tests/e2e/fixtures/credential-fixture/src/service.ts::PaymentService::class",
+      "kind": "imports",
+      "to": "packages/cli/tests/e2e/fixtures/credential-fixture/src/config.ts::getConfig::function"
+    },
+    {
+      "from": "packages/cli/tests/e2e/fixtures/credential-fixture/src/service.ts::PaymentService.process::method",
+      "kind": "calls",
+      "to": "packages/cli/tests/e2e/fixtures/credential-fixture/src/config.ts::getConfig::function"
+    },
+    {
+      "from": "packages/cli/tests/e2e/fixtures/credential-fixture/src/service.ts::PaymentService::class",
+      "kind": "uses",
+      "to": "packages/cli/tests/e2e/fixtures/credential-fixture/src/config.ts::getConfig::function"
+    }
+  ],
+  "file": "packages/cli/tests/e2e/fixtures/credential-fixture/src/service.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 9,
+      "endOffset": 227,
+      "kind": "class",
+      "name": "PaymentService",
+      "startLine": 2,
+      "startOffset": 39,
+      "symbolId": "packages/cli/tests/e2e/fixtures/credential-fixture/src/service.ts::PaymentService::class"
+    },
+    {
+      "endLine": 8,
+      "endOffset": 225,
+      "kind": "method",
+      "name": "PaymentService.process",
+      "startLine": 5,
+      "startOffset": 132,
+      "symbolId": "packages/cli/tests/e2e/fixtures/credential-fixture/src/service.ts::PaymentService.process::method"
+    }
+  ]
+}

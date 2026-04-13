@@ -1,0 +1,48 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/cli/__tests__/fixtures/sample-project/src/greet.ts::greet::function"
+    }
+  ],
+  "contentHash": "b651a3edc015b8443f074bfd8b134a1f0af98506d805287868700d2613c4f52b",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/__tests__/fixtures/sample-project/src/greet.ts::greet::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/__tests__/fixtures/sample-project/src/utils.ts::formatName::function"
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/fixtures/sample-project/src/greet.ts::greet::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/__tests__/fixtures/sample-project/src/utils.ts::formatName::function"
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/fixtures/sample-project/src/greet.ts::greet::function",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/__tests__/fixtures/sample-project/src/utils.ts::formatName::function"
+    }
+  ],
+  "file": "packages/cli/src/cli/__tests__/fixtures/sample-project/src/greet.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 4,
+      "endOffset": 126,
+      "kind": "function",
+      "name": "greet",
+      "startLine": 2,
+      "startOffset": 39,
+      "symbolId": "packages/cli/src/cli/__tests__/fixtures/sample-project/src/greet.ts::greet::function"
+    }
+  ]
+}

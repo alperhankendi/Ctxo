@@ -1,0 +1,48 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/core/intent-filter.ts::filterByIntent::function"
+    }
+  ],
+  "contentHash": "6e8a88441862fb57fe36d5c380ecc51a4abc82e35584aa7470632aadf5dfbfb5",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/intent-filter.ts::filterByIntent::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/intent-filter.ts::extractKeywords::function"
+    },
+    {
+      "from": "packages/cli/src/core/intent-filter.ts::filterByIntent::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/intent-filter.ts::collectMatchableStrings::function"
+    },
+    {
+      "from": "packages/cli/src/core/intent-filter.ts::filterByIntent::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/intent-filter.ts::matchesAny::function"
+    }
+  ],
+  "file": "packages/cli/src/core/intent-filter.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 70,
+      "endOffset": 2336,
+      "kind": "function",
+      "name": "filterByIntent",
+      "startLine": 57,
+      "startOffset": 1936,
+      "symbolId": "packages/cli/src/core/intent-filter.ts::filterByIntent::function"
+    }
+  ]
+}

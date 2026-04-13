@@ -1,0 +1,17 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "2ed77e8229802547a67a65de7b7bb4852b161ae31399cdb3b1547747b356e2c8",
+  "edges": [],
+  "file": "packages/cli/tests/e2e/cross-client-smoke.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

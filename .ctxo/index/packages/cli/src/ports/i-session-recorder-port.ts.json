@@ -1,0 +1,72 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "172b786d61d41bf99b8dca8bb7867e7157d264ae95c10789502f9b14c32d35f0",
+  "edges": [],
+  "file": "packages/cli/src/ports/i-session-recorder-port.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 22,
+      "endOffset": 887,
+      "kind": "interface",
+      "name": "SessionEvent",
+      "startLine": 7,
+      "startOffset": 223,
+      "symbolId": "packages/cli/src/ports/i-session-recorder-port.ts::SessionEvent::interface"
+    },
+    {
+      "endLine": 28,
+      "endOffset": 973,
+      "kind": "interface",
+      "name": "ToolStats",
+      "startLine": 24,
+      "startOffset": 889,
+      "symbolId": "packages/cli/src/ports/i-session-recorder-port.ts::ToolStats::interface"
+    },
+    {
+      "endLine": 34,
+      "endOffset": 1062,
+      "kind": "interface",
+      "name": "SymbolStats",
+      "startLine": 30,
+      "startOffset": 975,
+      "symbolId": "packages/cli/src/ports/i-session-recorder-port.ts::SymbolStats::interface"
+    },
+    {
+      "endLine": 40,
+      "endOffset": 1157,
+      "kind": "interface",
+      "name": "DetailLevelStats",
+      "startLine": 36,
+      "startOffset": 1064,
+      "symbolId": "packages/cli/src/ports/i-session-recorder-port.ts::DetailLevelStats::interface"
+    },
+    {
+      "endLine": 48,
+      "endOffset": 1347,
+      "kind": "interface",
+      "name": "AggregatedStats",
+      "startLine": 42,
+      "startOffset": 1159,
+      "symbolId": "packages/cli/src/ports/i-session-recorder-port.ts::AggregatedStats::interface"
+    },
+    {
+      "endLine": 68,
+      "endOffset": 1875,
+      "kind": "interface",
+      "name": "ISessionRecorderPort",
+      "startLine": 50,
+      "startOffset": 1349,
+      "symbolId": "packages/cli/src/ports/i-session-recorder-port.ts::ISessionRecorderPort::interface"
+    }
+  ]
+}

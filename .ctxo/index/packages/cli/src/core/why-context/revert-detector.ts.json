@@ -1,0 +1,82 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector.detect::method"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector.isRevert::method"
+    }
+  ],
+  "contentHash": "54bbc25c1856aca634ff865694603b0e66cd18a88b8e7178461fe73604713edc",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommitRecord::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::AntiPattern::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector.isRevert::method"
+    },
+    {
+      "from": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::CommitRecord::interface"
+    },
+    {
+      "from": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::AntiPattern::type"
+    }
+  ],
+  "file": "packages/cli/src/core/why-context/revert-detector.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 52,
+      "endOffset": 1492,
+      "kind": "class",
+      "name": "RevertDetector",
+      "startLine": 19,
+      "startOffset": 570,
+      "symbolId": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "endLine": 36,
+      "endOffset": 998,
+      "kind": "method",
+      "name": "RevertDetector.detect",
+      "startLine": 20,
+      "startOffset": 602,
+      "symbolId": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector.detect::method"
+    },
+    {
+      "endLine": 51,
+      "endOffset": 1490,
+      "kind": "method",
+      "name": "RevertDetector.isRevert",
+      "startLine": 38,
+      "startOffset": 1002,
+      "symbolId": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector.isRevert::method"
+    }
+  ]
+}

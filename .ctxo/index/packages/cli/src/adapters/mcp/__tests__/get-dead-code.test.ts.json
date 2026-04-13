@@ -1,0 +1,44 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "7c26242af4ba9245cc39561d7962b337299dababcbffc44b0db76d1dd03fb473",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-dead-code.test.ts::get-dead-code.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-dead-code.test.ts::get-dead-code.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-dead-code.test.ts::get-dead-code.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-dead-code.test.ts::get-dead-code.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-dead-code.test.ts::get-dead-code.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/adapters/mcp/__tests__/get-dead-code.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": []
+}

@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "32845a09258367299c775a405c882b6d69de778b4e4cbb78b93c02e126e8e6fa",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/__tests__/cli-router.test.ts::cli-router.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/cli-router.ts::CliRouter::class"
+    }
+  ],
+  "file": "packages/cli/src/cli/__tests__/cli-router.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

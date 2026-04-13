@@ -1,0 +1,56 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "a1c84e4d226de904bcf09360d7b7d958e90709ead76afbcf211be67ca877ae9c",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/runtime-check.test.ts::runtime-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::NodeVersionCheck::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/runtime-check.test.ts::runtime-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TsMorphCheck::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/runtime-check.test.ts::runtime-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TreeSitterCheck::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/runtime-check.test.ts::runtime-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::checkNodeVersion::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/runtime-check.test.ts::runtime-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/adapters/diagnostics/__tests__/runtime-check.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:01:42+03:00",
+      "hash": "777ffddd20b586a9a44711ca77b43ea210f69d7b",
+      "kind": "commit",
+      "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
+    },
+    {
+      "date": "2026-04-13T01:48:46+03:00",
+      "hash": "2b84e12580bd96212c8dbe7569931e93cc8e3892",
+      "kind": "commit",
+      "message": "feat(lang-typescript): extract TypeScript adapter as @ctxo/lang-typescript plugin"
+    },
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": []
+}

@@ -1,0 +1,156 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 8,
+      "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.tokenize::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.tokenizeQuery::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitName::method"
+    },
+    {
+      "cyclomatic": 14,
+      "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.tokenizeFilePath::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.isStopWord::method"
+    }
+  ],
+  "contentHash": "08c22f1b8d693e676315c91472e032e9b8c5277441e3bb7b72ceb961fd39989c",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/search/symbol-tokenizer.ts::isDigit::function"
+    },
+    {
+      "from": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/search/symbol-tokenizer.ts::isDigit::function"
+    },
+    {
+      "from": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/search/symbol-tokenizer.ts::isLower::function"
+    },
+    {
+      "from": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/search/symbol-tokenizer.ts::isUpper::function"
+    },
+    {
+      "from": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/search/symbol-tokenizer.ts::isUpper::function"
+    },
+    {
+      "from": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/search/symbol-tokenizer.ts::isUpper::function"
+    },
+    {
+      "from": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/search/symbol-tokenizer.ts::isDigit::function"
+    },
+    {
+      "from": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/search/symbol-tokenizer.ts::isUpper::function"
+    }
+  ],
+  "file": "packages/cli/src/core/search/symbol-tokenizer.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 191,
+      "endOffset": 6061,
+      "kind": "class",
+      "name": "SymbolTokenizer",
+      "startLine": 27,
+      "startOffset": 894,
+      "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer::class"
+    },
+    {
+      "endLine": 71,
+      "endOffset": 2378,
+      "kind": "method",
+      "name": "SymbolTokenizer.tokenize",
+      "startLine": 44,
+      "startOffset": 1526,
+      "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.tokenize::method"
+    },
+    {
+      "endLine": 89,
+      "endOffset": 2893,
+      "kind": "method",
+      "name": "SymbolTokenizer.tokenizeQuery",
+      "startLine": 76,
+      "startOffset": 2476,
+      "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.tokenizeQuery::method"
+    },
+    {
+      "endLine": 112,
+      "endOffset": 3689,
+      "kind": "method",
+      "name": "SymbolTokenizer.splitName",
+      "startLine": 100,
+      "startOffset": 3271,
+      "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitName::method"
+    },
+    {
+      "endLine": 164,
+      "endOffset": 5199,
+      "kind": "method",
+      "name": "SymbolTokenizer.splitCamelCase",
+      "startLine": 117,
+      "startOffset": 3775,
+      "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method"
+    },
+    {
+      "endLine": 185,
+      "endOffset": 5919,
+      "kind": "method",
+      "name": "SymbolTokenizer.tokenizeFilePath",
+      "startLine": 170,
+      "startOffset": 5364,
+      "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.tokenizeFilePath::method"
+    },
+    {
+      "endLine": 190,
+      "endOffset": 6059,
+      "kind": "method",
+      "name": "SymbolTokenizer.isStopWord",
+      "startLine": 188,
+      "startOffset": 5964,
+      "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.isStopWord::method"
+    },
+    {
+      "endLine": 19,
+      "endOffset": 756,
+      "kind": "interface",
+      "name": "TokenizerOptions",
+      "startLine": 12,
+      "startOffset": 428,
+      "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::TokenizerOptions::interface"
+    }
+  ]
+}

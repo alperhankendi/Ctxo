@@ -1,0 +1,96 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "c13c5e8a52da0f6e8759d0863069d5bbe1a1a063530e0b011fce8793120417ad",
+  "edges": [],
+  "file": "packages/plugin-api/src/types.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:48:46+03:00",
+      "hash": "2b84e12580bd96212c8dbe7569931e93cc8e3892",
+      "kind": "commit",
+      "message": "feat(lang-typescript): extract TypeScript adapter as @ctxo/lang-typescript plugin"
+    },
+    {
+      "date": "2026-04-13T01:35:07+03:00",
+      "hash": "dc578b8fcb106b7805e15f3ef22f4f1522c88451",
+      "kind": "commit",
+      "message": "feat(plugin-api): introduce plugin protocol v1 + workspace abstraction"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 35,
+      "endOffset": 643,
+      "kind": "interface",
+      "name": "SymbolNode",
+      "startLine": 27,
+      "startOffset": 468,
+      "symbolId": "packages/plugin-api/src/types.ts::SymbolNode::interface"
+    },
+    {
+      "endLine": 42,
+      "endOffset": 749,
+      "kind": "interface",
+      "name": "GraphEdge",
+      "startLine": 37,
+      "startOffset": 645,
+      "symbolId": "packages/plugin-api/src/types.ts::GraphEdge::interface"
+    },
+    {
+      "endLine": 47,
+      "endOffset": 833,
+      "kind": "interface",
+      "name": "ComplexityMetrics",
+      "startLine": 44,
+      "startOffset": 751,
+      "symbolId": "packages/plugin-api/src/types.ts::ComplexityMetrics::interface"
+    },
+    {
+      "endLine": 9,
+      "endOffset": 174,
+      "kind": "type",
+      "name": "SymbolKind",
+      "startLine": 9,
+      "startOffset": 119,
+      "symbolId": "packages/plugin-api/src/types.ts::SymbolKind::type"
+    },
+    {
+      "endLine": 19,
+      "endOffset": 331,
+      "kind": "type",
+      "name": "EdgeKind",
+      "startLine": 19,
+      "startOffset": 280,
+      "symbolId": "packages/plugin-api/src/types.ts::EdgeKind::type"
+    },
+    {
+      "endLine": 25,
+      "endOffset": 466,
+      "kind": "type",
+      "name": "SymbolId",
+      "startLine": 25,
+      "startOffset": 436,
+      "symbolId": "packages/plugin-api/src/types.ts::SymbolId::type"
+    },
+    {
+      "endLine": 7,
+      "endOffset": 116,
+      "kind": "variable",
+      "name": "SYMBOL_KINDS",
+      "startLine": 0,
+      "startOffset": 13,
+      "symbolId": "packages/plugin-api/src/types.ts::SYMBOL_KINDS::variable"
+    },
+    {
+      "endLine": 17,
+      "endOffset": 277,
+      "kind": "variable",
+      "name": "EDGE_KINDS",
+      "startLine": 11,
+      "startOffset": 189,
+      "symbolId": "packages/plugin-api/src/types.ts::EDGE_KINDS::variable"
+    }
+  ]
+}

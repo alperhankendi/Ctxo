@@ -1,0 +1,131 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck.run::method"
+    }
+  ],
+  "contentHash": "7f5d068deee2eb5d48bea8d2abfaf5733b0754d760c02234017509537b79d17a",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/version-command.ts::gatherVersionInfo::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/version-command.ts::formatVerbose::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/version-command.ts::VersionInfo::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/language/plugin-discovery.ts::discoverPlugins::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/plugin-loader.ts::loadManifestPath::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class",
+      "kind": "implements",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::collectInfo::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::buildSummary::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/version-command.ts::formatVerbose::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/version-command.ts::formatVerbose::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/version-command.ts::formatVerbose::function"
+    }
+  ],
+  "file": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:20:56+03:00",
+      "hash": "b60d608fe6e6c4a0c5490465532dd5c5e1353a3f",
+      "kind": "commit",
+      "message": "feat(doctor): add Versions section and language coverage check"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": [
+    {
+      "endLine": 43,
+      "endOffset": 1381,
+      "kind": "class",
+      "name": "VersionsCheck",
+      "startLine": 14,
+      "startOffset": 597,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class"
+    },
+    {
+      "endLine": 42,
+      "endOffset": 1379,
+      "kind": "method",
+      "name": "VersionsCheck.run",
+      "startLine": 18,
+      "startOffset": 712,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck.run::method"
+    }
+  ]
+}

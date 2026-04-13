@@ -1,0 +1,69 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "65c4ae28083e3a51695fa7d49d12a737267f0c2a162aad6f14033273cec8072d",
+  "edges": [
+    {
+      "from": "packages/plugin-api/src/__tests__/contract.test.ts::contract.test::variable",
+      "kind": "imports",
+      "to": "packages/plugin-api/src/index.ts::SUPPORTED_API_VERSION::variable"
+    },
+    {
+      "from": "packages/plugin-api/src/__tests__/contract.test.ts::contract.test::variable",
+      "kind": "imports",
+      "to": "packages/plugin-api/src/index.ts::SYMBOL_KINDS::variable"
+    },
+    {
+      "from": "packages/plugin-api/src/__tests__/contract.test.ts::contract.test::variable",
+      "kind": "imports",
+      "to": "packages/plugin-api/src/index.ts::EDGE_KINDS::variable"
+    },
+    {
+      "from": "packages/plugin-api/src/__tests__/contract.test.ts::contract.test::variable",
+      "kind": "imports",
+      "to": "packages/plugin-api/src/index.ts::CtxoLanguagePlugin::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/plugin-api/src/__tests__/contract.test.ts::contract.test::variable",
+      "kind": "imports",
+      "to": "packages/plugin-api/src/index.ts::ILanguageAdapter::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/plugin-api/src/__tests__/contract.test.ts::contract.test::variable",
+      "kind": "imports",
+      "to": "packages/plugin-api/src/index.ts::PluginContext::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/plugin-api/src/__tests__/contract.test.ts::contract.test::variable",
+      "kind": "imports",
+      "to": "packages/plugin-api/src/index.ts::IWorkspace::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/plugin-api/src/__tests__/contract.test.ts::contract.test::variable",
+      "kind": "imports",
+      "to": "packages/plugin-api/src/index.ts::SymbolKind::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/plugin-api/src/__tests__/contract.test.ts::contract.test::variable",
+      "kind": "imports",
+      "to": "packages/plugin-api/src/index.ts::EdgeKind::class",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/plugin-api/src/__tests__/contract.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:44:06+03:00",
+      "hash": "bacd0be38ebd8798e5a3e1a2df894d356aba3139",
+      "kind": "commit",
+      "message": "test(cli): audit cleanup — add plugin protocol coverage, fix ctxo-mcp drift"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

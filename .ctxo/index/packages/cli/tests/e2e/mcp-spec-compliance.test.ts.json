@@ -1,0 +1,65 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "5fc4cccfca24559ba1f8b923b76fa288c627d9487ca102598d8dc8ba53174e01",
+  "edges": [
+    {
+      "from": "packages/cli/tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "packages/cli/tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function"
+    },
+    {
+      "from": "packages/cli/tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
+    },
+    {
+      "from": "packages/cli/tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
+    },
+    {
+      "from": "packages/cli/tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
+    },
+    {
+      "from": "packages/cli/tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function"
+    },
+    {
+      "from": "packages/cli/tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/tests/e2e/mcp-spec-compliance.test.ts::mcp-spec-compliance.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/tests/e2e/mcp-spec-compliance.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

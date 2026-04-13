@@ -1,0 +1,57 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "93cd6b312e3848ba8cbcede99fd164f49168495f514cf0ffbda324a903bb402f",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommitRecord::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::ChurnData::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

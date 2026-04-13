@@ -1,0 +1,33 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "914ef8166f43c5f47fc52473455c91b0d865fe5ea05cfeed90c7fc2f93380653",
+  "edges": [
+    {
+      "from": "packages/lang-go/src/index.ts::plugin::variable",
+      "kind": "imports",
+      "to": "packages/lang-go/src/go-adapter.ts::GoAdapter::class"
+    }
+  ],
+  "file": "packages/lang-go/src/index.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:52:29+03:00",
+      "hash": "00cff73ddde2917c6dca764478fd0747633c1032",
+      "kind": "commit",
+      "message": "feat(lang-go): extract Go adapter as @ctxo/lang-go plugin"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 18,
+      "endOffset": 536,
+      "kind": "variable",
+      "name": "plugin",
+      "startLine": 8,
+      "startOffset": 294,
+      "symbolId": "packages/lang-go/src/index.ts::plugin::variable"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "55e1e9a64f32df40a5482db4c9f6a58b5297595eee0a9de81cae7647320ec941",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts::get-pr-impact.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts::get-pr-impact.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts::get-pr-impact.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts::get-pr-impact.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts::get-pr-impact.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts::get-pr-impact.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

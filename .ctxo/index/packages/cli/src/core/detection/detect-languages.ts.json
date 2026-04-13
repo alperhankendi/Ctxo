@@ -1,0 +1,109 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 12,
+      "symbolId": "packages/cli/src/core/detection/detect-languages.ts::detectLanguages::function"
+    },
+    {
+      "cyclomatic": 9,
+      "symbolId": "packages/cli/src/core/detection/detect-languages.ts::decideNeededLanguages::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/core/detection/detect-languages.ts::officialPluginFor::function"
+    }
+  ],
+  "contentHash": "d1dedf6f8e22d5f3db6b5a32f06004304a0e7f3b3bbbbcde7738cd93efd8a310",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/detection/detect-languages.ts::detectLanguages::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::listGitFiles::function"
+    }
+  ],
+  "file": "packages/cli/src/core/detection/detect-languages.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:16:53+03:00",
+      "hash": "715f2ae3045a9f8a2b790e7d7e0c8d61f7bd4905",
+      "kind": "commit",
+      "message": "feat(cli): add language detection utility"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 155,
+      "endOffset": 4398,
+      "kind": "function",
+      "name": "detectLanguages",
+      "startLine": 131,
+      "startOffset": 3611,
+      "symbolId": "packages/cli/src/core/detection/detect-languages.ts::detectLanguages::function"
+    },
+    {
+      "endLine": 192,
+      "endOffset": 5549,
+      "kind": "function",
+      "name": "decideNeededLanguages",
+      "startLine": 171,
+      "startOffset": 4895,
+      "symbolId": "packages/cli/src/core/detection/detect-languages.ts::decideNeededLanguages::function"
+    },
+    {
+      "endLine": 197,
+      "endOffset": 5732,
+      "kind": "function",
+      "name": "officialPluginFor",
+      "startLine": 195,
+      "startOffset": 5627,
+      "symbolId": "packages/cli/src/core/detection/detect-languages.ts::officialPluginFor::function"
+    },
+    {
+      "endLine": 51,
+      "endOffset": 1419,
+      "kind": "interface",
+      "name": "DetectionResult",
+      "startLine": 42,
+      "startOffset": 996,
+      "symbolId": "packages/cli/src/core/detection/detect-languages.ts::DetectionResult::interface"
+    },
+    {
+      "endLine": 162,
+      "endOffset": 4663,
+      "kind": "interface",
+      "name": "LanguageNeedsOptions",
+      "startLine": 157,
+      "startOffset": 4400,
+      "symbolId": "packages/cli/src/core/detection/detect-languages.ts::LanguageNeedsOptions::interface"
+    },
+    {
+      "endLine": 20,
+      "endOffset": 524,
+      "kind": "type",
+      "name": "KnownLanguage",
+      "startLine": 20,
+      "startOffset": 463,
+      "symbolId": "packages/cli/src/core/detection/detect-languages.ts::KnownLanguage::type"
+    },
+    {
+      "endLine": 18,
+      "endOffset": 460,
+      "kind": "variable",
+      "name": "KNOWN_LANGUAGES",
+      "startLine": 8,
+      "startOffset": 324,
+      "symbolId": "packages/cli/src/core/detection/detect-languages.ts::KNOWN_LANGUAGES::variable"
+    },
+    {
+      "endLine": 40,
+      "endOffset": 993,
+      "kind": "variable",
+      "name": "EXTENSION_LANGUAGE",
+      "startLine": 26,
+      "startOffset": 669,
+      "symbolId": "packages/cli/src/core/detection/detect-languages.ts::EXTENSION_LANGUAGE::variable"
+    }
+  ]
+}

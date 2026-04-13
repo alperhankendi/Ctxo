@@ -1,0 +1,122 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitBinaryCheck.run::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitRepoCheck.run::method"
+    }
+  ],
+  "contentHash": "e10ac6f5f8c08aaded541306b3463b486ad3f873147c96f3f28eb4231697e0ad",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitBinaryCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitBinaryCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitBinaryCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitBinaryCheck::class",
+      "kind": "implements",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitRepoCheck::class",
+      "kind": "implements",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitBinaryCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitBinaryCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitBinaryCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitRepoCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitRepoCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitRepoCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface"
+    }
+  ],
+  "file": "packages/cli/src/adapters/diagnostics/checks/git-check.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": [
+    {
+      "endLine": 17,
+      "endOffset": 771,
+      "kind": "class",
+      "name": "GitBinaryCheck",
+      "startLine": 5,
+      "startOffset": 223,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitBinaryCheck::class"
+    },
+    {
+      "endLine": 16,
+      "endOffset": 769,
+      "kind": "method",
+      "name": "GitBinaryCheck.run",
+      "startLine": 9,
+      "startOffset": 346,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitBinaryCheck.run::method"
+    },
+    {
+      "endLine": 29,
+      "endOffset": 1266,
+      "kind": "class",
+      "name": "GitRepoCheck",
+      "startLine": 19,
+      "startOffset": 773,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitRepoCheck::class"
+    },
+    {
+      "endLine": 28,
+      "endOffset": 1264,
+      "kind": "method",
+      "name": "GitRepoCheck.run",
+      "startLine": 23,
+      "startOffset": 893,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitRepoCheck.run::method"
+    }
+  ]
+}

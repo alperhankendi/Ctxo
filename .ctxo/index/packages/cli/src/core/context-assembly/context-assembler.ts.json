@@ -1,0 +1,306 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 17,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleForTask::method"
+    },
+    {
+      "cyclomatic": 10,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleRanked::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.computeTextRelevance::method"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.computeScore::method"
+    },
+    {
+      "cyclomatic": 8,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.buildContextEntry::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.isInterfaceOrType::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokensPublic::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokens::method"
+    }
+  ],
+  "contentHash": "59076d2c4632a7a368d7742f4909de412305cb23a9b5ddc01ee6fc7307a1fc04",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolKind::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/context-assembly/task-context-strategy.ts::TaskType::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/context-assembly/task-context-strategy.ts::ScoringWeights::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/context-assembly/task-context-strategy.ts::getWeightsForTask::function"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleForTask::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/context-assembly/task-context-strategy.ts::getWeightsForTask::function"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleForTask::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.isInterfaceOrType::method"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleForTask::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.isInterfaceOrType::method"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleForTask::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.buildContextEntry::method"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleForTask::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.computeScore::method"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleRanked::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.computeTextRelevance::method"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleRanked::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokens::method"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.buildContextEntry::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.computeScore::method"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.buildContextEntry::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokens::method"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokensPublic::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokens::method"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/context-assembly/task-context-strategy.ts::TaskType::type"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/context-assembly/task-context-strategy.ts::getWeightsForTask::function"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::SymbolNode::type"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/context-assembly/task-context-strategy.ts::ScoringWeights::interface"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::SymbolKind::type"
+    }
+  ],
+  "file": "packages/cli/src/core/context-assembly/context-assembler.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 254,
+      "endOffset": 8854,
+      "kind": "class",
+      "name": "ContextAssembler",
+      "startLine": 45,
+      "startOffset": 1365,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class"
+    },
+    {
+      "endLine": 134,
+      "endOffset": 4538,
+      "kind": "method",
+      "name": "ContextAssembler.assembleForTask",
+      "startLine": 49,
+      "startOffset": 1517,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleForTask::method"
+    },
+    {
+      "endLine": 199,
+      "endOffset": 6639,
+      "kind": "method",
+      "name": "ContextAssembler.assembleRanked",
+      "startLine": 136,
+      "startOffset": 4542,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleRanked::method"
+    },
+    {
+      "endLine": 207,
+      "endOffset": 6959,
+      "kind": "method",
+      "name": "ContextAssembler.computeTextRelevance",
+      "startLine": 201,
+      "startOffset": 6643,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.computeTextRelevance::method"
+    },
+    {
+      "endLine": 217,
+      "endOffset": 7439,
+      "kind": "method",
+      "name": "ContextAssembler.computeScore",
+      "startLine": 209,
+      "startOffset": 6963,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.computeScore::method"
+    },
+    {
+      "endLine": 237,
+      "endOffset": 8304,
+      "kind": "method",
+      "name": "ContextAssembler.buildContextEntry",
+      "startLine": 219,
+      "startOffset": 7443,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.buildContextEntry::method"
+    },
+    {
+      "endLine": 241,
+      "endOffset": 8418,
+      "kind": "method",
+      "name": "ContextAssembler.isInterfaceOrType",
+      "startLine": 239,
+      "startOffset": 8308,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.isInterfaceOrType::method"
+    },
+    {
+      "endLine": 245,
+      "endOffset": 8512,
+      "kind": "method",
+      "name": "ContextAssembler.estimateTokensPublic",
+      "startLine": 243,
+      "startOffset": 8422,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokensPublic::method"
+    },
+    {
+      "endLine": 253,
+      "endOffset": 8852,
+      "kind": "method",
+      "name": "ContextAssembler.estimateTokens",
+      "startLine": 247,
+      "startOffset": 8516,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokens::method"
+    },
+    {
+      "endLine": 15,
+      "endOffset": 643,
+      "kind": "interface",
+      "name": "ContextEntry",
+      "startLine": 6,
+      "startOffset": 387,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextEntry::interface"
+    },
+    {
+      "endLine": 24,
+      "endOffset": 876,
+      "kind": "interface",
+      "name": "TaskContextResult",
+      "startLine": 17,
+      "startOffset": 645,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::TaskContextResult::interface"
+    },
+    {
+      "endLine": 41,
+      "endOffset": 1327,
+      "kind": "interface",
+      "name": "RankedContextResult",
+      "startLine": 26,
+      "startOffset": 878,
+      "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::RankedContextResult::interface"
+    }
+  ]
+}

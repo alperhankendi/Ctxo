@@ -1,0 +1,40 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "b34a765ac4824d3449e66f94ae139e9f26a72bca37e5d34110dcb1acb3180c6e",
+  "edges": [
+    {
+      "from": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommitRecord::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::ChurnData::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/ports/i-git-port.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 8,
+      "endOffset": 404,
+      "kind": "interface",
+      "name": "IGitPort",
+      "startLine": 2,
+      "startOffset": 68,
+      "symbolId": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter.start::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter.stop::method"
+    }
+  ],
+  "contentHash": "330dad6e42ee385e3ddabde874ca1ab434c75b2e8c953062e74f281ce6fc36a3",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-watcher-port.ts::IWatcherPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-watcher-port.ts::FileChangeHandler::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class",
+      "kind": "implements",
+      "to": "packages/cli/src/ports/i-watcher-port.ts::IWatcherPort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-watcher-port.ts::IWatcherPort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-watcher-port.ts::FileChangeHandler::type"
+    }
+  ],
+  "file": "packages/cli/src/adapters/watcher/chokidar-watcher-adapter.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 43,
+      "endOffset": 1213,
+      "kind": "class",
+      "name": "ChokidarWatcherAdapter",
+      "startLine": 11,
+      "startOffset": 260,
+      "symbolId": "packages/cli/src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class"
+    },
+    {
+      "endLine": 35,
+      "endOffset": 1078,
+      "kind": "method",
+      "name": "ChokidarWatcherAdapter.start",
+      "startLine": 21,
+      "startOffset": 590,
+      "symbolId": "packages/cli/src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter.start::method"
+    },
+    {
+      "endLine": 42,
+      "endOffset": 1211,
+      "kind": "method",
+      "name": "ChokidarWatcherAdapter.stop",
+      "startLine": 37,
+      "startOffset": 1082,
+      "symbolId": "packages/cli/src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter.stop::method"
+    }
+  ]
+}

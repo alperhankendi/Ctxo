@@ -1,0 +1,278 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/cli/src/cli/cli-router.ts::getVersion::function"
+    },
+    {
+      "cyclomatic": 53,
+      "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.printHelp::method"
+    }
+  ],
+  "contentHash": "4e8055efbd4661030f4878ea805563598c9da5e117927b947b6191c2f8e988d7",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/sync-command.ts::SyncCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/status-command.ts::StatusCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/verify-command.ts::VerifyCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/init-command.ts::InitCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/watch-command.ts::WatchCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/stats-command.ts::StatsCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/version-command.ts::VersionCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/install-command.ts::InstallCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/cli-router.ts::CliRouter.printHelp::method"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/version-command.ts::VersionCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/version-command.ts::VersionCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/sync-command.ts::SyncCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/watch-command.ts::WatchCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/verify-command.ts::VerifyCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/status-command.ts::StatusCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/init-command.ts::InitCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/stats-command.ts::StatsCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/install-command.ts::InstallCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.printHelp::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/cli-router.ts::getVersion::function"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/version-command.ts::VersionCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/sync-command.ts::SyncCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/watch-command.ts::WatchCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/verify-command.ts::VerifyCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/status-command.ts::StatusCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/init-command.ts::InitCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/stats-command.ts::StatsCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/install-command.ts::InstallCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class"
+    }
+  ],
+  "file": "packages/cli/src/cli/cli-router.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:28:53+03:00",
+      "hash": "7174b669e8f74f8770aeeaa22475639fe090732d",
+      "kind": "commit",
+      "message": "feat(doctor): implement --fix with dependency-ordered execution"
+    },
+    {
+      "date": "2026-04-13T02:26:50+03:00",
+      "hash": "baec286db158b7a3d0ea02e2a7f4b8f23117bfe5",
+      "kind": "commit",
+      "message": "feat(index): language-aware preview and --install-missing flag"
+    },
+    {
+      "date": "2026-04-13T02:25:27+03:00",
+      "hash": "2002a30ebbf54da209a5b20951f1c7e411ea01ac",
+      "kind": "commit",
+      "message": "feat(init): detect languages and offer plugin install"
+    },
+    {
+      "date": "2026-04-13T02:23:19+03:00",
+      "hash": "7133c839ca5e6c29eaf0d95f55466668b0d02649",
+      "kind": "commit",
+      "message": "feat(cli): add ctxo install command for language plugin management"
+    },
+    {
+      "date": "2026-04-13T02:12:22+03:00",
+      "hash": "08f95346bc84fdb9fa9d4c23b5730254a39827a2",
+      "kind": "commit",
+      "message": "feat(cli): extend --version with plugin and runtime info"
+    },
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 29,
+      "endOffset": 1126,
+      "kind": "function",
+      "name": "getVersion",
+      "startLine": 14,
+      "startOffset": 680,
+      "symbolId": "packages/cli/src/cli/cli-router.ts::getVersion::function"
+    },
+    {
+      "endLine": 237,
+      "endOffset": 9470,
+      "kind": "class",
+      "name": "CliRouter",
+      "startLine": 31,
+      "startOffset": 1130,
+      "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter::class"
+    },
+    {
+      "endLine": 202,
+      "endOffset": 7675,
+      "kind": "method",
+      "name": "CliRouter.route",
+      "startLine": 38,
+      "startOffset": 1283,
+      "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method"
+    },
+    {
+      "endLine": 236,
+      "endOffset": 9467,
+      "kind": "method",
+      "name": "CliRouter.printHelp",
+      "startLine": 204,
+      "startOffset": 7681,
+      "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.printHelp::method"
+    }
+  ]
+}

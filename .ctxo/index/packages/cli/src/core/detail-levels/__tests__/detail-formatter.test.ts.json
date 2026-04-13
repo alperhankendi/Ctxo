@@ -1,0 +1,41 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "0d0c8ddbe6207d12eed9ae6d22a36d26f35b761cb2d711abf9d7f09f00bc3ff0",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/detail-levels/__tests__/detail-formatter.test.ts::detail-formatter.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detail-levels/detail-formatter.ts::DetailFormatter::class"
+    },
+    {
+      "from": "packages/cli/src/core/detail-levels/__tests__/detail-formatter.test.ts::detail-formatter.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::LogicSliceResult::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/detail-levels/__tests__/detail-formatter.test.ts::detail-formatter.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/detail-levels/__tests__/detail-formatter.test.ts::detail-formatter.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::GraphEdge::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/core/detail-levels/__tests__/detail-formatter.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

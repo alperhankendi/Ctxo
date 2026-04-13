@@ -1,0 +1,206 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 26,
+      "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.run::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.getTemplatePath::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.openInBrowser::method"
+    }
+  ],
+  "contentHash": "043ea8a0454cc80b67dd4991ab1f5a3dedf56f5838b6e46f935c081fb541989f",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/visualization-payload.ts::VisualizationPayload::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/visualization-payload.ts::VisNode::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/visualization-payload.ts::VisEdge::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/visualization-payload.ts::VisFileInfo::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.getTemplatePath::method"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.openInBrowser::method"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/visualization-payload.ts::VisNode::interface"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/visualization-payload.ts::VisEdge::interface"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/visualization-payload.ts::VisFileInfo::interface"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/visualization-payload.ts::VisualizationPayload::interface"
+    }
+  ],
+  "file": "packages/cli/src/cli/visualize-command.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 197,
+      "endOffset": 7088,
+      "kind": "class",
+      "name": "VisualizeCommand",
+      "startLine": 16,
+      "startOffset": 750,
+      "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class"
+    },
+    {
+      "endLine": 166,
+      "endOffset": 6053,
+      "kind": "method",
+      "name": "VisualizeCommand.run",
+      "startLine": 23,
+      "startOffset": 929,
+      "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.run::method"
+    },
+    {
+      "endLine": 178,
+      "endOffset": 6485,
+      "kind": "method",
+      "name": "VisualizeCommand.getTemplatePath",
+      "startLine": 168,
+      "startOffset": 6057,
+      "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.getTemplatePath::method"
+    },
+    {
+      "endLine": 196,
+      "endOffset": 7086,
+      "kind": "method",
+      "name": "VisualizeCommand.openInBrowser",
+      "startLine": 180,
+      "startOffset": 6489,
+      "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.openInBrowser::method"
+    },
+    {
+      "endLine": 14,
+      "endOffset": 748,
+      "kind": "interface",
+      "name": "VisualizeOptions",
+      "startLine": 10,
+      "startOffset": 648,
+      "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeOptions::interface"
+    }
+  ]
+}

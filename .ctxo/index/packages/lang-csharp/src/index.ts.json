@@ -1,0 +1,33 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "b45e6cb86af063a02035ca6c5d6a348b62b545ae75a45bcb197fac185eb6d313",
+  "edges": [
+    {
+      "from": "packages/lang-csharp/src/index.ts::plugin::variable",
+      "kind": "imports",
+      "to": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter::class"
+    }
+  ],
+  "file": "packages/lang-csharp/src/index.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:01:42+03:00",
+      "hash": "777ffddd20b586a9a44711ca77b43ea210f69d7b",
+      "kind": "commit",
+      "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 22,
+      "endOffset": 868,
+      "kind": "variable",
+      "name": "plugin",
+      "startLine": 10,
+      "startOffset": 447,
+      "symbolId": "packages/lang-csharp/src/index.ts::plugin::variable"
+    }
+  ]
+}

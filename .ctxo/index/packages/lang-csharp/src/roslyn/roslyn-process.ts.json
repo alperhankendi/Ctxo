@@ -1,0 +1,181 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 13,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::runBatchIndex::function"
+    },
+    {
+      "cyclomatic": 9,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.start::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.analyzeFile::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.isAlive::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.shutdown::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.resetInactivityTimer::method"
+    }
+  ],
+  "contentHash": "65b51ae14a10614af66371d0edf6ad47a82a2d8ae414b7462a7a2e46ac7fd7cf",
+  "edges": [
+    {
+      "from": "packages/lang-csharp/src/roslyn/roslyn-process.ts::runBatchIndex::function",
+      "kind": "imports",
+      "to": "packages/lang-csharp/src/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.start::method",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.resetInactivityTimer::method"
+    },
+    {
+      "from": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.analyzeFile::method",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.resetInactivityTimer::method"
+    },
+    {
+      "from": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.resetInactivityTimer::method",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.shutdown::method"
+    }
+  ],
+  "file": "packages/lang-csharp/src/roslyn/roslyn-process.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:01:42+03:00",
+      "hash": "777ffddd20b586a9a44711ca77b43ea210f69d7b",
+      "kind": "commit",
+      "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 119,
+      "endOffset": 3174,
+      "kind": "function",
+      "name": "runBatchIndex",
+      "startLine": 52,
+      "startOffset": 1113,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::runBatchIndex::function"
+    },
+    {
+      "endLine": 238,
+      "endOffset": 7000,
+      "kind": "class",
+      "name": "RoslynKeepAlive",
+      "startLine": 125,
+      "startOffset": 3303,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive::class"
+    },
+    {
+      "endLine": 194,
+      "endOffset": 5772,
+      "kind": "method",
+      "name": "RoslynKeepAlive.start",
+      "startLine": 140,
+      "startOffset": 3842,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.start::method"
+    },
+    {
+      "endLine": 216,
+      "endOffset": 6407,
+      "kind": "method",
+      "name": "RoslynKeepAlive.analyzeFile",
+      "startLine": 196,
+      "startOffset": 5776,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.analyzeFile::method"
+    },
+    {
+      "endLine": 220,
+      "endOffset": 6487,
+      "kind": "method",
+      "name": "RoslynKeepAlive.isAlive",
+      "startLine": 218,
+      "startOffset": 6411,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.isAlive::method"
+    },
+    {
+      "endLine": 229,
+      "endOffset": 6699,
+      "kind": "method",
+      "name": "RoslynKeepAlive.shutdown",
+      "startLine": 222,
+      "startOffset": 6491,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.shutdown::method"
+    },
+    {
+      "endLine": 237,
+      "endOffset": 6998,
+      "kind": "method",
+      "name": "RoslynKeepAlive.resetInactivityTimer",
+      "startLine": 231,
+      "startOffset": 6703,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.resetInactivityTimer::method"
+    },
+    {
+      "endLine": 11,
+      "endOffset": 304,
+      "kind": "interface",
+      "name": "RoslynFileResult",
+      "startLine": 5,
+      "startOffset": 151,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynFileResult::interface"
+    },
+    {
+      "endLine": 21,
+      "endOffset": 477,
+      "kind": "interface",
+      "name": "RoslynSymbol",
+      "startLine": 13,
+      "startOffset": 306,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynSymbol::interface"
+    },
+    {
+      "endLine": 27,
+      "endOffset": 556,
+      "kind": "interface",
+      "name": "RoslynEdge",
+      "startLine": 23,
+      "startOffset": 479,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynEdge::interface"
+    },
+    {
+      "endLine": 33,
+      "endOffset": 658,
+      "kind": "interface",
+      "name": "RoslynComplexity",
+      "startLine": 29,
+      "startOffset": 558,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynComplexity::interface"
+    },
+    {
+      "endLine": 39,
+      "endOffset": 834,
+      "kind": "interface",
+      "name": "RoslynProjectGraph",
+      "startLine": 35,
+      "startOffset": 660,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynProjectGraph::interface"
+    },
+    {
+      "endLine": 46,
+      "endOffset": 987,
+      "kind": "interface",
+      "name": "RoslynBatchResult",
+      "startLine": 41,
+      "startOffset": 836,
+      "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynBatchResult::interface"
+    }
+  ]
+}

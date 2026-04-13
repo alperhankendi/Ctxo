@@ -1,0 +1,38 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/adapters/workspace/single-package-workspace.ts::detectWorkspace::function"
+    }
+  ],
+  "contentHash": "8b575b0e168e9ac8413deea35181061fcff18acaa23f5e35afda80f2c4c397c9",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/workspace/single-package-workspace.ts::detectWorkspace::function",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/workspace/single-package-workspace.ts::findManifest::function"
+    }
+  ],
+  "file": "packages/cli/src/adapters/workspace/single-package-workspace.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:35:07+03:00",
+      "hash": "dc578b8fcb106b7805e15f3ef22f4f1522c88451",
+      "kind": "commit",
+      "message": "feat(plugin-api): introduce plugin protocol v1 + workspace abstraction"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 50,
+      "endOffset": 1315,
+      "kind": "function",
+      "name": "detectWorkspace",
+      "startLine": 40,
+      "startOffset": 1104,
+      "symbolId": "packages/cli/src/adapters/workspace/single-package-workspace.ts::detectWorkspace::function"
+    }
+  ]
+}

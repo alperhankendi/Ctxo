@@ -1,0 +1,29 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "740910ac4d136f739bf408457d2d039c9af2f3c14bbda2be1d9d5d8854dde094",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/stats/__tests__/session-recorder-adapter.test.ts::session-recorder-adapter.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/__tests__/session-recorder-adapter.test.ts::session-recorder-adapter.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-session-recorder-port.ts::SessionEvent::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/adapters/stats/__tests__/session-recorder-adapter.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

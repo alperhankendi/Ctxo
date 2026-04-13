@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "9a6fc4873b383e577b6cf1879199ea9e176762f0b75a080a26a926effde5065a",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/change-intelligence/__tests__/churn-analyzer.test.ts::churn-analyzer.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer::class"
+    }
+  ],
+  "file": "packages/cli/src/core/change-intelligence/__tests__/churn-analyzer.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

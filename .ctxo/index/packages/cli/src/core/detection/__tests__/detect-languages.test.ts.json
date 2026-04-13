@@ -1,0 +1,33 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "2833be5847a698e833ff9c14e6b298609d901ee22b6410104d45686e4f411af8",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/detection/__tests__/detect-languages.test.ts::detect-languages.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::detectLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/core/detection/__tests__/detect-languages.test.ts::detect-languages.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::decideNeededLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/core/detection/__tests__/detect-languages.test.ts::detect-languages.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::officialPluginFor::function"
+    }
+  ],
+  "file": "packages/cli/src/core/detection/__tests__/detect-languages.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:16:53+03:00",
+      "hash": "715f2ae3045a9f8a2b790e7d7e0c8d61f7bd4905",
+      "kind": "commit",
+      "message": "feat(cli): add language detection utility"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

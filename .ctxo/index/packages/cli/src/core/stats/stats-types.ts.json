@@ -1,0 +1,27 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "b5be3b7e2cd23c1ec9ebe0a244eef161155ee62ec7a11cdfb512c5f6ca898fd7",
+  "edges": [],
+  "file": "packages/cli/src/core/stats/stats-types.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 29,
+      "endOffset": 599,
+      "kind": "interface",
+      "name": "StatsReport",
+      "startLine": 4,
+      "startOffset": 124,
+      "symbolId": "packages/cli/src/core/stats/stats-types.ts::StatsReport::interface"
+    }
+  ]
+}

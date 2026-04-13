@@ -1,0 +1,29 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "068f83ff102c5cb59785a5e242de4085cd968c42b4db4f5cd9499d1891f1f30a",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/disk-check.test.ts::disk-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/disk-check.ts::DiskUsageCheck::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/disk-check.test.ts::disk-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/adapters/diagnostics/__tests__/disk-check.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": []
+}

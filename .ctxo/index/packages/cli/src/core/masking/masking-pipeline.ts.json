@@ -1,0 +1,63 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline.fromConfig::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline.mask::method"
+    }
+  ],
+  "contentHash": "c81e53591e89f680dc34cce4e93059b6f79fdc851cc92674622c0e1b09cc6ce6",
+  "edges": [],
+  "file": "packages/cli/src/core/masking/masking-pipeline.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 59,
+      "endOffset": 2451,
+      "kind": "class",
+      "name": "MaskingPipeline",
+      "startLine": 25,
+      "startOffset": 1299,
+      "symbolId": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "endLine": 48,
+      "endOffset": 2211,
+      "kind": "method",
+      "name": "MaskingPipeline.fromConfig",
+      "startLine": 36,
+      "startOffset": 1726,
+      "symbolId": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline.fromConfig::method"
+    },
+    {
+      "endLine": 58,
+      "endOffset": 2449,
+      "kind": "method",
+      "name": "MaskingPipeline.mask",
+      "startLine": 50,
+      "startOffset": 2215,
+      "symbolId": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline.mask::method"
+    },
+    {
+      "endLine": 23,
+      "endOffset": 1297,
+      "kind": "interface",
+      "name": "MaskingPatternConfig",
+      "startLine": 19,
+      "startOffset": 1175,
+      "symbolId": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPatternConfig::interface"
+    }
+  ]
+}

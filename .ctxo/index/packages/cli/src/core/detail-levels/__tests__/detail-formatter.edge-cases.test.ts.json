@@ -1,0 +1,35 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "d4500af98adbecbe9a084993f3626b664d8cbadf70b6e9577b266febc88f61ca",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/detail-levels/__tests__/detail-formatter.edge-cases.test.ts::detail-formatter.edge-cases.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detail-levels/detail-formatter.ts::DetailFormatter::class"
+    },
+    {
+      "from": "packages/cli/src/core/detail-levels/__tests__/detail-formatter.edge-cases.test.ts::detail-formatter.edge-cases.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::LogicSliceResult::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/detail-levels/__tests__/detail-formatter.edge-cases.test.ts::detail-formatter.edge-cases.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/core/detail-levels/__tests__/detail-formatter.edge-cases.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

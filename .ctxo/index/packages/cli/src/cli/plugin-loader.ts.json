@@ -1,0 +1,122 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/cli/plugin-loader.ts::loadManifestPath::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function"
+    }
+  ],
+  "contentHash": "ce0e71442554d24362de7839dd000fa259911bd350f68d34c87539a95ad9f4d7",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/plugin-loader.ts::loadManifestPath::function",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/language/plugin-discovery.ts::discoverPlugins::function"
+    },
+    {
+      "from": "packages/cli/src/cli/plugin-loader.ts::loadManifestPath::function",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/language/plugin-discovery.ts::DiscoveredPlugin::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/plugin-loader.ts::loadManifestPath::function",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/workspace/single-package-workspace.ts::detectWorkspace::function"
+    },
+    {
+      "from": "packages/cli/src/cli/plugin-loader.ts::loadManifestPath::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/cli/src/cli/plugin-loader.ts::loadManifestPath::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/plugin-loader.ts::resolveManifestPath::function"
+    },
+    {
+      "from": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/plugin-loader.ts::resolveManifestPath::function"
+    },
+    {
+      "from": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/workspace/single-package-workspace.ts::detectWorkspace::function"
+    },
+    {
+      "from": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/language/plugin-discovery.ts::discoverPlugins::function"
+    },
+    {
+      "from": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/plugin-loader.ts::buildContext::function"
+    },
+    {
+      "from": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/workspace/single-package-workspace.ts::detectWorkspace::function"
+    },
+    {
+      "from": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/language/plugin-discovery.ts::discoverPlugins::function"
+    },
+    {
+      "from": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/language/plugin-discovery.ts::DiscoveredPlugin::interface"
+    }
+  ],
+  "file": "packages/cli/src/cli/plugin-loader.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:12:22+03:00",
+      "hash": "08f95346bc84fdb9fa9d4c23b5730254a39827a2",
+      "kind": "commit",
+      "message": "feat(cli): extend --version with plugin and runtime info"
+    },
+    {
+      "date": "2026-04-13T01:48:46+03:00",
+      "hash": "2b84e12580bd96212c8dbe7569931e93cc8e3892",
+      "kind": "commit",
+      "message": "feat(lang-typescript): extract TypeScript adapter as @ctxo/lang-typescript plugin"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 37,
+      "endOffset": 1459,
+      "kind": "function",
+      "name": "loadManifestPath",
+      "startLine": 35,
+      "startOffset": 1344,
+      "symbolId": "packages/cli/src/cli/plugin-loader.ts::loadManifestPath::function"
+    },
+    {
+      "endLine": 94,
+      "endOffset": 3445,
+      "kind": "function",
+      "name": "loadPlugins",
+      "startLine": 73,
+      "startOffset": 2658,
+      "symbolId": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function"
+    },
+    {
+      "endLine": 13,
+      "endOffset": 624,
+      "kind": "interface",
+      "name": "LoadedPlugin",
+      "startLine": 9,
+      "startOffset": 484,
+      "symbolId": "packages/cli/src/cli/plugin-loader.ts::LoadedPlugin::interface"
+    }
+  ]
+}

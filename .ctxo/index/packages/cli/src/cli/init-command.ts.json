@@ -1,0 +1,438 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.installHooks::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.run::method"
+    },
+    {
+      "cyclomatic": 29,
+      "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method"
+    },
+    {
+      "cyclomatic": 16,
+      "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method"
+    },
+    {
+      "cyclomatic": 8,
+      "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.dryRun::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.getVersion::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.installHook::method"
+    }
+  ],
+  "contentHash": "aa3b894a06d0eb17ca8254b259f83869f7bbeebddec4fd06d0a35dcd781dbe08",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::PLATFORMS::variable"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::detectPlatforms::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::installRules::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureGitignore::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::getMcpConfigTargets::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureMcpConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::detectLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::decideNeededLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::officialPluginFor::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::KnownLanguage::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/install-command.ts::InstallCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.installHooks::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/init-command.ts::InitCommand.installHook::method"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.installHooks::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/init-command.ts::InitCommand.installHook::method"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/init-command.ts::InitCommand.dryRun::method"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/init-command.ts::InitCommand.getVersion::method"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/init-command.ts::renderBanner::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/init-command.ts::stepHeader::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/ai-rules.ts::detectPlatforms::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/init-command.ts::stepHeader::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::detectLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::decideNeededLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/init-command.ts::resolveInstalledPlugins::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/init-command.ts::stepHeader::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/init-command.ts::stepHeader::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureGitignore::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/ai-rules.ts::installRules::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/ai-rules.ts::getMcpConfigTargets::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureMcpConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/init-command.ts::InitCommand.installHooks::method"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/init-command.ts::box::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/init-command.ts::box::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/install-command.ts::InstallCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureGitignore::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/ai-rules.ts::installRules::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/ai-rules.ts::getMcpConfigTargets::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureMcpConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/init-command.ts::InitCommand.installHooks::method"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::detectLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::decideNeededLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/init-command.ts::resolveInstalledPlugins::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/install-command.ts::InstallCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/ai-rules.ts::detectPlatforms::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/ai-rules.ts::PLATFORMS::variable"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::KnownLanguage::type"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::detectLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::decideNeededLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::officialPluginFor::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureGitignore::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/ai-rules.ts::installRules::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/ai-rules.ts::getMcpConfigTargets::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureMcpConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/install-command.ts::InstallCommand::class"
+    }
+  ],
+  "file": "packages/cli/src/cli/init-command.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:56:43+03:00",
+      "hash": "372b12d8d710d375f87dbc65002c4f03ba49a064",
+      "kind": "commit",
+      "message": "fix(init): walk up to locate .git when cwd is a monorepo subpackage"
+    },
+    {
+      "date": "2026-04-13T02:49:34+03:00",
+      "hash": "d1b4329ed3b1df55acc21898505331c33407be12",
+      "kind": "commit",
+      "message": "chore: purge remaining ctxo-mcp references from runtime and user docs"
+    },
+    {
+      "date": "2026-04-13T02:25:27+03:00",
+      "hash": "2002a30ebbf54da209a5b20951f1c7e411ea01ac",
+      "kind": "commit",
+      "message": "feat(init): detect languages and offer plugin install"
+    },
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 505,
+      "endOffset": 19577,
+      "kind": "class",
+      "name": "InitCommand",
+      "startLine": 157,
+      "startOffset": 6215,
+      "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand::class"
+    },
+    {
+      "endLine": 172,
+      "endOffset": 6886,
+      "kind": "method",
+      "name": "InitCommand.installHooks",
+      "startLine": 167,
+      "startOffset": 6613,
+      "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.installHooks::method"
+    },
+    {
+      "endLine": 183,
+      "endOffset": 7296,
+      "kind": "method",
+      "name": "InitCommand.run",
+      "startLine": 174,
+      "startOffset": 6892,
+      "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.run::method"
+    },
+    {
+      "endLine": 371,
+      "endOffset": 14479,
+      "kind": "method",
+      "name": "InitCommand.runInteractive",
+      "startLine": 189,
+      "startOffset": 7527,
+      "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method"
+    },
+    {
+      "endLine": 439,
+      "endOffset": 17179,
+      "kind": "method",
+      "name": "InitCommand.runNonInteractive",
+      "startLine": 377,
+      "startOffset": 14710,
+      "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method"
+    },
+    {
+      "endLine": 467,
+      "endOffset": 18265,
+      "kind": "method",
+      "name": "InitCommand.dryRun",
+      "startLine": 445,
+      "startOffset": 17410,
+      "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.dryRun::method"
+    },
+    {
+      "endLine": 485,
+      "endOffset": 18992,
+      "kind": "method",
+      "name": "InitCommand.getVersion",
+      "startLine": 473,
+      "startOffset": 18496,
+      "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.getVersion::method"
+    },
+    {
+      "endLine": 504,
+      "endOffset": 19574,
+      "kind": "method",
+      "name": "InitCommand.installHook",
+      "startLine": 487,
+      "startOffset": 18998,
+      "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.installHook::method"
+    },
+    {
+      "endLine": 80,
+      "endOffset": 2560,
+      "kind": "interface",
+      "name": "InitOptions",
+      "startLine": 73,
+      "startOffset": 2352,
+      "symbolId": "packages/cli/src/cli/init-command.ts::InitOptions::interface"
+    }
+  ]
+}

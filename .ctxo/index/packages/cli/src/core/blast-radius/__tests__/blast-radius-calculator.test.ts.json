@@ -1,0 +1,34 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "47b55502fc70bc65236e65334f2ebbc55c1f5311d17f13dfb851152e9b7b6f0a",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/blast-radius/__tests__/blast-radius-calculator.test.ts::blast-radius-calculator.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/core/blast-radius/__tests__/blast-radius-calculator.test.ts::blast-radius-calculator.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/core/blast-radius/__tests__/blast-radius-calculator.test.ts::blast-radius-calculator.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/core/blast-radius/__tests__/blast-radius-calculator.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

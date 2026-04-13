@@ -1,0 +1,70 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "3c6afc35982ceee5511850dc5aa5367703c6a4525d10b1a1b01780011022b34f",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/__tests__/ai-rules.test.ts::ai-rules.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::PLATFORMS::variable"
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/ai-rules.test.ts::ai-rules.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::generateRules::function"
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/ai-rules.test.ts::ai-rules.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::installRules::function"
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/ai-rules.test.ts::ai-rules.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::detectPlatforms::function"
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/ai-rules.test.ts::ai-rules.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureGitignore::function"
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/ai-rules.test.ts::ai-rules.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/ai-rules.test.ts::ai-rules.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::getMcpConfigTargets::function"
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/ai-rules.test.ts::ai-rules.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureMcpConfig::function"
+    }
+  ],
+  "file": "packages/cli/src/cli/__tests__/ai-rules.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:49:34+03:00",
+      "hash": "d1b4329ed3b1df55acc21898505331c33407be12",
+      "kind": "commit",
+      "message": "chore: purge remaining ctxo-mcp references from runtime and user docs"
+    },
+    {
+      "date": "2026-04-13T02:44:06+03:00",
+      "hash": "bacd0be38ebd8798e5a3e1a2df894d356aba3139",
+      "kind": "commit",
+      "message": "test(cli): audit cleanup — add plugin protocol coverage, fix ctxo-mcp drift"
+    },
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

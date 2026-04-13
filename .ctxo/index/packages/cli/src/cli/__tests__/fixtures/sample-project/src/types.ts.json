@@ -1,0 +1,36 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "e06ac175e8fb6ca01b8a7c13e6469f3b4ec83485b8e3bdc9d965260ced114874",
+  "edges": [],
+  "file": "packages/cli/src/cli/__tests__/fixtures/sample-project/src/types.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 3,
+      "endOffset": 55,
+      "kind": "interface",
+      "name": "User",
+      "startLine": 0,
+      "startOffset": 0,
+      "symbolId": "packages/cli/src/cli/__tests__/fixtures/sample-project/src/types.ts::User::interface"
+    },
+    {
+      "endLine": 5,
+      "endOffset": 103,
+      "kind": "type",
+      "name": "Role",
+      "startLine": 5,
+      "startOffset": 57,
+      "symbolId": "packages/cli/src/cli/__tests__/fixtures/sample-project/src/types.ts::Role::type"
+    }
+  ]
+}

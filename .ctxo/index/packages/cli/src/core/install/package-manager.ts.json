@@ -1,0 +1,135 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/core/install/package-manager.ts::isPackageManager::function"
+    },
+    {
+      "cyclomatic": 9,
+      "symbolId": "packages/cli/src/core/install/package-manager.ts::resolvePackageManager::function"
+    },
+    {
+      "cyclomatic": 10,
+      "symbolId": "packages/cli/src/core/install/package-manager.ts::buildInstallCommand::function"
+    }
+  ],
+  "contentHash": "697c8611a94462053e9ceefa7be60926d226e269b9206338e9d1a2623f2fba86",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/install/package-manager.ts::resolvePackageManager::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/install/package-manager.ts::isPackageManager::function"
+    },
+    {
+      "from": "packages/cli/src/core/install/package-manager.ts::resolvePackageManager::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/install/package-manager.ts::isPackageManager::function"
+    },
+    {
+      "from": "packages/cli/src/core/install/package-manager.ts::resolvePackageManager::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/install/package-manager.ts::readConfigPackageManager::function"
+    },
+    {
+      "from": "packages/cli/src/core/install/package-manager.ts::resolvePackageManager::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/install/package-manager.ts::readPackageManagerField::function"
+    },
+    {
+      "from": "packages/cli/src/core/install/package-manager.ts::resolvePackageManager::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/install/package-manager.ts::detectFromLockfileWalkUp::function"
+    }
+  ],
+  "file": "packages/cli/src/core/install/package-manager.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:54:21+03:00",
+      "hash": "976fe9d1f2bc286792149dda4b40d1397ad50c13",
+      "kind": "commit",
+      "message": "fix(install): detect package manager from monorepo parent + corepack field"
+    },
+    {
+      "date": "2026-04-13T02:23:19+03:00",
+      "hash": "7133c839ca5e6c29eaf0d95f55466668b0d02649",
+      "kind": "commit",
+      "message": "feat(cli): add ctxo install command for language plugin management"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 9,
+      "endOffset": 393,
+      "kind": "function",
+      "name": "isPackageManager",
+      "startLine": 7,
+      "startOffset": 251,
+      "symbolId": "packages/cli/src/core/install/package-manager.ts::isPackageManager::function"
+    },
+    {
+      "endLine": 68,
+      "endOffset": 2346,
+      "kind": "function",
+      "name": "resolvePackageManager",
+      "startLine": 36,
+      "startOffset": 1161,
+      "symbolId": "packages/cli/src/core/install/package-manager.ts::resolvePackageManager::function"
+    },
+    {
+      "endLine": 189,
+      "endOffset": 6017,
+      "kind": "function",
+      "name": "buildInstallCommand",
+      "startLine": 157,
+      "startOffset": 5079,
+      "symbolId": "packages/cli/src/core/install/package-manager.ts::buildInstallCommand::function"
+    },
+    {
+      "endLine": 18,
+      "endOffset": 689,
+      "kind": "interface",
+      "name": "ResolveOptions",
+      "startLine": 11,
+      "startOffset": 395,
+      "symbolId": "packages/cli/src/core/install/package-manager.ts::ResolveOptions::interface"
+    },
+    {
+      "endLine": 24,
+      "endOffset": 857,
+      "kind": "interface",
+      "name": "Resolution",
+      "startLine": 20,
+      "startOffset": 691,
+      "symbolId": "packages/cli/src/core/install/package-manager.ts::Resolution::interface"
+    },
+    {
+      "endLine": 151,
+      "endOffset": 4912,
+      "kind": "interface",
+      "name": "InstallInvocation",
+      "startLine": 148,
+      "startOffset": 4810,
+      "symbolId": "packages/cli/src/core/install/package-manager.ts::InstallInvocation::interface"
+    },
+    {
+      "endLine": 3,
+      "endOffset": 157,
+      "kind": "type",
+      "name": "PackageManager",
+      "startLine": 3,
+      "startOffset": 96,
+      "symbolId": "packages/cli/src/core/install/package-manager.ts::PackageManager::type"
+    },
+    {
+      "endLine": 5,
+      "endOffset": 248,
+      "kind": "variable",
+      "name": "PACKAGE_MANAGERS",
+      "startLine": 5,
+      "startOffset": 172,
+      "symbolId": "packages/cli/src/core/install/package-manager.ts::PACKAGE_MANAGERS::variable"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck.run::method"
+    }
+  ],
+  "contentHash": "297269761a033d80307229158f5347fa15e9f5adb291111f3207344b37d620b0",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck::class",
+      "kind": "implements",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface"
+    }
+  ],
+  "file": "packages/cli/src/adapters/diagnostics/checks/config-check.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": [
+    {
+      "endLine": 28,
+      "endOffset": 1407,
+      "kind": "class",
+      "name": "ConfigFileCheck",
+      "startLine": 4,
+      "startOffset": 186,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck::class"
+    },
+    {
+      "endLine": 27,
+      "endOffset": 1405,
+      "kind": "method",
+      "name": "ConfigFileCheck.run",
+      "startLine": 8,
+      "startOffset": 309,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck.run::method"
+    }
+  ]
+}

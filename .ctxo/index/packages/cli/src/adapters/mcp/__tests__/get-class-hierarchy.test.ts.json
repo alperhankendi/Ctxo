@@ -1,0 +1,39 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "fd28751723a027f2aff488d1dfca7033c4134f43e5edc181dbae9999f557ecc6",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-class-hierarchy.test.ts::get-class-hierarchy.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-class-hierarchy.test.ts::get-class-hierarchy.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-class-hierarchy.test.ts::get-class-hierarchy.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-class-hierarchy.test.ts::get-class-hierarchy.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/adapters/mcp/__tests__/get-class-hierarchy.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": []
+}

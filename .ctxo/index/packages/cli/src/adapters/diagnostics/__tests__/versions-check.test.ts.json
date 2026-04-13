@@ -1,0 +1,29 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "01de0a80df67333f8443b25faa8c72348684b66020aebdba121c9b182bc05c89",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/versions-check.test.ts::versions-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/versions-check.test.ts::versions-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/adapters/diagnostics/__tests__/versions-check.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:20:56+03:00",
+      "hash": "b60d608fe6e6c4a0c5490465532dd5c5e1353a3f",
+      "kind": "commit",
+      "message": "feat(doctor): add Versions section and language coverage check"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": []
+}

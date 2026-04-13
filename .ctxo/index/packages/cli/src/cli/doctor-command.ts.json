@@ -1,0 +1,404 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 8,
+      "symbolId": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method"
+    }
+  ],
+  "contentHash": "037e22fec019f512180149b428305619e554b696746f12e25c47749ebfab8bf0",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/health-checker.ts::HealthChecker::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::NodeVersionCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TsMorphCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TreeSitterCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitBinaryCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitRepoCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::SymbolCountCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::EdgeCountCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::CoChangesCacheCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::SchemaVersionCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/storage-check.ts::SqliteCacheCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/disk-check.ts::DiskUsageCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/doctor-fix.ts::formatFixReport::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-fix.ts::formatFixReport::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::NodeVersionCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitBinaryCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitRepoCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/storage-check.ts::SqliteCacheCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TsMorphCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TreeSitterCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/disk-check.ts::DiskUsageCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::SymbolCountCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::EdgeCountCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::CoChangesCacheCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::SchemaVersionCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/health-checker.ts::HealthChecker::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::NodeVersionCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitBinaryCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/checks/git-check.ts::GitRepoCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/checks/storage-check.ts::SqliteCacheCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/checks/config-check.ts::ConfigFileCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TsMorphCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TreeSitterCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/checks/disk-check.ts::DiskUsageCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::SymbolCountCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::EdgeCountCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::CoChangesCacheCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::SchemaVersionCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/health-checker.ts::HealthChecker::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/doctor-fix.ts::formatFixReport::function"
+    }
+  ],
+  "file": "packages/cli/src/cli/doctor-command.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:28:53+03:00",
+      "hash": "7174b669e8f74f8770aeeaa22475639fe090732d",
+      "kind": "commit",
+      "message": "feat(doctor): implement --fix with dependency-ordered execution"
+    },
+    {
+      "date": "2026-04-13T02:20:56+03:00",
+      "hash": "b60d608fe6e6c4a0c5490465532dd5c5e1353a3f",
+      "kind": "commit",
+      "message": "feat(doctor): add Versions section and language coverage check"
+    },
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 112,
+      "endOffset": 3866,
+      "kind": "class",
+      "name": "DoctorCommand",
+      "startLine": 32,
+      "startOffset": 1438,
+      "symbolId": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class"
+    },
+    {
+      "endLine": 111,
+      "endOffset": 3863,
+      "kind": "method",
+      "name": "DoctorCommand.run",
+      "startLine": 41,
+      "startOffset": 1682,
+      "symbolId": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method"
+    },
+    {
+      "endLine": 30,
+      "endOffset": 1434,
+      "kind": "interface",
+      "name": "DoctorOptions",
+      "startLine": 24,
+      "startOffset": 1303,
+      "symbolId": "packages/cli/src/cli/doctor-command.ts::DoctorOptions::interface"
+    }
+  ]
+}

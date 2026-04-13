@@ -1,0 +1,58 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "295224f7c68d1989ddbe93dcca867da3e395dba1f2f87621614b0f29f2c7f349",
+  "edges": [
+    {
+      "from": "packages/plugin-api/src/plugin.ts::PluginLogger::interface",
+      "kind": "imports",
+      "to": "packages/plugin-api/src/adapter.ts::ILanguageAdapter::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/plugin-api/src/plugin.ts::PluginLogger::interface",
+      "kind": "imports",
+      "to": "packages/plugin-api/src/workspace.ts::IWorkspace::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/plugin-api/src/plugin.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:35:07+03:00",
+      "hash": "dc578b8fcb106b7805e15f3ef22f4f1522c88451",
+      "kind": "commit",
+      "message": "feat(plugin-api): introduce plugin protocol v1 + workspace abstraction"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 13,
+      "endOffset": 568,
+      "kind": "interface",
+      "name": "PluginLogger",
+      "startLine": 8,
+      "startOffset": 329,
+      "symbolId": "packages/plugin-api/src/plugin.ts::PluginLogger::interface"
+    },
+    {
+      "endLine": 24,
+      "endOffset": 913,
+      "kind": "interface",
+      "name": "PluginContext",
+      "startLine": 18,
+      "startOffset": 648,
+      "symbolId": "packages/plugin-api/src/plugin.ts::PluginContext::interface"
+    },
+    {
+      "endLine": 52,
+      "endOffset": 1903,
+      "kind": "interface",
+      "name": "CtxoLanguagePlugin",
+      "startLine": 31,
+      "startOffset": 1110,
+      "symbolId": "packages/plugin-api/src/plugin.ts::CtxoLanguagePlugin::interface"
+    }
+  ]
+}

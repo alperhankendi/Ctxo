@@ -1,0 +1,40 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "6b5613e28c345f8becbbeff2714ccc29b05a8b5266f72bb80ac0d81fe3516638",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/context-assembly/__tests__/context-assembler.test.ts::context-assembler.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/__tests__/context-assembler.test.ts::context-assembler.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class"
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/__tests__/context-assembler.test.ts::context-assembler.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/context-assembly/__tests__/context-assembler.test.ts::context-assembler.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/core/context-assembly/__tests__/context-assembler.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

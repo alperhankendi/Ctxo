@@ -1,0 +1,113 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter.formatHuman::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter.formatQuiet::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter.formatJson::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter.formatCheckLine::method"
+    }
+  ],
+  "contentHash": "7f1c758efb4ab882b7146f6f964af2f34824905d2e7f6076ee2830b649edec31",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::DoctorReport::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter.formatHuman::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter.formatCheckLine::method"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter.formatQuiet::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter.formatCheckLine::method"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::DoctorReport::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface"
+    }
+  ],
+  "file": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": [
+    {
+      "endLine": 57,
+      "endOffset": 1711,
+      "kind": "class",
+      "name": "DoctorReporter",
+      "startLine": 8,
+      "startOffset": 174,
+      "symbolId": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter::class"
+    },
+    {
+      "endLine": 20,
+      "endOffset": 601,
+      "kind": "method",
+      "name": "DoctorReporter.formatHuman",
+      "startLine": 9,
+      "startOffset": 207,
+      "symbolId": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter.formatHuman::method"
+    },
+    {
+      "endLine": 35,
+      "endOffset": 1067,
+      "kind": "method",
+      "name": "DoctorReporter.formatQuiet",
+      "startLine": 22,
+      "startOffset": 607,
+      "symbolId": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter.formatQuiet::method"
+    },
+    {
+      "endLine": 49,
+      "endOffset": 1439,
+      "kind": "method",
+      "name": "DoctorReporter.formatJson",
+      "startLine": 37,
+      "startOffset": 1073,
+      "symbolId": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter.formatJson::method"
+    },
+    {
+      "endLine": 56,
+      "endOffset": 1708,
+      "kind": "method",
+      "name": "DoctorReporter.formatCheckLine",
+      "startLine": 51,
+      "startOffset": 1445,
+      "symbolId": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter.formatCheckLine::method"
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/core/response-envelope.ts::setWorkspaceMeta::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/core/response-envelope.ts::getWorkspaceMeta::function"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
+    }
+  ],
+  "contentHash": "d53ebb7ac2395300cb8de2f2a306e5cad7ead2ba32dd8f0e1899f9a187574b49",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/response-envelope.ts::wrapResponse::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/response-envelope.ts::getThreshold::function"
+    },
+    {
+      "from": "packages/cli/src/core/response-envelope.ts::wrapResponse::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/response-envelope.ts::findTruncatableArray::function"
+    },
+    {
+      "from": "packages/cli/src/core/response-envelope.ts::wrapResponse::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/response-envelope.ts::buildMeta::function"
+    },
+    {
+      "from": "packages/cli/src/core/response-envelope.ts::wrapResponse::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/response-envelope.ts::buildMeta::function"
+    },
+    {
+      "from": "packages/cli/src/core/response-envelope.ts::wrapResponse::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/response-envelope.ts::buildMeta::function"
+    },
+    {
+      "from": "packages/cli/src/core/response-envelope.ts::wrapResponse::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/response-envelope.ts::buildMeta::function"
+    }
+  ],
+  "file": "packages/cli/src/core/response-envelope.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:35:07+03:00",
+      "hash": "dc578b8fcb106b7805e15f3ef22f4f1522c88451",
+      "kind": "commit",
+      "message": "feat(plugin-api): introduce plugin protocol v1 + workspace abstraction"
+    },
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 33,
+      "endOffset": 953,
+      "kind": "function",
+      "name": "setWorkspaceMeta",
+      "startLine": 31,
+      "startOffset": 844,
+      "symbolId": "packages/cli/src/core/response-envelope.ts::setWorkspaceMeta::function"
+    },
+    {
+      "endLine": 37,
+      "endOffset": 1056,
+      "kind": "function",
+      "name": "getWorkspaceMeta",
+      "startLine": 35,
+      "startOffset": 955,
+      "symbolId": "packages/cli/src/core/response-envelope.ts::getWorkspaceMeta::function"
+    },
+    {
+      "endLine": 163,
+      "endOffset": 4963,
+      "kind": "function",
+      "name": "wrapResponse",
+      "startLine": 91,
+      "startOffset": 3204,
+      "symbolId": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "endLine": 23,
+      "endOffset": 625,
+      "kind": "interface",
+      "name": "ResponseMeta",
+      "startLine": 9,
+      "startOffset": 272,
+      "symbolId": "packages/cli/src/core/response-envelope.ts::ResponseMeta::interface"
+    }
+  ]
+}

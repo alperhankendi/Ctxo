@@ -1,0 +1,242 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 33,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeConfidence::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.describeReason::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.isFrameworkSymbol::method"
+    },
+    {
+      "cyclomatic": 9,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeCascadeDepths::method"
+    },
+    {
+      "cyclomatic": 9,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detectScaffolding::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
+    }
+  ],
+  "contentHash": "5f8ca8c511ef257a20856ee87ee3c50f992d8881a93c34e8ecfd54a927a33392",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolKind::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
+    },
+    {
+      "from": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
+    },
+    {
+      "from": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detectScaffolding::method"
+    },
+    {
+      "from": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.isFrameworkSymbol::method"
+    },
+    {
+      "from": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeCascadeDepths::method"
+    },
+    {
+      "from": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeConfidence::method"
+    },
+    {
+      "from": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.describeReason::method"
+    },
+    {
+      "from": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detectScaffolding::method"
+    },
+    {
+      "from": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeConfidence::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
+    },
+    {
+      "from": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeConfidence::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
+    },
+    {
+      "from": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detectScaffolding::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
+    },
+    {
+      "from": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detectScaffolding::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
+    },
+    {
+      "from": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    }
+  ],
+  "file": "packages/cli/src/core/dead-code/dead-code-detector.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 325,
+      "endOffset": 10900,
+      "kind": "class",
+      "name": "DeadCodeDetector",
+      "startLine": 67,
+      "startOffset": 2104,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class"
+    },
+    {
+      "endLine": 208,
+      "endOffset": 7312,
+      "kind": "method",
+      "name": "DeadCodeDetector.detect",
+      "startLine": 68,
+      "startOffset": 2138,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method"
+    },
+    {
+      "endLine": 239,
+      "endOffset": 8259,
+      "kind": "method",
+      "name": "DeadCodeDetector.computeConfidence",
+      "startLine": 210,
+      "startOffset": 7316,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeConfidence::method"
+    },
+    {
+      "endLine": 250,
+      "endOffset": 8598,
+      "kind": "method",
+      "name": "DeadCodeDetector.describeReason",
+      "startLine": 241,
+      "startOffset": 8263,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.describeReason::method"
+    },
+    {
+      "endLine": 254,
+      "endOffset": 8713,
+      "kind": "method",
+      "name": "DeadCodeDetector.isFrameworkSymbol",
+      "startLine": 252,
+      "startOffset": 8602,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.isFrameworkSymbol::method"
+    },
+    {
+      "endLine": 291,
+      "endOffset": 9912,
+      "kind": "method",
+      "name": "DeadCodeDetector.computeCascadeDepths",
+      "startLine": 256,
+      "startOffset": 8717,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeCascadeDepths::method"
+    },
+    {
+      "endLine": 320,
+      "endOffset": 10778,
+      "kind": "method",
+      "name": "DeadCodeDetector.detectScaffolding",
+      "startLine": 293,
+      "startOffset": 9916,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detectScaffolding::method"
+    },
+    {
+      "endLine": 324,
+      "endOffset": 10898,
+      "kind": "method",
+      "name": "DeadCodeDetector.matchesAny",
+      "startLine": 322,
+      "startOffset": 10782,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method"
+    },
+    {
+      "endLine": 13,
+      "endOffset": 408,
+      "kind": "interface",
+      "name": "DeadSymbolEntry",
+      "startLine": 5,
+      "startOffset": 160,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadSymbolEntry::interface"
+    },
+    {
+      "endLine": 20,
+      "endOffset": 556,
+      "kind": "interface",
+      "name": "UnusedExportEntry",
+      "startLine": 15,
+      "startOffset": 410,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::UnusedExportEntry::interface"
+    },
+    {
+      "endLine": 27,
+      "endOffset": 698,
+      "kind": "interface",
+      "name": "ScaffoldingEntry",
+      "startLine": 22,
+      "startOffset": 558,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::ScaffoldingEntry::interface"
+    },
+    {
+      "endLine": 37,
+      "endOffset": 1010,
+      "kind": "interface",
+      "name": "DeadCodeResult",
+      "startLine": 29,
+      "startOffset": 700,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeResult::interface"
+    },
+    {
+      "endLine": 3,
+      "endOffset": 158,
+      "kind": "type",
+      "name": "DeadCodeConfidence",
+      "startLine": 3,
+      "startOffset": 109,
+      "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeConfidence::type"
+    }
+  ]
+}

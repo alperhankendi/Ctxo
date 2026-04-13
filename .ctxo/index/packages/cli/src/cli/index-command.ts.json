@@ -1,0 +1,478 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 31,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.autoInstallMissingPlugins::method"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.printLanguagePreview::method"
+    },
+    {
+      "cyclomatic": 12,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.registerDiscoveredPlugins::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.discoverFilesIn::method"
+    },
+    {
+      "cyclomatic": 14,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.discoverWorkspaces::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.isSupportedExtension::method"
+    },
+    {
+      "cyclomatic": 10,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.runCheck::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
+    }
+  ],
+  "contentHash": "78f7cd530efc85d4adeb9ce9dd1f278faa552938d64902a077116c78c700a37e",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/staleness/content-hasher.ts::ContentHasher::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/install-command.ts::InstallCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::detectLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::decideNeededLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::officialPluginFor::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::EXTENSION_LANGUAGE::variable"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::KnownLanguage::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/schema-manager.ts::SchemaManager::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolKind::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand.runCheck::method"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand.autoInstallMissingPlugins::method"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand.registerDiscoveredPlugins::method"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand.printLanguagePreview::method"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand.discoverWorkspaces::method"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand.discoverFilesIn::method"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/schema-manager.ts::SchemaManager::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/staleness/content-hasher.ts::ContentHasher::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.autoInstallMissingPlugins::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::detectLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.autoInstallMissingPlugins::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::decideNeededLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.autoInstallMissingPlugins::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::officialPluginFor::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.autoInstallMissingPlugins::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/install-command.ts::InstallCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.printLanguagePreview::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::detectLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.registerDiscoveredPlugins::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.discoverFilesIn::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand.isSupportedExtension::method"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.runCheck::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand.registerDiscoveredPlugins::method"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.runCheck::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand.discoverFilesIn::method"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.runCheck::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand.isSupportedExtension::method"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.runCheck::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.runCheck::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/staleness/content-hasher.ts::ContentHasher::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/schema-manager.ts::SchemaManager::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/staleness/content-hasher.ts::ContentHasher::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::SymbolKind::type"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::detectLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::decideNeededLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::KnownLanguage::type"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::officialPluginFor::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/install-command.ts::InstallCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::EXTENSION_LANGUAGE::variable"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function"
+    }
+  ],
+  "file": "packages/cli/src/cli/index-command.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:26:50+03:00",
+      "hash": "baec286db158b7a3d0ea02e2a7f4b8f23117bfe5",
+      "kind": "commit",
+      "message": "feat(index): language-aware preview and --install-missing flag"
+    },
+    {
+      "date": "2026-04-13T02:01:42+03:00",
+      "hash": "777ffddd20b586a9a44711ca77b43ea210f69d7b",
+      "kind": "commit",
+      "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
+    },
+    {
+      "date": "2026-04-13T01:52:29+03:00",
+      "hash": "00cff73ddde2917c6dca764478fd0747633c1032",
+      "kind": "commit",
+      "message": "feat(lang-go): extract Go adapter as @ctxo/lang-go plugin"
+    },
+    {
+      "date": "2026-04-13T01:48:46+03:00",
+      "hash": "2b84e12580bd96212c8dbe7569931e93cc8e3892",
+      "kind": "commit",
+      "message": "feat(lang-typescript): extract TypeScript adapter as @ctxo/lang-typescript plugin"
+    },
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 469,
+      "endOffset": 17936,
+      "kind": "class",
+      "name": "IndexCommand",
+      "startLine": 47,
+      "startOffset": 1972,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand::class"
+    },
+    {
+      "endLine": 249,
+      "endOffset": 9630,
+      "kind": "method",
+      "name": "IndexCommand.run",
+      "startLine": 58,
+      "startOffset": 2361,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method"
+    },
+    {
+      "endLine": 265,
+      "endOffset": 10243,
+      "kind": "method",
+      "name": "IndexCommand.autoInstallMissingPlugins",
+      "startLine": 251,
+      "startOffset": 9636,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.autoInstallMissingPlugins::method"
+    },
+    {
+      "endLine": 279,
+      "endOffset": 10944,
+      "kind": "method",
+      "name": "IndexCommand.printLanguagePreview",
+      "startLine": 267,
+      "startOffset": 10249,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.printLanguagePreview::method"
+    },
+    {
+      "endLine": 328,
+      "endOffset": 12921,
+      "kind": "method",
+      "name": "IndexCommand.registerDiscoveredPlugins",
+      "startLine": 281,
+      "startOffset": 10950,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.registerDiscoveredPlugins::method"
+    },
+    {
+      "endLine": 348,
+      "endOffset": 13526,
+      "kind": "method",
+      "name": "IndexCommand.discoverFilesIn",
+      "startLine": 330,
+      "startOffset": 12927,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.discoverFilesIn::method"
+    },
+    {
+      "endLine": 391,
+      "endOffset": 15045,
+      "kind": "method",
+      "name": "IndexCommand.discoverWorkspaces",
+      "startLine": 350,
+      "startOffset": 13532,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.discoverWorkspaces::method"
+    },
+    {
+      "endLine": 396,
+      "endOffset": 15210,
+      "kind": "method",
+      "name": "IndexCommand.isSupportedExtension",
+      "startLine": 393,
+      "startOffset": 15051,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.isSupportedExtension::method"
+    },
+    {
+      "endLine": 455,
+      "endOffset": 17368,
+      "kind": "method",
+      "name": "IndexCommand.runCheck",
+      "startLine": 398,
+      "startOffset": 15216,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.runCheck::method"
+    },
+    {
+      "endLine": 468,
+      "endOffset": 17933,
+      "kind": "method",
+      "name": "IndexCommand.ensureGitignore",
+      "startLine": 457,
+      "startOffset": 17374,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
+    }
+  ]
+}

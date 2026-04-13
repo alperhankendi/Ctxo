@@ -1,0 +1,62 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/adapters/storage/__tests__/test-fixtures.ts::buildFileIndex::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/adapters/storage/__tests__/test-fixtures.ts::buildSecondFileIndex::function"
+    }
+  ],
+  "contentHash": "cf4196af753ea75fb57a7e3d6a32030c42b9e16ca9287cec5509cedcade569fd",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/storage/__tests__/test-fixtures.ts::buildFileIndex::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/__tests__/test-fixtures.ts::buildFileIndex::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/__tests__/test-fixtures.ts::buildSecondFileIndex::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type"
+    }
+  ],
+  "file": "packages/cli/src/adapters/storage/__tests__/test-fixtures.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 33,
+      "endOffset": 762,
+      "kind": "function",
+      "name": "buildFileIndex",
+      "startLine": 16,
+      "startOffset": 344,
+      "symbolId": "packages/cli/src/adapters/storage/__tests__/test-fixtures.ts::buildFileIndex::function"
+    },
+    {
+      "endLine": 52,
+      "endOffset": 1132,
+      "kind": "function",
+      "name": "buildSecondFileIndex",
+      "startLine": 35,
+      "startOffset": 764,
+      "symbolId": "packages/cli/src/adapters/storage/__tests__/test-fixtures.ts::buildSecondFileIndex::function"
+    }
+  ]
+}

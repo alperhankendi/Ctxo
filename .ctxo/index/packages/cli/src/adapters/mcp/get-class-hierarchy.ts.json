@@ -1,0 +1,112 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 42,
+      "symbolId": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function"
+    }
+  ],
+  "contentHash": "9503bfde4ba710ec20808e2e5bf9fdda46f29963e5eefdc6843860344498b834",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-masking-port.ts::IMaskingPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
+    }
+  ],
+  "file": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 211,
+      "endOffset": 7481,
+      "kind": "function",
+      "name": "handleGetClassHierarchy",
+      "startLine": 13,
+      "startOffset": 574,
+      "symbolId": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function"
+    }
+  ]
+}

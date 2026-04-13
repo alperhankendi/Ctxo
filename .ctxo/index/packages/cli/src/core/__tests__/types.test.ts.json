@@ -1,0 +1,53 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "6b7dc3864ef08d12fef8b3ce66f27efeef856cf0b4532b3c59ca518c58e41ec7",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolKindSchema::variable"
+    },
+    {
+      "from": "packages/cli/src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolNodeSchema::variable"
+    },
+    {
+      "from": "packages/cli/src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::GraphEdgeSchema::variable"
+    },
+    {
+      "from": "packages/cli/src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndexSchema::variable"
+    },
+    {
+      "from": "packages/cli/src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolIdSchema::variable"
+    },
+    {
+      "from": "packages/cli/src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::EdgeKindSchema::variable"
+    },
+    {
+      "from": "packages/cli/src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::DetailLevelSchema::variable"
+    }
+  ],
+  "file": "packages/cli/src/core/__tests__/types.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

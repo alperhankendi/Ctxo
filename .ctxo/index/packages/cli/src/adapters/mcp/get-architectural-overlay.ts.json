@@ -1,0 +1,81 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
+    }
+  ],
+  "contentHash": "97dedda1d008ccf5b1693e3d5424172284b5ad55b876ad95b8cf5a965b10f605",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-masking-port.ts::IMaskingPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class"
+    }
+  ],
+  "file": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 54,
+      "endOffset": 1896,
+      "kind": "function",
+      "name": "handleGetArchitecturalOverlay",
+      "startLine": 10,
+      "startOffset": 372,
+      "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
+    }
+  ]
+}

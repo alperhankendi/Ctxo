@@ -1,0 +1,62 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-csharp/src/logger.ts::createLogger::function"
+    }
+  ],
+  "contentHash": "79af2ad3bf88f9b998bf8266d06a0cb7120391eb5f4263b6d342b1f847a5a57c",
+  "edges": [
+    {
+      "from": "packages/lang-csharp/src/logger.ts::createLogger::function",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/logger.ts::emit::function"
+    },
+    {
+      "from": "packages/lang-csharp/src/logger.ts::createLogger::function",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/logger.ts::emit::function"
+    },
+    {
+      "from": "packages/lang-csharp/src/logger.ts::createLogger::function",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/logger.ts::emit::function"
+    },
+    {
+      "from": "packages/lang-csharp/src/logger.ts::createLogger::function",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/logger.ts::emit::function"
+    }
+  ],
+  "file": "packages/lang-csharp/src/logger.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:01:42+03:00",
+      "hash": "777ffddd20b586a9a44711ca77b43ea210f69d7b",
+      "kind": "commit",
+      "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 39,
+      "endOffset": 1493,
+      "kind": "function",
+      "name": "createLogger",
+      "startLine": 32,
+      "startOffset": 1158,
+      "symbolId": "packages/lang-csharp/src/logger.ts::createLogger::function"
+    },
+    {
+      "endLine": 12,
+      "endOffset": 376,
+      "kind": "interface",
+      "name": "Logger",
+      "startLine": 7,
+      "startOffset": 287,
+      "symbolId": "packages/lang-csharp/src/logger.ts::Logger::interface"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "c8c239e62e189de8bb94f57954da6404e9513192e4ead819c8d9d9b17413f53f",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-symbol-importance.test.ts::get-symbol-importance.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-symbol-importance.test.ts::get-symbol-importance.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-symbol-importance.test.ts::get-symbol-importance.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-symbol-importance.test.ts::get-symbol-importance.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/adapters/mcp/__tests__/get-symbol-importance.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

@@ -1,0 +1,151 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "f5cbe341f1a909887acf21ce4b2c91b14ab8970ec3e9c096e60ac94f3637db64",
+  "edges": [
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/transport/http-server-transport.ts::startHttpTransport::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPatternConfig::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/stats/with-recording.ts::withRecording::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-session-recorder-port.ts::ISessionRecorderPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/workspace/single-package-workspace.ts::detectWorkspace::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/response-envelope.ts::setWorkspaceMeta::function"
+    }
+  ],
+  "file": "packages/cli/src/index.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:35:07+03:00",
+      "hash": "dc578b8fcb106b7805e15f3ef22f4f1522c88451",
+      "kind": "commit",
+      "message": "feat(plugin-api): introduce plugin protocol v1 + workspace abstraction"
+    },
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

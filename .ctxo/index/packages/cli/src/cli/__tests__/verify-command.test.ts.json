@@ -1,0 +1,28 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "c5d26da741d2c6762d6235c9350982e31a79f80527a4b71a1cb8730c1c5c3164",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/__tests__/verify-command.test.ts::verify-command.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/verify-command.test.ts::verify-command.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/verify-command.ts::VerifyCommand::class"
+    }
+  ],
+  "file": "packages/cli/src/cli/__tests__/verify-command.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

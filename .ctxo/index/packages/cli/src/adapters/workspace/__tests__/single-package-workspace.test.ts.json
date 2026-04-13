@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "24309c0599a586367628f1554514ed78f83518847c4e004e15c086afdfbd99a1",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/workspace/__tests__/single-package-workspace.test.ts::single-package-workspace.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/workspace/single-package-workspace.ts::detectWorkspace::function"
+    }
+  ],
+  "file": "packages/cli/src/adapters/workspace/__tests__/single-package-workspace.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:44:06+03:00",
+      "hash": "bacd0be38ebd8798e5a3e1a2df894d356aba3139",
+      "kind": "commit",
+      "message": "test(cli): audit cleanup — add plugin protocol coverage, fix ctxo-mcp drift"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

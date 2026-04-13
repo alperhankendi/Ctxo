@@ -1,0 +1,51 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "18e95cb81c98ccfec6a01ab0b6573265477f0deecd0099ac9d00f378193e6c70",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-change-intelligence.test.ts::get-change-intelligence.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-change-intelligence.test.ts::get-change-intelligence.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-change-intelligence.test.ts::get-change-intelligence.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-change-intelligence.test.ts::get-change-intelligence.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-change-intelligence.test.ts::get-change-intelligence.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::ChurnData::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-change-intelligence.test.ts::get-change-intelligence.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/adapters/mcp/__tests__/get-change-intelligence.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": []
+}

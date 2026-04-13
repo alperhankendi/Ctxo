@@ -1,0 +1,89 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-csharp/src/roslyn/solution-discovery.ts::detectDotnetSdk::function"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-csharp/src/roslyn/solution-discovery.ts::discoverSolution::function"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-csharp/src/roslyn/solution-discovery.ts::findCtxoRoslynProject::function"
+    }
+  ],
+  "contentHash": "40ee609a3a64fcf0b3997c78055c2b22c3508eb6a15959d11a85f9c18386a43c",
+  "edges": [
+    {
+      "from": "packages/lang-csharp/src/roslyn/solution-discovery.ts::detectDotnetSdk::function",
+      "kind": "imports",
+      "to": "packages/lang-csharp/src/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/lang-csharp/src/roslyn/solution-discovery.ts::discoverSolution::function",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/roslyn/solution-discovery.ts::findFiles::function"
+    },
+    {
+      "from": "packages/lang-csharp/src/roslyn/solution-discovery.ts::discoverSolution::function",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/roslyn/solution-discovery.ts::findFiles::function"
+    },
+    {
+      "from": "packages/lang-csharp/src/roslyn/solution-discovery.ts::discoverSolution::function",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/roslyn/solution-discovery.ts::findFiles::function"
+    },
+    {
+      "from": "packages/lang-csharp/src/roslyn/solution-discovery.ts::findCtxoRoslynProject::function",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/roslyn/solution-discovery.ts::findPackageRoot::function"
+    },
+    {
+      "from": "packages/lang-csharp/src/roslyn/solution-discovery.ts::findCtxoRoslynProject::function",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/roslyn/solution-discovery.ts::findMonorepoRoot::function"
+    }
+  ],
+  "file": "packages/lang-csharp/src/roslyn/solution-discovery.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:01:42+03:00",
+      "hash": "777ffddd20b586a9a44711ca77b43ea210f69d7b",
+      "kind": "commit",
+      "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 43,
+      "endOffset": 1361,
+      "kind": "function",
+      "name": "detectDotnetSdk",
+      "startLine": 31,
+      "startOffset": 885,
+      "symbolId": "packages/lang-csharp/src/roslyn/solution-discovery.ts::detectDotnetSdk::function"
+    },
+    {
+      "endLine": 69,
+      "endOffset": 2126,
+      "kind": "function",
+      "name": "discoverSolution",
+      "startLine": 45,
+      "startOffset": 1363,
+      "symbolId": "packages/lang-csharp/src/roslyn/solution-discovery.ts::discoverSolution::function"
+    },
+    {
+      "endLine": 119,
+      "endOffset": 4175,
+      "kind": "function",
+      "name": "findCtxoRoslynProject",
+      "startLine": 91,
+      "startOffset": 2755,
+      "symbolId": "packages/lang-csharp/src/roslyn/solution-discovery.ts::findCtxoRoslynProject::function"
+    }
+  ]
+}

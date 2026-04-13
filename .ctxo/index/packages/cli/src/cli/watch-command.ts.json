@@ -1,0 +1,213 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 17,
+      "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method"
+    }
+  ],
+  "contentHash": "421c2bd58cd82940a0d4a0a7d0e31de895c34f25cf8ca2108d01e989abede6b9",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/staleness/content-hasher.ts::ContentHasher::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommitIntent::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::AntiPattern::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/staleness/content-hasher.ts::ContentHasher::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/staleness/content-hasher.ts::ContentHasher::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::CommitIntent::type"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::AntiPattern::type"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type"
+    }
+  ],
+  "file": "packages/cli/src/cli/watch-command.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:01:42+03:00",
+      "hash": "777ffddd20b586a9a44711ca77b43ea210f69d7b",
+      "kind": "commit",
+      "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
+    },
+    {
+      "date": "2026-04-13T01:52:29+03:00",
+      "hash": "00cff73ddde2917c6dca764478fd0747633c1032",
+      "kind": "commit",
+      "message": "feat(lang-go): extract Go adapter as @ctxo/lang-go plugin"
+    },
+    {
+      "date": "2026-04-13T01:48:46+03:00",
+      "hash": "2b84e12580bd96212c8dbe7569931e93cc8e3892",
+      "kind": "commit",
+      "message": "feat(lang-typescript): extract TypeScript adapter as @ctxo/lang-typescript plugin"
+    },
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 213,
+      "endOffset": 7987,
+      "kind": "class",
+      "name": "WatchCommand",
+      "startLine": 29,
+      "startOffset": 1293,
+      "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand::class"
+    },
+    {
+      "endLine": 211,
+      "endOffset": 7984,
+      "kind": "method",
+      "name": "WatchCommand.run",
+      "startLine": 38,
+      "startOffset": 1527,
+      "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method"
+    }
+  ]
+}

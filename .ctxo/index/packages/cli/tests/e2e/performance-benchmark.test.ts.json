@@ -1,0 +1,49 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "0cc4105417a5800bd2d3b895ba422850c58092af2a4730f2e570442d024cde01",
+  "edges": [
+    {
+      "from": "packages/cli/tests/e2e/performance-benchmark.test.ts::performance-benchmark.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/tests/e2e/performance-benchmark.test.ts::performance-benchmark.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class"
+    },
+    {
+      "from": "packages/cli/tests/e2e/performance-benchmark.test.ts::performance-benchmark.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "packages/cli/tests/e2e/performance-benchmark.test.ts::performance-benchmark.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detail-levels/detail-formatter.ts::DetailFormatter::class"
+    },
+    {
+      "from": "packages/cli/tests/e2e/performance-benchmark.test.ts::performance-benchmark.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "packages/cli/tests/e2e/performance-benchmark.test.ts::performance-benchmark.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/tests/e2e/performance-benchmark.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

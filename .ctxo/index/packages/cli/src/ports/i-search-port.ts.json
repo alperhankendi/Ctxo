@@ -1,0 +1,40 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "388de3b29311ef449c7350ee050c8419a096951923441e4c7a8861f95f2ede6e",
+  "edges": [
+    {
+      "from": "packages/cli/src/ports/i-search-port.ts::ISearchPort::interface",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/ports/i-search-port.ts::ISearchPort::interface",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SearchResponse::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/ports/i-search-port.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 32,
+      "endOffset": 894,
+      "kind": "interface",
+      "name": "ISearchPort",
+      "startLine": 9,
+      "startOffset": 181,
+      "symbolId": "packages/cli/src/ports/i-search-port.ts::ISearchPort::interface"
+    }
+  ]
+}

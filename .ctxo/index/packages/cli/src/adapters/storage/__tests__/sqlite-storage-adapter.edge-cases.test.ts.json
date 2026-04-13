@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "203489b7a4652065daf504ac034d9c07dd51017677a9d95ed8752e1040f2907b",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/storage/__tests__/sqlite-storage-adapter.edge-cases.test.ts::sqlite-storage-adapter.edge-cases.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    }
+  ],
+  "file": "packages/cli/src/adapters/storage/__tests__/sqlite-storage-adapter.edge-cases.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

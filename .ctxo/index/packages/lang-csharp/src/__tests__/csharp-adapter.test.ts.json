@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "2a5c33dd613794acade542bd5990539ac2c5dfab542869fac76daeac894fe10d",
+  "edges": [
+    {
+      "from": "packages/lang-csharp/src/__tests__/csharp-adapter.test.ts::csharp-adapter.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter::class"
+    }
+  ],
+  "file": "packages/lang-csharp/src/__tests__/csharp-adapter.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:01:42+03:00",
+      "hash": "777ffddd20b586a9a44711ca77b43ea210f69d7b",
+      "kind": "commit",
+      "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "a957dc1731378d01c41914bd8225f447b7298dba493afe4022564fc936384652",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/language/__tests__/plugin-discovery.test.ts::plugin-discovery.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/language/plugin-discovery.ts::discoverPlugins::function"
+    }
+  ],
+  "file": "packages/cli/src/adapters/language/__tests__/plugin-discovery.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:44:06+03:00",
+      "hash": "bacd0be38ebd8798e5a3e1a2df894d356aba3139",
+      "kind": "commit",
+      "message": "test(cli): audit cleanup — add plugin protocol coverage, fix ctxo-mcp drift"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": []
+}

@@ -1,0 +1,17 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "b781649fb6c96f3acb160aac08b84d52766c4014106eaf696dc0c79a66640bd4",
+  "edges": [],
+  "file": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Interfaces/IUserRepository.cs",
+  "intent": [
+    {
+      "date": "2026-04-13T02:01:42+03:00",
+      "hash": "777ffddd20b586a9a44711ca77b43ea210f69d7b",
+      "kind": "commit",
+      "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

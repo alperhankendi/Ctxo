@@ -1,0 +1,17 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "5a72f9c917b13ede29c1ca04b85f84b2e67db9859693e74f064812e8e53a6c5e",
+  "edges": [],
+  "file": "packages/lang-typescript/vitest.config.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:48:46+03:00",
+      "hash": "2b84e12580bd96212c8dbe7569931e93cc8e3892",
+      "kind": "commit",
+      "message": "feat(lang-typescript): extract TypeScript adapter as @ctxo/lang-typescript plugin"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

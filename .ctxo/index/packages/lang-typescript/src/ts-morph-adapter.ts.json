@@ -1,0 +1,854 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isSupported::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.setSymbolRegistry::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.loadProjectSources::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.clearProjectSources::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractSymbols::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractEdges::method"
+    },
+    {
+      "cyclomatic": 10,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractComplexity::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractFunctions::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractClasses::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractInterfaces::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractTypeAliases::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractVariables::method"
+    },
+    {
+      "cyclomatic": 12,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractImportEdges::method"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractInheritanceEdges::method"
+    },
+    {
+      "cyclomatic": 24,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractCallEdges::method"
+    },
+    {
+      "cyclomatic": 13,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractReferenceEdges::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.emitUsesEdges::method"
+    },
+    {
+      "cyclomatic": 8,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveLocalCallTarget::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveThisMethodCall::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.parseSource::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.cleanupSourceFile::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveRelativeImport::method"
+    },
+    {
+      "cyclomatic": 16,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveSymbolReference::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.inferSymbolKind::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.normalizeFilePath::method"
+    },
+    {
+      "cyclomatic": 14,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.getExportedSymbolIds::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "cyclomatic": 15,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.countCyclomaticComplexity::method"
+    }
+  ],
+  "contentHash": "c851492fde20789e59ef63b46f8d48c504a70e36c3d1c4b96cfa25c5734cc8e0",
+  "edges": [
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter::class",
+      "kind": "implements",
+      "to": "/packages/lang-typescript/src/ts-morph-adapter.ts::ILanguageAdapter::interface"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.parseSource::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractFunctions::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractClasses::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractInterfaces::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractTypeAliases::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractVariables::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.cleanupSourceFile::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.parseSource::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractImportEdges::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractInheritanceEdges::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractCallEdges::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractReferenceEdges::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.cleanupSourceFile::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractComplexity::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.parseSource::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractComplexity::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractComplexity::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractComplexity::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.countCyclomaticComplexity::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractComplexity::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractComplexity::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractComplexity::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.countCyclomaticComplexity::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractComplexity::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.cleanupSourceFile::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractFunctions::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractFunctions::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractClasses::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractClasses::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractClasses::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractInterfaces::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractInterfaces::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractTypeAliases::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractTypeAliases::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractVariables::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractVariables::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractImportEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractImportEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.getExportedSymbolIds::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractImportEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveRelativeImport::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractImportEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractImportEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractImportEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractInheritanceEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractInheritanceEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractInheritanceEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveSymbolReference::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractInheritanceEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveSymbolReference::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractCallEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractCallEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractCallEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveLocalCallTarget::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractCallEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveLocalCallTarget::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractCallEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractCallEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractCallEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveThisMethodCall::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractCallEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveLocalCallTarget::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractCallEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveThisMethodCall::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractCallEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveLocalCallTarget::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractReferenceEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveRelativeImport::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractReferenceEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractReferenceEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractReferenceEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractReferenceEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractReferenceEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.emitUsesEdges::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractReferenceEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractReferenceEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractReferenceEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.emitUsesEdges::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveLocalCallTarget::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveRelativeImport::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveLocalCallTarget::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveLocalCallTarget::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveThisMethodCall::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.inferSymbolKind::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveSymbolReference::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.normalizeFilePath::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveSymbolReference::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.normalizeFilePath::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.getExportedSymbolIds::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.getExportedSymbolIds::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.getExportedSymbolIds::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.getExportedSymbolIds::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.getExportedSymbolIds::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.getExportedSymbolIds::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.getExportedSymbolIds::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.getExportedSymbolIds::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.getExportedSymbolIds::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "from": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.getExportedSymbolIds::method",
+      "kind": "calls",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    }
+  ],
+  "file": "packages/lang-typescript/src/ts-morph-adapter.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:48:46+03:00",
+      "hash": "2b84e12580bd96212c8dbe7569931e93cc8e3892",
+      "kind": "commit",
+      "message": "feat(lang-typescript): extract TypeScript adapter as @ctxo/lang-typescript plugin"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 754,
+      "endOffset": 25430,
+      "kind": "class",
+      "name": "TsMorphAdapter",
+      "startLine": 21,
+      "startOffset": 444,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter::class"
+    },
+    {
+      "endLine": 44,
+      "endOffset": 1127,
+      "kind": "method",
+      "name": "TsMorphAdapter.isSupported",
+      "startLine": 41,
+      "startOffset": 964,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isSupported::method"
+    },
+    {
+      "endLine": 48,
+      "endOffset": 1231,
+      "kind": "method",
+      "name": "TsMorphAdapter.setSymbolRegistry",
+      "startLine": 46,
+      "startOffset": 1131,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.setSymbolRegistry::method"
+    },
+    {
+      "endLine": 61,
+      "endOffset": 1724,
+      "kind": "method",
+      "name": "TsMorphAdapter.loadProjectSources",
+      "startLine": 50,
+      "startOffset": 1235,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.loadProjectSources::method"
+    },
+    {
+      "endLine": 68,
+      "endOffset": 1897,
+      "kind": "method",
+      "name": "TsMorphAdapter.clearProjectSources",
+      "startLine": 63,
+      "startOffset": 1728,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.clearProjectSources::method"
+    },
+    {
+      "endLine": 90,
+      "endOffset": 2658,
+      "kind": "method",
+      "name": "TsMorphAdapter.extractSymbols",
+      "startLine": 70,
+      "startOffset": 1901,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractSymbols::method"
+    },
+    {
+      "endLine": 113,
+      "endOffset": 3400,
+      "kind": "method",
+      "name": "TsMorphAdapter.extractEdges",
+      "startLine": 92,
+      "startOffset": 2662,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractEdges::method"
+    },
+    {
+      "endLine": 148,
+      "endOffset": 4660,
+      "kind": "method",
+      "name": "TsMorphAdapter.extractComplexity",
+      "startLine": 115,
+      "startOffset": 3404,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractComplexity::method"
+    },
+    {
+      "endLine": 172,
+      "endOffset": 5305,
+      "kind": "method",
+      "name": "TsMorphAdapter.extractFunctions",
+      "startLine": 152,
+      "startOffset": 4731,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractFunctions::method"
+    },
+    {
+      "endLine": 207,
+      "endOffset": 6359,
+      "kind": "method",
+      "name": "TsMorphAdapter.extractClasses",
+      "startLine": 174,
+      "startOffset": 5309,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractClasses::method"
+    },
+    {
+      "endLine": 228,
+      "endOffset": 6935,
+      "kind": "method",
+      "name": "TsMorphAdapter.extractInterfaces",
+      "startLine": 209,
+      "startOffset": 6363,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractInterfaces::method"
+    },
+    {
+      "endLine": 249,
+      "endOffset": 7531,
+      "kind": "method",
+      "name": "TsMorphAdapter.extractTypeAliases",
+      "startLine": 230,
+      "startOffset": 6939,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractTypeAliases::method"
+    },
+    {
+      "endLine": 273,
+      "endOffset": 8185,
+      "kind": "method",
+      "name": "TsMorphAdapter.extractVariables",
+      "startLine": 251,
+      "startOffset": 7535,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractVariables::method"
+    },
+    {
+      "endLine": 335,
+      "endOffset": 10380,
+      "kind": "method",
+      "name": "TsMorphAdapter.extractImportEdges",
+      "startLine": 277,
+      "startOffset": 8256,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractImportEdges::method"
+    },
+    {
+      "endLine": 371,
+      "endOffset": 11552,
+      "kind": "method",
+      "name": "TsMorphAdapter.extractInheritanceEdges",
+      "startLine": 337,
+      "startOffset": 10384,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractInheritanceEdges::method"
+    },
+    {
+      "endLine": 451,
+      "endOffset": 14695,
+      "kind": "method",
+      "name": "TsMorphAdapter.extractCallEdges",
+      "startLine": 373,
+      "startOffset": 11556,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractCallEdges::method"
+    },
+    {
+      "endLine": 492,
+      "endOffset": 16335,
+      "kind": "method",
+      "name": "TsMorphAdapter.extractReferenceEdges",
+      "startLine": 453,
+      "startOffset": 14699,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractReferenceEdges::method"
+    },
+    {
+      "endLine": 510,
+      "endOffset": 16815,
+      "kind": "method",
+      "name": "TsMorphAdapter.emitUsesEdges",
+      "startLine": 494,
+      "startOffset": 16339,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.emitUsesEdges::method"
+    },
+    {
+      "endLine": 538,
+      "endOffset": 17765,
+      "kind": "method",
+      "name": "TsMorphAdapter.resolveLocalCallTarget",
+      "startLine": 512,
+      "startOffset": 16819,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveLocalCallTarget::method"
+    },
+    {
+      "endLine": 555,
+      "endOffset": 18251,
+      "kind": "method",
+      "name": "TsMorphAdapter.resolveThisMethodCall",
+      "startLine": 540,
+      "startOffset": 17769,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveThisMethodCall::method"
+    },
+    {
+      "endLine": 573,
+      "endOffset": 18864,
+      "kind": "method",
+      "name": "TsMorphAdapter.parseSource",
+      "startLine": 559,
+      "startOffset": 18322,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.parseSource::method"
+    },
+    {
+      "endLine": 580,
+      "endOffset": 19055,
+      "kind": "method",
+      "name": "TsMorphAdapter.cleanupSourceFile",
+      "startLine": 575,
+      "startOffset": 18868,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.cleanupSourceFile::method"
+    },
+    {
+      "endLine": 584,
+      "endOffset": 19188,
+      "kind": "method",
+      "name": "TsMorphAdapter.buildSymbolId",
+      "startLine": 582,
+      "startOffset": 19059,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method"
+    },
+    {
+      "endLine": 601,
+      "endOffset": 19838,
+      "kind": "method",
+      "name": "TsMorphAdapter.resolveRelativeImport",
+      "startLine": 586,
+      "startOffset": 19192,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveRelativeImport::method"
+    },
+    {
+      "endLine": 639,
+      "endOffset": 21341,
+      "kind": "method",
+      "name": "TsMorphAdapter.resolveImportTarget",
+      "startLine": 603,
+      "startOffset": 19842,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method"
+    },
+    {
+      "endLine": 670,
+      "endOffset": 22535,
+      "kind": "method",
+      "name": "TsMorphAdapter.resolveSymbolReference",
+      "startLine": 641,
+      "startOffset": 21345,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveSymbolReference::method"
+    },
+    {
+      "endLine": 681,
+      "endOffset": 23046,
+      "kind": "method",
+      "name": "TsMorphAdapter.inferSymbolKind",
+      "startLine": 672,
+      "startOffset": 22539,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.inferSymbolKind::method"
+    },
+    {
+      "endLine": 686,
+      "endOffset": 23204,
+      "kind": "method",
+      "name": "TsMorphAdapter.normalizeFilePath",
+      "startLine": 683,
+      "startOffset": 23050,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.normalizeFilePath::method"
+    },
+    {
+      "endLine": 715,
+      "endOffset": 24340,
+      "kind": "method",
+      "name": "TsMorphAdapter.getExportedSymbolIds",
+      "startLine": 688,
+      "startOffset": 23208,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.getExportedSymbolIds::method"
+    },
+    {
+      "endLine": 722,
+      "endOffset": 24480,
+      "kind": "method",
+      "name": "TsMorphAdapter.isExported",
+      "startLine": 717,
+      "startOffset": 24344,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method"
+    },
+    {
+      "endLine": 753,
+      "endOffset": 25428,
+      "kind": "method",
+      "name": "TsMorphAdapter.countCyclomaticComplexity",
+      "startLine": 724,
+      "startOffset": 24484,
+      "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.countCyclomaticComplexity::method"
+    }
+  ]
+}

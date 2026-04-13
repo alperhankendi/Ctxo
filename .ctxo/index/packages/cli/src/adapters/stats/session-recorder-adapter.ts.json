@@ -1,0 +1,195 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.ensureTable::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.record::method"
+    },
+    {
+      "cyclomatic": 11,
+      "symbolId": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.queryStats::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.clear::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.flushToDisk::method"
+    }
+  ],
+  "contentHash": "459b74d6819591d35bf8476570454e18d0ecd2713d8793442da9894c93020a31",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-session-recorder-port.ts::ISessionRecorderPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-session-recorder-port.ts::SessionEvent::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-session-recorder-port.ts::AggregatedStats::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-session-recorder-port.ts::ToolStats::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-session-recorder-port.ts::SymbolStats::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-session-recorder-port.ts::DetailLevelStats::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class",
+      "kind": "implements",
+      "to": "packages/cli/src/ports/i-session-recorder-port.ts::ISessionRecorderPort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.record::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.ensureTable::method"
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.record::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.flushToDisk::method"
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.queryStats::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.ensureTable::method"
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.clear::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.ensureTable::method"
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.clear::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.flushToDisk::method"
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-session-recorder-port.ts::ISessionRecorderPort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-session-recorder-port.ts::SessionEvent::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-session-recorder-port.ts::AggregatedStats::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-session-recorder-port.ts::ToolStats::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-session-recorder-port.ts::SymbolStats::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-session-recorder-port.ts::DetailLevelStats::interface"
+    }
+  ],
+  "file": "packages/cli/src/adapters/stats/session-recorder-adapter.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 147,
+      "endOffset": 4611,
+      "kind": "class",
+      "name": "SessionRecorderAdapter",
+      "startLine": 13,
+      "startOffset": 305,
+      "symbolId": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class"
+    },
+    {
+      "endLine": 41,
+      "endOffset": 1272,
+      "kind": "method",
+      "name": "SessionRecorderAdapter.ensureTable",
+      "startLine": 23,
+      "startOffset": 603,
+      "symbolId": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.ensureTable::method"
+    },
+    {
+      "endLine": 63,
+      "endOffset": 1896,
+      "kind": "method",
+      "name": "SessionRecorderAdapter.record",
+      "startLine": 43,
+      "startOffset": 1276,
+      "symbolId": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.record::method"
+    },
+    {
+      "endLine": 132,
+      "endOffset": 4317,
+      "kind": "method",
+      "name": "SessionRecorderAdapter.queryStats",
+      "startLine": 65,
+      "startOffset": 1900,
+      "symbolId": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.queryStats::method"
+    },
+    {
+      "endLine": 138,
+      "endOffset": 4435,
+      "kind": "method",
+      "name": "SessionRecorderAdapter.clear",
+      "startLine": 134,
+      "startOffset": 4321,
+      "symbolId": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.clear::method"
+    },
+    {
+      "endLine": 146,
+      "endOffset": 4609,
+      "kind": "method",
+      "name": "SessionRecorderAdapter.flushToDisk",
+      "startLine": 140,
+      "startOffset": 4439,
+      "symbolId": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.flushToDisk::method"
+    }
+  ]
+}

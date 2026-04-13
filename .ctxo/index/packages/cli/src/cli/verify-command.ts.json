@@ -1,0 +1,77 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/cli/src/cli/verify-command.ts::VerifyCommand.run::method"
+    }
+  ],
+  "contentHash": "c17fd8f0ee1feb0dd495dd12544cfd9b284989a50224d382b437771db5e22eed",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/verify-command.ts::VerifyCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/verify-command.ts::VerifyCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/verify-command.ts::VerifyCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/verify-command.ts::VerifyCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/verify-command.ts::VerifyCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/verify-command.ts::VerifyCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/verify-command.ts::VerifyCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    }
+  ],
+  "file": "packages/cli/src/cli/verify-command.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 69,
+      "endOffset": 2446,
+      "kind": "class",
+      "name": "VerifyCommand",
+      "startLine": 6,
+      "startOffset": 243,
+      "symbolId": "packages/cli/src/cli/verify-command.ts::VerifyCommand::class"
+    },
+    {
+      "endLine": 68,
+      "endOffset": 2444,
+      "kind": "method",
+      "name": "VerifyCommand.run",
+      "startLine": 13,
+      "startOffset": 393,
+      "symbolId": "packages/cli/src/cli/verify-command.ts::VerifyCommand.run::method"
+    }
+  ]
+}

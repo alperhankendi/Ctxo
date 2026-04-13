@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "caa9e8f61f57008de23604bd5a89d0cf4d9af15bc5061d6e5b97ee78ba4d42ce",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/masking/__tests__/masking-pipeline.edge-cases.test.ts::masking-pipeline.edge-cases.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    }
+  ],
+  "file": "packages/cli/src/core/masking/__tests__/masking-pipeline.edge-cases.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

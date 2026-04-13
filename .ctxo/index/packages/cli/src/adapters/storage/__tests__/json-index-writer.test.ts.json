@@ -1,0 +1,28 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "ec4cf52dfa1517743d49a3e64bc117cf13eacc222dcc14a36efe756f5ef4add4",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/storage/__tests__/json-index-writer.test.ts::json-index-writer.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/__tests__/json-index-writer.test.ts::json-index-writer.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/__tests__/test-fixtures.ts::buildFileIndex::function"
+    }
+  ],
+  "file": "packages/cli/src/adapters/storage/__tests__/json-index-writer.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

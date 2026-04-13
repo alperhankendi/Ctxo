@@ -1,0 +1,29 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "efb2fdfd445a6ac8788483ff9ff7faae514d19b09daeec22f22a9efae49cc900",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/language/__tests__/language-adapter-registry.test.ts::language-adapter-registry.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class"
+    }
+  ],
+  "file": "packages/cli/src/adapters/language/__tests__/language-adapter-registry.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:48:46+03:00",
+      "hash": "2b84e12580bd96212c8dbe7569931e93cc8e3892",
+      "kind": "commit",
+      "message": "feat(lang-typescript): extract TypeScript adapter as @ctxo/lang-typescript plugin"
+    },
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": []
+}

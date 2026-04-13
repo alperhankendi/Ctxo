@@ -1,0 +1,151 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.isSupported::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.setSymbolRegistry::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.parse::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.buildSymbolId::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.nodeToLineRange::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.countCyclomaticComplexity::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractSymbols::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractEdges::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractComplexity::method"
+    }
+  ],
+  "contentHash": "fda0f5b054454d5a513531f6e8604246ed32e974c5116d8dd4f7e473c0843bb5",
+  "edges": [
+    {
+      "from": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter::class",
+      "kind": "implements",
+      "to": "/packages/lang-go/src/tree-sitter-adapter.ts::ILanguageAdapter::interface"
+    }
+  ],
+  "file": "packages/lang-go/src/tree-sitter-adapter.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:52:29+03:00",
+      "hash": "00cff73ddde2917c6dca764478fd0747633c1032",
+      "kind": "commit",
+      "message": "feat(lang-go): extract Go adapter as @ctxo/lang-go plugin"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 66,
+      "endOffset": 2095,
+      "kind": "class",
+      "name": "TreeSitterAdapter",
+      "startLine": 6,
+      "startOffset": 312,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter::class"
+    },
+    {
+      "endLine": 21,
+      "endOffset": 832,
+      "kind": "method",
+      "name": "TreeSitterAdapter.isSupported",
+      "startLine": 18,
+      "startOffset": 674,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.isSupported::method"
+    },
+    {
+      "endLine": 25,
+      "endOffset": 936,
+      "kind": "method",
+      "name": "TreeSitterAdapter.setSymbolRegistry",
+      "startLine": 23,
+      "startOffset": 836,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.setSymbolRegistry::method"
+    },
+    {
+      "endLine": 29,
+      "endOffset": 1021,
+      "kind": "method",
+      "name": "TreeSitterAdapter.parse",
+      "startLine": 27,
+      "startOffset": 940,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.parse::method"
+    },
+    {
+      "endLine": 33,
+      "endOffset": 1156,
+      "kind": "method",
+      "name": "TreeSitterAdapter.buildSymbolId",
+      "startLine": 31,
+      "startOffset": 1025,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.buildSymbolId::method"
+    },
+    {
+      "endLine": 47,
+      "endOffset": 1474,
+      "kind": "method",
+      "name": "TreeSitterAdapter.nodeToLineRange",
+      "startLine": 35,
+      "startOffset": 1160,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.nodeToLineRange::method"
+    },
+    {
+      "endLine": 61,
+      "endOffset": 1833,
+      "kind": "method",
+      "name": "TreeSitterAdapter.countCyclomaticComplexity",
+      "startLine": 49,
+      "startOffset": 1478,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.countCyclomaticComplexity::method"
+    },
+    {
+      "endLine": 63,
+      "endOffset": 1918,
+      "kind": "method",
+      "name": "TreeSitterAdapter.extractSymbols",
+      "startLine": 63,
+      "startOffset": 1837,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractSymbols::method"
+    },
+    {
+      "endLine": 64,
+      "endOffset": 1999,
+      "kind": "method",
+      "name": "TreeSitterAdapter.extractEdges",
+      "startLine": 64,
+      "startOffset": 1921,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractEdges::method"
+    },
+    {
+      "endLine": 65,
+      "endOffset": 2093,
+      "kind": "method",
+      "name": "TreeSitterAdapter.extractComplexity",
+      "startLine": 65,
+      "startOffset": 2002,
+      "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractComplexity::method"
+    }
+  ]
+}

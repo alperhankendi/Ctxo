@@ -1,0 +1,27 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "db92bc33f544a9406bd9191d44abb402b1c88dc6a00017ea776b05821618f5c5",
+  "edges": [],
+  "file": "packages/cli/src/ports/i-masking-port.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 2,
+      "endOffset": 63,
+      "kind": "interface",
+      "name": "IMaskingPort",
+      "startLine": 0,
+      "startOffset": 0,
+      "symbolId": "packages/cli/src/ports/i-masking-port.ts::IMaskingPort::interface"
+    }
+  ]
+}

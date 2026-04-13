@@ -1,0 +1,107 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 11,
+      "symbolId": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function"
+    }
+  ],
+  "contentHash": "05de0da1da4fe00e0de238cf9049d66f137aaf4422226b390c39136e5b160c3b",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-masking-port.ts::IMaskingPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
+    }
+  ],
+  "file": "packages/cli/src/adapters/mcp/get-changed-symbols.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 76,
+      "endOffset": 2880,
+      "kind": "function",
+      "name": "handleGetChangedSymbols",
+      "startLine": 13,
+      "startOffset": 546,
+      "symbolId": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function"
+    }
+  ]
+}

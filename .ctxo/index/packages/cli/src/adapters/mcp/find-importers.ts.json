@@ -1,0 +1,111 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 22,
+      "symbolId": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function"
+    }
+  ],
+  "contentHash": "163960c6be288080f830caa0e2f9b0f9873c6cb19669737c0cb3200583c15dec",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-masking-port.ts::IMaskingPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
+    }
+  ],
+  "file": "packages/cli/src/adapters/mcp/find-importers.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 138,
+      "endOffset": 5012,
+      "kind": "function",
+      "name": "handleFindImporters",
+      "startLine": 16,
+      "startOffset": 799,
+      "symbolId": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function"
+    }
+  ]
+}

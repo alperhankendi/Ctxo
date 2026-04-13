@@ -1,0 +1,69 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "732deec3d05aa42b096d838b99ca002c22e4066362efeae5a6e5cc8754ef8ab9",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::IndexDirectoryCheck::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::IndexFreshnessCheck::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::SymbolCountCheck::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::EdgeCountCheck::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::OrphanedFilesCheck::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::CoChangesCacheCheck::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/index-check.ts::SchemaVersionCheck::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/__tests__/test-fixtures.ts::buildFileIndex::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/__tests__/test-fixtures.ts::buildSecondFileIndex::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/index-check.test.ts::index-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/adapters/diagnostics/__tests__/index-check.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": []
+}

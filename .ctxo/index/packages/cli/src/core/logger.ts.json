@@ -1,0 +1,47 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/core/logger.ts::createLogger::function"
+    }
+  ],
+  "contentHash": "3aa84e44b234c791d553567aee99309d9d20b7ac0a08cf24527442b5e261a222",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/logger.ts::createLogger::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/logger.ts::isDebugEnabled::function"
+    }
+  ],
+  "file": "packages/cli/src/core/logger.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 53,
+      "endOffset": 1859,
+      "kind": "function",
+      "name": "createLogger",
+      "startLine": 34,
+      "startOffset": 1244,
+      "symbolId": "packages/cli/src/core/logger.ts::createLogger::function"
+    },
+    {
+      "endLine": 32,
+      "endOffset": 1242,
+      "kind": "interface",
+      "name": "Logger",
+      "startLine": 27,
+      "startOffset": 1009,
+      "symbolId": "packages/cli/src/core/logger.ts::Logger::interface"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "ebac7d5926d82fcb9b4b75553b8d15b5e3ae5eb0218f6aa3ef45e09fbbc66c3b",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/change-intelligence/__tests__/complexity-calculator.test.ts::complexity-calculator.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/change-intelligence/complexity-calculator.ts::ComplexityCalculator::class"
+    }
+  ],
+  "file": "packages/cli/src/core/change-intelligence/__tests__/complexity-calculator.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

@@ -1,0 +1,99 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.readAll::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.readSingle::method"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.collectJsonFiles::method"
+    }
+  ],
+  "contentHash": "66593b414cc4a1d868bb36d2fa96fbde5092d1cc71c357666159ab08427a088c",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndexSchema::variable"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.readAll::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.collectJsonFiles::method"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.readAll::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.readSingle::method"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::FileIndexSchema::variable"
+    }
+  ],
+  "file": "packages/cli/src/adapters/storage/json-index-reader.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 73,
+      "endOffset": 2118,
+      "kind": "class",
+      "name": "JsonIndexReader",
+      "startLine": 4,
+      "startOffset": 195,
+      "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "endLine": 27,
+      "endOffset": 711,
+      "kind": "method",
+      "name": "JsonIndexReader.readAll",
+      "startLine": 11,
+      "startOffset": 350,
+      "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.readAll::method"
+    },
+    {
+      "endLine": 51,
+      "endOffset": 1422,
+      "kind": "method",
+      "name": "JsonIndexReader.readSingle",
+      "startLine": 29,
+      "startOffset": 715,
+      "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.readSingle::method"
+    },
+    {
+      "endLine": 72,
+      "endOffset": 2116,
+      "kind": "method",
+      "name": "JsonIndexReader.collectJsonFiles",
+      "startLine": 53,
+      "startOffset": 1426,
+      "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.collectJsonFiles::method"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "b5be4e14939f5ba688f962e590b8808e789318c26f825910d22bb332e9948a9a",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/__tests__/watch-command.test.ts::watch-command.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/watch-command.ts::WatchCommand::class"
+    }
+  ],
+  "file": "packages/cli/src/cli/__tests__/watch-command.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

@@ -1,0 +1,47 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 12,
+      "symbolId": "packages/cli/src/adapters/transport/http-server-transport.ts::startHttpTransport::function"
+    }
+  ],
+  "contentHash": "ce0d7d6eff90b416c256ae1e042e5c40837d714476dc06459a555025a335859d",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/transport/http-server-transport.ts::startHttpTransport::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/logger.ts::createLogger::function"
+    }
+  ],
+  "file": "packages/cli/src/adapters/transport/http-server-transport.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 97,
+      "endOffset": 3541,
+      "kind": "function",
+      "name": "startHttpTransport",
+      "startLine": 22,
+      "startOffset": 874,
+      "symbolId": "packages/cli/src/adapters/transport/http-server-transport.ts::startHttpTransport::function"
+    },
+    {
+      "endLine": 12,
+      "endOffset": 633,
+      "kind": "type",
+      "name": "ServerFactory",
+      "startLine": 12,
+      "startOffset": 580,
+      "symbolId": "packages/cli/src/adapters/transport/http-server-transport.ts::ServerFactory::type"
+    }
+  ]
+}

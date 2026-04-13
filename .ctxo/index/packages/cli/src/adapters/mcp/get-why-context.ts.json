@@ -1,0 +1,129 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 10,
+      "symbolId": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
+    }
+  ],
+  "contentHash": "47c5e4ef25fb80bf6cff5b33c55c2e9beafff5c79501e7b896a8652a918a0711",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-masking-port.ts::IMaskingPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommitIntent::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::AntiPattern::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::CommitIntent::type"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::AntiPattern::type"
+    }
+  ],
+  "file": "packages/cli/src/adapters/mcp/get-why-context.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 96,
+      "endOffset": 3556,
+      "kind": "function",
+      "name": "handleGetWhyContext",
+      "startLine": 14,
+      "startOffset": 623,
+      "symbolId": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
+    }
+  ]
+}

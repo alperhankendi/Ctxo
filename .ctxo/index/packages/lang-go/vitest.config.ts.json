@@ -1,0 +1,17 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "5a72f9c917b13ede29c1ca04b85f84b2e67db9859693e74f064812e8e53a6c5e",
+  "edges": [],
+  "file": "packages/lang-go/vitest.config.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:52:29+03:00",
+      "hash": "00cff73ddde2917c6dca764478fd0747633c1032",
+      "kind": "commit",
+      "message": "feat(lang-go): extract Go adapter as @ctxo/lang-go plugin"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

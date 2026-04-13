@@ -1,0 +1,215 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 28,
+      "symbolId": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function"
+    },
+    {
+      "cyclomatic": 9,
+      "symbolId": "packages/cli/src/cli/doctor-fix.ts::formatFixReport::function"
+    }
+  ],
+  "contentHash": "363551408fdae0b15c28e4d2d32872b3e43e77034d2ccabd7ce2a1359253dcda",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::DoctorReport::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::detectLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::decideNeededLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::officialPluginFor::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::KnownLanguage::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/install-command.ts::InstallCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/init-command.ts::InitCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/sync-command.ts::SyncCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-fix.ts::isCI::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-fix.ts::run::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-fix.ts::fixConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-fix.ts::finish::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-fix.ts::run::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-fix.ts::fixHooks::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-fix.ts::hasMissingPlugins::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-fix.ts::run::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-fix.ts::fixLanguageCoverage::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-fix.ts::run::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-fix.ts::fixIndex::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-fix.ts::run::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-fix.ts::pruneOrphans::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-fix.ts::run::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-fix.ts::fixSqliteCache::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/doctor-fix.ts::finish::function"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::DoctorReport::interface"
+    }
+  ],
+  "file": "packages/cli/src/cli/doctor-fix.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:28:53+03:00",
+      "hash": "7174b669e8f74f8770aeeaa22475639fe090732d",
+      "kind": "commit",
+      "message": "feat(doctor): implement --fix with dependency-ordered execution"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 153,
+      "endOffset": 4806,
+      "kind": "function",
+      "name": "applyFixes",
+      "startLine": 57,
+      "startOffset": 1969,
+      "symbolId": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function"
+    },
+    {
+      "endLine": 335,
+      "endOffset": 10355,
+      "kind": "function",
+      "name": "formatFixReport",
+      "startLine": 323,
+      "startOffset": 9808,
+      "symbolId": "packages/cli/src/cli/doctor-fix.ts::formatFixReport::function"
+    },
+    {
+      "endLine": 22,
+      "endOffset": 863,
+      "kind": "interface",
+      "name": "FixOptions",
+      "startLine": 17,
+      "startOffset": 716,
+      "symbolId": "packages/cli/src/cli/doctor-fix.ts::FixOptions::interface"
+    },
+    {
+      "endLine": 30,
+      "endOffset": 1072,
+      "kind": "interface",
+      "name": "FixAttempt",
+      "startLine": 24,
+      "startOffset": 865,
+      "symbolId": "packages/cli/src/cli/doctor-fix.ts::FixAttempt::interface"
+    },
+    {
+      "endLine": 36,
+      "endOffset": 1204,
+      "kind": "interface",
+      "name": "FixReport",
+      "startLine": 32,
+      "startOffset": 1074,
+      "symbolId": "packages/cli/src/cli/doctor-fix.ts::FixReport::interface"
+    }
+  ]
+}

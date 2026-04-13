@@ -1,0 +1,73 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.register::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.getSupportedExtensions::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.getAdapter::method"
+    }
+  ],
+  "contentHash": "feec6355c45ab3eef856a11eacb5256277bf0d79e1fca30e25ccd35db26d6664",
+  "edges": [],
+  "file": "packages/cli/src/adapters/language/language-adapter-registry.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:48:46+03:00",
+      "hash": "2b84e12580bd96212c8dbe7569931e93cc8e3892",
+      "kind": "commit",
+      "message": "feat(lang-typescript): extract TypeScript adapter as @ctxo/lang-typescript plugin"
+    },
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": [
+    {
+      "endLine": 24,
+      "endOffset": 736,
+      "kind": "class",
+      "name": "LanguageAdapterRegistry",
+      "startLine": 3,
+      "startOffset": 96,
+      "symbolId": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class"
+    },
+    {
+      "endLine": 10,
+      "endOffset": 400,
+      "kind": "method",
+      "name": "LanguageAdapterRegistry.register",
+      "startLine": 6,
+      "startOffset": 216,
+      "symbolId": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.register::method"
+    },
+    {
+      "endLine": 14,
+      "endOffset": 500,
+      "kind": "method",
+      "name": "LanguageAdapterRegistry.getSupportedExtensions",
+      "startLine": 12,
+      "startOffset": 404,
+      "symbolId": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.getSupportedExtensions::method"
+    },
+    {
+      "endLine": 23,
+      "endOffset": 734,
+      "kind": "method",
+      "name": "LanguageAdapterRegistry.getAdapter",
+      "startLine": 16,
+      "startOffset": 504,
+      "symbolId": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.getAdapter::method"
+    }
+  ]
+}

@@ -1,0 +1,245 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::checkNodeVersion::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::NodeVersionCheck.run::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TsMorphCheck.run::method"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TreeSitterCheck.run::method"
+    }
+  ],
+  "contentHash": "970ad616cb06f02361f1f341c05f9df64cd43c25ca7a4fdd70c267e4149219f3",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::checkNodeVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::checkNodeVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::checkNodeVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::NodeVersionCheck::class",
+      "kind": "implements",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TsMorphCheck::class",
+      "kind": "implements",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TreeSitterCheck::class",
+      "kind": "implements",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::NodeVersionCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::checkNodeVersion::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TsMorphCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::tryResolve::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TsMorphCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::pass::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TsMorphCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::warn::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TreeSitterCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::tryResolve::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TreeSitterCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::tryResolve::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TreeSitterCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::pass::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TreeSitterCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::warn::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TreeSitterCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::warn::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::checkNodeVersion::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::NodeVersionCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::NodeVersionCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::NodeVersionCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TsMorphCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TsMorphCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TsMorphCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TreeSitterCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TreeSitterCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TreeSitterCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface"
+    }
+  ],
+  "file": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:20:56+03:00",
+      "hash": "b60d608fe6e6c4a0c5490465532dd5c5e1353a3f",
+      "kind": "commit",
+      "message": "feat(doctor): add Versions section and language coverage check"
+    },
+    {
+      "date": "2026-04-13T02:01:42+03:00",
+      "hash": "777ffddd20b586a9a44711ca77b43ea210f69d7b",
+      "kind": "commit",
+      "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
+    },
+    {
+      "date": "2026-04-13T01:48:46+03:00",
+      "hash": "2b84e12580bd96212c8dbe7569931e93cc8e3892",
+      "kind": "commit",
+      "message": "feat(lang-typescript): extract TypeScript adapter as @ctxo/lang-typescript plugin"
+    },
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": [
+    {
+      "endLine": 19,
+      "endOffset": 1084,
+      "kind": "function",
+      "name": "checkNodeVersion",
+      "startLine": 12,
+      "startOffset": 461,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::checkNodeVersion::function"
+    },
+    {
+      "endLine": 28,
+      "endOffset": 1320,
+      "kind": "class",
+      "name": "NodeVersionCheck",
+      "startLine": 21,
+      "startOffset": 1086,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::NodeVersionCheck::class"
+    },
+    {
+      "endLine": 27,
+      "endOffset": 1318,
+      "kind": "method",
+      "name": "NodeVersionCheck.run",
+      "startLine": 25,
+      "startOffset": 1215,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::NodeVersionCheck.run::method"
+    },
+    {
+      "endLine": 45,
+      "endOffset": 1858,
+      "kind": "class",
+      "name": "TsMorphCheck",
+      "startLine": 30,
+      "startOffset": 1322,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TsMorphCheck::class"
+    },
+    {
+      "endLine": 44,
+      "endOffset": 1856,
+      "kind": "method",
+      "name": "TsMorphCheck.run",
+      "startLine": 34,
+      "startOffset": 1469,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TsMorphCheck.run::method"
+    },
+    {
+      "endLine": 71,
+      "endOffset": 2756,
+      "kind": "class",
+      "name": "TreeSitterCheck",
+      "startLine": 47,
+      "startOffset": 1860,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TreeSitterCheck::class"
+    },
+    {
+      "endLine": 70,
+      "endOffset": 2754,
+      "kind": "method",
+      "name": "TreeSitterCheck.run",
+      "startLine": 51,
+      "startOffset": 2022,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TreeSitterCheck.run::method"
+    }
+  ]
+}

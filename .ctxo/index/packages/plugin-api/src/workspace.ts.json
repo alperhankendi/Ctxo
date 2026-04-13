@@ -1,0 +1,36 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "49898ed9bfce5b1f97dec632340cef0d43d7749598830728a5caf53004ddcb01",
+  "edges": [],
+  "file": "packages/plugin-api/src/workspace.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:35:07+03:00",
+      "hash": "dc578b8fcb106b7805e15f3ef22f4f1522c88451",
+      "kind": "commit",
+      "message": "feat(plugin-api): introduce plugin protocol v1 + workspace abstraction"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 7,
+      "endOffset": 294,
+      "kind": "interface",
+      "name": "IPackage",
+      "startLine": 0,
+      "startOffset": 0,
+      "symbolId": "packages/plugin-api/src/workspace.ts::IPackage::interface"
+    },
+    {
+      "endLine": 18,
+      "endOffset": 679,
+      "kind": "interface",
+      "name": "IWorkspace",
+      "startLine": 13,
+      "startOffset": 464,
+      "symbolId": "packages/plugin-api/src/workspace.ts::IWorkspace::interface"
+    }
+  ]
+}

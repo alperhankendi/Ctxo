@@ -1,0 +1,33 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "1871c9c628b7b9801d479cb43d930e54d2c4d5561e617e83303737ee14f20871",
+  "edges": [
+    {
+      "from": "packages/lang-typescript/src/index.ts::plugin::variable",
+      "kind": "imports",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter::class"
+    }
+  ],
+  "file": "packages/lang-typescript/src/index.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:48:46+03:00",
+      "hash": "2b84e12580bd96212c8dbe7569931e93cc8e3892",
+      "kind": "commit",
+      "message": "feat(lang-typescript): extract TypeScript adapter as @ctxo/lang-typescript plugin"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 17,
+      "endOffset": 548,
+      "kind": "variable",
+      "name": "plugin",
+      "startLine": 7,
+      "startOffset": 254,
+      "symbolId": "packages/lang-typescript/src/index.ts::plugin::variable"
+    }
+  ]
+}

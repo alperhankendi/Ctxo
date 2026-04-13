@@ -1,0 +1,57 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/cli/sync-command.ts::SyncCommand.run::method"
+    }
+  ],
+  "contentHash": "45b46f87b69501377a57aa8bfd22b366fee6a3f36bb111266a1114b1af53ef52",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/sync-command.ts::SyncCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/sync-command.ts::SyncCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/sync-command.ts::SyncCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    }
+  ],
+  "file": "packages/cli/src/cli/sync-command.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 22,
+      "endOffset": 583,
+      "kind": "class",
+      "name": "SyncCommand",
+      "startLine": 3,
+      "startOffset": 121,
+      "symbolId": "packages/cli/src/cli/sync-command.ts::SyncCommand::class"
+    },
+    {
+      "endLine": 21,
+      "endOffset": 581,
+      "kind": "method",
+      "name": "SyncCommand.run",
+      "startLine": 10,
+      "startOffset": 278,
+      "symbolId": "packages/cli/src/cli/sync-command.ts::SyncCommand.run::method"
+    }
+  ]
+}

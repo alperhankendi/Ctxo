@@ -1,0 +1,17 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "f482812181a7c4c317f7441d84bf039f7f1093fddae2ecf9cfe062ab24fe9951",
+  "edges": [],
+  "file": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/BaseSyncJob.cs",
+  "intent": [
+    {
+      "date": "2026-04-13T02:01:42+03:00",
+      "hash": "777ffddd20b586a9a44711ca77b43ea210f69d7b",
+      "kind": "commit",
+      "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

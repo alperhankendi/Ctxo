@@ -1,0 +1,40 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "15601de0069c277ad59fd290b34d1317e3cf3d1412e2f0498f412934157e9f53",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/logic-slice/__tests__/logic-slice-query.test.ts::logic-slice-query.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/core/logic-slice/__tests__/logic-slice-query.test.ts::logic-slice-query.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class"
+    },
+    {
+      "from": "packages/cli/src/core/logic-slice/__tests__/logic-slice-query.test.ts::logic-slice-query.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/logic-slice/__tests__/logic-slice-query.test.ts::logic-slice-query.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::GraphEdge::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/core/logic-slice/__tests__/logic-slice-query.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

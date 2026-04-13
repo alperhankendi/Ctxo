@@ -1,0 +1,41 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer.normalize::method"
+    }
+  ],
+  "contentHash": "33ca3b10f4132ed1d4b070565e120e3f003efbfddc91325a2d08fb14c9de8f3b",
+  "edges": [],
+  "file": "packages/cli/src/core/change-intelligence/churn-analyzer.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 8,
+      "endOffset": 290,
+      "kind": "class",
+      "name": "ChurnAnalyzer",
+      "startLine": 0,
+      "startOffset": 0,
+      "symbolId": "packages/cli/src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer::class"
+    },
+    {
+      "endLine": 7,
+      "endOffset": 288,
+      "kind": "method",
+      "name": "ChurnAnalyzer.normalize",
+      "startLine": 1,
+      "startOffset": 31,
+      "symbolId": "packages/cli/src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer.normalize::method"
+    }
+  ]
+}

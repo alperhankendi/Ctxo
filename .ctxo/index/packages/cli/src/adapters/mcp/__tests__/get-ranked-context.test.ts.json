@@ -1,0 +1,44 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "646fb846d03b4231c25c1846ac3eca732256fa3fd46e5e609ddbea51dbf0ef9c",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-ranked-context.test.ts::get-ranked-context.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-ranked-context.test.ts::get-ranked-context.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-ranked-context.test.ts::get-ranked-context.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-ranked-context.test.ts::get-ranked-context.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-ranked-context.test.ts::get-ranked-context.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/adapters/mcp/__tests__/get-ranked-context.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

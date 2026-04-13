@@ -1,0 +1,34 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "fca18b525e90e16d5867381f18fbef82d1473f9f8bc54b7abcc06bb7b55802de",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/importance/__tests__/pagerank-calculator.test.ts::pagerank-calculator.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/core/importance/__tests__/pagerank-calculator.test.ts::pagerank-calculator.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/core/importance/__tests__/pagerank-calculator.test.ts::pagerank-calculator.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/core/importance/__tests__/pagerank-calculator.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

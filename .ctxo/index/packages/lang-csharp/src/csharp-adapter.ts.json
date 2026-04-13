@@ -1,0 +1,239 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractSymbols::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractEdges::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractComplexity::method"
+    },
+    {
+      "cyclomatic": 13,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitSymbols::method"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractMethodSymbols::method"
+    },
+    {
+      "cyclomatic": 20,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitEdges::method"
+    },
+    {
+      "cyclomatic": 15,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitComplexity::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.countParameters::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.isPublic::method"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.resolveBaseType::method"
+    }
+  ],
+  "contentHash": "6174ea15904486260e859c0d202d674310d7ac6b2690810e952d9bf038d43a84",
+  "edges": [
+    {
+      "from": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter::class"
+    },
+    {
+      "from": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter::class",
+      "kind": "extends",
+      "to": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter::class"
+    },
+    {
+      "from": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitSymbols::method"
+    },
+    {
+      "from": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractSymbols::method"
+    },
+    {
+      "from": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitEdges::method"
+    },
+    {
+      "from": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractComplexity::method",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitComplexity::method"
+    },
+    {
+      "from": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.isPublic::method"
+    },
+    {
+      "from": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractMethodSymbols::method"
+    },
+    {
+      "from": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractMethodSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.isPublic::method"
+    },
+    {
+      "from": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractMethodSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.countParameters::method"
+    },
+    {
+      "from": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.isPublic::method"
+    },
+    {
+      "from": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.resolveBaseType::method"
+    },
+    {
+      "from": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitComplexity::method",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.isPublic::method"
+    },
+    {
+      "from": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitComplexity::method",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.isPublic::method"
+    },
+    {
+      "from": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitComplexity::method",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.countParameters::method"
+    },
+    {
+      "from": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter::class"
+    }
+  ],
+  "file": "packages/lang-csharp/src/csharp-adapter.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:01:42+03:00",
+      "hash": "777ffddd20b586a9a44711ca77b43ea210f69d7b",
+      "kind": "commit",
+      "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 295,
+      "endOffset": 9926,
+      "kind": "class",
+      "name": "CSharpAdapter",
+      "startLine": 11,
+      "startOffset": 443,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter::class"
+    },
+    {
+      "endLine": 28,
+      "endOffset": 999,
+      "kind": "method",
+      "name": "CSharpAdapter.extractSymbols",
+      "startLine": 18,
+      "startOffset": 593,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractSymbols::method"
+    },
+    {
+      "endLine": 44,
+      "endOffset": 1595,
+      "kind": "method",
+      "name": "CSharpAdapter.extractEdges",
+      "startLine": 30,
+      "startOffset": 1003,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractEdges::method"
+    },
+    {
+      "endLine": 56,
+      "endOffset": 2029,
+      "kind": "method",
+      "name": "CSharpAdapter.extractComplexity",
+      "startLine": 46,
+      "startOffset": 1599,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractComplexity::method"
+    },
+    {
+      "endLine": 116,
+      "endOffset": 3818,
+      "kind": "method",
+      "name": "CSharpAdapter.visitSymbols",
+      "startLine": 60,
+      "startOffset": 2100,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitSymbols::method"
+    },
+    {
+      "endLine": 145,
+      "endOffset": 4750,
+      "kind": "method",
+      "name": "CSharpAdapter.extractMethodSymbols",
+      "startLine": 118,
+      "startOffset": 3822,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractMethodSymbols::method"
+    },
+    {
+      "endLine": 208,
+      "endOffset": 6977,
+      "kind": "method",
+      "name": "CSharpAdapter.visitEdges",
+      "startLine": 149,
+      "startOffset": 4821,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitEdges::method"
+    },
+    {
+      "endLine": 262,
+      "endOffset": 8761,
+      "kind": "method",
+      "name": "CSharpAdapter.visitComplexity",
+      "startLine": 212,
+      "startOffset": 7048,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitComplexity::method"
+    },
+    {
+      "endLine": 274,
+      "endOffset": 9146,
+      "kind": "method",
+      "name": "CSharpAdapter.countParameters",
+      "startLine": 266,
+      "startOffset": 8832,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.countParameters::method"
+    },
+    {
+      "endLine": 282,
+      "endOffset": 9384,
+      "kind": "method",
+      "name": "CSharpAdapter.isPublic",
+      "startLine": 276,
+      "startOffset": 9150,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.isPublic::method"
+    },
+    {
+      "endLine": 294,
+      "endOffset": 9924,
+      "kind": "method",
+      "name": "CSharpAdapter.resolveBaseType",
+      "startLine": 284,
+      "startOffset": 9388,
+      "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.resolveBaseType::method"
+    }
+  ]
+}

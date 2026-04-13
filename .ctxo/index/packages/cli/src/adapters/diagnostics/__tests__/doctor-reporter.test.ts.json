@@ -1,0 +1,35 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "b5b3a5e3002b083d070c85914a2fe5b92b8e0efae5b57270f36cc165ea64e139",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/doctor-reporter.test.ts::doctor-reporter.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/doctor-reporter.test.ts::doctor-reporter.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::DoctorReport::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/doctor-reporter.test.ts::doctor-reporter.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/adapters/diagnostics/__tests__/doctor-reporter.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": []
+}

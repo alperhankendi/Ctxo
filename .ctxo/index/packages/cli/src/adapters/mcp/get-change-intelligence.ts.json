@@ -1,0 +1,122 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 11,
+      "symbolId": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function"
+    }
+  ],
+  "contentHash": "21bd97678a0e20cae8d54616e14d72c6956992c8b01934ff9a75c9cbe6bd0b89",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-masking-port.ts::IMaskingPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/change-intelligence/health-scorer.ts::HealthScorer::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/change-intelligence/health-scorer.ts::HealthScorer::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "packages/cli/src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/change-intelligence/health-scorer.ts::HealthScorer::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    }
+  ],
+  "file": "packages/cli/src/adapters/mcp/get-change-intelligence.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 93,
+      "endOffset": 3740,
+      "kind": "function",
+      "name": "handleGetChangeIntelligence",
+      "startLine": 13,
+      "startOffset": 575,
+      "symbolId": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function"
+    }
+  ]
+}

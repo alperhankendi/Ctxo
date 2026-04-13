@@ -1,0 +1,186 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.initialize::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.dispose::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.extractSymbols::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.extractEdges::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.extractComplexity::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.isSupported::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.setSymbolRegistry::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.getRoslynDelegate::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.getTier::method"
+    }
+  ],
+  "contentHash": "ee909dec429626ab78c921041f7383c0f548920218ebd78e5cf7f06263e75544",
+  "edges": [
+    {
+      "from": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter::class"
+    },
+    {
+      "from": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter::class"
+    },
+    {
+      "from": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-csharp/src/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter::class",
+      "kind": "implements",
+      "to": "/packages/lang-csharp/src/composite-adapter.ts::ILanguageAdapter::interface"
+    },
+    {
+      "from": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.initialize::method",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter::class"
+    },
+    {
+      "from": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.initialize::method",
+      "kind": "calls",
+      "to": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter::class"
+    },
+    {
+      "from": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter::class"
+    },
+    {
+      "from": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter::class"
+    }
+  ],
+  "file": "packages/lang-csharp/src/composite-adapter.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:01:42+03:00",
+      "hash": "777ffddd20b586a9a44711ca77b43ea210f69d7b",
+      "kind": "commit",
+      "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 78,
+      "endOffset": 2870,
+      "kind": "class",
+      "name": "CSharpCompositeAdapter",
+      "startLine": 13,
+      "startOffset": 618,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter::class"
+    },
+    {
+      "endLine": 41,
+      "endOffset": 1642,
+      "kind": "method",
+      "name": "CSharpCompositeAdapter.initialize",
+      "startLine": 18,
+      "startOffset": 837,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.initialize::method"
+    },
+    {
+      "endLine": 45,
+      "endOffset": 1732,
+      "kind": "method",
+      "name": "CSharpCompositeAdapter.dispose",
+      "startLine": 43,
+      "startOffset": 1646,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.dispose::method"
+    },
+    {
+      "endLine": 49,
+      "endOffset": 1910,
+      "kind": "method",
+      "name": "CSharpCompositeAdapter.extractSymbols",
+      "startLine": 47,
+      "startOffset": 1736,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.extractSymbols::method"
+    },
+    {
+      "endLine": 53,
+      "endOffset": 2083,
+      "kind": "method",
+      "name": "CSharpCompositeAdapter.extractEdges",
+      "startLine": 51,
+      "startOffset": 1914,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.extractEdges::method"
+    },
+    {
+      "endLine": 57,
+      "endOffset": 2274,
+      "kind": "method",
+      "name": "CSharpCompositeAdapter.extractComplexity",
+      "startLine": 55,
+      "startOffset": 2087,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.extractComplexity::method"
+    },
+    {
+      "endLine": 61,
+      "endOffset": 2373,
+      "kind": "method",
+      "name": "CSharpCompositeAdapter.isSupported",
+      "startLine": 59,
+      "startOffset": 2278,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.isSupported::method"
+    },
+    {
+      "endLine": 65,
+      "endOffset": 2491,
+      "kind": "method",
+      "name": "CSharpCompositeAdapter.setSymbolRegistry",
+      "startLine": 63,
+      "startOffset": 2377,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.setSymbolRegistry::method"
+    },
+    {
+      "endLine": 70,
+      "endOffset": 2652,
+      "kind": "method",
+      "name": "CSharpCompositeAdapter.getRoslynDelegate",
+      "startLine": 68,
+      "startOffset": 2581,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.getRoslynDelegate::method"
+    },
+    {
+      "endLine": 77,
+      "endOffset": 2868,
+      "kind": "method",
+      "name": "CSharpCompositeAdapter.getTier",
+      "startLine": 73,
+      "startOffset": 2714,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.getTier::method"
+    }
+  ]
+}

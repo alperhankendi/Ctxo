@@ -1,0 +1,78 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay.classify::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay.matchLayer::method"
+    }
+  ],
+  "contentHash": "3090d041a35e85305fb8895146bf0f452a5e7c1f07da33cc05e24a3ae48f72e7",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay.classify::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay.matchLayer::method"
+    }
+  ],
+  "file": "packages/cli/src/core/overlay/architectural-overlay.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 62,
+      "endOffset": 1813,
+      "kind": "class",
+      "name": "ArchitecturalOverlay",
+      "startLine": 31,
+      "startOffset": 1010,
+      "symbolId": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class"
+    },
+    {
+      "endLine": 52,
+      "endOffset": 1616,
+      "kind": "method",
+      "name": "ArchitecturalOverlay.classify",
+      "startLine": 41,
+      "startOffset": 1295,
+      "symbolId": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay.classify::method"
+    },
+    {
+      "endLine": 61,
+      "endOffset": 1811,
+      "kind": "method",
+      "name": "ArchitecturalOverlay.matchLayer",
+      "startLine": 54,
+      "startOffset": 1620,
+      "symbolId": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay.matchLayer::method"
+    },
+    {
+      "endLine": 3,
+      "endOffset": 84,
+      "kind": "interface",
+      "name": "LayerRule",
+      "startLine": 0,
+      "startOffset": 0,
+      "symbolId": "packages/cli/src/core/overlay/architectural-overlay.ts::LayerRule::interface"
+    },
+    {
+      "endLine": 7,
+      "endOffset": 165,
+      "kind": "interface",
+      "name": "OverlayResult",
+      "startLine": 5,
+      "startOffset": 86,
+      "symbolId": "packages/cli/src/core/overlay/architectural-overlay.ts::OverlayResult::interface"
+    }
+  ]
+}

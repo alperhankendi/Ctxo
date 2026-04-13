@@ -1,0 +1,27 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "b87fa5d140e241efcaa48b2ca05310edf56e2db4a6f018ee9dc83d35aac15b0d",
+  "edges": [],
+  "file": "packages/plugin-api/src/index.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:35:07+03:00",
+      "hash": "dc578b8fcb106b7805e15f3ef22f4f1522c88451",
+      "kind": "commit",
+      "message": "feat(plugin-api): introduce plugin protocol v1 + workspace abstraction"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 19,
+      "endOffset": 494,
+      "kind": "variable",
+      "name": "SUPPORTED_API_VERSION",
+      "startLine": 19,
+      "startOffset": 458,
+      "symbolId": "packages/plugin-api/src/index.ts::SUPPORTED_API_VERSION::variable"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "0056509e3d084badd08561d964406ead87774a29d75f46dae2636192c69a9002",
+  "edges": [
+    {
+      "from": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::GraphEdge::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/ports/i-storage-port.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 14,
+      "endOffset": 570,
+      "kind": "interface",
+      "name": "IStoragePort",
+      "startLine": 2,
+      "startOffset": 75,
+      "symbolId": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface"
+    }
+  ]
+}

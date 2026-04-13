@@ -1,0 +1,89 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 18,
+      "symbolId": "packages/cli/src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/core/co-change/co-change-analyzer.ts::loadCoChangeMap::function"
+    }
+  ],
+  "contentHash": "5e70f0471e6fd6b4988e04ed2b822b421c4529d7bb8cc5e5084eac9a414b79cc",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CoChangeEntry::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CoChangeMatrix::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type"
+    },
+    {
+      "from": "packages/cli/src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::CoChangeMatrix::interface"
+    },
+    {
+      "from": "packages/cli/src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::CoChangeEntry::interface"
+    },
+    {
+      "from": "packages/cli/src/core/co-change/co-change-analyzer.ts::loadCoChangeMap::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::CoChangeMatrix::interface"
+    },
+    {
+      "from": "packages/cli/src/core/co-change/co-change-analyzer.ts::loadCoChangeMap::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::CoChangeEntry::interface"
+    }
+  ],
+  "file": "packages/cli/src/core/co-change/co-change-analyzer.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 64,
+      "endOffset": 2009,
+      "kind": "function",
+      "name": "aggregateCoChanges",
+      "startLine": 5,
+      "startOffset": 136,
+      "symbolId": "packages/cli/src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function"
+    },
+    {
+      "endLine": 78,
+      "endOffset": 2453,
+      "kind": "function",
+      "name": "loadCoChangeMap",
+      "startLine": 66,
+      "startOffset": 2011,
+      "symbolId": "packages/cli/src/core/co-change/co-change-analyzer.ts::loadCoChangeMap::function"
+    }
+  ]
+}

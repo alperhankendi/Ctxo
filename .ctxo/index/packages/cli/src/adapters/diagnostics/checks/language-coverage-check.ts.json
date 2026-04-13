@@ -1,0 +1,141 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck.run::method"
+    }
+  ],
+  "contentHash": "b15caeb43a127b53de47ca177219d20244e8ff1d63ae5625dc11e48d0c13d9c3",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::decideNeededLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::detectLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::officialPluginFor::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::KnownLanguage::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class",
+      "kind": "implements",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::detectLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::decideNeededLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::pluginResolves::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::officialPluginFor::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::detectLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::decideNeededLanguages::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::KnownLanguage::type"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::officialPluginFor::function"
+    }
+  ],
+  "file": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T02:20:56+03:00",
+      "hash": "b60d608fe6e6c4a0c5490465532dd5c5e1353a3f",
+      "kind": "commit",
+      "message": "feat(doctor): add Versions section and language coverage check"
+    }
+  ],
+  "lastModified": 1776038614,
+  "symbols": [
+    {
+      "endLine": 59,
+      "endOffset": 1753,
+      "kind": "class",
+      "name": "LanguageCoverageCheck",
+      "startLine": 15,
+      "startOffset": 512,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class"
+    },
+    {
+      "endLine": 58,
+      "endOffset": 1751,
+      "kind": "method",
+      "name": "LanguageCoverageCheck.run",
+      "startLine": 19,
+      "startOffset": 653,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck.run::method"
+    }
+  ]
+}

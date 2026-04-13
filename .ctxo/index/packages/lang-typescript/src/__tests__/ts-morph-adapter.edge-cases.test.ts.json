@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "7b13608d58837efa78b382defc7970a79376cf32cbf9e3cd2dc4c0cf51702a2b",
+  "edges": [
+    {
+      "from": "packages/lang-typescript/src/__tests__/ts-morph-adapter.edge-cases.test.ts::ts-morph-adapter.edge-cases.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter::class"
+    }
+  ],
+  "file": "packages/lang-typescript/src/__tests__/ts-morph-adapter.edge-cases.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:48:46+03:00",
+      "hash": "2b84e12580bd96212c8dbe7569931e93cc8e3892",
+      "kind": "commit",
+      "message": "feat(lang-typescript): extract TypeScript adapter as @ctxo/lang-typescript plugin"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": []
+}

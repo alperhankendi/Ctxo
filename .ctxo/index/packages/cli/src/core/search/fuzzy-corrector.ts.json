@@ -1,0 +1,102 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 12,
+      "symbolId": "packages/cli/src/core/search/fuzzy-corrector.ts::damerauLevenshtein::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/core/search/fuzzy-corrector.ts::FuzzyCorrector.buildVocabulary::method"
+    },
+    {
+      "cyclomatic": 8,
+      "symbolId": "packages/cli/src/core/search/fuzzy-corrector.ts::FuzzyCorrector.correct::method"
+    },
+    {
+      "cyclomatic": 8,
+      "symbolId": "packages/cli/src/core/search/fuzzy-corrector.ts::FuzzyCorrector.findClosest::method"
+    }
+  ],
+  "contentHash": "db16844a29c2a16dbaee9d77b933f46aa9b07d2ec3e916bfb3924c8aea991cdc",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/search/fuzzy-corrector.ts::damerauLevenshtein::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FuzzyCorrection::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/search/fuzzy-corrector.ts::FuzzyCorrector.correct::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/search/fuzzy-corrector.ts::FuzzyCorrector.findClosest::method"
+    },
+    {
+      "from": "packages/cli/src/core/search/fuzzy-corrector.ts::FuzzyCorrector.findClosest::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/search/fuzzy-corrector.ts::damerauLevenshtein::function"
+    },
+    {
+      "from": "packages/cli/src/core/search/fuzzy-corrector.ts::FuzzyCorrector::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::FuzzyCorrection::interface"
+    }
+  ],
+  "file": "packages/cli/src/core/search/fuzzy-corrector.ts",
+  "intent": [
+    {
+      "date": "2026-04-13T01:25:01+03:00",
+      "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
+      "kind": "commit",
+      "message": "chore: migrate to pnpm monorepo structure"
+    }
+  ],
+  "lastModified": 1776038615,
+  "symbols": [
+    {
+      "endLine": 131,
+      "endOffset": 3828,
+      "kind": "function",
+      "name": "damerauLevenshtein",
+      "startLine": 101,
+      "startOffset": 2879,
+      "symbolId": "packages/cli/src/core/search/fuzzy-corrector.ts::damerauLevenshtein::function"
+    },
+    {
+      "endLine": 94,
+      "endOffset": 2705,
+      "kind": "class",
+      "name": "FuzzyCorrector",
+      "startLine": 9,
+      "startOffset": 275,
+      "symbolId": "packages/cli/src/core/search/fuzzy-corrector.ts::FuzzyCorrector::class"
+    },
+    {
+      "endLine": 15,
+      "endOffset": 521,
+      "kind": "method",
+      "name": "FuzzyCorrector.buildVocabulary",
+      "startLine": 13,
+      "startOffset": 408,
+      "symbolId": "packages/cli/src/core/search/fuzzy-corrector.ts::FuzzyCorrector.buildVocabulary::method"
+    },
+    {
+      "endLine": 64,
+      "endOffset": 1807,
+      "kind": "method",
+      "name": "FuzzyCorrector.correct",
+      "startLine": 21,
+      "startOffset": 644,
+      "symbolId": "packages/cli/src/core/search/fuzzy-corrector.ts::FuzzyCorrector.correct::method"
+    },
+    {
+      "endLine": 93,
+      "endOffset": 2703,
+      "kind": "method",
+      "name": "FuzzyCorrector.findClosest",
+      "startLine": 70,
+      "startOffset": 1932,
+      "symbolId": "packages/cli/src/core/search/fuzzy-corrector.ts::FuzzyCorrector.findClosest::method"
+    }
+  ]
+}
