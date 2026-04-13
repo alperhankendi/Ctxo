@@ -45,6 +45,10 @@ interface CSharpCompositeLike {
   getTier(): 'full' | 'syntax' | 'unavailable';
 }
 
+interface GoCompositeLike {
+  getTier(): 'full' | 'syntax' | 'unavailable';
+}
+
 export class IndexCommand {
   private readonly projectRoot: string;
   ctxoRoot: string;
@@ -76,7 +80,7 @@ export class IndexCommand {
 
     // Set up adapters via plugin discovery (TS, Go, C# all plugin-backed)
     const registry = new LanguageAdapterRegistry();
-    const { tsMorphLike, roslynAdapter, csharpTier } = await this.registerDiscoveredPlugins(registry);
+    const { tsMorphLike, roslynAdapter, csharpTier, goTier } = await this.registerDiscoveredPlugins(registry);
     this.supportedExtensions = registry.getSupportedExtensions();
 
     // Emit a language-aware pre-scan so users see the plan before the work runs
@@ -243,7 +247,7 @@ export class IndexCommand {
     console.error(`[ctxo] Index complete: ${processed} files indexed`);
     if (tsCount > 0) console.error(`[ctxo]   TypeScript/JS: ${tsCount} files (full tier)`);
     if (csCount > 0) console.error(`[ctxo]   C#: ${csCount} files (${csharpTier} tier${csharpTier === 'syntax' ? ' - .NET SDK 8+ for full analysis' : ''})`);
-    if (goCount > 0) console.error(`[ctxo]   Go: ${goCount} files (syntax tier)`);
+    if (goCount > 0) console.error(`[ctxo]   Go: ${goCount} files (${goTier} tier${goTier === 'syntax' ? ' - Go 1.22+ for full analysis' : ''})`);
 
     // Dispose Roslyn adapter
     if (roslynAdapter) await roslynAdapter.dispose();
@@ -283,11 +287,13 @@ export class IndexCommand {
     tsMorphLike: TsMorphLike | undefined;
     roslynAdapter: RoslynLike | null;
     csharpTier: string;
+    goTier: string;
   }> {
     const loaded = await loadPlugins(this.projectRoot);
     let tsMorphLike: TsMorphLike | undefined;
     let roslynAdapter: RoslynLike | null = null;
     let csharpTier = 'unavailable';
+    let goTier = 'unavailable';
 
     for (const { plugin, adapter } of loaded) {
       // Plugins that expose an initialize() lifecycle need it called before register
@@ -314,6 +320,7 @@ export class IndexCommand {
       // Duck-type: CSharpCompositeAdapter exposes Roslyn delegate + tier info
       const csCandidate = adapter as unknown as Partial<CSharpCompositeLike>;
       if (
+        plugin.id === 'csharp' &&
         typeof csCandidate.getRoslynDelegate === 'function' &&
         typeof csCandidate.getTier === 'function'
       ) {
@@ -321,11 +328,21 @@ export class IndexCommand {
         roslynAdapter = csCandidate.getRoslynDelegate() ?? null;
       }
 
-      const tierSuffix = plugin.id === 'csharp' && csharpTier !== 'full' ? ` (active: ${csharpTier})` : '';
+      // Duck-type: GoCompositeAdapter exposes tier info
+      const goCandidate = adapter as unknown as Partial<GoCompositeLike>;
+      if (plugin.id === 'go' && typeof goCandidate.getTier === 'function') {
+        goTier = goCandidate.getTier();
+      }
+
+      const activeTier =
+        plugin.id === 'csharp' ? csharpTier :
+        plugin.id === 'go' ? goTier :
+        plugin.tier;
+      const tierSuffix = activeTier !== plugin.tier ? ` (active: ${activeTier})` : '';
       console.error(`[ctxo] Plugin ${plugin.id}@${plugin.version} (${plugin.tier} tier${tierSuffix}) — ${plugin.extensions.join(', ')}`);
     }
 
-    return { tsMorphLike, roslynAdapter, csharpTier };
+    return { tsMorphLike, roslynAdapter, csharpTier, goTier };
   }
 
   private discoverFilesIn(root: string): string[] {
