@@ -256,13 +256,19 @@ See [Agentic AI Integration Guide](docs/agentic-ai-integration.md) for LangChain
 
 Language support ships as standalone plugins. Install only what your repo needs.
 
-| Language              | Plugin Package        | Parser      | Tier   | Features                                                         |
-| --------------------- | --------------------- | ----------- | ------ | ---------------------------------------------------------------- |
-| TypeScript/JavaScript | `@ctxo/lang-typescript` | ts-morph    | Full   | Type-aware resolution, cross-file imports, `this.method()` calls |
-| Go                    | `@ctxo/lang-go`         | tree-sitter | Syntax | Structs, interfaces, functions, methods, import edges            |
-| C#                    | `@ctxo/lang-csharp`     | tree-sitter | Syntax | Classes, interfaces, methods, enums, namespace qualification     |
+### Full tier (type-aware, cross-package semantic edges)
 
-Third-party plugins are supported via the `@ctxo/plugin-api` protocol (v1). Any package named `@ctxo/lang-*` or `ctxo-lang-*` declared in your project dependencies is auto-discovered.
+| Language              | Plugin Package          | Engine                    | Toolchain required   | Features                                                                                |
+| --------------------- | ----------------------- | ------------------------- | -------------------- | --------------------------------------------------------------------------------------- |
+| TypeScript/JavaScript | `@ctxo/lang-typescript` | ts-morph                  | bundled              | Type-aware resolution, cross-file imports, `this.method()` calls                        |
+| C#                    | `@ctxo/lang-csharp`     | `ctxo-roslyn` (Roslyn)    | .NET SDK ≥ 8 on PATH | Symbols, `calls` / `uses` / `implements` / `extends`, cross-project resolution          |
+| Go                    | `@ctxo/lang-go`         | `ctxo-go-analyzer`        | Go ≥ 1.22 on PATH    | Symbols, `calls` / `uses` / `implements` / `extends`, reflect-safe dead-code, generics  |
+
+### Syntax tier (tree-sitter, symbol inventory + imports)
+
+All other languages via the plugin protocol — any package named `@ctxo/lang-*` or `ctxo-lang-*` declared in your project dependencies is auto-discovered. Third-party plugins typically ship a tree-sitter adapter and deliver symbol extraction without type resolution.
+
+Full-tier plugins also include a tree-sitter syntax-tier fallback — if the required toolchain (Go / .NET SDK) is missing, the adapter transparently degrades instead of failing.
 
 ## Index Visualizer
 

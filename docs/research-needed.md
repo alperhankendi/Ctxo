@@ -9,7 +9,7 @@
 
 ### What is LSP?
 
-LSP is a protocol developed by Microsoft for communication between IDEs and language servers (`tsserver`, `gopls`, `omnisharp`). It provides:
+LSP is a protocol developed by Microsoft for communication between IDEs and language servers (`tsserver`, `omnisharp`, and friends). It provides:
 
 - **Go-to-definition** — resolve symbol declarations across files and packages
 - **Find all references** — locate every usage of a symbol in the workspace
@@ -51,7 +51,7 @@ Ctxo currently uses **ts-morph** in in-memory isolation mode (`useInMemoryFileSy
 ### Why LSP Should NOT Be Added Now
 
 #### 1. High Operational Complexity
-- `tsserver` startup: **3-8 seconds**, `gopls`: **5-15 seconds**, `omnisharp`: **30-90 seconds**
+- `tsserver` startup: **3-8 seconds**; `omnisharp`: **30-90 seconds**; general-purpose LSP servers typically fall in this range
 - LSP is stateful — requires subprocess lifecycle management, crash recovery, keepalive
 - Breaks Ctxo's "zero-config" story: `tsconfig.json`, `go.mod`, `.csproj` become hard prerequisites
 
@@ -66,8 +66,8 @@ Current `ILanguageAdapter` is **synchronous and file-scoped**. LSP is **asynchro
 |---|---|---|---|
 | Edge target accuracy | ~900 LOC + runtime dep | Multi-file ts-morph Project | **~50 LOC** |
 | `this.method()` call edges | ~900 LOC + runtime dep | Multi-file ts-morph Project | **~80 LOC** |
-| Go syntax-tier | gopls LSP adapter ~1000 LOC | tree-sitter adapter (V1.5) | **~400 LOC** |
-| Go semantic-tier | Embedded LSP client / gopls MCP | Standalone `ctxo-go-analyzer` binary using `go/packages` + `x/tools/go/ssa` + `callgraph/cha` (delivered v0.8.0-alpha.0) | **~1500 LOC** |
+| Go syntax-tier | LSP adapter ~1000 LOC | tree-sitter adapter (V1.5) | **~400 LOC** |
+| Go semantic-tier | Embedded LSP client | Standalone `ctxo-go-analyzer` binary using `go/packages` + `x/tools/go/ssa` + `callgraph/cha` (delivered v0.8.0-alpha.0) | **~1500 LOC** |
 | C# syntax-tier | omnisharp LSP ~1000 LOC | tree-sitter adapter (V1.5) | **~350 LOC** |
 
 ### Recommended Path Forward
@@ -79,7 +79,7 @@ Current `ILanguageAdapter` is **synchronous and file-scoped**. LSP is **asynchro
 
 **Medium Term (V1.5):** Tree-sitter adapter for Go/C# syntax-tier analysis — symbol inventory + import edges.
 
-**Long Term (V2): Delivered in v0.8.0-alpha.0** via a standalone `ctxo-go-analyzer` Go binary bundled inside `@ctxo/lang-go` (see [ADR-013](architecture/ADR/adr-013-go-full-tier-via-ctxo-go-analyzer-binary.md)). Originally scoped as gopls MCP composition; pivoted to an in-process binary because gopls' MCP surface lacked the batch-analysis capabilities required and its LSP surface would have been N+1 over hundreds of files.
+**Long Term (V2): Delivered in v0.8.0-alpha.0** via a standalone `ctxo-go-analyzer` Go binary bundled inside `@ctxo/lang-go` (see [ADR-013](architecture/ADR/adr-013-go-full-tier-via-ctxo-go-analyzer-binary.md)). Uses `go/packages` + `go/types` + `x/tools/go/ssa` + `callgraph/cha` for batch type-aware analysis — single-pass over the whole module rather than an LSP round-trip per file.
 
 ---
 
@@ -151,5 +151,5 @@ Without AST, Ctxo cannot extract symbols, build dependency graphs, calculate bla
 - [x] **P1:** Remove `useInMemoryFileSystem: true` from TsMorphAdapter — multi-file Project with `loadProjectSources`/`clearProjectSources` — fixed in `2e33cdc`
 - [x] **P1:** Enable `this.method()` call edge extraction — `resolveThisMethodCall` helper — fixed in `2e33cdc`
 - [x] **P2:** Tree-sitter adapter for Go/C# — `GoAdapter`, `CSharpAdapter` with graceful degradation — fixed in `e43db17`
-- [x] **P3:** Go semantic-tier — delivered v0.8.0-alpha.0 via standalone `ctxo-go-analyzer` binary (ADR-013); gopls MCP composition was rejected after evaluation (batch-unfriendly)
+- [x] **P3:** Go semantic-tier — delivered v0.8.0-alpha.0 via standalone `ctxo-go-analyzer` binary (ADR-013)
 - [ ] **P3:** Evaluate OmniSharp LSP adapter for C# semantic-tier only if tree-sitter proves insufficient based on user feedback
