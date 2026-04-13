@@ -1,5 +1,6 @@
 import { existsSync } from 'node:fs';
 import { spawn } from 'node:child_process';
+import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import {
   KNOWN_LANGUAGES,
@@ -162,11 +163,11 @@ function normalizeLanguage(input: string): KnownLanguage | null {
   return aliases[lowered] ?? null;
 }
 
+const installRequire = createRequire(import.meta.url);
+
 function isPluginInstalled(lang: KnownLanguage): boolean {
   try {
-    const { createRequire } = require('node:module') as typeof import('node:module');
-    const r = createRequire(import.meta.url);
-    r.resolve(`${officialPluginFor(lang)}/package.json`);
+    installRequire.resolve(`${officialPluginFor(lang)}/package.json`);
     return true;
   } catch {
     return false;

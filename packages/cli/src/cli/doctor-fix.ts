@@ -1,5 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { appendFileSync, existsSync, mkdirSync, rmSync, unlinkSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { JsonIndexReader } from '../adapters/storage/json-index-reader.js';
 import type { DoctorReport } from '../core/diagnostics/types.js';
@@ -282,11 +283,11 @@ async function fixSqliteCache(projectRoot: string, ctxoRoot: string, dryRun: boo
   await new SyncCommand(projectRoot).run();
 }
 
+const doctorRequire = createRequire(import.meta.url);
+
 function canResolvePlugin(lang: KnownLanguage): boolean {
   try {
-    const { createRequire } = require('node:module') as typeof import('node:module');
-    const r = createRequire(import.meta.url);
-    r.resolve(`${officialPluginFor(lang)}/package.json`);
+    doctorRequire.resolve(`${officialPluginFor(lang)}/package.json`);
     return true;
   } catch {
     return false;
