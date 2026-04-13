@@ -88,11 +88,11 @@ importers:
   packages/lang-csharp:
     dependencies:
       tree-sitter:
-        specifier: ^0.21.1
-        version: 0.21.1
+        specifier: ^0.25.0
+        version: 0.25.0
       tree-sitter-c-sharp:
         specifier: ^0.23.1
-        version: 0.23.1(tree-sitter@0.21.1)
+        version: 0.23.1(tree-sitter@0.25.0)
     devDependencies:
       '@ctxo/plugin-api':
         specifier: workspace:*
@@ -113,11 +113,11 @@ importers:
   packages/lang-go:
     dependencies:
       tree-sitter:
-        specifier: ^0.21.1
-        version: 0.21.1
+        specifier: ^0.25.0
+        version: 0.25.0
       tree-sitter-go:
         specifier: ^0.25.0
-        version: 0.25.0(tree-sitter@0.21.1)
+        version: 0.25.0(tree-sitter@0.25.0)
     devDependencies:
       '@ctxo/plugin-api':
         specifier: workspace:*
@@ -1958,8 +1958,8 @@ packages:
       tree-sitter:
         optional: true
 
-  tree-sitter@0.21.1:
-    resolution: {integrity: sha512-7dxoA6kYvtgWw80265MyqJlkRl4yawIjO7S5MigytjELkX43fV2WsAXzsNfO7sBpPPCF5Gp0+XzHk0DwLCq3xQ==}
+  tree-sitter@0.25.0:
+    resolution: {integrity: sha512-PGZZzFW63eElZJDe/b/R/LbsjDDYJa5UEjLZJB59RQsMX+fo0j54fqBPn1MGKav/QNa0JR0zBiVaikYDWCj5KQ==}
 
   ts-api-utils@2.5.0:
     resolution: {integrity: sha512-OJ/ibxhPlqrMM0UiNHJ/0CKQkoKF243/AEmplt3qpRgkW8VG7IfOS41h7V8TjITqdByHzrjcS/2si+y4lIh8NA==}
@@ -3966,21 +3966,21 @@ snapshots:
 
   tree-kill@1.2.2: {}
 
-  tree-sitter-c-sharp@0.23.1(tree-sitter@0.21.1):
+  tree-sitter-c-sharp@0.23.1(tree-sitter@0.25.0):
     dependencies:
       node-addon-api: 8.7.0
       node-gyp-build: 4.8.4
     optionalDependencies:
-      tree-sitter: 0.21.1
+      tree-sitter: 0.25.0
 
-  tree-sitter-go@0.25.0(tree-sitter@0.21.1):
+  tree-sitter-go@0.25.0(tree-sitter@0.25.0):
     dependencies:
       node-addon-api: 8.7.0
       node-gyp-build: 4.8.4
     optionalDependencies:
-      tree-sitter: 0.21.1
+      tree-sitter: 0.25.0
 
-  tree-sitter@0.21.1:
+  tree-sitter@0.25.0:
     dependencies:
       node-addon-api: 8.7.0
       node-gyp-build: 4.8.4
