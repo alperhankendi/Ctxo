@@ -1,0 +1,44 @@
+{
+  "name": "ctxo-lang-example",
+  "version": "0.1.0",
+  "description": "Template for a community Ctxo language plugin",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "ctxo",
+    "ctxo-plugin",
+    "language-plugin"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "@ctxo/plugin-api": "^0.7.0-alpha.0"
+  },
+  "devDependencies": {
+    "@ctxo/plugin-api": "^0.7.0-alpha.0",
+    "@types/node": "^22.0.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.0.0"
+  }
+}
