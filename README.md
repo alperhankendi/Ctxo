@@ -256,19 +256,16 @@ See [Agentic AI Integration Guide](docs/agentic-ai-integration.md) for LangChain
 
 Language support ships as standalone plugins. Install only what your repo needs.
 
-### Full tier (type-aware, cross-package semantic edges)
+| Language              | Plugin Package          | Engine                       | Tier   | Toolchain required   | Features                                                                                                           |
+| --------------------- | ----------------------- | ---------------------------- | ------ | -------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| TypeScript/JavaScript | `@ctxo/lang-typescript` | ts-morph                     | Full   | bundled              | Type-aware resolution, cross-file imports, `this.method()` calls, complexity metrics                               |
+| C#                    | `@ctxo/lang-csharp`     | `ctxo-roslyn` (Roslyn)       | Full   | .NET SDK ≥ 8 on PATH | Symbols + `calls` / `uses` / `implements` / `extends`, cross-project resolution, complexity, tree-sitter fallback  |
+| Go                    | `@ctxo/lang-go`         | `ctxo-go-analyzer`           | Full   | Go ≥ 1.22 on PATH    | Symbols + `calls` / `uses` / `implements` / `extends`, reflect-safe dead-code, generics, tree-sitter fallback      |
+| All other languages   | `@ctxo/lang-*` / `ctxo-lang-*` (plugin protocol) | tree-sitter (community adapter) | Syntax | bundled per plugin | Symbol inventory (functions, classes, types, methods), import edges, cyclomatic complexity, unexported symbols    |
 
-| Language              | Plugin Package          | Engine                    | Toolchain required   | Features                                                                                |
-| --------------------- | ----------------------- | ------------------------- | -------------------- | --------------------------------------------------------------------------------------- |
-| TypeScript/JavaScript | `@ctxo/lang-typescript` | ts-morph                  | bundled              | Type-aware resolution, cross-file imports, `this.method()` calls                        |
-| C#                    | `@ctxo/lang-csharp`     | `ctxo-roslyn` (Roslyn)    | .NET SDK ≥ 8 on PATH | Symbols, `calls` / `uses` / `implements` / `extends`, cross-project resolution          |
-| Go                    | `@ctxo/lang-go`         | `ctxo-go-analyzer`        | Go ≥ 1.22 on PATH    | Symbols, `calls` / `uses` / `implements` / `extends`, reflect-safe dead-code, generics  |
+**Full tier** delivers type-resolved semantic edges across package boundaries — what `get_blast_radius`, `find_importers`, `find_dead_code` and `get_class_hierarchy` actually need. Requires the language's official toolchain on `PATH`; graceful degradation to tree-sitter syntax tier when missing.
 
-### Syntax tier (tree-sitter, symbol inventory + imports)
-
-All other languages via the plugin protocol — any package named `@ctxo/lang-*` or `ctxo-lang-*` declared in your project dependencies is auto-discovered. Third-party plugins typically ship a tree-sitter adapter and deliver symbol extraction without type resolution.
-
-Full-tier plugins also include a tree-sitter syntax-tier fallback — if the required toolchain (Go / .NET SDK) is missing, the adapter transparently degrades instead of failing.
+**Syntax tier** works out of the box via the `@ctxo/plugin-api` protocol (v1). Any package named `@ctxo/lang-*` or `ctxo-lang-*` in your dependencies is auto-discovered — third-party plugins can deliver new languages without touching core.
 
 ## Index Visualizer
 
