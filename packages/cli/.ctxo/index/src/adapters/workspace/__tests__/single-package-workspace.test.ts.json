@@ -1,0 +1,16 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "24309c0599a586367628f1554514ed78f83518847c4e004e15c086afdfbd99a1",
+  "edges": [
+    {
+      "from": "src/adapters/workspace/__tests__/single-package-workspace.test.ts::single-package-workspace.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/workspace/single-package-workspace.ts::detectWorkspace::function"
+    }
+  ],
+  "file": "src/adapters/workspace/__tests__/single-package-workspace.test.ts",
+  "intent": [],
+  "lastModified": 1776038612,
+  "symbols": []
+}

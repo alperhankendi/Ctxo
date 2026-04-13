@@ -1,0 +1,31 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "89c5c1a444a4fdeefde724a53f4cb59553033c6ca01059a645270a38ff68e4b1",
+  "edges": [
+    {
+      "from": "src/core/install/__tests__/package-manager.test.ts::package-manager.test::variable",
+      "kind": "imports",
+      "to": "src/core/install/package-manager.ts::resolvePackageManager::function"
+    },
+    {
+      "from": "src/core/install/__tests__/package-manager.test.ts::package-manager.test::variable",
+      "kind": "imports",
+      "to": "src/core/install/package-manager.ts::buildInstallCommand::function"
+    },
+    {
+      "from": "src/core/install/__tests__/package-manager.test.ts::package-manager.test::variable",
+      "kind": "imports",
+      "to": "src/core/install/package-manager.ts::isPackageManager::function"
+    },
+    {
+      "from": "src/core/install/__tests__/package-manager.test.ts::package-manager.test::variable",
+      "kind": "imports",
+      "to": "src/core/install/package-manager.ts::PACKAGE_MANAGERS::variable"
+    }
+  ],
+  "file": "src/core/install/__tests__/package-manager.test.ts",
+  "intent": [],
+  "lastModified": 1776038612,
+  "symbols": []
+}

@@ -1,0 +1,34 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "4814c3f6f75280d4af29102ee8ccad89417f24c8bd852b09db4b5a2eaf46a353",
+  "edges": [
+    {
+      "from": "src/core/co-change/__tests__/co-change-analyzer.test.ts::co-change-analyzer.test::variable",
+      "kind": "imports",
+      "to": "src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function"
+    },
+    {
+      "from": "src/core/co-change/__tests__/co-change-analyzer.test.ts::co-change-analyzer.test::variable",
+      "kind": "imports",
+      "to": "src/core/co-change/co-change-analyzer.ts::loadCoChangeMap::function"
+    },
+    {
+      "from": "src/core/co-change/__tests__/co-change-analyzer.test.ts::co-change-analyzer.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "src/core/co-change/__tests__/co-change-analyzer.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-08T04:31:58+03:00",
+      "hash": "f2fd79d92382071661c21f86fb84aa88feeb7e1f",
+      "kind": "commit",
+      "message": "Add co-change analysis and get_pr_impact MCP tool (14th tool)"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": []
+}

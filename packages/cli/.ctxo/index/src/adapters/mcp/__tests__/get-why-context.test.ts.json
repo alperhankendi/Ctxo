@@ -1,0 +1,63 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "93cd6b312e3848ba8cbcede99fd164f49168495f514cf0ffbda324a903bb402f",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::CommitRecord::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::ChurnData::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/get-why-context.test.ts::get-why-context.test::variable",
+      "kind": "imports",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "src/adapters/mcp/__tests__/get-why-context.test.ts",
+  "intent": [
+    {
+      "date": "2026-03-31T03:15:55+03:00",
+      "hash": "dcae17802c9cc167416a9a55e325e5da1a595639",
+      "kind": "commit",
+      "message": "Add 4 new MCP tools, --max-history limit, and improve test coverage"
+    },
+    {
+      "date": "2026-03-29T17:01:15+03:00",
+      "hash": "847c9de113d6e3dee775691573768284c067c359",
+      "kind": "commit",
+      "message": "Add missing MCP handler tests and edge case coverage"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": []
+}

@@ -1,0 +1,152 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 11,
+      "symbolId": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function"
+    }
+  ],
+  "contentHash": "21bd97678a0e20cae8d54616e14d72c6956992c8b01934ff9a75c9cbe6bd0b89",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "imports",
+      "to": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "calls",
+      "to": "src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "calls",
+      "to": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "calls",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "src/core/change-intelligence/health-scorer.ts::HealthScorer::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
+      "kind": "uses",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    }
+  ],
+  "file": "src/adapters/mcp/get-change-intelligence.ts",
+  "intent": [
+    {
+      "date": "2026-03-29T23:13:51+03:00",
+      "hash": "3b4825cb5fbc655ab782fad4b9b54d8a63d3b9f3",
+      "kind": "commit",
+      "message": "Fix complexity aggregation for class-level symbols"
+    },
+    {
+      "date": "2026-03-29T22:49:58+03:00",
+      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
+      "kind": "commit",
+      "message": "Fix 12 feature completeness gaps found in deep audit"
+    },
+    {
+      "date": "2026-03-29T17:30:08+03:00",
+      "hash": "a494f9d485aa9268a5e63ad0aad321caecc0e2d8",
+      "kind": "commit",
+      "message": "Add missing CLI tests, wire staleness into all 5 MCP tools, configure npm pack"
+    },
+    {
+      "date": "2026-03-29T17:20:34+03:00",
+      "hash": "031d4b7cd1c78c1c839c3076b65bdc644d33d38f",
+      "kind": "commit",
+      "message": "Fix 5 bugs, implement missing FRs, add NFR benchmarks and staleness"
+    },
+    {
+      "date": "2026-03-29T16:49:13+03:00",
+      "hash": "3d2a69146903edf71a1a4e6797c8f392620ba4b7",
+      "kind": "commit",
+      "message": "Fix 7 runtime bugs from second code review"
+    },
+    {
+      "date": "2026-03-29T16:31:14+03:00",
+      "hash": "a193b5f72cb6284291ba0e38fdc13017e0953816",
+      "kind": "commit",
+      "message": "Add git adapter, why-context, and change intelligence modules"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": [
+    {
+      "endLine": 93,
+      "endOffset": 3740,
+      "kind": "function",
+      "name": "handleGetChangeIntelligence",
+      "startLine": 13,
+      "startOffset": 575,
+      "symbolId": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function"
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 21,
+      "symbolId": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
+    }
+  ],
+  "contentHash": "c48481ab5fe0343ee554fb9fcaa6851d4c432bda14f7a0df8ffb11e9ca76abae",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "imports",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "imports",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "imports",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "imports",
+      "to": "src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "imports",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "imports",
+      "to": "src/core/co-change/co-change-analyzer.ts::loadCoChangeMap::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "imports",
+      "to": "src/core/types.ts::CoChangeMatrix::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "imports",
+      "to": "src/core/types.ts::CoChangeEntry::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "calls",
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "calls",
+      "to": "src/adapters/mcp/get-pr-impact.ts::loadCoChanges::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "calls",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "calls",
+      "to": "src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "uses",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "uses",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "uses",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "uses",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "uses",
+      "to": "src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "uses",
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "uses",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    }
+  ],
+  "file": "src/adapters/mcp/get-pr-impact.ts",
+  "intent": [
+    {
+      "date": "2026-04-12T20:48:05+03:00",
+      "hash": "66c4f641db281f2bbb45dab41125c8f9cb5932e3",
+      "kind": "commit",
+      "message": "fix(mcp): align staleness warnings with JSON graph source (#40)"
+    },
+    {
+      "date": "2026-04-08T15:41:03+03:00",
+      "hash": "676f15d768b3abd1e18a9ace3411e4fb61bf579e",
+      "kind": "commit",
+      "message": "Add response size management with _meta field and auto-truncation (#26)"
+    },
+    {
+      "date": "2026-04-08T14:43:37+03:00",
+      "hash": "712e1fb7e8b721a7fda602fc94ea6b089aa5707e",
+      "kind": "commit",
+      "message": "fix(mcp): report indexed file count in get_pr_impact, not raw git paths (#24)"
+    },
+    {
+      "date": "2026-04-08T04:31:58+03:00",
+      "hash": "f2fd79d92382071661c21f86fb84aa88feeb7e1f",
+      "kind": "commit",
+      "message": "Add co-change analysis and get_pr_impact MCP tool (14th tool)"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": [
+    {
+      "endLine": 203,
+      "endOffset": 7237,
+      "kind": "function",
+      "name": "handleGetPrImpact",
+      "startLine": 30,
+      "startOffset": 1325,
+      "symbolId": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
+    }
+  ]
+}

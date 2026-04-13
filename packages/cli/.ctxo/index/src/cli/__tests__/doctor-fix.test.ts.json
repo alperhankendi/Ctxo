@@ -1,0 +1,27 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "8035e9eb8c532b029bd41b284a11b14e7bea39e7afa081df6654426250bc7b2b",
+  "edges": [
+    {
+      "from": "src/cli/__tests__/doctor-fix.test.ts::doctor-fix.test::variable",
+      "kind": "imports",
+      "to": "src/core/diagnostics/types.ts::DoctorReport::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/cli/__tests__/doctor-fix.test.ts::doctor-fix.test::variable",
+      "kind": "imports",
+      "to": "src/cli/doctor-fix.ts::applyFixes::function"
+    },
+    {
+      "from": "src/cli/__tests__/doctor-fix.test.ts::doctor-fix.test::variable",
+      "kind": "imports",
+      "to": "src/cli/doctor-fix.ts::formatFixReport::function"
+    }
+  ],
+  "file": "src/cli/__tests__/doctor-fix.test.ts",
+  "intent": [],
+  "lastModified": 1776038612,
+  "symbols": []
+}

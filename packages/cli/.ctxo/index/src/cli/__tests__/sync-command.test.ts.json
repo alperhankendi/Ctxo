@@ -1,0 +1,34 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "9564ce39d2f085d8759b133abfcde3c40a5b3a41f12e8fc00c36bb0ea864e14a",
+  "edges": [
+    {
+      "from": "src/cli/__tests__/sync-command.test.ts::sync-command.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "src/cli/__tests__/sync-command.test.ts::sync-command.test::variable",
+      "kind": "imports",
+      "to": "src/cli/sync-command.ts::SyncCommand::class"
+    },
+    {
+      "from": "src/cli/__tests__/sync-command.test.ts::sync-command.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "src/cli/__tests__/sync-command.test.ts",
+  "intent": [
+    {
+      "date": "2026-03-29T17:04:40+03:00",
+      "hash": "eb20d2b2554911bbbd82c8d4ccc377b495fda13f",
+      "kind": "commit",
+      "message": "Implement all CLI commands and add comprehensive test coverage"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": []
+}

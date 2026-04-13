@@ -1,0 +1,34 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "827f02fef1cd322f6f1dee586994be467a7b4603dbb676d18ffc40d2abb2d6cf",
+  "edges": [
+    {
+      "from": "src/adapters/diagnostics/__tests__/git-check.test.ts::git-check.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/diagnostics/checks/git-check.ts::GitBinaryCheck::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/__tests__/git-check.test.ts::git-check.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/diagnostics/checks/git-check.ts::GitRepoCheck::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/__tests__/git-check.test.ts::git-check.test::variable",
+      "kind": "imports",
+      "to": "src/core/diagnostics/types.ts::CheckContext::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "src/adapters/diagnostics/__tests__/git-check.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-11T01:50:54+03:00",
+      "hash": "308982ad956b5f091739c3e6e5fbdb1c7414c3c4",
+      "kind": "commit",
+      "message": "feat: add ctxo doctor command — unified health check for all subsystems"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": []
+}

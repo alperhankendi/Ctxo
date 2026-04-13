@@ -1,0 +1,29 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "8bc393915b796882e86704ed5ad5de19c20aa714f2be5c0340b9c449cc199993",
+  "edges": [
+    {
+      "from": "src/core/overlay/__tests__/architectural-overlay.test.ts::architectural-overlay.test::variable",
+      "kind": "imports",
+      "to": "src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class"
+    }
+  ],
+  "file": "src/core/overlay/__tests__/architectural-overlay.test.ts",
+  "intent": [
+    {
+      "date": "2026-03-29T23:31:57+03:00",
+      "hash": "d7f880e217e0b083fa2fa15ae7b689fe8dd66da7",
+      "kind": "commit",
+      "message": "Fix architectural overlay layers, add --skip-history flag, verify kind determinism"
+    },
+    {
+      "date": "2026-03-29T16:35:14+03:00",
+      "hash": "1b61fa7811ad1bc58a6c475de7b8b6582d17be7e",
+      "kind": "commit",
+      "message": "Add blast radius calculator and architectural overlay"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": []
+}

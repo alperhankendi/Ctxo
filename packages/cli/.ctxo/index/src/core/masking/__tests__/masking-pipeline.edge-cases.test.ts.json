@@ -1,0 +1,29 @@
+{
+  "antiPatterns": [
+    {
+      "date": "2026-03-29T23:09:49+03:00",
+      "hash": "f9867129db0000956a3bc46879883b880be68723",
+      "message": "Fix issues #2, #3, #4, #5: masking and revert detection improvements"
+    }
+  ],
+  "complexity": [],
+  "contentHash": "caa9e8f61f57008de23604bd5a89d0cf4d9af15bc5061d6e5b97ee78ba4d42ce",
+  "edges": [
+    {
+      "from": "src/core/masking/__tests__/masking-pipeline.edge-cases.test.ts::masking-pipeline.edge-cases.test::variable",
+      "kind": "imports",
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    }
+  ],
+  "file": "src/core/masking/__tests__/masking-pipeline.edge-cases.test.ts",
+  "intent": [
+    {
+      "date": "2026-03-29T23:09:49+03:00",
+      "hash": "f9867129db0000956a3bc46879883b880be68723",
+      "kind": "commit",
+      "message": "Fix issues #2, #3, #4, #5: masking and revert detection improvements"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": []
+}

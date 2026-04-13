@@ -1,0 +1,95 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 6,
+      "symbolId": "src/cli/verify-command.ts::VerifyCommand.run::method"
+    }
+  ],
+  "contentHash": "c17fd8f0ee1feb0dd495dd12544cfd9b284989a50224d382b437771db5e22eed",
+  "edges": [
+    {
+      "from": "src/cli/verify-command.ts::VerifyCommand::class",
+      "kind": "imports",
+      "to": "src/cli/index-command.ts::IndexCommand::class"
+    },
+    {
+      "from": "src/cli/verify-command.ts::VerifyCommand::class",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "src/cli/verify-command.ts::VerifyCommand.run::method",
+      "kind": "calls",
+      "to": "src/cli/index-command.ts::IndexCommand::class"
+    },
+    {
+      "from": "src/cli/verify-command.ts::VerifyCommand.run::method",
+      "kind": "calls",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "src/cli/verify-command.ts::VerifyCommand.run::method",
+      "kind": "calls",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "src/cli/verify-command.ts::VerifyCommand::class",
+      "kind": "uses",
+      "to": "src/cli/index-command.ts::IndexCommand::class"
+    },
+    {
+      "from": "src/cli/verify-command.ts::VerifyCommand::class",
+      "kind": "uses",
+      "to": "src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    }
+  ],
+  "file": "src/cli/verify-command.ts",
+  "intent": [
+    {
+      "date": "2026-03-29T22:49:58+03:00",
+      "hash": "e06c6d50035bec1a9eb5ea5bf7667c586ba95cb6",
+      "kind": "commit",
+      "message": "Fix 12 feature completeness gaps found in deep audit"
+    },
+    {
+      "date": "2026-03-29T18:04:41+03:00",
+      "hash": "14ae301297b9ed59b992950d4daeb25a526839b9",
+      "kind": "commit",
+      "message": "Fix 5 runtime bugs from round 4 review"
+    },
+    {
+      "date": "2026-03-29T17:20:34+03:00",
+      "hash": "031d4b7cd1c78c1c839c3076b65bdc644d33d38f",
+      "kind": "commit",
+      "message": "Fix 5 bugs, implement missing FRs, add NFR benchmarks and staleness"
+    },
+    {
+      "date": "2026-03-29T17:04:40+03:00",
+      "hash": "eb20d2b2554911bbbd82c8d4ccc377b495fda13f",
+      "kind": "commit",
+      "message": "Implement all CLI commands and add comprehensive test coverage"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": [
+    {
+      "endLine": 69,
+      "endOffset": 2446,
+      "kind": "class",
+      "name": "VerifyCommand",
+      "startLine": 6,
+      "startOffset": 243,
+      "symbolId": "src/cli/verify-command.ts::VerifyCommand::class"
+    },
+    {
+      "endLine": 68,
+      "endOffset": 2444,
+      "kind": "method",
+      "name": "VerifyCommand.run",
+      "startLine": 13,
+      "startOffset": 393,
+      "symbolId": "src/cli/verify-command.ts::VerifyCommand.run::method"
+    }
+  ]
+}

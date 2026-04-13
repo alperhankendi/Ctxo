@@ -1,0 +1,28 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "b3d3e307c6ad79adb9e3f0d2d7d8fe4b261eed5d51e17cb8cf3a0ca5d720de4b",
+  "edges": [
+    {
+      "from": "src/core/search/__tests__/fuzzy-corrector.test.ts::fuzzy-corrector.test::variable",
+      "kind": "imports",
+      "to": "src/core/search/fuzzy-corrector.ts::FuzzyCorrector::class"
+    },
+    {
+      "from": "src/core/search/__tests__/fuzzy-corrector.test.ts::fuzzy-corrector.test::variable",
+      "kind": "imports",
+      "to": "src/core/search/fuzzy-corrector.ts::damerauLevenshtein::function"
+    }
+  ],
+  "file": "src/core/search/__tests__/fuzzy-corrector.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-09T02:52:59+03:00",
+      "hash": "75de5e11d4c6e4b56483dfe7491b9297a01363d9",
+      "kind": "commit",
+      "message": "Add BM25 search engine with camelCase tokenization, fuzzy correction, and two-phase cascade (v0.4.0)"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": []
+}

@@ -1,0 +1,50 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "93369651cda9a54d2b6daac6bc229708c3eef6a2b49f82b33d923ec6a00f2926",
+  "edges": [
+    {
+      "from": "src/adapters/storage/__tests__/sqlite-storage-adapter.test.ts::sqlite-storage-adapter.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/adapters/storage/__tests__/sqlite-storage-adapter.test.ts::sqlite-storage-adapter.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "src/adapters/storage/__tests__/sqlite-storage-adapter.test.ts::sqlite-storage-adapter.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/__tests__/test-fixtures.ts::buildFileIndex::function"
+    },
+    {
+      "from": "src/adapters/storage/__tests__/sqlite-storage-adapter.test.ts::sqlite-storage-adapter.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/__tests__/test-fixtures.ts::buildSecondFileIndex::function"
+    }
+  ],
+  "file": "src/adapters/storage/__tests__/sqlite-storage-adapter.test.ts",
+  "intent": [
+    {
+      "date": "2026-03-29T19:22:39+03:00",
+      "hash": "c7389f822bc7c290fca4709cb71fb6beb9011a2e",
+      "kind": "commit",
+      "message": "Remove FK constraints from edges table — zero edge loss"
+    },
+    {
+      "date": "2026-03-29T16:52:30+03:00",
+      "hash": "d8f2f5cae3da8d4749427961bfbd9983cf18da22",
+      "kind": "commit",
+      "message": "Restore to_symbol FK with graceful error handling for cross-file edges"
+    },
+    {
+      "date": "2026-03-29T15:50:38+03:00",
+      "hash": "a55ee9addcea4a1b3da5a93e6acb2b979c5fb5c8",
+      "kind": "commit",
+      "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": []
+}

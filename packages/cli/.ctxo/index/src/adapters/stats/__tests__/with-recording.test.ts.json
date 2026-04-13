@@ -1,0 +1,35 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "7584c3ed1c2827f3422b89529769973690b3aaee7729d316c93f175566fc1e19",
+  "edges": [
+    {
+      "from": "src/adapters/stats/__tests__/with-recording.test.ts::with-recording.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/stats/with-recording.ts::withRecording::function"
+    },
+    {
+      "from": "src/adapters/stats/__tests__/with-recording.test.ts::with-recording.test::variable",
+      "kind": "imports",
+      "to": "src/ports/i-session-recorder-port.ts::ISessionRecorderPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/stats/__tests__/with-recording.test.ts::with-recording.test::variable",
+      "kind": "imports",
+      "to": "src/ports/i-session-recorder-port.ts::SessionEvent::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "src/adapters/stats/__tests__/with-recording.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-10T03:52:10+03:00",
+      "hash": "0cf2ae6801b0a02ce046f2587853f888b89b4360",
+      "kind": "commit",
+      "message": "feat(stats): add ctxo stats command with session recording"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": []
+}

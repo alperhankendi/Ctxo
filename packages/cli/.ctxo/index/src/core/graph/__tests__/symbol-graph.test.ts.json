@@ -1,0 +1,47 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "1fb7ad2a9ffae74f082a82141590ccd0278cb06f139f3ae99de12d908af04cb6",
+  "edges": [
+    {
+      "from": "src/core/graph/__tests__/symbol-graph.test.ts::symbol-graph.test::variable",
+      "kind": "imports",
+      "to": "src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "src/core/graph/__tests__/symbol-graph.test.ts::symbol-graph.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/core/graph/__tests__/symbol-graph.test.ts::symbol-graph.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::GraphEdge::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "src/core/graph/__tests__/symbol-graph.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-02T04:07:33+03:00",
+      "hash": "6adc1f76e5c15b0b31dcd371aab6b680ed930577",
+      "kind": "commit",
+      "message": "Fix class hierarchy implements edge resolution — relative .js paths not matching graph nodes"
+    },
+    {
+      "date": "2026-04-02T02:23:24+03:00",
+      "hash": "01f901c3e0ce8dba7c0281a8a75ae984a07773bf",
+      "kind": "commit",
+      "message": "Implement confirmed vs potential blast radius split (4-phase fix)"
+    },
+    {
+      "date": "2026-03-29T16:00:19+03:00",
+      "hash": "ea1b4eac08116b13d556ba9c194c115c5a4c1fd9",
+      "kind": "commit",
+      "message": "Add core graph, logic-slice query, and detail formatter"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": []
+}

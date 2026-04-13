@@ -1,0 +1,22 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "13ddaa23b1dfe208e55aa295d3aa304245972354d578120918793d93bed579bb",
+  "edges": [
+    {
+      "from": "src/adapters/diagnostics/__tests__/language-coverage-check.test.ts::language-coverage-check.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/__tests__/language-coverage-check.test.ts::language-coverage-check.test::variable",
+      "kind": "imports",
+      "to": "src/core/diagnostics/types.ts::CheckContext::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "src/adapters/diagnostics/__tests__/language-coverage-check.test.ts",
+  "intent": [],
+  "lastModified": 1776038612,
+  "symbols": []
+}

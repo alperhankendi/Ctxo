@@ -1,0 +1,50 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 8,
+      "symbolId": "src/core/staleness/staleness-detector.ts::StalenessDetector.check::method"
+    }
+  ],
+  "contentHash": "8ca909d40dfb2c9cd78da066e84b3351607c6402f943b2224ffc088e2cb8a1ed",
+  "edges": [],
+  "file": "src/core/staleness/staleness-detector.ts",
+  "intent": [
+    {
+      "date": "2026-03-29T17:20:34+03:00",
+      "hash": "031d4b7cd1c78c1c839c3076b65bdc644d33d38f",
+      "kind": "commit",
+      "message": "Fix 5 bugs, implement missing FRs, add NFR benchmarks and staleness"
+    }
+  ],
+  "lastModified": 1776038613,
+  "symbols": [
+    {
+      "endLine": 47,
+      "endOffset": 1371,
+      "kind": "class",
+      "name": "StalenessDetector",
+      "startLine": 8,
+      "startOffset": 183,
+      "symbolId": "src/core/staleness/staleness-detector.ts::StalenessDetector::class"
+    },
+    {
+      "endLine": 46,
+      "endOffset": 1369,
+      "kind": "method",
+      "name": "StalenessDetector.check",
+      "startLine": 17,
+      "startOffset": 437,
+      "symbolId": "src/core/staleness/staleness-detector.ts::StalenessDetector.check::method"
+    },
+    {
+      "endLine": 6,
+      "endOffset": 181,
+      "kind": "interface",
+      "name": "StalenessWarning",
+      "startLine": 3,
+      "startOffset": 83,
+      "symbolId": "src/core/staleness/staleness-detector.ts::StalenessWarning::interface"
+    }
+  ]
+}

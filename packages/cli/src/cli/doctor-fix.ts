@@ -1,6 +1,7 @@
-import { spawn } from 'node:child_process';
-import { appendFileSync, existsSync, mkdirSync, rmSync } from 'node:fs';
-import { join } from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { appendFileSync, existsSync, mkdirSync, rmSync, unlinkSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { JsonIndexReader } from '../adapters/storage/json-index-reader.js';
 import type { DoctorReport } from '../core/diagnostics/types.js';
 import {
   detectLanguages,
@@ -12,6 +13,7 @@ import { ensureConfig } from './ai-rules.js';
 import { InstallCommand } from './install-command.js';
 import { InitCommand } from './init-command.js';
 import { IndexCommand } from './index-command.js';
+import { SyncCommand } from './sync-command.js';
 
 export interface FixOptions {
   readonly projectRoot: string;
@@ -119,6 +121,16 @@ export async function applyFixes(report: DoctorReport, options: FixOptions): Pro
         ),
       );
     }
+    if (fixableIds.has('orphaned_files')) {
+      attempts.push(
+        await run(
+          'Orphaned index files',
+          'delete index entries without a matching source file',
+          () => pruneOrphans(options.projectRoot, options.ctxoRoot, options.dryRun ?? false),
+          options,
+        ),
+      );
+    }
   } else {
     attempts.push({ name: 'Index', action: 'rebuild JSON index', status: 'skipped', error: 'plugin install failed' });
   }
@@ -210,24 +222,64 @@ async function fixIndex(projectRoot: string, dryRun: boolean): Promise<void> {
   await new IndexCommand(projectRoot).run({});
 }
 
+async function pruneOrphans(projectRoot: string, ctxoRoot: string, dryRun: boolean): Promise<void> {
+  if (dryRun) return;
+  const indexDir = join(ctxoRoot, 'index');
+  if (!existsSync(indexDir)) return;
+
+  const sourceFiles = listGitFiles(projectRoot);
+  if (sourceFiles.size === 0) return; // no signal; refuse to mass-delete
+
+  const reader = new JsonIndexReader(ctxoRoot);
+  const indices = reader.readAll();
+  let removed = 0;
+  for (const idx of indices) {
+    if (sourceFiles.has(idx.file)) continue;
+    const jsonPath = join(indexDir, `${idx.file}.json`);
+    try {
+      if (existsSync(jsonPath)) {
+        unlinkSync(jsonPath);
+        removed += 1;
+        pruneEmptyParents(jsonPath, indexDir);
+      }
+    } catch {
+      // best-effort; leave stragglers for next run
+    }
+  }
+  if (removed === 0) return;
+}
+
+function pruneEmptyParents(filePath: string, stopAt: string): void {
+  let dir = dirname(filePath);
+  while (dir !== stopAt && dir.startsWith(stopAt)) {
+    try {
+      rmSync(dir, { recursive: false });
+    } catch {
+      return; // not empty or permission issue — stop climbing
+    }
+    dir = dirname(dir);
+  }
+}
+
+function listGitFiles(projectRoot: string): Set<string> {
+  try {
+    const out = execFileSync(
+      'git',
+      ['ls-files', '--cached', '--others', '--exclude-standard'],
+      { cwd: projectRoot, encoding: 'utf-8', maxBuffer: 64 * 1024 * 1024 },
+    );
+    return new Set(out.split('\n').filter(Boolean));
+  } catch {
+    return new Set();
+  }
+}
+
 async function fixSqliteCache(projectRoot: string, ctxoRoot: string, dryRun: boolean): Promise<void> {
   const cacheDir = join(ctxoRoot, '.cache');
   if (dryRun) return;
   if (existsSync(cacheDir)) rmSync(cacheDir, { recursive: true, force: true });
-  // Trigger a sync to rebuild from .ctxo/index/*.json
-  await spawnNode(['sync'], projectRoot);
-}
-
-function spawnNode(args: string[], cwd: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const child = spawn('npx', ['ctxo', ...args], {
-      cwd,
-      stdio: 'inherit',
-      shell: process.platform === 'win32',
-    });
-    child.on('exit', (code) => (code === 0 ? resolve() : reject(new Error(`ctxo ${args.join(' ')} exited ${code}`))));
-    child.on('error', reject);
-  });
+  // Trigger a sync to rebuild from .ctxo/index/*.json (in-process; no npx round-trip)
+  await new SyncCommand(projectRoot).run();
 }
 
 function canResolvePlugin(lang: KnownLanguage): boolean {

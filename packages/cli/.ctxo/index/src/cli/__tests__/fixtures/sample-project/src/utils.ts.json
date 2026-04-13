@@ -1,0 +1,41 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/cli/__tests__/fixtures/sample-project/src/utils.ts::formatName::function"
+    }
+  ],
+  "contentHash": "d3f420c929357df22eca1f58a745ba64827d9441cffa1ae79a681489079aea8f",
+  "edges": [],
+  "file": "src/cli/__tests__/fixtures/sample-project/src/utils.ts",
+  "intent": [
+    {
+      "date": "2026-03-29T16:23:42+03:00",
+      "hash": "98ebb212e830854e7c2a31edaba34847eb0cfbfd",
+      "kind": "commit",
+      "message": "Add ctxo index CLI command with file discovery and extraction pipeline"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": [
+    {
+      "endLine": 2,
+      "endOffset": 88,
+      "kind": "function",
+      "name": "formatName",
+      "startLine": 0,
+      "startOffset": 0,
+      "symbolId": "src/cli/__tests__/fixtures/sample-project/src/utils.ts::formatName::function"
+    },
+    {
+      "endLine": 4,
+      "endOffset": 120,
+      "kind": "variable",
+      "name": "VERSION",
+      "startLine": 4,
+      "startOffset": 103,
+      "symbolId": "src/cli/__tests__/fixtures/sample-project/src/utils.ts::VERSION::variable"
+    }
+  ]
+}

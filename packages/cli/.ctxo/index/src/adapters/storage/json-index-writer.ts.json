@@ -1,0 +1,178 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.write::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.writeCoChanges::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.atomicWrite::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.delete::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.resolveIndexPath::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.sortKeys::method"
+    }
+  ],
+  "contentHash": "bbe2c998e9674e342a8ce6501400e400f727f51d1c4890162e8c0e609778684d",
+  "edges": [
+    {
+      "from": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class",
+      "kind": "imports",
+      "to": "src/core/types.ts::CoChangeMatrix::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.write::method",
+      "kind": "calls",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.resolveIndexPath::method"
+    },
+    {
+      "from": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.write::method",
+      "kind": "calls",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.sortKeys::method"
+    },
+    {
+      "from": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.write::method",
+      "kind": "calls",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.atomicWrite::method"
+    },
+    {
+      "from": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.writeCoChanges::method",
+      "kind": "calls",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.atomicWrite::method"
+    },
+    {
+      "from": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.delete::method",
+      "kind": "calls",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.resolveIndexPath::method"
+    },
+    {
+      "from": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::FileIndex::type"
+    },
+    {
+      "from": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class",
+      "kind": "uses",
+      "to": "src/core/types.ts::CoChangeMatrix::interface"
+    }
+  ],
+  "file": "src/adapters/storage/json-index-writer.ts",
+  "intent": [
+    {
+      "date": "2026-04-08T08:12:01+03:00",
+      "hash": "d80f203bc7260fbd619565eb81f8b3c2213e54c2",
+      "kind": "commit",
+      "message": "fix(storage): use PID suffix for temp files and add atomicWrite test"
+    },
+    {
+      "date": "2026-04-08T08:00:31+03:00",
+      "hash": "71fcd7f82d7ccd479301dab3783690947e4abcb2",
+      "kind": "commit",
+      "message": "fix(storage): make JSON index writes atomic via tmp+rename"
+    },
+    {
+      "date": "2026-04-08T04:31:58+03:00",
+      "hash": "f2fd79d92382071661c21f86fb84aa88feeb7e1f",
+      "kind": "commit",
+      "message": "Add co-change analysis and get_pr_impact MCP tool (14th tool)"
+    },
+    {
+      "date": "2026-03-29T16:17:42+03:00",
+      "hash": "7b96d982fdf4c6fd753beeb4129181f9ad91ddb8",
+      "kind": "commit",
+      "message": "Fix 10 runtime bugs found in code review"
+    },
+    {
+      "date": "2026-03-29T15:50:38+03:00",
+      "hash": "a55ee9addcea4a1b3da5a93e6acb2b979c5fb5c8",
+      "kind": "commit",
+      "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": [
+    {
+      "endLine": 65,
+      "endOffset": 2192,
+      "kind": "class",
+      "name": "JsonIndexWriter",
+      "startLine": 4,
+      "startOffset": 220,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "endLine": 22,
+      "endOffset": 780,
+      "kind": "method",
+      "name": "JsonIndexWriter.write",
+      "startLine": 11,
+      "startOffset": 382,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.write::method"
+    },
+    {
+      "endLine": 28,
+      "endOffset": 1021,
+      "kind": "method",
+      "name": "JsonIndexWriter.writeCoChanges",
+      "startLine": 24,
+      "startOffset": 786,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.writeCoChanges::method"
+    },
+    {
+      "endLine": 34,
+      "endOffset": 1238,
+      "kind": "method",
+      "name": "JsonIndexWriter.atomicWrite",
+      "startLine": 30,
+      "startOffset": 1027,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.atomicWrite::method"
+    },
+    {
+      "endLine": 41,
+      "endOffset": 1419,
+      "kind": "method",
+      "name": "JsonIndexWriter.delete",
+      "startLine": 36,
+      "startOffset": 1244,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.delete::method"
+    },
+    {
+      "endLine": 50,
+      "endOffset": 1758,
+      "kind": "method",
+      "name": "JsonIndexWriter.resolveIndexPath",
+      "startLine": 43,
+      "startOffset": 1425,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.resolveIndexPath::method"
+    },
+    {
+      "endLine": 64,
+      "endOffset": 2189,
+      "kind": "method",
+      "name": "JsonIndexWriter.sortKeys",
+      "startLine": 52,
+      "startOffset": 1764,
+      "symbolId": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter.sortKeys::method"
+    }
+  ]
+}

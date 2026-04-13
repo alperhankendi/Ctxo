@@ -79,6 +79,14 @@ describe('applyFixes', () => {
     expect(existsSync(logPath)).toBe(true);
     expect(readFileSync(logPath, 'utf-8')).toContain('doctor --fix');
   });
+
+  it('schedules an orphan prune attempt when orphaned_files is failing', async () => {
+    const r = await applyFixes(
+      report([{ id: 'orphaned_files', status: 'fail' }]),
+      { projectRoot: tmp, ctxoRoot: join(tmp, '.ctxo'), dryRun: true },
+    );
+    expect(r.attempts.some((a) => a.name === 'Orphaned index files')).toBe(true);
+  });
 });
 
 describe('formatFixReport', () => {

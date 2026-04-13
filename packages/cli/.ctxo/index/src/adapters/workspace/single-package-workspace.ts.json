@@ -1,0 +1,31 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/adapters/workspace/single-package-workspace.ts::detectWorkspace::function"
+    }
+  ],
+  "contentHash": "8b575b0e168e9ac8413deea35181061fcff18acaa23f5e35afda80f2c4c397c9",
+  "edges": [
+    {
+      "from": "src/adapters/workspace/single-package-workspace.ts::detectWorkspace::function",
+      "kind": "calls",
+      "to": "src/adapters/workspace/single-package-workspace.ts::findManifest::function"
+    }
+  ],
+  "file": "src/adapters/workspace/single-package-workspace.ts",
+  "intent": [],
+  "lastModified": 1776038612,
+  "symbols": [
+    {
+      "endLine": 50,
+      "endOffset": 1315,
+      "kind": "function",
+      "name": "detectWorkspace",
+      "startLine": 40,
+      "startOffset": 1104,
+      "symbolId": "src/adapters/workspace/single-package-workspace.ts::detectWorkspace::function"
+    }
+  ]
+}

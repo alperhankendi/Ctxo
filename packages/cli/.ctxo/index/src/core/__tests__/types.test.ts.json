@@ -1,0 +1,53 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "6b7dc3864ef08d12fef8b3ce66f27efeef856cf0b4532b3c59ca518c58e41ec7",
+  "edges": [
+    {
+      "from": "src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolKindSchema::variable"
+    },
+    {
+      "from": "src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNodeSchema::variable"
+    },
+    {
+      "from": "src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::GraphEdgeSchema::variable"
+    },
+    {
+      "from": "src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndexSchema::variable"
+    },
+    {
+      "from": "src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolIdSchema::variable"
+    },
+    {
+      "from": "src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::EdgeKindSchema::variable"
+    },
+    {
+      "from": "src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::DetailLevelSchema::variable"
+    }
+  ],
+  "file": "src/core/__tests__/types.test.ts",
+  "intent": [
+    {
+      "date": "2026-03-29T15:43:28+03:00",
+      "hash": "f9bfea331e6ebdaf0733822d6f8d5b29a106d465",
+      "kind": "commit",
+      "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": []
+}

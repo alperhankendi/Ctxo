@@ -1,0 +1,51 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "f816e6ad7a05dee0f69732f22424967299168db2b4bd0eae73606bb9bc50bb99",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/__tests__/find-importers.test.ts::find-importers.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/find-importers.test.ts::find-importers.test::variable",
+      "kind": "imports",
+      "to": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/find-importers.test.ts::find-importers.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/mcp/find-importers.ts::handleFindImporters::function"
+    },
+    {
+      "from": "src/adapters/mcp/__tests__/find-importers.test.ts::find-importers.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "src/adapters/mcp/__tests__/find-importers.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-12T21:20:55+03:00",
+      "hash": "caa5ebefa759e0d93f1a6f9e5551764e6b6024cd",
+      "kind": "commit",
+      "message": "fix(mcp): expose aggregated edgeKinds array in find_importers direct mode"
+    },
+    {
+      "date": "2026-04-08T16:50:11+03:00",
+      "hash": "c02da4f533f70d435e58c6ef82205beeabc3c5d2",
+      "kind": "commit",
+      "message": "Add dedup regression tests and update runbook checklist (#22)"
+    },
+    {
+      "date": "2026-03-31T03:15:55+03:00",
+      "hash": "dcae17802c9cc167416a9a55e325e5da1a595639",
+      "kind": "commit",
+      "message": "Add 4 new MCP tools, --max-history limit, and improve test coverage"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": []
+}

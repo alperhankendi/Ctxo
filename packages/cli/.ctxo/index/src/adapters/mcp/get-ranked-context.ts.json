@@ -1,0 +1,165 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 18,
+      "symbolId": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function"
+    }
+  ],
+  "contentHash": "6d9dfa59b38e2edcd0e841891a5cadcae020f7a8a1951564a74d0507ba53e55a",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "imports",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "imports",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "imports",
+      "to": "src/core/context-assembly/context-assembler.ts::ContextAssembler::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "imports",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "imports",
+      "to": "src/core/search/search-engine.ts::SearchEngine::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "imports",
+      "to": "src/ports/i-search-port.ts::ISearchPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "imports",
+      "to": "src/core/logger.ts::createLogger::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "calls",
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "calls",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "calls",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "calls",
+      "to": "src/core/context-assembly/context-assembler.ts::ContextAssembler::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "calls",
+      "to": "src/core/search/search-engine.ts::SearchEngine::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "uses",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "uses",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "uses",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "uses",
+      "to": "src/ports/i-search-port.ts::ISearchPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "uses",
+      "to": "src/core/context-assembly/context-assembler.ts::ContextAssembler::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "uses",
+      "to": "src/core/search/search-engine.ts::SearchEngine::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "uses",
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
+      "kind": "uses",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    }
+  ],
+  "file": "src/adapters/mcp/get-ranked-context.ts",
+  "intent": [
+    {
+      "date": "2026-04-12T20:48:05+03:00",
+      "hash": "66c4f641db281f2bbb45dab41125c8f9cb5932e3",
+      "kind": "commit",
+      "message": "fix(mcp): align staleness warnings with JSON graph source (#40)"
+    },
+    {
+      "date": "2026-04-09T02:52:59+03:00",
+      "hash": "75de5e11d4c6e4b56483dfe7491b9297a01363d9",
+      "kind": "commit",
+      "message": "Add BM25 search engine with camelCase tokenization, fuzzy correction, and two-phase cascade (v0.4.0)"
+    },
+    {
+      "date": "2026-04-08T15:41:03+03:00",
+      "hash": "676f15d768b3abd1e18a9ace3411e4fb61bf579e",
+      "kind": "commit",
+      "message": "Add response size management with _meta field and auto-truncation (#26)"
+    },
+    {
+      "date": "2026-03-30T23:21:57+03:00",
+      "hash": "1dcd724d46790be519a60d8aeb2c9688e8cb8a90",
+      "kind": "commit",
+      "message": "Add context assembly: get_context_for_task + get_ranked_context"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": [
+    {
+      "endLine": 142,
+      "endOffset": 5360,
+      "kind": "function",
+      "name": "handleGetRankedContext",
+      "startLine": 21,
+      "startOffset": 985,
+      "symbolId": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function"
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 11,
+      "symbolId": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function"
+    }
+  ],
+  "contentHash": "05de0da1da4fe00e0de238cf9049d66f137aaf4422226b390c39136e5b160c3b",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "imports",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "calls",
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "calls",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "uses",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "uses",
+      "to": "src/ports/i-git-port.ts::IGitPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "uses",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "uses",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "uses",
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
+      "kind": "uses",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    }
+  ],
+  "file": "src/adapters/mcp/get-changed-symbols.ts",
+  "intent": [
+    {
+      "date": "2026-04-12T20:48:05+03:00",
+      "hash": "66c4f641db281f2bbb45dab41125c8f9cb5932e3",
+      "kind": "commit",
+      "message": "fix(mcp): align staleness warnings with JSON graph source (#40)"
+    },
+    {
+      "date": "2026-04-08T15:41:03+03:00",
+      "hash": "676f15d768b3abd1e18a9ace3411e4fb61bf579e",
+      "kind": "commit",
+      "message": "Add response size management with _meta field and auto-truncation (#26)"
+    },
+    {
+      "date": "2026-03-31T03:15:55+03:00",
+      "hash": "dcae17802c9cc167416a9a55e325e5da1a595639",
+      "kind": "commit",
+      "message": "Add 4 new MCP tools, --max-history limit, and improve test coverage"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": [
+    {
+      "endLine": 76,
+      "endOffset": 2880,
+      "kind": "function",
+      "name": "handleGetChangedSymbols",
+      "startLine": 13,
+      "startOffset": 546,
+      "symbolId": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function"
+    }
+  ]
+}

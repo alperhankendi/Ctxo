@@ -1,0 +1,53 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "1419c5ca5a1c0b3bf569fe060ff28f395b3f8212ef571cbb6dff9a394132b6af",
+  "edges": [],
+  "file": "tests/e2e/release-packaging.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-12T05:13:41+03:00",
+      "hash": "68186fca0afc0a304ceb626b03a5daf5f2202fda",
+      "kind": "commit",
+      "message": "feat: add ctxo visualize command with interactive dependency graph"
+    },
+    {
+      "date": "2026-04-12T00:20:34+03:00",
+      "hash": "0622a33fc7408c02e31faa08b40ae28e3e5d912a",
+      "kind": "commit",
+      "message": "fix: bump tarball size limit to 900KB (ctxo-roslyn adds ~25KB)"
+    },
+    {
+      "date": "2026-04-11T02:04:39+03:00",
+      "hash": "08a10fb91f0a112a4f56dc8779f41e863171cdce",
+      "kind": "commit",
+      "message": "feat: interactive ctxo init with AI tool rule generation (#34)"
+    },
+    {
+      "date": "2026-04-09T02:52:59+03:00",
+      "hash": "75de5e11d4c6e4b56483dfe7491b9297a01363d9",
+      "kind": "commit",
+      "message": "Add BM25 search engine with camelCase tokenization, fuzzy correction, and two-phase cascade (v0.4.0)"
+    },
+    {
+      "date": "2026-04-08T15:57:05+03:00",
+      "hash": "408d6832ee84f7a7b50d1c2d4cde81b7b6c22f50",
+      "kind": "commit",
+      "message": "Bump tarball size limit to 600KB (new files added)"
+    },
+    {
+      "date": "2026-03-30T00:12:27+03:00",
+      "hash": "cddb5ce67932dcebe25c85ac99c7208c0c1a1718",
+      "kind": "commit",
+      "message": "Fix release test: lower tarball size threshold for CI (dist/ not built during test step)"
+    },
+    {
+      "date": "2026-03-29T18:27:06+03:00",
+      "hash": "c7c06a44bc2764efc317c02df163d1a46f6d8c55",
+      "kind": "commit",
+      "message": "Complete Phase 10: Release gate tests"
+    }
+  ],
+  "lastModified": 1776038613,
+  "symbols": []
+}

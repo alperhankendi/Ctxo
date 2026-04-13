@@ -1,0 +1,109 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/cli/plugin-loader.ts::loadManifestPath::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/cli/plugin-loader.ts::loadPlugins::function"
+    }
+  ],
+  "contentHash": "ce0e71442554d24362de7839dd000fa259911bd350f68d34c87539a95ad9f4d7",
+  "edges": [
+    {
+      "from": "src/cli/plugin-loader.ts::loadManifestPath::function",
+      "kind": "imports",
+      "to": "src/adapters/language/plugin-discovery.ts::discoverPlugins::function"
+    },
+    {
+      "from": "src/cli/plugin-loader.ts::loadManifestPath::function",
+      "kind": "imports",
+      "to": "src/adapters/language/plugin-discovery.ts::DiscoveredPlugin::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/cli/plugin-loader.ts::loadManifestPath::function",
+      "kind": "imports",
+      "to": "src/adapters/workspace/single-package-workspace.ts::detectWorkspace::function"
+    },
+    {
+      "from": "src/cli/plugin-loader.ts::loadManifestPath::function",
+      "kind": "imports",
+      "to": "src/core/logger.ts::createLogger::function"
+    },
+    {
+      "from": "src/cli/plugin-loader.ts::loadManifestPath::function",
+      "kind": "calls",
+      "to": "src/cli/plugin-loader.ts::resolveManifestPath::function"
+    },
+    {
+      "from": "src/cli/plugin-loader.ts::loadPlugins::function",
+      "kind": "calls",
+      "to": "src/cli/plugin-loader.ts::resolveManifestPath::function"
+    },
+    {
+      "from": "src/cli/plugin-loader.ts::loadPlugins::function",
+      "kind": "calls",
+      "to": "src/adapters/workspace/single-package-workspace.ts::detectWorkspace::function"
+    },
+    {
+      "from": "src/cli/plugin-loader.ts::loadPlugins::function",
+      "kind": "calls",
+      "to": "src/adapters/language/plugin-discovery.ts::discoverPlugins::function"
+    },
+    {
+      "from": "src/cli/plugin-loader.ts::loadPlugins::function",
+      "kind": "calls",
+      "to": "src/cli/plugin-loader.ts::buildContext::function"
+    },
+    {
+      "from": "src/cli/plugin-loader.ts::loadPlugins::function",
+      "kind": "uses",
+      "to": "src/adapters/workspace/single-package-workspace.ts::detectWorkspace::function"
+    },
+    {
+      "from": "src/cli/plugin-loader.ts::loadPlugins::function",
+      "kind": "uses",
+      "to": "src/adapters/language/plugin-discovery.ts::discoverPlugins::function"
+    },
+    {
+      "from": "src/cli/plugin-loader.ts::loadPlugins::function",
+      "kind": "uses",
+      "to": "src/adapters/language/plugin-discovery.ts::DiscoveredPlugin::interface"
+    }
+  ],
+  "file": "src/cli/plugin-loader.ts",
+  "intent": [],
+  "lastModified": 1776038612,
+  "symbols": [
+    {
+      "endLine": 37,
+      "endOffset": 1459,
+      "kind": "function",
+      "name": "loadManifestPath",
+      "startLine": 35,
+      "startOffset": 1344,
+      "symbolId": "src/cli/plugin-loader.ts::loadManifestPath::function"
+    },
+    {
+      "endLine": 94,
+      "endOffset": 3445,
+      "kind": "function",
+      "name": "loadPlugins",
+      "startLine": 73,
+      "startOffset": 2658,
+      "symbolId": "src/cli/plugin-loader.ts::loadPlugins::function"
+    },
+    {
+      "endLine": 13,
+      "endOffset": 624,
+      "kind": "interface",
+      "name": "LoadedPlugin",
+      "startLine": 9,
+      "startOffset": 484,
+      "symbolId": "src/cli/plugin-loader.ts::LoadedPlugin::interface"
+    }
+  ]
+}

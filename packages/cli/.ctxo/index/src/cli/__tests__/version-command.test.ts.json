@@ -1,0 +1,43 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "0d9b17aa4a28b5d50453d6f19b6824a54891b1f61be0d2da2621a71072947cda",
+  "edges": [
+    {
+      "from": "src/cli/__tests__/version-command.test.ts::version-command.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/language/plugin-discovery.ts::DiscoveredPlugin::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/cli/__tests__/version-command.test.ts::version-command.test::variable",
+      "kind": "imports",
+      "to": "src/cli/version-command.ts::gatherVersionInfo::function"
+    },
+    {
+      "from": "src/cli/__tests__/version-command.test.ts::version-command.test::variable",
+      "kind": "imports",
+      "to": "src/cli/version-command.ts::formatShort::function"
+    },
+    {
+      "from": "src/cli/__tests__/version-command.test.ts::version-command.test::variable",
+      "kind": "imports",
+      "to": "src/cli/version-command.ts::formatVerbose::function"
+    },
+    {
+      "from": "src/cli/__tests__/version-command.test.ts::version-command.test::variable",
+      "kind": "imports",
+      "to": "src/cli/version-command.ts::formatJson::function"
+    },
+    {
+      "from": "src/cli/__tests__/version-command.test.ts::version-command.test::variable",
+      "kind": "imports",
+      "to": "src/cli/version-command.ts::VersionInfo::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "src/cli/__tests__/version-command.test.ts",
+  "intent": [],
+  "lastModified": 1776038612,
+  "symbols": []
+}

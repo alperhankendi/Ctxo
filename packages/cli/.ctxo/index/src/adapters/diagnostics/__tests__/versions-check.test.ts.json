@@ -1,0 +1,22 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "01de0a80df67333f8443b25faa8c72348684b66020aebdba121c9b182bc05c89",
+  "edges": [
+    {
+      "from": "src/adapters/diagnostics/__tests__/versions-check.test.ts::versions-check.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/diagnostics/checks/versions-check.ts::VersionsCheck::class"
+    },
+    {
+      "from": "src/adapters/diagnostics/__tests__/versions-check.test.ts::versions-check.test::variable",
+      "kind": "imports",
+      "to": "src/core/diagnostics/types.ts::CheckContext::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "src/adapters/diagnostics/__tests__/versions-check.test.ts",
+  "intent": [],
+  "lastModified": 1776038612,
+  "symbols": []
+}

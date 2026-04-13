@@ -1,0 +1,26 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "2833be5847a698e833ff9c14e6b298609d901ee22b6410104d45686e4f411af8",
+  "edges": [
+    {
+      "from": "src/core/detection/__tests__/detect-languages.test.ts::detect-languages.test::variable",
+      "kind": "imports",
+      "to": "src/core/detection/detect-languages.ts::detectLanguages::function"
+    },
+    {
+      "from": "src/core/detection/__tests__/detect-languages.test.ts::detect-languages.test::variable",
+      "kind": "imports",
+      "to": "src/core/detection/detect-languages.ts::decideNeededLanguages::function"
+    },
+    {
+      "from": "src/core/detection/__tests__/detect-languages.test.ts::detect-languages.test::variable",
+      "kind": "imports",
+      "to": "src/core/detection/detect-languages.ts::officialPluginFor::function"
+    }
+  ],
+  "file": "src/core/detection/__tests__/detect-languages.test.ts",
+  "intent": [],
+  "lastModified": 1776038612,
+  "symbols": []
+}

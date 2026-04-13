@@ -1,0 +1,41 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "0d0c8ddbe6207d12eed9ae6d22a36d26f35b761cb2d711abf9d7f09f00bc3ff0",
+  "edges": [
+    {
+      "from": "src/core/detail-levels/__tests__/detail-formatter.test.ts::detail-formatter.test::variable",
+      "kind": "imports",
+      "to": "src/core/detail-levels/detail-formatter.ts::DetailFormatter::class"
+    },
+    {
+      "from": "src/core/detail-levels/__tests__/detail-formatter.test.ts::detail-formatter.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::LogicSliceResult::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/core/detail-levels/__tests__/detail-formatter.test.ts::detail-formatter.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    },
+    {
+      "from": "src/core/detail-levels/__tests__/detail-formatter.test.ts::detail-formatter.test::variable",
+      "kind": "imports",
+      "to": "src/core/types.ts::GraphEdge::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "src/core/detail-levels/__tests__/detail-formatter.test.ts",
+  "intent": [
+    {
+      "date": "2026-03-29T16:00:19+03:00",
+      "hash": "ea1b4eac08116b13d556ba9c194c115c5a4c1fd9",
+      "kind": "commit",
+      "message": "Add core graph, logic-slice query, and detail formatter"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": []
+}

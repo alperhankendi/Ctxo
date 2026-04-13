@@ -1,0 +1,50 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "src/core/context-assembly/task-context-strategy.ts::getWeightsForTask::function"
+    }
+  ],
+  "contentHash": "1c2b5a1f8db7823794361b2f40534e97cd9e7702111e48171563c896b2b790bf",
+  "edges": [],
+  "file": "src/core/context-assembly/task-context-strategy.ts",
+  "intent": [
+    {
+      "date": "2026-03-30T23:21:57+03:00",
+      "hash": "1dcd724d46790be519a60d8aeb2c9688e8cb8a90",
+      "kind": "commit",
+      "message": "Add context assembly: get_context_for_task + get_ranked_context"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": [
+    {
+      "endLine": 43,
+      "endOffset": 1090,
+      "kind": "function",
+      "name": "getWeightsForTask",
+      "startLine": 41,
+      "startOffset": 984,
+      "symbolId": "src/core/context-assembly/task-context-strategy.ts::getWeightsForTask::function"
+    },
+    {
+      "endLine": 8,
+      "endOffset": 294,
+      "kind": "interface",
+      "name": "ScoringWeights",
+      "startLine": 2,
+      "startOffset": 70,
+      "symbolId": "src/core/context-assembly/task-context-strategy.ts::ScoringWeights::interface"
+    },
+    {
+      "endLine": 0,
+      "endOffset": 68,
+      "kind": "type",
+      "name": "TaskType",
+      "startLine": 0,
+      "startOffset": 0,
+      "symbolId": "src/core/context-assembly/task-context-strategy.ts::TaskType::type"
+    }
+  ]
+}

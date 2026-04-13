@@ -1,0 +1,175 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/cli/ai-rules.ts::detectPlatforms::function"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/cli/ai-rules.ts::generateRules::function"
+    },
+    {
+      "cyclomatic": 8,
+      "symbolId": "src/cli/ai-rules.ts::installRules::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "src/cli/ai-rules.ts::ensureGitignore::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "src/cli/ai-rules.ts::ensureConfig::function"
+    },
+    {
+      "cyclomatic": 9,
+      "symbolId": "src/cli/ai-rules.ts::getMcpConfigTargets::function"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "src/cli/ai-rules.ts::ensureMcpConfig::function"
+    }
+  ],
+  "contentHash": "a77745546332d67dd2c58b8704007ad9bde2e8a3cccb60e1205c3711b53fa4fd",
+  "edges": [
+    {
+      "from": "src/cli/ai-rules.ts::generateRules::function",
+      "kind": "calls",
+      "to": "src/cli/ai-rules.ts::ruleBody::function"
+    },
+    {
+      "from": "src/cli/ai-rules.ts::generateRules::function",
+      "kind": "calls",
+      "to": "src/cli/ai-rules.ts::cursorFrontmatter::function"
+    },
+    {
+      "from": "src/cli/ai-rules.ts::installRules::function",
+      "kind": "calls",
+      "to": "src/cli/ai-rules.ts::generateRules::function"
+    },
+    {
+      "from": "src/cli/ai-rules.ts::installRules::function",
+      "kind": "calls",
+      "to": "src/cli/ai-rules.ts::escapeRegExp::function"
+    },
+    {
+      "from": "src/cli/ai-rules.ts::installRules::function",
+      "kind": "calls",
+      "to": "src/cli/ai-rules.ts::escapeRegExp::function"
+    }
+  ],
+  "file": "src/cli/ai-rules.ts",
+  "intent": [
+    {
+      "date": "2026-04-11T03:18:18+03:00",
+      "hash": "2d284bc442746886ef6ed9a00231af05d6529e2f",
+      "kind": "commit",
+      "message": "feat: auto-register ctxo MCP server in config files during init"
+    },
+    {
+      "date": "2026-04-11T02:47:33+03:00",
+      "hash": "5de1095ca655a287c19a170293cb9cb5cf7e5faa",
+      "kind": "commit",
+      "message": "feat: auto-scaffold .gitignore and config.yaml in ctxo init"
+    },
+    {
+      "date": "2026-04-11T02:04:39+03:00",
+      "hash": "08a10fb91f0a112a4f56dc8779f41e863171cdce",
+      "kind": "commit",
+      "message": "feat: interactive ctxo init with AI tool rule generation (#34)"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": [
+    {
+      "endLine": 40,
+      "endOffset": 2313,
+      "kind": "function",
+      "name": "detectPlatforms",
+      "startLine": 32,
+      "startOffset": 2051,
+      "symbolId": "src/cli/ai-rules.ts::detectPlatforms::function"
+    },
+    {
+      "endLine": 107,
+      "endOffset": 5047,
+      "kind": "function",
+      "name": "generateRules",
+      "startLine": 99,
+      "startOffset": 4852,
+      "symbolId": "src/cli/ai-rules.ts::generateRules::function"
+    },
+    {
+      "endLine": 156,
+      "endOffset": 6963,
+      "kind": "function",
+      "name": "installRules",
+      "startLine": 118,
+      "startOffset": 5367,
+      "symbolId": "src/cli/ai-rules.ts::installRules::function"
+    },
+    {
+      "endLine": 185,
+      "endOffset": 8083,
+      "kind": "function",
+      "name": "ensureGitignore",
+      "startLine": 168,
+      "startOffset": 7325,
+      "symbolId": "src/cli/ai-rules.ts::ensureGitignore::function"
+    },
+    {
+      "endLine": 204,
+      "endOffset": 8636,
+      "kind": "function",
+      "name": "ensureConfig",
+      "startLine": 192,
+      "startOffset": 8203,
+      "symbolId": "src/cli/ai-rules.ts::ensureConfig::function"
+    },
+    {
+      "endLine": 247,
+      "endOffset": 10122,
+      "kind": "function",
+      "name": "getMcpConfigTargets",
+      "startLine": 224,
+      "startOffset": 9293,
+      "symbolId": "src/cli/ai-rules.ts::getMcpConfigTargets::function"
+    },
+    {
+      "endLine": 284,
+      "endOffset": 11450,
+      "kind": "function",
+      "name": "ensureMcpConfig",
+      "startLine": 249,
+      "startOffset": 10124,
+      "symbolId": "src/cli/ai-rules.ts::ensureMcpConfig::function"
+    },
+    {
+      "endLine": 20,
+      "endOffset": 691,
+      "kind": "interface",
+      "name": "Platform",
+      "startLine": 10,
+      "startOffset": 329,
+      "symbolId": "src/cli/ai-rules.ts::Platform::interface"
+    },
+    {
+      "endLine": 116,
+      "endOffset": 5365,
+      "kind": "interface",
+      "name": "InstallResult",
+      "startLine": 113,
+      "startOffset": 5270,
+      "symbolId": "src/cli/ai-rules.ts::InstallResult::interface"
+    },
+    {
+      "endLine": 30,
+      "endOffset": 2048,
+      "kind": "variable",
+      "name": "PLATFORMS",
+      "startLine": 22,
+      "startOffset": 706,
+      "symbolId": "src/cli/ai-rules.ts::PLATFORMS::variable"
+    }
+  ]
+}

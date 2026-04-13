@@ -1,0 +1,47 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "src/core/logger.ts::createLogger::function"
+    }
+  ],
+  "contentHash": "3aa84e44b234c791d553567aee99309d9d20b7ac0a08cf24527442b5e261a222",
+  "edges": [
+    {
+      "from": "src/core/logger.ts::createLogger::function",
+      "kind": "calls",
+      "to": "src/core/logger.ts::isDebugEnabled::function"
+    }
+  ],
+  "file": "src/core/logger.ts",
+  "intent": [
+    {
+      "date": "2026-04-08T17:56:58+03:00",
+      "hash": "18430d5cc2948dcaec9c139aaf48686023053b3a",
+      "kind": "commit",
+      "message": "Add debug mode (DEBUG=ctxo:*), structured logger, and CHANGELOG.md"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": [
+    {
+      "endLine": 53,
+      "endOffset": 1859,
+      "kind": "function",
+      "name": "createLogger",
+      "startLine": 34,
+      "startOffset": 1244,
+      "symbolId": "src/core/logger.ts::createLogger::function"
+    },
+    {
+      "endLine": 32,
+      "endOffset": 1242,
+      "kind": "interface",
+      "name": "Logger",
+      "startLine": 27,
+      "startOffset": 1009,
+      "symbolId": "src/core/logger.ts::Logger::interface"
+    }
+  ]
+}

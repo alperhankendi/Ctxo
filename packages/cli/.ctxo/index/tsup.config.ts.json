@@ -1,0 +1,29 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "12084f10d9dc9bac28bc33136dd63951a2ac4ab2bedc0c548eb8e2aa43ff706d",
+  "edges": [],
+  "file": "tsup.config.ts",
+  "intent": [
+    {
+      "date": "2026-04-08T03:09:19+03:00",
+      "hash": "e43db17e512a8ab500108767c0914c857b5707b3",
+      "kind": "commit",
+      "message": "Add tree-sitter adapters for Go and C# with graceful degradation"
+    },
+    {
+      "date": "2026-03-29T15:50:38+03:00",
+      "hash": "a55ee9addcea4a1b3da5a93e6acb2b979c5fb5c8",
+      "kind": "commit",
+      "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
+    },
+    {
+      "date": "2026-03-29T15:43:28+03:00",
+      "hash": "f9bfea331e6ebdaf0733822d6f8d5b29a106d465",
+      "kind": "commit",
+      "message": "Scaffold project with TypeScript, tsup, vitest, ESLint, and core domain types"
+    }
+  ],
+  "lastModified": 1776038613,
+  "symbols": []
+}

@@ -1,0 +1,95 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/config.ts::getConfig::function"
+    }
+  ],
+  "contentHash": "d63fc3cf90b4428416a1067ea7a8029744416696b7cf937c120afa1665ed7ec8",
+  "edges": [],
+  "file": "tests/e2e/fixtures/credential-fixture/src/config.ts",
+  "intent": [
+    {
+      "date": "2026-03-29T18:27:06+03:00",
+      "hash": "c7c06a44bc2764efc317c02df163d1a46f6d8c55",
+      "kind": "commit",
+      "message": "Complete Phase 10: Release gate tests"
+    }
+  ],
+  "lastModified": 1776038613,
+  "symbols": [
+    {
+      "endLine": 14,
+      "endOffset": 659,
+      "kind": "function",
+      "name": "getConfig",
+      "startLine": 9,
+      "startOffset": 560,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/config.ts::getConfig::function"
+    },
+    {
+      "endLine": 1,
+      "endOffset": 107,
+      "kind": "variable",
+      "name": "AWS_KEY",
+      "startLine": 1,
+      "startOffset": 75,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/config.ts::AWS_KEY::variable"
+    },
+    {
+      "endLine": 2,
+      "endOffset": 177,
+      "kind": "variable",
+      "name": "AWS_SECRET",
+      "startLine": 2,
+      "startOffset": 122,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/config.ts::AWS_SECRET::variable"
+    },
+    {
+      "endLine": 3,
+      "endOffset": 314,
+      "kind": "variable",
+      "name": "JWT_TOKEN",
+      "startLine": 3,
+      "startOffset": 192,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/config.ts::JWT_TOKEN::variable"
+    },
+    {
+      "endLine": 4,
+      "endOffset": 378,
+      "kind": "variable",
+      "name": "DB_PASSWORD",
+      "startLine": 4,
+      "startOffset": 329,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/config.ts::DB_PASSWORD::variable"
+    },
+    {
+      "endLine": 5,
+      "endOffset": 421,
+      "kind": "variable",
+      "name": "PRIVATE_IP",
+      "startLine": 5,
+      "startOffset": 393,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/config.ts::PRIVATE_IP::variable"
+    },
+    {
+      "endLine": 6,
+      "endOffset": 493,
+      "kind": "variable",
+      "name": "AZURE_KEY",
+      "startLine": 6,
+      "startOffset": 436,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/config.ts::AZURE_KEY::variable"
+    },
+    {
+      "endLine": 7,
+      "endOffset": 557,
+      "kind": "variable",
+      "name": "API_TOKEN",
+      "startLine": 7,
+      "startOffset": 508,
+      "symbolId": "tests/e2e/fixtures/credential-fixture/src/config.ts::API_TOKEN::variable"
+    }
+  ]
+}

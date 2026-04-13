@@ -1,0 +1,156 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 5,
+      "symbolId": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function"
+    }
+  ],
+  "contentHash": "cc1550913a33ee466217d7a6d852471fce64e30f481707cc73fcad6321f849cc",
+  "edges": [
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "imports",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "imports",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "imports",
+      "to": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "imports",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "imports",
+      "to": "src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "imports",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "calls",
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "calls",
+      "to": "src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "calls",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "calls",
+      "to": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "uses",
+      "to": "src/ports/i-storage-port.ts::IStoragePort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "uses",
+      "to": "src/ports/i-masking-port.ts::IMaskingPort::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "uses",
+      "to": "src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "uses",
+      "to": "src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "uses",
+      "to": "src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "uses",
+      "to": "src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
+      "kind": "uses",
+      "to": "src/core/response-envelope.ts::wrapResponse::function"
+    }
+  ],
+  "file": "src/adapters/mcp/get-dead-code.ts",
+  "intent": [
+    {
+      "date": "2026-04-12T20:48:05+03:00",
+      "hash": "66c4f641db281f2bbb45dab41125c8f9cb5932e3",
+      "kind": "commit",
+      "message": "fix(mcp): align staleness warnings with JSON graph source (#40)"
+    },
+    {
+      "date": "2026-04-08T18:30:54+03:00",
+      "hash": "bd9e7ba0057fdbf9eadfc0ea56ddb9b685059a8e",
+      "kind": "commit",
+      "message": "Fix TS2352 typecheck errors in MCP tool handlers"
+    },
+    {
+      "date": "2026-04-08T16:12:30+03:00",
+      "hash": "ad40ce28e65533d214754df71851a4c7a2f5e5c1",
+      "kind": "commit",
+      "message": "Add intent parameter for context-aware result filtering (#27)"
+    },
+    {
+      "date": "2026-04-08T15:52:43+03:00",
+      "hash": "83ec66fa360f18b1788f952fc5929fcce2174a55",
+      "kind": "commit",
+      "message": "Fix pre-existing TypeScript errors blocking CI"
+    },
+    {
+      "date": "2026-04-08T15:41:03+03:00",
+      "hash": "676f15d768b3abd1e18a9ace3411e4fb61bf579e",
+      "kind": "commit",
+      "message": "Add response size management with _meta field and auto-truncation (#26)"
+    },
+    {
+      "date": "2026-03-30T22:51:29+03:00",
+      "hash": "07e1bbcfca5863df7267e0f450bc6aee1f69216d",
+      "kind": "commit",
+      "message": "Add find_dead_code MCP tool — unreachable symbol and file detection"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": [
+    {
+      "endLine": 58,
+      "endOffset": 2251,
+      "kind": "function",
+      "name": "handleFindDeadCode",
+      "startLine": 14,
+      "startOffset": 700,
+      "symbolId": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function"
+    }
+  ]
+}

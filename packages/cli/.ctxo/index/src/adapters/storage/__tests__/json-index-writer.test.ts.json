@@ -1,0 +1,34 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "ec4cf52dfa1517743d49a3e64bc117cf13eacc222dcc14a36efe756f5ef4add4",
+  "edges": [
+    {
+      "from": "src/adapters/storage/__tests__/json-index-writer.test.ts::json-index-writer.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "src/adapters/storage/__tests__/json-index-writer.test.ts::json-index-writer.test::variable",
+      "kind": "imports",
+      "to": "src/adapters/storage/__tests__/test-fixtures.ts::buildFileIndex::function"
+    }
+  ],
+  "file": "src/adapters/storage/__tests__/json-index-writer.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-08T08:12:01+03:00",
+      "hash": "d80f203bc7260fbd619565eb81f8b3c2213e54c2",
+      "kind": "commit",
+      "message": "fix(storage): use PID suffix for temp files and add atomicWrite test"
+    },
+    {
+      "date": "2026-03-29T15:50:38+03:00",
+      "hash": "a55ee9addcea4a1b3da5a93e6acb2b979c5fb5c8",
+      "kind": "commit",
+      "message": "Add storage foundation: IStoragePort, JSON index writer/reader, SQLite adapter"
+    }
+  ],
+  "lastModified": 1776038612,
+  "symbols": []
+}
