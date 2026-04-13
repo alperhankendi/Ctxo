@@ -1,7 +1,10 @@
 import GoLanguage from 'tree-sitter-go';
 import type { SyntaxNode } from 'tree-sitter';
 import { TreeSitterAdapter } from './tree-sitter-adapter.js';
+import { createLogger } from './logger.js';
 import type { SymbolNode, GraphEdge, ComplexityMetrics } from '@ctxo/plugin-api';
+
+const log = createLogger('ctxo:lang-go');
 
 const GO_BRANCH_TYPES = [
   'if_statement', 'for_statement',
@@ -27,7 +30,7 @@ export class GoAdapter extends TreeSitterAdapter {
 
         if (node.type === 'function_declaration') {
           const name = node.childForFieldName('name')?.text;
-          if (!name || !this.isExported(name)) continue;
+          if (!name) continue;
           const range = this.nodeToLineRange(node);
           symbols.push({
             symbolId: this.buildSymbolId(filePath, name, 'function'),
@@ -39,7 +42,7 @@ export class GoAdapter extends TreeSitterAdapter {
 
         if (node.type === 'method_declaration') {
           const methodName = node.childForFieldName('name')?.text;
-          if (!methodName || !this.isExported(methodName)) continue;
+          if (!methodName) continue;
           const receiverType = this.extractReceiverType(node);
           const qualifiedName = receiverType ? `${receiverType}.${methodName}` : methodName;
           const range = this.nodeToLineRange(node);
@@ -58,7 +61,7 @@ export class GoAdapter extends TreeSitterAdapter {
 
       return symbols;
     } catch (err) {
-      console.error(`[ctxo:go] Symbol extraction failed for ${filePath}: ${(err as Error).message}`);
+      log.error(`Symbol extraction failed for ${filePath}: ${(err as Error).message}`);
       return [];
     }
   }
@@ -80,7 +83,7 @@ export class GoAdapter extends TreeSitterAdapter {
 
       return edges;
     } catch (err) {
-      console.error(`[ctxo:go] Edge extraction failed for ${filePath}: ${(err as Error).message}`);
+      log.error(`Edge extraction failed for ${filePath}: ${(err as Error).message}`);
       return [];
     }
   }
@@ -95,7 +98,7 @@ export class GoAdapter extends TreeSitterAdapter {
 
         if (node.type === 'function_declaration') {
           const name = node.childForFieldName('name')?.text;
-          if (!name || !this.isExported(name)) continue;
+          if (!name) continue;
           metrics.push({
             symbolId: this.buildSymbolId(filePath, name, 'function'),
             cyclomatic: this.countCyclomaticComplexity(node, GO_BRANCH_TYPES),
@@ -104,7 +107,7 @@ export class GoAdapter extends TreeSitterAdapter {
 
         if (node.type === 'method_declaration') {
           const methodName = node.childForFieldName('name')?.text;
-          if (!methodName || !this.isExported(methodName)) continue;
+          if (!methodName) continue;
           const receiverType = this.extractReceiverType(node);
           const qualifiedName = receiverType ? `${receiverType}.${methodName}` : methodName;
           metrics.push({
@@ -116,7 +119,7 @@ export class GoAdapter extends TreeSitterAdapter {
 
       return metrics;
     } catch (err) {
-      console.error(`[ctxo:go] Complexity extraction failed for ${filePath}: ${(err as Error).message}`);
+      log.error(`Complexity extraction failed for ${filePath}: ${(err as Error).message}`);
       return [];
     }
   }

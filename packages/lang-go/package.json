@@ -1,7 +1,7 @@
 {
   "name": "@ctxo/lang-go",
-  "version": "0.7.1",
-  "description": "Ctxo Go language plugin (tree-sitter, syntax tier)",
+  "version": "0.8.0-alpha.0",
+  "description": "Ctxo Go language plugin (ctxo-go-analyzer + tree-sitter, full tier)",
   "type": "module",
   "engines": {
     "node": ">=20"
@@ -17,6 +17,9 @@
   },
   "files": [
     "dist/",
+    "tools/ctxo-go-analyzer/**/*.go",
+    "tools/ctxo-go-analyzer/go.mod",
+    "tools/ctxo-go-analyzer/go.sum",
     "README.md"
   ],
   "scripts": {
