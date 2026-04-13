@@ -2,7 +2,13 @@
   "antiPatterns": [],
   "complexity": [],
   "contentHash": "b781649fb6c96f3acb160aac08b84d52766c4014106eaf696dc0c79a66640bd4",
-  "edges": [],
+  "edges": [
+    {
+      "from": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Interfaces/IUserRepository.cs::IUserRepository::interface",
+      "kind": "imports",
+      "to": "CsharpSample.Models::Models::variable"
+    }
+  ],
   "file": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Interfaces/IUserRepository.cs",
   "intent": [
     {
@@ -12,6 +18,16 @@
       "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
     }
   ],
-  "lastModified": 1776038929,
-  "symbols": []
+  "lastModified": 1776039771,
+  "symbols": [
+    {
+      "endLine": 9,
+      "endOffset": 186,
+      "kind": "interface",
+      "name": "IUserRepository",
+      "startLine": 4,
+      "startOffset": 64,
+      "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Interfaces/IUserRepository.cs::IUserRepository::interface"
+    }
+  ]
 }

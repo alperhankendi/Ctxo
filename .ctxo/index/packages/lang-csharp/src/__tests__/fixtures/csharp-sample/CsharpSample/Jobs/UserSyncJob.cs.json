@@ -1,8 +1,29 @@
 {
   "antiPatterns": [],
-  "complexity": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/UserSyncJob.cs::UserSyncJob.ExecuteAsync(0)::method"
+    }
+  ],
   "contentHash": "cd0362337446c647515d06e72f0c29dd66127e75e9202bccc7dc91614b2e46d6",
-  "edges": [],
+  "edges": [
+    {
+      "from": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/UserSyncJob.cs::UserSyncJob::class",
+      "kind": "imports",
+      "to": "CsharpSample.Models::Models::variable"
+    },
+    {
+      "from": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/UserSyncJob.cs::UserSyncJob::class",
+      "kind": "imports",
+      "to": "CsharpSample.Services::Services::variable"
+    },
+    {
+      "from": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/UserSyncJob.cs::UserSyncJob::class",
+      "kind": "extends",
+      "to": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/BaseSyncJob.cs::BaseSyncJob::class"
+    }
+  ],
   "file": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/UserSyncJob.cs",
   "intent": [
     {
@@ -12,6 +33,34 @@
       "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
     }
   ],
-  "lastModified": 1776038929,
-  "symbols": []
+  "lastModified": 1776039771,
+  "symbols": [
+    {
+      "endLine": 27,
+      "endOffset": 610,
+      "kind": "class",
+      "name": "UserSyncJob",
+      "startLine": 5,
+      "startOffset": 87,
+      "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/UserSyncJob.cs::UserSyncJob::class"
+    },
+    {
+      "endLine": 12,
+      "endOffset": 290,
+      "kind": "method",
+      "name": "UserSyncJob.UserSyncJob(1)",
+      "startLine": 9,
+      "startOffset": 180,
+      "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/UserSyncJob.cs::UserSyncJob.UserSyncJob(1)::method"
+    },
+    {
+      "endLine": 26,
+      "endOffset": 608,
+      "kind": "method",
+      "name": "UserSyncJob.ExecuteAsync(0)",
+      "startLine": 14,
+      "startOffset": 296,
+      "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/UserSyncJob.cs::UserSyncJob.ExecuteAsync(0)::method"
+    }
+  ]
 }

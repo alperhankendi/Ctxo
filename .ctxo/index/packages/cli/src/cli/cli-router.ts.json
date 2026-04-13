@@ -6,6 +6,10 @@
       "symbolId": "packages/cli/src/cli/cli-router.ts::getVersion::function"
     },
     {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/cli/cli-router.ts::locateGitRoot::function"
+    },
+    {
       "cyclomatic": 53,
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method"
     },
@@ -14,7 +18,7 @@
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.printHelp::method"
     }
   ],
-  "contentHash": "4e8055efbd4661030f4878ea805563598c9da5e117927b947b6191c2f8e988d7",
+  "contentHash": "88f3d59e5b81af34cd26fb2f9fff2949d3569b8950e2c7424f42f14a5293aeb8",
   "edges": [
     {
       "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
@@ -200,6 +204,12 @@
   "file": "packages/cli/src/cli/cli-router.ts",
   "intent": [
     {
+      "date": "2026-04-13T03:22:13+03:00",
+      "hash": "91d55991eca1d4419e539875a97312e7747d6464",
+      "kind": "commit",
+      "message": "fix(cli): walk up to .git in router so every subcommand benefits"
+    },
+    {
       "date": "2026-04-13T02:28:53+03:00",
       "hash": "7174b669e8f74f8770aeeaa22475639fe090732d",
       "kind": "commit",
@@ -236,42 +246,51 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776038929,
+  "lastModified": 1776039771,
   "symbols": [
     {
       "endLine": 29,
-      "endOffset": 1126,
+      "endOffset": 1135,
       "kind": "function",
       "name": "getVersion",
       "startLine": 14,
-      "startOffset": 680,
+      "startOffset": 689,
       "symbolId": "packages/cli/src/cli/cli-router.ts::getVersion::function"
     },
     {
-      "endLine": 237,
-      "endOffset": 9470,
+      "endLine": 46,
+      "endOffset": 1740,
+      "kind": "function",
+      "name": "locateGitRoot",
+      "startLine": 37,
+      "startOffset": 1458,
+      "symbolId": "packages/cli/src/cli/cli-router.ts::locateGitRoot::function"
+    },
+    {
+      "endLine": 257,
+      "endOffset": 10339,
       "kind": "class",
       "name": "CliRouter",
-      "startLine": 31,
-      "startOffset": 1130,
+      "startLine": 48,
+      "startOffset": 1744,
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter::class"
     },
     {
-      "endLine": 202,
-      "endOffset": 7675,
+      "endLine": 222,
+      "endOffset": 8544,
       "kind": "method",
       "name": "CliRouter.route",
-      "startLine": 38,
-      "startOffset": 1283,
+      "startLine": 58,
+      "startOffset": 2152,
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method"
     },
     {
-      "endLine": 236,
-      "endOffset": 9467,
+      "endLine": 256,
+      "endOffset": 10336,
       "kind": "method",
       "name": "CliRouter.printHelp",
-      "startLine": 204,
-      "startOffset": 7681,
+      "startLine": 224,
+      "startOffset": 8550,
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.printHelp::method"
     }
   ]

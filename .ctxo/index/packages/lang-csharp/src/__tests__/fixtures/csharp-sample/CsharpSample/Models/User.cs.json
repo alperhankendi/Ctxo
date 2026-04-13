@@ -1,6 +1,11 @@
 {
   "antiPatterns": [],
-  "complexity": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Models/User.cs::User.GetDisplayName(0)::method"
+    }
+  ],
   "contentHash": "0a07b4f4703a8ea0d78209975c120792fe8330443fbbc2ed6375f61a8072ea8f",
   "edges": [],
   "file": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Models/User.cs",
@@ -12,6 +17,25 @@
       "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
     }
   ],
-  "lastModified": 1776038929,
-  "symbols": []
+  "lastModified": 1776039771,
+  "symbols": [
+    {
+      "endLine": 12,
+      "endOffset": 256,
+      "kind": "class",
+      "name": "User",
+      "startLine": 2,
+      "startOffset": 32,
+      "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Models/User.cs::User::class"
+    },
+    {
+      "endLine": 11,
+      "endOffset": 254,
+      "kind": "method",
+      "name": "User.GetDisplayName(0)",
+      "startLine": 8,
+      "startOffset": 176,
+      "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Models/User.cs::User.GetDisplayName(0)::method"
+    }
+  ]
 }

@@ -1,6 +1,11 @@
 {
   "antiPatterns": [],
-  "complexity": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/BaseSyncJob.cs::BaseSyncJob.ExecuteAsync(0)::method"
+    }
+  ],
   "contentHash": "f482812181a7c4c317f7441d84bf039f7f1093fddae2ecf9cfe062ab24fe9951",
   "edges": [],
   "file": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/BaseSyncJob.cs",
@@ -12,6 +17,25 @@
       "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
     }
   ],
-  "lastModified": 1776038929,
-  "symbols": []
+  "lastModified": 1776039771,
+  "symbols": [
+    {
+      "endLine": 22,
+      "endOffset": 423,
+      "kind": "class",
+      "name": "BaseSyncJob",
+      "startLine": 2,
+      "startOffset": 30,
+      "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/BaseSyncJob.cs::BaseSyncJob::class"
+    },
+    {
+      "endLine": 11,
+      "endOffset": 224,
+      "kind": "method",
+      "name": "BaseSyncJob.ExecuteAsync(0)",
+      "startLine": 11,
+      "startOffset": 188,
+      "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/BaseSyncJob.cs::BaseSyncJob.ExecuteAsync(0)::method"
+    }
+  ]
 }

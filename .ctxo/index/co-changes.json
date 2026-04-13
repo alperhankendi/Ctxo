@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "timestamp": 1776038930,
+  "timestamp": 1776039772,
   "entries": [
     {
       "file1": "packages/cli/src/cli/index-command.ts",
@@ -197,8 +197,8 @@
     {
       "file1": "packages/cli/src/cli/cli-router.ts",
       "file2": "packages/cli/src/cli/init-command.ts",
-      "sharedCommits": 2,
-      "frequency": 0.5
+      "sharedCommits": 3,
+      "frequency": 0.6
     },
     {
       "file1": "packages/cli/src/cli/cli-router.ts",
