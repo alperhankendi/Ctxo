@@ -33,6 +33,11 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+
+      # Build workspace first so cli can resolve types from @ctxo/plugin-api/dist.
+      - name: Build workspace packages
+        run: pnpm -r build
+
       - name: Lint
         run: pnpm -r lint
       - name: Typecheck
@@ -60,6 +65,11 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+
+      # plugin-api + lang-* export dist/index.js; tests resolve them via the
+      # workspace link which requires the build output to exist.
+      - name: Build workspace packages
+        run: pnpm -r build
 
       - name: Run unit tests with coverage
         run: pnpm --filter @ctxo/cli test:unit:coverage
@@ -174,11 +184,9 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Download build artifact
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: dist
-          path: packages/cli/dist/
+      # Build plugin-api + lang-* so cli can resolve their dist entries at runtime.
+      - name: Build workspace packages
+        run: pnpm -r build
 
       - name: Run E2E tests
         run: pnpm --filter @ctxo/cli test:e2e
