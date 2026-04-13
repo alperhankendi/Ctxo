@@ -62,7 +62,7 @@ describe('GetChangeIntelligenceHandler', () => {
     const handler = handleGetChangeIntelligence(storage, git, new MaskingPipeline());
 
     const result = await handler({ symbolId: 'src/foo.ts::processPayment::function' });
-    const payload = JSON.parse(result.content[0]!.text);
+    const payload = JSON.parse(result.content[result.content.length - 1]!.text);
 
     expect(payload.symbolId).toBe('src/foo.ts::processPayment::function');
     expect(typeof payload.complexity).toBe('number');
@@ -76,7 +76,7 @@ describe('GetChangeIntelligenceHandler', () => {
     const handler = handleGetChangeIntelligence(storage, git, new MaskingPipeline());
 
     const result = await handler({ symbolId: 'src/foo.ts::processPayment::function' });
-    const payload = JSON.parse(result.content[0]!.text);
+    const payload = JSON.parse(result.content[result.content.length - 1]!.text);
 
     // foo.ts: no complexity data in index → cyclomatic=1 → normalized=0
     // churn 100/100=1.0, composite=0*1=0 → low (no complexity data = low risk)
@@ -89,7 +89,7 @@ describe('GetChangeIntelligenceHandler', () => {
     const handler = handleGetChangeIntelligence(storage, git, new MaskingPipeline());
 
     const result = await handler({ symbolId: 'src/missing.ts::x::function' });
-    const payload = JSON.parse(result.content[0]!.text);
+    const payload = JSON.parse(result.content[result.content.length - 1]!.text);
 
     expect(payload.found).toBe(false);
   });
@@ -99,9 +99,23 @@ describe('GetChangeIntelligenceHandler', () => {
     const handler = handleGetChangeIntelligence(storage, git, new MaskingPipeline());
 
     const result = await handler({ symbolId: '' });
-    const payload = JSON.parse(result.content[0]!.text);
+    const payload = JSON.parse(result.content[result.content.length - 1]!.text);
 
     expect(payload.error).toBe(true);
+  });
+
+  it('surfaces warning when JSON index is missing for a symbol present in storage', async () => {
+    const git = createMockGit({ 'src/foo.ts': 3 });
+    const handler = handleGetChangeIntelligence(storage, git, new MaskingPipeline());
+
+    const result = await handler({ symbolId: 'src/foo.ts::processPayment::function' });
+
+    const warnings = result.content.filter((c) => c.text.startsWith('⚠️'));
+    expect(warnings.length).toBeGreaterThan(0);
+    expect(warnings[0]!.text).toMatch(/JSON index for src\/foo\.ts not found/);
+
+    const payload = JSON.parse(result.content[result.content.length - 1]!.text);
+    expect(payload.complexity).toBe(0);
   });
 
   it('handles zero churn gracefully (new file)', async () => {
@@ -109,7 +123,7 @@ describe('GetChangeIntelligenceHandler', () => {
     const handler = handleGetChangeIntelligence(storage, git, new MaskingPipeline());
 
     const result = await handler({ symbolId: 'src/foo.ts::processPayment::function' });
-    const payload = JSON.parse(result.content[0]!.text);
+    const payload = JSON.parse(result.content[result.content.length - 1]!.text);
 
     expect(payload.churn).toBe(0);
     expect(payload.band).toBe('low');

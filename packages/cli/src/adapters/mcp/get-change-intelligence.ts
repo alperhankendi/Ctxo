@@ -58,6 +58,13 @@ export function handleGetChangeIntelligence(
       const fileIndex = indices.find((i) => i.file === filePath);
       const complexityEntries = fileIndex?.complexity ?? [];
 
+      // Storage knows the symbol but its JSON index is missing on disk — SQLite and
+      // `.ctxo/index/` have drifted. Surface it so the caller does not mistake the
+      // fallback `complexity: 0` score for a real "low risk" verdict.
+      const indexMissingWarning = !fileIndex
+        ? `JSON index for ${filePath} not found on disk — complexity falls back to 0. Run "ctxo index" to resync.`
+        : undefined;
+
       // Exact match first, then aggregate (max of methods for class-level queries)
       let cyclomatic = complexityEntries.find((c) => c.symbolId === symbolId)?.cyclomatic;
       if (cyclomatic === undefined) {
@@ -81,6 +88,9 @@ export function handleGetChangeIntelligence(
       if (staleness) {
         const warning = staleness.check(storage.listIndexedFiles());
         if (warning) content.push({ type: 'text', text: `⚠️ ${warning.message}` });
+      }
+      if (indexMissingWarning) {
+        content.push({ type: 'text', text: `⚠️ ${indexMissingWarning}` });
       }
       content.push({ type: 'text', text: payload });
 
