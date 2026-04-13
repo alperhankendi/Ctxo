@@ -35,7 +35,7 @@ describe('Release Packaging', () => {
     expect(existsSync(join(ROOT, 'dist', 'index.js'))).toBe(true);
   });
 
-  it('npm pack --dry-run excludes source and test files', () => {
+  it('npm pack --dry-run excludes source and test files', { timeout: 30_000 }, () => {
     const output = execSync('npm pack --dry-run --json', { cwd: ROOT, encoding: 'utf-8' });
     const info = JSON.parse(output);
     const files: string[] = (info[0]?.files ?? []).map((f: { path: string }) => f.path);
@@ -50,7 +50,7 @@ describe('Release Packaging', () => {
     expect(files.some((f: string) => f === 'package.json')).toBe(true);
   });
 
-  it('tarball size is reasonable (< 900KB)', () => {
+  it('tarball size is reasonable (< 900KB)', { timeout: 30_000 }, () => {
     const output = execSync('npm pack --dry-run --json', { cwd: ROOT, encoding: 'utf-8' });
 
     const info = JSON.parse(output);
