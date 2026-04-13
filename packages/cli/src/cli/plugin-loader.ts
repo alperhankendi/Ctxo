@@ -4,6 +4,7 @@ import type { CtxoLanguagePlugin, PluginContext, ILanguageAdapter, IWorkspace } 
 import { discoverPlugins, type DiscoveredPlugin } from '../adapters/language/plugin-discovery.js';
 import { detectWorkspace } from '../adapters/workspace/single-package-workspace.js';
 import { createLogger } from '../core/logger.js';
+import { makeGlobMatcher } from '../core/config/load-config.js';
 
 const log = createLogger('ctxo:plugin-loader');
 
@@ -71,7 +72,19 @@ function buildContext(projectRoot: string, workspace: IWorkspace, pluginId: stri
   };
 }
 
-export async function loadPlugins(projectRoot: string): Promise<LoadedPlugin[]> {
+export interface LoadPluginsOptions {
+  /**
+   * Glob patterns (matched against workspace paths relative to projectRoot)
+   * for workspaces whose plugin deps should be ignored during discovery.
+   * Sourced from `.ctxo/config.yaml#index.ignoreProjects`.
+   */
+  readonly ignoreProjects?: readonly string[];
+}
+
+export async function loadPlugins(
+  projectRoot: string,
+  options: LoadPluginsOptions = {},
+): Promise<LoadedPlugin[]> {
   const manifestPath = resolveManifestPath(projectRoot);
   if (!manifestPath) {
     log.info('No package.json found for plugin discovery');
@@ -79,7 +92,11 @@ export async function loadPlugins(projectRoot: string): Promise<LoadedPlugin[]> 
   }
 
   const workspace = detectWorkspace(projectRoot);
-  const result = await discoverPlugins({ manifestPath });
+  const ignoreProjectPatterns = options.ignoreProjects ?? [];
+  const shouldSkipSpecifier = ignoreProjectPatterns.length === 0
+    ? undefined
+    : makeGlobMatcher(ignoreProjectPatterns.slice());
+  const result = await discoverPlugins({ manifestPath, shouldSkipSpecifier });
 
   const loaded: LoadedPlugin[] = [];
   for (const { plugin, specifier } of result.plugins as readonly DiscoveredPlugin[]) {

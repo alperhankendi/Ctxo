@@ -173,6 +173,19 @@ describe('discoverPlugins', () => {
     expect(result.failures[0]!.reason).toMatch(/kaboom/);
   });
 
+  it('honours shouldSkipSpecifier and never imports skipped plugins', async () => {
+    const pluginDir = join(tmp, 'skip-me');
+    await writePluginModule(pluginDir, `throw new Error('should not be imported');`);
+    writeManifest(tmp, {});
+    const result = await discoverPlugins({
+      manifestPath: join(tmp, 'package.json'),
+      explicit: ['./skip-me/index.mjs'],
+      shouldSkipSpecifier: (spec) => spec.includes('skip-me'),
+    });
+    expect(result.plugins).toEqual([]);
+    expect(result.failures).toEqual([]);
+  });
+
   it('accepts named plugin export as fallback to default', async () => {
     const pluginDir = join(tmp, 'named-export');
     await writePluginModule(

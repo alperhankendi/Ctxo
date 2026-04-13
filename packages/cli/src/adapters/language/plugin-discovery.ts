@@ -19,6 +19,13 @@ export interface DiscoverOptions {
    * as local paths resolved against the manifest directory.
    */
   readonly explicit?: readonly string[];
+  /**
+   * Predicate that returns true for plugin specifiers that should be skipped
+   * entirely (never imported). Used by the CLI to short-circuit loading of
+   * plugins whose backing workspace was excluded via
+   * `.ctxo/config.yaml#index.ignoreProjects`.
+   */
+  readonly shouldSkipSpecifier?: (specifier: string) => boolean;
 }
 
 export interface DiscoveredPlugin {
@@ -119,6 +126,10 @@ export async function discoverPlugins(options: DiscoverOptions): Promise<Discove
   const failures: PluginLoadFailure[] = [];
 
   for (const spec of specifiers) {
+    if (options.shouldSkipSpecifier?.(spec)) {
+      log.info(`Skipping plugin ${spec} (matched ignoreProjects)`);
+      continue;
+    }
     const result = await tryLoad(spec, baseDir);
     if ('apiVersion' in result) {
       plugins.push({ plugin: result, specifier: spec });

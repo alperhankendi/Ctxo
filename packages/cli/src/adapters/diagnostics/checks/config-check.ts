@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { IHealthCheck, CheckResult, CheckContext } from '../../../core/diagnostics/types.js';
+import { loadConfig } from '../../../core/config/load-config.js';
 
 export class ConfigFileCheck implements IHealthCheck {
   readonly id = 'config_file';
@@ -20,6 +21,26 @@ export class ConfigFileCheck implements IHealthCheck {
       // Basic YAML structure check — tabs are invalid in YAML
       if (content.includes('\t')) {
         return { id: this.id, title: this.title, status: 'fail', message: 'Invalid config.yaml: tabs are not allowed in YAML', fix: 'Replace tabs with spaces in .ctxo/config.yaml' };
+      }
+
+      const loaded = loadConfig(ctx.ctxoRoot);
+      if (loaded.errors.length > 0) {
+        return {
+          id: this.id,
+          title: this.title,
+          status: 'fail',
+          message: `Invalid config.yaml: ${loaded.errors[0]}${loaded.errors.length > 1 ? ` (+${loaded.errors.length - 1} more)` : ''}`,
+          fix: 'Fix schema violations in .ctxo/config.yaml (see docs for the full schema)',
+        };
+      }
+      if (loaded.invalidGlobs.length > 0) {
+        return {
+          id: this.id,
+          title: this.title,
+          status: 'warn',
+          message: `config.yaml has ${loaded.invalidGlobs.length} invalid glob pattern(s): ${loaded.invalidGlobs.join('; ')}`,
+          fix: 'Fix the listed glob patterns under index.ignore / index.ignoreProjects',
+        };
       }
       return { id: this.id, title: this.title, status: 'pass', message: '.ctxo/config.yaml valid' };
     } catch (err) {

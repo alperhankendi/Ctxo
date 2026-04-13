@@ -28,6 +28,7 @@ import { withRecording } from './adapters/stats/with-recording.js';
 import type { ISessionRecorderPort } from './ports/i-session-recorder-port.js';
 import { detectWorkspace } from './adapters/workspace/single-package-workspace.js';
 import { setWorkspaceMeta } from './core/response-envelope.js';
+import { loadConfig, statsEnabled } from './core/config/load-config.js';
 
 const log = createLogger('ctxo:mcp');
 
@@ -50,18 +51,7 @@ function loadMaskingConfig(ctxoRoot: string): MaskingPipeline {
 }
 
 function readStatsEnabled(ctxoRoot: string): boolean {
-  const configPath = join(ctxoRoot, 'config.yaml');
-  if (!existsSync(configPath)) return true;
-
-  try {
-    const raw = readFileSync(configPath, 'utf-8');
-    // Simple YAML parsing for stats.enabled — avoid importing yaml package
-    const match = raw.match(/stats:\s*\n\s*enabled:\s*(true|false)/);
-    if (match) return match[1] !== 'false';
-    return true;
-  } catch {
-    return true;
-  }
+  return statsEnabled(loadConfig(ctxoRoot).config);
 }
 
 const PKG_VERSION: string = (() => {

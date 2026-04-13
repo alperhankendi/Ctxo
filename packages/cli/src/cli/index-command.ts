@@ -7,6 +7,12 @@ import { LanguageAdapterRegistry } from '../adapters/language/language-adapter-r
 import { loadPlugins } from './plugin-loader.js';
 import { InstallCommand } from './install-command.js';
 import {
+  loadConfig,
+  indexIgnorePatterns,
+  indexIgnoreProjectPatterns,
+  makeGlobMatcher,
+} from '../core/config/load-config.js';
+import {
   detectLanguages,
   decideNeededLanguages,
   officialPluginFor,
@@ -60,6 +66,27 @@ export class IndexCommand {
     this.supportedExtensions = new Set(['.ts', '.tsx', '.js', '.jsx', '.go', '.cs']);
   }
 
+  private loadIgnoreConfig(): {
+    ignoreFile: (p: string) => boolean;
+    ignoreProject: (p: string) => boolean;
+    ignoreProjectPatterns: string[];
+  } {
+    const { config } = loadConfig(this.ctxoRoot);
+    const filePatterns = indexIgnorePatterns(config);
+    const projectPatterns = indexIgnoreProjectPatterns(config);
+    if (filePatterns.length > 0) {
+      console.error(`[ctxo] index.ignore: ${filePatterns.length} pattern(s) active`);
+    }
+    if (projectPatterns.length > 0) {
+      console.error(`[ctxo] index.ignoreProjects: ${projectPatterns.length} pattern(s) active`);
+    }
+    return {
+      ignoreFile: makeGlobMatcher(filePatterns),
+      ignoreProject: makeGlobMatcher(projectPatterns),
+      ignoreProjectPatterns: projectPatterns,
+    };
+  }
+
   async run(options: {
     file?: string;
     check?: boolean;
@@ -78,9 +105,11 @@ export class IndexCommand {
       await this.autoInstallMissingPlugins();
     }
 
+    const ignore = this.loadIgnoreConfig();
+
     // Set up adapters via plugin discovery (TS, Go, C# all plugin-backed)
     const registry = new LanguageAdapterRegistry();
-    const { tsMorphLike, roslynAdapter, csharpTier, goTier } = await this.registerDiscoveredPlugins(registry);
+    const { tsMorphLike, roslynAdapter, csharpTier, goTier } = await this.registerDiscoveredPlugins(registry, ignore.ignoreProjectPatterns);
     this.supportedExtensions = registry.getSupportedExtensions();
 
     // Emit a language-aware pre-scan so users see the plan before the work runs
@@ -100,10 +129,10 @@ export class IndexCommand {
       console.error(`[ctxo] Incremental re-index: ${options.file}`);
     } else {
       // Check for monorepo workspaces — discover files across all roots
-      const workspaces = this.discoverWorkspaces();
+      const workspaces = this.discoverWorkspaces(ignore.ignoreProject);
       files = [];
       for (const ws of workspaces) {
-        const wsFiles = this.discoverFilesIn(ws);
+        const wsFiles = this.discoverFilesIn(ws, ignore.ignoreFile);
         files.push(...wsFiles);
       }
       console.error(`[ctxo] Building codebase index... Found ${files.length} source files`);
@@ -283,13 +312,16 @@ export class IndexCommand {
     for (const line of lines) console.error(line);
   }
 
-  private async registerDiscoveredPlugins(registry: LanguageAdapterRegistry): Promise<{
+  private async registerDiscoveredPlugins(
+    registry: LanguageAdapterRegistry,
+    ignoreProjectPatterns: string[] = [],
+  ): Promise<{
     tsMorphLike: TsMorphLike | undefined;
     roslynAdapter: RoslynLike | null;
     csharpTier: string;
     goTier: string;
   }> {
-    const loaded = await loadPlugins(this.projectRoot);
+    const loaded = await loadPlugins(this.projectRoot, { ignoreProjects: ignoreProjectPatterns });
     let tsMorphLike: TsMorphLike | undefined;
     let roslynAdapter: RoslynLike | null = null;
     let csharpTier = 'unavailable';
@@ -345,7 +377,7 @@ export class IndexCommand {
     return { tsMorphLike, roslynAdapter, csharpTier, goTier };
   }
 
-  private discoverFilesIn(root: string): string[] {
+  private discoverFilesIn(root: string, ignoreFile: (p: string) => boolean = () => false): string[] {
     try {
       const output = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard'], {
         cwd: root,
@@ -358,14 +390,18 @@ export class IndexCommand {
         .map((line) => line.trim())
         .filter((line) => line.length > 0)
         .filter((line) => this.isSupportedExtension(line))
-        .map((line) => join(root, line));
+        .map((line) => join(root, line))
+        .filter((abs) => {
+          const rel = relative(this.projectRoot, abs).replace(/\\/g, '/');
+          return !ignoreFile(rel);
+        });
     } catch {
       console.error(`[ctxo] git ls-files failed for ${root}`);
       return [];
     }
   }
 
-  private discoverWorkspaces(): string[] {
+  private discoverWorkspaces(ignoreProject: (p: string) => boolean = () => false): string[] {
     const pkgPath = join(this.projectRoot, 'package.json');
     if (!existsSync(pkgPath)) return [this.projectRoot];
 
@@ -401,8 +437,19 @@ export class IndexCommand {
 
       if (resolved.length === 0) return [this.projectRoot];
 
-      console.error(`[ctxo] Monorepo detected: ${resolved.length} workspace(s)`);
-      return resolved;
+      const filtered = resolved.filter((wsAbs) => {
+        const rel = relative(this.projectRoot, wsAbs).replace(/\\/g, '/');
+        if (ignoreProject(rel)) {
+          console.error(`[ctxo] index.ignoreProjects: skipping ${rel}`);
+          return false;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) return [this.projectRoot];
+
+      console.error(`[ctxo] Monorepo detected: ${filtered.length} workspace(s)`);
+      return filtered;
     } catch {
       return [this.projectRoot];
     }

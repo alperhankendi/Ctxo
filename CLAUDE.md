@@ -109,6 +109,27 @@ packages/cli/src/
   .cache/                      # gitignored (local SQLite, rebuilt from index/)
 ```
 
+#### `.ctxo/config.yaml` schema
+
+Optional fields — all have sensible defaults.
+
+```yaml
+version: "1.0"
+stats:
+  enabled: true                # opt-out of session recording (default true)
+index:
+  ignore:                      # globs applied AFTER git ls-files (per-file filter)
+    - "packages/**/fixtures/**"
+    - "tools/legacy-*/**"
+  ignoreProjects:              # globs applied to workspace roots (skip discovery)
+    - "packages/experimental-*"
+    - "examples/*"
+```
+
+- `index.ignore`: per-file picomatch globs, matched against repo-relative forward-slash paths.
+- `index.ignoreProjects`: matched against workspace paths; skipped workspaces are never enumerated and their plugin deps are never imported.
+- Invalid globs surface as warnings via `ctxo doctor`; schema violations surface as fails. The loader falls back to defaults on any error (warn-and-continue).
+
 ## Naming Conventions
 
 | Context | Convention | Example |
