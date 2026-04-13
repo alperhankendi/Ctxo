@@ -20,6 +20,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsup",
+    "prepack": "node -e \"const fs=require('fs');for(const f of ['README.md','llms.txt','llms-full.txt'])fs.copyFileSync('../../'+f,f)\"",
     "dev": "tsx src/index.ts",
     "test": "vitest run",
     "test:unit": "vitest run --config vitest.config.unit.ts",

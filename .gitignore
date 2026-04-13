@@ -11,6 +11,11 @@ dist/
 # a side effect of running cli with the wrong cwd during development
 packages/*/.ctxo/
 
+# cli ships root README + llms.txt via prepack; ignore the staged copies
+packages/cli/README.md
+packages/cli/llms.txt
+packages/cli/llms-full.txt
+
 # OS
 .DS_Store
 Thumbs.db
