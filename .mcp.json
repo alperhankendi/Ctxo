@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "ctxo": {
-      "command": "npx",
-      "args": ["tsx", "src/index.ts"],
-      "cwd": "."
-    }
-  }
-}

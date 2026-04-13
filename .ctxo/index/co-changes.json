@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "timestamp": 1776038616,
+  "timestamp": 1776038930,
   "entries": [
     {
       "file1": "packages/cli/src/cli/index-command.ts",
@@ -143,6 +143,12 @@
     {
       "file1": "packages/cli/src/core/response-envelope.ts",
       "file2": "packages/cli/src/index.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/__tests__/doctor-fix.test.ts",
+      "file2": "packages/cli/src/cli/doctor-fix.ts",
       "sharedCommits": 2,
       "frequency": 1
     },

@@ -23,12 +23,18 @@
   "file": "packages/cli/src/cli/__tests__/doctor-fix.test.ts",
   "intent": [
     {
+      "date": "2026-04-13T03:04:03+03:00",
+      "hash": "83f5211b9dcaa67bd833cd320ab7a546092e0ce6",
+      "kind": "commit",
+      "message": "fix(doctor): prune orphaned index files + call sync in-process"
+    },
+    {
       "date": "2026-04-13T02:28:53+03:00",
       "hash": "7174b669e8f74f8770aeeaa22475639fe090732d",
       "kind": "commit",
       "message": "feat(doctor): implement --fix with dependency-ordered execution"
     }
   ],
-  "lastModified": 1776038615,
+  "lastModified": 1776038929,
   "symbols": []
 }

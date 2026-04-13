@@ -7,6 +7,10 @@ dist/
 # Ctxo cache (never committed)
 .ctxo/.cache/
 
+# Ctxo index lives only at the monorepo root — any package-local .ctxo/ is
+# a side effect of running cli with the wrong cwd during development
+packages/*/.ctxo/
+
 # OS
 .DS_Store
 Thumbs.db
