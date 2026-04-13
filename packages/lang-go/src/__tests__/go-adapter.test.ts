@@ -22,12 +22,13 @@ describe('GoAdapter — symbol extraction', () => {
     expect(fn!.symbolId).toBe('cmd/payment.go::FormatAmount::function');
   });
 
-  it('skips unexported functions (lowercase)', async () => {
+  it('includes unexported functions (lowercase) — composite covers them via tree-sitter', async () => {
     const source = readFixture('go-sample.go.fixture');
     const symbols = await adapter.extractSymbols('cmd/payment.go', source);
 
     const unexported = symbols.find(s => s.name === 'newProcessor');
-    expect(unexported).toBeUndefined();
+    expect(unexported).toBeDefined();
+    expect(unexported!.kind).toBe('function');
   });
 
   it('extracts struct as class kind', async () => {
@@ -59,7 +60,7 @@ describe('GoAdapter — symbol extraction', () => {
     expect(method!.symbolId).toBe('cmd/payment.go::CardProcessor.Process::method');
   });
 
-  it('extracts all exported symbols from fixture', async () => {
+  it('extracts all top-level symbols from fixture (including unexported)', async () => {
     const source = readFixture('go-sample.go.fixture');
     const symbols = await adapter.extractSymbols('cmd/payment.go', source);
 
@@ -69,7 +70,9 @@ describe('GoAdapter — symbol extraction', () => {
     expect(names).toContain('FormatAmount');
     expect(names).toContain('CardProcessor');
     expect(names).toContain('CardProcessor.Process');
-    expect(names).toHaveLength(5);
+    // Unexported symbols are no longer filtered (Story 7.5) — analyzer pairs
+    // tree-sitter symbol coverage with type-resolved edges.
+    expect(names).toContain('newProcessor');
   });
 
   it('includes byte offsets on all symbols', async () => {
@@ -150,12 +153,13 @@ func Simple() int { return 42 }
     expect(processMetric!.cyclomatic).toBeGreaterThan(1);
   });
 
-  it('skips unexported functions', async () => {
+  it('emits complexity for unexported functions', async () => {
     const source = readFixture('go-sample.go.fixture');
     const metrics = await adapter.extractComplexity('cmd/payment.go', source);
 
     const unexported = metrics.find(m => m.symbolId.includes('newProcessor'));
-    expect(unexported).toBeUndefined();
+    expect(unexported).toBeDefined();
+    expect(unexported!.cyclomatic).toBeGreaterThanOrEqual(1);
   });
 });
 
