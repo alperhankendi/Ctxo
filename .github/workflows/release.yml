@@ -59,17 +59,106 @@ jobs:
           # Title/commit for the bot-opened "Version Packages" PR.
           title: 'chore(release): version packages'
           commit: 'chore(release): version packages'
-          # Create a GitHub Release per published package with notes drawn
-          # from its CHANGELOG entry. Landing page auto-updates via pages.yml.
-          createGithubReleases: true
-          # Tag dist-tag for published packages. Override per-package via
-          # .changeset/pre.json if we want a global prerelease channel.
-          # Omitting uses `latest` by default.
+          # Per-package GitHub Releases are disabled to keep the Releases page
+          # readable. We create a single umbrella release for @ctxo/cli below
+          # that lists every package published in the same run. npm remains
+          # the canonical per-package registry.
+          createGithubReleases: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           # provenance attestation requires id-token: write above.
           NPM_CONFIG_PROVENANCE: 'true'
+
+      - name: Create umbrella GitHub Release
+        if: steps.changesets.outputs.published == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISHED: ${{ steps.changesets.outputs.publishedPackages }}
+        run: |
+          set -euo pipefail
+          cli_version=$(echo "$PUBLISHED" | jq -r '.[] | select(.name=="@ctxo/cli") | .version')
+          # Pick the umbrella tag: CLI version when CLI bumped, else the
+          # highest version among published plugins (sorted by semver-ish desc).
+          if [ -n "$cli_version" ] && [ "$cli_version" != "null" ]; then
+            umbrella_version="$cli_version"
+            title_suffix=""
+          else
+            umbrella_version=$(echo "$PUBLISHED" | jq -r '.[].version' | sort -V -r | head -n1)
+            if [ -z "$umbrella_version" ]; then
+              echo "No publishable packages found; skipping umbrella release."
+              exit 0
+            fi
+            title_suffix=" — Plugin Release"
+          fi
+          tag="v$umbrella_version"
+          # Tag collisions can happen when plugins reach a version the CLI
+          # later adopts. Suffix with run id to keep the release unique and
+          # let the maintainer rename manually if desired.
+          if gh release view "$tag" >/dev/null 2>&1; then
+            tag="${tag}-plugins.${GITHUB_RUN_ID}"
+          fi
+          notes_file=$(mktemp)
+          {
+            echo "## Packages published in this release"
+            echo ""
+            echo "$PUBLISHED" | jq -r '.[] | "- `\(.name)@\(.version)` — https://www.npmjs.com/package/\(.name)/v/\(.version)"'
+            echo ""
+            echo "## Compatible set"
+            echo ""
+            echo "Versions tested together in this release:"
+            echo ""
+            echo "| Package | Version |"
+            echo "| --- | --- |"
+            for pkg_dir in packages/*/; do
+              pkg_json="$pkg_dir/package.json"
+              [ -f "$pkg_json" ] || continue
+              is_private=$(jq -r '.private // false' "$pkg_json")
+              [ "$is_private" = "true" ] && continue
+              pkg_name=$(jq -r .name "$pkg_json")
+              pkg_ver=$(jq -r .version "$pkg_json")
+              echo "| \`$pkg_name\` | \`$pkg_ver\` |"
+            done
+            echo ""
+            if [ -n "$cli_version" ] && [ "$cli_version" != "null" ]; then
+              echo ""
+              echo "## CLI changelog"
+              echo ""
+              awk -v ver="$cli_version" '
+                { sub(/\r$/, "") }
+                $0 ~ "^## " ver "($| )" { found=1; next }
+                found && /^## / { exit }
+                found { print }
+              ' packages/cli/CHANGELOG.md || true
+            else
+              echo ""
+              echo "## Plugin changelogs"
+              echo ""
+              for pkg_dir in packages/*/; do
+                pkg_name=$(jq -r .name "$pkg_dir/package.json")
+                pkg_ver=$(echo "$PUBLISHED" | jq -r --arg n "$pkg_name" '.[] | select(.name==$n) | .version')
+                if [ -n "$pkg_ver" ] && [ "$pkg_ver" != "null" ] && [ -f "$pkg_dir/CHANGELOG.md" ]; then
+                  echo "### $pkg_name@$pkg_ver"
+                  echo ""
+                  awk -v ver="$pkg_ver" '
+                    { sub(/\r$/, "") }
+                    $0 ~ "^## " ver "($| )" { found=1; next }
+                    found && /^## / { exit }
+                    found { print }
+                  ' "$pkg_dir/CHANGELOG.md" || true
+                  echo ""
+                fi
+              done
+            fi
+          } > "$notes_file"
+          prerelease_flag=""
+          case "$umbrella_version" in
+            *-alpha*|*-beta*|*-rc*|*-next*) prerelease_flag="--prerelease" ;;
+          esac
+          gh release create "$tag" \
+            --title "Ctxo $tag$title_suffix" \
+            --notes-file "$notes_file" \
+            $prerelease_flag
 
       - name: Release summary
         if: always()
