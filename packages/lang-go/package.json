@@ -1,6 +1,6 @@
 {
   "name": "@ctxo/lang-go",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Ctxo Go language plugin (tree-sitter, syntax tier)",
   "type": "module",
   "engines": {
