@@ -75,5 +75,9 @@
   "bugs": {
     "url": "https://github.com/alperhankendi/Ctxo/issues"
   },
-  "homepage": "https://github.com/alperhankendi/Ctxo#readme"
+  "homepage": "https://github.com/alperhankendi/Ctxo#readme",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
 }

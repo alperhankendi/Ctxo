@@ -43,6 +43,23 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # Fail fast if NPM_TOKEN is missing — otherwise changesets/publish would
+      # error mid-flight after build with a less actionable message.
+      - name: Verify NPM_TOKEN is set
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NPM_TOKEN" ]; then
+            echo "::error::NPM_TOKEN secret is not configured; aborting release."
+            exit 1
+          fi
+
+      - name: Typecheck workspace
+        run: pnpm -r typecheck
+
+      - name: Test workspace
+        run: pnpm -r test
+
       # Build every package so the npm tarballs carry dist/ and so the pnpm
       # publish step sees up-to-date workspace:* dependency resolution.
       - name: Build workspace packages
@@ -69,6 +86,38 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           # provenance attestation requires id-token: write above.
           NPM_CONFIG_PROVENANCE: 'true'
+
+      # `changeset publish` ships every version with the npm `latest` dist-tag
+      # regardless of semver prerelease identifier (no `.changeset/pre.json`).
+      # That clobbers `latest` with alpha/beta versions. We fix it here:
+      # prereleases get moved to a channel tag (alpha/beta/rc/next) and
+      # `latest` is re-pointed at the highest published *stable* version
+      # of each affected package.
+      - name: Fix npm dist-tags for prereleases
+        if: steps.changesets.outputs.published == 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          PUBLISHED: ${{ steps.changesets.outputs.publishedPackages }}
+        run: |
+          set -euo pipefail
+          echo "$PUBLISHED" | jq -c '.[]' | while read -r pkg; do
+            name=$(echo "$pkg" | jq -r .name)
+            version=$(echo "$pkg" | jq -r .version)
+            # Extract prerelease identifier (e.g., "alpha" from "1.2.3-alpha.0")
+            channel=$(echo "$version" | sed -nE 's/^[0-9]+\.[0-9]+\.[0-9]+-([a-z]+).*/\1/p')
+            if [ -z "$channel" ]; then
+              echo "stable: $name@$version (latest)"
+              continue
+            fi
+            echo "prerelease: $name@$version -> $channel"
+            npm dist-tag add "$name@$version" "$channel"
+            # Re-point latest to highest stable still published.
+            stable=$(npm view "$name" versions --json | jq -r '.[]' | grep -vE '-' | sort -V | tail -n1 || true)
+            if [ -n "$stable" ]; then
+              npm dist-tag add "$name@$stable" latest
+              echo "  latest re-pinned to $stable"
+            fi
+          done
 
       - name: Create umbrella GitHub Release
         if: steps.changesets.outputs.published == 'true'

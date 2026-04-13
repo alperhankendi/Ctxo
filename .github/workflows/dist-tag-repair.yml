@@ -1,0 +1,83 @@
+name: Dist-tag repair
+
+# One-shot maintenance workflow. Run manually from the Actions tab when the
+# npm `latest` tag has been clobbered by a prerelease publish (or when any
+# package's dist-tags need re-aligning). For each tracked package it:
+#   - moves any prerelease version currently on `latest` to its channel tag
+#     (alpha/beta/rc/next)
+#   - re-points `latest` to the highest published stable version
+
+on:
+  workflow_dispatch:
+    inputs:
+      packages:
+        description: Comma-separated package names (default = all @ctxo/* in this repo)
+        required: false
+        default: ''
+      dry_run:
+        description: Only print intended changes
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.repository == 'alperhankendi/Ctxo'
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Repair dist-tags
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          INPUT_PACKAGES: ${{ inputs.packages }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          if [ -n "$INPUT_PACKAGES" ]; then
+            pkgs=$(echo "$INPUT_PACKAGES" | tr ',' '\n' | tr -d ' ')
+          else
+            pkgs=$(jq -r '.name' packages/*/package.json | grep -v '^null$' | grep -v '^ctxo-monorepo$')
+          fi
+          echo "Targets:"
+          echo "$pkgs" | sed 's/^/  - /'
+          echo ""
+          echo "$pkgs" | while read -r name; do
+            [ -z "$name" ] && continue
+            echo "=== $name ==="
+            tags_json=$(npm view "$name" dist-tags --json 2>/dev/null || echo '{}')
+            current_latest=$(echo "$tags_json" | jq -r '.latest // empty')
+            echo "current latest: ${current_latest:-<none>}"
+            stable=$(npm view "$name" versions --json 2>/dev/null | jq -r '.[]' | grep -vE '-' | sort -V | tail -n1 || true)
+            if [ -z "$stable" ]; then
+              echo "  no stable versions published; skipping"
+              continue
+            fi
+            channel=$(echo "$current_latest" | sed -nE 's/^[0-9]+\.[0-9]+\.[0-9]+-([a-z]+).*/\1/p')
+            if [ -n "$channel" ]; then
+              echo "  $current_latest is a prerelease -> move to '$channel' tag"
+              if [ "$DRY_RUN" = "true" ]; then
+                echo "  [dry-run] npm dist-tag add $name@$current_latest $channel"
+              else
+                npm dist-tag add "$name@$current_latest" "$channel"
+              fi
+            fi
+            if [ "$current_latest" != "$stable" ]; then
+              echo "  re-point latest -> $stable"
+              if [ "$DRY_RUN" = "true" ]; then
+                echo "  [dry-run] npm dist-tag add $name@$stable latest"
+              else
+                npm dist-tag add "$name@$stable" latest
+              fi
+            else
+              echo "  latest already correct ($stable)"
+            fi
+          done
