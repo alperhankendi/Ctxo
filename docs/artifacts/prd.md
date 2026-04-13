@@ -392,3 +392,47 @@ All tools return structured JSON. Privacy masking applied to all outputs before 
 - **Scope:** Dedicated test fixture set containing known credential patterns (synthetic, non-real) — AWS keys, JWTs, `.env` patterns, private IPs
 - **Approach:** Assert zero leakage: run each pattern through all five tool outputs and verify masking pipeline redacts 100% of fixture sensitive strings before MCP response
 - **Gate:** Any new credential pattern added to the masking pipeline requires a corresponding fixture test (maps to FR17, FR18, NFR8)
+
+## Delivered Phases (post-V1)
+
+Phase PRDs consolidated into this document on 2026-04-13. Originals preserved in [docs/archive/prd/](../archive/prd/) for traceability. See [CHANGELOG.md](../../CHANGELOG.md) for per-release detail.
+
+### Phase: ctxo Doctor
+
+- **Status:** Delivered in v0.7.0-alpha.0
+- **Delivered on:** 2026-04-08 (command implemented, ADR pending)
+- **Goal:** Unified diagnostic command to check all subsystems (git, index, SQLite, node version, ts-morph, tree-sitter, disk, config) and report pass/warn/fail health status.
+- **Scope delivered:** 15-check health registry with human/JSON/quiet output formats; `--json`, `--quiet` flags; exit codes (0=pass/warn, 1=fail); parallel check execution via `Promise.allSettled()`
+- **Not delivered / deferred:** Auto-fix mode (`--fix` was deferred and merged into plugin-architecture doctor enhancement); remote diagnostics/telemetry
+- **Key artifacts:** 15 `IHealthCheck` implementations in `packages/cli/src/adapters/diagnostics/checks/`; `DoctorCommand` CLI integration; ~71 unit + integration + edge case tests
+- **Archive:** [prd-ctxo-doctor.md](../archive/prd/prd-ctxo-doctor.md)
+
+### Phase 1: Search Quality Upgrade
+
+- **Status:** Partial — in-memory BM25 delivered; FTS5 deferred
+- **Delivered on:** 2026-04-08 (design locked; BM25 + Porter tokenization + camelCase-aware ranking in `get_ranked_context`)
+- **Goal:** Replace substring matching in `get_ranked_context` with production-grade BM25 + PageRank search to handle camelCase, stemming, typo tolerance, and multi-word queries.
+- **Scope delivered:** Two-phase search cascade (Phase 1 BM25 + Phase 2 trigram fallback); camelCase/snake_case tokenization; BM25 scoring with PageRank boosting; fuzzy Damerau-Levenshtein correction; NDCG@10 target ≥ 0.75
+- **Not delivered / deferred:** FTS5 (deferred post-v0.7; in-memory BM25 shipped instead — see [ADR-003](../architecture/ADR/adr-003-fts5-search-deferred.md)); semantic/embedding search; custom synonyms
+- **Key artifacts:** `ContextAssembler` BM25 scorer; `search_symbols` `mode: 'fts'` support
+- **Archive:** [prd-phase1-search-quality.md](../archive/prd/prd-phase1-search-quality.md)
+
+### Phase 2: Plugin Architecture & Language Expansion
+
+- **Status:** Delivered in v0.7.0-alpha.0 (Phase A complete; Phase B deferred)
+- **Delivered on:** 2026-04-13 (monorepo migration, 5 packages, plugin protocol v1, TS/Go/C# extraction, `ctxo install`, `ctxo doctor --fix`, version visibility)
+- **Goal:** Replace bundled language adapters with plugin architecture supporting independent versioning, peer dependency isolation, and community extensibility.
+- **Scope delivered:** pnpm monorepo with `@ctxo/cli`, `@ctxo/plugin-api`, `@ctxo/lang-typescript`, `@ctxo/lang-go`, `@ctxo/lang-csharp`; `CtxoLanguagePlugin` protocol v1; `ctxo install <lang>` with auto-detection; `ctxo doctor --fix` dependency-ordered remediation; `ctxo --version` verbose + JSON output
+- **Not delivered / deferred:** Python/Java plugins (Phase B, v0.7.x); framework-aware analysis (Spring/Django ORM); full-tier analysis beyond C#; community plugin registry (v0.8+); automated release pipeline
+- **Key artifacts:** [ADR-012](../architecture/ADR/adr-012-plugin-architecture-and-monorepo.md); `plugin-discovery.ts`, `language-coverage-check.ts`, `version-command.ts`, `install-command.ts`, `doctor-fix.ts`, `plugin-loader.ts`; 987+ tests across 5 packages
+- **Archive:** [prd-plugin-architecture-and-language-expansion.md](../archive/prd/prd-plugin-architecture-and-language-expansion.md)
+
+### Phase 3: Monorepo Workspace Support
+
+- **Status:** Deferred — placeholder pending v0.7 user feedback
+- **Delivered on:** N/A
+- **Goal:** Enable ctxo to index isolated-package monorepos (pnpm / npm / yarn / Turborepo / Nx workspaces) with per-package boundaries, plugin discovery, and alias resolution.
+- **Scope delivered:** —
+- **Not delivered / deferred:** All features. Forward-compat design applied in v0.7 via `IWorkspace` abstraction, parameterized plugin discovery, optional `workspace` field in MCP `_meta`.
+- **Key artifacts:** Forward-compat stubs: `IWorkspace` interface, `loadPluginsFromManifest(manifestPath)` signature in v0.7. Phase 1 (future) targets `pnpm-workspace.yaml` auto-detection + per-package plugin aggregation.
+- **Archive:** [prd-monorepo-workspace-support.md](../archive/prd/prd-monorepo-workspace-support.md)

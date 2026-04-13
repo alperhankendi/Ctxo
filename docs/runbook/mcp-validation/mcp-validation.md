@@ -4,6 +4,15 @@
 > **When to run:** After every fix, feature addition, or before any release.
 > **Expected duration:** \~2 minutes (including index build)
 
+## Where to record session results
+
+Record each validation run as a new file in [test-sessions/](test-sessions/) using the next available version number (e.g., `v2.2.md`, `v3.0.md`). Keep previous files intact — session history is append-only.
+
+- Folder: [docs/runbook/mcp-validation/test-sessions/](test-sessions/)
+- Naming: `v<MAJOR>.<MINOR>.md` (bump minor for incremental re-runs, major for structural runbook changes)
+- Template: copy the newest existing session file as a starting point
+- Historical numbered results (CLI v1-v2, MCP v1, v3-v13) live in [docs/archive/validation-results/](../../archive/validation-results/)
+
 ***
 
 ## Step 1: Clean Slate — Delete Index & Cache
