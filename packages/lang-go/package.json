@@ -1,6 +1,6 @@
 {
   "name": "@ctxo/lang-go",
-  "version": "0.8.0-alpha.0",
+  "version": "0.8.0",
   "description": "Ctxo Go language plugin (ctxo-go-analyzer + tree-sitter, full tier)",
   "type": "module",
   "engines": {
@@ -43,7 +43,7 @@
     "tree-sitter-go": "^0.23.4"
   },
   "peerDependencies": {
-    "@ctxo/plugin-api": "^0.7.0"
+    "@ctxo/plugin-api": "^0.7.1"
   },
   "devDependencies": {
     "@ctxo/plugin-api": "workspace:*",

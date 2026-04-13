@@ -1,6 +1,6 @@
-# @ctxo/cli
+# @ctxo/lang-typescript
 
-## 0.7.2
+## 0.7.1
 
 ### Patch Changes
 
@@ -14,9 +14,3 @@
 
 - Updated dependencies [5b1ea92]
   - @ctxo/plugin-api@0.7.1
-
-## 0.7.1
-
-### Patch Changes
-
-- 35659c8: Improve GitHub Releases format. Per-package releases are replaced with a single umbrella release per published run, listing every package version published, the full compatible-set matrix across all `@ctxo/*` packages, and per-package CHANGELOG excerpts. Plugin-only releases also produce an umbrella entry. Alpha/beta/rc/next versions are auto-marked as pre-release.
