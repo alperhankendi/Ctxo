@@ -1,12 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dead Code Analysis - ctxo vs Manual | Ctxo</title>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+---
+layout: false
+title: Blast Radius Analysis — ctxo vs Manual
+---
+
 <style>
-  :root {
+:root {
     --bg: #f8fafc;
     --white: #ffffff;
     --text: #0f172a;
@@ -192,7 +190,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    max-height: 800px;
+    max-height: 900px;
   }
   .conv-tab {
     display: flex;
@@ -269,9 +267,9 @@
   .findings-box .findings-title { font-weight: 600; font-size: 12px; margin-bottom: 6px; }
   .findings-box ul { list-style: none; padding: 0; }
   .findings-box li { padding: 2px 0; font-size: 12px; color: var(--text-secondary); }
-  .dead { color: var(--red); font-weight: 500; }
-  .false-pos { color: var(--orange); font-weight: 500; }
-  .suspicious { color: #b45309; font-weight: 500; }
+  .confirmed { color: var(--red); font-weight: 500; }
+  .likely { color: var(--orange); font-weight: 500; }
+  .potential { color: #b45309; font-weight: 500; }
 
   .conv-footer {
     padding: 12px 20px;
@@ -292,11 +290,9 @@
     .conv-panel { max-height: none; }
   }
 </style>
-</head>
-<body>
 
 <nav style="position:fixed;top:0;right:0;z-index:100;display:flex;gap:0.25rem;padding:1rem 1.5rem;">
-  <a href="index.html" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:#0d9488;border:1px solid rgba(13,148,136,0.25);border-radius:6px;background:rgba(13,148,136,0.04);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(13,148,136,0.1)'" onmouseout="this.style.background='rgba(13,148,136,0.04)'">
+  <a href="/Ctxo/" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:#0d9488;border:1px solid rgba(13,148,136,0.25);border-radius:6px;background:rgba(13,148,136,0.04);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(13,148,136,0.1)'" onmouseout="this.style.background='rgba(13,148,136,0.04)'">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
     Ctxo
   </a>
@@ -322,7 +318,7 @@
       </a>
     </div>
   </div>
-  <a href="ctxo-visualizer.html" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:#0284c7;border:1px solid rgba(2,132,199,0.22);border-radius:6px;background:rgba(2,132,199,0.07);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(2,132,199,0.12)'" onmouseout="this.style.background='rgba(2,132,199,0.07)'">
+  <a href="/Ctxo/ctxo-visualizer.html" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:#0284c7;border:1px solid rgba(2,132,199,0.22);border-radius:6px;background:rgba(2,132,199,0.07);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(2,132,199,0.12)'" onmouseout="this.style.background='rgba(2,132,199,0.07)'">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/><path d="M2 12h20"/></svg>
     Visualizer
   </a>
@@ -339,55 +335,50 @@
     Fork
   </a>
 </nav>
-
 <!-- Hero -->
 <section class="hero">
-  <div class="hero-badge">Dead Code Analysis</div>
-  <h1>ctxo <em>find_dead_code</em><br>vs Manual Analysis</h1>
-  <p>Same codebase. Same model. Same question.<br>One uses the dependency graph. One doesn't.</p>
+  <div class="hero-badge">Blast Radius Analysis</div>
+  <h1>ctxo <em>get_blast_radius</em><br>vs Manual Analysis</h1>
+  <p>Modify a base class constructor. How many files break?<br>One call vs five greps to find the answer.</p>
 </section>
-
 <div class="container">
-
   <!-- Section 1: The Task -->
   <section class="section">
     <div class="section-eyebrow">What Was the Task</div>
-    <div class="section-title">Find All Dead Code in a Real-World Codebase</div>
+    <div class="section-title">Add IMetricsService to BaseSyncJob Constructor</div>
     <div class="section-desc">
-      A production backend service with ~2,400 symbols across API endpoints, sync services, infrastructure helpers, and background jobs. The goal: identify every unreachable symbol, unused export, and dead class - then separate true dead code from framework false positives.
+      A base class with 17 subclasses across sync services, background jobs, and message processing. Adding a constructor parameter ripples through every subclass, every instantiation site, and every caller up the chain. The question: what exactly will break?
     </div>
     <div class="task-card">
       <div>
-        <h3>Codebase Profile</h3>
+        <h3>The Change</h3>
         <p>
           <span class="tag tag-lang">Multi-language</span>
-          <span class="tag tag-symbols">2,382 symbols</span>
+          <span class="tag tag-symbols">35 impacted symbols</span>
           <span class="tag tag-model">Claude Opus 4.6</span>
         </p>
         <p style="margin-top: 12px;">
-          Includes API layer with minimal endpoints, DI-registered services, CLI commands (Spectre.Console), background sync jobs, and repository pattern with interface-based dispatch.
+          <code style="color: var(--accent); font-size: 13px;">BaseSyncJob</code> is the abstract base for all synchronization jobs. It has 2 constructor overloads, 17 direct subclasses, and is instantiated in scheduling and job tracking services. Adding <code style="color: var(--info); font-size: 13px;">IMetricsService</code> means every <code style="font-size: 13px;">base(...)</code> call and every <code style="font-size: 13px;">new XxxSync(...)</code> must change.
         </p>
       </div>
       <div>
         <h3>Two Approaches</h3>
         <p>
-          <strong style="color: var(--accent);">With ctxo:</strong> Single <code style="color: #7c3aed; font-size: 13px;">find_dead_code</code> call uses the pre-built dependency graph to analyze all 2,382 symbols at once.
+          <strong style="color: var(--accent);">With ctxo:</strong> <code style="color: #7c3aed; font-size: 13px;">search_symbols</code> to find BaseSyncJob, then <code style="color: #7c3aed; font-size: 13px;">get_blast_radius</code> for the full impact graph with confidence tiers and risk scores.
         </p>
         <p style="margin-top: 12px;">
-          <strong style="color: var(--orange);">Without ctxo:</strong> Manual static analysis using Grep + Read, scanning files one at a time across 8 rounds of pattern matching.
+          <strong style="color: var(--orange);">Without ctxo:</strong> Multiple Grep passes for class inheritance patterns, <code style="font-size: 13px;">base(...)</code> calls, and <code style="font-size: 13px;">new Xxx(...)</code> instantiation sites.
         </p>
       </div>
     </div>
   </section>
-
   <!-- Section 2: Metrics Comparison -->
   <section class="section">
     <div class="section-eyebrow">Performance Metrics</div>
     <div class="section-title">Head-to-Head Comparison</div>
     <div class="section-desc">
-      Both approaches used the same Claude Opus 4.6 model on the same codebase. The only difference: ctxo's dependency graph vs raw file scanning.
+      Both approaches used the same Claude Opus 4.6 model on the same codebase. The only difference: ctxo's dependency graph vs raw regex scanning.
     </div>
-
     <div class="comp-table-wrap">
       <table class="comp-table">
         <thead>
@@ -399,130 +390,138 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td>Iterations (rounds)</td><td>1</td><td>8</td><td class="delta-good">8x fewer</td></tr>
-          <tr><td>Tool calls</td><td>5</td><td>~35</td><td class="delta-good">7x fewer</td></tr>
-          <tr><td>Input tokens</td><td>~30,000</td><td>~50,000</td><td class="delta-good">40% less</td></tr>
-          <tr><td>Output tokens</td><td>~3,000</td><td>~6,000</td><td class="delta-good">50% less</td></tr>
-          <tr><td>Execution time</td><td>~35 seconds</td><td>~7 minutes</td><td class="delta-good">12x faster</td></tr>
-          <tr><td>Symbols analyzed</td><td>2,382 (full graph)</td><td>~200 (sampled)</td><td class="delta-good">12x coverage</td></tr>
-          <tr><td>Confirmed dead code</td><td>2 classes + 8 suspicious</td><td>4 classes + 4 fields + 12 counters</td><td class="delta-good">Full graph coverage</td></tr>
-          <tr><td>False positive triage</td><td>203 categorized by type</td><td>Not applicable</td><td class="delta-good">Auto-classified</td></tr>
+          <tr><td>Iterations (rounds)</td><td>3</td><td>2</td><td style="color: var(--text-light);">Similar</td></tr>
+          <tr><td>Tool calls</td><td>4</td><td>6</td><td class="delta-good">33% fewer</td></tr>
+          <tr><td>Estimated tokens</td><td>~14K</td><td>~17K</td><td class="delta-good">18% less</td></tr>
+          <tr><td>Execution time</td><td>~15 seconds</td><td>~15 seconds</td><td style="color: var(--text-light);">Same</td></tr>
+          <tr><td>Impact depth</td><td>4 layers (depth 1-4)</td><td>2 layers only</td><td class="delta-good">2x deeper</td></tr>
+          <tr><td>Confidence classification</td><td>3-tier (confirmed / likely / potential)</td><td>Binary (breaks / doesn't)</td><td class="delta-good">Risk-scored</td></tr>
+          <tr><td>Subclasses found</td><td>17 (all)</td><td>14 (missed 3)</td><td class="delta-bad">3 missed = silent compile errors</td></tr>
+          <tr><td>Impacted symbols</td><td>35 (risk-scored, 4 layers deep)</td><td>46 call sites (flat list, no scoring)</td><td class="delta-good">Risk-scored + prioritized</td></tr>
+          <tr><td>Recommendation</td><td>Alternative approach suggested</td><td>Raw list only</td><td class="delta-good">Included</td></tr>
         </tbody>
       </table>
     </div>
   </section>
-
   <!-- Section 3: Quality Analysis -->
   <section class="section">
     <div class="section-eyebrow">Result Quality</div>
-    <div class="section-title">What Each Approach Found</div>
+    <div class="section-title">What Each Approach Revealed</div>
     <div class="section-desc">
-      Breadth vs depth. The dependency graph sees the whole forest; manual analysis inspects individual trees.
+      Speed was similar. The real difference is depth, completeness, and actionability. Manual analysis gives a shallow snapshot; ctxo gives the full picture.
     </div>
-
     <div class="quality-grid">
       <div class="quality-card">
-        <h4><span class="dot dot-ctxo"></span> ctxo find_dead_code</h4>
+        <h4><span class="dot dot-ctxo"></span> ctxo get_blast_radius</h4>
         <ul class="quality-list">
-          <li>Full graph traversal: 2,382 symbols, 1,723 reachable</li>
-          <li>2 confirmed dead classes (CommandModel, AuditEntry)</li>
-          <li>8 suspicious symbols flagged for investigation</li>
-          <li>203 unused exports auto-categorized (DI, reflection, CLI, tests)</li>
-          <li>Zero orphan files detected</li>
-          <li>False positive categories explained (why they appear unused)</li>
+          <li><strong style="color: var(--text);">17 of 17 subclasses found</strong> - zero missed, including Message module jobs</li>
+          <li>35 impacted symbols with per-symbol risk scores (0.0 - 1.0)</li>
+          <li>3-tier confidence: 21 confirmed, 8 likely, 6 potential</li>
+          <li>4-depth traversal: subclasses - instantiation - scheduling - API/host</li>
+          <li>Edge kinds revealed (extends, imports, uses, calls)</li>
+          <li>Suggested alternative: resolve via ServiceContainer to touch <strong style="color: var(--accent);">only 1 file</strong> instead of 17</li>
         </ul>
       </div>
       <div class="quality-card">
         <h4><span class="dot dot-manual"></span> Manual Analysis</h4>
         <ul class="quality-list">
-          <li>4 dead classes found (CommandModel, AuditEntry, StringExtensions, ApiErrorMapping)</li>
-          <li>4 unused fields/constants identified</li>
-          <li>12 never-incremented counters across 4 files (misleading logs)</li>
-          <li>1 commented-out code block</li>
-          <li>1 duplicate method spotted (ComputeSha256)</li>
-          <li>1 TODO flagged for deletion found</li>
+          <li><strong style="color: var(--red);">14 of 17 subclasses found - missed 3</strong> (AttachmentDownloadJob, ImageDownloadJob, MessageSyncJob)</li>
+          <li>30 instantiation sites with line numbers (but incomplete without the 3 missing classes)</li>
+          <li>Only 2 layers deep - no visibility into scheduling or API callers</li>
+          <li>No risk scoring - flat list with no priority guidance</li>
+          <li>No transitive callers found (AppHostService, SyncEndpoints invisible)</li>
+          <li>No alternative approach suggested - just "here's what breaks"</li>
         </ul>
       </div>
     </div>
-
     <div class="verdict-card">
-      <h4>Verdict: Complementary Strengths</h4>
+      <h4>Verdict: Manual Analysis Is Dangerously Shallow</h4>
       <p>
-        <strong>ctxo</strong> provides unmatched <strong>breadth</strong> - it analyzed every symbol in the codebase and correctly classified 203 framework false positives that manual analysis never even encountered. It found the same 2 core dead classes instantly.
+        The manual approach <strong style="color: var(--red);">missed 3 subclasses entirely</strong>. In a real refactor, those 3 files would have compile errors that the developer didn't plan for. Grep-based analysis can only match text patterns it's told to look for - if the inheritance is in a different directory or module, it's invisible.
       </p>
       <p style="margin-top: 8px;">
-        <strong>Manual analysis</strong> found more <strong>granular depth</strong> - field-level dead code, never-incremented counters, and behavioral patterns that require reading individual lines of code. It also found 2 additional dead classes (StringExtensions, ApiErrorMapping) that ctxo flagged but didn't highlight.
+        <strong>ctxo</strong> found <strong>every single subclass</strong> because it traverses the actual dependency graph, not regex patterns. It went 4 layers deep to reveal that this change ripples all the way to API endpoints and the host service lifecycle. And it suggested an alternative (ServiceContainer resolution) that could <strong style="color: var(--accent);">eliminate the entire ripple effect</strong> - reducing the change from 17 files to 1.
       </p>
       <p style="margin-top: 8px;">
-        <strong>The ideal workflow:</strong> Start with ctxo for full coverage and false positive triage, then do targeted manual deep-dives on suspicious areas. This gives you both breadth AND depth in a fraction of the time.
+        Manual analysis gives you a partial answer you <em>think</em> is complete. ctxo gives you the full answer with risk-scored priorities, confidence tiers, and actionable alternatives. The difference isn't speed - it's <strong>correctness</strong>.
       </p>
     </div>
   </section>
-
   <!-- Section 4: Conversation View -->
   <section class="section">
     <div class="section-eyebrow">Live Comparison</div>
     <div class="section-title">Side-by-Side: Claude Code Sessions</div>
-    <div class="section-desc">Two real conversations running the same dead code analysis. Left uses ctxo's dependency graph. Right does it manually.</div>
-
+    <div class="section-desc">Two real conversations analyzing the same constructor change. Left uses ctxo's dependency graph. Right does it manually.</div>
     <div class="conv-container">
       <!-- WITH CTXO -->
       <div class="conv-panel">
         <div class="conv-tab ctxo">
           <span class="indicator"></span>
           <span class="tab-title">With ctxo</span>
-          <span class="tab-meta">~35 seconds</span>
+          <span class="tab-meta">~15 seconds</span>
         </div>
         <div class="conv-body">
           <div class="msg">
             <div class="msg-row">
               <div class="msg-avatar avatar-user">U</div>
-              <div class="msg-text">Find me dead codes in the codebase.</div>
+              <div class="msg-text">I need to modify the constructor of BaseSyncJob to add a new IMetricsService parameter. What will break?</div>
             </div>
           </div>
           <div class="msg">
             <div class="msg-row">
               <div class="msg-avatar avatar-claude">C</div>
-              <div class="msg-text">I'll use ctxo's <code style="color: #7c3aed;">find_dead_code</code> to analyze the full dependency graph.</div>
+              <div class="msg-text">Let me analyze the blast radius using ctxo.</div>
             </div>
             <div class="tool-call">
-              <div class="tool-name">find_dead_code (ctxo)</div>
-              <div class="tool-param">scope: "src/SampleApp/"</div>
+              <div class="tool-name">search_symbols (ctxo)</div>
+              <div class="tool-param">query: "BaseSyncJob"</div>
+            </div>
+            <div class="tool-call">
+              <div class="tool-name">get_blast_radius (ctxo)</div>
+              <div class="tool-param">symbolId: "...BaseSyncJob::class"</div>
             </div>
             <div class="tool-result">
               <div class="result-label">Result</div>
-              <code>totalSymbols: 2,382 | reachable: 1,723 | unusedExports: 203 | orphanFiles: 0</code>
+              <code>impactScore: 35 | risk: 1.0 | confirmed: 21 | likely: 8 | potential: 6</code>
+            </div>
+            <div class="tool-call">
+              <div class="tool-name">Read</div>
+              <div class="tool-param">BaseSyncJob.cs (constructor signature)</div>
             </div>
             <div class="msg-row" style="margin-top: 12px;">
               <div class="msg-avatar avatar-claude">C</div>
               <div class="msg-text">
-                <strong>Analysis complete.</strong> Here's what the dependency graph reveals:
+                <strong>Full blast radius analysis:</strong>
                 <div class="findings-box" style="border-left: 3px solid var(--red);">
-                  <div class="findings-title" style="color: var(--red);">Confirmed Dead Code</div>
+                  <div class="findings-title" style="color: var(--red);">Depth 1 - 17 Subclasses (confirmed)</div>
                   <ul>
-                    <li><span class="dead">CommandModel</span> - API/SampleApp.cs - zero importers</li>
-                    <li><span class="dead">AuditEntry</span> - Events directory - zero importers</li>
+                    <li><span class="confirmed">UserSync</span>, <span class="confirmed">UserArchiveSync</span>, <span class="confirmed">OrgSync</span></li>
+                    <li><span class="confirmed">ThreadSync</span>, <span class="confirmed">ThreadEventSync</span></li>
+                    <li><span class="confirmed">CalendarCollector</span>, <span class="confirmed">CalendarEnable</span>, <span class="confirmed">OnlineCalendarCollector</span>, <span class="confirmed">CallCollector</span></li>
+                    <li><span class="confirmed">GroupSync</span>, <span class="confirmed">FeedSync</span>, <span class="confirmed">FeedMessages</span>, <span class="confirmed">FeedRetainedMessages</span>, <span class="confirmed">GroupAttachmentDownloader</span></li>
+                    <li><span class="confirmed">AttachmentDownloadJob</span>, <span class="confirmed">ImageDownloadJob</span>, <span class="confirmed">MessageSyncJob</span></li>
                   </ul>
                 </div>
                 <div class="findings-box" style="border-left: 3px solid var(--orange); margin-top: 8px;">
-                  <div class="findings-title" style="color: var(--orange);">203 Unused Exports (False Positives)</div>
+                  <div class="findings-title" style="color: var(--orange);">Depth 2 - Instantiation Sites (likely)</div>
                   <ul>
-                    <li><span class="false-pos">API Endpoints</span> - runtime reflection (MapGroup)</li>
-                    <li><span class="false-pos">CLI Commands</span> - Spectre.Console framework</li>
-                    <li><span class="false-pos">DI Registrations</span> - builder.Services.Add*()</li>
-                    <li><span class="false-pos">Interface impls</span> - dispatched via interface</li>
-                    <li><span class="false-pos">Test classes</span> - test runner discovery</li>
+                    <li><span class="likely">ScheduleManager</span> - HandleUserSync, HandleGroupSync, HandleCalendar, HandleDownloads, RunManualSync</li>
+                    <li><span class="likely">JobTracker</span> - ExecuteSyncJob, RunPendingJobs</li>
+                    <li><span class="likely">MessagesServiceRegistration</span></li>
                   </ul>
                 </div>
                 <div class="findings-box" style="border-left: 3px solid #b45309; margin-top: 8px;">
-                  <div class="findings-title" style="color: #b45309;">8 Suspicious (Investigate)</div>
+                  <div class="findings-title" style="color: #b45309;">Depth 3-4 - Transitive Callers (potential)</div>
                   <ul>
-                    <li><span class="suspicious">SessionIdentity</span> - unused model class</li>
-                    <li><span class="suspicious">SetSecureConnectionString</span> - leftover utility</li>
-                    <li><span class="suspicious">DecryptAssetFile / EncryptAssetFile</span> - legacy</li>
-                    <li><span class="suspicious">GetDecryptedCertHash</span> - possibly unused</li>
-                    <li><span class="suspicious">ReadEncryptedConfigValue</span> - superseded?</li>
-                    <li><span class="suspicious">UpdateStatusAsync</span> - check API calls</li>
+                    <li><span class="potential">AppHostService.MainLoopAsync</span> - host lifecycle</li>
+                    <li><span class="potential">AppHostService.ExecuteAsync</span> - entry point</li>
+                    <li><span class="potential">SyncEndpoints.MapSyncEndpoints</span> - API layer</li>
+                  </ul>
+                </div>
+                <div class="findings-box" style="border-left: 3px solid var(--accent); margin-top: 8px;">
+                  <div class="findings-title" style="color: var(--accent);">Recommendation</div>
+                  <ul>
+                    <li>Resolve IMetricsService via ServiceContainer inside BaseSyncJob - <strong>touch only 1 file</strong></li>
                   </ul>
                 </div>
               </div>
@@ -530,107 +529,81 @@
           </div>
         </div>
         <div class="conv-footer">
-          <div>Iterations: <span class="stat-val">1</span></div>
-          <div>Tools: <span class="stat-val">5</span></div>
-          <div>Tokens: <span class="stat-val">~33K</span></div>
+          <div>Iterations: <span class="stat-val">3</span></div>
+          <div>Tools: <span class="stat-val">4</span></div>
+          <div>Tokens: <span class="stat-val">~14K</span></div>
         </div>
       </div>
-
       <!-- WITHOUT CTXO -->
       <div class="conv-panel">
         <div class="conv-tab manual">
           <span class="indicator"></span>
           <span class="tab-title">Without ctxo (Manual)</span>
-          <span class="tab-meta">~7 minutes</span>
+          <span class="tab-meta">~15 seconds</span>
         </div>
         <div class="conv-body">
           <div class="msg">
             <div class="msg-row">
               <div class="msg-avatar avatar-user">U</div>
-              <div class="msg-text">Find me dead codes. <strong>DO NOT USE CTXO MCP TOOLS</strong></div>
+              <div class="msg-text">I need to modify the constructor of BaseSyncJob to add a new IMetricsService parameter. What will break? <strong>DO NOT USE CTXO</strong></div>
             </div>
           </div>
           <div class="msg">
             <div class="msg-row">
               <div class="msg-avatar avatar-claude">C</div>
-              <div class="msg-text">I'll perform manual static analysis using Grep and Read tools.</div>
+              <div class="msg-text">Let me find all subclasses and usages with Grep.</div>
             </div>
             <div class="tool-call">
-              <div class="tool-name">Agent (Explore)</div>
-              <div class="tool-param">Scan for dead code patterns: unused private methods, commented code, [Obsolete]...</div>
+              <div class="tool-name">Grep x3 (parallel)</div>
+              <div class="tool-param">class\s+\w+.*BaseSyncJob | class BaseSyncJob | all refs</div>
             </div>
             <div class="tool-result">
               <div class="result-label">Round 1 Result</div>
-              <code>Found: ReadOptions unused field in AuthorizationEndpointFilter</code>
+              <code>14 subclasses found, 48 total references</code>
             </div>
           </div>
-          <div class="round-divider">Round 2 of 8</div>
+          <div class="round-divider">Round 2 of 2</div>
           <div class="msg">
             <div class="tool-call">
-              <div class="tool-name">Grep x3</div>
-              <div class="tool-param">private fields, commented-out code, [Obsolete]</div>
-            </div>
-            <div class="tool-result">
-              <div class="result-label">Found</div>
-              <code>Commented-out counters in CalendarCollector</code>
-            </div>
-          </div>
-          <div class="round-divider">Round 3 of 8</div>
-          <div class="msg">
-            <div class="tool-call">
-              <div class="tool-name">Grep x3</div>
-              <div class="tool-param">Verify ReadOptions, check StatusDeleted/StatusInactive usage</div>
-            </div>
-            <div class="tool-result">
-              <div class="result-label">Confirmed</div>
-              <code>StatusDeleted, StatusInactive - never referenced</code>
-            </div>
-          </div>
-          <div class="round-divider">Round 4 of 8</div>
-          <div class="msg">
-            <div class="tool-call">
-              <div class="tool-name">Read x1, Grep x4</div>
-              <div class="tool-param">Check counter increments in sync files</div>
-            </div>
-            <div class="tool-result">
-              <div class="result-label">Found</div>
-              <code>totalThrottleCount, totalGatewayErrorCount, totalRetryCount - never incremented in 4 files</code>
-            </div>
-          </div>
-          <div class="round-divider">Rounds 5-8</div>
-          <div class="msg">
-            <div class="tool-call">
-              <div class="tool-name">Grep x18, Read x3</div>
-              <div class="tool-param">Deep verification, class scanning, CommandModel, StringExtensions, ApiErrorMapping, AuditEntry...</div>
+              <div class="tool-name">Read x1, Grep x2</div>
+              <div class="tool-param">constructor + new Xxx() + base() patterns</div>
             </div>
             <div class="msg-row" style="margin-top: 12px;">
               <div class="msg-avatar avatar-claude">C</div>
               <div class="msg-text">
-                <strong>Analysis complete.</strong> After 8 rounds of scanning:
+                <strong>Complete blast radius:</strong>
                 <div class="findings-box" style="border-left: 3px solid var(--red);">
-                  <div class="findings-title" style="color: var(--red);">Dead Classes (4)</div>
+                  <div class="findings-title" style="color: var(--red);">Layer 1 - 14 Subclasses (missed 3!)</div>
                   <ul>
-                    <li><span class="dead">CommandModel</span> - entire file dead</li>
-                    <li><span class="dead">StringExtensions</span> - entire file dead</li>
-                    <li><span class="dead">ApiErrorMapping</span> - entire file dead</li>
-                    <li><span class="dead">AuditEntry</span> - model class dead</li>
+                    <li><span class="confirmed">UserSync</span>, <span class="confirmed">UserArchiveSync</span>, <span class="confirmed">OrgSync</span></li>
+                    <li><span class="confirmed">ThreadSync</span>, <span class="confirmed">ThreadEventSync</span></li>
+                    <li><span class="confirmed">GroupSync</span>, <span class="confirmed">FeedSync</span>, <span class="confirmed">FeedMessages</span></li>
+                    <li><span class="confirmed">FeedRetainedMessages</span>, <span class="confirmed">GroupAttachmentDownloader</span></li>
+                    <li><span class="confirmed">CalendarCollector</span>, <span class="confirmed">CalendarEnable</span></li>
+                    <li><span class="confirmed">OnlineCalendarCollector</span>, <span class="confirmed">CallCollector</span></li>
+                    <li style="color: var(--red); font-weight: 600;">AttachmentDownloadJob, ImageDownloadJob, MessageSyncJob - NOT FOUND</li>
                   </ul>
                 </div>
                 <div class="findings-box" style="border-left: 3px solid var(--orange); margin-top: 8px;">
-                  <div class="findings-title" style="color: var(--orange);">Unused Fields (4) + Counters (12)</div>
+                  <div class="findings-title" style="color: var(--orange);">Layer 2 - 30 Instantiation Sites</div>
                   <ul>
-                    <li><span class="suspicious">ReadOptions</span> - unused JsonSerializerOptions</li>
-                    <li><span class="suspicious">StatusDeleted / StatusInactive</span> - unused constants</li>
-                    <li><span class="suspicious">_createdSources / _sourceLock</span> - unused fields</li>
-                    <li><span class="suspicious">12 counters across 4 files</span> - never incremented</li>
+                    <li><span class="likely">ScheduleManager.cs</span> - 16 calls</li>
+                    <li><span class="likely">JobTracker.cs</span> - 14 calls</li>
                   </ul>
                 </div>
                 <div class="findings-box" style="border-left: 3px solid #d1d5db; margin-top: 8px;">
-                  <div class="findings-title" style="color: var(--text-light);">Other Issues</div>
+                  <div class="findings-title" style="color: var(--text-light);">Layers 3-4 - Not Reached</div>
                   <ul>
-                    <li>ComputeSha256() duplicated in 2 files</li>
-                    <li>1 commented-out code block</li>
-                    <li>1 TODO flagged for deletion</li>
+                    <li style="color: var(--text-light);">AppHostService, SyncEndpoints - invisible to grep</li>
+                    <li style="color: var(--text-light);">No risk scoring, no alternative suggested</li>
+                  </ul>
+                </div>
+                <div class="findings-box" style="border-left: 3px solid #d1d5db; margin-top: 8px;">
+                  <div class="findings-title">Summary</div>
+                  <ul>
+                    <li>14 of 17 subclasses found (<strong style="color: var(--red);">3 missed</strong>)</li>
+                    <li>30 instantiation sites (incomplete)</li>
+                    <li><strong>Thinks 46 call sites - actual number is higher</strong></li>
                   </ul>
                 </div>
               </div>
@@ -638,21 +611,16 @@
           </div>
         </div>
         <div class="conv-footer">
-          <div>Iterations: <span class="stat-val">8</span></div>
-          <div>Tools: <span class="stat-val">35</span></div>
-          <div>Tokens: <span class="stat-val">~56K</span></div>
+          <div>Iterations: <span class="stat-val">2</span></div>
+          <div>Tools: <span class="stat-val">6</span></div>
+          <div>Tokens: <span class="stat-val">~17K</span></div>
         </div>
       </div>
     </div>
   </section>
-
 </div>
-
 <!-- Footer -->
 <footer class="page-footer">
   <p>Built with <span class="brand">ctxo</span></p>
   <p class="tagline">AI agents don't fail because they can't code. They fail because they code blind. Ctxo gives them the full picture before they write a single line.</p>
 </footer>
-
-</body>
-</html>

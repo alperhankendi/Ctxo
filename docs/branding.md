@@ -68,14 +68,14 @@ box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 
 | Element | Font | Weight | Size |
 |---------|------|--------|------|
-| H1 (hero) | Inter | 700 | 48px, letter-spacing: -0.03em |
-| H2 (section) | Inter | 700 | 32px, letter-spacing: -0.02em |
-| H3 (card) | Inter | 600 | 16px |
-| Body | Inter | 400 | 14-16px, line-height: 1.6-1.7 |
-| Eyebrow | Inter | 600 | 12px, uppercase, letter-spacing: 0.12em |
-| Badge | Inter | 600 | 11-13px |
+| H1 (hero) | Geist | 700 | 48px, letter-spacing: -0.03em |
+| H2 (section) | Geist | 700 | 32px, letter-spacing: -0.02em |
+| H3 (card) | Geist | 600 | 16px |
+| Body | Geist | 400 | 14-16px, line-height: 1.6-1.7 |
+| Eyebrow | Geist | 600 | 12px, uppercase, letter-spacing: 0.12em |
+| Badge | Geist | 600 | 11-13px |
 | Code | JetBrains Mono | 400-600 | 11-13px |
-| Table header | Inter | 600 | 10-11px, uppercase, letter-spacing: 0.08em |
+| Table header | Geist | 600 | 10-11px, uppercase, letter-spacing: 0.08em |
 
 ---
 
@@ -160,6 +160,24 @@ When showing ctxo vs manual side-by-side:
 ## Hero Message
 
 > AI agents don't fail because they can't code. They fail because they code blind. Ctxo gives them the full picture before they write a single line.
+
+---
+
+## Logo
+
+Lightning bolt (zap) — stroked, not filled. Rendered in `--accent` (`#0d9488`).
+
+```svg
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+</svg>
+```
+
+**Usage:**
+- In nav/header at 14–16px, stroke matches surrounding link color (teal on landing, white on dark nav).
+- As standalone logo at 26–40px, use `stroke: var(--accent)` with `stroke-width: 2.5`.
+- Always stroked (never filled). `stroke-linecap: round`, `stroke-linejoin: round`.
+- Reference implementations: `pages/index.html` (header h1), `site/docs/public/logo.svg` (VitePress hero).
 
 ---
 

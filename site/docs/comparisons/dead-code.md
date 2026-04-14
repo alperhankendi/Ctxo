@@ -1,12 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dead Code Analysis - ctxo vs Manual | Ctxo</title>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+---
+layout: false
+title: Dead Code Analysis — ctxo vs Manual
+---
+
 <style>
-  :root {
+:root {
     --bg: #f8fafc;
     --white: #ffffff;
     --text: #0f172a;
@@ -292,11 +290,9 @@
     .conv-panel { max-height: none; }
   }
 </style>
-</head>
-<body>
 
 <nav style="position:fixed;top:0;right:0;z-index:100;display:flex;gap:0.25rem;padding:1rem 1.5rem;">
-  <a href="index.html" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:#0d9488;border:1px solid rgba(13,148,136,0.25);border-radius:6px;background:rgba(13,148,136,0.04);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(13,148,136,0.1)'" onmouseout="this.style.background='rgba(13,148,136,0.04)'">
+  <a href="/Ctxo/" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:#0d9488;border:1px solid rgba(13,148,136,0.25);border-radius:6px;background:rgba(13,148,136,0.04);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(13,148,136,0.1)'" onmouseout="this.style.background='rgba(13,148,136,0.04)'">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
     Ctxo
   </a>
@@ -322,7 +318,7 @@
       </a>
     </div>
   </div>
-  <a href="ctxo-visualizer.html" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:#0284c7;border:1px solid rgba(2,132,199,0.22);border-radius:6px;background:rgba(2,132,199,0.07);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(2,132,199,0.12)'" onmouseout="this.style.background='rgba(2,132,199,0.07)'">
+  <a href="/Ctxo/ctxo-visualizer.html" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:#0284c7;border:1px solid rgba(2,132,199,0.22);border-radius:6px;background:rgba(2,132,199,0.07);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(2,132,199,0.12)'" onmouseout="this.style.background='rgba(2,132,199,0.07)'">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/><path d="M2 12h20"/></svg>
     Visualizer
   </a>
@@ -339,16 +335,13 @@
     Fork
   </a>
 </nav>
-
 <!-- Hero -->
 <section class="hero">
   <div class="hero-badge">Dead Code Analysis</div>
   <h1>ctxo <em>find_dead_code</em><br>vs Manual Analysis</h1>
   <p>Same codebase. Same model. Same question.<br>One uses the dependency graph. One doesn't.</p>
 </section>
-
 <div class="container">
-
   <!-- Section 1: The Task -->
   <section class="section">
     <div class="section-eyebrow">What Was the Task</div>
@@ -379,7 +372,6 @@
       </div>
     </div>
   </section>
-
   <!-- Section 2: Metrics Comparison -->
   <section class="section">
     <div class="section-eyebrow">Performance Metrics</div>
@@ -387,7 +379,6 @@
     <div class="section-desc">
       Both approaches used the same Claude Opus 4.6 model on the same codebase. The only difference: ctxo's dependency graph vs raw file scanning.
     </div>
-
     <div class="comp-table-wrap">
       <table class="comp-table">
         <thead>
@@ -411,7 +402,6 @@
       </table>
     </div>
   </section>
-
   <!-- Section 3: Quality Analysis -->
   <section class="section">
     <div class="section-eyebrow">Result Quality</div>
@@ -419,7 +409,6 @@
     <div class="section-desc">
       Breadth vs depth. The dependency graph sees the whole forest; manual analysis inspects individual trees.
     </div>
-
     <div class="quality-grid">
       <div class="quality-card">
         <h4><span class="dot dot-ctxo"></span> ctxo find_dead_code</h4>
@@ -444,7 +433,6 @@
         </ul>
       </div>
     </div>
-
     <div class="verdict-card">
       <h4>Verdict: Complementary Strengths</h4>
       <p>
@@ -458,13 +446,11 @@
       </p>
     </div>
   </section>
-
   <!-- Section 4: Conversation View -->
   <section class="section">
     <div class="section-eyebrow">Live Comparison</div>
     <div class="section-title">Side-by-Side: Claude Code Sessions</div>
     <div class="section-desc">Two real conversations running the same dead code analysis. Left uses ctxo's dependency graph. Right does it manually.</div>
-
     <div class="conv-container">
       <!-- WITH CTXO -->
       <div class="conv-panel">
@@ -535,7 +521,6 @@
           <div>Tokens: <span class="stat-val">~33K</span></div>
         </div>
       </div>
-
       <!-- WITHOUT CTXO -->
       <div class="conv-panel">
         <div class="conv-tab manual">
@@ -645,14 +630,9 @@
       </div>
     </div>
   </section>
-
 </div>
-
 <!-- Footer -->
 <footer class="page-footer">
   <p>Built with <span class="brand">ctxo</span></p>
   <p class="tagline">AI agents don't fail because they can't code. They fail because they code blind. Ctxo gives them the full picture before they write a single line.</p>
 </footer>
-
-</body>
-</html>

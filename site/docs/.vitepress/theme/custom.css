@@ -1,0 +1,105 @@
+/* Ctxo brand — Ocean Teal palette (see docs/branding.md) */
+
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Fonts */
+  --vp-font-family-base: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, sans-serif;
+  --vp-font-family-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo,
+    Consolas, monospace;
+
+  /* Brand — primary teal */
+  --vp-c-brand-1: #0d9488;
+  --vp-c-brand-2: #14b8a6;
+  --vp-c-brand-3: #0d9488;
+  --vp-c-brand-soft: #f0fdfa;
+  --vp-c-brand-softer: #ccfbf1;
+
+  /* Semantic colors aligned with branding */
+  --vp-c-tip-1: #0d9488;
+  --vp-c-tip-2: #14b8a6;
+  --vp-c-tip-3: #0d9488;
+  --vp-c-tip-soft: #f0fdfa;
+
+  --vp-c-warning-1: #ea580c;
+  --vp-c-warning-2: #f97316;
+  --vp-c-warning-3: #ea580c;
+  --vp-c-warning-soft: #fff7ed;
+
+  --vp-c-danger-1: #dc2626;
+  --vp-c-danger-2: #ef4444;
+  --vp-c-danger-3: #dc2626;
+  --vp-c-danger-soft: #fef2f2;
+
+  --vp-c-info-1: #0284c7;
+  --vp-c-info-2: #0ea5e9;
+  --vp-c-info-3: #0284c7;
+  --vp-c-info-soft: #f0f9ff;
+
+  /* Backgrounds */
+  --vp-c-bg: #ffffff;
+  --vp-c-bg-alt: #f8fafc;
+  --vp-c-bg-soft: #f8fafc;
+  --vp-c-bg-elv: #ffffff;
+
+  /* Text */
+  --vp-c-text-1: #0f172a;
+  --vp-c-text-2: #64748b;
+  --vp-c-text-3: #94a3b8;
+
+  /* Borders */
+  --vp-c-border: #e2e8f0;
+  --vp-c-divider: #f1f5f9;
+
+  /* Home hero brand gradient (teal → sky) */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(135deg, #14b8a6, #0284c7);
+  --vp-home-hero-image-background-image: linear-gradient(
+    -45deg,
+    #0d9488 50%,
+    #0284c7 50%
+  );
+  --vp-home-hero-image-filter: blur(44px);
+
+  /* Feature cards use brand accents */
+  --vp-c-bg-feature: #f0fdfa;
+
+  /* Buttons */
+  --vp-button-brand-bg: #0d9488;
+  --vp-button-brand-hover-bg: #14b8a6;
+  --vp-button-brand-active-bg: #0f766e;
+  --vp-button-brand-text: #ffffff;
+  --vp-button-brand-border: transparent;
+  --vp-button-brand-hover-border: transparent;
+}
+
+.dark {
+  /* Dark brand variants */
+  --vp-c-brand-1: #2dd4bf;
+  --vp-c-brand-2: #14b8a6;
+  --vp-c-brand-3: #0d9488;
+  --vp-c-brand-soft: rgba(20, 184, 166, 0.14);
+  --vp-c-brand-softer: rgba(20, 184, 166, 0.08);
+
+  --vp-c-bg: #0b0f14;
+  --vp-c-bg-alt: #0f172a;
+  --vp-c-bg-soft: #0f172a;
+  --vp-c-bg-elv: #111827;
+
+  --vp-c-text-1: #f8fafc;
+  --vp-c-text-2: #cbd5e1;
+  --vp-c-text-3: #94a3b8;
+
+  --vp-c-border: #1f2937;
+  --vp-c-divider: #111827;
+}
+
+/* Tighten headings per branding.md (letter-spacing) */
+.vp-doc h1 {
+  letter-spacing: -0.03em;
+}
+.vp-doc h2,
+.vp-doc h3 {
+  letter-spacing: -0.02em;
+}

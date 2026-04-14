@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ctxo—AI agents don't fail because they can't code. They code blind.</title>
+---
+layout: false
+title: Ctxo — AI agents don't fail because they can't code. They code blind.
+---
+
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Geist:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Geist:wght@300;400;500;600;700;800&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -364,10 +363,9 @@
   .cn7{top:130px;left:25%;animation-delay:1.1s}.cn8{top:140px;left:58%;animation-delay:1.2s}
   .cn9{top:40px;left:80%;animation-delay:1.3s}.cn10{top:120px;left:75%;animation-delay:1.4s}
 </style>
-</head>
-<body>
-  <nav style="position:fixed;top:0;right:0;z-index:100;display:flex;gap:0.25rem;padding:1rem 1.5rem;">
-    <a href="index.html" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--green);border:1px solid var(--green-border);border-radius:6px;background:var(--green-bg);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='var(--green-soft)'" onmouseout="this.style.background='var(--green-bg)'">
+
+<nav style="position:fixed;top:0;right:0;z-index:100;display:flex;gap:0.25rem;padding:1rem 1.5rem;">
+    <a href="/Ctxo/" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--green);border:1px solid var(--green-border);border-radius:6px;background:var(--green-bg);text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='var(--green-soft)'" onmouseout="this.style.background='var(--green-bg)'">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
       Ctxo
     </a>
@@ -397,11 +395,11 @@
         </a>
       </div>
     </div>
-    <a href="docs/" title="Documentation" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--green);border:1px solid var(--green-border);border-radius:6px;background:var(--green-bg);text-decoration:none;transition:background 0.2s,border-color 0.2s;" onmouseover="this.style.background='var(--green-soft)'" onmouseout="this.style.background='var(--green-bg)'">
+    <a href="/Ctxo/docs/" title="Documentation" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--green);border:1px solid var(--green-border);border-radius:6px;background:var(--green-bg);text-decoration:none;transition:background 0.2s,border-color 0.2s;" onmouseover="this.style.background='var(--green-soft)'" onmouseout="this.style.background='var(--green-bg)'">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 016.5 2H20v20H6.5a2.5 2.5 0 010-5H20"/></svg>
       Docs
     </a>
-    <a href="ctxo-visualizer.html" title="Ctxo Index Visualizer" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--cyan);border:1px solid var(--cyan-border);border-radius:6px;background:var(--cyan-soft);text-decoration:none;transition:background 0.2s,border-color 0.2s;" onmouseover="this.style.background='rgba(2,132,199,0.12)'" onmouseout="this.style.background='var(--cyan-soft)'">
+    <a href="/Ctxo/ctxo-visualizer.html" title="Ctxo Index Visualizer" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;color:var(--cyan);border:1px solid var(--cyan-border);border-radius:6px;background:var(--cyan-soft);text-decoration:none;transition:background 0.2s,border-color 0.2s;" onmouseover="this.style.background='rgba(2,132,199,0.12)'" onmouseout="this.style.background='var(--cyan-soft)'">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/><path d="M2 12h20"/></svg>
       Visualizer
     </a>
@@ -431,7 +429,6 @@
         <code style="display:inline-block;padding:0.5rem 1.2rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:0.9rem;color:var(--cyan);letter-spacing:0.02em;user-select:all;cursor:text">npx @ctxo/cli init</code>
       </div>
     </div>
-
     <div class="comparison">
       <div class="panel panel--chaos">
         <div class="panel__label">Without Ctxo</div>
@@ -465,9 +462,7 @@
           <li><span class="x">✕</span> Stale reasoning after iterations</li>
         </ul>
       </div>
-
       <div class="vs"><span>VS</span></div>
-
       <div class="panel panel--clarity">
         <div class="panel__label">With Ctxo</div>
         <div class="clarity-graph">
@@ -511,7 +506,6 @@
         </div>
       </div>
     </div>
-
     <div class="metrics">
       <div class="metric">
         <div class="metric__label">Token Usage</div>
@@ -541,7 +535,6 @@
         <div class="metric__desc">context window free</div>
       </div>
     </div>
-
     <div class="cases">
       <div class="cases__header">
         <span class="cases__eyebrow">Real-World Results</span>
@@ -549,7 +542,7 @@
         <p class="cases__desc">Same codebase. Same model. Same question. One uses ctxo. One doesn't.</p>
       </div>
       <div class="cases__grid">
-        <a href="dead-code-comparison.html" class="case-card">
+        <a href="/Ctxo/docs/comparisons/dead-code" class="case-card">
           <div class="case-card__icon case-card__icon--dead">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
           </div>
@@ -568,7 +561,7 @@
           <p class="case-card__desc">1 call analyzed 2,382 symbols and auto-classified 203 false positives. Manual took 8 rounds and 35 tool calls.</p>
           <span class="case-card__link">See full comparison <span>→</span></span>
         </a>
-        <a href="blast-radius-comparison.html" class="case-card">
+        <a href="/Ctxo/docs/comparisons/blast-radius" class="case-card">
           <div class="case-card__icon case-card__icon--blast">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
           </div>
@@ -589,7 +582,4 @@
         </a>
       </div>
     </div>
-
   </div>
-</body>
-</html>
