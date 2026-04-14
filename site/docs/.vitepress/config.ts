@@ -13,6 +13,14 @@ export default defineConfig({
     /^\/Ctxo\//,
   ],
 
+  markdown: {
+    lineNumbers: true,
+    theme: {
+      light: 'github-light',
+      dark: 'github-dark-dimmed',
+    },
+  },
+
   head: [
     ['link', { rel: 'icon', href: '/Ctxo/docs/logo.svg', type: 'image/svg+xml' }],
   ],

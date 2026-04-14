@@ -103,3 +103,119 @@
 .vp-doc h3 {
   letter-spacing: -0.02em;
 }
+
+/* --- Code block polish --------------------------------------------------- */
+
+/* All code blocks: card-like, larger font, subtle glow */
+.vp-doc div[class*='language-'] {
+  border-radius: 12px;
+  margin: 20px 0;
+  background: #0f172a;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08),
+    0 1px 2px rgba(15, 23, 42, 0.04);
+  overflow: hidden;
+}
+
+.vp-doc div[class*='language-'] pre {
+  padding: 20px 24px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  background: transparent;
+}
+
+.vp-doc div[class*='language-'] code {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+  font-weight: 500;
+  color: #e2e8f0;
+}
+
+/* Language label — top-right, teal pill */
+.vp-doc div[class*='language-'] .lang {
+  color: #2dd4bf;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 4px 10px;
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid rgba(20, 184, 166, 0.25);
+  border-radius: 100px;
+  top: 10px;
+  right: 10px;
+  opacity: 0.9;
+}
+
+/* Shell / bash: terminal-style with a teal prompt accent strip */
+.vp-doc div[class='language-bash'],
+.vp-doc div[class='language-sh'],
+.vp-doc div[class='language-shell'] {
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+  position: relative;
+}
+.vp-doc div[class='language-bash']::before,
+.vp-doc div[class='language-sh']::before,
+.vp-doc div[class='language-shell']::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, #14b8a6, #0284c7);
+}
+
+/* Inline code — subtle teal chip */
+.vp-doc :not(pre) > code {
+  background: rgba(13, 148, 136, 0.08);
+  border: 1px solid rgba(13, 148, 136, 0.18);
+  color: #0d9488;
+  border-radius: 5px;
+  padding: 2px 7px;
+  font-size: 0.88em;
+  font-weight: 500;
+}
+
+/* Line numbers — dimmer, less aggressive */
+.vp-doc .line-numbers-wrapper {
+  color: rgba(148, 163, 184, 0.4);
+  border-right: 1px solid rgba(148, 163, 184, 0.12);
+  padding: 20px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+/* Copy button — teal on hover */
+.vp-doc div[class*='language-'] button.copy {
+  border-radius: 6px;
+  background: rgba(20, 184, 166, 0.1) !important;
+  border: 1px solid rgba(20, 184, 166, 0.2) !important;
+  transition: all 0.15s;
+}
+.vp-doc div[class*='language-'] button.copy:hover {
+  background: rgba(20, 184, 166, 0.2) !important;
+  border-color: rgba(20, 184, 166, 0.4) !important;
+}
+.vp-doc div[class*='language-'] button.copy.copied {
+  background: rgba(13, 148, 136, 0.25) !important;
+  border-color: #14b8a6 !important;
+}
+
+/* Code group tabs — brand accent on active */
+.vp-doc .vp-code-group .tabs {
+  background: #0b1220;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+.vp-doc .vp-code-group .tabs label {
+  color: #94a3b8;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 12px 18px;
+  transition: color 0.15s;
+}
+.vp-doc .vp-code-group .tabs input:checked + label {
+  color: #2dd4bf;
+}
+.vp-doc .vp-code-group .tabs input:checked + label::after {
+  background: linear-gradient(90deg, #14b8a6, #0284c7) !important;
+}
