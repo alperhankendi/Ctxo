@@ -7,6 +7,7 @@ export default defineConfig({
   base: '/Ctxo/docs/',
   cleanUrls: true,
   lastUpdated: true,
+  appearance: false,
   ignoreDeadLinks: [
     // links to pages outside VitePress (landing, visualizer) served from pages/
     /^\/Ctxo\//,
