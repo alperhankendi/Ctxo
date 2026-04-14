@@ -41,7 +41,7 @@ export default defineConfig({
       { text: 'MCP Tools', link: '/mcp-tools/overview' },
       { text: 'Architecture', link: '/architecture/hexagonal' },
       { text: 'Reference', link: '/reference/config-schema' },
-      { text: 'Visualizer', link: '/Ctxo/ctxo-visualizer.html', target: '_self' } as any,
+      { text: 'Visualizer', link: '/visualizer/' },
       { text: 'GitHub', link: 'https://github.com/alperhankendi/Ctxo' },
     ],
 
@@ -168,6 +168,14 @@ export default defineConfig({
             { text: 'Index JSON Schema', link: '/architecture/index-schema' },
             { text: 'Error Handling', link: '/architecture/error-handling' },
             { text: 'ADRs', link: '/architecture/adrs' },
+          ],
+        },
+        {
+          text: '🔭 Visualizer',
+          collapsed: false,
+          items: [
+            { text: 'Tour & Screenshots', link: '/visualizer/' },
+            { text: 'Open the tool ↗', link: '/Ctxo/ctxo-visualizer.html' },
           ],
         },
         {
