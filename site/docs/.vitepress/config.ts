@@ -27,7 +27,7 @@ export default defineConfig({
     logo: '/logo.svg',
 
     nav: [
-      { text: 'Home', link: '/Ctxo/', target: '_self' } as any,
+      { text: 'Home', link: 'https://alperhankendi.github.io/Ctxo/' },
       {
         text: 'Guide',
         items: [
@@ -175,7 +175,7 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: 'Tour & Screenshots', link: '/visualizer/' },
-            { text: 'Open the tool ↗', link: '/Ctxo/ctxo-visualizer.html' },
+            { text: 'Open the tool ↗', link: 'https://alperhankendi.github.io/Ctxo/ctxo-visualizer.html' },
           ],
         },
         {
