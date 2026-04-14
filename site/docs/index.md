@@ -14,7 +14,7 @@ anti-pattern warnings, and change health scores in under 500ms.
 
 ## Getting Started
 
-- [Quick Start](/quick-start) — install and index in under 2 minutes
+- [Quick Start](/introduction/quick-start) — install and index in under 2 minutes
 
 ## MCP Tools
 
