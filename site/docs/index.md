@@ -31,6 +31,6 @@ Real-world side-by-side evidence:
 
 ## External
 
-- [Landing page](/Ctxo/) — the Ctxo pitch
-- [Visualizer](/Ctxo/ctxo-visualizer.html) — interactive dependency graph
+- <a href="/Ctxo/" target="_self">Landing page</a> — the Ctxo pitch
+- <a href="/Ctxo/ctxo-visualizer.html" target="_self">Visualizer</a> — interactive dependency graph
 - [GitHub](https://github.com/alperhankendi/Ctxo) — source code
