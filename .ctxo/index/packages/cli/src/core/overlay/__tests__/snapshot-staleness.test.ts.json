@@ -1,0 +1,41 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "2b8a315e87298284518f627fff5ac514ef68cd4296ba96447ae11d854608c7ca",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/snapshot-staleness.test.ts::snapshot-staleness.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/snapshot-staleness.test.ts::snapshot-staleness.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/snapshot-staleness.test.ts::snapshot-staleness.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/snapshot-staleness.test.ts::snapshot-staleness.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
+    }
+  ],
+  "file": "packages/cli/src/core/overlay/__tests__/snapshot-staleness.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-16T02:24:31+03:00",
+      "hash": "0ef4193220fc4b421794c9eec1ad7e20948611e6",
+      "kind": "commit",
+      "message": "feat(mcp): snapshotStaleness in _meta surfaces snapshot-vs-HEAD gap (closes #55)"
+    }
+  ],
+  "lastModified": 1776296576,
+  "symbols": []
+}

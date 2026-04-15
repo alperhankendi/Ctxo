@@ -541,6 +541,12 @@
   "file": "packages/cli/src/cli/index-command.ts",
   "intent": [
     {
+      "date": "2026-04-16T02:09:58+03:00",
+      "hash": "5ae608f0da17bc164b0e31ce358e292233875cd1",
+      "kind": "commit",
+      "message": "fix(storage): snapshot writer refuses non-tmpdir paths without production opt-in (closes #58)"
+    },
+    {
       "date": "2026-04-16T01:43:29+03:00",
       "hash": "190f929def744a397c040aa323106b18b659dd5c",
       "kind": "commit",
@@ -589,7 +595,7 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776294576,
+  "lastModified": 1776296576,
   "symbols": [
     {
       "endLine": 662,

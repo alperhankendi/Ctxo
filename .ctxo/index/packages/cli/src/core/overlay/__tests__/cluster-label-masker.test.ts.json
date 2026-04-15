@@ -1,0 +1,29 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "7b980ba0baf1f246e00afa22b800aaf714163c4f977f04a0dfce8413b15b376f",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/cluster-label-masker.test.ts::cluster-label-masker.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/cluster-label-masker.test.ts::cluster-label-masker.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker::class"
+    }
+  ],
+  "file": "packages/cli/src/core/overlay/__tests__/cluster-label-masker.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-16T02:32:55+03:00",
+      "hash": "f563a37a96ad967887256d25d09f2db027b27f11",
+      "kind": "commit",
+      "message": "feat(mcp): cluster-label masking via .ctxo/config.yaml glob patterns (closes #60)"
+    }
+  ],
+  "lastModified": 1776296576,
+  "symbols": []
+}

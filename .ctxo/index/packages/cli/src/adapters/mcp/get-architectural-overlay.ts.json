@@ -6,12 +6,18 @@
       "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function"
     },
     {
-      "cyclomatic": 14,
+      "cyclomatic": 18,
       "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
     }
   ],
-  "contentHash": "25a1950460fd8e94c3a5dcbe54980dae4ea054484029bdef1c2d7a59d059d126",
+  "contentHash": "2e64e5933e71402d51c68cfc477a0453bfa91254846e339592601c1118c05fab",
   "edges": [
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
+    },
     {
       "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function",
       "kind": "imports",
@@ -37,6 +43,17 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function",
       "kind": "imports",
+      "to": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function",
+      "kind": "imports",
       "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
       "typeOnly": true
     },
@@ -51,6 +68,11 @@
       "kind": "imports",
       "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
       "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
@@ -100,7 +122,22 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
       "kind": "uses",
+      "to": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "uses",
       "to": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
@@ -110,6 +147,18 @@
   ],
   "file": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
   "intent": [
+    {
+      "date": "2026-04-16T02:32:55+03:00",
+      "hash": "f563a37a96ad967887256d25d09f2db027b27f11",
+      "kind": "commit",
+      "message": "feat(mcp): cluster-label masking via .ctxo/config.yaml glob patterns (closes #60)"
+    },
+    {
+      "date": "2026-04-16T02:24:31+03:00",
+      "hash": "0ef4193220fc4b421794c9eec1ad7e20948611e6",
+      "kind": "commit",
+      "message": "feat(mcp): snapshotStaleness in _meta surfaces snapshot-vs-HEAD gap (closes #55)"
+    },
     {
       "date": "2026-04-16T01:43:29+03:00",
       "hash": "190f929def744a397c040aa323106b18b659dd5c",
@@ -123,42 +172,42 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776294576,
+  "lastModified": 1776296576,
   "symbols": [
     {
-      "endLine": 79,
-      "endOffset": 2620,
+      "endLine": 82,
+      "endOffset": 2848,
       "kind": "function",
       "name": "buildCommunityOverlay",
-      "startLine": 32,
-      "startOffset": 979,
+      "startLine": 35,
+      "startOffset": 1207,
       "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function"
     },
     {
-      "endLine": 138,
-      "endOffset": 4754,
+      "endLine": 150,
+      "endOffset": 5406,
       "kind": "function",
       "name": "handleGetArchitecturalOverlay",
-      "startLine": 81,
-      "startOffset": 2622,
+      "startLine": 84,
+      "startOffset": 2850,
       "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
     },
     {
-      "endLine": 21,
-      "endOffset": 756,
+      "endLine": 24,
+      "endOffset": 984,
       "kind": "interface",
       "name": "CommunityOverlayCluster",
-      "startLine": 15,
-      "startOffset": 615,
+      "startLine": 18,
+      "startOffset": 843,
       "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::CommunityOverlayCluster::interface"
     },
     {
-      "endLine": 30,
-      "endOffset": 977,
+      "endLine": 33,
+      "endOffset": 1205,
       "kind": "interface",
       "name": "CommunityOverlay",
-      "startLine": 23,
-      "startOffset": 758,
+      "startLine": 26,
+      "startOffset": 986,
       "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::CommunityOverlay::interface"
     }
   ]

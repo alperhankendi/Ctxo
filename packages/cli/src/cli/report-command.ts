@@ -74,8 +74,12 @@ export class ReportCommand {
       for (const file of files) fileLayerMap.set(file, layer);
     }
 
-    // 4. Load community snapshots (current + history)
-    const snapshotWriter = new CommunitySnapshotWriter(this.ctxoRoot);
+    // 4. Load community snapshots (current + history). This command is
+    // read-only on the snapshot store; the writer's production-path guard
+    // still runs in the constructor, so opt in explicitly.
+    const snapshotWriter = new CommunitySnapshotWriter(this.ctxoRoot, {
+      allowProductionPath: true,
+    });
     const currentSnapshot = snapshotWriter.readCurrent();
     if (!currentSnapshot) {
       console.error(

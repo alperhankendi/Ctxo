@@ -19,10 +19,18 @@
     },
     {
       "cyclomatic": 2,
+      "symbolId": "packages/cli/src/core/config/load-config.ts::maskingClusterLabelPatterns::function"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/core/config/load-config.ts::watchSnapshotMinFileChanges::function"
+    },
+    {
+      "cyclomatic": 2,
       "symbolId": "packages/cli/src/core/config/load-config.ts::makeGlobMatcher::function"
     }
   ],
-  "contentHash": "8f3b6a3143a058d91df1b8308e1c9946ca436120d3bec4900bd8fed4fe2a5a3f",
+  "contentHash": "57f30c7b8e36630a112b50c383465f6ac106b44ea4d8f62273cfe27787910974",
   "edges": [
     {
       "from": "packages/cli/src/core/config/load-config.ts::loadConfig::function",
@@ -38,6 +46,11 @@
       "from": "packages/cli/src/core/config/load-config.ts::loadConfig::function",
       "kind": "imports",
       "to": "packages/cli/src/core/config/config-schema.ts::DEFAULT_CONFIG::variable"
+    },
+    {
+      "from": "packages/cli/src/core/config/load-config.ts::loadConfig::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/config-schema.ts::DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES::variable"
     },
     {
       "from": "packages/cli/src/core/config/load-config.ts::loadConfig::function",
@@ -79,10 +92,31 @@
       "from": "packages/cli/src/core/config/load-config.ts::indexIgnoreProjectPatterns::function",
       "kind": "uses",
       "to": "packages/cli/src/core/config/config-schema.ts::CtxoConfig::type"
+    },
+    {
+      "from": "packages/cli/src/core/config/load-config.ts::maskingClusterLabelPatterns::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/config/config-schema.ts::CtxoConfig::type"
+    },
+    {
+      "from": "packages/cli/src/core/config/load-config.ts::watchSnapshotMinFileChanges::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/config/config-schema.ts::CtxoConfig::type"
+    },
+    {
+      "from": "packages/cli/src/core/config/load-config.ts::watchSnapshotMinFileChanges::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/config/config-schema.ts::DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES::variable"
     }
   ],
   "file": "packages/cli/src/core/config/load-config.ts",
   "intent": [
+    {
+      "date": "2026-04-16T02:32:55+03:00",
+      "hash": "f563a37a96ad967887256d25d09f2db027b27f11",
+      "kind": "commit",
+      "message": "feat(mcp): cluster-label masking via .ctxo/config.yaml glob patterns (closes #60)"
+    },
     {
       "date": "2026-04-14T00:07:20+03:00",
       "hash": "30d5459eca9bc79be5a8f6814cbbfb4ed5c3bc14",
@@ -90,60 +124,78 @@
       "message": "feat(config): add index.ignore and index.ignoreProjects to .ctxo/config.yaml"
     }
   ],
-  "lastModified": 1776294577,
+  "lastModified": 1776296576,
   "symbols": [
     {
-      "endLine": 79,
-      "endOffset": 2623,
+      "endLine": 84,
+      "endOffset": 2757,
       "kind": "function",
       "name": "loadConfig",
-      "startLine": 33,
-      "startOffset": 892,
+      "startLine": 38,
+      "startOffset": 980,
       "symbolId": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
     },
     {
-      "endLine": 83,
-      "endOffset": 2728,
+      "endLine": 88,
+      "endOffset": 2866,
       "kind": "function",
       "name": "statsEnabled",
-      "startLine": 81,
-      "startOffset": 2625,
+      "startLine": 86,
+      "startOffset": 2761,
       "symbolId": "packages/cli/src/core/config/load-config.ts::statsEnabled::function"
     },
     {
-      "endLine": 87,
-      "endOffset": 2858,
+      "endLine": 92,
+      "endOffset": 3000,
       "kind": "function",
       "name": "indexIgnorePatterns",
-      "startLine": 85,
-      "startOffset": 2730,
+      "startLine": 90,
+      "startOffset": 2870,
       "symbolId": "packages/cli/src/core/config/load-config.ts::indexIgnorePatterns::function"
     },
     {
-      "endLine": 91,
-      "endOffset": 3003,
+      "endLine": 96,
+      "endOffset": 3149,
       "kind": "function",
       "name": "indexIgnoreProjectPatterns",
-      "startLine": 89,
-      "startOffset": 2860,
+      "startLine": 94,
+      "startOffset": 3004,
       "symbolId": "packages/cli/src/core/config/load-config.ts::indexIgnoreProjectPatterns::function"
     },
     {
-      "endLine": 104,
-      "endOffset": 3499,
+      "endLine": 100,
+      "endOffset": 3300,
+      "kind": "function",
+      "name": "maskingClusterLabelPatterns",
+      "startLine": 98,
+      "startOffset": 3153,
+      "symbolId": "packages/cli/src/core/config/load-config.ts::maskingClusterLabelPatterns::function"
+    },
+    {
+      "endLine": 106,
+      "endOffset": 3574,
+      "kind": "function",
+      "name": "watchSnapshotMinFileChanges",
+      "startLine": 102,
+      "startOffset": 3304,
+      "symbolId": "packages/cli/src/core/config/load-config.ts::watchSnapshotMinFileChanges::function"
+    },
+    {
+      "endLine": 119,
+      "endOffset": 4083,
       "kind": "function",
       "name": "makeGlobMatcher",
-      "startLine": 97,
-      "startOffset": 3166,
+      "startLine": 112,
+      "startOffset": 3743,
       "symbolId": "packages/cli/src/core/config/load-config.ts::makeGlobMatcher::function"
     },
     {
-      "endLine": 15,
-      "endOffset": 539,
+      "endLine": 20,
+      "endOffset": 609,
       "kind": "interface",
       "name": "LoadedConfig",
-      "startLine": 9,
-      "startOffset": 340,
+      "startLine": 14,
+      "startOffset": 404,
       "symbolId": "packages/cli/src/core/config/load-config.ts::LoadedConfig::interface"
     }
   ]

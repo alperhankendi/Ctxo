@@ -57,8 +57,10 @@ describe('Release Packaging', () => {
     const sizeBytes = info[0]?.unpackedSize ?? 0;
     const sizeKB = sizeBytes / 1024;
 
-    // Bumped from 950KB to 1050KB in v0.8 for graphology community-detection bundles.
-    expect(sizeKB).toBeLessThan(1050);
+    // 950KB → 1050KB (v0.8 graphology) → 1200KB (v0.8 follow-ups: report
+    // templates, architectural-intelligence helpers, cluster-label masker,
+    // snapshot staleness, drift stability filter).
+    expect(sizeKB).toBeLessThan(1200);
     expect(sizeKB).toBeGreaterThan(1); // Sanity: not empty (dist/ may not exist in CI pre-build)
   });
 });

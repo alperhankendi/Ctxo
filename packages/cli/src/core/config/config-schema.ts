@@ -32,23 +32,40 @@ export const MaskingConfigSchema = z
   })
   .strict();
 
+export const WatchConfigSchema = z
+  .object({
+    /**
+     * Minimum number of files that must be re-indexed since the last
+     * community snapshot before `ctxo watch` recomputes one. Default: 5.
+     * On large monorepos Louvain + PageRank cost ~1 s of blocking CPU;
+     * bumping this (e.g. 25) avoids recomputing on every save.
+     */
+    snapshotMinFileChanges: z.number().int().min(1).optional(),
+  })
+  .strict();
+
 export const CtxoConfigSchema = z
   .object({
     version: z.union([z.string(), z.number()]).optional(),
     stats: StatsConfigSchema.optional(),
     index: IndexConfigSchema.optional(),
     masking: MaskingConfigSchema.optional(),
+    watch: WatchConfigSchema.optional(),
   })
   .passthrough();
 
 export type StatsConfig = z.infer<typeof StatsConfigSchema>;
 export type IndexConfig = z.infer<typeof IndexConfigSchema>;
 export type MaskingConfig = z.infer<typeof MaskingConfigSchema>;
+export type WatchConfig = z.infer<typeof WatchConfigSchema>;
 export type CtxoConfig = z.infer<typeof CtxoConfigSchema>;
+
+export const DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES = 5;
 
 export const DEFAULT_CONFIG: CtxoConfig = {
   version: '1.0',
   stats: { enabled: true },
   index: { ignore: [], ignoreProjects: [] },
   masking: { clusterLabels: [] },
+  watch: { snapshotMinFileChanges: DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES },
 };

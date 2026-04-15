@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "8d9ea20a827431ab0c68e93dbdd63a79509ee559642a5a0762e66dbeb8d1ec6d",
+  "contentHash": "00d8a1d535ccb0eb2e35127690d42308035ee74a419bc73d8da833ae85a58f55",
   "edges": [
     {
       "from": "packages/cli/src/core/overlay/__tests__/drift-detector.test.ts::drift-detector.test::variable",
@@ -24,12 +24,18 @@
   "file": "packages/cli/src/core/overlay/__tests__/drift-detector.test.ts",
   "intent": [
     {
+      "date": "2026-04-16T02:37:45+03:00",
+      "hash": "cf42f444577b300856a167d2f4debc882db54b05",
+      "kind": "commit",
+      "message": "fix(overlay): filter transient drift to suppress Louvain jitter (closes #56)"
+    },
+    {
       "date": "2026-04-16T01:43:29+03:00",
       "hash": "190f929def744a397c040aa323106b18b659dd5c",
       "kind": "commit",
       "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
     }
   ],
-  "lastModified": 1776294577,
+  "lastModified": 1776296576,
   "symbols": []
 }

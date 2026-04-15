@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 14,
+      "cyclomatic": 17,
       "symbolId": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
     }
   ],
-  "contentHash": "347ce38d03b5717a5f465ba7118c8f8020e48179dd7092824ab8f23ffd4bb049",
+  "contentHash": "172531be76b6e1df38e387cf6eba230fe601841f2fc514aac40280ec562eb3b9",
   "edges": [
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
@@ -39,6 +39,17 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "imports",
+      "to": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
       "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
     },
     {
@@ -58,6 +69,11 @@
       "kind": "imports",
       "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
       "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
@@ -97,6 +113,11 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "uses",
+      "to": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
       "to": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector::class"
     },
     {
@@ -118,10 +139,33 @@
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "uses",
       "to": "packages/cli/src/core/types.ts::AntiPattern::type"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
     }
   ],
   "file": "packages/cli/src/adapters/mcp/get-why-context.ts",
   "intent": [
+    {
+      "date": "2026-04-16T02:37:45+03:00",
+      "hash": "cf42f444577b300856a167d2f4debc882db54b05",
+      "kind": "commit",
+      "message": "fix(overlay): filter transient drift to suppress Louvain jitter (closes #56)"
+    },
+    {
+      "date": "2026-04-16T02:32:55+03:00",
+      "hash": "f563a37a96ad967887256d25d09f2db027b27f11",
+      "kind": "commit",
+      "message": "feat(mcp): cluster-label masking via .ctxo/config.yaml glob patterns (closes #60)"
+    },
+    {
+      "date": "2026-04-16T02:24:31+03:00",
+      "hash": "0ef4193220fc4b421794c9eec1ad7e20948611e6",
+      "kind": "commit",
+      "message": "feat(mcp): snapshotStaleness in _meta surfaces snapshot-vs-HEAD gap (closes #55)"
+    },
     {
       "date": "2026-04-16T01:43:29+03:00",
       "hash": "190f929def744a397c040aa323106b18b659dd5c",
@@ -135,15 +179,15 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776294576,
+  "lastModified": 1776296576,
   "symbols": [
     {
-      "endLine": 113,
-      "endOffset": 4297,
+      "endLine": 126,
+      "endOffset": 4910,
       "kind": "function",
       "name": "handleGetWhyContext",
-      "startLine": 15,
-      "startOffset": 694,
+      "startLine": 17,
+      "startOffset": 865,
       "symbolId": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
     }
   ]

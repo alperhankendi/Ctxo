@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "4ff3db1741b7cf66027f1f74db4d59bfa365e86598a1f6e94ff6a1b4a606e487",
+  "contentHash": "d505b85cb42ee72bd2de20eab3a9817ccfa537dc83d7a8c105659531af87d4c6",
   "edges": [
     {
       "from": "packages/cli/src/cli/__tests__/index-command-ignore.test.ts::index-command-ignore.test::variable",
@@ -12,12 +12,18 @@
   "file": "packages/cli/src/cli/__tests__/index-command-ignore.test.ts",
   "intent": [
     {
+      "date": "2026-04-16T02:24:31+03:00",
+      "hash": "0ef4193220fc4b421794c9eec1ad7e20948611e6",
+      "kind": "commit",
+      "message": "feat(mcp): snapshotStaleness in _meta surfaces snapshot-vs-HEAD gap (closes #55)"
+    },
+    {
       "date": "2026-04-14T00:07:20+03:00",
       "hash": "30d5459eca9bc79be5a8f6814cbbfb4ed5c3bc14",
       "kind": "commit",
       "message": "feat(config): add index.ignore and index.ignoreProjects to .ctxo/config.yaml"
     }
   ],
-  "lastModified": 1776294576,
+  "lastModified": 1776296576,
   "symbols": []
 }

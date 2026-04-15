@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "068f83ff102c5cb59785a5e242de4085cd968c42b4db4f5cd9499d1891f1f30a",
+  "contentHash": "22bebb94a870a34889eb1915c1196a57e78811f46fe9f068e0addaa698f1013d",
   "edges": [
     {
       "from": "packages/cli/src/adapters/diagnostics/__tests__/disk-check.test.ts::disk-check.test::variable",
@@ -18,12 +18,18 @@
   "file": "packages/cli/src/adapters/diagnostics/__tests__/disk-check.test.ts",
   "intent": [
     {
+      "date": "2026-04-16T02:24:31+03:00",
+      "hash": "0ef4193220fc4b421794c9eec1ad7e20948611e6",
+      "kind": "commit",
+      "message": "feat(mcp): snapshotStaleness in _meta surfaces snapshot-vs-HEAD gap (closes #55)"
+    },
+    {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
       "kind": "commit",
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776294576,
+  "lastModified": 1776296576,
   "symbols": []
 }

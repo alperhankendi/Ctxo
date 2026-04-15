@@ -12,6 +12,7 @@ import { RevertDetector } from '../core/why-context/revert-detector.js';
 import { SymbolGraph } from '../core/graph/symbol-graph.js';
 import { PageRankCalculator } from '../core/importance/pagerank-calculator.js';
 import { CommunityDetector } from '../core/overlay/community-detector.js';
+import { loadConfig, watchSnapshotMinFileChanges } from '../core/config/load-config.js';
 import type { FileIndex, CommitIntent, AntiPattern, CommunitySnapshot } from '../core/types.js';
 
 const DEBOUNCE_MS = 300;
@@ -86,6 +87,13 @@ export class WatchCommand {
     const revertDetector = new RevertDetector();
     const watcher = new ChokidarWatcherAdapter(this.projectRoot);
     const pendingFiles = new Map<string, NodeJS.Timeout>();
+
+    // Watch-time community snapshots cost ~1s of blocking CPU on 25K-symbol
+    // monorepos (full PageRank + Louvain recompute). Only recompute once at
+    // least `snapshotMinFileChanges` distinct files have been re-indexed
+    // since the last snapshot, so rapid-fire saves don't stall the editor.
+    const snapshotThreshold = watchSnapshotMinFileChanges(loadConfig(this.ctxoRoot).config);
+    const pathsChangedSinceSnapshot = new Set<string>();
 
     const reindexFile = async (filePath: string) => {
       const adapter = registry.getAdapter(filePath);
@@ -169,15 +177,22 @@ export class WatchCommand {
 
     let communitySnapshotTimer: NodeJS.Timeout | undefined;
     const scheduleCommunitySnapshot = () => {
+      // Threshold skip — don't even arm the debounce timer unless enough
+      // distinct files changed since the last accepted snapshot.
+      if (pathsChangedSinceSnapshot.size < snapshotThreshold) return;
+
       if (communitySnapshotTimer) clearTimeout(communitySnapshotTimer);
       communitySnapshotTimer = setTimeout(() => {
         communitySnapshotTimer = undefined;
+        if (pathsChangedSinceSnapshot.size < snapshotThreshold) return;
+        const changedCount = pathsChangedSinceSnapshot.size;
+        pathsChangedSinceSnapshot.clear();
         try {
           const snapshot = buildWatchCommunitySnapshot(storage);
           if (snapshot) {
             storage.writeCommunities(snapshot);
             console.error(
-              `[ctxo] Community snapshot refreshed (modularity ${snapshot.modularity.toFixed(3)})`,
+              `[ctxo] Community snapshot refreshed after ${changedCount} file change(s) (modularity ${snapshot.modularity.toFixed(3)})`,
             );
           }
         } catch (err) {
@@ -195,6 +210,7 @@ export class WatchCommand {
         setTimeout(async () => {
           pendingFiles.delete(filePath);
           await reindexFile(filePath);
+          pathsChangedSinceSnapshot.add(filePath);
           scheduleCommunitySnapshot();
         }, DEBOUNCE_MS),
       );

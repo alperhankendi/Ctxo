@@ -1,0 +1,293 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.build::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.buildComplexityMap::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.buildAntiPatternFiles::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.buildNodes::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.selectTopNodes::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.buildEdges::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.buildFiles::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.buildModularityTrend::method"
+    }
+  ],
+  "contentHash": "8feeb75803811cbf0b6c1f6376c187ab4ccc08177629a8d656cbc5d4fc81c41c",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/visualization-payload.ts::VisEdge::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/visualization-payload.ts::VisFileInfo::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/visualization-payload.ts::VisNode::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::BoundaryViolation::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::DriftEvent::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::GodNode::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/report/report-payload.ts::toHistorySnapshot::function"
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/report/report-payload.ts::ReportKpi::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/report/report-payload.ts::ReportPayload::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.build::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.buildComplexityMap::method"
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.build::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.buildAntiPatternFiles::method"
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.build::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.buildNodes::method"
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.build::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.selectTopNodes::method"
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.build::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.buildEdges::method"
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.build::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.buildFiles::method"
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.build::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.buildModularityTrend::method"
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/report/report-payload.ts::ReportPayload::interface"
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/report/report-payload.ts::ReportKpi::interface"
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/report/report-payload.ts::toHistorySnapshot::function"
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type"
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/visualization-payload.ts::VisNode::interface"
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/visualization-payload.ts::VisEdge::interface"
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/visualization-payload.ts::VisFileInfo::interface"
+    },
+    {
+      "from": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface"
+    }
+  ],
+  "file": "packages/cli/src/core/report/report-payload-builder.ts",
+  "intent": [
+    {
+      "date": "2026-04-16T02:37:45+03:00",
+      "hash": "cf42f444577b300856a167d2f4debc882db54b05",
+      "kind": "commit",
+      "message": "fix(overlay): filter transient drift to suppress Louvain jitter (closes #56)"
+    }
+  ],
+  "lastModified": 1776296576,
+  "symbols": [
+    {
+      "endLine": 187,
+      "endOffset": 6580,
+      "kind": "class",
+      "name": "ReportPayloadBuilder",
+      "startLine": 40,
+      "startOffset": 1220,
+      "symbolId": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder::class"
+    },
+    {
+      "endLine": 101,
+      "endOffset": 3682,
+      "kind": "method",
+      "name": "ReportPayloadBuilder.build",
+      "startLine": 41,
+      "startOffset": 1258,
+      "symbolId": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.build::method"
+    },
+    {
+      "endLine": 112,
+      "endOffset": 4014,
+      "kind": "method",
+      "name": "ReportPayloadBuilder.buildComplexityMap",
+      "startLine": 103,
+      "startOffset": 3686,
+      "symbolId": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.buildComplexityMap::method"
+    },
+    {
+      "endLine": 120,
+      "endOffset": 4263,
+      "kind": "method",
+      "name": "ReportPayloadBuilder.buildAntiPatternFiles",
+      "startLine": 114,
+      "startOffset": 4018,
+      "symbolId": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.buildAntiPatternFiles::method"
+    },
+    {
+      "endLine": 146,
+      "endOffset": 5219,
+      "kind": "method",
+      "name": "ReportPayloadBuilder.buildNodes",
+      "startLine": 122,
+      "startOffset": 4267,
+      "symbolId": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.buildNodes::method"
+    },
+    {
+      "endLine": 151,
+      "endOffset": 5428,
+      "kind": "method",
+      "name": "ReportPayloadBuilder.selectTopNodes",
+      "startLine": 148,
+      "startOffset": 5223,
+      "symbolId": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.selectTopNodes::method"
+    },
+    {
+      "endLine": 158,
+      "endOffset": 5696,
+      "kind": "method",
+      "name": "ReportPayloadBuilder.buildEdges",
+      "startLine": 153,
+      "startOffset": 5432,
+      "symbolId": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.buildEdges::method"
+    },
+    {
+      "endLine": 175,
+      "endOffset": 6202,
+      "kind": "method",
+      "name": "ReportPayloadBuilder.buildFiles",
+      "startLine": 160,
+      "startOffset": 5700,
+      "symbolId": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.buildFiles::method"
+    },
+    {
+      "endLine": 186,
+      "endOffset": 6578,
+      "kind": "method",
+      "name": "ReportPayloadBuilder.buildModularityTrend",
+      "startLine": 177,
+      "startOffset": 6206,
+      "symbolId": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadBuilder.buildModularityTrend::method"
+    },
+    {
+      "endLine": 38,
+      "endOffset": 1218,
+      "kind": "interface",
+      "name": "ReportPayloadInput",
+      "startLine": 19,
+      "startOffset": 373,
+      "symbolId": "packages/cli/src/core/report/report-payload-builder.ts::ReportPayloadInput::interface"
+    }
+  ]
+}

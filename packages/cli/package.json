@@ -12,6 +12,7 @@
   "files": [
     "dist/",
     "pages/visualize-template.html",
+    "pages/report-template.html",
     "README.md",
     "llms.txt",
     "llms-full.txt"

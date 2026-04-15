@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "0940ccda64800d9cf79282f87b834afb939df8e3c216363684327e394c671a89",
+  "contentHash": "97305c9999447cd6c8460d4414e0053461e50689598ee508127a11716009b877",
   "edges": [],
   "file": "packages/cli/tsup.config.ts",
   "intent": [
@@ -18,6 +18,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776294577,
+  "lastModified": 1776296577,
   "symbols": []
 }

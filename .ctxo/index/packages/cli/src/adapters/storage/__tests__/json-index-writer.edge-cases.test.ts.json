@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "a5b0df84d887db2e995bf5b0b64e25612492c35362e009b0ab979da9ad50f36b",
+  "contentHash": "bbcb62b5df847e3854e0a48199f7ece5f1df0ef55c1bf2a608c935aa846e8e0a",
   "edges": [
     {
       "from": "packages/cli/src/adapters/storage/__tests__/json-index-writer.edge-cases.test.ts::json-index-writer.edge-cases.test::variable",
@@ -17,12 +17,18 @@
   "file": "packages/cli/src/adapters/storage/__tests__/json-index-writer.edge-cases.test.ts",
   "intent": [
     {
+      "date": "2026-04-16T02:24:31+03:00",
+      "hash": "0ef4193220fc4b421794c9eec1ad7e20948611e6",
+      "kind": "commit",
+      "message": "feat(mcp): snapshotStaleness in _meta surfaces snapshot-vs-HEAD gap (closes #55)"
+    },
+    {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
       "kind": "commit",
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776294576,
+  "lastModified": 1776296576,
   "symbols": []
 }

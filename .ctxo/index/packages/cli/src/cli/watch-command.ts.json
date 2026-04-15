@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 21,
+      "cyclomatic": 23,
       "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method"
     }
   ],
-  "contentHash": "c5540ad3d82c5956a0594f1a175d577a62719c9a54e54ce036a3719c733ce9ef",
+  "contentHash": "29381d1e45304b53f0292521d281bc8cbe7c34e5ceeb842a6e2366cfa56e7bd2",
   "edges": [
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
@@ -66,6 +66,16 @@
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
       "kind": "imports",
+      "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/load-config.ts::watchSnapshotMinFileChanges::function"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
       "to": "packages/cli/src/core/types.ts::FileIndex::type",
       "typeOnly": true
     },
@@ -91,6 +101,16 @@
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
       "kind": "calls",
       "to": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/config/load-config.ts::watchSnapshotMinFileChanges::function"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
     },
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
@@ -175,6 +195,16 @@
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
       "kind": "uses",
+      "to": "packages/cli/src/core/config/load-config.ts::watchSnapshotMinFileChanges::function"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
       "to": "packages/cli/src/core/types.ts::CommitIntent::type"
     },
     {
@@ -190,6 +220,12 @@
   ],
   "file": "packages/cli/src/cli/watch-command.ts",
   "intent": [
+    {
+      "date": "2026-04-16T02:09:58+03:00",
+      "hash": "5ae608f0da17bc164b0e31ce358e292233875cd1",
+      "kind": "commit",
+      "message": "fix(storage): snapshot writer refuses non-tmpdir paths without production opt-in (closes #58)"
+    },
     {
       "date": "2026-04-16T01:43:29+03:00",
       "hash": "190f929def744a397c040aa323106b18b659dd5c",
@@ -221,24 +257,24 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776294576,
+  "lastModified": 1776296576,
   "symbols": [
     {
-      "endLine": 239,
-      "endOffset": 9224,
+      "endLine": 255,
+      "endOffset": 10498,
       "kind": "class",
       "name": "WatchCommand",
-      "startLine": 34,
-      "startOffset": 1624,
+      "startLine": 35,
+      "startOffset": 1748,
       "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand::class"
     },
     {
-      "endLine": 237,
-      "endOffset": 9221,
+      "endLine": 253,
+      "endOffset": 10493,
       "kind": "method",
       "name": "WatchCommand.run",
-      "startLine": 43,
-      "startOffset": 1858,
+      "startLine": 44,
+      "startOffset": 1991,
       "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method"
     }
   ]
