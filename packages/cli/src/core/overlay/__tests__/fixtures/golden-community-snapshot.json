@@ -1,0 +1,68 @@
+{
+  "modularity": 0.666667,
+  "crossClusterEdges": 0,
+  "edgeQuality": "full",
+  "communities": [
+    {
+      "symbolId": "auth/login.ts::login::function",
+      "communityId": 0,
+      "communityLabel": "auth"
+    },
+    {
+      "symbolId": "auth/session.ts::Session::class",
+      "communityId": 0,
+      "communityLabel": "auth"
+    },
+    {
+      "symbolId": "auth/token.ts::verifyToken::function",
+      "communityId": 0,
+      "communityLabel": "auth"
+    },
+    {
+      "symbolId": "auth/user.ts::User::class",
+      "communityId": 0,
+      "communityLabel": "auth"
+    },
+    {
+      "symbolId": "billing/charge.ts::charge::function",
+      "communityId": 1,
+      "communityLabel": "billing"
+    },
+    {
+      "symbolId": "billing/invoice.ts::Invoice::class",
+      "communityId": 1,
+      "communityLabel": "billing"
+    },
+    {
+      "symbolId": "billing/refund.ts::refund::function",
+      "communityId": 1,
+      "communityLabel": "billing"
+    },
+    {
+      "symbolId": "billing/tax.ts::calcTax::function",
+      "communityId": 1,
+      "communityLabel": "billing"
+    },
+    {
+      "symbolId": "reporting/aggregate.ts::aggregate::function",
+      "communityId": 2,
+      "communityLabel": "reporting"
+    },
+    {
+      "symbolId": "reporting/chart.ts::Chart::class",
+      "communityId": 2,
+      "communityLabel": "reporting"
+    },
+    {
+      "symbolId": "reporting/export.ts::exportCsv::function",
+      "communityId": 2,
+      "communityLabel": "reporting"
+    },
+    {
+      "symbolId": "reporting/monthly.ts::monthlyReport::function",
+      "communityId": 2,
+      "communityLabel": "reporting"
+    }
+  ],
+  "godNodes": []
+}
