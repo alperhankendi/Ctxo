@@ -1,23 +1,50 @@
 import type { CommunityEntry, CommunitySnapshot, DriftEvent } from '../types.js';
 
+export type DriftStability = 'stable' | 'transient' | 'unverified';
+
+export interface DriftEventWithStability extends DriftEvent {
+  readonly stability: DriftStability;
+}
+
+export interface DriftStabilitySummary {
+  /** Events confirmed across ≥2 snapshots (real drift). */
+  readonly stable: number;
+  /** Events that bounced back to a prior cluster (likely Louvain jitter). */
+  readonly transient: number;
+  /** Events seen only once because history is too shallow to classify. */
+  readonly unverified: number;
+}
+
 export interface DriftDetectionResult {
-  readonly events: DriftEvent[];
+  readonly events: DriftEventWithStability[];
   readonly confidence: 'high' | 'medium' | 'low';
   readonly snapshotsAvailable: number;
+  readonly stability: DriftStabilitySummary;
   readonly hint?: string;
 }
 
-const DEFAULT_JACCARD_THRESHOLD = 0.5;
+// Issue #56: lowered from 0.5 → 0.3 to be more forgiving when Louvain
+// renumbers clusters between runs. Jaccard 0.3 still requires meaningful
+// membership overlap but tolerates routine re-clustering.
+const DEFAULT_JACCARD_THRESHOLD = 0.3;
 
 export interface DriftDetectorOptions {
   readonly jaccardThreshold?: number;
+  /**
+   * Filter out transient drift — i.e., events where the symbol bounced back
+   * to a previously-seen cluster within the retained snapshot window. Enabled
+   * by default so callers don't have to wade through Louvain jitter.
+   */
+  readonly suppressTransient?: boolean;
 }
 
 export class DriftDetector {
   private readonly jaccardThreshold: number;
+  private readonly suppressTransient: boolean;
 
   constructor(options: DriftDetectorOptions = {}) {
     this.jaccardThreshold = options.jaccardThreshold ?? DEFAULT_JACCARD_THRESHOLD;
+    this.suppressTransient = options.suppressTransient ?? true;
   }
 
   detect(
@@ -26,12 +53,14 @@ export class DriftDetector {
   ): DriftDetectionResult {
     const snapshotsAvailable = history.length;
     const previous = history[0];
+    const anchor = history[1];
 
     if (!previous) {
       return {
         events: [],
         confidence: 'low',
         snapshotsAvailable,
+        stability: { stable: 0, transient: 0, unverified: 0 },
         hint: 'No prior snapshot available — install the post-commit hook (`ctxo init`), run `ctxo watch`, or add `ctxo index --check` to CI so the drift history accumulates.',
       };
     }
@@ -42,18 +71,56 @@ export class DriftDetector {
 
     const currentAssignments = assignmentMap(current.communities);
     const previousAssignments = assignmentMap(previous.communities);
+    const anchorAssignments = anchor ? assignmentMap(anchor.communities) : undefined;
     const previousLabels = labelMap(previous.communities);
     const currentLabels = labelMap(current.communities);
 
-    const events: DriftEvent[] = [];
+    // Compute anchor→previous mapping so we can translate the symbol's anchor
+    // cluster id into the "previous snapshot" id space for comparison.
+    const anchorToPrev = anchor
+      ? this.mapCommunities(previousByCommunityId, indexByCommunityId(anchor.communities))
+      : new Map<number, number>();
+
+    const rawEvents: DriftEventWithStability[] = [];
+    const stability = { stable: 0, transient: 0, unverified: 0 };
+
     for (const [symbolId, currentId] of currentAssignments) {
       const prevId = previousAssignments.get(symbolId);
       if (prevId === undefined) continue;
-      // Translate previous cluster id to the equivalent "current" id via mapping.
       const mappedPrevId = mapping.get(prevId);
       if (mappedPrevId === currentId) continue;
 
-      events.push({
+      // Stability classification:
+      //   stable    — anchor's cluster maps to `prevId` (the symbol was settled in the
+      //               prior cluster for ≥2 snapshots, then moved; real drift).
+      //   transient — anchor's cluster maps to `currentId` (the symbol bounced between
+      //               clusters; likely Louvain jitter — worth suppressing by default).
+      //   unverified — no anchor snapshot, or anchor has no entry for this symbol.
+      let classification: DriftStability;
+      if (!anchorAssignments) {
+        classification = 'unverified';
+      } else {
+        const anchorId = anchorAssignments.get(symbolId);
+        if (anchorId === undefined) {
+          classification = 'unverified';
+        } else {
+          const anchorInPrevSpace = anchorToPrev.get(anchorId);
+          if (anchorInPrevSpace === prevId) {
+            classification = 'stable';
+          } else if (anchorInPrevSpace !== undefined) {
+            // Anchor maps to some previous cluster that is not the movedFrom cluster.
+            // If that translates forward to the current cluster, this is a bounce.
+            const anchorInCurrentSpace = mapping.get(anchorInPrevSpace);
+            classification =
+              anchorInCurrentSpace === currentId ? 'transient' : 'unverified';
+          } else {
+            classification = 'unverified';
+          }
+        }
+      }
+
+      stability[classification]++;
+      rawEvents.push({
         symbolId,
         movedFrom: {
           id: prevId,
@@ -64,15 +131,20 @@ export class DriftDetector {
           label: currentLabels.get(currentId) ?? `community-${currentId}`,
         },
         firstSeenInNewCluster: current.computedAt,
+        stability: classification,
       });
     }
 
-    events.sort((a, b) => a.symbolId.localeCompare(b.symbolId));
+    const events = (this.suppressTransient
+      ? rawEvents.filter((e) => e.stability !== 'transient')
+      : rawEvents
+    ).sort((a, b) => a.symbolId.localeCompare(b.symbolId));
 
     return {
       events,
       confidence: confidenceFor(snapshotsAvailable),
       snapshotsAvailable,
+      stability,
       hint: hintFor(snapshotsAvailable),
     };
   }

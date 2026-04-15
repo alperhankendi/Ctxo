@@ -97,6 +97,7 @@ export function handleGetWhyContext(
             events: relevant,
             confidence: drift.confidence,
             snapshotsAvailable: drift.snapshotsAvailable,
+            stabilitySummary: drift.stability,
             ...(drift.hint ? { hint: drift.hint } : {}),
           };
         }

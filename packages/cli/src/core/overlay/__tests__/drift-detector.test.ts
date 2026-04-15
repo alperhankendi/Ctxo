@@ -83,6 +83,9 @@ describe('DriftDetector', () => {
   });
 
   it('sorts drift events by symbol id', () => {
+    // Pin the older 0.5 threshold so alpha (3 members) vs beta (7 members) remains
+    // disjoint enough NOT to map — ensuring z/m/a are flagged as drifted.
+    const detector = new DriftDetector({ jaccardThreshold: 0.5 });
     // prev alpha cluster has 3 symbols; the three symbols below each moved to separate
     // clusters so alpha does not map anywhere with high overlap.
     const prev = snapshot([
@@ -182,5 +185,127 @@ describe('DriftDetector', () => {
     const current = snapshot([]);
     const result = detector.detect(current, [prev]);
     expect(result.events).toEqual([]);
+  });
+
+  it('suppresses transient drift where the symbol bounced back to a prior cluster', () => {
+    // Anchor (t=-2): A in X (stable group {A,B,C})
+    // Prev   (t=-1): A jumped to Y
+    // Current (t=0): A bounced back to X → transient, suppressed by default
+    const jitterDetector = new DriftDetector({ jaccardThreshold: 0.5 });
+    const anchor = snapshot([
+      entry('a.ts::A::function', 0, 'X'),
+      entry('b.ts::B::function', 0, 'X'),
+      entry('c.ts::C::function', 0, 'X'),
+      entry('k.ts::K::function', 1, 'Y'),
+      entry('l.ts::L::function', 1, 'Y'),
+      entry('m.ts::M::function', 1, 'Y'),
+    ]);
+    const prev = snapshot([
+      entry('a.ts::A::function', 1, 'Y'),
+      entry('b.ts::B::function', 0, 'X'),
+      entry('c.ts::C::function', 0, 'X'),
+      entry('k.ts::K::function', 1, 'Y'),
+      entry('l.ts::L::function', 1, 'Y'),
+      entry('m.ts::M::function', 1, 'Y'),
+    ]);
+    const current = snapshot([
+      entry('a.ts::A::function', 0, 'X'),
+      entry('b.ts::B::function', 0, 'X'),
+      entry('c.ts::C::function', 0, 'X'),
+      entry('k.ts::K::function', 1, 'Y'),
+      entry('l.ts::L::function', 1, 'Y'),
+      entry('m.ts::M::function', 1, 'Y'),
+    ]);
+    const result = jitterDetector.detect(current, [prev, anchor]);
+    expect(result.events).toEqual([]);
+    expect(result.stability.transient).toBeGreaterThanOrEqual(1);
+  });
+
+  it('surfaces transient events when suppressTransient is disabled', () => {
+    const verbose = new DriftDetector({ jaccardThreshold: 0.5, suppressTransient: false });
+    // Fixture needs enough overlap so anchor maps cleanly to prev, and prev to current,
+    // so the bounce can be identified. Symbols B/C stay in X, K/L/M stay in Y.
+    const anchor = snapshot([
+      entry('a.ts::A::function', 0, 'X'),
+      entry('b.ts::B::function', 0, 'X'),
+      entry('c.ts::C::function', 0, 'X'),
+      entry('k.ts::K::function', 1, 'Y'),
+      entry('l.ts::L::function', 1, 'Y'),
+      entry('m.ts::M::function', 1, 'Y'),
+    ]);
+    const prev = snapshot([
+      entry('a.ts::A::function', 1, 'Y'), // drifted to Y
+      entry('b.ts::B::function', 0, 'X'),
+      entry('c.ts::C::function', 0, 'X'),
+      entry('k.ts::K::function', 1, 'Y'),
+      entry('l.ts::L::function', 1, 'Y'),
+      entry('m.ts::M::function', 1, 'Y'),
+    ]);
+    const current = snapshot([
+      entry('a.ts::A::function', 0, 'X'), // bounced back
+      entry('b.ts::B::function', 0, 'X'),
+      entry('c.ts::C::function', 0, 'X'),
+      entry('k.ts::K::function', 1, 'Y'),
+      entry('l.ts::L::function', 1, 'Y'),
+      entry('m.ts::M::function', 1, 'Y'),
+    ]);
+    const result = verbose.detect(current, [prev, anchor]);
+    expect(result.events.length).toBeGreaterThanOrEqual(1);
+    expect(result.events.some((e) => e.stability === 'transient')).toBe(true);
+  });
+
+  it('emits stable drift when the symbol was settled in the old cluster for ≥2 snapshots', () => {
+    const jitterDetector = new DriftDetector({ jaccardThreshold: 0.5 });
+    const anchor = snapshot([
+      entry('a.ts::A::function', 0, 'old'),
+      entry('b.ts::B::function', 0, 'old'),
+      entry('c.ts::C::function', 0, 'old'),
+      entry('k.ts::K::function', 1, 'new'),
+      entry('l.ts::L::function', 1, 'new'),
+      entry('m.ts::M::function', 1, 'new'),
+    ]);
+    const prev = snapshot([
+      entry('a.ts::A::function', 0, 'old'), // still in old at t=-1
+      entry('b.ts::B::function', 0, 'old'),
+      entry('c.ts::C::function', 0, 'old'),
+      entry('k.ts::K::function', 1, 'new'),
+      entry('l.ts::L::function', 1, 'new'),
+      entry('m.ts::M::function', 1, 'new'),
+    ]);
+    const current = snapshot([
+      entry('a.ts::A::function', 1, 'new'), // real drift at t=0
+      entry('b.ts::B::function', 0, 'old'),
+      entry('c.ts::C::function', 0, 'old'),
+      entry('k.ts::K::function', 1, 'new'),
+      entry('l.ts::L::function', 1, 'new'),
+      entry('m.ts::M::function', 1, 'new'),
+    ]);
+    const result = jitterDetector.detect(current, [prev, anchor]);
+    expect(result.events.map((e) => e.symbolId)).toContain('a.ts::A::function');
+    expect(result.events[0]!.stability).toBe('stable');
+    expect(result.stability.stable).toBe(1);
+  });
+
+  it('marks drift as unverified when history has only one snapshot', () => {
+    const detector2 = new DriftDetector({ jaccardThreshold: 0.5 });
+    const prev = snapshot([
+      entry('a.ts::A::function', 0, 'old'),
+      entry('b.ts::B::function', 0, 'old'),
+      entry('c.ts::C::function', 0, 'old'),
+      entry('k.ts::K::function', 1, 'new'),
+      entry('l.ts::L::function', 1, 'new'),
+      entry('m.ts::M::function', 1, 'new'),
+    ]);
+    const current = snapshot([
+      entry('a.ts::A::function', 1, 'new'),
+      entry('b.ts::B::function', 0, 'old'),
+      entry('c.ts::C::function', 0, 'old'),
+      entry('k.ts::K::function', 1, 'new'),
+      entry('l.ts::L::function', 1, 'new'),
+      entry('m.ts::M::function', 1, 'new'),
+    ]);
+    const result = detector2.detect(current, [prev]);
+    expect(result.events[0]!.stability).toBe('unverified');
+    expect(result.stability.unverified).toBeGreaterThanOrEqual(1);
   });
 });
