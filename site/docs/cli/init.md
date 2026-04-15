@@ -18,7 +18,7 @@ Requires a git repository (run `git init` first).
 ## Synopsis
 
 ```shell
-npx ctxo init [options]
+npx @ctxo/init [options]
 ```
 
 ## Flags
@@ -52,26 +52,26 @@ untouched. You can safely re-run `ctxo init` to pick up new AI tool rules.
 
 ::: code-group
 ```shell [interactive]
-npx ctxo init
+npx @ctxo/init
 ```
 
 ```shell [non-interactive]
 # Pick tools explicitly and install everything without prompts.
-npx ctxo init --tools claude-code,cursor --yes
+npx @ctxo/init --tools claude-code,cursor --yes
 ```
 
 ```shell [rules only]
 # Refresh AI tool rules after a ctxo upgrade. Don't touch plugins or hooks.
-npx ctxo init --rules
+npx @ctxo/init --rules
 ```
 
 ```shell [no plugin install]
 # Set everything up but defer plugin installation to a later step.
-npx ctxo init --no-install --yes --tools claude-code
+npx @ctxo/init --no-install --yes --tools claude-code
 ```
 
 ```shell [preview]
-npx ctxo init --dry-run
+npx @ctxo/init --dry-run
 ```
 :::
 

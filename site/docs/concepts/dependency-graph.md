@@ -107,7 +107,7 @@ different but correct answers.
 
 ## Related docs
 
-- **[Index schema](/architecture/index-schema)** full JSON contract.
+- **Index schema** see the committed `.ctxo/index/` JSON.
 - **[Symbol IDs](/reference/symbol-ids)** exact rules for naming edge cases.
 - **[Edge kinds](/reference/edge-kinds)** semantics and plugin authoring
   guidance.

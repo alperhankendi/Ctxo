@@ -427,14 +427,38 @@
       <p>AI agents don't fail because they can't code.<br>
       They fail because they <strong>code blind</strong>.<br>
       Ctxo gives them the full picture <strong>before they write a single line</strong>.</p>
-      <div style="margin-top:1.2rem;display:flex;gap:0.6rem;justify-content:center;align-items:center;flex-wrap:wrap;">
-        <code style="display:inline-block;padding:0.5rem 1.2rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:0.9rem;color:var(--cyan);letter-spacing:0.02em;user-select:all;cursor:text">npx @ctxo/cli init</code>
-        <a href="docs/" style="display:inline-flex;align-items:center;gap:0.45rem;padding:0.5rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.85rem;font-weight:700;color:#ffffff;background:linear-gradient(135deg,var(--green),var(--cyan));border-radius:6px;text-decoration:none;box-shadow:0 4px 14px rgba(13,148,136,0.25);transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 20px rgba(13,148,136,0.35)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 14px rgba(13,148,136,0.25)'">
+      <div style="margin-top:1.5rem;display:flex;gap:0.75rem;justify-content:center;align-items:center;flex-wrap:wrap;">
+        <div role="region" aria-label="Install command" style="position:relative;display:inline-flex;align-items:center;gap:0.75rem;padding:0.6rem 0.85rem 0.6rem 1rem;background:linear-gradient(180deg,#0f172a 0%,#1e293b 100%);border:1px solid rgba(20,184,166,0.25);border-radius:10px;box-shadow:0 6px 24px rgba(15,23,42,0.18),inset 0 1px 0 rgba(255,255,255,0.04);font-family:'JetBrains Mono',monospace;font-size:0.85rem;overflow:hidden;">
+          <span aria-hidden="true" style="color:#2dd4bf;font-weight:800;user-select:none;">#</span>
+          <code id="ctxo-init-cmd" style="color:#e2e8f0;background:transparent;user-select:all;cursor:text;white-space:nowrap;">npx @ctxo/init</code>
+          <button type="button" id="ctxo-init-copy" title="Copy" aria-label="Copy to clipboard" onclick="ctxoCopyInit(this)" style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;margin-left:4px;color:#94a3b8;background:rgba(20,184,166,0.1);border:1px solid rgba(20,184,166,0.25);border-radius:6px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='rgba(20,184,166,0.2)';this.style.color='#2dd4bf';this.style.borderColor='rgba(20,184,166,0.5)'" onmouseout="this.style.background='rgba(20,184,166,0.1)';this.style.color='#94a3b8';this.style.borderColor='rgba(20,184,166,0.25)'">
+            <svg id="ctxo-init-icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <svg id="ctxo-init-icon-ok" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+        </div>
+        <a href="docs/" style="display:inline-flex;align-items:center;gap:0.45rem;padding:0.65rem 1.1rem;font-family:'JetBrains Mono',monospace;font-size:0.85rem;font-weight:700;color:#ffffff;background:linear-gradient(135deg,var(--green),var(--cyan));border-radius:8px;text-decoration:none;box-shadow:0 4px 14px rgba(13,148,136,0.25);transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 20px rgba(13,148,136,0.35)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 14px rgba(13,148,136,0.25)'">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           Get Started
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </a>
       </div>
+      <script>
+        function ctxoCopyInit(btn) {
+          var cmd = document.getElementById('ctxo-init-cmd').textContent;
+          var copyIcon = document.getElementById('ctxo-init-icon-copy');
+          var okIcon = document.getElementById('ctxo-init-icon-ok');
+          navigator.clipboard.writeText(cmd).then(function () {
+            copyIcon.style.display = 'none';
+            okIcon.style.display = 'inline';
+            btn.style.color = '#22c55e';
+            setTimeout(function () {
+              copyIcon.style.display = 'inline';
+              okIcon.style.display = 'none';
+              btn.style.color = '';
+            }, 1400);
+          });
+        }
+      </script>
     </div>
 
     <div class="comparison">

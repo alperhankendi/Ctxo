@@ -39,7 +39,7 @@ export default defineConfig({
       },
       { text: 'CLI', link: '/cli/overview' },
       { text: 'MCP Tools', link: '/mcp-tools/overview' },
-      { text: 'Architecture', link: '/architecture/hexagonal' },
+      { text: 'Languages', link: '/languages/overview' },
       { text: 'Reference', link: '/reference/config-schema' },
       { text: 'Visualizer', link: '/visualizer/' },
       { text: 'GitHub', link: 'https://github.com/alperhankendi/Ctxo' },
@@ -156,18 +156,6 @@ export default defineConfig({
             { text: 'Go', link: '/languages/go' },
             { text: 'C#', link: '/languages/csharp' },
             { text: 'Writing a Plugin', link: '/languages/writing-a-plugin' },
-          ],
-        },
-        {
-          text: '🏛 Architecture',
-          collapsed: true,
-          items: [
-            { text: 'Hexagonal Design', link: '/architecture/hexagonal' },
-            { text: 'Plugin API v1', link: '/architecture/plugin-api' },
-            { text: 'Storage Layout', link: '/architecture/storage' },
-            { text: 'Index JSON Schema', link: '/architecture/index-schema' },
-            { text: 'Error Handling', link: '/architecture/error-handling' },
-            { text: 'ADRs', link: '/architecture/adrs' },
           ],
         },
         {

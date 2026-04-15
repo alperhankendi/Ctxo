@@ -33,7 +33,7 @@ Two calls do the heavy lifting:
   repos.
 
 If git is not available, the adapter logs and returns empty arrays. No
-crash, no blocking. See [error handling](/architecture/error-handling).
+crash, no blocking.
 
 ## Two record types per file
 

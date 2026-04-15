@@ -7,6 +7,43 @@ description: "Agents code blind without a dependency graph. Ctxo replaces 10-20 
 
 > AI agents don't fail because they can't code. They fail because they code blind.
 
+<div style="margin:28px 0 8px;padding:20px 24px;border-radius:14px;background:linear-gradient(135deg,rgba(20,184,166,0.08),rgba(2,132,199,0.08));border:1px solid rgba(20,184,166,0.25);">
+  <h2 id="proactive-not-reactive" style="display:flex;align-items:center;gap:12px;margin:0 0 12px;padding:0;border:0;font-size:26px;letter-spacing:-0.02em;">
+    <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#14b8a6,#0284c7);box-shadow:0 6px 20px rgba(13,148,136,0.3);flex-shrink:0;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    </span>
+    <span style="background:linear-gradient(135deg,#14b8a6,#0284c7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Proactive, not reactive</span>
+  </h2>
+  <p style="margin:0 0 10px;color:var(--vp-c-text-2);font-size:16px;line-height:1.65;">
+    The core shift: your agent stops <em>reacting</em> to files it stumbles into and starts <em>planning</em> from a complete map. Blast radius before the edit. Git intent before the bug fix. Importer list before the rename.
+  </p>
+  <p style="margin:0;color:var(--vp-c-text-2);font-size:15px;line-height:1.6;">
+    The agent still writes the code. It just stops writing it blind — so the bug never has to be caught by the compiler, the tests, CI, or a user.
+  </p>
+</div>
+
+Modern AI agents are fluent at writing code. They are not fluent at
+understanding what it touches. Every unseen dependency, every reverted
+pattern, every subclass that nobody warned them about becomes a bug that
+surfaces **later** - where fixing it is exponentially more expensive:
+
+| Stage where a blind edit is caught | Cost to fix |
+| --- | --- |
+| **Compile / type-check** | Minutes. One more iteration. |
+| **Unit tests** | Tens of minutes. Re-run, re-diagnose, re-edit. |
+| **Integration / CI** | Hours. Someone else is blocked. |
+| **Runtime / production** | Days. Users hit it. A revert is on the table. |
+
+Each stage is **reactive**. The agent writes, something breaks, the agent
+patches, something else breaks. Token budgets balloon, latency compounds,
+dev time drags, trust in the agent erodes.
+
+Ctxo flips this. Before the agent writes a single line, [`get_blast_radius`](/mcp-tools/get-blast-radius)
+tells it every caller and subclass that will be affected; [`get_why_context`](/mcp-tools/get-why-context)
+surfaces the revert from three weeks ago; [`get_logic_slice`](/mcp-tools/get-logic-slice) delivers
+exactly the deps it needs inside the token budget. The problem never
+happens - it is resolved **at authoring time**, not caught downstream.
+
 ## The problem: agents code blind
 
 Drop a modern coding agent into a real repo and watch it work. It will:
@@ -65,13 +102,6 @@ Two interactive comparisons show Ctxo against a naive agent loop:
 
 And the <a href="/Ctxo/ctxo-visualizer.html" target="_self">Ctxo Visualizer</a>
 lets you explore the dependency graph of a real indexed repo.
-
-## Proactive, not reactive
-
-The core shift Ctxo enables: your agent stops *reacting* to files it stumbles
-into and starts *planning* from a complete map. Blast radius before the edit.
-Git intent before the bug fix. Importer list before the rename. The agent
-still writes the code. It just stops writing it blind.
 
 ## Next steps
 

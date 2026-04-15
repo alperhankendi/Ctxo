@@ -106,5 +106,5 @@ threshold safe.
   truncation and size.
 - **[Response envelope reference](/reference/response-envelope)** exact
   field semantics.
-- **[Error handling](/architecture/error-handling)** masking sits at the
+- **Error handling** masking sits at the
   adapter boundary and all MCP responses pass through it before delivery.

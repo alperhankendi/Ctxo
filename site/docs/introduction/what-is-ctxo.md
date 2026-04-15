@@ -37,6 +37,11 @@ change-health scores, all in a single sub-500ms call.
   not IDE cursor completions.
 - **Not cloud-hosted.** Everything runs locally. Your code never leaves your
   machine.
+- **Not a memory layer.** Ctxo does not remember your chats, prompts, or
+  agent state. It answers fresh from the committed index every call.
+- **Not a context compressor.** Ctxo does not summarise or shrink existing
+  context. It precomputes the *right* context — dependency-aware slices,
+  sized to a token budget — so the agent never has to read the whole file.
 
 ## How it fits together
 
@@ -53,8 +58,7 @@ change-health scores, all in a single sub-500ms call.
                                     |   .cache/  (local SQLite)     |
                                     +---------------+---------------+
                                                     ^
-                                                    | ts-morph / Roslyn /
-                                                    | tree-sitter + git
+                                                    | Ctxo indexer
                                                     |
                                             +-------+--------+
                                             | Your codebase  |
