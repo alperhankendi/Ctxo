@@ -14,16 +14,27 @@ import { createLogger } from '../../core/logger.js';
 
 const log = createLogger('ctxo:storage');
 
+export interface SqliteStorageAdapterOptions {
+  /**
+   * Acknowledge writes to a production (non-tmpdir) `.ctxo/` root. Required
+   * when the CLI talks to the user's real project. Tests using mkdtempSync
+   * paths can omit this; they are auto-recognised as safe.
+   */
+  readonly allowProductionPath?: boolean;
+}
+
 export class SqliteStorageAdapter implements IStoragePort {
   private db: Database | undefined;
   private readonly dbPath: string;
   private readonly ctxoRoot: string;
   private readonly communityWriter: CommunitySnapshotWriter;
 
-  constructor(ctxoRoot: string) {
+  constructor(ctxoRoot: string, options: SqliteStorageAdapterOptions = {}) {
     this.ctxoRoot = ctxoRoot;
     this.dbPath = join(ctxoRoot, '.cache', 'symbols.db');
-    this.communityWriter = new CommunitySnapshotWriter(ctxoRoot);
+    this.communityWriter = new CommunitySnapshotWriter(ctxoRoot, {
+      allowProductionPath: options.allowProductionPath,
+    });
   }
 
   async init(): Promise<void> {

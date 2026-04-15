@@ -309,7 +309,7 @@ export class IndexCommand {
     schemaManager.writeVersion();
 
     // Populate SQLite cache (skip rebuildFromJson since we just wrote the JSON)
-    const storage = new SqliteStorageAdapter(this.ctxoRoot);
+    const storage = new SqliteStorageAdapter(this.ctxoRoot, { allowProductionPath: true });
     try {
       await storage.initEmpty();
       storage.bulkWrite(indices);

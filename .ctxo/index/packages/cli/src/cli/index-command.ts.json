@@ -50,7 +50,7 @@
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.buildCommunitySnapshot::method"
     }
   ],
-  "contentHash": "cd944e8a61e8f4e7656b8dd50f603face38cca600a3b0e3b6e86d14c4819bacf",
+  "contentHash": "91a1231d031de4bdfcbfb4a96d62d9f88ae0ee48b51f9afc94d3fe6932e2a733",
   "edges": [
     {
       "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
@@ -589,11 +589,11 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776294236,
+  "lastModified": 1776294576,
   "symbols": [
     {
       "endLine": 662,
-      "endOffset": 26028,
+      "endOffset": 26059,
       "kind": "class",
       "name": "IndexCommand",
       "startLine": 61,
@@ -611,7 +611,7 @@
     },
     {
       "endLine": 338,
-      "endOffset": 13515,
+      "endOffset": 13546,
       "kind": "method",
       "name": "IndexCommand.run",
       "startLine": 93,
@@ -620,92 +620,92 @@
     },
     {
       "endLine": 354,
-      "endOffset": 14128,
+      "endOffset": 14159,
       "kind": "method",
       "name": "IndexCommand.autoInstallMissingPlugins",
       "startLine": 340,
-      "startOffset": 13521,
+      "startOffset": 13552,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.autoInstallMissingPlugins::method"
     },
     {
       "endLine": 368,
-      "endOffset": 14829,
+      "endOffset": 14860,
       "kind": "method",
       "name": "IndexCommand.printLanguagePreview",
       "startLine": 356,
-      "startOffset": 14134,
+      "startOffset": 14165,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.printLanguagePreview::method"
     },
     {
       "endLine": 433,
-      "endOffset": 17376,
+      "endOffset": 17407,
       "kind": "method",
       "name": "IndexCommand.registerDiscoveredPlugins",
       "startLine": 370,
-      "startOffset": 14835,
+      "startOffset": 14866,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.registerDiscoveredPlugins::method"
     },
     {
       "endLine": 457,
-      "endOffset": 18183,
+      "endOffset": 18214,
       "kind": "method",
       "name": "IndexCommand.discoverFilesIn",
       "startLine": 435,
-      "startOffset": 17382,
+      "startOffset": 17413,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.discoverFilesIn::method"
     },
     {
       "endLine": 511,
-      "endOffset": 20125,
+      "endOffset": 20156,
       "kind": "method",
       "name": "IndexCommand.discoverWorkspaces",
       "startLine": 459,
-      "startOffset": 18189,
+      "startOffset": 18220,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.discoverWorkspaces::method"
     },
     {
       "endLine": 516,
-      "endOffset": 20290,
+      "endOffset": 20321,
       "kind": "method",
       "name": "IndexCommand.isSupportedExtension",
       "startLine": 513,
-      "startOffset": 20131,
+      "startOffset": 20162,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.isSupportedExtension::method"
     },
     {
       "endLine": 580,
-      "endOffset": 22831,
+      "endOffset": 22862,
       "kind": "method",
       "name": "IndexCommand.runCheck",
       "startLine": 518,
-      "startOffset": 20296,
+      "startOffset": 20327,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.runCheck::method"
     },
     {
       "endLine": 593,
-      "endOffset": 23396,
+      "endOffset": 23427,
       "kind": "method",
       "name": "IndexCommand.ensureGitignore",
       "startLine": 582,
-      "startOffset": 22837,
+      "startOffset": 22868,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
     },
     {
       "endLine": 628,
-      "endOffset": 24775,
+      "endOffset": 24806,
       "kind": "method",
       "name": "IndexCommand.buildGraphInputIndices",
       "startLine": 604,
-      "startOffset": 23919,
+      "startOffset": 23950,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.buildGraphInputIndices::method"
     },
     {
       "endLine": 661,
-      "endOffset": 26025,
+      "endOffset": 26056,
       "kind": "method",
       "name": "IndexCommand.buildCommunitySnapshot",
       "startLine": 630,
-      "startOffset": 24781,
+      "startOffset": 24812,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.buildCommunitySnapshot::method"
     }
   ]

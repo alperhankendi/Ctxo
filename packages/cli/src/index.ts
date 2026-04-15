@@ -84,7 +84,7 @@ async function main(): Promise<void> {
   const ctxoRoot = '.ctxo';
   const workspace = detectWorkspace(process.cwd());
   setWorkspaceMeta({ root: workspace.root });
-  const storage = new SqliteStorageAdapter(ctxoRoot);
+  const storage = new SqliteStorageAdapter(ctxoRoot, { allowProductionPath: true });
   await storage.init();
 
   const masking = loadMaskingConfig(ctxoRoot);

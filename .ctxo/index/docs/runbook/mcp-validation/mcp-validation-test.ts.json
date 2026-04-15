@@ -97,6 +97,12 @@
   "file": "docs/runbook/mcp-validation/mcp-validation-test.ts",
   "intent": [
     {
+      "date": "2026-04-16T02:04:31+03:00",
+      "hash": "999ca72cdb48edc8893678e48384dd1b3627d5a6",
+      "kind": "commit",
+      "message": "fix(storage): skip 'nocommit' snapshots from history (closes #57)"
+    },
+    {
       "date": "2026-04-08T15:32:04+03:00",
       "hash": "85f1d67d58d682c0f038b36ef9dd1b17eac10b6f",
       "kind": "commit",
@@ -109,6 +115,6 @@
       "message": "Add automated MCP validation test script to runbook"
     }
   ],
-  "lastModified": 1776294236,
+  "lastModified": 1776294576,
   "symbols": []
 }

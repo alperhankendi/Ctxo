@@ -6,7 +6,7 @@
       "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method"
     }
   ],
-  "contentHash": "eca3b5a5e35bcff84fb9d2625a3201de704e37a89ecd3b2a7c40bf64e29eb103",
+  "contentHash": "c5540ad3d82c5956a0594f1a175d577a62719c9a54e54ce036a3719c733ce9ef",
   "edges": [
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
@@ -221,11 +221,11 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776294236,
+  "lastModified": 1776294576,
   "symbols": [
     {
       "endLine": 239,
-      "endOffset": 9193,
+      "endOffset": 9224,
       "kind": "class",
       "name": "WatchCommand",
       "startLine": 34,
@@ -234,7 +234,7 @@
     },
     {
       "endLine": 237,
-      "endOffset": 9190,
+      "endOffset": 9221,
       "kind": "method",
       "name": "WatchCommand.run",
       "startLine": 43,

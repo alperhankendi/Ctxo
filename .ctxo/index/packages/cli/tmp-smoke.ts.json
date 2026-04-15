@@ -95,7 +95,14 @@
     }
   ],
   "file": "packages/cli/tmp-smoke.ts",
-  "intent": [],
-  "lastModified": 1776294236,
+  "intent": [
+    {
+      "date": "2026-04-16T02:04:31+03:00",
+      "hash": "999ca72cdb48edc8893678e48384dd1b3627d5a6",
+      "kind": "commit",
+      "message": "fix(storage): skip 'nocommit' snapshots from history (closes #57)"
+    }
+  ],
+  "lastModified": 1776294577,
   "symbols": []
 }

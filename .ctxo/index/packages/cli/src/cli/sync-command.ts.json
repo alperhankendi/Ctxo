@@ -6,7 +6,7 @@
       "symbolId": "packages/cli/src/cli/sync-command.ts::SyncCommand.run::method"
     }
   ],
-  "contentHash": "45b46f87b69501377a57aa8bfd22b366fee6a3f36bb111266a1114b1af53ef52",
+  "contentHash": "966c0c56d526499cdc58099b380a72c6910f966afbd5643734b22f2ea241604b",
   "edges": [
     {
       "from": "packages/cli/src/cli/sync-command.ts::SyncCommand::class",
@@ -33,11 +33,11 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776294236,
+  "lastModified": 1776294576,
   "symbols": [
     {
       "endLine": 22,
-      "endOffset": 583,
+      "endOffset": 614,
       "kind": "class",
       "name": "SyncCommand",
       "startLine": 3,
@@ -46,7 +46,7 @@
     },
     {
       "endLine": 21,
-      "endOffset": 581,
+      "endOffset": 612,
       "kind": "method",
       "name": "SyncCommand.run",
       "startLine": 10,

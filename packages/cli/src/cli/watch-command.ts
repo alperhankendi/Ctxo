@@ -78,7 +78,7 @@ export class WatchCommand {
 
     const supportedExtensions = registry.getSupportedExtensions();
     const writer = new JsonIndexWriter(this.ctxoRoot);
-    const storage = new SqliteStorageAdapter(this.ctxoRoot);
+    const storage = new SqliteStorageAdapter(this.ctxoRoot, { allowProductionPath: true });
     await storage.init();
     const hasher = new ContentHasher();
 

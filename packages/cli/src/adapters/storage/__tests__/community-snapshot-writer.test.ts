@@ -172,6 +172,18 @@ describe('CommunitySnapshotWriter', () => {
     expect(history[0]!.commitSha).toBe('real1');
   });
 
+  it('refuses to write outside a tmpdir path unless opted into a production root', () => {
+    // Simulates the exact test-isolation scenario that polluted the repo's .ctxo/
+    // during v0.8 runtime analysis: some test instantiates the writer with a path
+    // that sits outside os.tmpdir() and without the production opt-in.
+    const unsafe = '/opt/some/project/.ctxo';
+    expect(() => new CommunitySnapshotWriter(unsafe)).toThrow(/refusing to write/);
+    // Opting in explicitly unblocks the writer for the CLI's real production usage.
+    expect(
+      () => new CommunitySnapshotWriter(unsafe, { allowProductionPath: true }),
+    ).not.toThrow();
+  });
+
   it('filters legacy nocommit entries out of listHistory (defense in depth)', () => {
     const writer = new CommunitySnapshotWriter(ctxoRoot);
     // Seed a real snapshot first so history dir exists.

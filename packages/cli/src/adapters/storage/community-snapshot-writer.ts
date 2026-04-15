@@ -5,7 +5,8 @@ import {
   readdirSync,
   unlinkSync,
 } from 'node:fs';
-import { basename, join } from 'node:path';
+import { tmpdir } from 'node:os';
+import { basename, join, resolve } from 'node:path';
 
 import { createLogger } from '../../core/logger.js';
 import type { CommunitySnapshot } from '../../core/types.js';
@@ -18,15 +19,36 @@ const HISTORY_DIR_NAME = 'communities.history';
 const CURRENT_FILE_NAME = 'communities.json';
 const NOCOMMIT_SHA = 'nocommit';
 
+export interface CommunitySnapshotWriterOptions {
+  readonly historyLimit?: number;
+  /**
+   * Acknowledge that this writer targets a production `.ctxo/` root (user's
+   * real project). Required when the path is outside the system tmpdir; this
+   * prevents test runs from accidentally writing a tiny/invalid snapshot into
+   * the developer's real project via an unisolated fixture.
+   */
+  readonly allowProductionPath?: boolean;
+}
+
 export class CommunitySnapshotWriter {
   private readonly indexDir: string;
   private readonly historyDir: string;
   private readonly historyLimit: number;
 
-  constructor(ctxoRoot: string, historyLimit: number = DEFAULT_HISTORY_LIMIT) {
+  constructor(
+    ctxoRoot: string,
+    historyLimitOrOptions: number | CommunitySnapshotWriterOptions = DEFAULT_HISTORY_LIMIT,
+  ) {
+    const options: CommunitySnapshotWriterOptions =
+      typeof historyLimitOrOptions === 'number'
+        ? { historyLimit: historyLimitOrOptions }
+        : historyLimitOrOptions;
+
     this.indexDir = join(ctxoRoot, 'index');
     this.historyDir = join(this.indexDir, HISTORY_DIR_NAME);
-    this.historyLimit = historyLimit;
+    this.historyLimit = options.historyLimit ?? DEFAULT_HISTORY_LIMIT;
+
+    assertSafeWritePath(ctxoRoot, options.allowProductionPath ?? false);
   }
 
   writeSnapshot(snapshot: CommunitySnapshot): void {
@@ -131,4 +153,22 @@ export class CommunitySnapshotWriter {
       return undefined;
     }
   }
+}
+
+/**
+ * Production `.ctxo/` roots must be opted into explicitly. This catches
+ * the rogue case where a test forgets to pass a tmpdir and would otherwise
+ * clobber the developer's real snapshot (as happened during v0.8 runtime
+ * analysis — a 39-node modularity-0 snapshot appeared in the repo root from
+ * an unisolated fixture).
+ */
+function assertSafeWritePath(ctxoRoot: string, allowProduction: boolean): void {
+  const resolved = resolve(ctxoRoot);
+  const tmpRoot = resolve(tmpdir());
+  const inTmp = resolved.startsWith(tmpRoot);
+  if (inTmp || allowProduction) return;
+  throw new Error(
+    `CommunitySnapshotWriter: refusing to write to non-tmp path ${resolved}. ` +
+      `Pass { allowProductionPath: true } for production CLI writes, or target a tmpdir-based path in tests.`,
+  );
 }
