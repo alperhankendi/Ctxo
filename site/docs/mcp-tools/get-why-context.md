@@ -13,12 +13,7 @@ history. Reverted code is invisible in the current source but lives on in
 git — this tool surfaces it before you repeat a mistake someone already
 undid.
 
-::: tip When to use
-Call this **after [`get_blast_radius`](/mcp-tools/get-blast-radius) and
-before editing** any non-trivial symbol. It is step 2 of the mandatory
-"Before ANY Code Modification" workflow, and especially important for
-legacy code where you lack first-hand context.
-:::
+See [the mandatory sequence](/mcp-tools/tool-selection-guide#modifying-existing-code) before editing.
 
 ## Parameters
 

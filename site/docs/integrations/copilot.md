@@ -25,17 +25,9 @@ Per-project `.vscode/mcp.json` is the recommended default and can be committed.
 
 ## Configuration
 
-```json
-{
-  "servers": {
-    "ctxo": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["@ctxo/cli", "mcp"]
-    }
-  }
-}
-```
+Copy the canonical Copilot block from
+[MCP Client Setup](/introduction/mcp-client-setup#github-copilot). Save it at
+`.vscode/mcp.json` in the repo root.
 
 ::: warning Schema is different
 Note the three differences from other clients:
@@ -46,21 +38,6 @@ Note the three differences from other clients:
 
 Copying the Claude Code config verbatim will silently fail to register.
 :::
-
-With debug logging:
-
-```json
-{
-  "servers": {
-    "ctxo": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["@ctxo/cli", "mcp"],
-      "env": { "DEBUG": "ctxo:*" }
-    }
-  }
-}
-```
 
 ## Verify
 

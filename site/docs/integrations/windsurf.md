@@ -27,30 +27,10 @@ active and let the user-global config apply to all of them.
 
 ## Configuration
 
-```json
-{
-  "mcpServers": {
-    "ctxo": {
-      "command": "npx",
-      "args": ["@ctxo/cli", "mcp"]
-    }
-  }
-}
-```
-
-With debug logging:
-
-```json
-{
-  "mcpServers": {
-    "ctxo": {
-      "command": "npx",
-      "args": ["@ctxo/cli", "mcp"],
-      "env": { "DEBUG": "ctxo:*" }
-    }
-  }
-}
-```
+Copy the canonical Windsurf block from
+[MCP Client Setup](/introduction/mcp-client-setup#windsurf). Save it at
+`~/.codeium/windsurf/mcp_config.json` (on Windows,
+`%USERPROFILE%\.codeium\windsurf\mcp_config.json`).
 
 ## Verify
 

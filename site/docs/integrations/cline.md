@@ -27,18 +27,10 @@ Cline (gear icon -> MCP Servers -> Configure MCP Servers).
 
 ## Configuration
 
-```json
-{
-  "mcpServers": {
-    "ctxo": {
-      "command": "npx",
-      "args": ["@ctxo/cli", "mcp"],
-      "disabled": false,
-      "autoApprove": []
-    }
-  }
-}
-```
+Copy the canonical Cline block from
+[MCP Client Setup](/introduction/mcp-client-setup#cline). Save it at
+`cline_mcp_settings.json` (path varies by OS — see the table above), or
+just paste it into the **MCP Servers** panel in the Cline UI.
 
 `autoApprove` is a Cline-specific field - list tool names here to skip the
 approval prompt. Start with `[]` and add tools as you build trust:

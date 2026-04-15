@@ -26,30 +26,10 @@ Ctxo automatically.
 
 ## Configuration
 
-```json
-{
-  "mcpServers": {
-    "ctxo": {
-      "command": "npx",
-      "args": ["@ctxo/cli", "mcp"]
-    }
-  }
-}
-```
-
-With debug output:
-
-```json
-{
-  "mcpServers": {
-    "ctxo": {
-      "command": "npx",
-      "args": ["@ctxo/cli", "mcp"],
-      "env": { "DEBUG": "ctxo:*" }
-    }
-  }
-}
-```
+Copy the canonical Cursor block from
+[MCP Client Setup](/introduction/mcp-client-setup#cursor). Save it at
+`.cursor/mcp.json` in the repo root (recommended, commit it) or at
+`~/.cursor/mcp.json` for a per-user override.
 
 ## Verify
 

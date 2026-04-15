@@ -41,15 +41,15 @@ mis-label it.
 
 Only five edge kinds exist:
 
-| Edge         | Meaning                                          | Blast-radius confidence |
-| ------------ | ------------------------------------------------ | ----------------------- |
-| `imports`    | File-level or symbol-level import                | potential               |
-| `calls`      | Call-site reference                              | confirmed               |
-| `extends`    | Class extends class                              | confirmed               |
-| `implements` | Class implements interface                       | confirmed               |
-| `uses`       | Non-call reference (type position, field access) | likely                  |
+| Edge         | Meaning                                          |
+| ------------ | ------------------------------------------------ |
+| `imports`    | File-level or symbol-level import                |
+| `calls`      | Call-site reference                              |
+| `extends`    | Class extends class                              |
+| `implements` | Class implements interface                       |
+| `uses`       | Non-call reference (type position, field access) |
 
-Confidence tiers drive [blast radius](./blast-radius.md) scoring.
+Edge kinds drive [blast radius](./blast-radius.md) confidence tiering.
 
 ## Symbol IDs
 

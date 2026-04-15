@@ -9,12 +9,7 @@ Answers the question **"what breaks if I change this?"** Returns every symbol
 that could be affected by modifying the target, graded across three confidence
 tiers so you know what is certain vs speculative.
 
-::: tip When to use
-Call this **before editing any function or class**. It is step 1 of the
-mandatory "Before ANY Code Modification" workflow. Pair it with
-[`get_why_context`](/mcp-tools/get-why-context) to also see revert history and
-anti-patterns.
-:::
+See [the mandatory sequence](/mcp-tools/tool-selection-guide#modifying-existing-code) before editing.
 
 ## Parameters
 
@@ -26,11 +21,7 @@ anti-patterns.
 
 ### Confidence tiers
 
-| Tier        | Meaning                                                        |
-| ----------- | -------------------------------------------------------------- |
-| `confirmed` | Direct caller / importer edge in the graph                     |
-| `likely`    | Transitive dependent within a shallow traversal                |
-| `potential` | Co-change history suggests coupling even without a static edge |
+Results are grouped into 3 confidence tiers — see [Blast Radius tiers](/concepts/blast-radius#confidence-tiers).
 
 ## Example
 

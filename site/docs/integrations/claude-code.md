@@ -26,30 +26,10 @@ Ctxo for free when they clone the repo.
 
 ## Configuration
 
-```json
-{
-  "mcpServers": {
-    "ctxo": {
-      "command": "npx",
-      "args": ["@ctxo/cli", "mcp"]
-    }
-  }
-}
-```
-
-With debug logging to stderr:
-
-```json
-{
-  "mcpServers": {
-    "ctxo": {
-      "command": "npx",
-      "args": ["@ctxo/cli", "mcp"],
-      "env": { "DEBUG": "ctxo:*" }
-    }
-  }
-}
-```
+Copy the canonical Claude Code block from
+[MCP Client Setup](/introduction/mcp-client-setup#claude-code) (including the
+optional `env.DEBUG` variant for stderr logging). Save it at `.mcp.json` in
+the repo root, or at `~/.claude.json` for a per-user override.
 
 ::: tip Pin the binary in CI
 `npx` does a network resolve on every spawn. For hermetic environments,

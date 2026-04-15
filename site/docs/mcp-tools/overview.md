@@ -7,9 +7,7 @@ description: "All 14 Ctxo MCP tools, grouped by purpose, with links to detailed 
 
 Ctxo ships **14 MCP tools** over stdio transport with **zero external network dependencies** — every tool reads from the local `.ctxo/` index and returns results in **under 500ms** on typical repositories. Tools are grouped into four categories matching the sidebar: Context & Search, Impact & Change, Structure & Deps, and History & Cleanup.
 
-::: tip Before you edit code
-Always call [`get_blast_radius`](/mcp-tools/get-blast-radius) and [`get_why_context`](/mcp-tools/get-why-context) on the symbol you're about to change. See the [Tool Selection Guide](/mcp-tools/tool-selection-guide) for a decision tree.
-:::
+See [the mandatory sequence](/mcp-tools/tool-selection-guide#modifying-existing-code) before editing.
 
 ## Context & Search
 
