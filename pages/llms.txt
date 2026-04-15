@@ -1,0 +1,93 @@
+# Ctxo
+
+> AI agents don't fail because they can't code. They fail because they code blind. Ctxo gives them the full picture before they write a single line.
+
+Ctxo is a Model Context Protocol (MCP) server that delivers Logic-Slices to AI coding assistants: a symbol plus its transitive dependencies, git intent, anti-pattern warnings, and change health scores in under 500ms. It ships as an npm package (`@ctxo/cli`) plus language plugins (`@ctxo/lang-typescript`, `@ctxo/lang-go`, `@ctxo/lang-csharp`).
+
+## Introduction
+
+- [What is Ctxo?](https://alperhankendi.github.io/Ctxo/docs/introduction/what-is-ctxo): Overview, what it is and is not, how it fits into your stack.
+- [Why Ctxo?](https://alperhankendi.github.io/Ctxo/docs/introduction/why-ctxo): Shift the fix-loop left. Proactive, not reactive.
+- [Installation](https://alperhankendi.github.io/Ctxo/docs/introduction/installation): `npx @ctxo/init`, then `npx ctxo doctor`.
+- [Quick Start](https://alperhankendi.github.io/Ctxo/docs/introduction/quick-start): Index a repo and make the first MCP call.
+- [MCP Client Setup](https://alperhankendi.github.io/Ctxo/docs/introduction/mcp-client-setup): Claude Code, Cursor, Copilot, Windsurf, Cline.
+
+## Core Concepts
+
+- [Logic-Slices](https://alperhankendi.github.io/Ctxo/docs/concepts/logic-slices): Symbol + transitive deps with L1-L4 progressive detail.
+- [Dependency Graph](https://alperhankendi.github.io/Ctxo/docs/concepts/dependency-graph): Symbol nodes, 5 edge kinds.
+- [Blast Radius](https://alperhankendi.github.io/Ctxo/docs/concepts/blast-radius): 3-tier impact scoring.
+- [Git Intent & Anti-Patterns](https://alperhankendi.github.io/Ctxo/docs/concepts/git-intent): Commit history, revert detection.
+- [Change Intelligence](https://alperhankendi.github.io/Ctxo/docs/concepts/change-intelligence): Complexity × churn composite.
+- [PageRank Importance](https://alperhankendi.github.io/Ctxo/docs/concepts/pagerank): Node centrality for ranked context.
+- [Masking Pipeline](https://alperhankendi.github.io/Ctxo/docs/concepts/masking): Secret sanitization on every response.
+
+## CLI Reference
+
+- [Overview](https://alperhankendi.github.io/Ctxo/docs/cli/overview): All commands at a glance.
+- [ctxo install](https://alperhankendi.github.io/Ctxo/docs/cli/install): Install language plugins.
+- [ctxo init](https://alperhankendi.github.io/Ctxo/docs/cli/init): Bootstrap a project.
+- [ctxo index](https://alperhankendi.github.io/Ctxo/docs/cli/index): Build the codebase index.
+- [ctxo watch](https://alperhankendi.github.io/Ctxo/docs/cli/watch): Incremental re-index.
+- [ctxo sync](https://alperhankendi.github.io/Ctxo/docs/cli/sync): Rebuild SQLite from JSON.
+- [ctxo status](https://alperhankendi.github.io/Ctxo/docs/cli/status): Index manifest.
+- [ctxo doctor](https://alperhankendi.github.io/Ctxo/docs/cli/doctor): Health check + `--fix`.
+- [ctxo visualize](https://alperhankendi.github.io/Ctxo/docs/cli/visualize): Interactive graph HTML.
+- [config.yaml](https://alperhankendi.github.io/Ctxo/docs/cli/config-yaml): Project config file.
+- [Environment variables](https://alperhankendi.github.io/Ctxo/docs/cli/env-vars): DEBUG namespaces and friends.
+
+## MCP Tools (14)
+
+- [Overview](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/overview): All tools grouped.
+- [Tool Selection Guide](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/tool-selection-guide): Which tool for which task.
+- [Response Format](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/response-format): `_meta` envelope summary.
+- [get_logic_slice](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-logic-slice): Symbol + deps (L1-L4).
+- [get_context_for_task](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-context-for-task): Task-aware context.
+- [get_ranked_context](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-ranked-context): BM25 + PageRank search.
+- [search_symbols](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/search-symbols): Name or regex search.
+- [get_blast_radius](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-blast-radius): Impact score + tiers.
+- [get_pr_impact](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-pr-impact): Full PR risk assessment.
+- [get_change_intelligence](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-change-intelligence): Per-symbol complexity × churn.
+- [get_changed_symbols](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-changed-symbols): Symbols in recent diffs.
+- [find_importers](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/find-importers): Reverse dependency lookup.
+- [get_class_hierarchy](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-class-hierarchy): Ancestors + descendants.
+- [get_architectural_overlay](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-architectural-overlay): Domain / Infra / Adapters layers.
+- [get_symbol_importance](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-symbol-importance): PageRank centrality.
+- [get_why_context](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-why-context): Git commit intent + anti-patterns.
+- [find_dead_code](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/find-dead-code): Unused symbols, unused exports, scaffolding.
+
+## Integrations
+
+- [Claude Code](https://alperhankendi.github.io/Ctxo/docs/integrations/claude-code): Anthropic CLI.
+- [Cursor](https://alperhankendi.github.io/Ctxo/docs/integrations/cursor): Cursor IDE.
+- [GitHub Copilot](https://alperhankendi.github.io/Ctxo/docs/integrations/copilot): Copilot Chat.
+- [Windsurf](https://alperhankendi.github.io/Ctxo/docs/integrations/windsurf): Codeium Windsurf.
+- [Cline](https://alperhankendi.github.io/Ctxo/docs/integrations/cline): VS Code extension.
+- [Raw MCP Client](https://alperhankendi.github.io/Ctxo/docs/integrations/raw-mcp-client): Talk to Ctxo via SDK.
+
+## Languages
+
+- [Overview](https://alperhankendi.github.io/Ctxo/docs/languages/overview): Tier matrix and detection.
+- [TypeScript](https://alperhankendi.github.io/Ctxo/docs/languages/typescript): `@ctxo/lang-typescript` (ts-morph).
+- [Go](https://alperhankendi.github.io/Ctxo/docs/languages/go): `@ctxo/lang-go` (tree-sitter + analyzer).
+- [C#](https://alperhankendi.github.io/Ctxo/docs/languages/csharp): `@ctxo/lang-csharp` (Roslyn + tree-sitter).
+- [Writing a Plugin](https://alperhankendi.github.io/Ctxo/docs/languages/writing-a-plugin): Plugin API v1.
+
+## Visualizer
+
+- [Tour](https://alperhankendi.github.io/Ctxo/docs/visualizer/): Screenshots and feature map.
+- [Open the tool](https://alperhankendi.github.io/Ctxo/ctxo-visualizer.html): Interactive dependency graph.
+
+## Comparisons
+
+- [Blast Radius](https://alperhankendi.github.io/Ctxo/docs/comparisons/blast-radius): ctxo vs manual dependency tracing.
+- [Dead Code](https://alperhankendi.github.io/Ctxo/docs/comparisons/dead-code): ctxo vs knip, tsr, deadcode.
+
+## Reference
+
+- [Config Schema](https://alperhankendi.github.io/Ctxo/docs/reference/config-schema): Full `.ctxo/config.yaml`.
+- [Symbol IDs](https://alperhankendi.github.io/Ctxo/docs/reference/symbol-ids): `<file>::<name>::<kind>`.
+- [Edge Kinds](https://alperhankendi.github.io/Ctxo/docs/reference/edge-kinds): imports, calls, extends, implements, uses.
+- [Response Envelope](https://alperhankendi.github.io/Ctxo/docs/reference/response-envelope): `_meta` fields.
+- [CI Integration](https://alperhankendi.github.io/Ctxo/docs/reference/ci-integration): `ctxo index --check`.
+- [Release Process](https://alperhankendi.github.io/Ctxo/docs/reference/release-process): Changesets flow.
