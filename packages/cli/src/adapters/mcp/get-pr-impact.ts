@@ -8,6 +8,7 @@ import type { StalenessCheck } from './get-logic-slice.js';
 import { getGraphAndFiles } from './get-logic-slice.js';
 import { BlastRadiusCalculator } from '../../core/blast-radius/blast-radius-calculator.js';
 import { BoundaryViolationDetector } from '../../core/overlay/boundary-violation-detector.js';
+import { buildSnapshotStaleness } from '../../core/overlay/snapshot-staleness.js';
 import { wrapResponse } from '../../core/response-envelope.js';
 import { loadCoChangeMap } from '../../core/co-change/co-change-analyzer.js';
 import type { CoChangeMatrix, CoChangeEntry, CommunitySnapshot } from '../../core/types.js';
@@ -233,7 +234,9 @@ export function handleGetPrImpact(
       if (boundarySection) body.boundaryViolations = boundarySection;
       if (clustersAffected && clustersAffected.length > 0) body.clustersAffected = clustersAffected;
 
-      const payload = masking.mask(JSON.stringify(wrapResponse(body)));
+      const stalenessMeta = await buildSnapshotStaleness(storage, git);
+      const extras = stalenessMeta ? { snapshotStaleness: stalenessMeta } : undefined;
+      const payload = masking.mask(JSON.stringify(wrapResponse(body, extras)));
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {

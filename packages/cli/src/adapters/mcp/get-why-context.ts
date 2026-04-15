@@ -4,6 +4,7 @@ import type { IGitPort } from '../../ports/i-git-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { RevertDetector } from '../../core/why-context/revert-detector.js';
 import { DriftDetector } from '../../core/overlay/drift-detector.js';
+import { buildSnapshotStaleness } from '../../core/overlay/snapshot-staleness.js';
 import { JsonIndexReader } from '../storage/json-index-reader.js';
 import type { AntiPattern, CommitIntent } from '../../core/types.js';
 import type { StalenessCheck } from './get-logic-slice.js';
@@ -93,6 +94,11 @@ export function handleGetWhyContext(
             ...(drift.hint ? { hint: drift.hint } : {}),
           };
         }
+      }
+
+      const stalenessMeta = await buildSnapshotStaleness(storage, git);
+      if (stalenessMeta) {
+        responsePayload._meta = { snapshotStaleness: stalenessMeta };
       }
 
       const payload = masking.mask(JSON.stringify(responsePayload));

@@ -31,7 +31,7 @@ describe('SimpleGitAdapter', () => {
   });
 
   afterEach(() => {
-    rmSync(tempDir, { recursive: true, force: true });
+    rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   });
 
   it('extracts commit history for a file with correct fields', async () => {

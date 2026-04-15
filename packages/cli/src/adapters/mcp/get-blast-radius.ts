@@ -1,8 +1,10 @@
 import { z } from 'zod';
+import type { IGitPort } from '../../ports/i-git-port.js';
 import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { BlastRadiusCalculator } from '../../core/blast-radius/blast-radius-calculator.js';
 import { wrapResponse } from '../../core/response-envelope.js';
+import { buildSnapshotStaleness } from '../../core/overlay/snapshot-staleness.js';
 import { filterByIntent } from '../../core/intent-filter.js';
 import type { CommunitySnapshot } from '../../core/types.js';
 import type { StalenessCheck } from './get-logic-slice.js';
@@ -53,11 +55,12 @@ export function handleGetBlastRadius(
   masking: IMaskingPort,
   staleness?: StalenessCheck,
   ctxoRoot = '.ctxo',
+  git?: IGitPort,
 ) {
   const calculator = new BlastRadiusCalculator();
   const getGraph = () => getGraphAndFiles(ctxoRoot, storage);
 
-  return (args: Record<string, unknown>) => {
+  return async (args: Record<string, unknown>) => {
     try {
       const parsed = InputSchema.safeParse(args);
       if (!parsed.success) {
@@ -113,7 +116,9 @@ export function handleGetBlastRadius(
         }
       }
 
-      const payload = masking.mask(JSON.stringify(wrapResponse(body)));
+      const stalenessMeta = git ? await buildSnapshotStaleness(storage, git) : undefined;
+      const extras = stalenessMeta ? { snapshotStaleness: stalenessMeta } : undefined;
+      const payload = masking.mask(JSON.stringify(wrapResponse(body, extras)));
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {

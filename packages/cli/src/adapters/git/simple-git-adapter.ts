@@ -97,4 +97,26 @@ export class SimpleGitAdapter implements IGitPort {
       return { filePath, commitCount: 0 };
     }
   }
+
+  async getHeadSha(): Promise<string | undefined> {
+    try {
+      const raw = await this.git.revparse(['--short', 'HEAD']);
+      const sha = raw.trim();
+      return sha.length > 0 ? sha : undefined;
+    } catch (err) {
+      log.error(`Failed to resolve HEAD: ${(err as Error).message}`);
+      return undefined;
+    }
+  }
+
+  async countCommitsBetween(base: string): Promise<number | undefined> {
+    try {
+      const raw = await this.git.raw(['rev-list', '--count', `${base}..HEAD`]);
+      const n = parseInt(raw.trim(), 10);
+      return Number.isFinite(n) && n >= 0 ? n : undefined;
+    } catch (err) {
+      log.error(`Failed to count commits since ${base}: ${(err as Error).message}`);
+      return undefined;
+    }
+  }
 }

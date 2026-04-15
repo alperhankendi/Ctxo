@@ -76,7 +76,7 @@ describe('GetClassHierarchyHandler', () => {
 
   afterEach(() => {
     storage.close();
-    rmSync(tempDir, { recursive: true, force: true });
+    rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   });
 
   it('returns ancestors for a class that extends another', () => {

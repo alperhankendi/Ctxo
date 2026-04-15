@@ -18,7 +18,7 @@ describe('SqliteStorageAdapter — IStoragePort contract', () => {
 
   afterEach(() => {
     adapter.close();
-    rmSync(tempDir, { recursive: true, force: true });
+    rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   });
 
   it('writes and reads back a symbol file', () => {
@@ -138,6 +138,6 @@ describe('SqliteStorageAdapter — cold start rebuild', () => {
     expect(allSymbols).toHaveLength(2);
 
     adapter.close();
-    rmSync(tempDir, { recursive: true, force: true });
+    rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   });
 });

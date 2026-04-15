@@ -31,7 +31,13 @@ describe('IndexCommand', () => {
   });
 
   afterEach(() => {
-    rmSync(tempDir, { recursive: true, force: true });
+    // Windows holds simple-git / sqlite handles briefly after test body returns;
+    // cleanup is best-effort to avoid false-positive test failures.
+    try {
+      rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+    } catch {
+      /* best effort */
+    }
   });
 
   it('discovers all .ts files in project directory', async () => {

@@ -49,12 +49,12 @@ describe('GetArchitecturalOverlayHandler', () => {
 
   afterEach(() => {
     storage.close();
-    rmSync(tempDir, { recursive: true, force: true });
+    rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   });
 
-  it('returns MCP response with layer map', () => {
+  it('returns MCP response with layer map', async () => {
     const handler = handleGetArchitecturalOverlay(storage, new MaskingPipeline());
-    const result = handler({});
+    const result = await handler({});
     const payload = JSON.parse(result.content[0]!.text);
 
     expect(payload.layers).toBeDefined();
@@ -65,9 +65,9 @@ describe('GetArchitecturalOverlayHandler', () => {
     expect(payload.layers['Unknown']).toContain('src/utils/format.ts');
   });
 
-  it('filters by specific layer when parameter provided', () => {
+  it('filters by specific layer when parameter provided', async () => {
     const handler = handleGetArchitecturalOverlay(storage, new MaskingPipeline());
-    const result = handler({ layer: 'Domain' });
+    const result = await handler({ layer: 'Domain' });
     const payload = JSON.parse(result.content[0]!.text);
 
     expect(payload.layer).toBe('Domain');
@@ -75,17 +75,17 @@ describe('GetArchitecturalOverlayHandler', () => {
     expect(payload.files).not.toContain('src/utils/format.ts');
   });
 
-  it('returns empty files array for non-existent layer', () => {
+  it('returns empty files array for non-existent layer', async () => {
     const handler = handleGetArchitecturalOverlay(storage, new MaskingPipeline());
-    const result = handler({ layer: 'NonExistent' });
+    const result = await handler({ layer: 'NonExistent' });
     const payload = JSON.parse(result.content[0]!.text);
 
     expect(payload.files).toEqual([]);
   });
 
-  it('returns all layers when no filter specified', () => {
+  it('returns all layers when no filter specified', async () => {
     const handler = handleGetArchitecturalOverlay(storage, new MaskingPipeline());
-    const result = handler({});
+    const result = await handler({});
     const payload = JSON.parse(result.content[0]!.text);
 
     expect(Object.keys(payload.layers)).toContain('Domain');
@@ -99,7 +99,7 @@ describe('GetArchitecturalOverlayHandler', () => {
     await emptyStorage.initEmpty();
 
     const handler = handleGetArchitecturalOverlay(emptyStorage, new MaskingPipeline());
-    const result = handler({});
+    const result = await handler({});
     const payload = JSON.parse(result.content[0]!.text);
 
     expect(payload.layers).toEqual({});
@@ -108,10 +108,10 @@ describe('GetArchitecturalOverlayHandler', () => {
     rmSync(emptyDir, { recursive: true, force: true });
   });
 
-  it('includes community overlay in both mode when a snapshot is available', () => {
+  it('includes community overlay in both mode when a snapshot is available', async () => {
     storage.writeCommunities(buildSnapshot());
     const handler = handleGetArchitecturalOverlay(storage, new MaskingPipeline());
-    const result = handler({});
+    const result = await handler({});
     const payload = JSON.parse(result.content[0]!.text);
 
     expect(payload.layers).toBeDefined();
@@ -121,27 +121,27 @@ describe('GetArchitecturalOverlayHandler', () => {
     expect(payload.communities.clusters).toHaveLength(2);
   });
 
-  it('drops the layers map when mode=communities', () => {
+  it('drops the layers map when mode=communities', async () => {
     storage.writeCommunities(buildSnapshot());
     const handler = handleGetArchitecturalOverlay(storage, new MaskingPipeline());
-    const result = handler({ mode: 'communities' });
+    const result = await handler({ mode: 'communities' });
     const payload = JSON.parse(result.content[0]!.text);
     expect(payload.layers).toBeUndefined();
     expect(payload.communities).toBeDefined();
   });
 
-  it('drops the communities map when mode=regex', () => {
+  it('drops the communities map when mode=regex', async () => {
     storage.writeCommunities(buildSnapshot());
     const handler = handleGetArchitecturalOverlay(storage, new MaskingPipeline());
-    const result = handler({ mode: 'regex' });
+    const result = await handler({ mode: 'regex' });
     const payload = JSON.parse(result.content[0]!.text);
     expect(payload.layers).toBeDefined();
     expect(payload.communities).toBeUndefined();
   });
 
-  it('returns a hint when mode=communities but no snapshot exists', () => {
+  it('returns a hint when mode=communities but no snapshot exists', async () => {
     const handler = handleGetArchitecturalOverlay(storage, new MaskingPipeline());
-    const result = handler({ mode: 'communities' });
+    const result = await handler({ mode: 'communities' });
     const payload = JSON.parse(result.content[0]!.text);
     expect(payload.hint).toMatch(/ctxo index/);
   });
@@ -153,13 +153,37 @@ describe('GetArchitecturalOverlayHandler', () => {
     expect(overlay.clusters[0]!.godNodes).toContain('src/core/types.ts::T::type');
   });
 
-  it('wraps all responses with a _meta envelope', () => {
+  it('wraps all responses with a _meta envelope', async () => {
     const handler = handleGetArchitecturalOverlay(storage, new MaskingPipeline());
-    const full = JSON.parse(handler({}).content[0]!.text);
+    const full = JSON.parse((await handler({})).content[0]!.text);
     expect(full._meta).toBeDefined();
     expect(full._meta).toMatchObject({ truncated: expect.any(Boolean), totalBytes: expect.any(Number) });
 
-    const filtered = JSON.parse(handler({ layer: 'Domain' }).content[0]!.text);
+    const filtered = JSON.parse((await handler({ layer: 'Domain' })).content[0]!.text);
     expect(filtered._meta).toBeDefined();
+  });
+
+  it('surfaces snapshotStaleness in _meta when git reports HEAD ahead of snapshot', async () => {
+    storage.writeCommunities(buildSnapshot()); // commitSha: 'abc1234'
+    const git = {
+      getHeadSha: () => Promise.resolve('def5678'),
+      countCommitsBetween: () => Promise.resolve(3),
+    } as unknown as Parameters<typeof handleGetArchitecturalOverlay>[3];
+
+    const handler = handleGetArchitecturalOverlay(storage, new MaskingPipeline(), undefined, git);
+    const payload = JSON.parse((await handler({})).content[0]!.text);
+    expect(payload._meta.snapshotStaleness).toMatchObject({
+      snapshotCommit: 'abc1234',
+      currentHeadCommit: 'def5678',
+      commitsBehind: 3,
+    });
+    expect(payload._meta.snapshotStaleness.hint).toMatch(/behind HEAD/);
+  });
+
+  it('omits snapshotStaleness when git port is not provided', async () => {
+    storage.writeCommunities(buildSnapshot());
+    const handler = handleGetArchitecturalOverlay(storage, new MaskingPipeline());
+    const payload = JSON.parse((await handler({})).content[0]!.text);
+    expect(payload._meta.snapshotStaleness).toBeUndefined();
   });
 });

@@ -101,9 +101,9 @@ describe('NFR15/NFR17: MCP Spec Compliance — All 5 Tools', () => {
   });
 
   describe('get_blast_radius', () => {
-    it('success response conforms to MCP content shape', () => {
+    it('success response conforms to MCP content shape', async () => {
       const handler = handleGetBlastRadius(storage, masking, undefined, tempDir);
-      const result = handler({ symbolId: 'src/app.ts::main::function' });
+      const result = await handler({ symbolId: 'src/app.ts::main::function' });
       assertMcpResponseShape(result);
 
       const payload = JSON.parse(result.content[result.content.length - 1]!.text);
@@ -116,9 +116,9 @@ describe('NFR15/NFR17: MCP Spec Compliance — All 5 Tools', () => {
       expect(payload).toHaveProperty('impactedSymbols');
     });
 
-    it('miss response returns { found: false }', () => {
+    it('miss response returns { found: false }', async () => {
       const handler = handleGetBlastRadius(storage, masking, undefined, tempDir);
-      const result = handler({ symbolId: 'src/missing.ts::x::function' });
+      const result = await handler({ symbolId: 'src/missing.ts::x::function' });
       assertMcpResponseShape(result);
 
       const payload = JSON.parse(result.content[result.content.length - 1]!.text);
@@ -127,18 +127,18 @@ describe('NFR15/NFR17: MCP Spec Compliance — All 5 Tools', () => {
   });
 
   describe('get_architectural_overlay', () => {
-    it('success response conforms to MCP content shape', () => {
+    it('success response conforms to MCP content shape', async () => {
       const handler = handleGetArchitecturalOverlay(storage, masking);
-      const result = handler({});
+      const result = await handler({});
       assertMcpResponseShape(result);
 
       const payload = JSON.parse(result.content[result.content.length - 1]!.text);
       expect(payload).toHaveProperty('layers');
     });
 
-    it('filtered response returns layer + files', () => {
+    it('filtered response returns layer + files', async () => {
       const handler = handleGetArchitecturalOverlay(storage, masking);
-      const result = handler({ layer: 'Unknown' });
+      const result = await handler({ layer: 'Unknown' });
       assertMcpResponseShape(result);
 
       const payload = JSON.parse(result.content[result.content.length - 1]!.text);

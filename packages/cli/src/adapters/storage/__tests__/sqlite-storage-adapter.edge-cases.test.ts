@@ -22,7 +22,7 @@ describe('SqliteStorageAdapter — corrupt DB recovery', () => {
 
     adapter.close();
     spy.mockRestore();
-    rmSync(tempDir, { recursive: true, force: true });
+    rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   });
 });
 
@@ -51,7 +51,7 @@ describe('SqliteStorageAdapter — no FK constraints', () => {
     expect(sym?.name).toBe('fn');
 
     adapter.close();
-    rmSync(tempDir, { recursive: true, force: true });
+    rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   });
 
   it('stores all edges in bulkWrite regardless of insert order', async () => {
@@ -83,7 +83,7 @@ describe('SqliteStorageAdapter — no FK constraints', () => {
     expect(edges[0]?.to).toBe('src/b.ts::B::class');
 
     adapter.close();
-    rmSync(tempDir, { recursive: true, force: true });
+    rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   });
 });
 
@@ -97,6 +97,6 @@ describe('SqliteStorageAdapter — initEmpty', () => {
     expect(adapter.getAllSymbols()).toEqual([]);
 
     adapter.close();
-    rmSync(tempDir, { recursive: true, force: true });
+    rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   });
 });

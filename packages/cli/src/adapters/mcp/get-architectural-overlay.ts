@@ -1,8 +1,10 @@
 import { z } from 'zod';
+import type { IGitPort } from '../../ports/i-git-port.js';
 import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { ArchitecturalOverlay } from '../../core/overlay/architectural-overlay.js';
 import { wrapResponse } from '../../core/response-envelope.js';
+import { buildSnapshotStaleness } from '../../core/overlay/snapshot-staleness.js';
 import type { CommunitySnapshot, GodNode } from '../../core/types.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 
@@ -83,10 +85,11 @@ export function handleGetArchitecturalOverlay(
   storage: IStoragePort,
   masking: IMaskingPort,
   staleness?: StalenessCheck,
+  git?: IGitPort,
 ) {
   const overlay = new ArchitecturalOverlay();
 
-  return (args: Record<string, unknown>) => {
+  return async (args: Record<string, unknown>) => {
     try {
       const parsed = InputSchema.safeParse(args);
       if (!parsed.success) {
@@ -109,11 +112,14 @@ export function handleGetArchitecturalOverlay(
         return content;
       };
 
+      const stalenessMeta = git ? await buildSnapshotStaleness(storage, git) : undefined;
+      const extras = stalenessMeta ? { snapshotStaleness: stalenessMeta } : undefined;
+
       // Filter by layer if specified (regex-mode semantics always apply here)
       if (parsed.data.layer) {
         const filtered = result.layers[parsed.data.layer];
         const payload = masking.mask(
-          JSON.stringify(wrapResponse({ layer: parsed.data.layer, files: filtered ?? [] })),
+          JSON.stringify(wrapResponse({ layer: parsed.data.layer, files: filtered ?? [] }, extras)),
         );
         return { content: buildContent(payload) };
       }
@@ -128,7 +134,7 @@ export function handleGetArchitecturalOverlay(
         body.hint = 'No community snapshot available. Run `ctxo index` to generate one.';
       }
 
-      const payload = masking.mask(JSON.stringify(wrapResponse(body)));
+      const payload = masking.mask(JSON.stringify(wrapResponse(body, extras)));
       return { content: buildContent(payload) };
     } catch (err) {
       return {

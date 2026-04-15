@@ -180,7 +180,7 @@ function registerTools(
     (args) => changeIntelligenceHandler(args),
   );
 
-  const blastRadiusHandler = withRecording('get_blast_radius', handleGetBlastRadius(storage, masking, staleness, ctxoRoot), recorder);
+  const blastRadiusHandler = withRecording('get_blast_radius', handleGetBlastRadius(storage, masking, staleness, ctxoRoot, git), recorder);
 
   server.registerTool(
     'get_blast_radius',
@@ -196,7 +196,7 @@ function registerTools(
     (args) => blastRadiusHandler(args),
   );
 
-  const overlayHandler = withRecording('get_architectural_overlay', handleGetArchitecturalOverlay(storage, masking, staleness), recorder);
+  const overlayHandler = withRecording('get_architectural_overlay', handleGetArchitecturalOverlay(storage, masking, staleness, git), recorder);
 
   server.registerTool(
     'get_architectural_overlay',

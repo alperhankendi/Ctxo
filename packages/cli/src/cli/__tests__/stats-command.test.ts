@@ -28,7 +28,7 @@ describe('StatsCommand', () => {
   afterEach(() => {
     errorSpy.mockRestore();
     logSpy.mockRestore();
-    rmSync(tempDir, { recursive: true, force: true });
+    rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   });
 
   async function seedEvents(count: number): Promise<void> {
