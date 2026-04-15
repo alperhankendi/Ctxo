@@ -16,6 +16,7 @@ const log = createLogger('ctxo:community-snapshot');
 const DEFAULT_HISTORY_LIMIT = 10;
 const HISTORY_DIR_NAME = 'communities.history';
 const CURRENT_FILE_NAME = 'communities.json';
+const NOCOMMIT_SHA = 'nocommit';
 
 export class CommunitySnapshotWriter {
   private readonly indexDir: string;
@@ -36,13 +37,19 @@ export class CommunitySnapshotWriter {
     // overwriting. This keeps history as "snapshots older than current" —
     // drift and boundary-violation detectors compare current vs history[0]
     // and must not see current in both positions.
+    //
+    // Skip archival for snapshots whose commitSha is 'nocommit' (git
+    // unavailable at write time). They have no stable anchor for drift
+    // comparison and would pollute history with indistinguishable entries.
     const currentPath = join(this.indexDir, CURRENT_FILE_NAME);
     if (existsSync(currentPath)) {
       try {
         const existingRaw = readFileSync(currentPath, 'utf-8');
         const existing = JSON.parse(existingRaw) as CommunitySnapshot;
-        const historyFile = this.historyFilename(existing);
-        this.atomicWrite(join(this.historyDir, historyFile), existingRaw);
+        if (existing.commitSha && existing.commitSha !== NOCOMMIT_SHA) {
+          const historyFile = this.historyFilename(existing);
+          this.atomicWrite(join(this.historyDir, historyFile), existingRaw);
+        }
       } catch (err) {
         log.error(`failed to archive existing snapshot: ${(err as Error).message}`);
       }
@@ -66,11 +73,15 @@ export class CommunitySnapshotWriter {
       .filter((name) => name.endsWith('.json'))
       .sort()
       .reverse();
-    const bounded = typeof limit === 'number' ? entries.slice(0, limit) : entries;
     const snapshots: CommunitySnapshot[] = [];
-    for (const name of bounded) {
+    for (const name of entries) {
       const snap = this.safeParse(join(this.historyDir, name));
-      if (snap) snapshots.push(snap);
+      if (!snap) continue;
+      // Defense in depth: filter any legacy `nocommit` entries that slipped
+      // into history before the writer skip-archival guard landed.
+      if (!snap.commitSha || snap.commitSha === NOCOMMIT_SHA) continue;
+      snapshots.push(snap);
+      if (typeof limit === 'number' && snapshots.length >= limit) break;
     }
     return snapshots;
   }

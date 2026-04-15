@@ -2,7 +2,7 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 3,
+      "cyclomatic": 5,
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter.writeSnapshot::method"
     },
     {
@@ -10,7 +10,7 @@
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter.readCurrent::method"
     },
     {
-      "cyclomatic": 5,
+      "cyclomatic": 8,
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter.listHistory::method"
     },
     {
@@ -30,7 +30,7 @@
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter.safeParse::method"
     }
   ],
-  "contentHash": "4aee1b5c6066e85c4e833714ea4239bcc0e4d710908949be5947b499d8e07f5e",
+  "contentHash": "004f8f5e6d8a7b9224162935898410e5fb321038a71a9e7868944542a08d394a",
   "edges": [
     {
       "from": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter::class",
@@ -90,79 +90,86 @@
     }
   ],
   "file": "packages/cli/src/adapters/storage/community-snapshot-writer.ts",
-  "intent": [],
-  "lastModified": 1776292784,
+  "intent": [
+    {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    }
+  ],
+  "lastModified": 1776294236,
   "symbols": [
     {
-      "endLine": 122,
-      "endOffset": 4230,
+      "endLine": 133,
+      "endOffset": 4799,
       "kind": "class",
       "name": "CommunitySnapshotWriter",
-      "startLine": 19,
-      "startOffset": 492,
+      "startLine": 20,
+      "startOffset": 525,
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter::class"
     },
     {
-      "endLine": 54,
-      "endOffset": 1938,
+      "endLine": 61,
+      "endOffset": 2283,
       "kind": "method",
       "name": "CommunitySnapshotWriter.writeSnapshot",
-      "startLine": 30,
-      "startOffset": 880,
+      "startLine": 31,
+      "startOffset": 913,
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter.writeSnapshot::method"
     },
     {
-      "endLine": 60,
-      "endOffset": 2127,
+      "endLine": 67,
+      "endOffset": 2472,
       "kind": "method",
       "name": "CommunitySnapshotWriter.readCurrent",
-      "startLine": 56,
-      "startOffset": 1942,
+      "startLine": 63,
+      "startOffset": 2287,
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter.readCurrent::method"
     },
     {
-      "endLine": 75,
-      "endOffset": 2657,
+      "endLine": 86,
+      "endOffset": 3226,
       "kind": "method",
       "name": "CommunitySnapshotWriter.listHistory",
-      "startLine": 62,
-      "startOffset": 2131,
+      "startLine": 69,
+      "startOffset": 2476,
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter.listHistory::method"
     },
     {
-      "endLine": 79,
-      "endOffset": 2767,
+      "endLine": 90,
+      "endOffset": 3336,
       "kind": "method",
       "name": "CommunitySnapshotWriter.atomicWrite",
-      "startLine": 77,
-      "startOffset": 2661,
+      "startLine": 88,
+      "startOffset": 3230,
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter.atomicWrite::method"
     },
     {
-      "endLine": 94,
-      "endOffset": 3378,
+      "endLine": 105,
+      "endOffset": 3947,
       "kind": "method",
       "name": "CommunitySnapshotWriter.historyFilename",
-      "startLine": 81,
-      "startOffset": 2771,
+      "startLine": 92,
+      "startOffset": 3340,
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter.historyFilename::method"
     },
     {
-      "endLine": 111,
-      "endOffset": 3917,
+      "endLine": 122,
+      "endOffset": 4486,
       "kind": "method",
       "name": "CommunitySnapshotWriter.rotateHistory",
-      "startLine": 96,
-      "startOffset": 3382,
+      "startLine": 107,
+      "startOffset": 3951,
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter.rotateHistory::method"
     },
     {
-      "endLine": 121,
-      "endOffset": 4228,
+      "endLine": 132,
+      "endOffset": 4797,
       "kind": "method",
       "name": "CommunitySnapshotWriter.safeParse",
-      "startLine": 113,
-      "startOffset": 3921,
+      "startLine": 124,
+      "startOffset": 4490,
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter.safeParse::method"
     }
   ]

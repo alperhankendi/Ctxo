@@ -1,0 +1,101 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "d3620a31ab182b26a37b03e9810744ccce73cea2c179a3c216b6819099e96e9d",
+  "edges": [
+    {
+      "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
+      "kind": "imports",
+      "to": "../src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+    },
+    {
+      "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
+      "kind": "imports",
+      "to": "../src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+    },
+    {
+      "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
+      "kind": "imports",
+      "to": "../src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+    },
+    {
+      "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
+      "kind": "imports",
+      "to": "../src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function"
+    },
+    {
+      "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
+      "kind": "imports",
+      "to": "../src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
+    },
+    {
+      "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
+      "kind": "imports",
+      "to": "../src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function"
+    },
+    {
+      "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
+      "kind": "imports",
+      "to": "../src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
+    },
+    {
+      "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
+      "kind": "imports",
+      "to": "../src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
+    },
+    {
+      "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
+      "kind": "imports",
+      "to": "../src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function"
+    },
+    {
+      "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
+      "kind": "imports",
+      "to": "../src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function"
+    },
+    {
+      "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
+      "kind": "imports",
+      "to": "../src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function"
+    },
+    {
+      "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
+      "kind": "imports",
+      "to": "../src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function"
+    },
+    {
+      "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
+      "kind": "imports",
+      "to": "../src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function"
+    },
+    {
+      "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
+      "kind": "imports",
+      "to": "../src/adapters/mcp/find-importers.ts::handleFindImporters::function"
+    },
+    {
+      "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
+      "kind": "imports",
+      "to": "../src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function"
+    },
+    {
+      "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
+      "kind": "imports",
+      "to": "../src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function"
+    },
+    {
+      "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
+      "kind": "imports",
+      "to": "../src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
+    },
+    {
+      "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
+      "kind": "imports",
+      "to": "../src/core/staleness/staleness-detector.ts::StalenessDetector::class"
+    }
+  ],
+  "file": "packages/cli/tmp-smoke.ts",
+  "intent": [],
+  "lastModified": 1776294236,
+  "symbols": []
+}

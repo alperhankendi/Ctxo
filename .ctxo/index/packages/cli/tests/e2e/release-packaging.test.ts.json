@@ -6,6 +6,12 @@
   "file": "packages/cli/tests/e2e/release-packaging.test.ts",
   "intent": [
     {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    },
+    {
       "date": "2026-04-14T01:25:48+03:00",
       "hash": "9c1905c524791585a13e2bc0739f108be98f851e",
       "kind": "commit",
@@ -18,6 +24,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776292785,
+  "lastModified": 1776294237,
   "symbols": []
 }

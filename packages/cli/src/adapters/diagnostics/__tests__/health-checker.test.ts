@@ -126,7 +126,7 @@ describe('HealthChecker', () => {
     }
   });
 
-  it('suppresses PASS lines in quiet mode but still logs WARN and FAIL', async () => {
+  it('suppresses all per-check logger lines in quiet mode (reporter still prints WARN/FAIL)', async () => {
     const checks = [
       mockCheck('a', { status: 'pass' }),
       mockCheck('b', { status: 'warn', message: 'look here' }),
@@ -134,22 +134,25 @@ describe('HealthChecker', () => {
     ];
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
     try {
-      await new HealthChecker(checks, { quiet: true }).runAll(ctx);
+      const report = await new HealthChecker(checks, { quiet: true }).runAll(ctx);
       const lines = spy.mock.calls.map((c) => String(c[0]));
       expect(lines.some((l) => l.includes('a: PASS'))).toBe(false);
-      expect(lines.some((l) => l.includes('b: WARN'))).toBe(true);
-      expect(lines.some((l) => l.includes('c: FAIL'))).toBe(true);
+      expect(lines.some((l) => l.includes('b: WARN'))).toBe(false);
+      expect(lines.some((l) => l.includes('c: FAIL'))).toBe(false);
+      // Results still include the WARN/FAIL data for the reporter to render.
+      expect(report.summary).toEqual({ pass: 1, warn: 1, fail: 1 });
     } finally {
       spy.mockRestore();
     }
   });
 
-  it('still logs ERROR lines for crashing checks in quiet mode', async () => {
+  it('suppresses ERROR logger lines for crashing checks in quiet mode but still records the FAIL result', async () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
     try {
-      await new HealthChecker([crashingCheck('crashy', 'boom')], { quiet: true }).runAll(ctx);
+      const report = await new HealthChecker([crashingCheck('crashy', 'boom')], { quiet: true }).runAll(ctx);
       const lines = spy.mock.calls.map((c) => String(c[0]));
-      expect(lines.some((l) => l.includes('crashy: FAIL'))).toBe(true);
+      expect(lines.some((l) => l.includes('crashy: FAIL'))).toBe(false);
+      expect(report.summary.fail).toBe(1);
     } finally {
       spy.mockRestore();
     }

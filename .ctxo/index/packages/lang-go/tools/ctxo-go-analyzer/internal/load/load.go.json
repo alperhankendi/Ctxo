@@ -72,7 +72,7 @@
       "message": "feat(lang-go/analyzer): add go/packages loader + AST symbol extraction"
     }
   ],
-  "lastModified": 1776292786,
+  "lastModified": 1776294237,
   "symbols": [
     {
       "endLine": 53,

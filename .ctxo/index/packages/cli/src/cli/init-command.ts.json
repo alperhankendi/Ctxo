@@ -327,6 +327,12 @@
   "file": "packages/cli/src/cli/init-command.ts",
   "intent": [
     {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    },
+    {
       "date": "2026-04-13T03:22:13+03:00",
       "hash": "91d55991eca1d4419e539875a97312e7747d6464",
       "kind": "commit",
@@ -357,7 +363,7 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776292785,
+  "lastModified": 1776294236,
   "symbols": [
     {
       "endLine": 507,

@@ -143,13 +143,53 @@ describe('CommunitySnapshotWriter', () => {
     expect(history[0]!.commitSha).toBe('ok');
   });
 
-  it('falls back when snapshot commit sha is empty', () => {
+  it('does NOT archive a nocommit snapshot into history (drift anchor invariant)', () => {
+    // With no git, the CLI records commitSha='nocommit'. Such snapshots have
+    // no stable comparison anchor — they must not pollute the history chain
+    // that drift/boundary-violation detectors read.
     const writer = new CommunitySnapshotWriter(ctxoRoot);
-    writer.writeSnapshot(makeSnapshot({ commitSha: '' }));
-    // Second write pushes the empty-sha snapshot into history.
-    writer.writeSnapshot(makeSnapshot({ computedAt: '2026-04-16T11:00:00.000Z', commitSha: 'next' }));
-    const history = readdirSync(join(ctxoRoot, 'index', 'communities.history'));
-    expect(history[0]).toContain('nocommit');
+    writer.writeSnapshot(makeSnapshot({ commitSha: 'nocommit' }));
+    writer.writeSnapshot(
+      makeSnapshot({ computedAt: '2026-04-16T11:00:00.000Z', commitSha: 'real1' }),
+    );
+    const historyFiles = readdirSync(join(ctxoRoot, 'index', 'communities.history'));
+    expect(historyFiles).toHaveLength(0);
+    expect(writer.listHistory()).toHaveLength(0);
+  });
+
+  it('archives successor snapshots normally even after a nocommit predecessor', () => {
+    const writer = new CommunitySnapshotWriter(ctxoRoot);
+    writer.writeSnapshot(makeSnapshot({ commitSha: 'nocommit' }));
+    writer.writeSnapshot(
+      makeSnapshot({ computedAt: '2026-04-16T11:00:00.000Z', commitSha: 'real1' }),
+    );
+    writer.writeSnapshot(
+      makeSnapshot({ computedAt: '2026-04-16T12:00:00.000Z', commitSha: 'real2' }),
+    );
+    const history = writer.listHistory();
+    // Only real1 lands in history (nocommit was skipped, real2 is current).
+    expect(history).toHaveLength(1);
+    expect(history[0]!.commitSha).toBe('real1');
+  });
+
+  it('filters legacy nocommit entries out of listHistory (defense in depth)', () => {
+    const writer = new CommunitySnapshotWriter(ctxoRoot);
+    // Seed a real snapshot first so history dir exists.
+    writer.writeSnapshot(makeSnapshot({ commitSha: 'real0' }));
+    writer.writeSnapshot(
+      makeSnapshot({ computedAt: '2026-04-16T11:00:00.000Z', commitSha: 'real1' }),
+    );
+    // Drop a legacy nocommit snapshot directly into history (simulates data
+    // written before the archival guard landed).
+    const histDir = join(ctxoRoot, 'index', 'communities.history');
+    writeFileSync(
+      join(histDir, '2026-04-16T10-30-00-000Z-nocommit.json'),
+      JSON.stringify(makeSnapshot({ commitSha: 'nocommit' })),
+    );
+
+    const history = writer.listHistory();
+    expect(history.every((s) => s.commitSha !== 'nocommit' && s.commitSha !== '')).toBe(true);
+    expect(history.some((s) => s.commitSha === 'real0')).toBe(true);
   });
 
   it('persists JSON with indentation', () => {

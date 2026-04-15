@@ -22,7 +22,14 @@
     }
   ],
   "file": "packages/cli/src/core/overlay/__tests__/drift-detector.test.ts",
-  "intent": [],
-  "lastModified": 1776292784,
+  "intent": [
+    {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    }
+  ],
+  "lastModified": 1776294236,
   "symbols": []
 }

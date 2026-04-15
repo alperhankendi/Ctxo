@@ -353,6 +353,12 @@
   "file": "packages/cli/src/cli/doctor-command.ts",
   "intent": [
     {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    },
+    {
       "date": "2026-04-13T02:28:53+03:00",
       "hash": "7174b669e8f74f8770aeeaa22475639fe090732d",
       "kind": "commit",
@@ -371,7 +377,7 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776292785,
+  "lastModified": 1776294236,
   "symbols": [
     {
       "endLine": 112,

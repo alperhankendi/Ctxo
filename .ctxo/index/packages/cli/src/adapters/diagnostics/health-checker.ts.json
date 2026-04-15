@@ -6,7 +6,7 @@
       "symbolId": "packages/cli/src/adapters/diagnostics/health-checker.ts::HealthChecker.runAll::method"
     }
   ],
-  "contentHash": "50326d73d77960352c6ddcb353a961facb61637e4e2a17bab2263b73d10e35d1",
+  "contentHash": "5c4a7ce7be76e076005fcb2beade44693805b2e20c0fa40f8c79d5e2ad179947",
   "edges": [
     {
       "from": "packages/cli/src/adapters/diagnostics/health-checker.ts::HealthChecker::class",
@@ -61,35 +61,41 @@
   "file": "packages/cli/src/adapters/diagnostics/health-checker.ts",
   "intent": [
     {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    },
+    {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
       "kind": "commit",
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776292785,
+  "lastModified": 1776294236,
   "symbols": [
     {
-      "endLine": 55,
-      "endOffset": 1881,
+      "endLine": 53,
+      "endOffset": 1820,
       "kind": "class",
       "name": "HealthChecker",
       "startLine": 10,
-      "startOffset": 360,
+      "startOffset": 446,
       "symbolId": "packages/cli/src/adapters/diagnostics/health-checker.ts::HealthChecker::class"
     },
     {
-      "endLine": 54,
-      "endOffset": 1879,
+      "endLine": 52,
+      "endOffset": 1818,
       "kind": "method",
       "name": "HealthChecker.runAll",
       "startLine": 19,
-      "startOffset": 618,
+      "startOffset": 704,
       "symbolId": "packages/cli/src/adapters/diagnostics/health-checker.ts::HealthChecker.runAll::method"
     },
     {
       "endLine": 8,
-      "endOffset": 358,
+      "endOffset": 444,
       "kind": "interface",
       "name": "HealthCheckerOptions",
       "startLine": 5,

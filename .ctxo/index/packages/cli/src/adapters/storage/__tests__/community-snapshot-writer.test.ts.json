@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "c50891e6e80b287f19c8c123ca0cd95e43ca1ebba2b47ea6feb569f0d24f54f5",
+  "contentHash": "f8c1331ebea5dc0180dcd8b9275b0fc294885dbb56c42af015cdab827d5b8ea4",
   "edges": [
     {
       "from": "packages/cli/src/adapters/storage/__tests__/community-snapshot-writer.test.ts::community-snapshot-writer.test::variable",
@@ -16,7 +16,14 @@
     }
   ],
   "file": "packages/cli/src/adapters/storage/__tests__/community-snapshot-writer.test.ts",
-  "intent": [],
-  "lastModified": 1776292784,
+  "intent": [
+    {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    }
+  ],
+  "lastModified": 1776294236,
   "symbols": []
 }

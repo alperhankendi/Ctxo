@@ -68,9 +68,10 @@ time pnpm --filter @ctxo/cli exec tsx src/index.ts index
 * [ ] Output shows `[ctxo] Community detection: M clusters (modularity X.XXX)` with modularity ≥ 0.3
 * [ ] `.ctxo/index/` contains JSON files
 * [ ] `.ctxo/index/communities.json` exists and is valid JSON (version: 1)
-* [ ] `.ctxo/index/communities.history/<ISO>-<sha>.json` exists for this run
 * [ ] No errors on stderr
 * [ ] Build time under 10 seconds
+
+> **Note:** `.ctxo/index/communities.history/<ISO>-<sha>.json` is **not** created on the first run after a wipe — rotation only kicks in from the second `ctxo index` onward. See Step 2.7.
 
 ### 2.2 `--check` Flag (CI Gate)
 
@@ -127,7 +128,8 @@ pnpm --filter @ctxo/cli exec tsx src/index.ts index --file packages/cli/src/core
 **Verify:**
 
 * [ ] Only `packages/cli/src/core/types.ts` is re-indexed
-* [ ] Output shows 1 file indexed
+* [ ] Output shows `[ctxo] Community detection (incremental, full-graph recompute): N clusters (modularity X.XXX)` — community detection reruns over the full merged graph (new file + existing committed index), not over the 1-file subgraph
+* [ ] Output shows 1 file indexed (`[ctxo] Index complete: 1 files indexed`)
 * [ ] Other index files are unchanged
 
 ### 2.6 `--skip-community` Flag (opt out of community detection)
@@ -148,17 +150,23 @@ time pnpm --filter @ctxo/cli exec tsx src/index.ts index --skip-community
 
 ### 2.7 Snapshot History Rotation (run index twice)
 
+> **Behavior note:** The first post-wipe `ctxo index` writes `communities.json` but does **not** create a `communities.history/` entry — history rotation is only triggered when there is a previous snapshot to rotate. So history files start appearing from the second run onward.
+
 ```bash
-pnpm --filter @ctxo/cli exec tsx src/index.ts index
-pnpm --filter @ctxo/cli exec tsx src/index.ts index
+rm -rf .ctxo/.cache/ .ctxo/index/
+pnpm --filter @ctxo/cli exec tsx src/index.ts index  # run 1 — writes communities.json, no history
+pnpm --filter @ctxo/cli exec tsx src/index.ts index  # run 2 — rotates previous snapshot into history
+pnpm --filter @ctxo/cli exec tsx src/index.ts index  # run 3
 ls .ctxo/index/communities.history/
 ```
 
 **Verify:**
 
-* [ ] At least 2 snapshot files exist in `communities.history/`
-* [ ] File names are `<ISO-timestamp>-<git-short-sha>.json`
-* [ ] Max 10 files kept (FIFO eviction; verify by running `ctxo index` 11 times and confirming oldest file is removed)
+* [ ] After run 1: `communities.history/` is empty (or absent).
+* [ ] After run 2: exactly 1 snapshot file exists in `communities.history/`.
+* [ ] After run 3: at least 2 snapshot files exist.
+* [ ] File names are `<ISO-timestamp>-<git-short-sha>.json`.
+* [ ] Max 10 files kept (FIFO eviction; verify by running `ctxo index` 11 times after an initial snapshot exists and confirming the oldest file is removed).
 
 ### 2.8 `--max-history` Invalid Input
 

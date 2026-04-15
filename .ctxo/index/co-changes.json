@@ -1,16 +1,16 @@
 {
   "version": 1,
-  "timestamp": 1776292787,
+  "timestamp": 1776294238,
   "entries": [
-    {
-      "file1": "packages/cli/src/cli/__tests__/ai-rules.test.ts",
-      "file2": "packages/cli/src/cli/ai-rules.ts",
-      "sharedCommits": 4,
-      "frequency": 1
-    },
     {
       "file1": "packages/cli/src/cli/index-command.ts",
       "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 5,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/__tests__/ai-rules.test.ts",
+      "file2": "packages/cli/src/cli/ai-rules.ts",
       "sharedCommits": 4,
       "frequency": 1
     },
@@ -33,6 +33,144 @@
       "frequency": 1
     },
     {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/cli/cli-router.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
       "file1": "packages/cli/src/adapters/diagnostics/__tests__/runtime-check.test.ts",
       "file2": "packages/cli/src/adapters/language/__tests__/language-adapter-registry.test.ts",
       "sharedCommits": 2,
@@ -81,6 +219,138 @@
       "frequency": 1
     },
     {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/cli/cli-router.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
       "file1": "packages/cli/src/adapters/language/__tests__/language-adapter-registry.test.ts",
       "file2": "packages/cli/src/adapters/language/language-adapter-registry.ts",
       "sharedCommits": 2,
@@ -119,6 +389,252 @@
     {
       "file1": "packages/cli/src/adapters/language/language-adapter-registry.ts",
       "file2": "packages/cli/src/ports/i-language-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/cli/cli-router.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/src/cli/cli-router.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
@@ -141,8 +657,878 @@
       "frequency": 1
     },
     {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/src/cli/cli-router.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/src/cli/cli-router.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "file2": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "file2": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "file2": "packages/cli/src/cli/cli-router.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "file2": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "file2": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "file2": "packages/cli/src/cli/cli-router.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "file2": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "file2": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "file2": "packages/cli/src/cli/cli-router.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "file2": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "file2": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "file2": "packages/cli/src/cli/cli-router.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "file2": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "file2": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "file2": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "file2": "packages/cli/src/cli/cli-router.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-reader.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "file2": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "file2": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "file2": "packages/cli/src/cli/cli-router.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/json-index-writer.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "file2": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "file2": "packages/cli/src/cli/cli-router.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
       "file1": "packages/cli/src/cli/__tests__/ai-rules.test.ts",
       "file2": "packages/cli/src/cli/__tests__/init-command.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "file2": "packages/cli/src/cli/cli-router.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
@@ -159,14 +1545,104 @@
       "frequency": 1
     },
     {
+      "file1": "packages/cli/src/cli/cli-router.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/cli-router.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/cli-router.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/doctor-command.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/doctor-command.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/doctor-command.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/index-command.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
       "file1": "packages/cli/src/cli/index-command.ts",
       "file2": "packages/cli/src/ports/i-language-adapter.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
     {
+      "file1": "packages/cli/src/cli/index-command.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/index-command.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/init-command.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/init-command.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/init-command.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/watch-command.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
       "file1": "packages/cli/src/cli/watch-command.ts",
       "file2": "packages/cli/src/ports/i-language-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/watch-command.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/watch-command.ts",
+      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
@@ -178,7 +1654,55 @@
     },
     {
       "file1": "packages/cli/src/core/response-envelope.ts",
-      "file2": "packages/cli/src/index.ts",
+      "file2": "packages/cli/src/core/types.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/core/response-envelope.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/core/response-envelope.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/core/types.ts",
+      "file2": "packages/cli/src/ports/i-storage-port.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/core/types.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/core/types.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/ports/i-storage-port.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/ports/i-storage-port.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
@@ -261,20 +1785,92 @@
       "frequency": 0.75
     },
     {
-      "file1": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts",
+      "file1": "packages/cli/src/cli/cli-router.ts",
       "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 3,
+      "frequency": 0.75
+    },
+    {
+      "file1": "packages/cli/src/cli/cli-router.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 4,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/cli/cli-router.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
       "sharedCommits": 2,
       "frequency": 0.667
     },
     {
       "file1": "packages/cli/src/cli/cli-router.ts",
-      "file2": "packages/cli/src/cli/doctor-command.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/cli/doctor-command.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/cli/doctor-command.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/cli/index-command.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
       "sharedCommits": 2,
       "frequency": 0.667
     },
     {
       "file1": "packages/cli/src/cli/index-command.ts",
       "file2": "packages/cli/src/index.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/cli/index-command.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/cli/init-command.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/cli/init-command.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/cli/watch-command.ts",
+      "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/cli/watch-command.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/core/response-envelope.ts",
+      "file2": "packages/cli/src/index.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/core/response-envelope.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
       "sharedCommits": 2,
       "frequency": 0.667
     },
@@ -291,10 +1887,10 @@
       "frequency": 0.667
     },
     {
-      "file1": "packages/cli/src/cli/cli-router.ts",
-      "file2": "packages/cli/src/cli/init-command.ts",
-      "sharedCommits": 3,
-      "frequency": 0.6
+      "file1": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts",
+      "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 0.5
     },
     {
       "file1": "packages/cli/src/cli/__tests__/ai-rules.test.ts",
@@ -309,10 +1905,46 @@
       "frequency": 0.5
     },
     {
-      "file1": "packages/cli/src/cli/cli-router.ts",
+      "file1": "packages/cli/src/cli/doctor-command.ts",
       "file2": "packages/cli/src/cli/index-command.ts",
       "sharedCommits": 2,
-      "frequency": 0.286
+      "frequency": 0.5
+    },
+    {
+      "file1": "packages/cli/src/cli/doctor-command.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 0.5
+    },
+    {
+      "file1": "packages/cli/src/cli/doctor-command.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 0.5
+    },
+    {
+      "file1": "packages/cli/src/cli/cli-router.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 0.4
+    },
+    {
+      "file1": "packages/cli/src/cli/init-command.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 0.4
+    },
+    {
+      "file1": "packages/cli/src/cli/cli-router.ts",
+      "file2": "packages/cli/src/cli/index-command.ts",
+      "sharedCommits": 3,
+      "frequency": 0.375
+    },
+    {
+      "file1": "packages/cli/src/cli/index-command.ts",
+      "file2": "packages/cli/src/cli/init-command.ts",
+      "sharedCommits": 2,
+      "frequency": 0.333
     }
   ]
 }

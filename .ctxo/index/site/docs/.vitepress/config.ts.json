@@ -6,6 +6,12 @@
   "file": "site/docs/.vitepress/config.ts",
   "intent": [
     {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    },
+    {
       "date": "2026-04-15T23:30:11+03:00",
       "hash": "bcfc86daa71b2b132ded919afc2b68c64080e749",
       "kind": "commit",
@@ -66,6 +72,6 @@
       "message": "feat(site): VitePress docs site + Geist brand font"
     }
   ],
-  "lastModified": 1776292786,
+  "lastModified": 1776294237,
   "symbols": []
 }

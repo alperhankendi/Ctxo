@@ -1,24 +1,24 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { SqliteStorageAdapter } from '../../../src/adapters/storage/sqlite-storage-adapter.js';
-import { MaskingPipeline } from '../../../src/core/masking/masking-pipeline.js';
-import { SimpleGitAdapter } from '../../../src/adapters/git/simple-git-adapter.js';
-import { handleGetLogicSlice } from '../../../src/adapters/mcp/get-logic-slice.js';
-import { handleGetWhyContext } from '../../../src/adapters/mcp/get-why-context.js';
-import { handleGetChangeIntelligence } from '../../../src/adapters/mcp/get-change-intelligence.js';
-import { handleGetBlastRadius } from '../../../src/adapters/mcp/get-blast-radius.js';
-import { handleGetArchitecturalOverlay } from '../../../src/adapters/mcp/get-architectural-overlay.js';
-import { handleFindDeadCode } from '../../../src/adapters/mcp/get-dead-code.js';
-import { handleGetContextForTask } from '../../../src/adapters/mcp/get-context-for-task.js';
-import { handleGetRankedContext } from '../../../src/adapters/mcp/get-ranked-context.js';
-import { handleSearchSymbols } from '../../../src/adapters/mcp/search-symbols.js';
-import { handleGetChangedSymbols } from '../../../src/adapters/mcp/get-changed-symbols.js';
-import { handleFindImporters } from '../../../src/adapters/mcp/find-importers.js';
-import { handleGetClassHierarchy } from '../../../src/adapters/mcp/get-class-hierarchy.js';
-import { handleGetSymbolImportance } from '../../../src/adapters/mcp/get-symbol-importance.js';
-import { handleGetPrImpact } from '../../../src/adapters/mcp/get-pr-impact.js';
-import { StalenessDetector } from '../../../src/core/staleness/staleness-detector.js';
+import { SqliteStorageAdapter } from '../../../packages/cli/src/adapters/storage/sqlite-storage-adapter.js';
+import { MaskingPipeline } from '../../../packages/cli/src/core/masking/masking-pipeline.js';
+import { SimpleGitAdapter } from '../../../packages/cli/src/adapters/git/simple-git-adapter.js';
+import { handleGetLogicSlice } from '../../../packages/cli/src/adapters/mcp/get-logic-slice.js';
+import { handleGetWhyContext } from '../../../packages/cli/src/adapters/mcp/get-why-context.js';
+import { handleGetChangeIntelligence } from '../../../packages/cli/src/adapters/mcp/get-change-intelligence.js';
+import { handleGetBlastRadius } from '../../../packages/cli/src/adapters/mcp/get-blast-radius.js';
+import { handleGetArchitecturalOverlay } from '../../../packages/cli/src/adapters/mcp/get-architectural-overlay.js';
+import { handleFindDeadCode } from '../../../packages/cli/src/adapters/mcp/get-dead-code.js';
+import { handleGetContextForTask } from '../../../packages/cli/src/adapters/mcp/get-context-for-task.js';
+import { handleGetRankedContext } from '../../../packages/cli/src/adapters/mcp/get-ranked-context.js';
+import { handleSearchSymbols } from '../../../packages/cli/src/adapters/mcp/search-symbols.js';
+import { handleGetChangedSymbols } from '../../../packages/cli/src/adapters/mcp/get-changed-symbols.js';
+import { handleFindImporters } from '../../../packages/cli/src/adapters/mcp/find-importers.js';
+import { handleGetClassHierarchy } from '../../../packages/cli/src/adapters/mcp/get-class-hierarchy.js';
+import { handleGetSymbolImportance } from '../../../packages/cli/src/adapters/mcp/get-symbol-importance.js';
+import { handleGetPrImpact } from '../../../packages/cli/src/adapters/mcp/get-pr-impact.js';
+import { StalenessDetector } from '../../../packages/cli/src/core/staleness/staleness-detector.js';
 import { z } from 'zod';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -99,17 +99,17 @@ async function main() {
 
   // Run all 14 tool tests
   const tests: [string, Record<string, any>][] = [
-    ['get_logic_slice', { symbolId: 'src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class', level: 3 }],
-    ['get_blast_radius', { symbolId: 'src/core/types.ts::SymbolNode::type' }],
+    ['get_logic_slice', { symbolId: 'packages/cli/src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class', level: 3 }],
+    ['get_blast_radius', { symbolId: 'packages/cli/src/core/types.ts::SymbolNode::type' }],
     ['get_architectural_overlay', {}],
-    ['get_why_context', { symbolId: 'src/core/masking/masking-pipeline.ts::MaskingPipeline::class' }],
-    ['get_change_intelligence', { symbolId: 'src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class' }],
+    ['get_why_context', { symbolId: 'packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class' }],
+    ['get_change_intelligence', { symbolId: 'packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class' }],
     ['find_dead_code', {}],
-    ['get_context_for_task', { symbolId: 'src/core/graph/symbol-graph.ts::SymbolGraph::class', taskType: 'understand' }],
+    ['get_context_for_task', { symbolId: 'packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class', taskType: 'understand' }],
     ['get_ranked_context', { query: 'masking', tokenBudget: 2000 }],
     ['search_symbols', { pattern: '^handle', kind: 'function' }],
     ['get_changed_symbols', { since: 'HEAD~3' }],
-    ['find_importers', { symbolId: 'src/core/types.ts::SymbolNode::type', transitive: true }],
+    ['find_importers', { symbolId: 'packages/cli/src/core/types.ts::SymbolNode::type', transitive: true }],
     ['get_class_hierarchy', {}],
     ['get_symbol_importance', { limit: 10 }],
     ['get_pr_impact', { since: 'HEAD~3' }],
