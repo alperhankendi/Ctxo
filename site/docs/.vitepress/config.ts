@@ -18,8 +18,36 @@ export default defineConfig({
     theme: 'github-dark-dimmed',
   },
 
+  sitemap: {
+    hostname: 'https://alperhankendi.github.io/Ctxo/docs/',
+  },
+
   head: [
+    // Favicon
     ['link', { rel: 'icon', href: '/Ctxo/docs/logo.svg', type: 'image/svg+xml' }],
+    ['link', { rel: 'apple-touch-icon', href: '/Ctxo/docs/apple-touch-icon.png' }],
+
+    // Theme colour (brand teal)
+    ['meta', { name: 'theme-color', content: '#0d9488' }],
+
+    // Open Graph (shared by Facebook, LinkedIn, Slack, Discord, etc.)
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:site_name', content: 'Ctxo' }],
+    ['meta', { property: 'og:title', content: 'Ctxo — Dependency-aware context for AI coding agents' }],
+    ['meta', { property: 'og:description', content: "AI agents don't fail because they can't code. They fail because they code blind. Ctxo gives them the full picture before they write a single line." }],
+    ['meta', { property: 'og:url', content: 'https://alperhankendi.github.io/Ctxo/' }],
+    ['meta', { property: 'og:image', content: 'https://alperhankendi.github.io/Ctxo/docs/social-preview.png' }],
+    ['meta', { property: 'og:image:width', content: '1200' }],
+    ['meta', { property: 'og:image:height', content: '630' }],
+
+    // Twitter / X card
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: 'Ctxo — Dependency-aware context for AI coding agents' }],
+    ['meta', { name: 'twitter:description', content: "Logic-Slices, blast radius, git intent — all via MCP, under 500ms." }],
+    ['meta', { name: 'twitter:image', content: 'https://alperhankendi.github.io/Ctxo/docs/social-preview.png' }],
+
+    // AI-native discovery
+    ['link', { rel: 'alternate', type: 'text/plain', href: '/Ctxo/docs/llms.txt', title: 'LLM-friendly manifest' }],
   ],
 
   themeConfig: {
