@@ -171,4 +171,26 @@ describe('GetWhyContextHandler', () => {
     expect(payload.commitHistory).toEqual([]);
     expect(payload.antiPatternWarnings).toEqual([]);
   });
+
+  it('includes driftSignals with a hint when snapshot history is thin', async () => {
+    storage.writeCommunities({
+      version: 1,
+      computedAt: '2026-04-16T10:00:00.000Z',
+      commitSha: 'abc1234',
+      modularity: 0.5,
+      communities: [
+        { symbolId: 'src/foo.ts::processPayment::function', communityId: 0, communityLabel: 'billing' },
+      ],
+      godNodes: [],
+      edgeQuality: 'full',
+      crossClusterEdges: 0,
+    });
+    const git = createMockGit([]);
+    const handler = handleGetWhyContext(storage, git, new MaskingPipeline(), undefined, tempDir);
+    const result = await handler({ symbolId: 'src/foo.ts::processPayment::function' });
+    const payload = JSON.parse(result.content[0]!.text);
+    expect(payload.driftSignals).toBeDefined();
+    expect(payload.driftSignals.confidence).toBe('low');
+    expect(payload.driftSignals.hint).toMatch(/post-commit|ctxo index/);
+  });
 });

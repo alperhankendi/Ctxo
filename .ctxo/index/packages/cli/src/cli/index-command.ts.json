@@ -6,7 +6,7 @@
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.loadIgnoreConfig::method"
     },
     {
-      "cyclomatic": 32,
+      "cyclomatic": 41,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method"
     },
     {
@@ -40,9 +40,17 @@
     {
       "cyclomatic": 3,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.buildGraphInputIndices::method"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.buildCommunitySnapshot::method"
     }
   ],
-  "contentHash": "9171ebec43518e791cbe0a6f15d8cec285c8bac912ef396145ade52d7e3bea4f",
+  "contentHash": "cd944e8a61e8f4e7656b8dd50f603face38cca600a3b0e3b6e86d14c4819bacf",
   "edges": [
     {
       "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
@@ -118,6 +126,11 @@
     {
       "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
       "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
       "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
     },
     {
@@ -139,6 +152,33 @@
       "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
       "kind": "imports",
       "to": "packages/cli/src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::EdgeQuality::type",
+      "typeOnly": true
     },
     {
       "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
@@ -216,6 +256,21 @@
       "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
       "kind": "calls",
       "to": "packages/cli/src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand.buildGraphInputIndices::method"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand.buildCommunitySnapshot::method"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::countCommunities::function"
     },
     {
       "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
@@ -318,6 +373,41 @@
       "to": "packages/cli/src/core/staleness/content-hasher.ts::ContentHasher::class"
     },
     {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.runCheck::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.buildGraphInputIndices::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.buildCommunitySnapshot::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::pickEdgeQuality::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.buildCommunitySnapshot::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::safeHeadSha::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.buildCommunitySnapshot::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.buildCommunitySnapshot::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.buildCommunitySnapshot::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class"
+    },
+    {
       "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
       "kind": "uses",
       "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
@@ -385,6 +475,11 @@
     {
       "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
       "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
       "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
     },
     {
@@ -421,6 +516,26 @@
       "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
       "kind": "uses",
       "to": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class"
     }
   ],
   "file": "packages/cli/src/cli/index-command.ts",
@@ -468,106 +583,124 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776292785,
   "symbols": [
     {
-      "endLine": 533,
-      "endOffset": 20333,
+      "endLine": 662,
+      "endOffset": 26028,
       "kind": "class",
       "name": "IndexCommand",
-      "startLine": 57,
-      "startOffset": 2196,
+      "startLine": 61,
+      "startOffset": 2524,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand::class"
     },
     {
-      "endLine": 87,
-      "endOffset": 3369,
+      "endLine": 91,
+      "endOffset": 3697,
       "kind": "method",
       "name": "IndexCommand.loadIgnoreConfig",
-      "startLine": 68,
-      "startOffset": 2585,
+      "startLine": 72,
+      "startOffset": 2913,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.loadIgnoreConfig::method"
     },
     {
-      "endLine": 282,
-      "endOffset": 10832,
+      "endLine": 338,
+      "endOffset": 13515,
       "kind": "method",
       "name": "IndexCommand.run",
-      "startLine": 89,
-      "startOffset": 3375,
+      "startLine": 93,
+      "startOffset": 3703,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method"
     },
     {
-      "endLine": 298,
-      "endOffset": 11445,
+      "endLine": 354,
+      "endOffset": 14128,
       "kind": "method",
       "name": "IndexCommand.autoInstallMissingPlugins",
-      "startLine": 284,
-      "startOffset": 10838,
+      "startLine": 340,
+      "startOffset": 13521,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.autoInstallMissingPlugins::method"
     },
     {
-      "endLine": 312,
-      "endOffset": 12146,
+      "endLine": 368,
+      "endOffset": 14829,
       "kind": "method",
       "name": "IndexCommand.printLanguagePreview",
-      "startLine": 300,
-      "startOffset": 11451,
+      "startLine": 356,
+      "startOffset": 14134,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.printLanguagePreview::method"
     },
     {
-      "endLine": 377,
-      "endOffset": 14693,
+      "endLine": 433,
+      "endOffset": 17376,
       "kind": "method",
       "name": "IndexCommand.registerDiscoveredPlugins",
-      "startLine": 314,
-      "startOffset": 12152,
+      "startLine": 370,
+      "startOffset": 14835,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.registerDiscoveredPlugins::method"
     },
     {
-      "endLine": 401,
-      "endOffset": 15500,
+      "endLine": 457,
+      "endOffset": 18183,
       "kind": "method",
       "name": "IndexCommand.discoverFilesIn",
-      "startLine": 379,
-      "startOffset": 14699,
+      "startLine": 435,
+      "startOffset": 17382,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.discoverFilesIn::method"
     },
     {
-      "endLine": 455,
-      "endOffset": 17442,
+      "endLine": 511,
+      "endOffset": 20125,
       "kind": "method",
       "name": "IndexCommand.discoverWorkspaces",
-      "startLine": 403,
-      "startOffset": 15506,
+      "startLine": 459,
+      "startOffset": 18189,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.discoverWorkspaces::method"
     },
     {
-      "endLine": 460,
-      "endOffset": 17607,
+      "endLine": 516,
+      "endOffset": 20290,
       "kind": "method",
       "name": "IndexCommand.isSupportedExtension",
-      "startLine": 457,
-      "startOffset": 17448,
+      "startLine": 513,
+      "startOffset": 20131,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.isSupportedExtension::method"
     },
     {
-      "endLine": 519,
-      "endOffset": 19765,
+      "endLine": 580,
+      "endOffset": 22831,
       "kind": "method",
       "name": "IndexCommand.runCheck",
-      "startLine": 462,
-      "startOffset": 17613,
+      "startLine": 518,
+      "startOffset": 20296,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.runCheck::method"
     },
     {
-      "endLine": 532,
-      "endOffset": 20330,
+      "endLine": 593,
+      "endOffset": 23396,
       "kind": "method",
       "name": "IndexCommand.ensureGitignore",
-      "startLine": 521,
-      "startOffset": 19771,
+      "startLine": 582,
+      "startOffset": 22837,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
+    },
+    {
+      "endLine": 628,
+      "endOffset": 24775,
+      "kind": "method",
+      "name": "IndexCommand.buildGraphInputIndices",
+      "startLine": 604,
+      "startOffset": 23919,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.buildGraphInputIndices::method"
+    },
+    {
+      "endLine": 661,
+      "endOffset": 26025,
+      "kind": "method",
+      "name": "IndexCommand.buildCommunitySnapshot",
+      "startLine": 630,
+      "startOffset": 24781,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.buildCommunitySnapshot::method"
     }
   ]
 }

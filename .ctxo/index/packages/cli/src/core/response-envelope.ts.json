@@ -14,7 +14,7 @@
       "symbolId": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
     }
   ],
-  "contentHash": "d53ebb7ac2395300cb8de2f2a306e5cad7ead2ba32dd8f0e1899f9a187574b49",
+  "contentHash": "d66fbf8068898e70f2cbdd6e1f6e7e0334241370740a9cb22efd9c4dd135dd81",
   "edges": [
     {
       "from": "packages/cli/src/core/response-envelope.ts::wrapResponse::function",
@@ -62,7 +62,7 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776292785,
   "symbols": [
     {
       "endLine": 33,
@@ -83,12 +83,12 @@
       "symbolId": "packages/cli/src/core/response-envelope.ts::getWorkspaceMeta::function"
     },
     {
-      "endLine": 163,
-      "endOffset": 4963,
+      "endLine": 165,
+      "endOffset": 5165,
       "kind": "function",
       "name": "wrapResponse",
-      "startLine": 91,
-      "startOffset": 3204,
+      "startLine": 93,
+      "startOffset": 3406,
       "symbolId": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
     },
     {

@@ -1,0 +1,39 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "8bc745523dfd34785ef08a0880daa423333bdae90aeb95a0410219d21f6da557",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/boundary-violation-detector.test.ts::boundary-violation-detector.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/boundary-violation-detector.test.ts::boundary-violation-detector.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunityEntry::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/boundary-violation-detector.test.ts::boundary-violation-detector.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/boundary-violation-detector.test.ts::boundary-violation-detector.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/boundary-violation-detector.test.ts::boundary-violation-detector.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class"
+    }
+  ],
+  "file": "packages/cli/src/core/overlay/__tests__/boundary-violation-detector.test.ts",
+  "intent": [],
+  "lastModified": 1776292784,
+  "symbols": []
+}

@@ -37,6 +37,7 @@ time pnpm --filter @ctxo/cli exec tsx src/index.ts index
 **Verify:**
 
 * [ ] Output shows `[ctxo] Index complete: N files indexed`
+* [ ] Output shows `[ctxo] Community detection: M clusters (modularity X.XXX)` with modularity ≥ 0.3
 * [ ] No errors on stderr
 * [ ] Build time under 10 seconds
 * [ ] Default `--max-history 20` applied (each file stores at most 20 commits)
@@ -45,6 +46,8 @@ time pnpm --filter @ctxo/cli exec tsx src/index.ts index
 * [ ] Sources cleared after Phase 1b (memory released)
 * [ ] Multi-language adapters registered: TsMorphAdapter (.ts/.tsx/.js/.jsx) + GoAdapter (.go) + CSharpAdapter (.cs)
 * [ ] Dynamic extension filter active via `registry.getSupportedExtensions()`
+* [ ] `.ctxo/index/communities.json` produced with fields: `version: 1`, `commitSha`, `modularity`, `communities`, `godNodes`, `edgeQuality`, `crossClusterEdges`
+* [ ] `.ctxo/index/communities.history/<ISO-timestamp>-<shortsha>.json` exists after this run
 
 **Record metrics:**
 
@@ -53,6 +56,10 @@ time pnpm --filter @ctxo/cli exec tsx src/index.ts index
 | Files indexed | \_\_\_         |
 | Build time    | \_\_\_ seconds |
 | Languages     | TS/JS: \_\_\_, Go: \_\_\_, C#: \_\_\_ |
+| Modularity    | \_\_\_         |
+| Clusters      | \_\_\_         |
+| God nodes     | \_\_\_         |
+| Edge quality  | full / mixed / syntax-only |
 
 ### 2.1 Custom `--max-history` Override
 
@@ -211,7 +218,16 @@ Test with a high-impact core type to verify multi-depth traversal, risk scoring,
 * [ ] No `confidence` param → all entries returned (backward compat)
 * [ ] Filtered `impactScore` matches filtered array length
 
-### 5.6 Edge Cases
+### 5.6 Cluster Breakdown (v0.8 Architectural Intelligence)
+
+**Verify (when `communities.json` exists):**
+
+* [ ] `byCluster` object present — maps `clusterLabel` → count of impacted symbols in that cluster
+* [ ] `crossClusterEdges` present — count of edges the change crosses between different clusters
+* [ ] When ≥ 3 distinct clusters are touched, `multiClusterHint` present with "multi-team review recommended" text
+* [ ] When no snapshot exists (`ctxo index --skip-community`), these fields are omitted (backward compat)
+
+### 5.7 Edge Cases
 
 * [ ] Leaf symbol (no dependents) returns `impactScore: 0`, `confirmedCount: 0`, `likelyCount: 0`, `potentialCount: 0`
 * [ ] Non-existent symbol returns `{ found: false }`
@@ -234,9 +250,9 @@ Test with a high-impact core type to verify multi-depth traversal, risk scoring,
 
 ## Step 6: Test `get_architectural_overlay`
 
-Call with no parameters for full project scan.
+Call with no parameters for full project scan (default `mode: "both"`).
 
-**Verify:**
+**Verify (regex layers — always present):**
 
 * [ ] Response contains `layers` object with up to 6 keys: `Domain`, `Adapter`, `Test`, `Composition`, `Configuration`, `Unknown`
 * [ ] `Domain` includes: `packages/cli/src/core/`, `packages/cli/src/ports/` files
@@ -249,6 +265,22 @@ Call with no parameters for full project scan.
 * [ ] No `packages/cli/src/core/` file appears in Adapter layer (hexagonal architecture rule)
 * [ ] No `packages/cli/src/adapters/` file appears in Domain layer
 
+**Verify (v0.8 community overlay — present when snapshot exists):**
+
+* [ ] Response contains `communities` object with `modularity`, `edgeQuality`, `crossClusterEdges`, `commitSha`, `computedAt`, `clusters[]`
+* [ ] `modularity` is between 0.3 and 1.0 (higher = stronger cluster separation)
+* [ ] `edgeQuality` is one of `full` | `mixed` | `syntax-only` depending on language tier mix
+* [ ] `clusters[]` sorted by `memberCount` descending; each has `id`, `label`, `memberCount`, `members[]` (preview ≤ 15), `godNodes[]`
+* [ ] At least one cluster label matches a source directory prefix (e.g., `packages/cli/src/core/graph`)
+* [ ] At least one god node is surfaced (symbol bridging ≥ 3 clusters; check `.members` of each cluster containing its id)
+
+**Mode filter verification:**
+
+* [ ] `get_architectural_overlay({ mode: "regex" })` → only `layers`, no `communities`
+* [ ] `get_architectural_overlay({ mode: "communities" })` → only `communities`, no `layers`
+* [ ] `get_architectural_overlay({ mode: "communities" })` on a repo that hasn't indexed → returns `{ hint: "... run ctxo index ..." }`
+* [ ] `get_architectural_overlay({ layer: "Domain" })` (legacy filter) still returns `{ layer, files[] }` shape — unchanged backward compat
+
 **Record:**
 
 | Layer         | File Count |
@@ -260,6 +292,14 @@ Call with no parameters for full project scan.
 | Configuration | \_\_\_     |
 | Unknown       | \_\_\_     |
 | Total         | \_\_\_     |
+
+| Community metric | Value  |
+| ---------------- | ------ |
+| Modularity       | \_\_\_ |
+| Clusters         | \_\_\_ |
+| God nodes        | \_\_\_ |
+| Cross-cluster edges | \_\_\_ |
+| Edge quality     | \_\_\_ |
 
 ***
 
@@ -302,6 +342,16 @@ Call again WITHOUT `maxCommits`:
 * [ ] `maxCommits: 1` returns exactly 1 commit
 * [ ] `maxCommits` larger than total commits returns all commits (no error)
 * [ ] Omitting `maxCommits` returns full history (default behavior)
+
+### 7.3 Drift Signals (v0.8 Architectural Intelligence)
+
+**Verify (when `communities.json` exists):**
+
+* [ ] Response contains `driftSignals` object with `confidence`, `snapshotsAvailable`, and optional `events[]` and `hint`
+* [ ] `confidence`: `low` when `snapshotsAvailable < 3`, `medium` for 3-6, `high` for 7+
+* [ ] On low confidence a `hint` is present pointing to `post-commit` hook or `ctxo index`
+* [ ] After running `ctxo index` twice with a symbol moving clusters (e.g., touching imports), `events[]` contains an entry for that symbol with `movedFrom.label` ≠ `movedTo.label`
+* [ ] When no `communities.json` exists, `driftSignals` field is omitted from the response
 
 **Record:**
 
@@ -1156,6 +1206,16 @@ const { handleGetPrImpact } = require('./packages/cli/src/adapters/mcp/get-pr-im
 * [ ] `summary.confirmedTotal + summary.likelyTotal + summary.potentialTotal = totalImpact`
 * [ ] `confidence` filter restricts results to specified tier
 * [ ] Empty diff returns `changedFiles: 0, riskLevel: "low"`
+
+**Verify (v0.8 boundary violations + clusters affected):**
+
+* [ ] `boundaryViolations` present when `communities.json` exists. Shape:
+  * `violations[]` each with `from`, `to`, `edgeKind`, `historicalEdgesBetweenClusters`, `severity` (`high` | `medium`)
+  * `confidence` (`low` when `snapshotsAvailable < 3`), `snapshotsAvailable`, optional `hint`
+* [ ] Violations only include edges where at least one endpoint is a PR-changed symbol
+* [ ] `severity: "high"` entries satisfy `historicalEdgesBetweenClusters === 0`
+* [ ] `clustersAffected[]` present — each entry has `id`, `label`, `symbolCount`; sorted by `symbolCount` desc
+* [ ] When `communities.json` is missing, both fields are omitted (backward compat)
 
 **Record:**
 

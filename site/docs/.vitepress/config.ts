@@ -99,6 +99,7 @@ export default defineConfig({
             { text: 'Git Intent & Anti-Patterns', link: '/concepts/git-intent' },
             { text: 'Change Intelligence', link: '/concepts/change-intelligence' },
             { text: 'PageRank Importance', link: '/concepts/pagerank' },
+            { text: 'Architectural Intelligence', link: '/concepts/architectural-intelligence' },
             { text: 'Masking Pipeline', link: '/concepts/masking' },
           ],
         },

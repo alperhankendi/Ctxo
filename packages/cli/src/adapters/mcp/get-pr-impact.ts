@@ -7,9 +7,10 @@ import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 import { getGraphAndFiles } from './get-logic-slice.js';
 import { BlastRadiusCalculator } from '../../core/blast-radius/blast-radius-calculator.js';
+import { BoundaryViolationDetector } from '../../core/overlay/boundary-violation-detector.js';
 import { wrapResponse } from '../../core/response-envelope.js';
 import { loadCoChangeMap } from '../../core/co-change/co-change-analyzer.js';
-import type { CoChangeMatrix, CoChangeEntry } from '../../core/types.js';
+import type { CoChangeMatrix, CoChangeEntry, CommunitySnapshot } from '../../core/types.js';
 
 const InputSchema = z.object({
   since: z.string().optional().default('HEAD~1'),
@@ -26,6 +27,25 @@ function loadCoChanges(ctxoRoot: string): Map<string, CoChangeEntry[]> | undefin
   } catch {
     return undefined;
   }
+}
+
+function computeClustersAffected(
+  snapshot: CommunitySnapshot,
+  changedSymbolIds: ReadonlySet<string>,
+): Array<{ id: number; label: string; symbolCount: number }> {
+  const totals = new Map<number, { label: string; count: number }>();
+  for (const entry of snapshot.communities) {
+    if (!changedSymbolIds.has(entry.symbolId)) continue;
+    const existing = totals.get(entry.communityId);
+    if (existing) {
+      existing.count += 1;
+    } else {
+      totals.set(entry.communityId, { label: entry.communityLabel, count: 1 });
+    }
+  }
+  return [...totals.entries()]
+    .map(([id, { label, count }]) => ({ id, label, symbolCount: count }))
+    .sort((a, b) => b.symbolCount - a.symbolCount || a.id - b.id);
 }
 
 export function handleGetPrImpact(
@@ -172,7 +192,31 @@ export function handleGetPrImpact(
 
       const changedSymbols = files.reduce((sum, f) => sum + f.symbols.length, 0);
 
-      const payload = masking.mask(JSON.stringify(wrapResponse({
+      const snapshot = storage.readCommunities();
+      const history = snapshot ? storage.listCommunityHistory() : [];
+      let boundarySection: Record<string, unknown> | undefined;
+      let clustersAffected: Array<{ id: number; label: string; symbolCount: number }> | undefined;
+
+      if (snapshot) {
+        const detector = new BoundaryViolationDetector();
+        const violationResult = detector.detect(graph, snapshot, history);
+        const changedSymbolIds = new Set<string>();
+        for (const file of files) {
+          for (const sym of file.symbols) changedSymbolIds.add(sym.symbolId);
+        }
+        const relevant = violationResult.violations.filter(
+          (v) => changedSymbolIds.has(v.from.symbolId) || changedSymbolIds.has(v.to.symbolId),
+        );
+        boundarySection = {
+          violations: relevant,
+          confidence: violationResult.confidence,
+          snapshotsAvailable: violationResult.snapshotsAvailable,
+          ...(violationResult.hint ? { hint: violationResult.hint } : {}),
+        };
+        clustersAffected = computeClustersAffected(snapshot, changedSymbolIds);
+      }
+
+      const body: Record<string, unknown> = {
         since,
         changedFiles: files.length,
         changedSymbols,
@@ -185,7 +229,11 @@ export function handleGetPrImpact(
           potentialTotal,
           highRiskSymbols: highRiskSymbols.slice(0, 10),
         },
-      })));
+      };
+      if (boundarySection) body.boundaryViolations = boundarySection;
+      if (clustersAffected && clustersAffected.length > 0) body.clustersAffected = clustersAffected;
+
+      const payload = masking.mask(JSON.stringify(wrapResponse(body)));
 
       const content: Array<{ type: 'text'; text: string }> = [];
       if (staleness) {

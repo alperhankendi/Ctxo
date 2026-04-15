@@ -1,0 +1,16 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "08c35c992f723014d91d179263f300bc92af0e545ddb386e0f1b04b9d6825b8a",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/community-labeler.test.ts::community-labeler.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/community-labeler.ts::labelCommunities::function"
+    }
+  ],
+  "file": "packages/cli/src/core/overlay/__tests__/community-labeler.test.ts",
+  "intent": [],
+  "lastModified": 1776292784,
+  "symbols": []
+}

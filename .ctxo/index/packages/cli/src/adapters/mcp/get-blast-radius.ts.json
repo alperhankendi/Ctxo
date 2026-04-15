@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 7,
+      "cyclomatic": 10,
       "symbolId": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
     }
   ],
-  "contentHash": "71652cf3022a18f9c1fb2e517e0edd1a99e74dbf56ebeb02452fd492c942dbbb",
+  "contentHash": "9b180b0c0779ef591a0b9519c19feb0a90a4dde1aa2b4d22dc74bf227d53d1c5",
   "edges": [
     {
       "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
@@ -38,6 +38,12 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
       "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "imports",
       "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
       "typeOnly": true
     },
@@ -55,6 +61,11 @@
       "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
       "kind": "calls",
       "to": "packages/cli/src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/mcp/get-blast-radius.ts::computeClusterBreakdown::function"
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
@@ -111,15 +122,15 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776292785,
   "symbols": [
     {
-      "endLine": 82,
-      "endOffset": 3166,
+      "endLine": 131,
+      "endOffset": 5062,
       "kind": "function",
       "name": "handleGetBlastRadius",
-      "startLine": 15,
-      "startOffset": 750,
+      "startLine": 50,
+      "startOffset": 2109,
       "symbolId": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
     }
   ]

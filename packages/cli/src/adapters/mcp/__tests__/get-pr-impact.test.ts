@@ -193,4 +193,28 @@ describe('handleGetPrImpact', () => {
     const payload = JSON.parse(result.content[0]!.text);
     expect(payload.error).toBe(true);
   });
+
+  it('surfaces boundaryViolations + clustersAffected when a snapshot is available', async () => {
+    storage.writeCommunities({
+      version: 1,
+      computedAt: '2026-04-16T10:00:00.000Z',
+      commitSha: 'abc1234',
+      modularity: 0.5,
+      communities: [
+        { symbolId: 'src/a.ts::A::function', communityId: 0, communityLabel: 'alpha' },
+        { symbolId: 'src/b.ts::B::class', communityId: 1, communityLabel: 'beta' },
+        { symbolId: 'src/c.ts::C::interface', communityId: 2, communityLabel: 'gamma' },
+      ],
+      godNodes: [],
+      edgeQuality: 'full',
+      crossClusterEdges: 2,
+    });
+    const git = createMockGit(['src/a.ts']);
+    const handler = handleGetPrImpact(storage, git, new MaskingPipeline(), undefined, tempDir);
+    const result = await handler({ since: 'HEAD~1' });
+    const payload = JSON.parse(result.content[0]!.text);
+    expect(payload.boundaryViolations).toBeDefined();
+    expect(payload.clustersAffected).toBeDefined();
+    expect(Array.isArray(payload.clustersAffected)).toBe(true);
+  });
 });

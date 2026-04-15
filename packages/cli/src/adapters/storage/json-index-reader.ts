@@ -63,8 +63,14 @@ export class JsonIndexReader {
 
       const fullPath = join(dir, entry.name);
       if (entry.isDirectory()) {
+        // Skip non-FileIndex directories under .ctxo/index/
+        if (entry.name === 'communities.history') continue;
         files.push(...this.collectJsonFiles(fullPath, visited));
-      } else if (entry.name.endsWith('.json') && entry.name !== 'co-changes.json') {
+      } else if (
+        entry.name.endsWith('.json') &&
+        entry.name !== 'co-changes.json' &&
+        entry.name !== 'communities.json'
+      ) {
         files.push(fullPath);
       }
     }

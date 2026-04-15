@@ -1,4 +1,9 @@
-import type { FileIndex, GraphEdge, SymbolNode } from '../core/types.js';
+import type {
+  CommunitySnapshot,
+  FileIndex,
+  GraphEdge,
+  SymbolNode,
+} from '../core/types.js';
 
 export interface IStoragePort {
   writeSymbolFile(fileIndex: FileIndex): void;
@@ -11,5 +16,8 @@ export interface IStoragePort {
   getAllSymbols(): SymbolNode[];
   getAllEdges(): GraphEdge[];
   bulkWrite(indices: FileIndex[]): void;
+  readCommunities(): CommunitySnapshot | undefined;
+  writeCommunities(snapshot: CommunitySnapshot): void;
+  listCommunityHistory(limit?: number): CommunitySnapshot[];
   close(): void;
 }

@@ -1,6 +1,7 @@
-import { writeFileSync, renameSync, mkdirSync, unlinkSync, existsSync } from 'node:fs';
+import { mkdirSync, unlinkSync, existsSync } from 'node:fs';
 import { dirname, join, resolve, sep } from 'node:path';
 import type { FileIndex, CoChangeMatrix } from '../../core/types.js';
+import { atomicWrite } from './atomic-write.js';
 
 export class JsonIndexWriter {
   private readonly indexDir: string;
@@ -29,9 +30,7 @@ export class JsonIndexWriter {
   }
 
   private atomicWrite(targetPath: string, content: string): void {
-    const tmpPath = `${targetPath}.${process.pid}.tmp`;
-    writeFileSync(tmpPath, content, 'utf-8');
-    renameSync(tmpPath, targetPath);
+    atomicWrite(targetPath, content);
   }
 
   delete(relativePath: string): void {

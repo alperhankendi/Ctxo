@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 17,
+      "cyclomatic": 21,
       "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method"
     }
   ],
-  "contentHash": "421c2bd58cd82940a0d4a0a7d0e31de895c34f25cf8ca2108d01e989abede6b9",
+  "contentHash": "eca3b5a5e35bcff84fb9d2625a3201de704e37a89ecd3b2a7c40bf64e29eb103",
   "edges": [
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
@@ -51,6 +51,21 @@
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
       "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
       "to": "packages/cli/src/core/types.ts::FileIndex::type",
       "typeOnly": true
     },
@@ -67,9 +82,20 @@
       "typeOnly": true
     },
     {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
+    {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
       "kind": "calls",
       "to": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/watch-command.ts::buildWatchCommunitySnapshot::function"
     },
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
@@ -189,24 +215,24 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776292785,
   "symbols": [
     {
-      "endLine": 213,
-      "endOffset": 7987,
+      "endLine": 239,
+      "endOffset": 9193,
       "kind": "class",
       "name": "WatchCommand",
-      "startLine": 29,
-      "startOffset": 1293,
+      "startLine": 34,
+      "startOffset": 1624,
       "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand::class"
     },
     {
-      "endLine": 211,
-      "endOffset": 7984,
+      "endLine": 237,
+      "endOffset": 9190,
       "kind": "method",
       "name": "WatchCommand.run",
-      "startLine": 38,
-      "startOffset": 1527,
+      "startLine": 43,
+      "startOffset": 1858,
       "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method"
     }
   ]

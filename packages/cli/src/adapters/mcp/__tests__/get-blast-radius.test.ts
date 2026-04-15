@@ -199,4 +199,34 @@ describe('GetBlastRadiusHandler', () => {
 
     expect(unfilteredPayload.impactScore).toBeGreaterThanOrEqual(filteredPayload.impactScore);
   });
+
+  it('omits cluster breakdown when no community snapshot is available', () => {
+    const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = handler({ symbolId: 'src/c.ts::C::interface' });
+    const payload = JSON.parse(result.content[0]!.text);
+    expect(payload.byCluster).toBeUndefined();
+  });
+
+  it('emits cluster breakdown + multiClusterHint when snapshot covers impacted symbols across clusters', () => {
+    storage.writeCommunities({
+      version: 1,
+      computedAt: '2026-04-16T10:00:00.000Z',
+      commitSha: 'abc1234',
+      modularity: 0.5,
+      communities: [
+        { symbolId: 'src/a.ts::A::function', communityId: 0, communityLabel: 'alpha' },
+        { symbolId: 'src/b.ts::B::class', communityId: 1, communityLabel: 'beta' },
+        { symbolId: 'src/c.ts::C::interface', communityId: 2, communityLabel: 'gamma' },
+      ],
+      godNodes: [],
+      edgeQuality: 'full',
+      crossClusterEdges: 2,
+    });
+    const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = handler({ symbolId: 'src/c.ts::C::interface' });
+    const payload = JSON.parse(result.content[0]!.text);
+    expect(payload.byCluster).toBeDefined();
+    const totals = Object.values(payload.byCluster as Record<string, number>);
+    expect(totals.reduce((sum, v) => sum + v, 0)).toBeGreaterThan(0);
+  });
 });

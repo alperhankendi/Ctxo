@@ -18,7 +18,7 @@
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.printHelp::method"
     }
   ],
-  "contentHash": "88f3d59e5b81af34cd26fb2f9fff2949d3569b8950e2c7424f42f14a5293aeb8",
+  "contentHash": "54394b97a438a2af3a5f2e1b702bd888320702a5c39f54127f67ff81956b2d22",
   "edges": [
     {
       "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
@@ -246,7 +246,7 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776292785,
   "symbols": [
     {
       "endLine": 29,
@@ -267,8 +267,8 @@
       "symbolId": "packages/cli/src/cli/cli-router.ts::locateGitRoot::function"
     },
     {
-      "endLine": 257,
-      "endOffset": 10339,
+      "endLine": 260,
+      "endOffset": 10518,
       "kind": "class",
       "name": "CliRouter",
       "startLine": 48,
@@ -276,8 +276,8 @@
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter::class"
     },
     {
-      "endLine": 222,
-      "endOffset": 8544,
+      "endLine": 224,
+      "endOffset": 8636,
       "kind": "method",
       "name": "CliRouter.route",
       "startLine": 58,
@@ -285,12 +285,12 @@
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method"
     },
     {
-      "endLine": 256,
-      "endOffset": 10336,
+      "endLine": 259,
+      "endOffset": 10515,
       "kind": "method",
       "name": "CliRouter.printHelp",
-      "startLine": 224,
-      "startOffset": 8550,
+      "startLine": 226,
+      "startOffset": 8642,
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.printHelp::method"
     }
   ]

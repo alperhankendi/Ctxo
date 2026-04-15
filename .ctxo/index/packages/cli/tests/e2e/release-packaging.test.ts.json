@@ -1,10 +1,16 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "1419c5ca5a1c0b3bf569fe060ff28f395b3f8212ef571cbb6dff9a394132b6af",
+  "contentHash": "0048d8043e70bc61f95627570d9a92278995806cedaf9e50481dc04656a1f38a",
   "edges": [],
   "file": "packages/cli/tests/e2e/release-packaging.test.ts",
   "intent": [
+    {
+      "date": "2026-04-14T01:25:48+03:00",
+      "hash": "9c1905c524791585a13e2bc0739f108be98f851e",
+      "kind": "commit",
+      "message": "test(cli): bump npm pack timeout to 30s for slow CI runners"
+    },
     {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
@@ -12,6 +18,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776292785,
   "symbols": []
 }

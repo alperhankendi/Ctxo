@@ -1,0 +1,152 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 11,
+      "symbolId": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildMultiClusterGraph::function"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildGraphWithGodNode::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildIsolatedGraph::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildDisconnectedClusterGraph::function"
+    }
+  ],
+  "contentHash": "10c0b510d163082a7bc63f4b9dc5d91c9579ddb6610f9fbe792882b566c7a9cd",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildMultiClusterGraph::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildMultiClusterGraph::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildMultiClusterGraph::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::EdgeKind::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildMultiClusterGraph::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::makeNode::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildMultiClusterGraph::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildGraphWithGodNode::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildMultiClusterGraph::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildGraphWithGodNode::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::makeNode::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildIsolatedGraph::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::makeNode::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildIsolatedGraph::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildDisconnectedClusterGraph::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::makeNode::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildDisconnectedClusterGraph::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::makeNode::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildDisconnectedClusterGraph::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildMultiClusterGraph::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildMultiClusterGraph::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::EdgeKind::type"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildGraphWithGodNode::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildIsolatedGraph::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildDisconnectedClusterGraph::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    }
+  ],
+  "file": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts",
+  "intent": [],
+  "lastModified": 1776292784,
+  "symbols": [
+    {
+      "endLine": 62,
+      "endOffset": 1933,
+      "kind": "function",
+      "name": "buildMultiClusterGraph",
+      "startLine": 14,
+      "startOffset": 359,
+      "symbolId": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildMultiClusterGraph::function"
+    },
+    {
+      "endLine": 77,
+      "endOffset": 2423,
+      "kind": "function",
+      "name": "buildGraphWithGodNode",
+      "startLine": 64,
+      "startOffset": 1935,
+      "symbolId": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildGraphWithGodNode::function"
+    },
+    {
+      "endLine": 83,
+      "endOffset": 2592,
+      "kind": "function",
+      "name": "buildIsolatedGraph",
+      "startLine": 79,
+      "startOffset": 2425,
+      "symbolId": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildIsolatedGraph::function"
+    },
+    {
+      "endLine": 107,
+      "endOffset": 3460,
+      "kind": "function",
+      "name": "buildDisconnectedClusterGraph",
+      "startLine": 85,
+      "startOffset": 2594,
+      "symbolId": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildDisconnectedClusterGraph::function"
+    }
+  ]
+}

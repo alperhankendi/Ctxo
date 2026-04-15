@@ -109,4 +109,49 @@ describe('HealthChecker', () => {
     const report = await new HealthChecker(checks).runAll(ctx);
     expect(report.summary.pass + report.summary.warn + report.summary.fail).toBe(report.checks.length);
   });
+
+  it('emits per-check INFO lines by default (non-quiet mode)', async () => {
+    const checks = [
+      mockCheck('a', { status: 'pass' }),
+      mockCheck('b', { status: 'warn' }),
+    ];
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      await new HealthChecker(checks).runAll(ctx);
+      const lines = spy.mock.calls.map((c) => String(c[0]));
+      expect(lines.some((l) => l.includes('a: PASS'))).toBe(true);
+      expect(lines.some((l) => l.includes('b: WARN'))).toBe(true);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  it('suppresses PASS lines in quiet mode but still logs WARN and FAIL', async () => {
+    const checks = [
+      mockCheck('a', { status: 'pass' }),
+      mockCheck('b', { status: 'warn', message: 'look here' }),
+      mockCheck('c', { status: 'fail', message: 'broken' }),
+    ];
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      await new HealthChecker(checks, { quiet: true }).runAll(ctx);
+      const lines = spy.mock.calls.map((c) => String(c[0]));
+      expect(lines.some((l) => l.includes('a: PASS'))).toBe(false);
+      expect(lines.some((l) => l.includes('b: WARN'))).toBe(true);
+      expect(lines.some((l) => l.includes('c: FAIL'))).toBe(true);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  it('still logs ERROR lines for crashing checks in quiet mode', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      await new HealthChecker([crashingCheck('crashy', 'boom')], { quiet: true }).runAll(ctx);
+      const lines = spy.mock.calls.map((c) => String(c[0]));
+      expect(lines.some((l) => l.includes('crashy: FAIL'))).toBe(true);
+    } finally {
+      spy.mockRestore();
+    }
+  });
 });

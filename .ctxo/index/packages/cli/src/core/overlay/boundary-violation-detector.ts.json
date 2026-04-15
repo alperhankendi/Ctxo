@@ -1,0 +1,118 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 15,
+      "symbolId": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector.detect::method"
+    }
+  ],
+  "contentHash": "88b4010fd22313182ac428b6601ed6a59fa85b6da477d065e92103345ba3dd86",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::BoundaryViolation::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunityEntry::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/boundary-violation-detector.ts::assignmentMap::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/boundary-violation-detector.ts::labelMap::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/boundary-violation-detector.ts::assignmentMap::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/boundary-violation-detector.ts::labelMap::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/boundary-violation-detector.ts::countHistoricalCrossCluster::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/boundary-violation-detector.ts::confidenceFor::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/boundary-violation-detector.ts::hintFor::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::BoundaryViolation::interface"
+    }
+  ],
+  "file": "packages/cli/src/core/overlay/boundary-violation-detector.ts",
+  "intent": [],
+  "lastModified": 1776292784,
+  "symbols": [
+    {
+      "endLine": 83,
+      "endOffset": 2792,
+      "kind": "class",
+      "name": "BoundaryViolationDetector",
+      "startLine": 18,
+      "startOffset": 485,
+      "symbolId": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class"
+    },
+    {
+      "endLine": 82,
+      "endOffset": 2790,
+      "kind": "method",
+      "name": "BoundaryViolationDetector.detect",
+      "startLine": 19,
+      "startOffset": 528,
+      "symbolId": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector.detect::method"
+    },
+    {
+      "endLine": 12,
+      "endOffset": 370,
+      "kind": "interface",
+      "name": "BoundaryViolationDetectionResult",
+      "startLine": 7,
+      "startOffset": 158,
+      "symbolId": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetectionResult::interface"
+    }
+  ]
+}

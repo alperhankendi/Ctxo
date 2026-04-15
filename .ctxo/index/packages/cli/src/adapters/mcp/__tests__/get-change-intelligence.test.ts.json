@@ -40,12 +40,18 @@
   "file": "packages/cli/src/adapters/mcp/__tests__/get-change-intelligence.test.ts",
   "intent": [
     {
+      "date": "2026-04-14T00:26:11+03:00",
+      "hash": "cdf9a236a6518282a208dcf7704124074aaf5bdb",
+      "kind": "commit",
+      "message": "feat(mcp): warn when JSON index missing in get_change_intelligence"
+    },
+    {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
       "kind": "commit",
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776292785,
   "symbols": []
 }

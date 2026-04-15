@@ -1,0 +1,44 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/adapters/storage/atomic-write.ts::atomicWrite::function"
+    },
+    {
+      "cyclomatic": 9,
+      "symbolId": "packages/cli/src/adapters/storage/atomic-write.ts::sweepStaleTmpFiles::function"
+    }
+  ],
+  "contentHash": "5185ee843e4acf61e4d4572b1f0d10ea8e3795246c32c63a5ec6e093b269a191",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/storage/atomic-write.ts::atomicWrite::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/logger.ts::createLogger::function"
+    }
+  ],
+  "file": "packages/cli/src/adapters/storage/atomic-write.ts",
+  "intent": [],
+  "lastModified": 1776292784,
+  "symbols": [
+    {
+      "endLine": 14,
+      "endOffset": 567,
+      "kind": "function",
+      "name": "atomicWrite",
+      "startLine": 10,
+      "startOffset": 360,
+      "symbolId": "packages/cli/src/adapters/storage/atomic-write.ts::atomicWrite::function"
+    },
+    {
+      "endLine": 48,
+      "endOffset": 1723,
+      "kind": "function",
+      "name": "sweepStaleTmpFiles",
+      "startLine": 23,
+      "startOffset": 862,
+      "symbolId": "packages/cli/src/adapters/storage/atomic-write.ts::sweepStaleTmpFiles::function"
+    }
+  ]
+}

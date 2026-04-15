@@ -22,12 +22,16 @@ import {
 
 const requireCjs = createRequire(import.meta.url);
 import { JsonIndexWriter } from '../adapters/storage/json-index-writer.js';
+import { JsonIndexReader } from '../adapters/storage/json-index-reader.js';
 import { SqliteStorageAdapter } from '../adapters/storage/sqlite-storage-adapter.js';
 import { SchemaManager } from '../adapters/storage/schema-manager.js';
 import { SimpleGitAdapter } from '../adapters/git/simple-git-adapter.js';
 import { RevertDetector } from '../core/why-context/revert-detector.js';
 import { aggregateCoChanges } from '../core/co-change/co-change-analyzer.js';
-import type { FileIndex, SymbolKind } from '../core/types.js';
+import { CommunityDetector } from '../core/overlay/community-detector.js';
+import { SymbolGraph } from '../core/graph/symbol-graph.js';
+import { PageRankCalculator } from '../core/importance/pagerank-calculator.js';
+import type { CommunitySnapshot, EdgeQuality, FileIndex, SymbolKind } from '../core/types.js';
 
 interface TsMorphLike {
   loadProjectSources(sources: Map<string, string>): void;
@@ -92,6 +96,7 @@ export class IndexCommand {
     check?: boolean;
     skipSideEffects?: boolean;
     skipHistory?: boolean;
+    skipCommunity?: boolean;
     maxHistory?: number;
     installMissing?: boolean;
   } = {}): Promise<void> {
@@ -136,6 +141,17 @@ export class IndexCommand {
         files.push(...wsFiles);
       }
       console.error(`[ctxo] Building codebase index... Found ${files.length} source files`);
+    }
+
+    // Pre-Phase 0: sweep orphan .<pid>.tmp files from a previous interrupted write.
+    try {
+      const { sweepStaleTmpFiles } = await import('../adapters/storage/atomic-write.js');
+      const swept = sweepStaleTmpFiles(join(this.ctxoRoot, 'index'));
+      if (swept > 0) {
+        console.error(`[ctxo] Cleaned ${swept} orphan .tmp file(s) from previous interrupted run`);
+      }
+    } catch {
+      /* non-fatal */
     }
 
     // Phase 0: Roslyn batch index (if available, pre-caches all C# results)
@@ -245,6 +261,43 @@ export class IndexCommand {
       console.error(`[ctxo] Co-change analysis: ${coChangeMatrix.entries.length} file pairs detected`);
     }
 
+    // Phase 2c: Community detection + snapshot
+    //
+    // Full indexing:    run Louvain over pendingIndices (all indexed files).
+    // Incremental (--file): merge the just-updated fileIndex(es) with the rest of the committed
+    //                       JSON index on disk so Louvain sees the *complete* graph. Running it
+    //                       over the 1-file subgraph alone would produce a meaningless
+    //                       N-singleton snapshot (modularity 0).
+    // Opt-out (--skip-community): skip entirely. Warn if a stale snapshot exists on disk.
+    let communitySnapshot: CommunitySnapshot | undefined;
+
+    if (options.skipCommunity && pendingIndices.length > 0) {
+      if (existsSync(join(this.ctxoRoot, 'index', 'communities.json'))) {
+        console.error(
+          `[ctxo] WARN stale communities.json present — --skip-community preserved existing snapshot. Run \`ctxo index\` (full) to refresh.`,
+        );
+      }
+    } else if (pendingIndices.length > 0) {
+      try {
+        const graphIndices = this.buildGraphInputIndices(pendingIndices);
+        communitySnapshot = this.buildCommunitySnapshot(
+          graphIndices,
+          {
+            csharpTier,
+            goTier,
+            tsCount: graphIndices.filter((idx) => /\.(ts|tsx|js|jsx)$/.test(idx.file)).length,
+          },
+          gitAdapter,
+        );
+        const scope = options.file ? ' (incremental, full-graph recompute)' : '';
+        console.error(
+          `[ctxo] Community detection${scope}: ${countCommunities(communitySnapshot)} clusters (modularity ${communitySnapshot.modularity.toFixed(3)})`,
+        );
+      } catch (err) {
+        console.error(`[ctxo] Community detection skipped: ${(err as Error).message}`);
+      }
+    }
+
     // Phase 3: Write all indices
     const indices: FileIndex[] = [];
     for (const { fileIndex } of pendingIndices) {
@@ -260,6 +313,9 @@ export class IndexCommand {
     try {
       await storage.initEmpty();
       storage.bulkWrite(indices);
+      if (communitySnapshot) {
+        storage.writeCommunities(communitySnapshot);
+      }
     } finally {
       storage.close();
     }
@@ -505,9 +561,14 @@ export class IndexCommand {
         const source = readFileSync(filePath, 'utf-8');
         const currentHash = hasher.hash(source);
         if (currentHash === indexed.contentHash) continue;
+        console.error(`[ctxo] STALE: ${relativePath} (content hash differs)`);
+      } else {
+        // Legacy index: contentHash wasn't populated yet. We cannot tell whether
+        // the mtime bump reflects real content change — fail closed, but tell the user why.
+        console.error(
+          `[ctxo] STALE: ${relativePath} (index predates contentHash — run \`ctxo index\` once to enable mtime-tolerant checks)`,
+        );
       }
-
-      console.error(`[ctxo] STALE: ${relativePath}`);
       staleCount++;
     }
 
@@ -531,4 +592,106 @@ export class IndexCommand {
     writeFileSync(gitignorePath, existing + suffix, 'utf-8');
     console.error('[ctxo] Added .ctxo/.cache/ to .gitignore');
   }
+
+  /**
+   * Produce the FileIndex list used as input to community detection.
+   *
+   * Full index run: returns pendingIndices as-is — they already cover every file.
+   * Incremental `--file` run: pendingIndices holds only the just-updated file(s). We load the
+   * rest of the committed JSON index from disk and splice in the fresh in-memory indices so
+   * Louvain sees the COMPLETE project graph. Without this, Louvain would run on a 1-file
+   * subgraph and emit a meaningless modularity-0 snapshot.
+   */
+  private buildGraphInputIndices(
+    pendingIndices: ReadonlyArray<{ relativePath: string; fileIndex: FileIndex }>,
+  ): FileIndex[] {
+    const pendingByPath = new Map<string, FileIndex>();
+    for (const { fileIndex } of pendingIndices) {
+      pendingByPath.set(fileIndex.file, fileIndex);
+    }
+
+    const reader = new JsonIndexReader(this.ctxoRoot);
+    const committed = reader.readAll();
+
+    const merged: FileIndex[] = [];
+    for (const idx of committed) {
+      const override = pendingByPath.get(idx.file);
+      if (override) {
+        merged.push(override);
+        pendingByPath.delete(idx.file);
+      } else {
+        merged.push(idx);
+      }
+    }
+    // Newly indexed files (no prior committed entry) get appended.
+    for (const remaining of pendingByPath.values()) merged.push(remaining);
+    return merged;
+  }
+
+  private buildCommunitySnapshot(
+    indices: readonly FileIndex[],
+    tiers: { csharpTier: string; goTier: string; tsCount: number },
+    gitAdapter: SimpleGitAdapter,
+  ): CommunitySnapshot {
+    const graph = new SymbolGraph();
+    for (const fileIndex of indices) {
+      for (const symbol of fileIndex.symbols) graph.addNode(symbol);
+    }
+    for (const fileIndex of indices) {
+      for (const edge of fileIndex.edges) graph.addEdge(edge);
+    }
+
+    const pagerank = new PageRankCalculator().calculate(graph, { limit: graph.nodeCount });
+    const pagerankMap = new Map<string, number>();
+    for (const entry of pagerank.rankings) pagerankMap.set(entry.symbolId, entry.score);
+
+    const detector = new CommunityDetector();
+    const edgeQuality = pickEdgeQuality(tiers);
+    const detectResult = detector.detect(graph, pagerankMap, edgeQuality);
+
+    return {
+      version: 1,
+      computedAt: new Date().toISOString(),
+      commitSha: safeHeadSha(gitAdapter),
+      modularity: detectResult.modularity,
+      communities: detectResult.communities,
+      godNodes: detectResult.godNodes,
+      edgeQuality: detectResult.edgeQuality,
+      crossClusterEdges: detectResult.crossClusterEdges,
+    };
+  }
+}
+
+function pickEdgeQuality(tiers: {
+  csharpTier: string;
+  goTier: string;
+  tsCount: number;
+}): EdgeQuality {
+  const hasSyntaxOnly = tiers.csharpTier === 'syntax' || tiers.goTier === 'syntax';
+  const hasFull =
+    tiers.tsCount > 0 || tiers.csharpTier === 'full' || tiers.goTier === 'full';
+  if (hasSyntaxOnly && hasFull) return 'mixed';
+  if (hasSyntaxOnly) return 'syntax-only';
+  return 'full';
+}
+
+function safeHeadSha(gitAdapter: SimpleGitAdapter): string {
+  try {
+    const maybeSha = (gitAdapter as unknown as { getHeadSha?: () => string | undefined }).getHeadSha?.();
+    if (maybeSha) return maybeSha.slice(0, 8);
+  } catch {
+    /* fall through */
+  }
+  try {
+    const out = execFileSync('git', ['rev-parse', '--short', 'HEAD'], { encoding: 'utf-8' });
+    return out.trim();
+  } catch {
+    return 'nocommit';
+  }
+}
+
+function countCommunities(snapshot: CommunitySnapshot): number {
+  const ids = new Set<number>();
+  for (const entry of snapshot.communities) ids.add(entry.communityId);
+  return ids.size;
 }

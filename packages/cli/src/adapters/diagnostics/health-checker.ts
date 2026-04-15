@@ -3,11 +3,18 @@ import type { IHealthCheck, CheckContext, CheckResult, DoctorReport } from '../.
 
 const log = createLogger('ctxo:doctor');
 
+export interface HealthCheckerOptions {
+  /** Suppress per-check PASS info lines only. WARN, FAIL, and ERROR still log. */
+  readonly quiet?: boolean;
+}
+
 export class HealthChecker {
   private readonly checks: IHealthCheck[];
+  private readonly quiet: boolean;
 
-  constructor(checks: IHealthCheck[]) {
+  constructor(checks: IHealthCheck[], options: HealthCheckerOptions = {}) {
     this.checks = checks;
+    this.quiet = options.quiet ?? false;
   }
 
   async runAll(ctx: CheckContext): Promise<DoctorReport> {
@@ -19,7 +26,11 @@ export class HealthChecker {
       const check = this.checks[i]!;
       if (outcome.status === 'fulfilled') {
         const r = outcome.value;
-        log.info(`${r.id}: ${r.status.toUpperCase()} (${r.message})`);
+        // In --quiet mode, suppress PASS noise only. WARN and FAIL still log
+        // so operators can see anything that needs attention.
+        if (!this.quiet || r.status !== 'pass') {
+          log.info(`${r.id}: ${r.status.toUpperCase()} (${r.message})`);
+        }
         return r;
       }
       const message = (outcome.reason as Error)?.message ?? 'Unknown error';

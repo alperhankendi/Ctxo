@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "timestamp": 1776115135,
+  "timestamp": 1776292787,
   "entries": [
     {
       "file1": "packages/cli/src/cli/__tests__/ai-rules.test.ts",
@@ -119,6 +119,12 @@
     {
       "file1": "packages/cli/src/adapters/language/language-adapter-registry.ts",
       "file2": "packages/cli/src/ports/i-language-adapter.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-change-intelligence.test.ts",
+      "file2": "packages/cli/src/adapters/mcp/get-change-intelligence.ts",
       "sharedCommits": 2,
       "frequency": 1
     },

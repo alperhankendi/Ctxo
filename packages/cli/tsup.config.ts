@@ -7,7 +7,13 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   target: 'node20',
-  external: ['tree-sitter', 'tree-sitter-go', 'tree-sitter-c-sharp'],
+  external: [
+    'tree-sitter',
+    'tree-sitter-go',
+    'tree-sitter-c-sharp',
+    'graphology',
+    'graphology-communities-louvain',
+  ],
   banner: {
     js: '#!/usr/bin/env node',
   },

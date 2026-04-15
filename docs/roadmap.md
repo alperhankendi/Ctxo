@@ -16,7 +16,7 @@ Items on deck for v0.7.x / v0.8. No strict ordering — picked by impact + readi
 
 ### Code intelligence
 
-- **Community detection / graph clustering** — Leiden/Louvain on the symbol graph to enrich `get_architectural_overlay` with data-driven layer detection and expose "god nodes" + "surprising connections" (cross-cluster edges). Complements PageRank; surfaces hidden coupling and architectural drift. Source: graphify competitive learnings.
+- **Community detection / graph clustering** — _shipped in v0.8 (see [CHANGELOG](../CHANGELOG.md))_. Louvain over the symbol graph powers `get_architectural_overlay` data-driven clusters, god nodes, cluster-scoped blast radius, drift signals in `get_why_context`, and boundary violations in `get_pr_impact`. Leiden remains deferred (see below).
 
 ### Platform & transport
 
@@ -44,6 +44,10 @@ Work that's been scoped and explicitly parked. Each has a known trigger to react
 
 | Item | Source | Trigger to reactivate |
 |---|---|---|
+| **Leiden community detection** | v0.8 Architectural Intelligence work | Monorepos/codebases where Louvain cluster quality is insufficient (~100K+ symbols, high modularity resolution needs). Swap is additive — same `CommunitySnapshot` output shape. |
+| **Historical graph reconstruction for drift (`--since=30d`)** | v0.8 drift design | User demand for deep temporal drift analysis over re-parse cost. Snapshot-based chain is default. |
+| **GHA workflow template in `ctxo init`** | v0.8 init UX | Shipped as plain docs guidance in v0.8; wrap as interactive template when users ask. |
+| **HEAD staleness hint in MCP `_meta`** | v0.8 init UX | Snapshot freshness is observable via `commitSha` inside `communities.json`; promote into response envelope if users report drift signal confusion. |
 | **Phase 1 Tier 3 — FTS5 search** | todo.md Phase 1 Tier 3 | Monorepos or codebases with 25K+ symbols where in-memory BM25 degrades. See [ADR-003](architecture/ADR/adr-003-fts5-search-deferred.md). |
 | **Python / Java plugins** (Phase B) | [prd.md § Phase 2](artifacts/prd.md#phase-2-plugin-architecture--language-expansion) | User demand post-v0.7; plugin protocol v1 already stable. |
 | **Framework-aware analysis** (Spring / Django ORM) | [prd.md § Phase 2](artifacts/prd.md#phase-2-plugin-architecture--language-expansion) | Requires plugin protocol v2 (semantic hooks); out of scope until multiple plugins exist. |

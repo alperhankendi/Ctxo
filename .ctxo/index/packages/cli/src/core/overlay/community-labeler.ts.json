@@ -1,0 +1,31 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/core/overlay/community-labeler.ts::labelCommunities::function"
+    }
+  ],
+  "contentHash": "187eb4a640a24e03c00460f534f20520cb14da6c4ea347a37830e6def54126ca",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/overlay/community-labeler.ts::labelCommunities::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/community-labeler.ts::pickLabel::function"
+    }
+  ],
+  "file": "packages/cli/src/core/overlay/community-labeler.ts",
+  "intent": [],
+  "lastModified": 1776292784,
+  "symbols": [
+    {
+      "endLine": 17,
+      "endOffset": 496,
+      "kind": "function",
+      "name": "labelCommunities",
+      "startLine": 3,
+      "startOffset": 60,
+      "symbolId": "packages/cli/src/core/overlay/community-labeler.ts::labelCommunities::function"
+    }
+  ]
+}

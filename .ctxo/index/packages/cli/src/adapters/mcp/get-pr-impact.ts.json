@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 21,
+      "cyclomatic": 30,
       "symbolId": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
     }
   ],
-  "contentHash": "c48481ab5fe0343ee554fb9fcaa6851d4c432bda14f7a0df8ffb11e9ca76abae",
+  "contentHash": "366bee2a845b7ff2a691dbc6e99c6fcdbc6454eeaf8cfddd0594d3ba90e692bf",
   "edges": [
     {
       "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
@@ -45,6 +45,11 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
       "kind": "imports",
+      "to": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "imports",
       "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
     },
     {
@@ -66,6 +71,12 @@
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
       "kind": "calls",
       "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
@@ -77,12 +88,22 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
       "kind": "calls",
+      "to": "packages/cli/src/adapters/mcp/get-pr-impact.ts::computeClustersAffected::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "calls",
       "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
       "kind": "calls",
       "to": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class"
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
@@ -117,6 +138,11 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
       "kind": "uses",
+      "to": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "uses",
       "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
     }
   ],
@@ -129,15 +155,15 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776292785,
   "symbols": [
     {
-      "endLine": 203,
-      "endOffset": 7237,
+      "endLine": 251,
+      "endOffset": 9472,
       "kind": "function",
       "name": "handleGetPrImpact",
-      "startLine": 30,
-      "startOffset": 1325,
+      "startLine": 50,
+      "startOffset": 2178,
       "symbolId": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
     }
   ]

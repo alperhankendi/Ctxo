@@ -1,0 +1,71 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "92ed1380f2a437ebb16248717870d733ee0c5ccb3c72cb5bee18920a3ecde1ed",
+  "edges": [],
+  "file": "site/docs/.vitepress/config.ts",
+  "intent": [
+    {
+      "date": "2026-04-15T23:30:11+03:00",
+      "hash": "bcfc86daa71b2b132ded919afc2b68c64080e749",
+      "kind": "commit",
+      "message": "chore(site): Google Search Console meta tag verification (landing + docs)"
+    },
+    {
+      "date": "2026-04-15T23:13:58+03:00",
+      "hash": "7b2e7cda53f79bafea47da5bb352a77065d8c474",
+      "kind": "commit",
+      "message": "feat(site): SEO + brand polish"
+    },
+    {
+      "date": "2026-04-15T23:01:13+03:00",
+      "hash": "0dc141deb016a72ba917ae74f598a04c93bde82c",
+      "kind": "commit",
+      "message": "docs(site): Phase 3 content (17 pages) + landing terminal + sidebar refactor"
+    },
+    {
+      "date": "2026-04-15T02:11:41+03:00",
+      "hash": "7687a1449d818aa654dcb92ca85b00e8ed2d4f33",
+      "kind": "commit",
+      "message": "fix(site): use absolute URL for Home + Open-tool nav/sidebar (VitePress prepended base, breaking /Ctxo/* config links)"
+    },
+    {
+      "date": "2026-04-15T02:09:13+03:00",
+      "hash": "5bbb8c299a0cd1cb064b0b9c9fe7c7b1bac32ad5",
+      "kind": "commit",
+      "message": "feat(site): Visualizer docs section with screenshots tour"
+    },
+    {
+      "date": "2026-04-15T01:37:16+03:00",
+      "hash": "24e24ecf13625d72c29128a9e5f45dfb38b98dad",
+      "kind": "commit",
+      "message": "fix(site): force dark shiki theme (appearance disabled, was using light tokens on dark bg)"
+    },
+    {
+      "date": "2026-04-15T01:34:01+03:00",
+      "hash": "d800c0298a556e1f3430004d287b2d22d1054448",
+      "kind": "commit",
+      "message": "style(site): terminal-style code blocks, line numbers, brand-teal accents"
+    },
+    {
+      "date": "2026-04-15T01:20:13+03:00",
+      "hash": "e2f32df1bd568f9c93b2133c9138addc6211bfa4",
+      "kind": "commit",
+      "message": "feat(site): full docs tree with sidebar + 62 stub pages"
+    },
+    {
+      "date": "2026-04-15T01:08:33+03:00",
+      "hash": "d9f0b664365074361aa127942acb94004e276ce5",
+      "kind": "commit",
+      "message": "chore(site): disable dark mode (force light theme)"
+    },
+    {
+      "date": "2026-04-15T00:49:12+03:00",
+      "hash": "c889213c290bdc60b893ef0e497236cc086b51bf",
+      "kind": "commit",
+      "message": "feat(site): VitePress docs site + Geist brand font"
+    }
+  ],
+  "lastModified": 1776292786,
+  "symbols": []
+}

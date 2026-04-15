@@ -1,0 +1,22 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "c50891e6e80b287f19c8c123ca0cd95e43ca1ebba2b47ea6feb569f0d24f54f5",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/storage/__tests__/community-snapshot-writer.test.ts::community-snapshot-writer.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/__tests__/community-snapshot-writer.test.ts::community-snapshot-writer.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter::class"
+    }
+  ],
+  "file": "packages/cli/src/adapters/storage/__tests__/community-snapshot-writer.test.ts",
+  "intent": [],
+  "lastModified": 1776292784,
+  "symbols": []
+}

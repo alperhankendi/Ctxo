@@ -1,0 +1,144 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.detect::method"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.mapCommunities::method"
+    }
+  ],
+  "contentHash": "ed95d55caccd3c7b2715730ecdc6d9f14f6af739cfd34bf2057a79ad6e96349b",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunityEntry::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::DriftEvent::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::indexByCommunityId::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::indexByCommunityId::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.mapCommunities::method"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::assignmentMap::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::assignmentMap::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::labelMap::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::labelMap::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::confidenceFor::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::hintFor::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.mapCommunities::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::jaccard::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::DriftEvent::interface"
+    }
+  ],
+  "file": "packages/cli/src/core/overlay/drift-detector.ts",
+  "intent": [],
+  "lastModified": 1776292784,
+  "symbols": [
+    {
+      "endLine": 101,
+      "endOffset": 3374,
+      "kind": "class",
+      "name": "DriftDetector",
+      "startLine": 15,
+      "startOffset": 395,
+      "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class"
+    },
+    {
+      "endLine": 77,
+      "endOffset": 2558,
+      "kind": "method",
+      "name": "DriftDetector.detect",
+      "startLine": 22,
+      "startOffset": 612,
+      "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.detect::method"
+    },
+    {
+      "endLine": 100,
+      "endOffset": 3372,
+      "kind": "method",
+      "name": "DriftDetector.mapCommunities",
+      "startLine": 79,
+      "startOffset": 2562,
+      "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.mapCommunities::method"
+    },
+    {
+      "endLine": 7,
+      "endOffset": 272,
+      "kind": "interface",
+      "name": "DriftDetectionResult",
+      "startLine": 2,
+      "startOffset": 83,
+      "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetectionResult::interface"
+    },
+    {
+      "endLine": 13,
+      "endOffset": 393,
+      "kind": "interface",
+      "name": "DriftDetectorOptions",
+      "startLine": 11,
+      "startOffset": 314,
+      "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetectorOptions::interface"
+    }
+  ]
+}

@@ -3,7 +3,7 @@
 > **Purpose:** Repeatable end-to-end validation of all `ctxo` CLI commands.
 > **When to run:** After any CLI change, new command, or before release.
 > **Expected duration:** ~3 minutes
-> **Version:** v0.7.0-alpha.0
+> **Version:** v0.8.0 (architectural intelligence)
 > **Prerequisite:** Index must exist (run `ctxo index` first, or follow [MCP Validation Runbook](../mcp-validation/mcp-validation.md) Steps 1-2)
 
 All commands assume the monorepo root as cwd. `.ctxo/` is per-project; when validating the ctxo repo itself it lives at the workspace root. `--file src/X.ts` is interpreted relative to the cwd.
@@ -14,7 +14,7 @@ All commands assume the monorepo root as cwd. `.ctxo/` is per-project; when vali
 
 | Command | Purpose | Flags |
 |---------|---------|-------|
-| `ctxo index` | Build codebase index | `--file <path>`, `--check`, `--skip-history`, `--max-history N` |
+| `ctxo index` | Build codebase index | `--file <path>`, `--check`, `--skip-history`, `--max-history N`, `--skip-community` |
 | `ctxo sync` | Rebuild SQLite from JSON index | — |
 | `ctxo status` | Show index manifest | — |
 | `ctxo verify-index` | CI gate: fail if index stale | — |
@@ -65,7 +65,10 @@ time pnpm --filter @ctxo/cli exec tsx src/index.ts index
 **Verify:**
 
 * [ ] Output shows `[ctxo] Index complete: N files indexed`
+* [ ] Output shows `[ctxo] Community detection: M clusters (modularity X.XXX)` with modularity ≥ 0.3
 * [ ] `.ctxo/index/` contains JSON files
+* [ ] `.ctxo/index/communities.json` exists and is valid JSON (version: 1)
+* [ ] `.ctxo/index/communities.history/<ISO>-<sha>.json` exists for this run
 * [ ] No errors on stderr
 * [ ] Build time under 10 seconds
 
@@ -127,17 +130,51 @@ pnpm --filter @ctxo/cli exec tsx src/index.ts index --file packages/cli/src/core
 * [ ] Output shows 1 file indexed
 * [ ] Other index files are unchanged
 
-### 2.6 `--max-history` Invalid Input
+### 2.6 `--skip-community` Flag (opt out of community detection)
 
 ```bash
-pnpm --filter @ctxo/cli exec tsx src/index.ts index --max-history abc 2>&1; echo "Exit: $?"
-pnpm --filter @ctxo/cli exec tsx src/index.ts index --max-history 0 2>&1; echo "Exit: $?"
-pnpm --filter @ctxo/cli exec tsx src/index.ts index --max-history 2>&1; echo "Exit: $?"
+rm -rf .ctxo/.cache/ .ctxo/index/
+time pnpm --filter @ctxo/cli exec tsx src/index.ts index --skip-community
 ```
 
 **Verify:**
 
-* [ ] All three show error message
+* [ ] Output shows `[ctxo] Index complete: N files indexed`
+* [ ] Output does NOT contain `[ctxo] Community detection:` line
+* [ ] If a previous `communities.json` exists, output shows `[ctxo] WARN stale communities.json present — --skip-community preserved existing snapshot.`
+* [ ] If no previous `communities.json` exists, `.ctxo/index/communities.json` stays absent
+* [ ] If a previous `communities.json` exists, its contents are preserved (mtime unchanged, cluster count unchanged) — the flag does NOT regenerate or delete the snapshot
+* [ ] Indexing is marginally faster (no Louvain + PageRank pass)
+
+### 2.7 Snapshot History Rotation (run index twice)
+
+```bash
+pnpm --filter @ctxo/cli exec tsx src/index.ts index
+pnpm --filter @ctxo/cli exec tsx src/index.ts index
+ls .ctxo/index/communities.history/
+```
+
+**Verify:**
+
+* [ ] At least 2 snapshot files exist in `communities.history/`
+* [ ] File names are `<ISO-timestamp>-<git-short-sha>.json`
+* [ ] Max 10 files kept (FIFO eviction; verify by running `ctxo index` 11 times and confirming oldest file is removed)
+
+### 2.8 `--max-history` Invalid Input
+
+> **Note:** Run these against a **built CLI** (`node packages/cli/dist/index.js ...`) or plain `tsx`.
+> The `pnpm --filter ... exec` wrapper injects an `undefined` line into the output stream that
+> can make the error assertion noisy — this is a pnpm cosmetics issue, not a CLI bug.
+
+```bash
+node packages/cli/dist/index.js index --max-history abc 2>&1; echo "Exit: $?"
+node packages/cli/dist/index.js index --max-history 0 2>&1; echo "Exit: $?"
+node packages/cli/dist/index.js index --max-history 2>&1; echo "Exit: $?"
+```
+
+**Verify:**
+
+* [ ] All three show `[ctxo] --max-history requires a positive integer`
 * [ ] All three exit with code 1
 
 ***
@@ -257,11 +294,18 @@ pnpm --filter @ctxo/cli exec tsx src/index.ts index --check 2>&1; echo "Exit: $?
 pnpm --filter @ctxo/cli exec tsx src/index.ts init
 ```
 
-**Verify:**
+**Verify (happy path — say yes to hooks):**
 
+* [ ] Prompt message mentions architectural drift & boundary violation signals when describing hooks
 * [ ] Creates `.git/hooks/post-commit` (or updates it)
 * [ ] Creates `.git/hooks/post-merge` (or updates it)
 * [ ] Hooks contain `ctxo index` command
+
+**Verify (opt-out path — say no to hooks):**
+
+* [ ] Init prints a `⚠` warning that drift + boundary signals depend on snapshot cadence
+* [ ] Warning lists fallback options: `ctxo watch`, `ctxo index --check` in CI, re-run `ctxo init` later
+* [ ] Setup still completes successfully (only hook step skipped)
 
 ```bash
 cat .git/hooks/post-commit
@@ -285,6 +329,24 @@ kill $WATCH_PID 2>/dev/null
 * [ ] Shows `[ctxo] Watching for changes...` or similar
 * [ ] No errors on startup
 * [ ] Exits cleanly on kill
+
+### 7.1 Watch community snapshot refresh (longer run)
+
+```bash
+# Start watcher, touch a source file, wait ~8 seconds for debounced snapshot
+pnpm --filter @ctxo/cli exec tsx src/index.ts watch &
+WATCH_PID=$!
+sleep 2
+touch packages/cli/src/core/types.ts
+sleep 8
+kill $WATCH_PID 2>/dev/null
+```
+
+**Verify:**
+
+* [ ] Console shows `[ctxo] Community snapshot refreshed (modularity X.XXX)` after ~5 s debounce
+* [ ] `.ctxo/index/communities.json` mtime is recent
+* [ ] A new file appears in `.ctxo/index/communities.history/` (hook-less users get automatic snapshots via watch)
 
 ***
 
@@ -592,8 +654,11 @@ pnpm --filter @ctxo/cli exec tsx src/index.ts stats
 
 ## Step 11: Run CLI Unit Tests
 
+> **Note:** `pnpm --filter @ctxo/cli exec` runs with `cwd = packages/cli/`, so test paths
+> are relative to that cwd — NOT the repo root. Use `src/...`, not `packages/cli/src/...`.
+
 ```bash
-pnpm --filter @ctxo/cli exec vitest run packages/cli/src/cli/__tests__/ 2>&1 | tail -5
+pnpm --filter @ctxo/cli exec vitest run src/cli/__tests__/ 2>&1 | tail -5
 ```
 
 **Verify:**
@@ -602,7 +667,7 @@ pnpm --filter @ctxo/cli exec vitest run packages/cli/src/cli/__tests__/ 2>&1 | t
 * [ ] No failures or errors
 
 ```bash
-pnpm --filter @ctxo/cli exec vitest run packages/cli/src/adapters/stats/__tests__/ 2>&1 | tail -5
+pnpm --filter @ctxo/cli exec vitest run src/adapters/stats/__tests__/ 2>&1 | tail -5
 ```
 
 **Verify:**

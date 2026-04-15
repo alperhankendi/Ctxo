@@ -53,6 +53,8 @@ const TRUNCATABLE_FIELDS: Record<string, string> = {
   scaffolding: 'Review the scaffolding markers directly in the listed files.',
   deadFiles: 'Use find_dead_code with includeTests to adjust scope.',
   files: 'Use get_changed_symbols with a narrower since ref or smaller maxFiles.',
+  clusters: 'Use get_architectural_overlay with mode=communities and layer filter for a focused view.',
+  clustersAffected: 'Use get_blast_radius on individual changed symbols for per-cluster impact.',
 };
 
 function getThreshold(): number {

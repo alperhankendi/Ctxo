@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 10,
+      "cyclomatic": 14,
       "symbolId": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
     }
   ],
-  "contentHash": "47c5e4ef25fb80bf6cff5b33c55c2e9beafff5c79501e7b896a8652a918a0711",
+  "contentHash": "347ce38d03b5717a5f465ba7118c8f8020e48179dd7092824ab8f23ffd4bb049",
   "edges": [
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
@@ -34,18 +34,23 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "imports",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
       "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::CommitIntent::type",
+      "to": "packages/cli/src/core/types.ts::AntiPattern::type",
       "typeOnly": true
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::AntiPattern::type",
+      "to": "packages/cli/src/core/types.ts::CommitIntent::type",
       "typeOnly": true
     },
     {
@@ -63,6 +68,11 @@
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "calls",
       "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class"
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
@@ -97,6 +107,11 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "uses",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
       "to": "packages/cli/src/core/types.ts::CommitIntent::type"
     },
     {
@@ -114,15 +129,15 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776292785,
   "symbols": [
     {
-      "endLine": 96,
-      "endOffset": 3556,
+      "endLine": 113,
+      "endOffset": 4297,
       "kind": "function",
       "name": "handleGetWhyContext",
-      "startLine": 14,
-      "startOffset": 623,
+      "startLine": 15,
+      "startOffset": 694,
       "symbolId": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
     }
   ]

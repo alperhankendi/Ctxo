@@ -89,6 +89,23 @@ Review a specific commit range, confirmed impacts only:
       "packages/cli/src/core/graph/graph.ts::Graph::class"
     ]
   },
+  "boundaryViolations": {
+    "confidence": "medium",
+    "snapshotsAvailable": 4,
+    "violations": [
+      {
+        "from": { "symbolId": ".../CheckoutFlow::class", "communityId": 1, "label": "Billing" },
+        "to":   { "symbolId": ".../UserPermissions::class", "communityId": 3, "label": "Auth" },
+        "edgeKind": "calls",
+        "historicalEdgesBetweenClusters": 0,
+        "severity": "high"
+      }
+    ]
+  },
+  "clustersAffected": [
+    { "id": 1, "label": "Billing", "symbolCount": 5 },
+    { "id": 3, "label": "Auth", "symbolCount": 1 }
+  ],
   "_meta": { "totalItems": 3, "returnedItems": 3, "truncated": false }
 }
 ```
@@ -109,12 +126,38 @@ If the diff is empty:
 - **`files[].coChangedWith`** — files that historically change together with
   this one but are **not** in the current diff. A strong signal that the PR
   may be incomplete.
+- **`boundaryViolations.violations[]`** (v0.8) — edges introduced by this PR
+  between clusters that had no edges between them historically. `severity:
+  "high"` + `historicalEdgesBetweenClusters: 0` is a first-ever layer
+  crossing.
+- **`clustersAffected[]`** (v0.8) — distinct clusters the PR touches. A PR
+  spanning 3+ clusters is usually a cross-team change.
+
+## Killer example: the first-ever cluster crossing
+
+A PR wires a direct call from `CheckoutFlow` (Billing cluster) to `UserPermissions` (Auth cluster). Typecheck passes. Tests pass. `riskLevel` from blast radius alone may even come back `low` — the affected set is tiny.
+
+But the last 10 snapshots show **zero** edges between these two clusters. A senior reviewer would ask "why is Billing reaching into Auth internals?" Ctxo now hands that exact question to the AI reviewer before a human ever sees the PR:
+
+```json
+"boundaryViolations": {
+  "violations": [{
+    "from": { "label": "Billing" },
+    "to":   { "label": "Auth" },
+    "historicalEdgesBetweenClusters": 0,
+    "severity": "high"
+  }]
+}
+```
+
+This is architectural review from git history — no competitor MCP server has it.
 
 ## When to use
 
 - PR review and pre-merge sanity check
-- CI gate on high-risk changes (parse `riskLevel === "high"`)
+- CI gate on high-risk changes (parse `riskLevel === "high"` or `boundaryViolations.violations.length > 0`)
 - "Did I forget a file?" check via `coChangedWith`
+- "Should this span multiple teams?" check via `clustersAffected`
 
 ## Related tools
 

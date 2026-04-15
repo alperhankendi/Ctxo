@@ -10,7 +10,7 @@
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.run::method"
     },
     {
-      "cyclomatic": 29,
+      "cyclomatic": 30,
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method"
     },
     {
@@ -30,7 +30,7 @@
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.installHook::method"
     }
   ],
-  "contentHash": "3021cf5ed97d50ca7e8f192cf4cf80ffcb5a593fcac08d8b699e78372ca39aea",
+  "contentHash": "48ace7b9ff96a4f4e924a73873f8db479d99d562293a3a4553704395b3451f4f",
   "edges": [
     {
       "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
@@ -357,11 +357,11 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776292785,
   "symbols": [
     {
-      "endLine": 492,
-      "endOffset": 19130,
+      "endLine": 507,
+      "endOffset": 19834,
       "kind": "class",
       "name": "InitCommand",
       "startLine": 146,
@@ -387,8 +387,8 @@
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.run::method"
     },
     {
-      "endLine": 358,
-      "endOffset": 14032,
+      "endLine": 373,
+      "endOffset": 14736,
       "kind": "method",
       "name": "InitCommand.runInteractive",
       "startLine": 176,
@@ -396,39 +396,39 @@
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method"
     },
     {
-      "endLine": 426,
-      "endOffset": 16732,
+      "endLine": 441,
+      "endOffset": 17436,
       "kind": "method",
       "name": "InitCommand.runNonInteractive",
-      "startLine": 364,
-      "startOffset": 14263,
+      "startLine": 379,
+      "startOffset": 14967,
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method"
     },
     {
-      "endLine": 454,
-      "endOffset": 17818,
+      "endLine": 469,
+      "endOffset": 18522,
       "kind": "method",
       "name": "InitCommand.dryRun",
-      "startLine": 432,
-      "startOffset": 16963,
+      "startLine": 447,
+      "startOffset": 17667,
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.dryRun::method"
     },
     {
-      "endLine": 472,
-      "endOffset": 18545,
+      "endLine": 487,
+      "endOffset": 19249,
       "kind": "method",
       "name": "InitCommand.getVersion",
-      "startLine": 460,
-      "startOffset": 18049,
+      "startLine": 475,
+      "startOffset": 18753,
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.getVersion::method"
     },
     {
-      "endLine": 491,
-      "endOffset": 19127,
+      "endLine": 506,
+      "endOffset": 19831,
       "kind": "method",
       "name": "InitCommand.installHook",
-      "startLine": 474,
-      "startOffset": 18551,
+      "startLine": 489,
+      "startOffset": 19255,
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.installHook::method"
     },
     {

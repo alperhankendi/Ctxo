@@ -92,6 +92,7 @@ export class CliRouter {
         }
         const checkArg = args.includes('--check');
         const skipHistory = args.includes('--skip-history');
+        const skipCommunity = args.includes('--skip-community');
         const installMissing = args.includes('--install-missing');
         const maxHistoryIdx = args.indexOf('--max-history');
         const maxHistoryArg = maxHistoryIdx !== -1 ? Number(args[maxHistoryIdx + 1]) : undefined;
@@ -104,6 +105,7 @@ export class CliRouter {
           file: fileArg,
           check: checkArg,
           skipHistory,
+          skipCommunity,
           maxHistory: maxHistoryArg,
           installMissing,
         });
@@ -230,6 +232,7 @@ ctxo v${v} — MCP server for dependency-aware codebase context
 Usage:
   ctxo                      Start MCP server (stdio transport)
   ctxo index                Build full codebase index (--max-history N, default 20)
+  ctxo index --skip-community    Skip Louvain community detection for faster indexing
   ctxo sync                 Rebuild SQLite cache from committed JSON index
   ctxo watch                Start file watcher for incremental re-indexing
   ctxo verify-index         CI gate: fail if index is stale

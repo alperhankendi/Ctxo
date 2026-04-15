@@ -1,0 +1,220 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 16,
+      "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.detect::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.singletonCommunities::method"
+    },
+    {
+      "cyclomatic": 10,
+      "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.splitDisconnectedCommunities::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.normalizeCommunityIds::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.buildMemberIndex::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.countCrossClusterEdges::method"
+    },
+    {
+      "cyclomatic": 13,
+      "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.detectGodNodes::method"
+    }
+  ],
+  "contentHash": "7053a7c5c374a31916d76e20f190e4e3dc5b61ff14e5981d1df7e8fc17973432",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunityEntry::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::EdgeQuality::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::GodNode::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/community-labeler.ts::labelCommunities::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.singletonCommunities::method"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.splitDisconnectedCommunities::method"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.normalizeCommunityIds::method"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.buildMemberIndex::method"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/community-labeler.ts::labelCommunities::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.countCrossClusterEdges::method"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.detect::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.detectGodNodes::method"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::EdgeQuality::type"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/overlay/community-labeler.ts::labelCommunities::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::CommunityEntry::interface"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::GodNode::interface"
+    }
+  ],
+  "file": "packages/cli/src/core/overlay/community-detector.ts",
+  "intent": [],
+  "lastModified": 1776292784,
+  "symbols": [
+    {
+      "endLine": 274,
+      "endOffset": 9305,
+      "kind": "class",
+      "name": "CommunityDetector",
+      "startLine": 38,
+      "startOffset": 1362,
+      "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class"
+    },
+    {
+      "endLine": 137,
+      "endOffset": 4859,
+      "kind": "method",
+      "name": "CommunityDetector.detect",
+      "startLine": 49,
+      "startOffset": 1830,
+      "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.detect::method"
+    },
+    {
+      "endLine": 145,
+      "endOffset": 5097,
+      "kind": "method",
+      "name": "CommunityDetector.singletonCommunities",
+      "startLine": 139,
+      "startOffset": 4863,
+      "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.singletonCommunities::method"
+    },
+    {
+      "endLine": 183,
+      "endOffset": 6359,
+      "kind": "method",
+      "name": "CommunityDetector.splitDisconnectedCommunities",
+      "startLine": 147,
+      "startOffset": 5101,
+      "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.splitDisconnectedCommunities::method"
+    },
+    {
+      "endLine": 208,
+      "endOffset": 7090,
+      "kind": "method",
+      "name": "CommunityDetector.normalizeCommunityIds",
+      "startLine": 185,
+      "startOffset": 6363,
+      "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.normalizeCommunityIds::method"
+    },
+    {
+      "endLine": 219,
+      "endOffset": 7473,
+      "kind": "method",
+      "name": "CommunityDetector.buildMemberIndex",
+      "startLine": 210,
+      "startOffset": 7094,
+      "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.buildMemberIndex::method"
+    },
+    {
+      "endLine": 233,
+      "endOffset": 7856,
+      "kind": "method",
+      "name": "CommunityDetector.countCrossClusterEdges",
+      "startLine": 221,
+      "startOffset": 7477,
+      "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.countCrossClusterEdges::method"
+    },
+    {
+      "endLine": 273,
+      "endOffset": 9303,
+      "kind": "method",
+      "name": "CommunityDetector.detectGodNodes",
+      "startLine": 235,
+      "startOffset": 7860,
+      "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.detectGodNodes::method"
+    },
+    {
+      "endLine": 26,
+      "endOffset": 1089,
+      "kind": "interface",
+      "name": "CommunityComputeResult",
+      "startLine": 20,
+      "startOffset": 866,
+      "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityComputeResult::interface"
+    },
+    {
+      "endLine": 32,
+      "endOffset": 1246,
+      "kind": "interface",
+      "name": "CommunityDetectorOptions",
+      "startLine": 28,
+      "startOffset": 1091,
+      "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetectorOptions::interface"
+    }
+  ]
+}

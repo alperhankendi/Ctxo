@@ -60,6 +60,14 @@ Filter to high-confidence only:
       "riskScore": 0.91
     }
   ],
+  "byCluster": {
+    "packages/cli/src/adapters/storage": 12,
+    "packages/cli/src/core/graph": 3,
+    "packages/cli/src/adapters/mcp": 8,
+    "packages/cli/src/cli": 4
+  },
+  "crossClusterEdges": 15,
+  "multiClusterHint": "Change impacts 4 clusters — multi-team review recommended.",
   "_meta": { "totalItems": 27, "returnedItems": 27, "truncated": false }
 }
 ```
@@ -69,6 +77,25 @@ If the symbol is missing from the index:
 ```json
 { "found": false, "hint": "Symbol not found. Run \"ctxo index\" to build the codebase index." }
 ```
+
+### v0.8 cluster fields
+
+| Field | When present | Meaning |
+| :--- | :--- | :--- |
+| `byCluster` | A community snapshot exists (`ctxo index` after v0.8) | Map of `clusterLabel` → count of impacted symbols in that cluster |
+| `crossClusterEdges` | Same | Count of impacted-set edges that cross the target's own cluster |
+| `multiClusterHint` | `byCluster` touches ≥ 3 clusters | Human-readable nudge for multi-team review |
+
+## Killer example: same `impactScore`, different risk
+
+Two candidate refactors both report `impactScore: 10`. Before v0.8, they look identical.
+
+| Change | `byCluster` (v0.8) | Verdict |
+| :--- | :--- | :--- |
+| **A** — rename a private method | `{ "src/billing": 10 }` | One cluster, one team; proceed. |
+| **B** — tweak a shared DTO | `{ "src/billing": 4, "src/auth": 3, "src/reporting": 3 }` + `multiClusterHint` | Three clusters, three teams; needs coordination. |
+
+The raw numbers are identical. The cluster breakdown is the difference between "go" and "stop".
 
 ## Interpreting `overallRiskScore`
 

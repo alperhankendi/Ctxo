@@ -252,3 +252,54 @@ export interface SearchResponse {
   metrics: SearchMetrics;
   fuzzyCorrection?: FuzzyCorrection;
 }
+
+// ── Community Detection ────────────────────────────────────────
+
+export interface CommunityEntry {
+  readonly symbolId: string;
+  readonly communityId: number;
+  readonly communityLabel: string;
+}
+
+export interface GodNode {
+  readonly symbolId: string;
+  readonly bridgedCommunities: readonly number[];
+  readonly centralityScore: number;
+}
+
+export const EDGE_QUALITY = ['full', 'syntax-only', 'mixed'] as const;
+export type EdgeQuality = (typeof EDGE_QUALITY)[number];
+
+export interface CommunitySnapshot {
+  readonly version: 1;
+  readonly computedAt: string;
+  readonly commitSha: string;
+  readonly modularity: number;
+  readonly communities: readonly CommunityEntry[];
+  readonly godNodes: readonly GodNode[];
+  readonly edgeQuality: EdgeQuality;
+  readonly crossClusterEdges: number;
+}
+
+export interface DriftEvent {
+  readonly symbolId: string;
+  readonly movedFrom: { readonly id: number; readonly label: string };
+  readonly movedTo: { readonly id: number; readonly label: string };
+  readonly firstSeenInNewCluster: string;
+}
+
+export interface BoundaryViolation {
+  readonly from: {
+    readonly symbolId: string;
+    readonly communityId: number;
+    readonly label: string;
+  };
+  readonly to: {
+    readonly symbolId: string;
+    readonly communityId: number;
+    readonly label: string;
+  };
+  readonly edgeKind: EdgeKind;
+  readonly historicalEdgesBetweenClusters: number;
+  readonly severity: 'high' | 'medium';
+}

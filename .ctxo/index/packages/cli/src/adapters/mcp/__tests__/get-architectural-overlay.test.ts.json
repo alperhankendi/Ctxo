@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "6681a797dd362cf491161b42bfb09985565b70de1384113063d2c558fd2a1532",
+  "contentHash": "b699a3e211a534782e893b44151c982540a8bf5a678faf7cd649cfa465ac3f81",
   "edges": [
     {
       "from": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts::get-architectural-overlay.test::variable",
@@ -21,6 +21,17 @@
     {
       "from": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts::get-architectural-overlay.test::variable",
       "kind": "imports",
+      "to": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts::get-architectural-overlay.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts::get-architectural-overlay.test::variable",
+      "kind": "imports",
       "to": "packages/cli/src/core/types.ts::FileIndex::type",
       "typeOnly": true
     }
@@ -34,6 +45,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776292785,
   "symbols": []
 }

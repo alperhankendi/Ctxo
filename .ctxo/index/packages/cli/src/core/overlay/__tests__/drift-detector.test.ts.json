@@ -1,0 +1,28 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "8d9ea20a827431ab0c68e93dbdd63a79509ee559642a5a0762e66dbeb8d1ec6d",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/drift-detector.test.ts::drift-detector.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunityEntry::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/drift-detector.test.ts::drift-detector.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/drift-detector.test.ts::drift-detector.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class"
+    }
+  ],
+  "file": "packages/cli/src/core/overlay/__tests__/drift-detector.test.ts",
+  "intent": [],
+  "lastModified": 1776292784,
+  "symbols": []
+}

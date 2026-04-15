@@ -2,31 +2,52 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 7,
+      "cyclomatic": 13,
+      "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function"
+    },
+    {
+      "cyclomatic": 14,
       "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
     }
   ],
-  "contentHash": "97dedda1d008ccf5b1693e3d5424172284b5ad55b876ad95b8cf5a965b10f605",
+  "contentHash": "25a1950460fd8e94c3a5dcbe54980dae4ea054484029bdef1c2d7a59d059d126",
   "edges": [
     {
-      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function",
       "kind": "imports",
       "to": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface",
       "typeOnly": true
     },
     {
-      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function",
       "kind": "imports",
       "to": "packages/cli/src/ports/i-masking-port.ts::IMaskingPort::interface",
       "typeOnly": true
     },
     {
-      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function",
       "kind": "imports",
       "to": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class"
     },
     {
-      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::GodNode::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function",
       "kind": "imports",
       "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
       "typeOnly": true
@@ -34,7 +55,32 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
       "kind": "calls",
+      "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "calls",
       "to": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::GodNode::interface"
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
@@ -55,6 +101,11 @@
       "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
       "kind": "uses",
       "to": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
     }
   ],
   "file": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
@@ -66,16 +117,43 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776292785,
   "symbols": [
     {
-      "endLine": 54,
-      "endOffset": 1896,
+      "endLine": 79,
+      "endOffset": 2620,
+      "kind": "function",
+      "name": "buildCommunityOverlay",
+      "startLine": 32,
+      "startOffset": 979,
+      "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function"
+    },
+    {
+      "endLine": 138,
+      "endOffset": 4754,
       "kind": "function",
       "name": "handleGetArchitecturalOverlay",
-      "startLine": 10,
-      "startOffset": 372,
+      "startLine": 81,
+      "startOffset": 2622,
       "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
+    },
+    {
+      "endLine": 21,
+      "endOffset": 756,
+      "kind": "interface",
+      "name": "CommunityOverlayCluster",
+      "startLine": 15,
+      "startOffset": 615,
+      "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::CommunityOverlayCluster::interface"
+    },
+    {
+      "endLine": 30,
+      "endOffset": 977,
+      "kind": "interface",
+      "name": "CommunityOverlay",
+      "startLine": 23,
+      "startOffset": 758,
+      "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::CommunityOverlay::interface"
     }
   ]
 }
