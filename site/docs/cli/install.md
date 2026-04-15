@@ -10,18 +10,7 @@ packages for one or more languages. It auto-detects your project's package
 manager (`pnpm`, `npm`, `yarn`, `bun`) and runs the equivalent of
 `<pm> add -D @ctxo/lang-typescript @ctxo/lang-go ...` for you.
 
-::: tip Direct alternative
-If you prefer to stay with plain npm/pnpm, install the plugin packages
-directly:
-
-```bash
-pnpm add -D @ctxo/lang-typescript   # or @ctxo/lang-go, @ctxo/lang-csharp
-```
-
-Published packages: [`@ctxo/lang-typescript`](https://www.npmjs.com/package/@ctxo/lang-typescript),
-[`@ctxo/lang-go`](https://www.npmjs.com/package/@ctxo/lang-go),
-[`@ctxo/lang-csharp`](https://www.npmjs.com/package/@ctxo/lang-csharp).
-:::
+For a manual alternative to this command, see [Installation](/introduction/installation#add-a-language-later).
 
 When called with no arguments, `ctxo install` auto-detects languages used in
 the repo (via file extensions and common manifest files) and installs the

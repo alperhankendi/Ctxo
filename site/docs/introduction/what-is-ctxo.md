@@ -5,9 +5,6 @@ description: "Ctxo is an MCP server that gives AI coding agents dependency-aware
 
 # What is Ctxo?
 
-> AI agents don't fail because they can't code. They fail because they code blind.
-> Ctxo gives them the full picture before they write a single line.
-
 Ctxo is a **Model Context Protocol (MCP) server** that turns your repository into
 a queryable knowledge base for AI coding assistants. Instead of letting an agent
 grep its way through files one at a time, Ctxo serves **Logic-Slices**: a symbol

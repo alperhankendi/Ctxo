@@ -22,32 +22,15 @@ file). SQLite under `.ctxo/.cache/` is a rebuildable mirror.
 
 ## Symbol kinds
 
-Only six kinds exist. This is a deliberate contract enforced by zod schemas in
-[`core/types.ts`](https://github.com/alperhankendi/ctxo/blob/master/packages/cli/src/core/types.ts):
-
-| Kind        | Examples                                      |
-| ----------- | --------------------------------------------- |
-| `function`  | top-level functions, arrow functions exported |
-| `class`     | TypeScript/Go/C# classes                      |
-| `interface` | TS interfaces, Go interfaces, C# interfaces   |
-| `method`    | class members                                 |
-| `variable`  | exported const/let/var worth tracking         |
-| `type`      | TS type aliases, Go named types               |
-
-A plugin that cannot cleanly classify a declaration should drop it rather than
-mis-label it.
+Nodes are symbols of kind: `function | class | interface | method | variable | type`.
+See the [Symbol IDs reference](/reference/symbol-ids) for the full format and
+edge-case rules.
 
 ## Edge kinds
 
-Only five edge kinds exist:
-
-| Edge         | Meaning                                          |
-| ------------ | ------------------------------------------------ |
-| `imports`    | File-level or symbol-level import                |
-| `calls`      | Call-site reference                              |
-| `extends`    | Class extends class                              |
-| `implements` | Class implements interface                       |
-| `uses`       | Non-call reference (type position, field access) |
+5 kinds: `imports`, `calls`, `extends`, `implements`, `uses`. See
+[Edge kinds](/reference/edge-kinds) for direction, semantics, and per-parser
+emission rules.
 
 Edge kinds drive [blast radius](./blast-radius.md) confidence tiering.
 

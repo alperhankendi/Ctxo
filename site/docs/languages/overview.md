@@ -34,14 +34,10 @@ tier in `ctxo doctor --json` under the language coverage check.
 
 ## What gets extracted
 
-Every plugin returns the same shapes, defined in `@ctxo/plugin-api`:
-
-- **Symbols:** `function`, `class`, `interface`, `method`, `variable`, `type`
-- **Edges:** `imports`, `calls`, `extends`, `implements`, `uses`
-- **Complexity:** per-symbol cyclomatic count
-
-See [Symbol IDs](/reference/symbol-ids) and [Edge kinds](/reference/edge-kinds)
-for the canonical format.
+Every plugin returns the same shapes, defined in `@ctxo/plugin-api`: symbols,
+edges, and a per-symbol cyclomatic complexity count. See
+[Symbol IDs](/reference/symbol-ids) and [Edge kinds](/reference/edge-kinds) for
+the canonical enums and format.
 
 ## Detection
 
