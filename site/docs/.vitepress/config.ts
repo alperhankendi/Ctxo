@@ -24,6 +24,9 @@ export default defineConfig({
 
   head: [
     // Favicon
+    // Google Search Console
+    ['meta', { name: 'google-site-verification', content: 'uB871XYbfXjh0NP_KKY9y_k5CeWCSrEbsabbMAMryJg' }],
+
     ['link', { rel: 'icon', href: '/Ctxo/docs/logo.svg', type: 'image/svg+xml' }],
     ['link', { rel: 'apple-touch-icon', href: '/Ctxo/docs/apple-touch-icon.png' }],
 
