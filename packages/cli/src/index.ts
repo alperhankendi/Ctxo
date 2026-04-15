@@ -28,7 +28,8 @@ import { withRecording } from './adapters/stats/with-recording.js';
 import type { ISessionRecorderPort } from './ports/i-session-recorder-port.js';
 import { detectWorkspace } from './adapters/workspace/single-package-workspace.js';
 import { setWorkspaceMeta } from './core/response-envelope.js';
-import { loadConfig, statsEnabled } from './core/config/load-config.js';
+import { loadConfig, maskingClusterLabelPatterns, statsEnabled } from './core/config/load-config.js';
+import { ClusterLabelMasker } from './core/overlay/cluster-label-masker.js';
 
 const log = createLogger('ctxo:mcp');
 
@@ -88,6 +89,9 @@ async function main(): Promise<void> {
   await storage.init();
 
   const masking = loadMaskingConfig(ctxoRoot);
+  const clusterLabelMasker = new ClusterLabelMasker(
+    maskingClusterLabelPatterns(loadConfig(ctxoRoot).config),
+  );
   const git = new SimpleGitAdapter(process.cwd());
 
   // Session recording (opt-out via config.yaml stats.enabled: false)
@@ -102,13 +106,13 @@ async function main(): Promise<void> {
   const { StalenessDetector } = await import('./core/staleness/staleness-detector.js');
   const staleness = new StalenessDetector(process.cwd(), ctxoRoot);
 
-  registerTools(server, storage, masking, git, staleness, recorder, ctxoRoot);
+  registerTools(server, storage, masking, git, staleness, recorder, ctxoRoot, clusterLabelMasker);
 
   // Start MCP server — HTTP mode or stdio mode
   if (httpPortStr) {
     await startHttpTransport(async () => {
       const s = new McpServer({ name: 'ctxo', version: PKG_VERSION });
-      registerTools(s, storage, masking, git, staleness, recorder, ctxoRoot);
+      registerTools(s, storage, masking, git, staleness, recorder, ctxoRoot, clusterLabelMasker);
       return s;
     }, parseInt(httpPortStr, 10));
   } else {
@@ -126,6 +130,7 @@ function registerTools(
   staleness: any,
   recorder: ISessionRecorderPort | null,
   ctxoRoot = '.ctxo',
+  clusterLabelMasker?: ClusterLabelMasker,
 ) {
   // Tool annotations — all Ctxo tools are read-only index queries
   const toolAnnotations = {
@@ -137,7 +142,7 @@ function registerTools(
 
   // Register tools — each handler wrapped with session recording
   const logicSliceHandler = withRecording('get_logic_slice', handleGetLogicSlice(storage, masking, staleness, ctxoRoot), recorder);
-  const whyContextHandler = withRecording('get_why_context', handleGetWhyContext(storage, git, masking, staleness, ctxoRoot), recorder);
+  const whyContextHandler = withRecording('get_why_context', handleGetWhyContext(storage, git, masking, staleness, ctxoRoot, clusterLabelMasker), recorder);
   const changeIntelligenceHandler = withRecording('get_change_intelligence', handleGetChangeIntelligence(storage, git, masking, staleness, ctxoRoot), recorder);
 
   server.registerTool(
@@ -180,7 +185,7 @@ function registerTools(
     (args) => changeIntelligenceHandler(args),
   );
 
-  const blastRadiusHandler = withRecording('get_blast_radius', handleGetBlastRadius(storage, masking, staleness, ctxoRoot, git), recorder);
+  const blastRadiusHandler = withRecording('get_blast_radius', handleGetBlastRadius(storage, masking, staleness, ctxoRoot, git, clusterLabelMasker), recorder);
 
   server.registerTool(
     'get_blast_radius',
@@ -196,7 +201,7 @@ function registerTools(
     (args) => blastRadiusHandler(args),
   );
 
-  const overlayHandler = withRecording('get_architectural_overlay', handleGetArchitecturalOverlay(storage, masking, staleness, git), recorder);
+  const overlayHandler = withRecording('get_architectural_overlay', handleGetArchitecturalOverlay(storage, masking, staleness, git, clusterLabelMasker), recorder);
 
   server.registerTool(
     'get_architectural_overlay',
@@ -339,7 +344,7 @@ function registerTools(
     (args) => symbolImportanceHandler(args),
   );
 
-  const prImpactHandler = withRecording('get_pr_impact', handleGetPrImpact(storage, git, masking, staleness, ctxoRoot), recorder);
+  const prImpactHandler = withRecording('get_pr_impact', handleGetPrImpact(storage, git, masking, staleness, ctxoRoot, clusterLabelMasker), recorder);
 
   server.registerTool(
     'get_pr_impact',

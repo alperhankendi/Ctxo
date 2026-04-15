@@ -5,6 +5,7 @@ import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { BlastRadiusCalculator } from '../../core/blast-radius/blast-radius-calculator.js';
 import { wrapResponse } from '../../core/response-envelope.js';
 import { buildSnapshotStaleness } from '../../core/overlay/snapshot-staleness.js';
+import type { ClusterLabelMasker } from '../../core/overlay/cluster-label-masker.js';
 import { filterByIntent } from '../../core/intent-filter.js';
 import type { CommunitySnapshot } from '../../core/types.js';
 import type { StalenessCheck } from './get-logic-slice.js';
@@ -56,6 +57,7 @@ export function handleGetBlastRadius(
   staleness?: StalenessCheck,
   ctxoRoot = '.ctxo',
   git?: IGitPort,
+  clusterLabelMasker?: ClusterLabelMasker,
 ) {
   const calculator = new BlastRadiusCalculator();
   const getGraph = () => getGraphAndFiles(ctxoRoot, storage);
@@ -93,7 +95,11 @@ export function handleGetBlastRadius(
       const likelyCount = symbols.filter(s => s.confidence === 'likely').length;
       const potentialCount = symbols.filter(s => s.confidence === 'potential').length;
 
-      const snapshot = storage.readCommunities();
+      const rawSnapshot = storage.readCommunities();
+      const snapshot =
+        rawSnapshot && clusterLabelMasker?.isEnabled()
+          ? clusterLabelMasker.maskSnapshot(rawSnapshot)
+          : rawSnapshot;
       const clusterBreakdown = snapshot
         ? computeClusterBreakdown(snapshot, symbolId, symbols.map((s) => s.symbolId))
         : undefined;

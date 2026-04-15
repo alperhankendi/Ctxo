@@ -5,6 +5,7 @@ import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { RevertDetector } from '../../core/why-context/revert-detector.js';
 import { DriftDetector } from '../../core/overlay/drift-detector.js';
 import { buildSnapshotStaleness } from '../../core/overlay/snapshot-staleness.js';
+import type { ClusterLabelMasker } from '../../core/overlay/cluster-label-masker.js';
 import { JsonIndexReader } from '../storage/json-index-reader.js';
 import type { AntiPattern, CommitIntent } from '../../core/types.js';
 import type { StalenessCheck } from './get-logic-slice.js';
@@ -20,6 +21,7 @@ export function handleGetWhyContext(
   masking: IMaskingPort,
   staleness?: StalenessCheck,
   ctxoRoot = '.ctxo',
+  clusterLabelMasker?: ClusterLabelMasker,
 ) {
   const revertDetector = new RevertDetector();
   const indexReader = new JsonIndexReader(ctxoRoot);
@@ -81,7 +83,11 @@ export function handleGetWhyContext(
         responsePayload.warningBadge = '⚠ Anti-pattern detected';
       }
 
-      const currentSnapshot = storage.readCommunities();
+      const rawSnapshot = storage.readCommunities();
+      const currentSnapshot =
+        rawSnapshot && clusterLabelMasker?.isEnabled()
+          ? clusterLabelMasker.maskSnapshot(rawSnapshot)
+          : rawSnapshot;
       if (currentSnapshot) {
         const history = storage.listCommunityHistory();
         const drift = driftDetector.detect(currentSnapshot, history);

@@ -91,6 +91,10 @@ export function indexIgnoreProjectPatterns(config: CtxoConfig): string[] {
   return (config.index?.ignoreProjects ?? []).filter(isValidGlob);
 }
 
+export function maskingClusterLabelPatterns(config: CtxoConfig): string[] {
+  return (config.masking?.clusterLabels ?? []).filter(isValidGlob);
+}
+
 /**
  * Build a single predicate that returns true when the given path matches any
  * of the supplied glob patterns. Paths are normalised to forward slashes.

@@ -186,4 +186,36 @@ describe('GetArchitecturalOverlayHandler', () => {
     const payload = JSON.parse((await handler({})).content[0]!.text);
     expect(payload._meta.snapshotStaleness).toBeUndefined();
   });
+
+  it('masks sensitive cluster labels when a ClusterLabelMasker is wired', async () => {
+    storage.writeCommunities({
+      version: 1,
+      computedAt: '2026-04-16T10:00:00.000Z',
+      commitSha: 'abc1234',
+      modularity: 0.5,
+      communities: [
+        { symbolId: 'src/core/types.ts::T::type', communityId: 0, communityLabel: 'internal-vault' },
+        { symbolId: 'src/ports/i-storage.ts::I::interface', communityId: 1, communityLabel: 'src/core' },
+      ],
+      godNodes: [],
+      edgeQuality: 'full',
+      crossClusterEdges: 0,
+    });
+    const { ClusterLabelMasker } = await import('../../../core/overlay/cluster-label-masker.js');
+    const masker = new ClusterLabelMasker(['internal-*']);
+    const handler = handleGetArchitecturalOverlay(
+      storage,
+      new MaskingPipeline(),
+      undefined,
+      undefined,
+      masker,
+    );
+    const payload = JSON.parse((await handler({})).content[0]!.text);
+    const labels = payload.communities.clusters.map(
+      (c: { label: string }) => c.label,
+    ) as string[];
+    expect(labels.some((l) => /^\[masked-cluster-\d+\]$/.test(l))).toBe(true);
+    expect(labels).toContain('src/core');
+    expect(labels).not.toContain('internal-vault');
+  });
 });

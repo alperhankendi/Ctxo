@@ -5,6 +5,7 @@ import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { ArchitecturalOverlay } from '../../core/overlay/architectural-overlay.js';
 import { wrapResponse } from '../../core/response-envelope.js';
 import { buildSnapshotStaleness } from '../../core/overlay/snapshot-staleness.js';
+import type { ClusterLabelMasker } from '../../core/overlay/cluster-label-masker.js';
 import type { CommunitySnapshot, GodNode } from '../../core/types.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 
@@ -86,6 +87,7 @@ export function handleGetArchitecturalOverlay(
   masking: IMaskingPort,
   staleness?: StalenessCheck,
   git?: IGitPort,
+  clusterLabelMasker?: ClusterLabelMasker,
 ) {
   const overlay = new ArchitecturalOverlay();
 
@@ -124,7 +126,11 @@ export function handleGetArchitecturalOverlay(
         return { content: buildContent(payload) };
       }
 
-      const snapshot = mode === 'regex' ? undefined : storage.readCommunities();
+      const rawSnapshot = mode === 'regex' ? undefined : storage.readCommunities();
+      const snapshot =
+        rawSnapshot && clusterLabelMasker?.isEnabled()
+          ? clusterLabelMasker.maskSnapshot(rawSnapshot)
+          : rawSnapshot;
       const community = snapshot ? buildCommunityOverlay(snapshot) : undefined;
 
       const body: Record<string, unknown> = {};

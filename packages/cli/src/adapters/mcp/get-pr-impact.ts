@@ -9,6 +9,7 @@ import { getGraphAndFiles } from './get-logic-slice.js';
 import { BlastRadiusCalculator } from '../../core/blast-radius/blast-radius-calculator.js';
 import { BoundaryViolationDetector } from '../../core/overlay/boundary-violation-detector.js';
 import { buildSnapshotStaleness } from '../../core/overlay/snapshot-staleness.js';
+import type { ClusterLabelMasker } from '../../core/overlay/cluster-label-masker.js';
 import { wrapResponse } from '../../core/response-envelope.js';
 import { loadCoChangeMap } from '../../core/co-change/co-change-analyzer.js';
 import type { CoChangeMatrix, CoChangeEntry, CommunitySnapshot } from '../../core/types.js';
@@ -55,6 +56,7 @@ export function handleGetPrImpact(
   masking: IMaskingPort,
   staleness?: StalenessCheck,
   ctxoRoot = '.ctxo',
+  clusterLabelMasker?: ClusterLabelMasker,
 ) {
   const calculator = new BlastRadiusCalculator();
   const getGraph = () => getGraphAndFiles(ctxoRoot, storage);
@@ -193,7 +195,11 @@ export function handleGetPrImpact(
 
       const changedSymbols = files.reduce((sum, f) => sum + f.symbols.length, 0);
 
-      const snapshot = storage.readCommunities();
+      const rawSnapshot = storage.readCommunities();
+      const snapshot =
+        rawSnapshot && clusterLabelMasker?.isEnabled()
+          ? clusterLabelMasker.maskSnapshot(rawSnapshot)
+          : rawSnapshot;
       const history = snapshot ? storage.listCommunityHistory() : [];
       let boundarySection: Record<string, unknown> | undefined;
       let clustersAffected: Array<{ id: number; label: string; symbolCount: number }> | undefined;
