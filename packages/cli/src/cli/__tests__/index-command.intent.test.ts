@@ -53,7 +53,11 @@ describe('IndexCommand — intent and antiPatterns (Issue #1)', () => {
   });
 
   afterEach(() => {
-    rmSync(tempDir, { recursive: true, force: true });
+    try {
+      rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+    } catch {
+      /* best effort — Windows file locks from simple-git / sqlite */
+    }
   });
 
   it('populates intent with commit history for each indexed file', async () => {

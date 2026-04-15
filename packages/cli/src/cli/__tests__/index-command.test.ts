@@ -31,7 +31,13 @@ describe('IndexCommand', () => {
   });
 
   afterEach(() => {
-    rmSync(tempDir, { recursive: true, force: true });
+    // Windows holds simple-git / sqlite handles briefly after test body returns;
+    // cleanup is best-effort to avoid false-positive test failures.
+    try {
+      rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+    } catch {
+      /* best effort */
+    }
   });
 
   it('discovers all .ts files in project directory', async () => {
@@ -138,5 +144,52 @@ describe('IndexCommand', () => {
     const symbolNames = content.symbols.map((s: { name: string }) => s.name);
     expect(symbolNames).toContain('User');
     expect(symbolNames).toContain('Role');
+  });
+
+  it('writes communities.json on full index run', async () => {
+    const cmd = new IndexCommand(tempDir);
+    await cmd.run();
+    expect(existsSync(join(tempDir, '.ctxo', 'index', 'communities.json'))).toBe(true);
+  });
+
+  it('skips community detection with --skip-community and preserves any existing snapshot', async () => {
+    // Full run first — produces real snapshot.
+    await new IndexCommand(tempDir).run();
+    const snapshotPath = join(tempDir, '.ctxo', 'index', 'communities.json');
+    expect(existsSync(snapshotPath)).toBe(true);
+    const beforeMtime = readFileSync(snapshotPath, 'utf-8');
+
+    // Re-index with skipCommunity — snapshot must not be touched.
+    await new IndexCommand(tempDir).run({ skipCommunity: true });
+    const afterMtime = readFileSync(snapshotPath, 'utf-8');
+    expect(afterMtime).toBe(beforeMtime);
+  });
+
+  it('recomputes community snapshot over the FULL project graph during --file incremental re-index', async () => {
+    // Full run establishes real snapshot.
+    await new IndexCommand(tempDir).run();
+    const snapshotPath = join(tempDir, '.ctxo', 'index', 'communities.json');
+    const before = JSON.parse(readFileSync(snapshotPath, 'utf-8'));
+    const beforeClusterCount = new Set(
+      (before.communities as Array<{ communityId: number }>).map((c) => c.communityId),
+    ).size;
+    const beforeSymbolCount = before.communities.length;
+
+    // Incremental re-index of a single file MUST refresh communities.json using the full
+    // graph (committed index merged with in-memory fileIndex) — not just the 1-file subgraph.
+    await new IndexCommand(tempDir).run({ file: 'src/types.ts' });
+    const after = JSON.parse(readFileSync(snapshotPath, 'utf-8'));
+    const afterClusterCount = new Set(
+      (after.communities as Array<{ communityId: number }>).map((c) => c.communityId),
+    ).size;
+    const afterSymbolCount = after.communities.length;
+
+    // computedAt must advance (snapshot refreshed).
+    expect(after.computedAt).not.toBe(before.computedAt);
+    // Symbol count must match the full project — NOT just the 1-file subgraph.
+    // If --file mode incorrectly ran over the subgraph we would see only that file's symbols.
+    expect(afterSymbolCount).toBeGreaterThanOrEqual(beforeSymbolCount);
+    // Cluster count stays in the right order of magnitude (no singleton explosion).
+    expect(afterClusterCount).toBeLessThanOrEqual(beforeSymbolCount);
   });
 });

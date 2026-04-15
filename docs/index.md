@@ -23,6 +23,10 @@
 - **[conventions/testing.md](./conventions/testing.md)** — TS-001 to TS-014 test rules
 - **[conventions/review-feedback-checks.md](./conventions/review-feedback-checks.md)** — CodeRabbit feedback patterns
 
+## Features
+
+- **[features/architectural-intelligence.md](./features/architectural-intelligence.md)** — v0.8 community detection, drift, boundary violations, cluster-scoped blast radius
+
 ## Product & ecosystem
 
 - **[branding.md](./branding.md)** — brand palette + visual guide
@@ -32,7 +36,7 @@
 ## Runbooks
 
 - **[runbook/cli-validation/cli-validation.md](./runbook/cli-validation/cli-validation.md)** — full CLI validation runbook
-- **[runbook/cli-validation/validation-result-v3.md](./runbook/cli-validation/validation-result-v3.md)** — latest CLI validation result
+- **[runbook/cli-validation/validation-result-v6.md](./runbook/cli-validation/validation-result-v6.md)** — latest CLI validation result
 - **[runbook/mcp-validation/mcp-validation.md](./runbook/mcp-validation/mcp-validation.md)** — full MCP validation runbook
 - **[runbook/mcp-validation/validation-result-v14.md](./runbook/mcp-validation/validation-result-v14.md)** — latest MCP validation result
 - **[runbook/mcp-validation/test-sessions/](./runbook/mcp-validation/test-sessions/)** — append-only MCP session logs

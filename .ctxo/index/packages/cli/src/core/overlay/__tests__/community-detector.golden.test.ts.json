@@ -1,0 +1,28 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "7d0e4f74ccb9c0babeaefd3d742d44771d6c6244a558a577937cac2c9f591bb4",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/community-detector.golden.test.ts::community-detector.golden.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/community-detector.golden.test.ts::community-detector.golden.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildMultiClusterGraph::function"
+    }
+  ],
+  "file": "packages/cli/src/core/overlay/__tests__/community-detector.golden.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-16T02:06:47+03:00",
+      "hash": "72465dccb48f208207c13e5c7864a186fa965c00",
+      "kind": "commit",
+      "message": "test(core): golden-snapshot determinism test for CommunityDetector (closes #61)"
+    }
+  ],
+  "lastModified": 1776296576,
+  "symbols": []
+}

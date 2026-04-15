@@ -21,6 +21,18 @@ export interface ResponseMeta {
     root: string;
     package?: string;
   };
+  /**
+   * How far the community snapshot has drifted from current git HEAD.
+   * Only populated on cluster-aware MCP tools (overlay, blast-radius,
+   * why-context, pr-impact). Tells AI agents whether the cluster / drift /
+   * boundary data they are about to act on is fresh or N commits stale.
+   */
+  snapshotStaleness?: {
+    snapshotCommit: string;
+    currentHeadCommit?: string;
+    commitsBehind?: number;
+    hint?: string;
+  };
 }
 
 let workspaceMeta: ResponseMeta['workspace'] | undefined;
@@ -53,6 +65,8 @@ const TRUNCATABLE_FIELDS: Record<string, string> = {
   scaffolding: 'Review the scaffolding markers directly in the listed files.',
   deadFiles: 'Use find_dead_code with includeTests to adjust scope.',
   files: 'Use get_changed_symbols with a narrower since ref or smaller maxFiles.',
+  clusters: 'Use get_architectural_overlay with mode=communities and layer filter for a focused view.',
+  clustersAffected: 'Use get_blast_radius on individual changed symbols for per-cluster impact.',
 };
 
 function getThreshold(): number {
@@ -85,11 +99,25 @@ function findTruncatableArray(data: Record<string, unknown>): { key: string; arr
  * @param data - The raw response object (before JSON.stringify)
  * @returns The data object with _meta added (and arrays truncated if over threshold)
  */
-function buildMeta(base: Omit<ResponseMeta, 'workspace'>): ResponseMeta {
-  return workspaceMeta ? { ...base, workspace: workspaceMeta } : base;
+export interface WrapResponseExtras {
+  snapshotStaleness?: ResponseMeta['snapshotStaleness'];
 }
 
-export function wrapResponse(data: Record<string, unknown>): Record<string, unknown> {
+function buildMeta(
+  base: Omit<ResponseMeta, 'workspace' | 'snapshotStaleness'>,
+  extras?: WrapResponseExtras,
+): ResponseMeta {
+  const meta: ResponseMeta = workspaceMeta ? { ...base, workspace: workspaceMeta } : base;
+  if (extras?.snapshotStaleness) {
+    return { ...meta, snapshotStaleness: extras.snapshotStaleness };
+  }
+  return meta;
+}
+
+export function wrapResponse(
+  data: Record<string, unknown>,
+  extras?: WrapResponseExtras,
+): Record<string, unknown> {
   const threshold = getThreshold();
   const fullJson = JSON.stringify(data);
   const totalBytes = Buffer.byteLength(fullJson, 'utf-8');
@@ -101,12 +129,15 @@ export function wrapResponse(data: Record<string, unknown>): Record<string, unkn
   if (totalBytes <= threshold) {
     return {
       ...data,
-      _meta: buildMeta({
-        totalItems,
-        returnedItems: totalItems,
-        truncated: false,
-        totalBytes,
-      }),
+      _meta: buildMeta(
+        {
+          totalItems,
+          returnedItems: totalItems,
+          truncated: false,
+          totalBytes,
+        },
+        extras,
+      ),
     };
   }
 
@@ -114,12 +145,15 @@ export function wrapResponse(data: Record<string, unknown>): Record<string, unkn
   if (!truncatable || truncatable.arr.length <= 1) {
     return {
       ...data,
-      _meta: buildMeta({
-        totalItems,
-        returnedItems: totalItems,
-        truncated: false,
-        totalBytes,
-      }),
+      _meta: buildMeta(
+        {
+          totalItems,
+          returnedItems: totalItems,
+          truncated: false,
+          totalBytes,
+        },
+        extras,
+      ),
     };
   }
 
@@ -132,13 +166,16 @@ export function wrapResponse(data: Record<string, unknown>): Record<string, unkn
     const trial = {
       ...data,
       [truncatable.key]: truncatable.arr.slice(0, mid),
-      _meta: buildMeta({
-        totalItems,
-        returnedItems: mid,
-        truncated: true,
-        totalBytes,
-        hint: TRUNCATABLE_FIELDS[truncatable.key],
-      }),
+      _meta: buildMeta(
+        {
+          totalItems,
+          returnedItems: mid,
+          truncated: true,
+          totalBytes,
+          hint: TRUNCATABLE_FIELDS[truncatable.key],
+        },
+        extras,
+      ),
     };
     const size = Buffer.byteLength(JSON.stringify(trial), 'utf-8');
     if (size <= threshold) {
@@ -153,12 +190,15 @@ export function wrapResponse(data: Record<string, unknown>): Record<string, unkn
   return {
     ...data,
     [truncatable.key]: truncatable.arr.slice(0, lo),
-    _meta: buildMeta({
-      totalItems,
-      returnedItems: lo,
-      truncated: true,
-      totalBytes,
-      hint,
-    }),
+    _meta: buildMeta(
+      {
+        totalItems,
+        returnedItems: lo,
+        truncated: true,
+        totalBytes,
+        hint,
+      },
+      extras,
+    ),
   };
 }

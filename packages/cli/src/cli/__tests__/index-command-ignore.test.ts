@@ -8,7 +8,13 @@ import { IndexCommand } from '../index-command.js';
 const tempDirs: string[] = [];
 
 afterEach(() => {
-  for (const dir of tempDirs) rmSync(dir, { recursive: true, force: true });
+  for (const dir of tempDirs) {
+    try {
+      rmSync(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+    } catch {
+      /* best effort — Windows file locks from simple-git / sqlite */
+    }
+  }
   tempDirs.length = 0;
 });
 

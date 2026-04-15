@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 10,
+      "cyclomatic": 17,
       "symbolId": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
     }
   ],
-  "contentHash": "47c5e4ef25fb80bf6cff5b33c55c2e9beafff5c79501e7b896a8652a918a0711",
+  "contentHash": "172531be76b6e1df38e387cf6eba230fe601841f2fc514aac40280ec562eb3b9",
   "edges": [
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
@@ -34,18 +34,34 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "imports",
-      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class"
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::CommitIntent::type",
+      "to": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker::class",
       "typeOnly": true
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
       "to": "packages/cli/src/core/types.ts::AntiPattern::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommitIntent::type",
       "typeOnly": true
     },
     {
@@ -57,12 +73,22 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "calls",
+      "to": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "calls",
       "to": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector::class"
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "calls",
       "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class"
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
@@ -87,6 +113,11 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "uses",
+      "to": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
       "to": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector::class"
     },
     {
@@ -97,16 +128,50 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "uses",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
       "to": "packages/cli/src/core/types.ts::CommitIntent::type"
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
       "kind": "uses",
       "to": "packages/cli/src/core/types.ts::AntiPattern::type"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
     }
   ],
   "file": "packages/cli/src/adapters/mcp/get-why-context.ts",
   "intent": [
+    {
+      "date": "2026-04-16T02:37:45+03:00",
+      "hash": "cf42f444577b300856a167d2f4debc882db54b05",
+      "kind": "commit",
+      "message": "fix(overlay): filter transient drift to suppress Louvain jitter (closes #56)"
+    },
+    {
+      "date": "2026-04-16T02:32:55+03:00",
+      "hash": "f563a37a96ad967887256d25d09f2db027b27f11",
+      "kind": "commit",
+      "message": "feat(mcp): cluster-label masking via .ctxo/config.yaml glob patterns (closes #60)"
+    },
+    {
+      "date": "2026-04-16T02:24:31+03:00",
+      "hash": "0ef4193220fc4b421794c9eec1ad7e20948611e6",
+      "kind": "commit",
+      "message": "feat(mcp): snapshotStaleness in _meta surfaces snapshot-vs-HEAD gap (closes #55)"
+    },
+    {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    },
     {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
@@ -114,15 +179,15 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776296576,
   "symbols": [
     {
-      "endLine": 96,
-      "endOffset": 3556,
+      "endLine": 126,
+      "endOffset": 4910,
       "kind": "function",
       "name": "handleGetWhyContext",
-      "startLine": 14,
-      "startOffset": 623,
+      "startLine": 17,
+      "startOffset": 865,
       "symbolId": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
     }
   ]

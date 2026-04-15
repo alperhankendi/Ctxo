@@ -1,101 +1,107 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "d3620a31ab182b26a37b03e9810744ccce73cea2c179a3c216b6819099e96e9d",
+  "contentHash": "e7cd1ba32609605cc10721013e8e42b05ea2cf6c789f1deee881e1a2369a5e10",
   "edges": [
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
-      "to": "src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
+      "to": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class"
     },
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
-      "to": "src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
+      "to": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class"
     },
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
-      "to": "src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
+      "to": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
     },
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function"
+      "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function"
     },
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
+      "to": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function"
     },
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function"
+      "to": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function"
     },
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
+      "to": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
     },
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
+      "to": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
     },
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function"
+      "to": "packages/cli/src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function"
     },
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function"
+      "to": "packages/cli/src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function"
     },
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function"
+      "to": "packages/cli/src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function"
     },
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
-      "to": "src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function"
+      "to": "packages/cli/src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function"
     },
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function"
+      "to": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function"
     },
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
-      "to": "src/adapters/mcp/find-importers.ts::handleFindImporters::function"
+      "to": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function"
     },
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function"
+      "to": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function"
     },
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function"
+      "to": "packages/cli/src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function"
     },
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
-      "to": "src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
+      "to": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
     },
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
       "kind": "imports",
-      "to": "src/core/staleness/staleness-detector.ts::StalenessDetector::class"
+      "to": "packages/cli/src/core/staleness/staleness-detector.ts::StalenessDetector::class"
     }
   ],
   "file": "docs/runbook/mcp-validation/mcp-validation-test.ts",
   "intent": [
+    {
+      "date": "2026-04-16T02:04:31+03:00",
+      "hash": "999ca72cdb48edc8893678e48384dd1b3627d5a6",
+      "kind": "commit",
+      "message": "fix(storage): skip 'nocommit' snapshots from history (closes #57)"
+    },
     {
       "date": "2026-04-08T15:32:04+03:00",
       "hash": "85f1d67d58d682c0f038b36ef9dd1b17eac10b6f",
@@ -109,6 +115,6 @@
       "message": "Add automated MCP validation test script to runbook"
     }
   ],
-  "lastModified": 1776115133,
+  "lastModified": 1776296576,
   "symbols": []
 }

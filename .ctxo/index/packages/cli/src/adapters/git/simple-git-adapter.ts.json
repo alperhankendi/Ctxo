@@ -20,9 +20,17 @@
     {
       "cyclomatic": 2,
       "symbolId": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getFileChurn::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getHeadSha::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.countCommitsBetween::method"
     }
   ],
-  "contentHash": "fb90386f71891084e16dce53638edf78984373de2bf72a24461eda76e6e8941e",
+  "contentHash": "f832fc1a62d2e742ad18cfaa1d10e149e12853e4890a528e98db23f5c073130d",
   "edges": [
     {
       "from": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class",
@@ -71,17 +79,23 @@
   "file": "packages/cli/src/adapters/git/simple-git-adapter.ts",
   "intent": [
     {
+      "date": "2026-04-16T02:24:31+03:00",
+      "hash": "0ef4193220fc4b421794c9eec1ad7e20948611e6",
+      "kind": "commit",
+      "message": "feat(mcp): snapshotStaleness in _meta surfaces snapshot-vs-HEAD gap (closes #55)"
+    },
+    {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
       "kind": "commit",
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115133,
+  "lastModified": 1776296576,
   "symbols": [
     {
-      "endLine": 99,
-      "endOffset": 2977,
+      "endLine": 121,
+      "endOffset": 3731,
       "kind": "class",
       "name": "SimpleGitAdapter",
       "startLine": 7,
@@ -132,6 +146,24 @@
       "startLine": 86,
       "startOffset": 2586,
       "symbolId": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getFileChurn::method"
+    },
+    {
+      "endLine": 109,
+      "endOffset": 3313,
+      "kind": "method",
+      "name": "SimpleGitAdapter.getHeadSha",
+      "startLine": 100,
+      "startOffset": 2980,
+      "symbolId": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getHeadSha::method"
+    },
+    {
+      "endLine": 120,
+      "endOffset": 3728,
+      "kind": "method",
+      "name": "SimpleGitAdapter.countCommitsBetween",
+      "startLine": 111,
+      "startOffset": 3319,
+      "symbolId": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.countCommitsBetween::method"
     }
   ]
 }

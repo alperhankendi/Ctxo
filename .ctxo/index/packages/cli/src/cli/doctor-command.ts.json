@@ -6,7 +6,7 @@
       "symbolId": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method"
     }
   ],
-  "contentHash": "037e22fec019f512180149b428305619e554b696746f12e25c47749ebfab8bf0",
+  "contentHash": "efc2b81b1247c6d35d6de7528ecf3406edcf4d4eebba5743fe0e127e9ad05344",
   "edges": [
     {
       "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
@@ -353,6 +353,12 @@
   "file": "packages/cli/src/cli/doctor-command.ts",
   "intent": [
     {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    },
+    {
       "date": "2026-04-13T02:28:53+03:00",
       "hash": "7174b669e8f74f8770aeeaa22475639fe090732d",
       "kind": "commit",
@@ -371,11 +377,11 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776296576,
   "symbols": [
     {
       "endLine": 112,
-      "endOffset": 3866,
+      "endOffset": 3901,
       "kind": "class",
       "name": "DoctorCommand",
       "startLine": 32,
@@ -384,7 +390,7 @@
     },
     {
       "endLine": 111,
-      "endOffset": 3863,
+      "endOffset": 3898,
       "kind": "method",
       "name": "DoctorCommand.run",
       "startLine": 41,

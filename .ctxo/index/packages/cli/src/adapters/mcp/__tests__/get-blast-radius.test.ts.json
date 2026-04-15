@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "785f49682221bf317ed98563c0ebd8af29435bc124c19782fad24ede1e76e2a9",
+  "contentHash": "28b3843152817dd736afedfecc0249a8e9a212c58d9a5aefa68c8b0b77796f6c",
   "edges": [
     {
       "from": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts::get-blast-radius.test::variable",
@@ -28,12 +28,24 @@
   "file": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
   "intent": [
     {
+      "date": "2026-04-16T02:24:31+03:00",
+      "hash": "0ef4193220fc4b421794c9eec1ad7e20948611e6",
+      "kind": "commit",
+      "message": "feat(mcp): snapshotStaleness in _meta surfaces snapshot-vs-HEAD gap (closes #55)"
+    },
+    {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    },
+    {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
       "kind": "commit",
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776296576,
   "symbols": []
 }

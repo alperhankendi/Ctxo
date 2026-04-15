@@ -14,7 +14,7 @@ describe('SchemaManager', () => {
   });
 
   afterEach(() => {
-    rmSync(tempDir, { recursive: true, force: true });
+    rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   });
 
   it('writes schema version on first run', () => {

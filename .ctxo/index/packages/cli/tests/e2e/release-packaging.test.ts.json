@@ -1,10 +1,22 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "1419c5ca5a1c0b3bf569fe060ff28f395b3f8212ef571cbb6dff9a394132b6af",
+  "contentHash": "778ba86d7219b987d8bafbcd1affdfbfe78b15d72dea2a2125ae8119b050a3b6",
   "edges": [],
   "file": "packages/cli/tests/e2e/release-packaging.test.ts",
   "intent": [
+    {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    },
+    {
+      "date": "2026-04-14T01:25:48+03:00",
+      "hash": "9c1905c524791585a13e2bc0739f108be98f851e",
+      "kind": "commit",
+      "message": "test(cli): bump npm pack timeout to 30s for slow CI runners"
+    },
     {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
@@ -12,6 +24,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776296577,
   "symbols": []
 }

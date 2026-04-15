@@ -11,7 +11,7 @@ export class SyncCommand {
   async run(): Promise<void> {
     console.error('[ctxo] Rebuilding SQLite cache from committed JSON index...');
 
-    const storage = new SqliteStorageAdapter(this.ctxoRoot);
+    const storage = new SqliteStorageAdapter(this.ctxoRoot, { allowProductionPath: true });
     try {
       await storage.init();
     } finally {

@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 17,
+      "cyclomatic": 23,
       "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method"
     }
   ],
-  "contentHash": "421c2bd58cd82940a0d4a0a7d0e31de895c34f25cf8ca2108d01e989abede6b9",
+  "contentHash": "29381d1e45304b53f0292521d281bc8cbe7c34e5ceeb842a6e2366cfa56e7bd2",
   "edges": [
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
@@ -51,6 +51,31 @@
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
       "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/load-config.ts::watchSnapshotMinFileChanges::function"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
       "to": "packages/cli/src/core/types.ts::FileIndex::type",
       "typeOnly": true
     },
@@ -67,9 +92,30 @@
       "typeOnly": true
     },
     {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
+    {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
       "kind": "calls",
       "to": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/config/load-config.ts::watchSnapshotMinFileChanges::function"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/watch-command.ts::buildWatchCommunitySnapshot::function"
     },
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
@@ -145,6 +191,16 @@
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
       "kind": "uses",
       "to": "packages/cli/src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/config/load-config.ts::watchSnapshotMinFileChanges::function"
+    },
+    {
+      "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
     },
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
@@ -164,6 +220,18 @@
   ],
   "file": "packages/cli/src/cli/watch-command.ts",
   "intent": [
+    {
+      "date": "2026-04-16T02:09:58+03:00",
+      "hash": "5ae608f0da17bc164b0e31ce358e292233875cd1",
+      "kind": "commit",
+      "message": "fix(storage): snapshot writer refuses non-tmpdir paths without production opt-in (closes #58)"
+    },
+    {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    },
     {
       "date": "2026-04-13T02:01:42+03:00",
       "hash": "777ffddd20b586a9a44711ca77b43ea210f69d7b",
@@ -189,24 +257,24 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776296576,
   "symbols": [
     {
-      "endLine": 213,
-      "endOffset": 7987,
+      "endLine": 255,
+      "endOffset": 10498,
       "kind": "class",
       "name": "WatchCommand",
-      "startLine": 29,
-      "startOffset": 1293,
+      "startLine": 35,
+      "startOffset": 1748,
       "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand::class"
     },
     {
-      "endLine": 211,
-      "endOffset": 7984,
+      "endLine": 253,
+      "endOffset": 10493,
       "kind": "method",
       "name": "WatchCommand.run",
-      "startLine": 38,
-      "startOffset": 1527,
+      "startLine": 44,
+      "startOffset": 1991,
       "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method"
     }
   ]

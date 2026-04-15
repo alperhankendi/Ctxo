@@ -1,10 +1,16 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "c20d0773a1ef776812211438ae1f69231ba5b8d3871d2ddc8bb3a5d0850ef52a",
+  "contentHash": "42c71333a9ef99ae39a27096b1e5c47bbf333bf891c03e6698c2b77a5bb83324",
   "edges": [],
   "file": "packages/cli/src/core/config/config-schema.ts",
   "intent": [
+    {
+      "date": "2026-04-16T02:32:55+03:00",
+      "hash": "f563a37a96ad967887256d25d09f2db027b27f11",
+      "kind": "commit",
+      "message": "feat(mcp): cluster-label masking via .ctxo/config.yaml glob patterns (closes #60)"
+    },
     {
       "date": "2026-04-14T00:07:20+03:00",
       "hash": "30d5459eca9bc79be5a8f6814cbbfb4ed5c3bc14",
@@ -12,69 +18,114 @@
       "message": "feat(config): add index.ignore and index.ignoreProjects to .ctxo/config.yaml"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776296576,
   "symbols": [
     {
-      "endLine": 30,
-      "endOffset": 823,
+      "endLine": 56,
+      "endOffset": 1816,
       "kind": "type",
       "name": "StatsConfig",
-      "startLine": 30,
-      "startOffset": 763,
+      "startLine": 56,
+      "startOffset": 1756,
       "symbolId": "packages/cli/src/core/config/config-schema.ts::StatsConfig::type"
     },
     {
-      "endLine": 31,
-      "endOffset": 884,
+      "endLine": 57,
+      "endOffset": 1878,
       "kind": "type",
       "name": "IndexConfig",
-      "startLine": 31,
-      "startOffset": 824,
+      "startLine": 57,
+      "startOffset": 1818,
       "symbolId": "packages/cli/src/core/config/config-schema.ts::IndexConfig::type"
     },
     {
-      "endLine": 32,
-      "endOffset": 943,
+      "endLine": 58,
+      "endOffset": 1944,
+      "kind": "type",
+      "name": "MaskingConfig",
+      "startLine": 58,
+      "startOffset": 1880,
+      "symbolId": "packages/cli/src/core/config/config-schema.ts::MaskingConfig::type"
+    },
+    {
+      "endLine": 59,
+      "endOffset": 2006,
+      "kind": "type",
+      "name": "WatchConfig",
+      "startLine": 59,
+      "startOffset": 1946,
+      "symbolId": "packages/cli/src/core/config/config-schema.ts::WatchConfig::type"
+    },
+    {
+      "endLine": 60,
+      "endOffset": 2066,
       "kind": "type",
       "name": "CtxoConfig",
-      "startLine": 32,
-      "startOffset": 885,
+      "startLine": 60,
+      "startOffset": 2008,
       "symbolId": "packages/cli/src/core/config/config-schema.ts::CtxoConfig::type"
     },
     {
       "endLine": 13,
-      "endOffset": 373,
+      "endOffset": 386,
       "kind": "variable",
       "name": "StatsConfigSchema",
       "startLine": 9,
-      "startOffset": 286,
+      "startOffset": 295,
       "symbolId": "packages/cli/src/core/config/config-schema.ts::StatsConfigSchema::variable"
     },
     {
       "endLine": 20,
-      "endOffset": 549,
+      "endOffset": 569,
       "kind": "variable",
       "name": "IndexConfigSchema",
       "startLine": 15,
-      "startOffset": 389,
+      "startOffset": 404,
       "symbolId": "packages/cli/src/core/config/config-schema.ts::IndexConfigSchema::variable"
     },
     {
-      "endLine": 28,
-      "endOffset": 760,
+      "endLine": 32,
+      "endOffset": 1006,
+      "kind": "variable",
+      "name": "MaskingConfigSchema",
+      "startLine": 22,
+      "startOffset": 587,
+      "symbolId": "packages/cli/src/core/config/config-schema.ts::MaskingConfigSchema::variable"
+    },
+    {
+      "endLine": 44,
+      "endOffset": 1444,
+      "kind": "variable",
+      "name": "WatchConfigSchema",
+      "startLine": 34,
+      "startOffset": 1024,
+      "symbolId": "packages/cli/src/core/config/config-schema.ts::WatchConfigSchema::variable"
+    },
+    {
+      "endLine": 54,
+      "endOffset": 1751,
       "kind": "variable",
       "name": "CtxoConfigSchema",
-      "startLine": 22,
-      "startOffset": 565,
+      "startLine": 46,
+      "startOffset": 1462,
       "symbolId": "packages/cli/src/core/config/config-schema.ts::CtxoConfigSchema::variable"
     },
     {
-      "endLine": 38,
-      "endOffset": 1081,
+      "endLine": 62,
+      "endOffset": 2126,
+      "kind": "variable",
+      "name": "DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES",
+      "startLine": 62,
+      "startOffset": 2083,
+      "symbolId": "packages/cli/src/core/config/config-schema.ts::DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES::variable"
+    },
+    {
+      "endLine": 70,
+      "endOffset": 2385,
       "kind": "variable",
       "name": "DEFAULT_CONFIG",
-      "startLine": 34,
-      "startOffset": 958,
+      "startLine": 64,
+      "startOffset": 2144,
       "symbolId": "packages/cli/src/core/config/config-schema.ts::DEFAULT_CONFIG::variable"
     }
   ]

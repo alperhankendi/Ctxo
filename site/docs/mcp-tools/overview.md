@@ -22,8 +22,8 @@ See [the mandatory sequence](/mcp-tools/tool-selection-guide#modifying-existing-
 
 | Tool | Purpose |
 | --- | --- |
-| [`get_blast_radius`](/mcp-tools/get-blast-radius) | Impact score + affected symbols in three tiers (confirmed / likely / potential) |
-| [`get_pr_impact`](/mcp-tools/get-pr-impact) | Full PR risk assessment: changes + blast radius + co-change history |
+| [`get_blast_radius`](/mcp-tools/get-blast-radius) | Impact score + affected symbols in three tiers (confirmed / likely / potential) + v0.8 cluster breakdown |
+| [`get_pr_impact`](/mcp-tools/get-pr-impact) | Full PR risk assessment: changes + blast radius + co-change history + v0.8 boundary violations |
 | [`get_changed_symbols`](/mcp-tools/get-changed-symbols) | Symbols in recently changed files (git diff) |
 | [`get_change_intelligence`](/mcp-tools/get-change-intelligence) | Complexity x churn composite score for hotspot detection |
 
@@ -31,7 +31,7 @@ See [the mandatory sequence](/mcp-tools/tool-selection-guide#modifying-existing-
 
 | Tool | Purpose |
 | --- | --- |
-| [`get_architectural_overlay`](/mcp-tools/get-architectural-overlay) | Project layer map (Domain / Infrastructure / Adapters) |
+| [`get_architectural_overlay`](/mcp-tools/get-architectural-overlay) | Regex layers (Domain / Adapter / Ports / ...) + v0.8 data-driven community clusters with god nodes |
 | [`find_importers`](/mcp-tools/find-importers) | Reverse dependency lookup — who uses this symbol? |
 | [`get_class_hierarchy`](/mcp-tools/get-class-hierarchy) | Class inheritance tree (ancestors + descendants) |
 | [`get_symbol_importance`](/mcp-tools/get-symbol-importance) | PageRank centrality ranking of symbols |

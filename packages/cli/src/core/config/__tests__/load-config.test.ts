@@ -8,6 +8,8 @@ import {
   indexIgnorePatterns,
   indexIgnoreProjectPatterns,
   makeGlobMatcher,
+  maskingClusterLabelPatterns,
+  watchSnapshotMinFileChanges,
 } from '../load-config.js';
 
 describe('loadConfig', () => {
@@ -119,5 +121,36 @@ describe('makeGlobMatcher', () => {
     expect(m('packages/experimental-foo')).toBe(true);
     expect(m('examples/demo')).toBe(true);
     expect(m('packages/cli')).toBe(false);
+  });
+});
+
+describe('maskingClusterLabelPatterns', () => {
+  it('returns the configured glob patterns', () => {
+    const cfg = { masking: { clusterLabels: ['internal-*', 'secret-*'] } };
+    expect(maskingClusterLabelPatterns(cfg)).toEqual(['internal-*', 'secret-*']);
+  });
+
+  it('returns an empty array when not configured', () => {
+    expect(maskingClusterLabelPatterns({})).toEqual([]);
+  });
+
+  it('drops patterns that fail glob validation', () => {
+    const cfg = { masking: { clusterLabels: ['valid-*', ''] } };
+    expect(maskingClusterLabelPatterns(cfg as never)).toEqual(['valid-*']);
+  });
+});
+
+describe('watchSnapshotMinFileChanges', () => {
+  it('returns the default when not configured', () => {
+    expect(watchSnapshotMinFileChanges({})).toBeGreaterThanOrEqual(1);
+  });
+
+  it('returns the configured value', () => {
+    expect(watchSnapshotMinFileChanges({ watch: { snapshotMinFileChanges: 25 } })).toBe(25);
+  });
+
+  it('falls back to default when the configured value is invalid', () => {
+    expect(watchSnapshotMinFileChanges({ watch: { snapshotMinFileChanges: -5 } })).toBeGreaterThanOrEqual(1);
+    expect(watchSnapshotMinFileChanges({ watch: { snapshotMinFileChanges: Number.NaN } })).toBeGreaterThanOrEqual(1);
   });
 });

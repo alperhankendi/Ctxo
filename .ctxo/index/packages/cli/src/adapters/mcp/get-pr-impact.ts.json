@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 21,
+      "cyclomatic": 33,
       "symbolId": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
     }
   ],
-  "contentHash": "c48481ab5fe0343ee554fb9fcaa6851d4c432bda14f7a0df8ffb11e9ca76abae",
+  "contentHash": "72075139427ee85100052eee81cf1d716b37f6bf688ed64b10cfa1a6159d96c7",
   "edges": [
     {
       "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
@@ -45,6 +45,22 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
       "kind": "imports",
+      "to": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "imports",
       "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
     },
     {
@@ -66,6 +82,12 @@
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
       "kind": "calls",
       "to": "packages/cli/src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function"
     },
@@ -77,12 +99,27 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
       "kind": "calls",
+      "to": "packages/cli/src/adapters/mcp/get-pr-impact.ts::computeClustersAffected::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "calls",
       "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
       "kind": "calls",
       "to": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class"
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
@@ -107,6 +144,11 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
       "kind": "uses",
+      "to": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "uses",
       "to": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
     },
     {
@@ -117,11 +159,39 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
       "kind": "uses",
+      "to": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
+      "kind": "uses",
       "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
     }
   ],
   "file": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
   "intent": [
+    {
+      "date": "2026-04-16T02:32:55+03:00",
+      "hash": "f563a37a96ad967887256d25d09f2db027b27f11",
+      "kind": "commit",
+      "message": "feat(mcp): cluster-label masking via .ctxo/config.yaml glob patterns (closes #60)"
+    },
+    {
+      "date": "2026-04-16T02:24:31+03:00",
+      "hash": "0ef4193220fc4b421794c9eec1ad7e20948611e6",
+      "kind": "commit",
+      "message": "feat(mcp): snapshotStaleness in _meta surfaces snapshot-vs-HEAD gap (closes #55)"
+    },
+    {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    },
     {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
@@ -129,15 +199,15 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776296576,
   "symbols": [
     {
-      "endLine": 203,
-      "endOffset": 7237,
+      "endLine": 260,
+      "endOffset": 10023,
       "kind": "function",
       "name": "handleGetPrImpact",
-      "startLine": 30,
-      "startOffset": 1325,
+      "startLine": 52,
+      "startOffset": 2349,
       "symbolId": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function"
     }
   ]

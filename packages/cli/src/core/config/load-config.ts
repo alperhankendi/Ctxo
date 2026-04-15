@@ -3,7 +3,12 @@ import { join } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import picomatch from 'picomatch';
 import { createLogger } from '../logger.js';
-import { CtxoConfigSchema, DEFAULT_CONFIG, type CtxoConfig } from './config-schema.js';
+import {
+  CtxoConfigSchema,
+  DEFAULT_CONFIG,
+  DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES,
+  type CtxoConfig,
+} from './config-schema.js';
 
 const log = createLogger('ctxo:config');
 
@@ -89,6 +94,16 @@ export function indexIgnorePatterns(config: CtxoConfig): string[] {
 
 export function indexIgnoreProjectPatterns(config: CtxoConfig): string[] {
   return (config.index?.ignoreProjects ?? []).filter(isValidGlob);
+}
+
+export function maskingClusterLabelPatterns(config: CtxoConfig): string[] {
+  return (config.masking?.clusterLabels ?? []).filter(isValidGlob);
+}
+
+export function watchSnapshotMinFileChanges(config: CtxoConfig): number {
+  const value = config.watch?.snapshotMinFileChanges;
+  if (typeof value === 'number' && Number.isFinite(value) && value >= 1) return value;
+  return DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES;
 }
 
 /**

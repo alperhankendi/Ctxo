@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "504ff9e50349a587e49f515f370a969e7ec0e46407f93aad246d2743adb9429c",
+  "contentHash": "29f069f6749e589c546427f901e8731e9a5c6474c5186c07b07f15b3648fe55e",
   "edges": [
     {
       "from": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts::health-checker.test::variable",
@@ -30,12 +30,24 @@
   "file": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
   "intent": [
     {
+      "date": "2026-04-16T02:04:31+03:00",
+      "hash": "999ca72cdb48edc8893678e48384dd1b3627d5a6",
+      "kind": "commit",
+      "message": "fix(storage): skip 'nocommit' snapshots from history (closes #57)"
+    },
+    {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    },
+    {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
       "kind": "commit",
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115133,
+  "lastModified": 1776296576,
   "symbols": []
 }

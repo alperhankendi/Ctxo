@@ -54,7 +54,7 @@ describe('GetChangeIntelligenceHandler', () => {
 
   afterEach(() => {
     storage.close();
-    rmSync(tempDir, { recursive: true, force: true });
+    rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   });
 
   it('returns MCP response with complexity, churn, composite score, band', async () => {

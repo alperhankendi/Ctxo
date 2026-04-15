@@ -69,7 +69,7 @@ export class DoctorCommand {
       ? new JsonIndexReader(this.ctxoRoot).readAll()
       : [];
 
-    const checker = new HealthChecker(checks);
+    const checker = new HealthChecker(checks, { quiet: Boolean(options.quiet) });
     const report = await checker.runAll({
       projectRoot: this.projectRoot,
       ctxoRoot: this.ctxoRoot,

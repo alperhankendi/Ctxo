@@ -1,0 +1,17 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "e99651cf0550070ac472d1dc600bce5e5319141840c6705e1733a578d58de832",
+  "edges": [],
+  "file": "site/docs/.vitepress/theme/index.ts",
+  "intent": [
+    {
+      "date": "2026-04-15T00:49:12+03:00",
+      "hash": "c889213c290bdc60b893ef0e497236cc086b51bf",
+      "kind": "commit",
+      "message": "feat(site): VitePress docs site + Geist brand font"
+    }
+  ],
+  "lastModified": 1776296577,
+  "symbols": []
+}

@@ -31,7 +31,7 @@ describe('GitRepoCheck', () => {
   let tempDir: string;
 
   afterEach(() => {
-    if (tempDir) rmSync(tempDir, { recursive: true, force: true });
+    if (tempDir) rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   });
 
   it('has correct id and title', () => {

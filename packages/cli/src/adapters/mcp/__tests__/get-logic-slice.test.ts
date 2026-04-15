@@ -68,7 +68,7 @@ describe('GetLogicSliceHandler', () => {
 
   afterEach(() => {
     storage.close();
-    rmSync(tempDir, { recursive: true, force: true });
+    rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   });
 
   it('returns MCP response with content array for valid symbolId', () => {

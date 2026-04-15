@@ -49,13 +49,13 @@ describe('GetBlastRadiusHandler', () => {
 
   afterEach(() => {
     storage.close();
-    rmSync(tempDir, { recursive: true, force: true });
+    rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   });
 
-  it('returns MCP response with ranked dependents', () => {
+  it('returns MCP response with ranked dependents', async () => {
     const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
 
-    const result = handler({ symbolId: 'src/c.ts::C::interface' });
+    const result = await handler({ symbolId: 'src/c.ts::C::interface' });
     const payload = JSON.parse(result.content[0]!.text);
 
     expect(payload.symbolId).toBe('src/c.ts::C::interface');
@@ -67,10 +67,10 @@ describe('GetBlastRadiusHandler', () => {
     expect(payload.impactedSymbols[0].riskScore).toBeDefined();
   });
 
-  it('returns transitive blast radius', () => {
+  it('returns transitive blast radius', async () => {
     const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
 
-    const result = handler({ symbolId: 'src/c.ts::C::interface' });
+    const result = await handler({ symbolId: 'src/c.ts::C::interface' });
     const payload = JSON.parse(result.content[0]!.text);
 
     const depIds = payload.impactedSymbols.map((d: { symbolId: string }) => d.symbolId);
@@ -78,10 +78,10 @@ describe('GetBlastRadiusHandler', () => {
     expect(depIds).toContain('src/a.ts::A::function');
   });
 
-  it('returns { found: false } for missing symbol', () => {
+  it('returns { found: false } for missing symbol', async () => {
     const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
 
-    const result = handler({ symbolId: 'src/missing.ts::X::function' });
+    const result = await handler({ symbolId: 'src/missing.ts::X::function' });
     const payload = JSON.parse(result.content[0]!.text);
 
     expect(payload.found).toBe(false);
@@ -100,22 +100,22 @@ describe('GetBlastRadiusHandler', () => {
     storage.writeSymbolFile(sensitiveIndex);
 
     const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
-    const result = handler({ symbolId: 'src/c.ts::C::interface' });
+    const result = await handler({ symbolId: 'src/c.ts::C::interface' });
 
     expect(result.content[0]!.text).toContain('[REDACTED:AWS_KEY]');
   });
 
-  it('returns error for empty symbolId', () => {
+  it('returns error for empty symbolId', async () => {
     const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
-    const result = handler({ symbolId: '' });
+    const result = await handler({ symbolId: '' });
     const payload = JSON.parse(result.content[0]!.text);
 
     expect(payload.error).toBe(true);
   });
 
-  it('returns confirmedCount, likelyCount, and potentialCount in response', () => {
+  it('returns confirmedCount, likelyCount, and potentialCount in response', async () => {
     const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
-    const result = handler({ symbolId: 'src/c.ts::C::interface' });
+    const result = await handler({ symbolId: 'src/c.ts::C::interface' });
     const payload = JSON.parse(result.content[0]!.text);
 
     expect(typeof payload.confirmedCount).toBe('number');
@@ -124,9 +124,9 @@ describe('GetBlastRadiusHandler', () => {
     expect(payload.confirmedCount + payload.likelyCount + payload.potentialCount).toBe(payload.impactScore);
   });
 
-  it('classifies implements edge as confirmed and imports edge as potential', () => {
+  it('classifies implements edge as confirmed and imports edge as potential', async () => {
     const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
-    const result = handler({ symbolId: 'src/c.ts::C::interface' });
+    const result = await handler({ symbolId: 'src/c.ts::C::interface' });
     const payload = JSON.parse(result.content[0]!.text);
 
     // B implements C → confirmed (depth 1)
@@ -138,9 +138,9 @@ describe('GetBlastRadiusHandler', () => {
     expect(aEntry.confidence).toBe('potential');
   });
 
-  it('returns riskScore per entry with depth-weighted decay', () => {
+  it('returns riskScore per entry with depth-weighted decay', async () => {
     const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
-    const result = handler({ symbolId: 'src/c.ts::C::interface' });
+    const result = await handler({ symbolId: 'src/c.ts::C::interface' });
     const payload = JSON.parse(result.content[0]!.text);
 
     // Depth 1 should have higher riskScore than depth 2
@@ -152,9 +152,9 @@ describe('GetBlastRadiusHandler', () => {
     }
   });
 
-  it('returns zero counts for leaf symbol with no dependents', () => {
+  it('returns zero counts for leaf symbol with no dependents', async () => {
     const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
-    const result = handler({ symbolId: 'src/a.ts::A::function' });
+    const result = await handler({ symbolId: 'src/a.ts::A::function' });
     const payload = JSON.parse(result.content[0]!.text);
 
     expect(payload.impactScore).toBe(0);
@@ -164,9 +164,9 @@ describe('GetBlastRadiusHandler', () => {
     expect(payload.overallRiskScore).toBe(0);
   });
 
-  it('includes edgeKinds in each impacted symbol entry', () => {
+  it('includes edgeKinds in each impacted symbol entry', async () => {
     const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
-    const result = handler({ symbolId: 'src/c.ts::C::interface' });
+    const result = await handler({ symbolId: 'src/c.ts::C::interface' });
     const payload = JSON.parse(result.content[0]!.text);
 
     for (const entry of payload.impactedSymbols) {
@@ -176,9 +176,9 @@ describe('GetBlastRadiusHandler', () => {
     }
   });
 
-  it('filters by confidence when confidence param is provided', () => {
+  it('filters by confidence when confidence param is provided', async () => {
     const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
-    const result = handler({ symbolId: 'src/c.ts::C::interface', confidence: 'confirmed' });
+    const result = await handler({ symbolId: 'src/c.ts::C::interface', confidence: 'confirmed' });
     const payload = JSON.parse(result.content[0]!.text);
 
     for (const entry of payload.impactedSymbols) {
@@ -198,5 +198,35 @@ describe('GetBlastRadiusHandler', () => {
     const filteredPayload = JSON.parse(filtered.content[0]!.text);
 
     expect(unfilteredPayload.impactScore).toBeGreaterThanOrEqual(filteredPayload.impactScore);
+  });
+
+  it('omits cluster breakdown when no community snapshot is available', async () => {
+    const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = await handler({ symbolId: 'src/c.ts::C::interface' });
+    const payload = JSON.parse(result.content[0]!.text);
+    expect(payload.byCluster).toBeUndefined();
+  });
+
+  it('emits cluster breakdown + multiClusterHint when snapshot covers impacted symbols across clusters', () => {
+    storage.writeCommunities({
+      version: 1,
+      computedAt: '2026-04-16T10:00:00.000Z',
+      commitSha: 'abc1234',
+      modularity: 0.5,
+      communities: [
+        { symbolId: 'src/a.ts::A::function', communityId: 0, communityLabel: 'alpha' },
+        { symbolId: 'src/b.ts::B::class', communityId: 1, communityLabel: 'beta' },
+        { symbolId: 'src/c.ts::C::interface', communityId: 2, communityLabel: 'gamma' },
+      ],
+      godNodes: [],
+      edgeQuality: 'full',
+      crossClusterEdges: 2,
+    });
+    const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = await handler({ symbolId: 'src/c.ts::C::interface' });
+    const payload = JSON.parse(result.content[0]!.text);
+    expect(payload.byCluster).toBeDefined();
+    const totals = Object.values(payload.byCluster as Record<string, number>);
+    expect(totals.reduce((sum, v) => sum + v, 0)).toBeGreaterThan(0);
   });
 });

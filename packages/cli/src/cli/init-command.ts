@@ -272,7 +272,13 @@ export class InitCommand {
     let installGitHooks = false;
     if (!options.rulesOnly) {
       stepNum++;
-      console.error(stepHeader(stepNum, totalSteps, `Git Hooks ${pc.yellow('recommended')}`, 'Auto-updates index on every commit and pull.', pc));
+      console.error(stepHeader(
+        stepNum,
+        totalSteps,
+        `Git Hooks ${pc.yellow('recommended')}`,
+        'Auto-updates index and community snapshots on every commit and pull.\n  Without hooks, architectural drift & boundary violation signals stay empty\n  until you re-run `ctxo index` manually (or start `ctxo watch`).',
+        pc,
+      ));
       console.error('');
 
       const hooks = await clack.confirm({
@@ -282,6 +288,15 @@ export class InitCommand {
 
       if (clack.isCancel(hooks)) { clack.cancel('Setup cancelled.'); process.exit(0); }
       installGitHooks = hooks as boolean;
+
+      if (!installGitHooks) {
+        console.error('');
+        console.error(pc.yellow('  ⚠ Drift & boundary-violation signals depend on repeated snapshots.'));
+        console.error(pc.dim('    Options without hooks:'));
+        console.error(pc.dim('      • run `ctxo watch` during development'));
+        console.error(pc.dim('      • add `ctxo index --check` to CI'));
+        console.error(pc.dim('      • run `ctxo init` again to install hooks later'));
+      }
       console.error('');
     }
 

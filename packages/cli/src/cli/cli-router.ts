@@ -9,6 +9,7 @@ import { WatchCommand } from './watch-command.js';
 import { StatsCommand } from './stats-command.js';
 import { DoctorCommand } from './doctor-command.js';
 import { VisualizeCommand } from './visualize-command.js';
+import { ReportCommand } from './report-command.js';
 import { VersionCommand } from './version-command.js';
 import { InstallCommand } from './install-command.js';
 
@@ -92,6 +93,7 @@ export class CliRouter {
         }
         const checkArg = args.includes('--check');
         const skipHistory = args.includes('--skip-history');
+        const skipCommunity = args.includes('--skip-community');
         const installMissing = args.includes('--install-missing');
         const maxHistoryIdx = args.indexOf('--max-history');
         const maxHistoryArg = maxHistoryIdx !== -1 ? Number(args[maxHistoryIdx + 1]) : undefined;
@@ -104,6 +106,7 @@ export class CliRouter {
           file: fileArg,
           check: checkArg,
           skipHistory,
+          skipCommunity,
           maxHistory: maxHistoryArg,
           installMissing,
         });
@@ -215,6 +218,34 @@ export class CliRouter {
         break;
       }
 
+      case 'report': {
+        const outputIdx = args.indexOf('--output');
+        const outputArg = outputIdx !== -1 ? args[outputIdx + 1] : undefined;
+        const noBrowser = args.includes('--no-browser');
+        const positiveInt = (flag: string): number | undefined => {
+          const idx = args.indexOf(flag);
+          if (idx === -1) return undefined;
+          const n = Number(args[idx + 1]);
+          if (!Number.isFinite(n) || n < 1) {
+            console.error(`[ctxo] ${flag} requires a positive integer`);
+            process.exit(1);
+            throw new Error('unreachable');
+          }
+          return n;
+        };
+        const maxNodes = positiveInt('--max-nodes');
+        const maxDriftEvents = positiveInt('--max-drift-events');
+        const maxViolations = positiveInt('--max-violations');
+        await new ReportCommand(this.projectRoot).run({
+          output: outputArg,
+          noBrowser,
+          ...(maxNodes !== undefined ? { maxNodes } : {}),
+          ...(maxDriftEvents !== undefined ? { maxDriftEvents } : {}),
+          ...(maxViolations !== undefined ? { maxViolations } : {}),
+        });
+        break;
+      }
+
       default:
         console.error(`[ctxo] Unknown command: "${command}". Run "ctxo --help" for usage.`);
         process.exit(1);
@@ -230,6 +261,7 @@ ctxo v${v} — MCP server for dependency-aware codebase context
 Usage:
   ctxo                      Start MCP server (stdio transport)
   ctxo index                Build full codebase index (--max-history N, default 20)
+  ctxo index --skip-community    Skip Louvain community detection for faster indexing
   ctxo sync                 Rebuild SQLite cache from committed JSON index
   ctxo watch                Start file watcher for incremental re-indexing
   ctxo verify-index         CI gate: fail if index is stale
@@ -244,6 +276,10 @@ Usage:
   ctxo visualize --max-nodes N   Limit to top N symbols by PageRank
   ctxo visualize --output PATH   Write HTML to custom path
   ctxo visualize --no-browser    Skip auto-opening browser
+  ctxo report               Generate architectural intelligence dashboard HTML
+  ctxo report --max-nodes N Graph filter — top N symbols by PageRank (default 500)
+  ctxo report --output PATH Write HTML to custom path (default .ctxo/report.html)
+  ctxo report --no-browser  Skip auto-opening browser
   ctxo install [<lang>...]  Install language plugins (detects if omitted)
   ctxo install python -y    Batch install, no prompt
   ctxo install ts --global  Install globally

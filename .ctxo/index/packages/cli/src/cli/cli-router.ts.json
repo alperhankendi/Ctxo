@@ -10,7 +10,7 @@
       "symbolId": "packages/cli/src/cli/cli-router.ts::locateGitRoot::function"
     },
     {
-      "cyclomatic": 53,
+      "cyclomatic": 61,
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method"
     },
     {
@@ -18,7 +18,7 @@
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.printHelp::method"
     }
   ],
-  "contentHash": "88f3d59e5b81af34cd26fb2f9fff2949d3569b8950e2c7424f42f14a5293aeb8",
+  "contentHash": "aa99abcc04412f5b165a36952e5b43386b7e9bc2208e661ed12ad83c0801768a",
   "edges": [
     {
       "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
@@ -64,6 +64,11 @@
       "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
       "kind": "imports",
       "to": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/report-command.ts::ReportCommand::class"
     },
     {
       "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
@@ -141,6 +146,11 @@
       "to": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class"
     },
     {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/report-command.ts::ReportCommand::class"
+    },
+    {
       "from": "packages/cli/src/cli/cli-router.ts::CliRouter.printHelp::method",
       "kind": "calls",
       "to": "packages/cli/src/cli/cli-router.ts::getVersion::function"
@@ -199,10 +209,27 @@
       "from": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
       "kind": "uses",
       "to": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/report-command.ts::ReportCommand::class"
     }
   ],
   "file": "packages/cli/src/cli/cli-router.ts",
   "intent": [
+    {
+      "date": "2026-04-16T02:37:45+03:00",
+      "hash": "cf42f444577b300856a167d2f4debc882db54b05",
+      "kind": "commit",
+      "message": "fix(overlay): filter transient drift to suppress Louvain jitter (closes #56)"
+    },
+    {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    },
     {
       "date": "2026-04-13T03:22:13+03:00",
       "hash": "91d55991eca1d4419e539875a97312e7747d6464",
@@ -246,51 +273,51 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776296576,
   "symbols": [
     {
-      "endLine": 29,
-      "endOffset": 1135,
+      "endLine": 30,
+      "endOffset": 1189,
       "kind": "function",
       "name": "getVersion",
-      "startLine": 14,
-      "startOffset": 689,
+      "startLine": 15,
+      "startOffset": 743,
       "symbolId": "packages/cli/src/cli/cli-router.ts::getVersion::function"
     },
     {
-      "endLine": 46,
-      "endOffset": 1740,
+      "endLine": 47,
+      "endOffset": 1794,
       "kind": "function",
       "name": "locateGitRoot",
-      "startLine": 37,
-      "startOffset": 1458,
+      "startLine": 38,
+      "startOffset": 1512,
       "symbolId": "packages/cli/src/cli/cli-router.ts::locateGitRoot::function"
     },
     {
-      "endLine": 257,
-      "endOffset": 10339,
+      "endLine": 293,
+      "endOffset": 12067,
       "kind": "class",
       "name": "CliRouter",
-      "startLine": 48,
-      "startOffset": 1744,
+      "startLine": 49,
+      "startOffset": 1798,
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter::class"
     },
     {
-      "endLine": 222,
-      "endOffset": 8544,
+      "endLine": 253,
+      "endOffset": 9883,
       "kind": "method",
       "name": "CliRouter.route",
-      "startLine": 58,
-      "startOffset": 2152,
+      "startLine": 59,
+      "startOffset": 2206,
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method"
     },
     {
-      "endLine": 256,
-      "endOffset": 10336,
+      "endLine": 292,
+      "endOffset": 12064,
       "kind": "method",
       "name": "CliRouter.printHelp",
-      "startLine": 224,
-      "startOffset": 8550,
+      "startLine": 255,
+      "startOffset": 9889,
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.printHelp::method"
     }
   ]

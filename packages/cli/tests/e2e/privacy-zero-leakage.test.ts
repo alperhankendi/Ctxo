@@ -77,12 +77,12 @@ describe('NFR8: Privacy Zero-Leakage Gate', () => {
     }
   });
 
-  it('get_blast_radius response contains no unmasked credentials', () => {
+  it('get_blast_radius response contains no unmasked credentials', async () => {
     const handler = handleGetBlastRadius(storage, masking, undefined, join(tempDir, '.ctxo'));
     const symbols = storage.getAllSymbols();
 
     for (const sym of symbols) {
-      const result = handler({ symbolId: sym.symbolId });
+      const result = await handler({ symbolId: sym.symbolId });
       const responseText = result.content.map((c) => c.text).join(' ');
 
       for (const forbidden of FORBIDDEN_PATTERNS) {
@@ -91,9 +91,9 @@ describe('NFR8: Privacy Zero-Leakage Gate', () => {
     }
   });
 
-  it('get_architectural_overlay response contains no unmasked credentials', () => {
+  it('get_architectural_overlay response contains no unmasked credentials', async () => {
     const handler = handleGetArchitecturalOverlay(storage, masking, undefined);
-    const result = handler({});
+    const result = await handler({});
     const responseText = result.content.map((c) => c.text).join(' ');
 
     for (const forbidden of FORBIDDEN_PATTERNS) {

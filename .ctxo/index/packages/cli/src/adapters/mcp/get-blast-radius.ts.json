@@ -2,12 +2,18 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 7,
+      "cyclomatic": 14,
       "symbolId": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
     }
   ],
-  "contentHash": "71652cf3022a18f9c1fb2e517e0edd1a99e74dbf56ebeb02452fd492c942dbbb",
+  "contentHash": "255cd63408e74e1354d3f882ad319af4838209764b21704d05a2c0b6153eeb40",
   "edges": [
+    {
+      "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "imports",
+      "to": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface",
+      "typeOnly": true
+    },
     {
       "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
       "kind": "imports",
@@ -33,7 +39,24 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
       "kind": "imports",
+      "to": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "imports",
       "to": "packages/cli/src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
@@ -55,6 +78,16 @@
       "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
       "kind": "calls",
       "to": "packages/cli/src/core/intent-filter.ts::filterByIntent::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/mcp/get-blast-radius.ts::computeClusterBreakdown::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
     },
     {
       "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
@@ -84,6 +117,16 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
       "kind": "uses",
+      "to": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "uses",
       "to": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
     },
     {
@@ -99,11 +142,34 @@
     {
       "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
       "kind": "uses",
+      "to": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
+      "kind": "uses",
       "to": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
     }
   ],
   "file": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
   "intent": [
+    {
+      "date": "2026-04-16T02:32:55+03:00",
+      "hash": "f563a37a96ad967887256d25d09f2db027b27f11",
+      "kind": "commit",
+      "message": "feat(mcp): cluster-label masking via .ctxo/config.yaml glob patterns (closes #60)"
+    },
+    {
+      "date": "2026-04-16T02:24:31+03:00",
+      "hash": "0ef4193220fc4b421794c9eec1ad7e20948611e6",
+      "kind": "commit",
+      "message": "feat(mcp): snapshotStaleness in _meta surfaces snapshot-vs-HEAD gap (closes #55)"
+    },
+    {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    },
     {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
@@ -111,15 +177,15 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776296576,
   "symbols": [
     {
-      "endLine": 82,
-      "endOffset": 3166,
+      "endLine": 142,
+      "endOffset": 5705,
       "kind": "function",
       "name": "handleGetBlastRadius",
-      "startLine": 15,
-      "startOffset": 750,
+      "startLine": 53,
+      "startOffset": 2337,
       "symbolId": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function"
     }
   ]

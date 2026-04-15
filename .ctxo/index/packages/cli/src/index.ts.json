@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "79cef8f5b3edc19332d54a5a966482d0890a73c59133a6d7bd6d262f699a5681",
+  "contentHash": "fa897f20c5ee877be14dabdb02ba36682fa814d0c4886283926b9a2f8f7539bc",
   "edges": [
     {
       "from": "packages/cli/src/index.ts::index::variable",
@@ -138,11 +138,39 @@
     {
       "from": "packages/cli/src/index.ts::index::variable",
       "kind": "imports",
+      "to": "packages/cli/src/core/config/load-config.ts::maskingClusterLabelPatterns::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
       "to": "packages/cli/src/core/config/load-config.ts::statsEnabled::function"
+    },
+    {
+      "from": "packages/cli/src/index.ts::index::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker::class"
     }
   ],
   "file": "packages/cli/src/index.ts",
   "intent": [
+    {
+      "date": "2026-04-16T02:32:55+03:00",
+      "hash": "f563a37a96ad967887256d25d09f2db027b27f11",
+      "kind": "commit",
+      "message": "feat(mcp): cluster-label masking via .ctxo/config.yaml glob patterns (closes #60)"
+    },
+    {
+      "date": "2026-04-16T02:24:31+03:00",
+      "hash": "0ef4193220fc4b421794c9eec1ad7e20948611e6",
+      "kind": "commit",
+      "message": "feat(mcp): snapshotStaleness in _meta surfaces snapshot-vs-HEAD gap (closes #55)"
+    },
+    {
+      "date": "2026-04-16T02:09:58+03:00",
+      "hash": "5ae608f0da17bc164b0e31ce358e292233875cd1",
+      "kind": "commit",
+      "message": "fix(storage): snapshot writer refuses non-tmpdir paths without production opt-in (closes #58)"
+    },
     {
       "date": "2026-04-14T00:07:20+03:00",
       "hash": "30d5459eca9bc79be5a8f6814cbbfb4ed5c3bc14",
@@ -162,6 +190,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776296577,
   "symbols": []
 }

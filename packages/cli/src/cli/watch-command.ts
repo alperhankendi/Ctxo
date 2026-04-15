@@ -5,12 +5,18 @@ import { loadPlugins } from './plugin-loader.js';
 import { JsonIndexWriter } from '../adapters/storage/json-index-writer.js';
 import { SqliteStorageAdapter } from '../adapters/storage/sqlite-storage-adapter.js';
 import { ChokidarWatcherAdapter } from '../adapters/watcher/chokidar-watcher-adapter.js';
+import { execFileSync } from 'node:child_process';
 import { ContentHasher } from '../core/staleness/content-hasher.js';
 import { SimpleGitAdapter } from '../adapters/git/simple-git-adapter.js';
 import { RevertDetector } from '../core/why-context/revert-detector.js';
-import type { FileIndex, CommitIntent, AntiPattern } from '../core/types.js';
+import { SymbolGraph } from '../core/graph/symbol-graph.js';
+import { PageRankCalculator } from '../core/importance/pagerank-calculator.js';
+import { CommunityDetector } from '../core/overlay/community-detector.js';
+import { loadConfig, watchSnapshotMinFileChanges } from '../core/config/load-config.js';
+import type { FileIndex, CommitIntent, AntiPattern, CommunitySnapshot } from '../core/types.js';
 
 const DEBOUNCE_MS = 300;
+const COMMUNITY_SNAPSHOT_DEBOUNCE_MS = 5000;
 
 interface RoslynLike {
   isReady(): boolean;
@@ -73,7 +79,7 @@ export class WatchCommand {
 
     const supportedExtensions = registry.getSupportedExtensions();
     const writer = new JsonIndexWriter(this.ctxoRoot);
-    const storage = new SqliteStorageAdapter(this.ctxoRoot);
+    const storage = new SqliteStorageAdapter(this.ctxoRoot, { allowProductionPath: true });
     await storage.init();
     const hasher = new ContentHasher();
 
@@ -81,6 +87,13 @@ export class WatchCommand {
     const revertDetector = new RevertDetector();
     const watcher = new ChokidarWatcherAdapter(this.projectRoot);
     const pendingFiles = new Map<string, NodeJS.Timeout>();
+
+    // Watch-time community snapshots cost ~1s of blocking CPU on 25K-symbol
+    // monorepos (full PageRank + Louvain recompute). Only recompute once at
+    // least `snapshotMinFileChanges` distinct files have been re-indexed
+    // since the last snapshot, so rapid-fire saves don't stall the editor.
+    const snapshotThreshold = watchSnapshotMinFileChanges(loadConfig(this.ctxoRoot).config);
+    const pathsChangedSinceSnapshot = new Set<string>();
 
     const reindexFile = async (filePath: string) => {
       const adapter = registry.getAdapter(filePath);
@@ -162,15 +175,43 @@ export class WatchCommand {
       }
     };
 
+    let communitySnapshotTimer: NodeJS.Timeout | undefined;
+    const scheduleCommunitySnapshot = () => {
+      // Threshold skip — don't even arm the debounce timer unless enough
+      // distinct files changed since the last accepted snapshot.
+      if (pathsChangedSinceSnapshot.size < snapshotThreshold) return;
+
+      if (communitySnapshotTimer) clearTimeout(communitySnapshotTimer);
+      communitySnapshotTimer = setTimeout(() => {
+        communitySnapshotTimer = undefined;
+        if (pathsChangedSinceSnapshot.size < snapshotThreshold) return;
+        const changedCount = pathsChangedSinceSnapshot.size;
+        pathsChangedSinceSnapshot.clear();
+        try {
+          const snapshot = buildWatchCommunitySnapshot(storage);
+          if (snapshot) {
+            storage.writeCommunities(snapshot);
+            console.error(
+              `[ctxo] Community snapshot refreshed after ${changedCount} file change(s) (modularity ${snapshot.modularity.toFixed(3)})`,
+            );
+          }
+        } catch (err) {
+          console.error(`[ctxo] Community snapshot skipped: ${(err as Error).message}`);
+        }
+      }, COMMUNITY_SNAPSHOT_DEBOUNCE_MS);
+    };
+
     const debouncedReindex = (filePath: string) => {
       const existing = pendingFiles.get(filePath);
       if (existing) clearTimeout(existing);
 
       pendingFiles.set(
         filePath,
-        setTimeout(() => {
+        setTimeout(async () => {
           pendingFiles.delete(filePath);
-          reindexFile(filePath);
+          await reindexFile(filePath);
+          pathsChangedSinceSnapshot.add(filePath);
+          scheduleCommunitySnapshot();
         }, DEBOUNCE_MS),
       );
     };
@@ -196,6 +237,7 @@ export class WatchCommand {
       for (const timeout of pendingFiles.values()) {
         clearTimeout(timeout);
       }
+      if (communitySnapshotTimer) clearTimeout(communitySnapshotTimer);
       // Shutdown Roslyn keep-alive
       const roslynShutdown = roslynAdapter ? roslynAdapter.dispose() : Promise.resolve();
       roslynShutdown.then(() => {
@@ -211,4 +253,40 @@ export class WatchCommand {
     process.on('SIGTERM', cleanup);
   }
 
+}
+
+function buildWatchCommunitySnapshot(storage: SqliteStorageAdapter): CommunitySnapshot | undefined {
+  const symbols = storage.getAllSymbols();
+  if (symbols.length === 0) return undefined;
+  const edges = storage.getAllEdges();
+
+  const graph = new SymbolGraph();
+  for (const symbol of symbols) graph.addNode(symbol);
+  for (const edge of edges) graph.addEdge(edge);
+
+  const pagerank = new PageRankCalculator().calculate(graph, { limit: graph.nodeCount });
+  const pagerankMap = new Map<string, number>();
+  for (const entry of pagerank.rankings) pagerankMap.set(entry.symbolId, entry.score);
+
+  const detector = new CommunityDetector();
+  const detectResult = detector.detect(graph, pagerankMap, 'full');
+
+  return {
+    version: 1,
+    computedAt: new Date().toISOString(),
+    commitSha: readHeadSha(),
+    modularity: detectResult.modularity,
+    communities: detectResult.communities,
+    godNodes: detectResult.godNodes,
+    edgeQuality: detectResult.edgeQuality,
+    crossClusterEdges: detectResult.crossClusterEdges,
+  };
+}
+
+function readHeadSha(): string {
+  try {
+    return execFileSync('git', ['rev-parse', '--short', 'HEAD'], { encoding: 'utf-8' }).trim();
+  } catch {
+    return 'nocommit';
+  }
 }

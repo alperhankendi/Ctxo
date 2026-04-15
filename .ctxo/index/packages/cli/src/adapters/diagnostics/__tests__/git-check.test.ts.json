@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "827f02fef1cd322f6f1dee586994be467a7b4603dbb676d18ffc40d2abb2d6cf",
+  "contentHash": "3d62371329f1b18c7804150831fc85bc1336b99df3cf8763eef6d24586991cef",
   "edges": [
     {
       "from": "packages/cli/src/adapters/diagnostics/__tests__/git-check.test.ts::git-check.test::variable",
@@ -23,12 +23,18 @@
   "file": "packages/cli/src/adapters/diagnostics/__tests__/git-check.test.ts",
   "intent": [
     {
+      "date": "2026-04-16T02:24:31+03:00",
+      "hash": "0ef4193220fc4b421794c9eec1ad7e20948611e6",
+      "kind": "commit",
+      "message": "feat(mcp): snapshotStaleness in _meta surfaces snapshot-vs-HEAD gap (closes #55)"
+    },
+    {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
       "kind": "commit",
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115133,
+  "lastModified": 1776296576,
   "symbols": []
 }

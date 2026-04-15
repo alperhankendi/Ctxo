@@ -1,8 +1,14 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "0056509e3d084badd08561d964406ead87774a29d75f46dae2636192c69a9002",
+  "contentHash": "fd037bced28b0c7f744c8ec347d2050c7e71c09ec9322f30f8d6ef55d851555b",
   "edges": [
+    {
+      "from": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
     {
       "from": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface",
       "kind": "imports",
@@ -25,21 +31,27 @@
   "file": "packages/cli/src/ports/i-storage-port.ts",
   "intent": [
     {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    },
+    {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
       "kind": "commit",
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776296577,
   "symbols": [
     {
-      "endLine": 14,
-      "endOffset": 570,
+      "endLine": 22,
+      "endOffset": 766,
       "kind": "interface",
       "name": "IStoragePort",
-      "startLine": 2,
-      "startOffset": 75,
+      "startLine": 7,
+      "startOffset": 103,
       "symbolId": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface"
     }
   ]

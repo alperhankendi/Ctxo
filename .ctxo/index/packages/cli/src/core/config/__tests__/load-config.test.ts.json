@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "d00466038436f98e15e75bec4af71644b808c426894673f07bef9ff2f045061d",
+  "contentHash": "fa31f789061a2d9c6f815ae48707a48b62778dd5abcefff84dc3ca1772faf51c",
   "edges": [
     {
       "from": "packages/cli/src/core/config/__tests__/load-config.test.ts::load-config.test::variable",
@@ -27,6 +27,16 @@
       "from": "packages/cli/src/core/config/__tests__/load-config.test.ts::load-config.test::variable",
       "kind": "imports",
       "to": "packages/cli/src/core/config/load-config.ts::makeGlobMatcher::function"
+    },
+    {
+      "from": "packages/cli/src/core/config/__tests__/load-config.test.ts::load-config.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/load-config.ts::maskingClusterLabelPatterns::function"
+    },
+    {
+      "from": "packages/cli/src/core/config/__tests__/load-config.test.ts::load-config.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/load-config.ts::watchSnapshotMinFileChanges::function"
     }
   ],
   "file": "packages/cli/src/core/config/__tests__/load-config.test.ts",
@@ -38,6 +48,6 @@
       "message": "feat(config): add index.ignore and index.ignoreProjects to .ctxo/config.yaml"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776296576,
   "symbols": []
 }

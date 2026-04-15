@@ -1,21 +1,40 @@
 import initSqlJs, { type Database } from 'sql.js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
-import type { FileIndex, GraphEdge, SymbolNode } from '../../core/types.js';
+import type {
+  CommunitySnapshot,
+  FileIndex,
+  GraphEdge,
+  SymbolNode,
+} from '../../core/types.js';
 import type { IStoragePort } from '../../ports/i-storage-port.js';
+import { CommunitySnapshotWriter } from './community-snapshot-writer.js';
 import { JsonIndexReader } from './json-index-reader.js';
 import { createLogger } from '../../core/logger.js';
 
 const log = createLogger('ctxo:storage');
 
+export interface SqliteStorageAdapterOptions {
+  /**
+   * Acknowledge writes to a production (non-tmpdir) `.ctxo/` root. Required
+   * when the CLI talks to the user's real project. Tests using mkdtempSync
+   * paths can omit this; they are auto-recognised as safe.
+   */
+  readonly allowProductionPath?: boolean;
+}
+
 export class SqliteStorageAdapter implements IStoragePort {
   private db: Database | undefined;
   private readonly dbPath: string;
   private readonly ctxoRoot: string;
+  private readonly communityWriter: CommunitySnapshotWriter;
 
-  constructor(ctxoRoot: string) {
+  constructor(ctxoRoot: string, options: SqliteStorageAdapterOptions = {}) {
     this.ctxoRoot = ctxoRoot;
     this.dbPath = join(ctxoRoot, '.cache', 'symbols.db');
+    this.communityWriter = new CommunitySnapshotWriter(ctxoRoot, {
+      allowProductionPath: options.allowProductionPath,
+    });
   }
 
   async init(): Promise<void> {
@@ -322,6 +341,18 @@ export class SqliteStorageAdapter implements IStoragePort {
     const buffer = Buffer.from(data);
     mkdirSync(dirname(this.dbPath), { recursive: true });
     writeFileSync(this.dbPath, buffer);
+  }
+
+  readCommunities(): CommunitySnapshot | undefined {
+    return this.communityWriter.readCurrent();
+  }
+
+  writeCommunities(snapshot: CommunitySnapshot): void {
+    this.communityWriter.writeSnapshot(snapshot);
+  }
+
+  listCommunityHistory(limit?: number): CommunitySnapshot[] {
+    return this.communityWriter.listHistory(limit);
   }
 
   close(): void {

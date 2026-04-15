@@ -1,0 +1,38 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "9137971bfe22de531593298e465b7d3d3ce589c033410ee7ede7fcc259d05086",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/__tests__/report-command.test.ts::report-command.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/report-command.test.ts::report-command.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/report-command.test.ts::report-command.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/report-command.test.ts::report-command.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/report-command.test.ts::report-command.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/report-command.ts::ReportCommand::class"
+    }
+  ],
+  "file": "packages/cli/src/cli/__tests__/report-command.test.ts",
+  "intent": [],
+  "lastModified": 1776296576,
+  "symbols": []
+}

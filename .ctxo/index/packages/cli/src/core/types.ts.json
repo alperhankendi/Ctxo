@@ -1,10 +1,16 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "5ad995bfdfb51272ce098be0d6677c812a454770f00e99e67723bd469c4f7d76",
+  "contentHash": "7da02ad4211125ecdc34a8ab3d2ee48d21036836b82ef655b5676943f060e372",
   "edges": [],
   "file": "packages/cli/src/core/types.ts",
   "intent": [
+    {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    },
     {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
@@ -12,7 +18,7 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776296577,
   "symbols": [
     {
       "endLine": 133,
@@ -150,6 +156,51 @@
       "symbolId": "packages/cli/src/core/types.ts::SearchResponse::interface"
     },
     {
+      "endLine": 261,
+      "endOffset": 7162,
+      "kind": "interface",
+      "name": "CommunityEntry",
+      "startLine": 257,
+      "startOffset": 7027,
+      "symbolId": "packages/cli/src/core/types.ts::CommunityEntry::interface"
+    },
+    {
+      "endLine": 267,
+      "endOffset": 7313,
+      "kind": "interface",
+      "name": "GodNode",
+      "startLine": 263,
+      "startOffset": 7166,
+      "symbolId": "packages/cli/src/core/types.ts::GodNode::interface"
+    },
+    {
+      "endLine": 281,
+      "endOffset": 7778,
+      "kind": "interface",
+      "name": "CommunitySnapshot",
+      "startLine": 272,
+      "startOffset": 7449,
+      "symbolId": "packages/cli/src/core/types.ts::CommunitySnapshot::interface"
+    },
+    {
+      "endLine": 288,
+      "endOffset": 8029,
+      "kind": "interface",
+      "name": "DriftEvent",
+      "startLine": 283,
+      "startOffset": 7782,
+      "symbolId": "packages/cli/src/core/types.ts::DriftEvent::interface"
+    },
+    {
+      "endLine": 304,
+      "endOffset": 8439,
+      "kind": "interface",
+      "name": "BoundaryViolation",
+      "startLine": 290,
+      "startOffset": 8033,
+      "symbolId": "packages/cli/src/core/types.ts::BoundaryViolation::interface"
+    },
+    {
       "endLine": 14,
       "endOffset": 340,
       "kind": "type",
@@ -238,6 +289,15 @@
       "startLine": 164,
       "startOffset": 4695,
       "symbolId": "packages/cli/src/core/types.ts::ScoreBand::type"
+    },
+    {
+      "endLine": 270,
+      "endOffset": 7445,
+      "kind": "type",
+      "name": "EdgeQuality",
+      "startLine": 270,
+      "startOffset": 7389,
+      "symbolId": "packages/cli/src/core/types.ts::EdgeQuality::type"
     },
     {
       "endLine": 11,
@@ -364,6 +424,15 @@
       "startLine": 163,
       "startOffset": 4644,
       "symbolId": "packages/cli/src/core/types.ts::SCORE_BANDS::variable"
+    },
+    {
+      "endLine": 269,
+      "endOffset": 7386,
+      "kind": "variable",
+      "name": "EDGE_QUALITY",
+      "startLine": 269,
+      "startOffset": 7330,
+      "symbolId": "packages/cli/src/core/types.ts::EDGE_QUALITY::variable"
     }
   ]
 }

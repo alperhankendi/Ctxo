@@ -14,7 +14,7 @@
       "symbolId": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
     }
   ],
-  "contentHash": "d53ebb7ac2395300cb8de2f2a306e5cad7ead2ba32dd8f0e1899f9a187574b49",
+  "contentHash": "37d244429ed63b192a4883071d138e25dbfa3c03d57d9a928bf7eb8c57b26240",
   "edges": [
     {
       "from": "packages/cli/src/core/response-envelope.ts::wrapResponse::function",
@@ -50,6 +50,18 @@
   "file": "packages/cli/src/core/response-envelope.ts",
   "intent": [
     {
+      "date": "2026-04-16T02:24:31+03:00",
+      "hash": "0ef4193220fc4b421794c9eec1ad7e20948611e6",
+      "kind": "commit",
+      "message": "feat(mcp): snapshotStaleness in _meta surfaces snapshot-vs-HEAD gap (closes #55)"
+    },
+    {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    },
+    {
       "date": "2026-04-13T01:35:07+03:00",
       "hash": "dc578b8fcb106b7805e15f3ef22f4f1522c88451",
       "kind": "commit",
@@ -62,43 +74,52 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776115134,
+  "lastModified": 1776296576,
   "symbols": [
     {
-      "endLine": 33,
-      "endOffset": 953,
+      "endLine": 45,
+      "endOffset": 1392,
       "kind": "function",
       "name": "setWorkspaceMeta",
-      "startLine": 31,
-      "startOffset": 844,
+      "startLine": 43,
+      "startOffset": 1283,
       "symbolId": "packages/cli/src/core/response-envelope.ts::setWorkspaceMeta::function"
     },
     {
-      "endLine": 37,
-      "endOffset": 1056,
+      "endLine": 49,
+      "endOffset": 1495,
       "kind": "function",
       "name": "getWorkspaceMeta",
-      "startLine": 35,
-      "startOffset": 955,
+      "startLine": 47,
+      "startOffset": 1394,
       "symbolId": "packages/cli/src/core/response-envelope.ts::getWorkspaceMeta::function"
     },
     {
-      "endLine": 163,
-      "endOffset": 4963,
+      "endLine": 203,
+      "endOffset": 6109,
       "kind": "function",
       "name": "wrapResponse",
-      "startLine": 91,
-      "startOffset": 3204,
+      "startLine": 116,
+      "startOffset": 4144,
       "symbolId": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
     },
     {
-      "endLine": 23,
-      "endOffset": 625,
+      "endLine": 35,
+      "endOffset": 1064,
       "kind": "interface",
       "name": "ResponseMeta",
       "startLine": 9,
       "startOffset": 272,
       "symbolId": "packages/cli/src/core/response-envelope.ts::ResponseMeta::interface"
+    },
+    {
+      "endLine": 103,
+      "endOffset": 3793,
+      "kind": "interface",
+      "name": "WrapResponseExtras",
+      "startLine": 101,
+      "startOffset": 3697,
+      "symbolId": "packages/cli/src/core/response-envelope.ts::WrapResponseExtras::interface"
     }
   ]
 }

@@ -1,0 +1,54 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "40b2d84d05572614408ba3c8dafd2397612b65a0641e63d8a10600322ea380a1",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/community-detector.test.ts::community-detector.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/community-detector.test.ts::community-detector.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::SymbolNode::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/community-detector.test.ts::community-detector.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/community-detector.test.ts::community-detector.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildDisconnectedClusterGraph::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/community-detector.test.ts::community-detector.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildGraphWithGodNode::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/community-detector.test.ts::community-detector.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildIsolatedGraph::function"
+    },
+    {
+      "from": "packages/cli/src/core/overlay/__tests__/community-detector.test.ts::community-detector.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildMultiClusterGraph::function"
+    }
+  ],
+  "file": "packages/cli/src/core/overlay/__tests__/community-detector.test.ts",
+  "intent": [
+    {
+      "date": "2026-04-16T01:43:29+03:00",
+      "hash": "190f929def744a397c040aa323106b18b659dd5c",
+      "kind": "commit",
+      "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
+    }
+  ],
+  "lastModified": 1776296576,
+  "symbols": []
+}

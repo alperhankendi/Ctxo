@@ -3,8 +3,11 @@ import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IGitPort } from '../../ports/i-git-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
 import { RevertDetector } from '../../core/why-context/revert-detector.js';
+import { DriftDetector } from '../../core/overlay/drift-detector.js';
+import { buildSnapshotStaleness } from '../../core/overlay/snapshot-staleness.js';
+import type { ClusterLabelMasker } from '../../core/overlay/cluster-label-masker.js';
 import { JsonIndexReader } from '../storage/json-index-reader.js';
-import type { CommitIntent, AntiPattern } from '../../core/types.js';
+import type { AntiPattern, CommitIntent } from '../../core/types.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 
 const InputSchema = z.object({
@@ -18,9 +21,11 @@ export function handleGetWhyContext(
   masking: IMaskingPort,
   staleness?: StalenessCheck,
   ctxoRoot = '.ctxo',
+  clusterLabelMasker?: ClusterLabelMasker,
 ) {
   const revertDetector = new RevertDetector();
   const indexReader = new JsonIndexReader(ctxoRoot);
+  const driftDetector = new DriftDetector();
 
   return async (args: Record<string, unknown>) => {
     try {
@@ -76,6 +81,31 @@ export function handleGetWhyContext(
 
       if (antiPatterns.length > 0) {
         responsePayload.warningBadge = '⚠ Anti-pattern detected';
+      }
+
+      const rawSnapshot = storage.readCommunities();
+      const currentSnapshot =
+        rawSnapshot && clusterLabelMasker?.isEnabled()
+          ? clusterLabelMasker.maskSnapshot(rawSnapshot)
+          : rawSnapshot;
+      if (currentSnapshot) {
+        const history = storage.listCommunityHistory();
+        const drift = driftDetector.detect(currentSnapshot, history);
+        const relevant = drift.events.filter((event) => event.symbolId === symbolId);
+        if (relevant.length > 0 || drift.hint) {
+          responsePayload.driftSignals = {
+            events: relevant,
+            confidence: drift.confidence,
+            snapshotsAvailable: drift.snapshotsAvailable,
+            stabilitySummary: drift.stability,
+            ...(drift.hint ? { hint: drift.hint } : {}),
+          };
+        }
+      }
+
+      const stalenessMeta = await buildSnapshotStaleness(storage, git);
+      if (stalenessMeta) {
+        responsePayload._meta = { snapshotStaleness: stalenessMeta };
       }
 
       const payload = masking.mask(JSON.stringify(responsePayload));
