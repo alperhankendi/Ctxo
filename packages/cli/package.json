@@ -1,6 +1,6 @@
 {
   "name": "@ctxo/cli",
-  "version": "0.7.2",
+  "version": "0.8.0",
   "description": "MCP server delivering dependency-aware, history-enriched context for codebases",
   "type": "module",
   "engines": {
