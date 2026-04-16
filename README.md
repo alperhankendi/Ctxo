@@ -10,15 +10,13 @@
   <img alt="Ctxo — Code intelligence for AI agents" src="docs/img/hero-svg.svg" width="100%">
 </picture>
 
-<p>
-  <a href="https://www.npmjs.com/package/@ctxo/cli">
-    <img src="https://img.shields.io/badge/%24%20npx-%40ctxo%2Finit-14b8a6?style=for-the-badge&labelColor=0f172a&logoColor=white" alt="npx @ctxo/init">
-  </a>
-  &nbsp;
-  <a href="https://alperhankendi.github.io/Ctxo/docs/">
-    <img src="https://img.shields.io/badge/Get%20Started-%E2%86%92-06b6d4?style=for-the-badge&labelColor=0f172a" alt="Get Started →">
-  </a>
-</p>
+```Shell
+npx @ctxo/init
+```
+
+<a href="https://alperhankendi.github.io/Ctxo/docs/">
+  <img src="https://img.shields.io/badge/Get%20Started-%E2%86%92-06b6d4?style=for-the-badge&labelColor=0f172a" alt="Get Started →">
+</a>
 
 <sub>Detects your languages, installs the right plugins, wires Ctxo into your AI client, installs git hooks, and builds the first index — one command.</sub>
 
