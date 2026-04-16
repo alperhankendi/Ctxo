@@ -22,33 +22,21 @@ npx @ctxo/init
 
 ***
 
-<table>
-<tr>
-<td width="50%" valign="top">
+## The Problem: agents code blind
 
-### Without Ctxo
+Drop a modern coding agent into a real repo. It ripgreps a symbol, gets 47 hits, reads five files to find the definition, five more for callers — **misses the subclass entirely** (inheritance doesn't show up in text search), **never checks git history** (and confidently reintroduces a bug that was reverted three weeks ago), then runs out of context and starts hallucinating.
 
-- ✕ Context window saturated
-- ✕ Partial context hallucination
-- ✕ Lost-in-the-middle
-- ✕ Context poisoning
-- ✕ 10-20 calls per symbol
-- ✕ Stale reasoning after iterations
+It's not a skill gap. It's a **sensory gap**. The agent is navigating your codebase with its eyes closed and a phone book.
 
-</td>
-<td width="50%" valign="top">
+## The Solution: proactive, not reactive
 
-### With Ctxo
+The core shift: your agent stops reacting to files it stumbles into and starts planning from a complete map. **Blast radius before the edit. Git intent before the bug fix. Importer list before the rename.**
 
-- ✓ Clean, relevant context only
-- ✓ One call replaces full exploration
-- ✓ Structured symbol graphs + deps
-- ✓ Built-in usage stats & insights
-- ✓ Detects architectural drift + boundary violations
+Ctxo indexes your repo once — kept fresh by file watchers and git hooks — into a deterministic graph: every symbol, every edge (imports, calls, extends, implements), every relevant git commit with intent classified, every anti-pattern. All exposed through 14 semantic MCP tools.
 
-</td>
-</tr>
-</table>
+One `get_blast_radius` call replaces an entire ripgrep/read spiral. One `get_pr_impact` replaces a full review session of "wait, what calls this?"
+
+The agent still writes the code. It just stops writing it **blind** — so the bug never has to be caught by the compiler, the tests, CI, or a user.
 
 ## Index Visualizer
 
