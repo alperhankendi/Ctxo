@@ -12,6 +12,7 @@
 
 ```Shell
 npx @ctxo/init
+npx @ctxo/cli index
 ```
 
 <a href="https://alperhankendi.github.io/Ctxo/docs/">
