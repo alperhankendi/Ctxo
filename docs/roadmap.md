@@ -34,7 +34,6 @@ Open loops from the Epic 6 audit (2026-04-13). Small-to-medium tasks; clearing t
 
 - **Cross-client smoke-test matrix** — Auto-registration works (v0.5.1) but no captured smoke-test record. Run all 14 MCP tools against Claude Code / Cursor / VS Code Copilot / Windsurf against a reference fixture; commit the result into `docs/runbook/mcp-validation/test-sessions/`.
 - **Published p95 baseline per MCP tool** — Benchmark harness exists (`pnpm --filter @ctxo/cli bench`); no baseline numbers in docs. Run once on a reference machine, publish table under [architecture.md](artifacts/architecture.md) NFR-1 budgets.
-- **CI matrix coverage verification** — Confirm current GitHub Actions matrix covers Node 18 / 20 / 22 × macOS + Linux (test strategy claims this; verify + document).
 
 ---
 

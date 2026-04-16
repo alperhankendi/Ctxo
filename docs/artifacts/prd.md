@@ -378,7 +378,7 @@ All tools return structured JSON. Privacy masking applied to all outputs before 
 ### E2E Tests
 
 - **Scope:** Full `npx ctxo` CLI — index build, incremental re-index, `--check` exit codes, file watcher trigger
-- **Approach:** Real TypeScript fixture projects on disk; CI runs on macOS and Linux (Node.js 18, 20, 22)
+- **Approach:** Real TypeScript fixture projects on disk; CI runs on Linux (`ubuntu-latest`) against Node.js 20 and 22. Node 18 dropped after upstream EOL (2025-04); macOS/Windows supported at runtime but not continuously CI-verified.
 - **Key cases:** Index build on clean project produces valid manifest; `--check` exits non-zero after source file modification; incremental re-index updates only the changed file's JSON; `ctxo watch` detects a save and re-indexes within 2s
 
 ### MCP Client Compatibility Tests

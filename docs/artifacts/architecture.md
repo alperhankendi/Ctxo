@@ -55,7 +55,7 @@ _This document builds collaboratively through step-by-step discovery. Sections a
 | NFR-6 | Config sharing | .ctxo/config.yaml committed to repo |
 | NFR-7 | MCP client compatibility | All MCP-compatible clients (Claude Code, Cursor, VS Code Copilot, etc.) |
 | NFR-8 | Privacy | Sensitive data never leaves local machine |
-| NFR-9 | Platform independence | macOS, Linux, Windows (Node.js 20+) |
+| NFR-9 | Platform independence | Linux CI-verified (Node.js 20, 22); macOS + Windows runtime-supported via Node.js 20+ but not continuously tested |
 
 **Scale & Complexity:** High — multi-language AST analysis, graph traversal, MCP protocol, git integration, privacy pipeline, team-shared committed index.
 
@@ -682,7 +682,7 @@ compatible with all dependencies including native addons.
 | NFR-6 | Config committed | ✅ `.ctxo/config.yaml` |
 | NFR-7 | All MCP clients | ✅ StdioServerTransport, Nov 2025 spec |
 | NFR-8 | Privacy | ✅ masking pipeline, local machine only |
-| NFR-9 | Platform independence | ✅ Node.js 20+, no platform-specific code |
+| NFR-9 | Platform independence | ✅ Linux CI-verified (Node 20, 22); macOS + Windows runtime-supported, not CI-gated |
 
 ### Gap Analysis
 

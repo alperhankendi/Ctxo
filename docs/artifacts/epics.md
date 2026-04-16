@@ -26,7 +26,7 @@ inputDocuments:
 
 - **Epic 6.1 (verify):** Cross-client compatibility matrix (Claude Code / Cursor / VS Code Copilot / Windsurf) is implicitly met via auto-registration (v0.5.1) but no explicit smoke-test record exists. Capture current result into runbook.
 - **Epic 6.3 (verify):** Benchmark harness exists (`pnpm --filter @ctxo/cli bench`) but no published p95 baseline per MCP tool. Publish once.
-- **CI matrix (from test strategy):** Node 18 / 20 / 22 × macOS + Linux matrix — verify current GitHub Actions coverage matches.
+- **CI matrix (verified 2026-04-16):** Actual GitHub Actions coverage is **Linux (`ubuntu-latest`) × Node 20 + 22**. Node 18 was dropped (upstream EOL 2025-04); macOS/Windows are runtime-supported but not CI-verified. Older docs citing "Node 18/20/22 × macOS + Linux" have been corrected in place.
 
 ### Deferred (intentional, with rationale)
 
@@ -139,7 +139,7 @@ CI/CD Patterns:
 Testing Requirements:
 - AR24: Unit tests: vitest, ≥90% line coverage on core domain modules
 - AR25: Integration tests: InMemoryTransport from @modelcontextprotocol/sdk — no real MCP client needed
-- AR26: E2E tests: real TypeScript fixture projects on disk; CI on macOS + Linux across Node 18, 20, 22
+- AR26: E2E tests: real TypeScript fixture projects on disk; CI on Linux (`ubuntu-latest`) across Node 20 and 22
 - AR27: Privacy masking validation: dedicated synthetic credential fixture set, zero-leakage gate before release
 
 ### UX Design Requirements
@@ -570,7 +570,7 @@ Go and C# codebases can be indexed and queried via tree-sitter syntax-level adap
 - `ctxo index` indexes both languages; symbols coexist in the same graph
 - All 5 MCP tools return results spanning both languages where applicable
 - `ctxo status` shows per-language file counts
-- CI matrix: macOS + Linux, Node 18, 20, 22
+- CI matrix: Linux (`ubuntu-latest`), Node 20 and 22
 
 ### Epic 8: Event-Driven Index Updates — GitHub & GitLab Integration (DONE — architectural pivot)
 
