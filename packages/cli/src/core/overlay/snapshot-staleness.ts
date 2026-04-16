@@ -1,11 +1,26 @@
-import type { IGitPort } from '../../ports/i-git-port.js';
-import type { IStoragePort } from '../../ports/i-storage-port.js';
+import type { CommunitySnapshot } from '../types.js';
 
 export interface SnapshotStaleness {
   readonly snapshotCommit: string;
   readonly currentHeadCommit?: string;
   readonly commitsBehind?: number;
   readonly hint?: string;
+}
+
+/**
+ * Narrow structural views of the capabilities this module needs from the
+ * storage and git adapters. We declare them here (in core/) rather than
+ * importing the full IStoragePort / IGitPort interfaces from ports/ so the
+ * hexagonal boundary holds: core/ knows nothing about ports/. Callers pass
+ * their existing port-typed adapters — they satisfy these shapes structurally.
+ */
+export interface SnapshotStalenessStorage {
+  readCommunities(): CommunitySnapshot | undefined;
+}
+
+export interface SnapshotStalenessGit {
+  getHeadSha?(): Promise<string | undefined> | string | undefined;
+  countCommitsBetween?(sha: string): Promise<number | undefined> | number | undefined;
 }
 
 /**
@@ -18,8 +33,8 @@ export interface SnapshotStaleness {
  * is unavailable and no comparison is possible.
  */
 export async function buildSnapshotStaleness(
-  storage: IStoragePort,
-  git: IGitPort,
+  storage: SnapshotStalenessStorage,
+  git: SnapshotStalenessGit,
 ): Promise<SnapshotStaleness | undefined> {
   const snapshot = storage.readCommunities();
   if (!snapshot || !snapshot.commitSha || snapshot.commitSha === 'nocommit') return undefined;
