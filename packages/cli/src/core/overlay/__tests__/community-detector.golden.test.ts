@@ -69,7 +69,7 @@ describe('CommunityDetector — golden snapshot', () => {
       );
     }
 
-    const golden = readFileSync(GOLDEN_PATH, 'utf-8').trimEnd();
+    const golden = readFileSync(GOLDEN_PATH, 'utf-8').replace(/\r\n/g, '\n').trimEnd();
     expect(serialized).toBe(golden);
   });
 

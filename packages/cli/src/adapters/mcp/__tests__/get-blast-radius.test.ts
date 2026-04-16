@@ -87,7 +87,7 @@ describe('GetBlastRadiusHandler', () => {
     expect(payload.found).toBe(false);
   });
 
-  it('applies masking to response', () => {
+  it('applies masking to response', async () => {
     // Add a symbol with sensitive name
     const sensitiveIndex: FileIndex = {
       file: 'src/config.ts',
@@ -189,10 +189,10 @@ describe('GetBlastRadiusHandler', () => {
     expect(payload.likelyCount).toBe(0);
   });
 
-  it('returns all entries when no confidence filter', () => {
+  it('returns all entries when no confidence filter', async () => {
     const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
-    const unfiltered = handler({ symbolId: 'src/c.ts::C::interface' });
-    const filtered = handler({ symbolId: 'src/c.ts::C::interface', confidence: 'confirmed' });
+    const unfiltered = await handler({ symbolId: 'src/c.ts::C::interface' });
+    const filtered = await handler({ symbolId: 'src/c.ts::C::interface', confidence: 'confirmed' });
 
     const unfilteredPayload = JSON.parse(unfiltered.content[0]!.text);
     const filteredPayload = JSON.parse(filtered.content[0]!.text);
@@ -207,7 +207,7 @@ describe('GetBlastRadiusHandler', () => {
     expect(payload.byCluster).toBeUndefined();
   });
 
-  it('emits cluster breakdown + multiClusterHint when snapshot covers impacted symbols across clusters', () => {
+  it('emits cluster breakdown + multiClusterHint when snapshot covers impacted symbols across clusters', async () => {
     storage.writeCommunities({
       version: 1,
       computedAt: '2026-04-16T10:00:00.000Z',

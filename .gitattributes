@@ -1,0 +1,2 @@
+# Golden snapshots must stay LF so byte-identical comparisons hold on Windows.
+packages/cli/src/core/overlay/__tests__/fixtures/golden-community-snapshot.json text eol=lf

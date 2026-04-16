@@ -25,7 +25,7 @@ import { join } from 'node:path';
 
 async function main() {
   const ctxoRoot = '.ctxo';
-  const storage = new SqliteStorageAdapter(ctxoRoot);
+  const storage = new SqliteStorageAdapter(ctxoRoot, { allowProductionPath: true });
   await storage.init();
   const masking = new MaskingPipeline();
   const git = new SimpleGitAdapter(process.cwd());
