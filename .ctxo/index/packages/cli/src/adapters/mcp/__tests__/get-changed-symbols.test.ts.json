@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "a49e6b31ef441a1c3344f8bb2edba4d045852f99f07cf8127c7926c25df33d7d",
+  "contentHash": "6b1013738730c27381be3dc2d944340532dcc1ae346f936f964a0dd57a5138e7",
   "edges": [
     {
       "from": "packages/cli/src/adapters/mcp/__tests__/get-changed-symbols.test.ts::get-changed-symbols.test::variable",
@@ -51,6 +51,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354055,
   "symbols": []
 }

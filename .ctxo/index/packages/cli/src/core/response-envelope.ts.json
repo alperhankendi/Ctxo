@@ -14,7 +14,7 @@
       "symbolId": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
     }
   ],
-  "contentHash": "37d244429ed63b192a4883071d138e25dbfa3c03d57d9a928bf7eb8c57b26240",
+  "contentHash": "f9e594c7224204cad4a77c6ce0dc1330da5652b9c01567807370a123369ec902",
   "edges": [
     {
       "from": "packages/cli/src/core/response-envelope.ts::wrapResponse::function",
@@ -74,51 +74,51 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354056,
   "symbols": [
     {
       "endLine": 45,
-      "endOffset": 1392,
+      "endOffset": 1437,
       "kind": "function",
       "name": "setWorkspaceMeta",
       "startLine": 43,
-      "startOffset": 1283,
+      "startOffset": 1326,
       "symbolId": "packages/cli/src/core/response-envelope.ts::setWorkspaceMeta::function"
     },
     {
       "endLine": 49,
-      "endOffset": 1495,
+      "endOffset": 1544,
       "kind": "function",
       "name": "getWorkspaceMeta",
       "startLine": 47,
-      "startOffset": 1394,
+      "startOffset": 1441,
       "symbolId": "packages/cli/src/core/response-envelope.ts::getWorkspaceMeta::function"
     },
     {
       "endLine": 203,
-      "endOffset": 6109,
+      "endOffset": 6312,
       "kind": "function",
       "name": "wrapResponse",
       "startLine": 116,
-      "startOffset": 4144,
+      "startOffset": 4260,
       "symbolId": "packages/cli/src/core/response-envelope.ts::wrapResponse::function"
     },
     {
       "endLine": 35,
-      "endOffset": 1064,
+      "endOffset": 1099,
       "kind": "interface",
       "name": "ResponseMeta",
       "startLine": 9,
-      "startOffset": 272,
+      "startOffset": 281,
       "symbolId": "packages/cli/src/core/response-envelope.ts::ResponseMeta::interface"
     },
     {
       "endLine": 103,
-      "endOffset": 3793,
+      "endOffset": 3896,
       "kind": "interface",
       "name": "WrapResponseExtras",
       "startLine": 101,
-      "startOffset": 3697,
+      "startOffset": 3798,
       "symbolId": "packages/cli/src/core/response-envelope.ts::WrapResponseExtras::interface"
     }
   ]

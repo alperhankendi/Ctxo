@@ -221,6 +221,12 @@
   "file": "packages/cli/src/cli/watch-command.ts",
   "intent": [
     {
+      "date": "2026-04-16T02:43:12+03:00",
+      "hash": "2ded1a911a7f195becd8d07e5a1f28368b76858f",
+      "kind": "commit",
+      "message": "perf(watch): threshold-based skip for community snapshot recompute (closes #59)"
+    },
+    {
       "date": "2026-04-16T02:09:58+03:00",
       "hash": "5ae608f0da17bc164b0e31ce358e292233875cd1",
       "kind": "commit",
@@ -257,7 +263,7 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354056,
   "symbols": [
     {
       "endLine": 255,

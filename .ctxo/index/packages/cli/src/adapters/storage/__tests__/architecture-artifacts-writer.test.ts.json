@@ -1,0 +1,28 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "b51e2d9a72a1d328cb9193a65375ec9c112c985c374ae119d0493af5e2cfe795",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/storage/__tests__/architecture-artifacts-writer.test.ts::architecture-artifacts-writer.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::BoundaryViolationsArtifact::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/__tests__/architecture-artifacts-writer.test.ts::architecture-artifacts-writer.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::DriftEventsArtifact::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/__tests__/architecture-artifacts-writer.test.ts::architecture-artifacts-writer.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter::class"
+    }
+  ],
+  "file": "packages/cli/src/adapters/storage/__tests__/architecture-artifacts-writer.test.ts",
+  "intent": [],
+  "lastModified": 1776354055,
+  "symbols": []
+}

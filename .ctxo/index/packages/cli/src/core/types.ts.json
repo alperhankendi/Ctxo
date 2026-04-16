@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "7da02ad4211125ecdc34a8ab3d2ee48d21036836b82ef655b5676943f060e372",
+  "contentHash": "c335be6e7b097c4b9a28a93aa6c5b1b21aa6051090f87a871bf019ee30aaf237",
   "edges": [],
   "file": "packages/cli/src/core/types.ts",
   "intent": [
@@ -18,7 +18,7 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776296577,
+  "lastModified": 1776354056,
   "symbols": [
     {
       "endLine": 133,
@@ -201,6 +201,24 @@
       "symbolId": "packages/cli/src/core/types.ts::BoundaryViolation::interface"
     },
     {
+      "endLine": 321,
+      "endOffset": 9018,
+      "kind": "interface",
+      "name": "DriftEventsArtifact",
+      "startLine": 313,
+      "startOffset": 8739,
+      "symbolId": "packages/cli/src/core/types.ts::DriftEventsArtifact::interface"
+    },
+    {
+      "endLine": 331,
+      "endOffset": 9319,
+      "kind": "interface",
+      "name": "BoundaryViolationsArtifact",
+      "startLine": 323,
+      "startOffset": 9022,
+      "symbolId": "packages/cli/src/core/types.ts::BoundaryViolationsArtifact::interface"
+    },
+    {
       "endLine": 14,
       "endOffset": 340,
       "kind": "type",
@@ -298,6 +316,15 @@
       "startLine": 270,
       "startOffset": 7389,
       "symbolId": "packages/cli/src/core/types.ts::EdgeQuality::type"
+    },
+    {
+      "endLine": 311,
+      "endOffset": 8735,
+      "kind": "type",
+      "name": "ConfidenceLevel",
+      "startLine": 311,
+      "startOffset": 8679,
+      "symbolId": "packages/cli/src/core/types.ts::ConfidenceLevel::type"
     },
     {
       "endLine": 11,

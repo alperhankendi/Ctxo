@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "5b5c6ad984d8d65fecd84b6e4118c5da348fed2a41b747709563c728e6f87b06",
+  "contentHash": "56087db95e2d3c2a615b4b6e7968f39b44bea8ee12f3491ead422cb79c90af96",
   "edges": [
     {
       "from": "packages/cli/src/adapters/mcp/__tests__/get-class-hierarchy.test.ts::get-class-hierarchy.test::variable",
@@ -40,6 +40,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354055,
   "symbols": []
 }

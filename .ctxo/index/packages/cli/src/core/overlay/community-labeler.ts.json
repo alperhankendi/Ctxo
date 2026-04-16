@@ -6,7 +6,7 @@
       "symbolId": "packages/cli/src/core/overlay/community-labeler.ts::labelCommunities::function"
     }
   ],
-  "contentHash": "187eb4a640a24e03c00460f534f20520cb14da6c4ea347a37830e6def54126ca",
+  "contentHash": "d380633f9946fe41a348d34e0ec4ecb094940e43f17e066a9bace7738728cf2a",
   "edges": [
     {
       "from": "packages/cli/src/core/overlay/community-labeler.ts::labelCommunities::function",
@@ -23,15 +23,15 @@
       "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354056,
   "symbols": [
     {
       "endLine": 17,
-      "endOffset": 496,
+      "endOffset": 513,
       "kind": "function",
       "name": "labelCommunities",
       "startLine": 3,
-      "startOffset": 60,
+      "startOffset": 63,
       "symbolId": "packages/cli/src/core/overlay/community-labeler.ts::labelCommunities::function"
     }
   ]

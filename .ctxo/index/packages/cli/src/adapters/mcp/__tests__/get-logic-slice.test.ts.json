@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "09604b57bdf7961d2956120ff9dbcc35446fcc806532b3e322b232e62d8e9276",
+  "contentHash": "ba58be7265a6c142c58e639c0c16f707d964a88b3568ed4e5009acbf0fb8fd3d",
   "edges": [
     {
       "from": "packages/cli/src/adapters/mcp/__tests__/get-logic-slice.test.ts::get-logic-slice.test::variable",
@@ -40,6 +40,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354055,
   "symbols": []
 }

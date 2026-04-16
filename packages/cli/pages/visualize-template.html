@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -126,12 +126,46 @@
   .banner { padding: 6px 12px; background: rgba(78,121,167,0.1); border-bottom: 1px solid var(--border); font-size: 11px; color: #4E79A7; display: none; }
   .banner.visible { display: block; }
 
+  /* First-load info modal */
+  #infoModal { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: none; align-items: center; justify-content: center; z-index: 100; padding: 24px; }
+  #infoModal.visible { display: flex; }
+  #infoModal .card { background: var(--bg2); color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 24px 28px; max-width: 560px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.35); font-size: 13px; line-height: 1.55; }
+  #infoModal h2 { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--name); }
+  #infoModal .example { display: flex; gap: 12px; align-items: center; padding: 10px 12px; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 6px; margin: 12px 0; }
+  #infoModal .example .dot { width: 28px; height: 28px; border-radius: 50%; flex: 0 0 auto; }
+  #infoModal .example .text { font-size: 12px; color: var(--text2); }
+  #infoModal p { margin-bottom: 10px; color: var(--text2); }
+  #infoModal strong { color: var(--name); font-weight: 600; }
+  #infoModal code { background: var(--input-bg); padding: 1px 5px; border-radius: 3px; font-family: ui-monospace, monospace; font-size: 11px; color: var(--name); }
+  #infoModal .actions { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; gap: 12px; }
+  #infoModal .actions label { font-size: 11px; color: var(--text3); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+  #infoModal button { appearance: none; background: #4E79A7; color: #fff; border: 0; padding: 8px 18px; border-radius: 6px; font: inherit; font-size: 12px; font-weight: 500; cursor: pointer; }
+  #infoModal button:hover { background: #3f6388; }
+
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 3px; }
 </style>
 </head>
 <body>
+
+<div id="infoModal" role="dialog" aria-labelledby="infoTitle">
+  <div class="card">
+    <h2 id="infoTitle">Layer vs Community — two views of the same graph</h2>
+    <p><strong>Layer</strong> (node fill) — the role you <em>designed</em>. Folder-based: <code>core/</code> is Domain, <code>adapters/</code> is Adapter, <code>__tests__/</code> is Test, etc. Answers <em>"where does this code live in my intended architecture?"</em></p>
+    <p><strong>Community</strong> (node border) — the modules the dependency graph <em>actually shows</em>. Louvain clustering finds tightly-connected groups of symbols. Answers <em>"how does the code really hang together?"</em></p>
+    <div class="example">
+      <div class="dot" style="background:#4E79A7;border:3px solid #F28E2B"></div>
+      <div class="text"><strong>Dual mode.</strong> Blue fill + orange border = this symbol is labelled Domain but clusters with an Adapter community. That mismatch is the signal: either the layer rule is wrong, or the code has leaked across the boundary you drew.</div>
+    </div>
+    <p>Red edges are <strong>boundary violations</strong> — dependencies that cross communities and are rare (or unprecedented) in snapshot history. That's where architectural drift shows up first.</p>
+    <p><strong>Use it:</strong> skim in Dual for mismatches, switch to Layer to orient, switch to Community to find the de-facto modules when refactoring.</p>
+    <div class="actions">
+      <label><input type="checkbox" id="infoDontShow" /> Don't show again</label>
+      <button id="infoClose">Got it</button>
+    </div>
+  </div>
+</div>
 
 <div id="graph-wrap">
   <div id="graph"></div>
@@ -141,6 +175,12 @@
         Layers <span class="arrow open">&#9660;</span>
       </div>
       <div class="legend-body" id="layerBody"></div>
+    </div>
+    <div class="legend-panel" id="communityPanel">
+      <div class="legend-header" id="communityHeader">
+        Communities <span class="arrow open">&#9660;</span>
+      </div>
+      <div class="legend-body" id="communityBody"></div>
     </div>
     <div class="legend-panel" id="edgePanel">
       <div class="legend-header" id="edgeHeader">
@@ -172,6 +212,22 @@
         Dead code
         <span class="tip-icon" title="Show only unreachable symbols with zero importers or cascading dead dependencies">?</span>
       </label>
+    </div>
+    <div id="color-mode-row" style="display:flex;align-items:center;gap:6px;margin-top:4px;font-size:10px;color:var(--text4);flex-wrap:wrap">
+      <span>Color by</span>
+      <label style="display:inline-flex;align-items:center;gap:3px;cursor:pointer;color:var(--text2)">
+        <input type="radio" name="colorMode" value="dual" checked style="margin:0" />
+        Dual (fill = Layer, border = Community)
+      </label>
+      <label style="display:inline-flex;align-items:center;gap:3px;cursor:pointer;color:var(--text2)">
+        <input type="radio" name="colorMode" value="layer" style="margin:0" />
+        Layer
+      </label>
+      <label style="display:inline-flex;align-items:center;gap:3px;cursor:pointer;color:var(--text2)">
+        <input type="radio" name="colorMode" value="community" style="margin:0" />
+        Community
+      </label>
+      <button type="button" id="infoBtn" style="background:transparent;border:1px solid var(--input-border);color:var(--text2);font-size:10px;padding:2px 6px;border-radius:4px;cursor:pointer">What's the difference?</button>
     </div>
     <div id="label-row" style="display:flex;align-items:center;gap:6px;margin-top:4px">
       <span style="font-size:10px;color:var(--text4)">Labels</span>
@@ -213,6 +269,20 @@ var LAYER_COLORS = {
   Unknown:       '#BAB0AC'   // grey
 };
 
+// Deterministic palette for community coloring. Wraps at PALETTE.length
+// so repeats are visually distant enough in practice.
+var COMMUNITY_PALETTE = [
+  '#4E79A7', '#F28E2B', '#59A14F', '#EDC948', '#B07AA1',
+  '#E15759', '#76B7B2', '#FF9DA7', '#9C755F', '#BAB0AC',
+  '#6B9AC4', '#D37295', '#8CD17D', '#F1CE63', '#A173D1'
+];
+var COMMUNITY_UNASSIGNED = '#555866';
+
+function communityColor(id) {
+  if (id < 0) return COMMUNITY_UNASSIGNED;
+  return COMMUNITY_PALETTE[((id % COMMUNITY_PALETTE.length) + COMMUNITY_PALETTE.length) % COMMUNITY_PALETTE.length];
+}
+
 var EDGE_COLORS = {
   imports:    { color: '#4E79A7', opacity: 0.6 },
   calls:      { color: '#59A14F', opacity: 0.7 },
@@ -220,6 +290,21 @@ var EDGE_COLORS = {
   implements: { color: '#F28E2B', opacity: 0.8 },
   uses:       { color: '#BAB0AC', opacity: 0.35 }
 };
+
+// Boundary violations override edge styling. Red for "this edge crosses
+// community boundaries and is rarely/never seen in the snapshot history".
+var VIOLATION_COLOR_HIGH = '#E15759';    // high severity (never crossed before)
+var VIOLATION_COLOR_MEDIUM = '#F28E2B';  // medium (crossed <=2 times historically)
+
+// Color mode: 'dual' | 'layer' | 'community'.
+// 'dual' (default) encodes BOTH views on every node:
+//   - node fill color = architectural Layer (designed role)
+//   - node border color = Louvain Community (observed clustering)
+// This makes mismatches visible at a glance: a community whose nodes span
+// multiple fill colors means an observed module crosses designed layers.
+// Users can collapse to a single encoding via the toggle.
+var colorMode = 'dual';
+var hiddenCommunities = new Set();
 
 // DOM helper
 function el(tag, attrs, children) {
@@ -272,7 +357,9 @@ function init() {
   // Build vis.js nodes
   var visNodes = [];
   data.nodes.forEach(function(n) {
-    var color = LAYER_COLORS[n.layer] || '#BAB0AC';
+    var communityId = typeof n.communityId === 'number' ? n.communityId : -1;
+    var communityLabel = n.communityLabel || 'unassigned';
+    var colors = resolveNodeColors(n, communityId);
     var size = 10 + 30 * (n.pageRank / maxPR);
     var prNorm = n.pageRank / maxPR;
     var showLabel = prNorm >= labelThreshold;
@@ -280,22 +367,30 @@ function init() {
     var nodeObj = {
       id: n.id,
       label: showLabel ? n.name : '',
-      title: n.name + '\n' + n.file + '\n' + n.kind + ' | ' + n.layer + '\nPageRank: ' + n.pageRank.toFixed(6) + '\nIn: ' + n.inDegree + ' Out: ' + n.outDegree + (n.isDead ? '\n[DEAD CODE]' : ''),
+      title:
+        n.name + '\n' +
+        n.file + '\n' +
+        n.kind + ' | ' + n.layer + ' | ' + communityLabel + '\n' +
+        'PageRank: ' + n.pageRank.toFixed(6) + '\n' +
+        'In: ' + n.inDegree + ' Out: ' + n.outDegree +
+        (n.isDead ? '\n[DEAD CODE]' : ''),
       size: size,
       color: {
-        background: color,
-        border: color,
-        highlight: { background: '#ffffff', border: color },
-        hover: { background: '#ffffff', border: color }
+        background: colors.fill,
+        border: colors.border,
+        highlight: { background: '#ffffff', border: colors.border },
+        hover: { background: '#ffffff', border: colors.border }
       },
-      borderWidth: n.isDead ? 3 : 1.5,
-      borderWidthSelected: 3,
-      font: { color: '#ffffff', size: showLabel ? 12 : 0 },
+      borderWidth: colors.borderWidth,
+      borderWidthSelected: Math.max(colors.borderWidth, 3),
+      font: { color: '#1a1d24', size: showLabel ? 12 : 0 },
       // Store metadata
       _kind: n.kind,
       _file: n.file,
       _startLine: n.startLine,
       _layer: n.layer,
+      _community: communityId,
+      _communityLabel: communityLabel,
       _pageRank: n.pageRank,
       _isDead: n.isDead,
       _deadConfidence: n.deadConfidence,
@@ -308,13 +403,12 @@ function init() {
       _prNorm: prNorm
     };
 
+    // Dead/antipattern visuals are handled by resolveNodeColors (border
+    // override) but the dashed stroke + faded opacity stay here since they
+    // are independent of color.
     if (n.isDead) {
       nodeObj.shapeProperties = { borderDashes: [6, 3] };
-      nodeObj.color.border = '#E15759';
       nodeObj.opacity = 0.5;
-    } else if (n.hasAntiPattern) {
-      nodeObj.color.border = '#F28E2B';
-      nodeObj.borderWidth = 2.5;
     }
 
     allNodes[n.id] = nodeObj;
@@ -325,16 +419,27 @@ function init() {
   data.edges.forEach(function(e, i) {
     var ec = EDGE_COLORS[e.kind] || EDGE_COLORS.uses;
     var isWeak = (e.kind === 'uses' || e.kind === 'imports');
+    var violation = e.violationSeverity;
+    var baseColor = violation
+      ? (violation === 'high' ? VIOLATION_COLOR_HIGH : VIOLATION_COLOR_MEDIUM)
+      : ec.color;
+    var baseOpacity = violation ? 0.95 : ec.opacity;
+    var baseWidth = violation ? (violation === 'high' ? 3 : 2.5) : (isWeak ? 1 : 2);
     var edgeObj = {
       id: 'e' + i,
       from: e.source,
       to: e.target,
       arrows: { to: { enabled: true, scaleFactor: 0.5 } },
-      color: { color: ec.color, opacity: ec.opacity, highlight: ec.color, hover: ec.color },
-      width: isWeak ? 1 : 2,
-      dashes: e.kind === 'uses',
+      color: { color: baseColor, opacity: baseOpacity, highlight: baseColor, hover: baseColor },
+      width: baseWidth,
+      dashes: violation === 'medium' ? [8, 4] : (e.kind === 'uses'),
       smooth: { type: 'continuous', roundness: 0.2 },
       selectionWidth: 3,
+      _violationSeverity: violation || null,
+      _edgeBaseColor: ec.color,
+      _edgeBaseOpacity: ec.opacity,
+      _edgeBaseWidth: isWeak ? 1 : 2,
+      _edgeDashesDefault: e.kind === 'uses',
       _kind: e.kind
     };
     allEdges.push(edgeObj);
@@ -398,12 +503,26 @@ function init() {
 
   // Build UI
   buildLayerLegend(data);
+  buildCommunityLegend(data);
   buildEdgeLegend();
   setupSearch(data);
   updateStats();
 
-  // Theme toggle
-  document.getElementById('themeToggle').addEventListener('click', function() {
+  // Color mode toggle (Layer / Community)
+  document.querySelectorAll('input[name="colorMode"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+      if (!this.checked) return;
+      colorMode = this.value;
+      applyColorMode();
+    });
+  });
+
+  // Theme state — default is light, set on <html data-theme="light">.
+  // Theme toggle flips between 'light' and unset (dark).
+  var themeBtn = document.getElementById('themeToggle');
+  themeBtn.textContent = '\u2600'; // sun visible in light mode → click to go dark
+  document.getElementById('graph').style.background = '#f5f6f8';
+  themeBtn.addEventListener('click', function() {
     var current = document.documentElement.getAttribute('data-theme');
     var isLight = current === 'light';
     var next = isLight ? null : 'light';
@@ -423,6 +542,26 @@ function init() {
     network.setOptions({ nodes: { font: { color: fontColor } } });
     document.getElementById('graph').style.background = bgColor;
   });
+
+  // First-load info modal (explains Layer vs Community). Dismissed forever
+  // via "Don't show again" checkbox (localStorage flag).
+  var infoModal = document.getElementById('infoModal');
+  var infoClose = document.getElementById('infoClose');
+  var infoDontShow = document.getElementById('infoDontShow');
+  var infoBtn = document.getElementById('infoBtn');
+  function showInfoModal() { infoModal.classList.add('visible'); }
+  function hideInfoModal() {
+    infoModal.classList.remove('visible');
+    if (infoDontShow.checked) {
+      try { localStorage.setItem('ctxo-vis-info-seen', '1'); } catch (e) {}
+    }
+  }
+  infoClose.addEventListener('click', hideInfoModal);
+  infoModal.addEventListener('click', function(e) { if (e.target === infoModal) hideInfoModal(); });
+  infoBtn.addEventListener('click', showInfoModal);
+  try {
+    if (localStorage.getItem('ctxo-vis-info-seen') !== '1') showInfoModal();
+  } catch (e) { showInfoModal(); }
 
   // Anti-pattern filter
   document.getElementById('antiPatternToggle').querySelector('input').addEventListener('change', function() {
@@ -639,6 +778,133 @@ function clearNodeInfo() {
     var p = document.getElementById(id);
     while (p.firstChild) p.removeChild(p.firstChild);
   });
+}
+
+// Color resolution: picks fill + border + width based on the current
+// colorMode plus special cases (dead, anti-pattern).
+//   dual      → fill = Layer color,  border = Community color
+//   layer     → both fill and border = Layer color
+//   community → both fill and border = Community color
+// Special cases always win on the border:
+//   isDead        → dashed red border
+//   antiPattern   → solid orange border
+function resolveNodeColors(n, communityId) {
+  var layerColor = LAYER_COLORS[n.layer] || '#BAB0AC';
+  var commColor = communityColor(communityId);
+
+  var fill, border, borderWidth;
+  if (colorMode === 'community') {
+    fill = commColor;
+    border = commColor;
+    borderWidth = 1.5;
+  } else if (colorMode === 'layer') {
+    fill = layerColor;
+    border = layerColor;
+    borderWidth = 1.5;
+  } else {
+    // dual
+    fill = layerColor;
+    border = commColor;
+    borderWidth = 2.5;
+  }
+
+  if (n.isDead) {
+    border = '#E15759';
+    borderWidth = 3;
+  } else if (n.hasAntiPattern) {
+    border = '#F28E2B';
+    borderWidth = 2.5;
+  }
+
+  return { fill: fill, border: border, borderWidth: borderWidth };
+}
+
+function applyColorMode() {
+  var updates = [];
+  for (var id in allNodes) {
+    var nodeObj = allNodes[id];
+    var dummy = {
+      layer: nodeObj._layer,
+      isDead: nodeObj._isDead,
+      hasAntiPattern: nodeObj._hasAntiPattern,
+    };
+    var colors = resolveNodeColors(dummy, nodeObj._community);
+    nodeObj.color.background = colors.fill;
+    nodeObj.color.border = colors.border;
+    nodeObj.color.highlight = { background: '#ffffff', border: colors.border };
+    nodeObj.color.hover = { background: '#ffffff', border: colors.border };
+    nodeObj.borderWidth = colors.borderWidth;
+    updates.push({ id: id, color: nodeObj.color, borderWidth: colors.borderWidth });
+  }
+  if (nodesDataset) nodesDataset.update(updates);
+}
+
+function applyCommunityFilter() {
+  if (!nodesDataset) return;
+  // Node is hidden if its community is in hiddenCommunities (only relevant
+  // when coloring by community; layer filter stays independent).
+  var updates = [];
+  for (var id in allNodes) {
+    var n = allNodes[id];
+    var layerHidden = hiddenLayers.has(n._layer);
+    var communityHidden = hiddenCommunities.has(String(n._community));
+    var hidden = layerHidden || communityHidden;
+    updates.push({ id: id, hidden: hidden });
+  }
+  nodesDataset.update(updates);
+}
+
+function buildCommunityLegend(data) {
+  var body = document.getElementById('communityBody');
+  var header = document.getElementById('communityHeader');
+  if (!body || !header) return;
+  while (body.firstChild) body.removeChild(body.firstChild);
+
+  var communities = (data.communities || []).slice();
+  if (communities.length === 0) {
+    body.appendChild(el('div', { style: { color: 'var(--text4)', fontSize: '10px', padding: '4px 6px' }, textContent: 'No community snapshot. Run `ctxo index`.' }));
+  }
+
+  // Show top 12 by member count; rest fold into an "other" entry.
+  var top = communities.slice(0, 12);
+  top.forEach(function(c) {
+    var color = communityColor(c.id);
+    var label = c.label || ('community-' + c.id);
+    var item = el('div', { className: 'chip-item' }, [
+      el('span', { className: 'chip-dot', style: { background: color } }),
+      el('span', { textContent: label }),
+      el('span', { className: 'chip-count', textContent: String(c.memberCount) })
+    ]);
+    item.onclick = function() {
+      var key = String(c.id);
+      if (hiddenCommunities.has(key)) {
+        hiddenCommunities.delete(key);
+        item.classList.remove('dimmed');
+      } else {
+        hiddenCommunities.add(key);
+        item.classList.add('dimmed');
+      }
+      applyCommunityFilter();
+    };
+    body.appendChild(item);
+  });
+  if (communities.length > top.length) {
+    body.appendChild(el('div', { style: { color: 'var(--text4)', fontSize: '10px', padding: '4px 6px' }, textContent: '+ ' + (communities.length - top.length) + ' more communities' }));
+  }
+
+  if (typeof data.violationCount === 'number' && data.violationCount > 0) {
+    var vRow = el('div', { className: 'chip-item', style: { marginTop: '4px', borderTop: '1px dashed var(--border)', paddingTop: '6px' } }, [
+      el('span', { className: 'chip-dot', style: { background: VIOLATION_COLOR_HIGH } }),
+      el('span', { textContent: 'Boundary violations' }),
+      el('span', { className: 'chip-count', textContent: String(data.violationCount) })
+    ]);
+    body.appendChild(vRow);
+  }
+
+  header.onclick = function() {
+    body.classList.toggle('collapsed');
+    header.querySelector('.arrow').classList.toggle('open');
+  };
 }
 
 function buildLayerLegend(data) {

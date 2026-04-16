@@ -303,3 +303,30 @@ export interface BoundaryViolation {
   readonly historicalEdgesBetweenClusters: number;
   readonly severity: 'high' | 'medium';
 }
+
+// ── Persisted architectural artifacts ──────────────────────────
+// Written by `ctxo index` next to communities.json so the static
+// HTML visualizer can render Architecture views without re-running
+// detectors in the browser.
+
+export type ConfidenceLevel = 'high' | 'medium' | 'low';
+
+export interface DriftEventsArtifact {
+  readonly version: 1;
+  readonly computedAt: string;
+  readonly commitSha: string;
+  readonly confidence: ConfidenceLevel;
+  readonly snapshotsAvailable: number;
+  readonly hint?: string;
+  readonly events: readonly DriftEvent[];
+}
+
+export interface BoundaryViolationsArtifact {
+  readonly version: 1;
+  readonly computedAt: string;
+  readonly commitSha: string;
+  readonly confidence: ConfidenceLevel;
+  readonly snapshotsAvailable: number;
+  readonly hint?: string;
+  readonly violations: readonly BoundaryViolation[];
+}

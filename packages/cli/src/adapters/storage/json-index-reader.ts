@@ -69,7 +69,9 @@ export class JsonIndexReader {
       } else if (
         entry.name.endsWith('.json') &&
         entry.name !== 'co-changes.json' &&
-        entry.name !== 'communities.json'
+        entry.name !== 'communities.json' &&
+        entry.name !== 'drift-events.json' &&
+        entry.name !== 'boundary-violations.json'
       ) {
         files.push(fullPath);
       }

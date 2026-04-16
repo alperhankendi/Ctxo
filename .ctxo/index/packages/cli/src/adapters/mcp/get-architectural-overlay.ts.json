@@ -10,7 +10,7 @@
       "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
     }
   ],
-  "contentHash": "2e64e5933e71402d51c68cfc477a0453bfa91254846e339592601c1118c05fab",
+  "contentHash": "ef767e99768b3be0f0403b7ba31ea134a07cc9838b1d6bed1bc3fd33a19c57f2",
   "edges": [
     {
       "from": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function",
@@ -172,42 +172,42 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354055,
   "symbols": [
     {
       "endLine": 82,
-      "endOffset": 2848,
+      "endOffset": 2930,
       "kind": "function",
       "name": "buildCommunityOverlay",
       "startLine": 35,
-      "startOffset": 1207,
+      "startOffset": 1242,
       "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function"
     },
     {
       "endLine": 150,
-      "endOffset": 5406,
+      "endOffset": 5556,
       "kind": "function",
       "name": "handleGetArchitecturalOverlay",
       "startLine": 84,
-      "startOffset": 2850,
+      "startOffset": 2934,
       "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function"
     },
     {
       "endLine": 24,
-      "endOffset": 984,
+      "endOffset": 1008,
       "kind": "interface",
       "name": "CommunityOverlayCluster",
       "startLine": 18,
-      "startOffset": 843,
+      "startOffset": 861,
       "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::CommunityOverlayCluster::interface"
     },
     {
       "endLine": 33,
-      "endOffset": 1205,
+      "endOffset": 1238,
       "kind": "interface",
       "name": "CommunityOverlay",
       "startLine": 26,
-      "startOffset": 986,
+      "startOffset": 1012,
       "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::CommunityOverlay::interface"
     }
   ]

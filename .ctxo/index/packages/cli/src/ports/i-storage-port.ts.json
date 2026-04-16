@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "fd037bced28b0c7f744c8ec347d2050c7e71c09ec9322f30f8d6ef55d851555b",
+  "contentHash": "38806a7404ddc7eab5eb9f764d9d943ad9476b1103a96cded63602825f8937ec",
   "edges": [
     {
       "from": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface",
@@ -43,15 +43,15 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776296577,
+  "lastModified": 1776354056,
   "symbols": [
     {
       "endLine": 22,
-      "endOffset": 766,
+      "endOffset": 788,
       "kind": "interface",
       "name": "IStoragePort",
       "startLine": 7,
-      "startOffset": 103,
+      "startOffset": 110,
       "symbolId": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface"
     }
   ]

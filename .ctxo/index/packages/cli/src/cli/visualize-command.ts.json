@@ -2,7 +2,7 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 26,
+      "cyclomatic": 38,
       "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.run::method"
     },
     {
@@ -14,8 +14,18 @@
       "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.openInBrowser::method"
     }
   ],
-  "contentHash": "043ea8a0454cc80b67dd4991ab1f5a3dedf56f5838b6e46f935c081fb541989f",
+  "contentHash": "a798aa3c77285e7458351e467b2c16dadc532337279964f7499ae1a8a85b4a7e",
   "edges": [
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter::class"
+    },
     {
       "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
       "kind": "imports",
@@ -44,6 +54,12 @@
     {
       "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
       "kind": "imports",
+      "to": "packages/cli/src/core/graph/visualization-payload.ts::VisCommunityLegend::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "imports",
       "to": "packages/cli/src/core/graph/visualization-payload.ts::VisualizationPayload::interface",
       "typeOnly": true
     },
@@ -63,6 +79,18 @@
       "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
       "kind": "imports",
       "to": "packages/cli/src/core/graph/visualization-payload.ts::VisFileInfo::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::BoundaryViolation::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommunityEntry::interface",
       "typeOnly": true
     },
     {
@@ -101,6 +129,16 @@
       "to": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class"
     },
     {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter::class"
+    },
+    {
       "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
       "kind": "uses",
       "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
@@ -128,6 +166,26 @@
     {
       "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
       "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::CommunityEntry::interface"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::BoundaryViolation::interface"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "uses",
       "to": "packages/cli/src/core/graph/visualization-payload.ts::VisNode::interface"
     },
     {
@@ -139,6 +197,11 @@
       "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
       "kind": "uses",
       "to": "packages/cli/src/core/graph/visualization-payload.ts::VisFileInfo::interface"
+    },
+    {
+      "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/visualization-payload.ts::VisCommunityLegend::interface"
     },
     {
       "from": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
@@ -155,51 +218,51 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354056,
   "symbols": [
     {
-      "endLine": 197,
-      "endOffset": 7088,
+      "endLine": 264,
+      "endOffset": 9743,
       "kind": "class",
       "name": "VisualizeCommand",
-      "startLine": 16,
-      "startOffset": 750,
+      "startLine": 25,
+      "startOffset": 1048,
       "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class"
     },
     {
-      "endLine": 166,
-      "endOffset": 6053,
+      "endLine": 233,
+      "endOffset": 8708,
       "kind": "method",
       "name": "VisualizeCommand.run",
-      "startLine": 23,
-      "startOffset": 929,
+      "startLine": 32,
+      "startOffset": 1227,
       "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.run::method"
     },
     {
-      "endLine": 178,
-      "endOffset": 6485,
+      "endLine": 245,
+      "endOffset": 9140,
       "kind": "method",
       "name": "VisualizeCommand.getTemplatePath",
-      "startLine": 168,
-      "startOffset": 6057,
+      "startLine": 235,
+      "startOffset": 8712,
       "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.getTemplatePath::method"
     },
     {
-      "endLine": 196,
-      "endOffset": 7086,
+      "endLine": 263,
+      "endOffset": 9741,
       "kind": "method",
       "name": "VisualizeCommand.openInBrowser",
-      "startLine": 180,
-      "startOffset": 6489,
+      "startLine": 247,
+      "startOffset": 9144,
       "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.openInBrowser::method"
     },
     {
-      "endLine": 14,
-      "endOffset": 748,
+      "endLine": 23,
+      "endOffset": 1046,
       "kind": "interface",
       "name": "VisualizeOptions",
-      "startLine": 10,
-      "startOffset": 648,
+      "startLine": 19,
+      "startOffset": 946,
       "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeOptions::interface"
     }
   ]

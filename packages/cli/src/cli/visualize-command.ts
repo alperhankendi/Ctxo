@@ -1,12 +1,21 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join, basename } from 'node:path';
 import { execFile } from 'node:child_process';
+import { ArchitectureArtifactsWriter } from '../adapters/storage/architecture-artifacts-writer.js';
+import { CommunitySnapshotWriter } from '../adapters/storage/community-snapshot-writer.js';
 import { JsonIndexReader } from '../adapters/storage/json-index-reader.js';
 import { SymbolGraph } from '../core/graph/symbol-graph.js';
 import { PageRankCalculator } from '../core/importance/pagerank-calculator.js';
 import { DeadCodeDetector } from '../core/dead-code/dead-code-detector.js';
 import { ArchitecturalOverlay } from '../core/overlay/architectural-overlay.js';
-import type { VisualizationPayload, VisNode, VisEdge, VisFileInfo } from '../core/graph/visualization-payload.js';
+import type {
+  VisCommunityLegend,
+  VisualizationPayload,
+  VisNode,
+  VisEdge,
+  VisFileInfo,
+} from '../core/graph/visualization-payload.js';
+import type { BoundaryViolation, CommunityEntry } from '../core/types.js';
 
 export interface VisualizeOptions {
   output?: string;
@@ -96,11 +105,41 @@ export class VisualizeCommand {
       }
     }
 
+    // 5b. Load community snapshot + boundary violations produced by `ctxo index`.
+    //     These are read-only here — the writer guards are opt-in.
+    const communityWriter = new CommunitySnapshotWriter(this.ctxoRoot, {
+      allowProductionPath: true,
+    });
+    const currentSnapshot = communityWriter.readCurrent();
+    const communityByIdForSymbol = new Map<string, { id: number; label: string }>();
+    if (currentSnapshot) {
+      for (const entry of currentSnapshot.communities as readonly CommunityEntry[]) {
+        communityByIdForSymbol.set(entry.symbolId, {
+          id: entry.communityId,
+          label: entry.communityLabel,
+        });
+      }
+    }
+    const architectureWriter = new ArchitectureArtifactsWriter(this.ctxoRoot, {
+      allowProductionPath: true,
+    });
+    const violationsArtifact = architectureWriter.readBoundaryViolations();
+    const violationEdgeSeverity = new Map<string, BoundaryViolation['severity']>();
+    if (violationsArtifact) {
+      for (const v of violationsArtifact.violations as readonly BoundaryViolation[]) {
+        violationEdgeSeverity.set(
+          `${v.from.symbolId}|${v.to.symbolId}`,
+          v.severity,
+        );
+      }
+    }
+
     // 6. Build payload
     const totalSymbols = graph.nodeCount;
     let nodes: VisNode[] = graph.allNodes().map(sym => {
       const file = sym.symbolId.split('::')[0] ?? '';
       const dead = deadMap.get(sym.symbolId);
+      const community = communityByIdForSymbol.get(sym.symbolId);
       return {
         id: sym.symbolId,
         name: sym.name,
@@ -115,6 +154,8 @@ export class VisualizeCommand {
         hasAntiPattern: antiPatternFiles.has(file),
         inDegree: graph.getReverseEdges(sym.symbolId).length,
         outDegree: graph.getForwardEdges(sym.symbolId).length,
+        communityId: community?.id ?? -1,
+        communityLabel: community?.label ?? 'unassigned',
       };
     });
 
@@ -127,7 +168,15 @@ export class VisualizeCommand {
     const nodeIds = new Set(nodes.map(n => n.id));
     const edges: VisEdge[] = graph.allEdges()
       .filter(e => nodeIds.has(e.from) && nodeIds.has(e.to))
-      .map(e => ({ source: e.from, target: e.to, kind: e.kind }));
+      .map(e => {
+        const severity = violationEdgeSeverity.get(`${e.from}|${e.to}`);
+        return {
+          source: e.from,
+          target: e.to,
+          kind: e.kind,
+          ...(severity ? { violationSeverity: severity } : {}),
+        };
+      });
 
     // Build per-file info (intent + anti-patterns)
     const filesInfo: VisFileInfo[] = indices
@@ -138,6 +187,21 @@ export class VisualizeCommand {
         antiPatterns: fi.antiPatterns.map(a => ({ hash: a.hash, message: a.message, date: a.date })),
       }));
 
+    // Build community legend restricted to communities with visible members.
+    const legendCounts = new Map<number, { label: string; count: number }>();
+    for (const node of nodes) {
+      if (node.communityId < 0) continue;
+      const entry = legendCounts.get(node.communityId);
+      if (entry) {
+        entry.count += 1;
+      } else {
+        legendCounts.set(node.communityId, { label: node.communityLabel, count: 1 });
+      }
+    }
+    const communities: VisCommunityLegend[] = [...legendCounts.entries()]
+      .map(([id, { label, count }]) => ({ id, label, memberCount: count }))
+      .sort((a, b) => b.memberCount - a.memberCount);
+
     const payload: VisualizationPayload = {
       projectName: basename(this.projectRoot),
       generatedAt: new Date().toISOString().split('T')[0]!,
@@ -147,6 +211,9 @@ export class VisualizeCommand {
       edges,
       layers: overlayResult.layers,
       files: filesInfo,
+      communities,
+      modularity: currentSnapshot?.modularity ?? 0,
+      violationCount: violationsArtifact?.violations.length ?? 0,
     };
 
     // 8. Inject into template

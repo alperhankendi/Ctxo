@@ -14,7 +14,7 @@
       "symbolId": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker.maskSnapshot::method"
     }
   ],
-  "contentHash": "941c418fb6c8aa3bdc605913bb313952c486b3e5ada231d19c65152c4d6f01c2",
+  "contentHash": "98c2138d25d51e17f957cf13cc01f668ca6ea1c72dee2a501baaaf19270d691f",
   "edges": [
     {
       "from": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker::class",
@@ -79,42 +79,42 @@
       "message": "feat(mcp): cluster-label masking via .ctxo/config.yaml glob patterns (closes #60)"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354056,
   "symbols": [
     {
       "endLine": 50,
-      "endOffset": 2050,
+      "endOffset": 2100,
       "kind": "class",
       "name": "ClusterLabelMasker",
       "startLine": 13,
-      "startOffset": 648,
+      "startOffset": 661,
       "symbolId": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker::class"
     },
     {
       "endLine": 25,
-      "endOffset": 1058,
+      "endOffset": 1083,
       "kind": "method",
       "name": "ClusterLabelMasker.isEnabled",
       "startLine": 23,
-      "startOffset": 1007,
+      "startOffset": 1030,
       "symbolId": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker.isEnabled::method"
     },
     {
       "endLine": 35,
-      "endOffset": 1380,
+      "endOffset": 1415,
       "kind": "method",
       "name": "ClusterLabelMasker.mask",
       "startLine": 27,
-      "startOffset": 1062,
+      "startOffset": 1089,
       "symbolId": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker.mask::method"
     },
     {
       "endLine": 49,
-      "endOffset": 2048,
+      "endOffset": 2097,
       "kind": "method",
       "name": "ClusterLabelMasker.maskSnapshot",
       "startLine": 37,
-      "startOffset": 1384,
+      "startOffset": 1421,
       "symbolId": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker.maskSnapshot::method"
     }
   ]

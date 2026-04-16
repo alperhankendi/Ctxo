@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "8c0ff6964daddeb3aec5cb9e49ffcf69e613346f767db889f35b966c0e6cbdf2",
+  "contentHash": "6d850a8f2f0178ae72930c44d91aafb726a992dda3434d5fd1878af2d2bdaef0",
   "edges": [
     {
       "from": "packages/cli/src/core/graph/visualization-payload.ts::VisNode::interface",
@@ -25,11 +25,11 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354056,
   "symbols": [
     {
-      "endLine": 17,
-      "endOffset": 496,
+      "endLine": 23,
+      "endOffset": 716,
       "kind": "interface",
       "name": "VisNode",
       "startLine": 2,
@@ -37,30 +37,39 @@
       "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisNode::interface"
     },
     {
-      "endLine": 23,
-      "endOffset": 607,
+      "endLine": 35,
+      "endOffset": 1049,
       "kind": "interface",
       "name": "VisEdge",
-      "startLine": 19,
-      "startOffset": 498,
+      "startLine": 25,
+      "startOffset": 718,
       "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisEdge::interface"
     },
     {
-      "endLine": 29,
-      "endOffset": 830,
+      "endLine": 41,
+      "endOffset": 1272,
       "kind": "interface",
       "name": "VisFileInfo",
-      "startLine": 25,
-      "startOffset": 609,
+      "startLine": 37,
+      "startOffset": 1051,
       "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisFileInfo::interface"
     },
     {
-      "endLine": 40,
-      "endOffset": 1139,
+      "endLine": 47,
+      "endOffset": 1394,
+      "kind": "interface",
+      "name": "VisCommunityLegend",
+      "startLine": 43,
+      "startOffset": 1274,
+      "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisCommunityLegend::interface"
+    },
+    {
+      "endLine": 67,
+      "endOffset": 2131,
       "kind": "interface",
       "name": "VisualizationPayload",
-      "startLine": 31,
-      "startOffset": 832,
+      "startLine": 49,
+      "startOffset": 1396,
       "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisualizationPayload::interface"
     }
   ]

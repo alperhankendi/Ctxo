@@ -10,7 +10,7 @@
       "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.mapCommunities::method"
     }
   ],
-  "contentHash": "ce05b6a4b326b86cfda34126365ba4b219a9564d5c5e570043bdd7a06019414d",
+  "contentHash": "1832d79d0a851af6b9e49e6081c5b41de2cb2e6d4bc31325df9b95079b2ad9ab",
   "edges": [
     {
       "from": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class",
@@ -116,78 +116,78 @@
       "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354056,
   "symbols": [
     {
       "endLine": 173,
-      "endOffset": 6634,
+      "endOffset": 6807,
       "kind": "class",
       "name": "DriftDetector",
       "startLine": 40,
-      "startOffset": 1452,
+      "startOffset": 1492,
       "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class"
     },
     {
       "endLine": 149,
-      "endOffset": 5818,
+      "endOffset": 5967,
       "kind": "method",
       "name": "DriftDetector.detect",
       "startLine": 49,
-      "startOffset": 1780,
+      "startOffset": 1829,
       "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.detect::method"
     },
     {
       "endLine": 172,
-      "endOffset": 6632,
+      "endOffset": 6804,
       "kind": "method",
       "name": "DriftDetector.mapCommunities",
       "startLine": 151,
-      "startOffset": 5822,
+      "startOffset": 5973,
       "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.mapCommunities::method"
     },
     {
       "endLine": 6,
-      "endOffset": 253,
+      "endOffset": 259,
       "kind": "interface",
       "name": "DriftEventWithStability",
       "startLine": 4,
-      "startOffset": 152,
+      "startOffset": 156,
       "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftEventWithStability::interface"
     },
     {
       "endLine": 15,
-      "endOffset": 598,
+      "endOffset": 613,
       "kind": "interface",
       "name": "DriftStabilitySummary",
       "startLine": 8,
-      "startOffset": 255,
+      "startOffset": 263,
       "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftStabilitySummary::interface"
     },
     {
       "endLine": 23,
-      "endOffset": 847,
+      "endOffset": 870,
       "kind": "interface",
       "name": "DriftDetectionResult",
       "startLine": 17,
-      "startOffset": 600,
+      "startOffset": 617,
       "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetectionResult::interface"
     },
     {
       "endLine": 38,
-      "endOffset": 1450,
+      "endOffset": 1488,
       "kind": "interface",
       "name": "DriftDetectorOptions",
       "startLine": 30,
-      "startOffset": 1093,
+      "startOffset": 1123,
       "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetectorOptions::interface"
     },
     {
       "endLine": 2,
-      "endOffset": 150,
+      "endOffset": 152,
       "kind": "type",
       "name": "DriftStability",
       "startLine": 2,
-      "startOffset": 83,
+      "startOffset": 85,
       "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftStability::type"
     }
   ]

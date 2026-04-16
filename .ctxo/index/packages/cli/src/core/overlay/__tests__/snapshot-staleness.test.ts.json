@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "2b8a315e87298284518f627fff5ac514ef68cd4296ba96447ae11d854608c7ca",
+  "contentHash": "c0ca826f1225b16b2238a3682eedcfb0f67995523ed61e60292f0c637a1c9bab",
   "edges": [
     {
       "from": "packages/cli/src/core/overlay/__tests__/snapshot-staleness.test.ts::snapshot-staleness.test::variable",
@@ -36,6 +36,6 @@
       "message": "feat(mcp): snapshotStaleness in _meta surfaces snapshot-vs-HEAD gap (closes #55)"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354056,
   "symbols": []
 }

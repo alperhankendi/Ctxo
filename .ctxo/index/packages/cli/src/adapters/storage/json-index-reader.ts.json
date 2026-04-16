@@ -10,11 +10,11 @@
       "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.readSingle::method"
     },
     {
-      "cyclomatic": 9,
+      "cyclomatic": 11,
       "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.collectJsonFiles::method"
     }
   ],
-  "contentHash": "de3f7d407b6cb5eb3cd82e64b94fad07318d9882b4cb7aec69b1fd0f069ab435",
+  "contentHash": "3081611a65582867033ca4ae8b2b06f4a64cbab64d284fcf09aa9e5b7600bcb2",
   "edges": [
     {
       "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
@@ -63,42 +63,42 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354055,
   "symbols": [
     {
-      "endLine": 79,
-      "endOffset": 2308,
+      "endLine": 81,
+      "endOffset": 2488,
       "kind": "class",
       "name": "JsonIndexReader",
       "startLine": 4,
-      "startOffset": 195,
+      "startOffset": 199,
       "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
     },
     {
       "endLine": 27,
-      "endOffset": 711,
+      "endOffset": 738,
       "kind": "method",
       "name": "JsonIndexReader.readAll",
       "startLine": 11,
-      "startOffset": 350,
+      "startOffset": 361,
       "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.readAll::method"
     },
     {
       "endLine": 51,
-      "endOffset": 1422,
+      "endOffset": 1473,
       "kind": "method",
       "name": "JsonIndexReader.readSingle",
       "startLine": 29,
-      "startOffset": 715,
+      "startOffset": 744,
       "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.readSingle::method"
     },
     {
-      "endLine": 78,
-      "endOffset": 2306,
+      "endLine": 80,
+      "endOffset": 2485,
       "kind": "method",
       "name": "JsonIndexReader.collectJsonFiles",
       "startLine": 53,
-      "startOffset": 1426,
+      "startOffset": 1479,
       "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.collectJsonFiles::method"
     }
   ]

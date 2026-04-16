@@ -6,7 +6,7 @@
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.loadIgnoreConfig::method"
     },
     {
-      "cyclomatic": 41,
+      "cyclomatic": 42,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method"
     },
     {
@@ -48,9 +48,13 @@
     {
       "cyclomatic": 6,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.buildCommunitySnapshot::method"
+    },
+    {
+      "cyclomatic": 8,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.writeArchitectureArtifacts::method"
     }
   ],
-  "contentHash": "91a1231d031de4bdfcbfb4a96d62d9f88ae0ee48b51f9afc94d3fe6932e2a733",
+  "contentHash": "c4c590839c371236dfb4fe9fe97185fab3e80f56b3bfeffcb8c6391baa71bb76",
   "edges": [
     {
       "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
@@ -141,6 +145,16 @@
     {
       "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
       "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
       "to": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class"
     },
     {
@@ -161,6 +175,16 @@
     {
       "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
       "kind": "imports",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
       "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
     },
     {
@@ -171,7 +195,19 @@
     {
       "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
       "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::BoundaryViolationsArtifact::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
       "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::DriftEventsArtifact::interface",
       "typeOnly": true
     },
     {
@@ -271,6 +307,11 @@
       "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
       "kind": "calls",
       "to": "packages/cli/src/cli/index-command.ts::countCommunities::function"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/index-command.ts::IndexCommand.writeArchitectureArtifacts::method"
     },
     {
       "from": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
@@ -408,6 +449,31 @@
       "to": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class"
     },
     {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.writeArchitectureArtifacts::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.writeArchitectureArtifacts::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.writeArchitectureArtifacts::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.writeArchitectureArtifacts::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand.writeArchitectureArtifacts::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter::class"
+    },
+    {
       "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
       "kind": "uses",
       "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
@@ -536,6 +602,36 @@
       "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
       "kind": "uses",
       "to": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::DriftEventsArtifact::interface"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::BoundaryViolationsArtifact::interface"
+    },
+    {
+      "from": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter::class"
     }
   ],
   "file": "packages/cli/src/cli/index-command.ts",
@@ -595,124 +691,133 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354056,
   "symbols": [
     {
-      "endLine": 662,
-      "endOffset": 26059,
+      "endLine": 756,
+      "endOffset": 29896,
       "kind": "class",
       "name": "IndexCommand",
-      "startLine": 61,
-      "startOffset": 2524,
+      "startLine": 72,
+      "startOffset": 2948,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand::class"
     },
     {
-      "endLine": 91,
-      "endOffset": 3697,
+      "endLine": 102,
+      "endOffset": 4121,
       "kind": "method",
       "name": "IndexCommand.loadIgnoreConfig",
-      "startLine": 72,
-      "startOffset": 2913,
+      "startLine": 83,
+      "startOffset": 3337,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.loadIgnoreConfig::method"
     },
     {
-      "endLine": 338,
-      "endOffset": 13546,
+      "endLine": 358,
+      "endOffset": 14469,
       "kind": "method",
       "name": "IndexCommand.run",
-      "startLine": 93,
-      "startOffset": 3703,
+      "startLine": 104,
+      "startOffset": 4127,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method"
     },
     {
-      "endLine": 354,
-      "endOffset": 14159,
+      "endLine": 374,
+      "endOffset": 15082,
       "kind": "method",
       "name": "IndexCommand.autoInstallMissingPlugins",
-      "startLine": 340,
-      "startOffset": 13552,
+      "startLine": 360,
+      "startOffset": 14475,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.autoInstallMissingPlugins::method"
     },
     {
-      "endLine": 368,
-      "endOffset": 14860,
+      "endLine": 388,
+      "endOffset": 15783,
       "kind": "method",
       "name": "IndexCommand.printLanguagePreview",
-      "startLine": 356,
-      "startOffset": 14165,
+      "startLine": 376,
+      "startOffset": 15088,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.printLanguagePreview::method"
     },
     {
-      "endLine": 433,
-      "endOffset": 17407,
+      "endLine": 453,
+      "endOffset": 18330,
       "kind": "method",
       "name": "IndexCommand.registerDiscoveredPlugins",
-      "startLine": 370,
-      "startOffset": 14866,
+      "startLine": 390,
+      "startOffset": 15789,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.registerDiscoveredPlugins::method"
     },
     {
-      "endLine": 457,
-      "endOffset": 18214,
+      "endLine": 481,
+      "endOffset": 19421,
       "kind": "method",
       "name": "IndexCommand.discoverFilesIn",
-      "startLine": 435,
-      "startOffset": 17413,
+      "startLine": 455,
+      "startOffset": 18336,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.discoverFilesIn::method"
     },
     {
-      "endLine": 511,
-      "endOffset": 20156,
+      "endLine": 535,
+      "endOffset": 21363,
       "kind": "method",
       "name": "IndexCommand.discoverWorkspaces",
-      "startLine": 459,
-      "startOffset": 18220,
+      "startLine": 483,
+      "startOffset": 19427,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.discoverWorkspaces::method"
     },
     {
-      "endLine": 516,
-      "endOffset": 20321,
+      "endLine": 540,
+      "endOffset": 21528,
       "kind": "method",
       "name": "IndexCommand.isSupportedExtension",
-      "startLine": 513,
-      "startOffset": 20162,
+      "startLine": 537,
+      "startOffset": 21369,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.isSupportedExtension::method"
     },
     {
-      "endLine": 580,
-      "endOffset": 22862,
+      "endLine": 604,
+      "endOffset": 24069,
       "kind": "method",
       "name": "IndexCommand.runCheck",
-      "startLine": 518,
-      "startOffset": 20327,
+      "startLine": 542,
+      "startOffset": 21534,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.runCheck::method"
     },
     {
-      "endLine": 593,
-      "endOffset": 23427,
+      "endLine": 617,
+      "endOffset": 24634,
       "kind": "method",
       "name": "IndexCommand.ensureGitignore",
-      "startLine": 582,
-      "startOffset": 22868,
+      "startLine": 606,
+      "startOffset": 24075,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.ensureGitignore::method"
     },
     {
-      "endLine": 628,
-      "endOffset": 24806,
+      "endLine": 652,
+      "endOffset": 26013,
       "kind": "method",
       "name": "IndexCommand.buildGraphInputIndices",
-      "startLine": 604,
-      "startOffset": 23950,
+      "startLine": 628,
+      "startOffset": 25157,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.buildGraphInputIndices::method"
     },
     {
-      "endLine": 661,
-      "endOffset": 26056,
+      "endLine": 685,
+      "endOffset": 27263,
       "kind": "method",
       "name": "IndexCommand.buildCommunitySnapshot",
-      "startLine": 630,
-      "startOffset": 24812,
+      "startLine": 654,
+      "startOffset": 26019,
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.buildCommunitySnapshot::method"
+    },
+    {
+      "endLine": 755,
+      "endOffset": 29893,
+      "kind": "method",
+      "name": "IndexCommand.writeArchitectureArtifacts",
+      "startLine": 693,
+      "startOffset": 27554,
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.writeArchitectureArtifacts::method"
     }
   ]
 }

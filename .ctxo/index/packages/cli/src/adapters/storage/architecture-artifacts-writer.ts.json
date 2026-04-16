@@ -1,0 +1,130 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter.writeDriftEvents::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter.writeBoundaryViolations::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter.readDriftEvents::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter.readBoundaryViolations::method"
+    }
+  ],
+  "contentHash": "d9973c12f26bc70cff067d9bfdb5829522492562af2ca79d422d8d56fe8160dd",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::BoundaryViolationsArtifact::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::DriftEventsArtifact::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/atomic-write.ts::atomicWrite::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter.writeDriftEvents::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/atomic-write.ts::atomicWrite::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter.writeBoundaryViolations::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/atomic-write.ts::atomicWrite::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::DriftEventsArtifact::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/atomic-write.ts::atomicWrite::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::BoundaryViolationsArtifact::interface"
+    }
+  ],
+  "file": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts",
+  "intent": [],
+  "lastModified": 1776354055,
+  "symbols": [
+    {
+      "endLine": 74,
+      "endOffset": 2816,
+      "kind": "class",
+      "name": "ArchitectureArtifactsWriter",
+      "startLine": 35,
+      "startOffset": 1314,
+      "symbolId": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter::class"
+    },
+    {
+      "endLine": 46,
+      "endOffset": 1804,
+      "kind": "method",
+      "name": "ArchitectureArtifactsWriter.writeDriftEvents",
+      "startLine": 43,
+      "startOffset": 1604,
+      "symbolId": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter.writeDriftEvents::method"
+    },
+    {
+      "endLine": 51,
+      "endOffset": 2027,
+      "kind": "method",
+      "name": "ArchitectureArtifactsWriter.writeBoundaryViolations",
+      "startLine": 48,
+      "startOffset": 1808,
+      "symbolId": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter.writeBoundaryViolations::method"
+    },
+    {
+      "endLine": 62,
+      "endOffset": 2405,
+      "kind": "method",
+      "name": "ArchitectureArtifactsWriter.readDriftEvents",
+      "startLine": 53,
+      "startOffset": 2031,
+      "symbolId": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter.readDriftEvents::method"
+    },
+    {
+      "endLine": 73,
+      "endOffset": 2814,
+      "kind": "method",
+      "name": "ArchitectureArtifactsWriter.readBoundaryViolations",
+      "startLine": 64,
+      "startOffset": 2409,
+      "symbolId": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter.readBoundaryViolations::method"
+    },
+    {
+      "endLine": 21,
+      "endOffset": 766,
+      "kind": "interface",
+      "name": "ArchitectureArtifactsWriterOptions",
+      "startLine": 15,
+      "startOffset": 501,
+      "symbolId": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriterOptions::interface"
+    }
+  ]
+}
