@@ -10,7 +10,7 @@
       "symbolId": "packages/cli/src/adapters/storage/atomic-write.ts::sweepStaleTmpFiles::function"
     }
   ],
-  "contentHash": "5185ee843e4acf61e4d4572b1f0d10ea8e3795246c32c63a5ec6e093b269a191",
+  "contentHash": "c73c7d826219b6081222d2cb11f4e676185f67c6c903f8fb0a67253cdd2cd03d",
   "edges": [
     {
       "from": "packages/cli/src/adapters/storage/atomic-write.ts::atomicWrite::function",
@@ -27,24 +27,24 @@
       "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354055,
   "symbols": [
     {
       "endLine": 14,
-      "endOffset": 567,
+      "endOffset": 581,
       "kind": "function",
       "name": "atomicWrite",
       "startLine": 10,
-      "startOffset": 360,
+      "startOffset": 370,
       "symbolId": "packages/cli/src/adapters/storage/atomic-write.ts::atomicWrite::function"
     },
     {
       "endLine": 48,
-      "endOffset": 1723,
+      "endOffset": 1771,
       "kind": "function",
       "name": "sweepStaleTmpFiles",
       "startLine": 23,
-      "startOffset": 862,
+      "startOffset": 885,
       "symbolId": "packages/cli/src/adapters/storage/atomic-write.ts::sweepStaleTmpFiles::function"
     }
   ]

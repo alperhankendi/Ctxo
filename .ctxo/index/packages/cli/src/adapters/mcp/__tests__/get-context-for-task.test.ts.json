@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "3a84b064686d28a3e974eeab0746a344fc7f92210f8b15d9d1c78214bc4c54b7",
+  "contentHash": "692f48b4aa1098192ecf7ee3d392c673ed1f6657270fbd19585783de84ec54e8",
   "edges": [
     {
       "from": "packages/cli/src/adapters/mcp/__tests__/get-context-for-task.test.ts::get-context-for-task.test::variable",
@@ -51,6 +51,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354055,
   "symbols": []
 }

@@ -25,13 +25,24 @@ import { JsonIndexWriter } from '../adapters/storage/json-index-writer.js';
 import { JsonIndexReader } from '../adapters/storage/json-index-reader.js';
 import { SqliteStorageAdapter } from '../adapters/storage/sqlite-storage-adapter.js';
 import { SchemaManager } from '../adapters/storage/schema-manager.js';
+import { ArchitectureArtifactsWriter } from '../adapters/storage/architecture-artifacts-writer.js';
+import { CommunitySnapshotWriter } from '../adapters/storage/community-snapshot-writer.js';
 import { SimpleGitAdapter } from '../adapters/git/simple-git-adapter.js';
 import { RevertDetector } from '../core/why-context/revert-detector.js';
 import { aggregateCoChanges } from '../core/co-change/co-change-analyzer.js';
 import { CommunityDetector } from '../core/overlay/community-detector.js';
+import { DriftDetector } from '../core/overlay/drift-detector.js';
+import { BoundaryViolationDetector } from '../core/overlay/boundary-violation-detector.js';
 import { SymbolGraph } from '../core/graph/symbol-graph.js';
 import { PageRankCalculator } from '../core/importance/pagerank-calculator.js';
-import type { CommunitySnapshot, EdgeQuality, FileIndex, SymbolKind } from '../core/types.js';
+import type {
+  BoundaryViolationsArtifact,
+  CommunitySnapshot,
+  DriftEventsArtifact,
+  EdgeQuality,
+  FileIndex,
+  SymbolKind,
+} from '../core/types.js';
 
 interface TsMorphLike {
   loadProjectSources(sources: Map<string, string>): void;
@@ -320,6 +331,15 @@ export class IndexCommand {
       storage.close();
     }
 
+    // Phase 2d: Persist derived architectural artifacts (drift events + boundary
+    // violations). These are computed AFTER `writeCommunities` so that the
+    // freshly-archived previous snapshot is available at history[0]. Consumers:
+    // - pages/ctxo-visualizer.html Architecture tab reads these directly.
+    // - Future MCP tools can surface the same data without recomputing.
+    if (communitySnapshot) {
+      this.writeArchitectureArtifacts(indices, communitySnapshot);
+    }
+
     // Ensure .ctxo/.cache/ is in .gitignore (skip during verify runs)
     if (!options.skipSideEffects) {
       this.ensureGitignore();
@@ -450,7 +470,11 @@ export class IndexCommand {
         .filter((abs) => {
           const rel = relative(this.projectRoot, abs).replace(/\\/g, '/');
           return !ignoreFile(rel);
-        });
+        })
+        // `git ls-files --cached` still lists files that have been deleted in
+        // the working tree but whose removal isn't staged yet. Filter those out
+        // so we don't spam ENOENT errors from readFileSync on stale entries.
+        .filter((abs) => existsSync(abs));
     } catch {
       console.error(`[ctxo] git ls-files failed for ${root}`);
       return [];
@@ -659,6 +683,76 @@ export class IndexCommand {
       edgeQuality: detectResult.edgeQuality,
       crossClusterEdges: detectResult.crossClusterEdges,
     };
+  }
+
+  /**
+   * Writes drift-events.json and boundary-violations.json next to
+   * communities.json. Must be called AFTER storage.writeCommunities so the
+   * prior snapshot has already been archived into communities.history/ and
+   * can serve as history[0] for the detectors.
+   */
+  private writeArchitectureArtifacts(
+    indices: readonly FileIndex[],
+    snapshot: CommunitySnapshot,
+  ): void {
+    try {
+      const snapshotWriter = new CommunitySnapshotWriter(this.ctxoRoot, {
+        allowProductionPath: true,
+      });
+      const history = snapshotWriter.listHistory();
+
+      const graph = new SymbolGraph();
+      for (const fileIndex of indices) {
+        for (const symbol of fileIndex.symbols) graph.addNode(symbol);
+      }
+      for (const fileIndex of indices) {
+        for (const edge of fileIndex.edges) graph.addEdge(edge);
+      }
+
+      const driftResult = new DriftDetector().detect(snapshot, history);
+      const violationsResult = new BoundaryViolationDetector().detect(
+        graph,
+        snapshot,
+        history,
+      );
+
+      const computedAt = new Date().toISOString();
+      const driftArtifact: DriftEventsArtifact = {
+        version: 1,
+        computedAt,
+        commitSha: snapshot.commitSha,
+        confidence: driftResult.confidence,
+        snapshotsAvailable: driftResult.snapshotsAvailable,
+        ...(driftResult.hint ? { hint: driftResult.hint } : {}),
+        events: driftResult.events,
+      };
+      const violationsArtifact: BoundaryViolationsArtifact = {
+        version: 1,
+        computedAt,
+        commitSha: snapshot.commitSha,
+        confidence: violationsResult.confidence,
+        snapshotsAvailable: violationsResult.snapshotsAvailable,
+        ...(violationsResult.hint ? { hint: violationsResult.hint } : {}),
+        violations: violationsResult.violations,
+      };
+
+      const writer = new ArchitectureArtifactsWriter(this.ctxoRoot, {
+        allowProductionPath: true,
+      });
+      writer.writeDriftEvents(driftArtifact);
+      writer.writeBoundaryViolations(violationsArtifact);
+
+      console.error(
+        `[ctxo] Architecture artifacts: ${driftResult.events.length} drift events, ` +
+          `${violationsResult.violations.length} boundary violations ` +
+          `(confidence: drift=${driftResult.confidence}, violations=${violationsResult.confidence})`,
+      );
+    } catch (err) {
+      // Non-fatal: detectors failing must not break the core index.
+      console.error(
+        `[ctxo] Architecture artifacts skipped: ${(err as Error).message}`,
+      );
+    }
   }
 }
 

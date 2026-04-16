@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "08c35c992f723014d91d179263f300bc92af0e545ddb386e0f1b04b9d6825b8a",
+  "contentHash": "21912e3ee99e017a2bdce6ce7352d03852bf1d8d1ea9ec1a44642b6a6c0f5a02",
   "edges": [
     {
       "from": "packages/cli/src/core/overlay/__tests__/community-labeler.test.ts::community-labeler.test::variable",
@@ -18,6 +18,6 @@
       "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354056,
   "symbols": []
 }

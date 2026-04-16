@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "7f2ee5a1aa89f99ad82627b543c400bf3297f7a2ded94a617f13a0ebe8d3fc8c",
+  "contentHash": "bb94f988c3ea2e8dad6432ccc17ca5f482b5f326b67144a180ffb8cdc47f233c",
   "edges": [
     {
       "from": "packages/cli/src/adapters/storage/__tests__/atomic-write.test.ts::atomic-write.test::variable",
@@ -23,6 +23,6 @@
       "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354055,
   "symbols": []
 }

@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "1e9c817a57805933863e3bbf9de2c7de16ec9dd77d207e5104d33a2b81fd1847",
+  "contentHash": "d97ebf9e78380868af9ba149c6fc10d8ec7845e61ca24e553bc92fe673003e80",
   "edges": [
     {
       "from": "packages/cli/tests/e2e/privacy-zero-leakage.test.ts::privacy-zero-leakage.test::variable",
@@ -49,6 +49,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776296577,
+  "lastModified": 1776354056,
   "symbols": []
 }

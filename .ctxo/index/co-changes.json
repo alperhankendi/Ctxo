@@ -1,13 +1,7 @@
 {
   "version": 1,
-  "timestamp": 1776296577,
+  "timestamp": 1776354057,
   "entries": [
-    {
-      "file1": "packages/cli/src/cli/index-command.ts",
-      "file2": "packages/cli/src/cli/watch-command.ts",
-      "sharedCommits": 6,
-      "frequency": 1
-    },
     {
       "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
       "file2": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
@@ -293,6 +287,24 @@
     {
       "file1": "packages/cli/src/cli/__tests__/index-command.test.ts",
       "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 3,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/watch-command.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 3,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 3,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/core/config/config-schema.ts",
+      "file2": "packages/cli/src/core/config/load-config.ts",
       "sharedCommits": 3,
       "frequency": 1
     },
@@ -1023,12 +1035,6 @@
       "frequency": 1
     },
     {
-      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
-      "file2": "packages/cli/tsup.config.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
       "file1": "packages/cli/src/adapters/diagnostics/__tests__/index-check.test.ts",
       "file2": "packages/cli/src/adapters/diagnostics/__tests__/storage-check.test.ts",
       "sharedCommits": 2,
@@ -1539,12 +1545,6 @@
       "frequency": 1
     },
     {
-      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
-      "file2": "packages/cli/tsup.config.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
       "file1": "packages/cli/src/adapters/git/__tests__/simple-git-adapter.test.ts",
       "file2": "packages/cli/src/adapters/git/simple-git-adapter.ts",
       "sharedCommits": 2,
@@ -2343,12 +2343,6 @@
       "frequency": 1
     },
     {
-      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
-      "file2": "packages/cli/tsup.config.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
       "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
       "file2": "packages/cli/src/adapters/mcp/__tests__/get-changed-symbols.test.ts",
       "sharedCommits": 2,
@@ -2489,12 +2483,6 @@
     {
       "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
       "file2": "packages/cli/tests/e2e/privacy-zero-leakage.test.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
-      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
-      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
@@ -3513,12 +3501,6 @@
       "frequency": 1
     },
     {
-      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
-      "file2": "packages/cli/tsup.config.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
       "file1": "packages/cli/src/adapters/mcp/__tests__/get-ranked-context.test.ts",
       "file2": "packages/cli/src/adapters/mcp/__tests__/get-symbol-importance.test.ts",
       "sharedCommits": 2,
@@ -3897,12 +3879,6 @@
       "frequency": 1
     },
     {
-      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
-      "file2": "packages/cli/tsup.config.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
       "file1": "packages/cli/src/adapters/mcp/__tests__/search-symbols.test.ts",
       "file2": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
       "sharedCommits": 2,
@@ -4125,12 +4101,6 @@
       "frequency": 1
     },
     {
-      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
-      "file2": "packages/cli/tsup.config.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
       "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
       "file2": "packages/cli/src/adapters/storage/__tests__/json-index-reader.test.ts",
       "sharedCommits": 2,
@@ -4229,12 +4199,6 @@
     {
       "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
       "file2": "packages/cli/tests/e2e/privacy-zero-leakage.test.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
-      "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
-      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
@@ -4341,12 +4305,6 @@
       "frequency": 1
     },
     {
-      "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
-      "file2": "packages/cli/tsup.config.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
       "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
       "file2": "packages/cli/src/adapters/storage/__tests__/json-index-reader.test.ts",
       "sharedCommits": 2,
@@ -4445,12 +4403,6 @@
     {
       "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
       "file2": "packages/cli/tests/e2e/privacy-zero-leakage.test.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
-      "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
-      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
@@ -5069,12 +5021,6 @@
     {
       "file1": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
       "file2": "packages/cli/src/ports/i-storage-port.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
-      "file1": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
-      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
@@ -5229,12 +5175,6 @@
       "frequency": 1
     },
     {
-      "file1": "packages/cli/src/cli/__tests__/index-command.test.ts",
-      "file2": "packages/cli/tsup.config.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
       "file1": "packages/cli/src/cli/__tests__/init-command.test.ts",
       "file2": "packages/cli/src/cli/ai-rules.ts",
       "sharedCommits": 2,
@@ -5325,12 +5265,6 @@
       "frequency": 1
     },
     {
-      "file1": "packages/cli/src/cli/cli-router.ts",
-      "file2": "packages/cli/tsup.config.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
       "file1": "packages/cli/src/cli/doctor-command.ts",
       "file2": "packages/cli/src/core/types.ts",
       "sharedCommits": 2,
@@ -5339,12 +5273,6 @@
     {
       "file1": "packages/cli/src/cli/doctor-command.ts",
       "file2": "packages/cli/src/ports/i-storage-port.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
-      "file1": "packages/cli/src/cli/doctor-command.ts",
-      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
@@ -5373,12 +5301,6 @@
       "frequency": 1
     },
     {
-      "file1": "packages/cli/src/cli/index-command.ts",
-      "file2": "packages/cli/tsup.config.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
       "file1": "packages/cli/src/cli/init-command.ts",
       "file2": "packages/cli/src/core/types.ts",
       "sharedCommits": 2,
@@ -5387,12 +5309,6 @@
     {
       "file1": "packages/cli/src/cli/init-command.ts",
       "file2": "packages/cli/src/ports/i-storage-port.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
-      "file1": "packages/cli/src/cli/init-command.ts",
-      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
@@ -5423,12 +5339,6 @@
     {
       "file1": "packages/cli/src/cli/watch-command.ts",
       "file2": "packages/cli/src/ports/i-storage-port.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
-      "file1": "packages/cli/src/cli/watch-command.ts",
-      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
@@ -5465,12 +5375,6 @@
     {
       "file1": "packages/cli/src/core/response-envelope.ts",
       "file2": "packages/cli/tests/e2e/privacy-zero-leakage.test.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
-      "file1": "packages/cli/src/core/response-envelope.ts",
-      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
@@ -5541,8 +5445,8 @@
       "frequency": 1
     },
     {
-      "file1": "packages/cli/tests/e2e/release-packaging.test.ts",
-      "file2": "packages/cli/tsup.config.ts",
+      "file1": "packages/cli/src/cli/__tests__/index-command-ignore.test.ts",
+      "file2": "packages/cli/src/index.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
@@ -5577,32 +5481,20 @@
       "frequency": 1
     },
     {
-      "file1": "packages/cli/src/cli/__tests__/index-command-ignore.test.ts",
-      "file2": "packages/cli/src/index.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
       "file1": "packages/cli/src/adapters/language/plugin-discovery.ts",
       "file2": "packages/cli/src/index.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
     {
-      "file1": "packages/cli/src/core/config/config-schema.ts",
+      "file1": "packages/cli/src/core/config/__tests__/load-config.test.ts",
+      "file2": "packages/cli/src/core/config/config-schema.ts",
+      "sharedCommits": 2,
+      "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/core/config/__tests__/load-config.test.ts",
       "file2": "packages/cli/src/core/config/load-config.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
-      "file1": "packages/cli/src/core/config/config-schema.ts",
-      "file2": "packages/cli/src/index.ts",
-      "sharedCommits": 2,
-      "frequency": 1
-    },
-    {
-      "file1": "packages/cli/src/core/config/load-config.ts",
-      "file2": "packages/cli/src/index.ts",
       "sharedCommits": 2,
       "frequency": 1
     },
@@ -5665,6 +5557,12 @@
       "file2": "packages/lang-go/tools/ctxo-go-analyzer/main.go",
       "sharedCommits": 2,
       "frequency": 1
+    },
+    {
+      "file1": "packages/cli/src/cli/index-command.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 6,
+      "frequency": 0.857
     },
     {
       "file1": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts",
@@ -5735,6 +5633,12 @@
     {
       "file1": "packages/cli/src/cli/cli-router.ts",
       "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 3,
+      "frequency": 0.75
+    },
+    {
+      "file1": "packages/cli/src/cli/watch-command.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
       "sharedCommits": 3,
       "frequency": 0.75
     },
@@ -5877,6 +5781,12 @@
       "frequency": 0.667
     },
     {
+      "file1": "packages/cli/src/adapters/diagnostics/__tests__/health-checker.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
       "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
       "file2": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
       "sharedCommits": 2,
@@ -5979,6 +5889,12 @@
       "frequency": 0.667
     },
     {
+      "file1": "packages/cli/src/adapters/diagnostics/health-checker.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
       "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
       "file2": "packages/cli/src/adapters/mcp/__tests__/get-change-intelligence.test.ts",
       "sharedCommits": 2,
@@ -5998,7 +5914,7 @@
     },
     {
       "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
-      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 0.667
     },
@@ -6059,6 +5975,12 @@
     {
       "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
       "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 0.667
     },
@@ -6225,6 +6147,12 @@
       "frequency": 0.667
     },
     {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-pr-impact.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
       "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
       "file2": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
       "sharedCommits": 2,
@@ -6273,6 +6201,12 @@
       "frequency": 0.667
     },
     {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-why-context.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
       "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
       "file2": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
       "sharedCommits": 2,
@@ -6280,7 +6214,7 @@
     },
     {
       "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
-      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 0.667
     },
@@ -6292,7 +6226,7 @@
     },
     {
       "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
-      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 0.667
     },
@@ -6304,7 +6238,7 @@
     },
     {
       "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
-      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 0.667
     },
@@ -6316,7 +6250,7 @@
     },
     {
       "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
-      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 0.667
     },
@@ -6363,6 +6297,12 @@
       "frequency": 0.667
     },
     {
+      "file1": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts",
+      "file2": "packages/cli/tsup.config.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
       "file1": "packages/cli/src/cli/__tests__/index-command.test.ts",
       "file2": "packages/cli/src/cli/cli-router.ts",
       "sharedCommits": 2,
@@ -6401,42 +6341,42 @@
     {
       "file1": "packages/cli/src/cli/__tests__/index-command.test.ts",
       "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/cli/__tests__/index-command.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 0.667
     },
     {
       "file1": "packages/cli/src/cli/cli-router.ts",
-      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 0.667
     },
     {
       "file1": "packages/cli/src/cli/doctor-command.ts",
-      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 0.667
     },
     {
       "file1": "packages/cli/src/cli/index-command.ts",
-      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 0.667
     },
     {
       "file1": "packages/cli/src/cli/init-command.ts",
-      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
-      "sharedCommits": 2,
-      "frequency": 0.667
-    },
-    {
-      "file1": "packages/cli/src/cli/watch-command.ts",
-      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 0.667
     },
     {
       "file1": "packages/cli/src/core/response-envelope.ts",
-      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "file2": "packages/cli/tsup.config.ts",
       "sharedCommits": 2,
       "frequency": 0.667
     },
@@ -6479,6 +6419,18 @@
     {
       "file1": "packages/cli/src/cli/index-command.ts",
       "file2": "packages/cli/src/cli/plugin-loader.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/core/config/config-schema.ts",
+      "file2": "packages/cli/src/index.ts",
+      "sharedCommits": 2,
+      "frequency": 0.667
+    },
+    {
+      "file1": "packages/cli/src/core/config/load-config.ts",
+      "file2": "packages/cli/src/index.ts",
       "sharedCommits": 2,
       "frequency": 0.667
     },
@@ -6543,6 +6495,12 @@
       "frequency": 0.5
     },
     {
+      "file1": "packages/cli/src/adapters/mcp/__tests__/get-architectural-overlay.test.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 0.5
+    },
+    {
       "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
       "file2": "packages/cli/src/cli/cli-router.ts",
       "sharedCommits": 2,
@@ -6573,6 +6531,12 @@
       "frequency": 0.5
     },
     {
+      "file1": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 0.5
+    },
+    {
       "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
       "file2": "packages/cli/src/cli/cli-router.ts",
       "sharedCommits": 2,
@@ -6603,6 +6567,12 @@
       "frequency": 0.5
     },
     {
+      "file1": "packages/cli/src/adapters/mcp/get-blast-radius.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 0.5
+    },
+    {
       "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
       "file2": "packages/cli/src/cli/cli-router.ts",
       "sharedCommits": 2,
@@ -6629,12 +6599,24 @@
     {
       "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
       "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 0.5
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-pr-impact.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
       "sharedCommits": 2,
       "frequency": 0.5
     },
     {
       "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
       "file2": "packages/cli/src/cli/doctor-command.ts",
+      "sharedCommits": 2,
+      "frequency": 0.5
+    },
+    {
+      "file1": "packages/cli/src/adapters/mcp/get-why-context.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
       "sharedCommits": 2,
       "frequency": 0.5
     },
@@ -6657,6 +6639,12 @@
       "frequency": 0.5
     },
     {
+      "file1": "packages/cli/src/cli/cli-router.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 0.5
+    },
+    {
       "file1": "packages/cli/src/cli/doctor-command.ts",
       "file2": "packages/cli/src/cli/index-command.ts",
       "sharedCommits": 2,
@@ -6681,8 +6669,20 @@
       "frequency": 0.5
     },
     {
+      "file1": "packages/cli/src/cli/doctor-command.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 0.5
+    },
+    {
       "file1": "packages/cli/src/cli/index-command.ts",
       "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 0.5
+    },
+    {
+      "file1": "packages/cli/src/cli/index-command.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
       "sharedCommits": 2,
       "frequency": 0.5
     },
@@ -6693,8 +6693,20 @@
       "frequency": 0.5
     },
     {
+      "file1": "packages/cli/src/cli/init-command.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
+      "sharedCommits": 2,
+      "frequency": 0.5
+    },
+    {
       "file1": "packages/cli/src/cli/watch-command.ts",
       "file2": "packages/cli/src/core/response-envelope.ts",
+      "sharedCommits": 2,
+      "frequency": 0.5
+    },
+    {
+      "file1": "packages/cli/src/core/response-envelope.ts",
+      "file2": "packages/cli/tests/e2e/release-packaging.test.ts",
       "sharedCommits": 2,
       "frequency": 0.5
     },
@@ -6723,12 +6735,6 @@
       "frequency": 0.333
     },
     {
-      "file1": "packages/cli/src/cli/cli-router.ts",
-      "file2": "packages/cli/src/cli/watch-command.ts",
-      "sharedCommits": 2,
-      "frequency": 0.333
-    },
-    {
       "file1": "packages/cli/src/cli/index-command.ts",
       "file2": "packages/cli/src/cli/init-command.ts",
       "sharedCommits": 2,
@@ -6745,6 +6751,12 @@
       "file2": "packages/cli/src/index.ts",
       "sharedCommits": 2,
       "frequency": 0.333
+    },
+    {
+      "file1": "packages/cli/src/cli/cli-router.ts",
+      "file2": "packages/cli/src/cli/watch-command.ts",
+      "sharedCommits": 2,
+      "frequency": 0.286
     }
   ]
 }

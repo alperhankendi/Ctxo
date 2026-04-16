@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "d3620a31ab182b26a37b03e9810744ccce73cea2c179a3c216b6819099e96e9d",
+  "contentHash": "27b69eb9c28c4fab02b9b0762399a7c45107512b0df3664385e07b72e0a39a40",
   "edges": [
     {
       "from": "packages/cli/tmp-smoke.ts::tmp-smoke::variable",
@@ -103,6 +103,6 @@
       "message": "fix(storage): skip 'nocommit' snapshots from history (closes #57)"
     }
   ],
-  "lastModified": 1776296577,
+  "lastModified": 1776354056,
   "symbols": []
 }

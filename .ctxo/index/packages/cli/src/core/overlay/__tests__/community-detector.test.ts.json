@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "40b2d84d05572614408ba3c8dafd2397612b65a0641e63d8a10600322ea380a1",
+  "contentHash": "8f6943cce77d45e53bb8f663c48b7915c47ff25f6665b424f209ba084d2da9ac",
   "edges": [
     {
       "from": "packages/cli/src/core/overlay/__tests__/community-detector.test.ts::community-detector.test::variable",
@@ -49,6 +49,6 @@
       "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354056,
   "symbols": []
 }

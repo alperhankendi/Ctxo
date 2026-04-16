@@ -112,6 +112,12 @@
   "file": "packages/cli/src/core/config/load-config.ts",
   "intent": [
     {
+      "date": "2026-04-16T02:43:12+03:00",
+      "hash": "2ded1a911a7f195becd8d07e5a1f28368b76858f",
+      "kind": "commit",
+      "message": "perf(watch): threshold-based skip for community snapshot recompute (closes #59)"
+    },
+    {
       "date": "2026-04-16T02:32:55+03:00",
       "hash": "f563a37a96ad967887256d25d09f2db027b27f11",
       "kind": "commit",
@@ -124,7 +130,7 @@
       "message": "feat(config): add index.ignore and index.ignoreProjects to .ctxo/config.yaml"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354056,
   "symbols": [
     {
       "endLine": 84,

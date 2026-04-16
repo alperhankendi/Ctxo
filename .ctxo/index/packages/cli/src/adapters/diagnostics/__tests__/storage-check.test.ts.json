@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "6af7834a1450249e598990bad54bf9f89c353f3e8a8c96425b49df0310feb205",
+  "contentHash": "129f9cd971bd552e8eef5c4b4bedcfb9bab9c335d85f205014e0af707579f376",
   "edges": [
     {
       "from": "packages/cli/src/adapters/diagnostics/__tests__/storage-check.test.ts::storage-check.test::variable",
@@ -30,6 +30,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354055,
   "symbols": []
 }

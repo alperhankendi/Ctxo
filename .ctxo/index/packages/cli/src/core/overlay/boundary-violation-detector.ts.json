@@ -6,7 +6,7 @@
       "symbolId": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector.detect::method"
     }
   ],
-  "contentHash": "88b4010fd22313182ac428b6601ed6a59fa85b6da477d065e92103345ba3dd86",
+  "contentHash": "9095d428da1c9beff61c12140145bbd6b87637c171533329774f9f71524b8625",
   "edges": [
     {
       "from": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class",
@@ -92,33 +92,33 @@
       "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354056,
   "symbols": [
     {
       "endLine": 83,
-      "endOffset": 2792,
+      "endOffset": 2875,
       "kind": "class",
       "name": "BoundaryViolationDetector",
       "startLine": 18,
-      "startOffset": 485,
+      "startOffset": 503,
       "symbolId": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class"
     },
     {
       "endLine": 82,
-      "endOffset": 2790,
+      "endOffset": 2872,
       "kind": "method",
       "name": "BoundaryViolationDetector.detect",
       "startLine": 19,
-      "startOffset": 528,
+      "startOffset": 547,
       "symbolId": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector.detect::method"
     },
     {
       "endLine": 12,
-      "endOffset": 370,
+      "endOffset": 382,
       "kind": "interface",
       "name": "BoundaryViolationDetectionResult",
       "startLine": 7,
-      "startOffset": 158,
+      "startOffset": 165,
       "symbolId": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetectionResult::interface"
     }
   ]

@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "7b980ba0baf1f246e00afa22b800aaf714163c4f977f04a0dfce8413b15b376f",
+  "contentHash": "02afbdbeeefdb1eac4e9acc4450b838f117c78422b3b6fd64b308285876430ee",
   "edges": [
     {
       "from": "packages/cli/src/core/overlay/__tests__/cluster-label-masker.test.ts::cluster-label-masker.test::variable",
@@ -24,6 +24,6 @@
       "message": "feat(mcp): cluster-label masking via .ctxo/config.yaml glob patterns (closes #60)"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354056,
   "symbols": []
 }

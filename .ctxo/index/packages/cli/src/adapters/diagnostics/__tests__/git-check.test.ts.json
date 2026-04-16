@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "3d62371329f1b18c7804150831fc85bc1336b99df3cf8763eef6d24586991cef",
+  "contentHash": "2b7573c54161cc02fbea4856118cd71ce15c23689c89aae3b144b006f5d83cf2",
   "edges": [
     {
       "from": "packages/cli/src/adapters/diagnostics/__tests__/git-check.test.ts::git-check.test::variable",
@@ -35,6 +35,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354055,
   "symbols": []
 }

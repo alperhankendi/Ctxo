@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "e7cd1ba32609605cc10721013e8e42b05ea2cf6c789f1deee881e1a2369a5e10",
+  "contentHash": "4896131663d33dbac6981891a5a4437a0682872ff982f9db65beaf500f0c1dd3",
   "edges": [
     {
       "from": "docs/runbook/mcp-validation/mcp-validation-test.ts::mcp-validation-test::variable",
@@ -115,6 +115,6 @@
       "message": "Add automated MCP validation test script to runbook"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354055,
   "symbols": []
 }

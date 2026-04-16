@@ -1,10 +1,16 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "97305c9999447cd6c8460d4414e0053461e50689598ee508127a11716009b877",
+  "contentHash": "0940ccda64800d9cf79282f87b834afb939df8e3c216363684327e394c671a89",
   "edges": [],
   "file": "packages/cli/tsup.config.ts",
   "intent": [
+    {
+      "date": "2026-04-16T02:43:12+03:00",
+      "hash": "2ded1a911a7f195becd8d07e5a1f28368b76858f",
+      "kind": "commit",
+      "message": "perf(watch): threshold-based skip for community snapshot recompute (closes #59)"
+    },
     {
       "date": "2026-04-16T01:43:29+03:00",
       "hash": "190f929def744a397c040aa323106b18b659dd5c",
@@ -18,6 +24,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776296577,
+  "lastModified": 1776354056,
   "symbols": []
 }

@@ -46,6 +46,39 @@
   .tab:hover { color: var(--text); }
   .tab.active { color: var(--accent2); border-bottom-color: var(--accent); }
   .tab .badge { background: var(--bg4); color: var(--text2); font-size: 10px; padding: 1px 6px; border-radius: 10px; margin-left: 4px; }
+
+  /* Architecture sub-tab styling */
+  .arch-tabs { display: flex; gap: 4px; padding: 10px 14px 0; border-bottom: 1px solid var(--border); background: var(--bg2); }
+  .arch-tab { appearance: none; background: transparent; color: var(--text2); border: 0; padding: 8px 14px; font: inherit; font-size: 12px; font-weight: 500; border-radius: 6px 6px 0 0; cursor: pointer; transition: background 0.15s, color 0.15s; white-space: nowrap; position: relative; bottom: -1px; border-bottom: 2px solid transparent; }
+  .arch-tab:hover { color: var(--text); }
+  .arch-tab.active { color: var(--accent2); border-bottom-color: var(--accent); }
+  .arch-tab .badge { background: var(--bg4); color: var(--text2); font-size: 10px; padding: 1px 6px; border-radius: 10px; margin-left: 4px; }
+  .arch-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+  .arch-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  @media (max-width: 900px) { .arch-kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  .arch-kpi { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+  .arch-kpi-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+  .arch-kpi-value { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; line-height: 1; margin-bottom: 6px; }
+  .arch-kpi-meta { font-size: 11px; color: var(--text3); }
+  .arch-kpi-ok .arch-kpi-value { color: #22c55e; }
+  .arch-kpi-warn .arch-kpi-value { color: #f97316; }
+  .arch-kpi-bad .arch-kpi-value { color: #ef4444; }
+  .arch-section { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 16px; }
+  .arch-section h3 { font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--text); }
+  .arch-section-sub { font-size: 11px; color: var(--text3); margin-bottom: 10px; }
+  .arch-empty { font-size: 12px; color: var(--text3); padding: 8px 0; }
+  .arch-list { list-style: none; display: flex; flex-direction: column; gap: 4px; padding: 0; }
+  .arch-list li { padding: 8px 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; }
+  .arch-mono { font-family: 'Cascadia Code','Fira Code',monospace; font-size: 11px; color: var(--text); word-break: break-all; }
+  .arch-meta { font-size: 11px; color: var(--text3); white-space: nowrap; margin-left: 8px; }
+  .arch-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .arch-table th { text-align: left; padding: 6px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); border-bottom: 1px solid var(--border); font-weight: 500; position: sticky; top: 0; background: var(--bg2); cursor: pointer; }
+  .arch-table th:hover { color: var(--accent2); }
+  .arch-table td { padding: 6px 10px; border-bottom: 1px solid var(--border); color: var(--text2); vertical-align: middle; }
+  .arch-chip { display: inline-block; width: 10px; height: 10px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+  .arch-sev-high { color: #ef4444; font-weight: 600; }
+  .arch-sev-medium { color: #f97316; }
+  .arch-trend { width: 100%; height: 120px; margin-top: 6px; }
   .filter-group { display: flex; flex-wrap: wrap; gap: 4px; }
   .filter-chip { font-size: 11px; padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg); color: var(--text2); cursor: pointer; transition: all 0.15s; }
   .filter-chip.active { border-color: var(--accent); background: rgba(99,102,241,0.15); color: var(--accent2); }
@@ -211,7 +244,7 @@
     <div class="sidebar-section">
       <div class="drop-zone" id="dropZone">
         <div class="icon">&#128194;</div>
-        <p>Drop a folder or JSON files<br>or click to browse</p>
+        <p>Drop <code>.ctxo/</code> root folder<br>(covers per-file indices + communities + drift + violations)</p>
         <input type="file" id="fileInput" multiple accept=".json" webkitdirectory />
       </div>
       <button class="browse-btn" id="browseFolderBtn">Browse Folder...</button>
@@ -259,6 +292,7 @@
       <button class="tab" data-tab="heatmap">Heatmap<span class="badge" id="heatmapBadge">0</span></button>
       <button class="tab" data-tab="cochanges">Co-Changes<span class="badge" id="cochangeBadge">0</span></button>
       <button class="tab" data-tab="timeline">Timeline</button>
+      <button class="tab" data-tab="architecture">Architecture<span class="badge" id="architectureBadge">0</span></button>
       <button class="tab" data-tab="mcpexplorer">MCP Explorer</button>
       <button class="tab" data-tab="diff">Diff</button>
     </div>
@@ -291,6 +325,17 @@
     <div class="panel" id="panel-timeline">
       <div class="timeline-container" id="timelineContainer">
         <div class="empty-state"><div class="es-icon">&#128197;</div><p>Load JSON files to see the commit timeline</p></div>
+      </div>
+    </div>
+    <div class="panel" id="panel-architecture">
+      <div class="arch-tabs">
+        <button class="arch-tab active" data-arch-tab="overview">Overview</button>
+        <button class="arch-tab" data-arch-tab="drift">Drift<span class="badge" id="archDriftBadge">0</span></button>
+        <button class="arch-tab" data-arch-tab="violations">Violations<span class="badge" id="archViolBadge">0</span></button>
+        <button class="arch-tab" data-arch-tab="hotspots">Hotspots</button>
+      </div>
+      <div class="arch-body" id="archBody">
+        <div class="empty-state"><div class="es-icon">&#127970;</div><p>Load <code>.ctxo/index/</code> to see architectural intelligence</p></div>
       </div>
     </div>
     <div class="panel" id="panel-mcpexplorer">
@@ -369,13 +414,32 @@ function el(tag, attrs, children) {
 // ─── State ───
 const state = {
   files: [], coChanges: [],
+  // Architecture intelligence: current community snapshot, history (oldest-first),
+  // drift/violation artifacts. Loaded from .ctxo/index/ alongside per-file indices.
+  communities: null,         // CommunitySnapshot | null
+  communityHistory: [],      // CommunitySnapshot[] (sorted oldest->newest)
+  drift: null,               // DriftEventsArtifact | null
+  violations: null,          // BoundaryViolationsArtifact | null
   activeTab: 'dashboard',
+  archSubTab: 'overview',    // overview | drift | violations | hotspots
   search: '',
   kindFilter: { function: true, class: true, interface: true, method: true, variable: true, type: true },
   edgeFilter: { imports: true, calls: true, extends: true, implements: true, uses: true },
   minComplexity: 0, selectedFile: null,
   heatmapMode: 'symbol', theme: 'light',
 };
+
+// Deterministic community palette (matches visualize-template.html).
+const ARCH_COMMUNITY_PALETTE = [
+  '#4E79A7', '#F28E2B', '#59A14F', '#EDC948', '#B07AA1',
+  '#E15759', '#76B7B2', '#FF9DA7', '#9C755F', '#BAB0AC',
+  '#6B9AC4', '#D37295', '#8CD17D', '#F1CE63', '#A173D1'
+];
+function archCommunityColor(id) {
+  if (typeof id !== 'number' || id < 0) return '#555866';
+  const p = ARCH_COMMUNITY_PALETTE;
+  return p[((id % p.length) + p.length) % p.length];
+}
 
 const KIND_COLORS = { function: '#3b82f6', class: '#a855f7', interface: '#14b8a6', method: '#f97316', variable: '#6b7280', type: '#5eead4' };
 const EDGE_STYLES = {
@@ -479,7 +543,7 @@ dropZone.addEventListener('drop', async e => {
   e.preventDefault(); e.stopPropagation(); dropZone.classList.remove('dragover');
   dropZone.querySelector('p').textContent = 'Loading...';
   try { const files = await collectDroppedFiles(e.dataTransfer); await loadJsonFiles(files); } catch (err) { console.error('Drop error:', err); }
-  dropZone.querySelector('p').textContent = 'Drop a folder or JSON files\nor click to browse';
+  dropZone.querySelector('p').textContent = 'Drop .ctxo/ root folder (per-file + communities + drift + violations)';
 });
 fileInput.addEventListener('change', async e => { await loadJsonFiles(Array.from(e.target.files)); });
 
@@ -505,16 +569,62 @@ async function collectFromDirectoryHandle(dirHandle, path = '') {
       const text = await file.text();
       try {
         const parsed = JSON.parse(text);
-        if (name === 'co-changes.json' && parsed.entries) { state.coChanges = parsed.entries; }
-        else if (parsed && parsed.file && typeof parsed.file === 'string') { results.push(parsed); }
+        ingestArchitectureJson(name, parsed) || ingestCoChanges(name, parsed) || ingestFileIndex(parsed, results);
       } catch {}
     }
   }
   return results;
 }
 
+// Recognize architectural-intelligence artifacts by filename+shape.
+// Returns true when the payload was consumed so the caller stops cascading.
+// Defensive: some browsers hand us paths (e.g. "index/communities.json")
+// via webkitRelativePath instead of just the basename — use .endsWith() so
+// either form matches.
+function ingestArchitectureJson(name, parsed) {
+  if (!parsed || typeof parsed !== 'object') return false;
+  const base = (name || '').split(/[\\/]/).pop() || name;
+  if (base === 'communities.json' && Array.isArray(parsed.communities) && typeof parsed.modularity === 'number') {
+    state.communities = parsed;
+    return true;
+  }
+  if (base === 'drift-events.json' && Array.isArray(parsed.events)) {
+    state.drift = parsed;
+    return true;
+  }
+  if (base === 'boundary-violations.json' && Array.isArray(parsed.violations)) {
+    state.violations = parsed;
+    return true;
+  }
+  // communities.history/*.json: same snapshot shape as current but filenames vary.
+  // Recognize by having communities[] + modularity + commitSha + no drift/violation fields.
+  if (Array.isArray(parsed.communities) && typeof parsed.modularity === 'number' && typeof parsed.commitSha === 'string' && !parsed.events && !parsed.violations) {
+    const existing = state.communityHistory.find(s => s.commitSha === parsed.commitSha && s.computedAt === parsed.computedAt);
+    if (!existing) state.communityHistory.push(parsed);
+    return true;
+  }
+  return false;
+}
+
+function ingestCoChanges(name, parsed) {
+  if (name === 'co-changes.json' && parsed && Array.isArray(parsed.entries)) {
+    state.coChanges = parsed.entries;
+    return true;
+  }
+  return false;
+}
+
+function ingestFileIndex(parsed, results) {
+  if (parsed && parsed.file && typeof parsed.file === 'string') {
+    results.push(parsed);
+    return true;
+  }
+  return false;
+}
+
 async function loadJsonFilesFromParsed(parsedFiles) {
   parsedFiles.forEach(r => state.files.push(r));
+  state.communityHistory.sort((a, b) => (a.computedAt || '').localeCompare(b.computedAt || ''));
   dedup();
   updateAll();
 }
@@ -546,11 +656,14 @@ async function loadJsonFiles(fileList) {
     promises.push(f.text().then(t => { try { return { name: f.name, data: JSON.parse(t) }; } catch { return null; } }));
   }
   const results = await Promise.all(promises);
+  const accumulated = [];
   results.forEach(r => {
     if (!r) return;
-    if (r.name === 'co-changes.json' && r.data.entries) { state.coChanges = r.data.entries; }
-    else if (r.data && r.data.file && typeof r.data.file === 'string') { state.files.push(r.data); }
+    ingestArchitectureJson(r.name, r.data) || ingestCoChanges(r.name, r.data) || ingestFileIndex(r.data, accumulated);
   });
+  accumulated.forEach(idx => state.files.push(idx));
+  // Sort community history oldest->newest using ISO timestamps.
+  state.communityHistory.sort((a, b) => (a.computedAt || '').localeCompare(b.computedAt || ''));
   dedup();
   updateAll();
 }
@@ -558,13 +671,19 @@ async function loadJsonFiles(fileList) {
 function dedup() {
   const seen = new Set();
   state.files = state.files.filter(f => { if (seen.has(f.file)) return false; seen.add(f.file); return true; });
-  document.getElementById('fileCount').textContent = state.files.length + ' file(s) loaded' + (state.coChanges.length ? ', ' + state.coChanges.length + ' co-changes' : '');
+  const archBits = [];
+  if (state.communities) archBits.push('snapshot');
+  if (state.communityHistory.length) archBits.push(state.communityHistory.length + ' history');
+  if (state.drift) archBits.push(state.drift.events.length + ' drift');
+  if (state.violations) archBits.push(state.violations.violations.length + ' violations');
+  const archSuffix = archBits.length ? ', arch: ' + archBits.join(' · ') : '';
+  document.getElementById('fileCount').textContent = state.files.length + ' file(s) loaded' + (state.coChanges.length ? ', ' + state.coChanges.length + ' co-changes' : '') + archSuffix;
 }
 
 // ─── Tabs ───
-document.querySelectorAll('.tab').forEach(tab => {
+document.querySelectorAll('.tabs > .tab').forEach(tab => {
   tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tabs > .tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
     state.activeTab = tab.dataset.tab;
@@ -572,6 +691,16 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.getElementById('edgeFilterSection').style.display = state.activeTab === 'graph' ? '' : 'none';
     document.getElementById('complexitySection').style.display = state.activeTab === 'heatmap' ? '' : 'none';
     updateAll();
+  });
+});
+
+// Architecture sub-tabs (Overview / Drift / Violations / Hotspots)
+document.querySelectorAll('.arch-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.arch-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    state.archSubTab = tab.dataset.archTab;
+    if (state.activeTab === 'architecture') renderArchitecture();
   });
 });
 
@@ -606,6 +735,14 @@ function updateAll() {
   else if (state.activeTab === 'heatmap') renderHeatmap();
   else if (state.activeTab === 'cochanges') renderCoChanges();
   else if (state.activeTab === 'timeline') renderTimeline();
+  else if (state.activeTab === 'architecture') renderArchitecture();
+
+  // Architecture badge reflects total surfaced issues (violations + drift).
+  const archBadge = document.getElementById('architectureBadge');
+  if (archBadge) {
+    const n = (state.drift?.events.length || 0) + (state.violations?.violations.length || 0);
+    archBadge.textContent = String(n);
+  }
   updatePrompt();
 }
 
@@ -991,6 +1128,352 @@ function renderTimeline() {
     countSpan.textContent = count + ' events';
   }
   renderEntries();
+}
+
+// ═══════════════════════════════════════
+// ARCHITECTURE TAB
+// ═══════════════════════════════════════
+function renderArchitecture() {
+  const body = document.getElementById('archBody');
+  if (!body) return;
+  body.textContent = '';
+
+  const hasAnyArch = state.communities || state.communityHistory.length || state.drift || state.violations;
+  if (!hasAnyArch) {
+    body.appendChild(el('div', { className: 'empty-state' }, [
+      el('div', { className: 'es-icon', textContent: '\u{1F3E2}' }),
+      el('p', { textContent: 'Load your .ctxo/ folder to see community detection, drift, boundary violations, and hotspots.' }),
+      el('p', { style: { color: 'var(--text3)', fontSize: '11px', marginTop: '8px' }, textContent: 'Run `ctxo index` first so communities.json, drift-events.json, and boundary-violations.json exist under .ctxo/index/.' }),
+    ]));
+    document.getElementById('archDriftBadge').textContent = '0';
+    document.getElementById('archViolBadge').textContent = '0';
+    return;
+  }
+
+  document.getElementById('archDriftBadge').textContent = String(state.drift?.events.length || 0);
+  document.getElementById('archViolBadge').textContent = String(state.violations?.violations.length || 0);
+
+  if (state.archSubTab === 'overview') renderArchOverview(body);
+  else if (state.archSubTab === 'drift') renderArchDrift(body);
+  else if (state.archSubTab === 'violations') renderArchViolations(body);
+  else if (state.archSubTab === 'hotspots') renderArchHotspots(body);
+}
+
+function archKpi(label, value, meta, tone) {
+  return el('div', { className: 'arch-kpi arch-kpi-' + (tone || '') }, [
+    el('div', { className: 'arch-kpi-label', textContent: label }),
+    el('div', { className: 'arch-kpi-value', textContent: value }),
+    el('div', { className: 'arch-kpi-meta', textContent: meta }),
+  ]);
+}
+
+function renderArchOverview(body) {
+  const current = state.communities;
+  const modularity = current?.modularity ?? 0;
+  const communityCount = current ? new Set(current.communities.map(c => c.communityId)).size : 0;
+  const violations = state.violations?.violations || [];
+  const highSev = violations.filter(v => v.severity === 'high').length;
+  const medSev = violations.filter(v => v.severity === 'medium').length;
+  const drift = state.drift?.events || [];
+  const driftConf = state.drift?.confidence || 'low';
+  const deadCount = countDeadSymbolsHeuristic();
+
+  const trend = buildModularityTrend();
+  const grid = el('div', { className: 'arch-kpi-grid' }, [
+    archKpi(
+      'Modularity',
+      modularity.toFixed(3),
+      trend.length > 1 ? (trendDelta(trend) >= 0 ? '↑' : '↓') + ' ' + trendDelta(trend).toFixed(3) + ' vs oldest snapshot' : 'single snapshot',
+      trend.length > 1 && trendDelta(trend) < 0 ? 'warn' : 'ok'
+    ),
+    archKpi('Boundary violations', String(violations.length), highSev + ' high · ' + medSev + ' medium', highSev > 0 ? 'bad' : violations.length ? 'warn' : 'ok'),
+    archKpi('Drift events', String(drift.length), 'confidence: ' + driftConf, drift.length === 0 ? 'ok' : (driftConf === 'low' ? '' : 'warn')),
+    archKpi('Communities', String(communityCount), state.communityHistory.length + ' history snapshots', ''),
+  ]);
+  body.appendChild(grid);
+
+  if (trend.length > 1) body.appendChild(buildModularityTrendSection(trend));
+  body.appendChild(buildGodNodesSection(current));
+  body.appendChild(buildHintsSection());
+}
+
+function renderArchDrift(body) {
+  const events = state.drift?.events || [];
+  const confidence = state.drift?.confidence || 'low';
+  const hint = state.drift?.hint;
+
+  const section = el('div', { className: 'arch-section' }, [
+    el('h3', { textContent: 'Community drift' }),
+    el('div', { className: 'arch-section-sub', textContent: 'Symbols that moved between communities between the previous snapshot and the current one. Drift confidence builds up as more snapshots accumulate in communities.history/.' }),
+  ]);
+
+  const confChip = el('span', { style: { display: 'inline-block', fontSize: '11px', padding: '2px 8px', borderRadius: '10px', background: confidence === 'high' ? 'rgba(34,197,94,0.15)' : confidence === 'medium' ? 'rgba(251,146,60,0.15)' : 'rgba(107,114,128,0.15)', color: confidence === 'high' ? '#22c55e' : confidence === 'medium' ? '#f97316' : 'var(--text3)', marginRight: '8px' }, textContent: 'confidence: ' + confidence });
+  const countChip = el('span', { style: { fontSize: '11px', color: 'var(--text3)' }, textContent: events.length + ' event(s) · ' + state.communityHistory.length + ' snapshot(s) available' });
+  section.appendChild(el('div', { style: { marginBottom: '12px' } }, [confChip, countChip]));
+  if (hint) section.appendChild(el('div', { className: 'arch-section-sub', style: { color: 'var(--text2)' }, textContent: hint }));
+  body.appendChild(section);
+
+  const trend = buildModularityTrend();
+  if (trend.length > 1) body.appendChild(buildModularityTrendSection(trend));
+
+  const tableSection = el('div', { className: 'arch-section' }, [
+    el('h3', { textContent: 'Drift events (' + events.length + ')' }),
+  ]);
+  if (events.length === 0) {
+    tableSection.appendChild(el('div', { className: 'arch-empty', textContent: 'No symbols changed community between snapshots.' }));
+  } else {
+    const table = el('table', { className: 'arch-table' });
+    table.appendChild(el('thead', {}, [el('tr', {}, [
+      el('th', { textContent: 'Symbol' }),
+      el('th', { textContent: 'From' }),
+      el('th', { textContent: 'To' }),
+      el('th', { textContent: 'First seen' }),
+    ])]));
+    const tbody = el('tbody');
+    events.slice(0, 200).forEach(e => {
+      const tr = el('tr', {}, [
+        el('td', { className: 'arch-mono', textContent: shortenSymbolId(e.symbolId) }),
+        el('td', {}, [el('span', { className: 'arch-chip', style: { background: archCommunityColor(e.movedFrom.id) } }), document.createTextNode(e.movedFrom.label)]),
+        el('td', {}, [el('span', { className: 'arch-chip', style: { background: archCommunityColor(e.movedTo.id) } }), document.createTextNode(e.movedTo.label)]),
+        el('td', { style: { color: 'var(--text3)' }, textContent: (e.firstSeenInNewCluster || '').split('T')[0] || '' }),
+      ]);
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    tableSection.appendChild(table);
+    if (events.length > 200) tableSection.appendChild(el('div', { className: 'arch-section-sub', style: { marginTop: '8px' }, textContent: 'Showing first 200 of ' + events.length + '.' }));
+  }
+  body.appendChild(tableSection);
+}
+
+function renderArchViolations(body) {
+  const violations = state.violations?.violations || [];
+  const confidence = state.violations?.confidence || 'low';
+
+  const section = el('div', { className: 'arch-section' }, [
+    el('h3', { textContent: 'Boundary violations (' + violations.length + ')' }),
+    el('div', { className: 'arch-section-sub', textContent: 'Edges that cross community boundaries and are rarely (or never) seen in the snapshot history. High severity = first ever crossing; medium = crossed <=2 times historically.' }),
+  ]);
+  if (violations.length === 0) {
+    section.appendChild(el('div', { className: 'arch-empty', textContent: 'No boundary violations detected. Clean architecture!' }));
+    body.appendChild(section);
+    return;
+  }
+  section.appendChild(el('div', { className: 'arch-section-sub', style: { color: 'var(--text2)' }, textContent: 'confidence: ' + confidence }));
+  const table = el('table', { className: 'arch-table' });
+  table.appendChild(el('thead', {}, [el('tr', {}, [
+    el('th', { textContent: 'Severity' }),
+    el('th', { textContent: 'From' }),
+    el('th', { textContent: 'To' }),
+    el('th', { textContent: 'Edge' }),
+    el('th', { textContent: 'Past crossings' }),
+  ])]));
+  const tbody = el('tbody');
+  violations.slice(0, 300).forEach(v => {
+    const tr = el('tr', {}, [
+      el('td', {}, [el('span', { className: v.severity === 'high' ? 'arch-sev-high' : 'arch-sev-medium', textContent: v.severity })]),
+      el('td', {}, [el('span', { className: 'arch-chip', style: { background: archCommunityColor(v.from.communityId) } }), el('span', { className: 'arch-mono', textContent: shortenSymbolId(v.from.symbolId) })]),
+      el('td', {}, [el('span', { className: 'arch-chip', style: { background: archCommunityColor(v.to.communityId) } }), el('span', { className: 'arch-mono', textContent: shortenSymbolId(v.to.symbolId) })]),
+      el('td', { style: { color: 'var(--text3)' }, textContent: v.edgeKind }),
+      el('td', { style: { color: 'var(--text3)' }, textContent: v.historicalEdgesBetweenClusters < 0 ? '—' : String(v.historicalEdgesBetweenClusters) }),
+    ]);
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  section.appendChild(table);
+  if (violations.length > 300) section.appendChild(el('div', { className: 'arch-section-sub', style: { marginTop: '8px' }, textContent: 'Showing first 300 of ' + violations.length + '.' }));
+  body.appendChild(section);
+}
+
+function renderArchHotspots(body) {
+  // Hotspots: top symbols by complexity × churn composite. Derived from state.files.
+  const churnByFile = new Map();
+  state.files.forEach(f => {
+    const churn = (f.intent || []).length + (f.antiPatterns || []).length;
+    churnByFile.set(f.file, churn);
+  });
+  const hotspots = [];
+  state.files.forEach(f => {
+    const churn = churnByFile.get(f.file) || 0;
+    (f.complexity || []).forEach(c => {
+      const cx = c.cyclomatic || 0;
+      if (cx === 0 && churn === 0) return;
+      const score = cx * (1 + Math.log2(1 + churn));
+      hotspots.push({ symbolId: c.symbolId, file: f.file, cyclomatic: cx, churn, score });
+    });
+  });
+  hotspots.sort((a, b) => b.score - a.score);
+  const top = hotspots.slice(0, 50);
+
+  const section = el('div', { className: 'arch-section' }, [
+    el('h3', { textContent: 'Hotspots — change × complexity' }),
+    el('div', { className: 'arch-section-sub', textContent: 'Highest-risk symbols: cyclomatic complexity × log(1 + churn). Where complexity is changing is where bugs live.' }),
+  ]);
+  if (top.length === 0) {
+    section.appendChild(el('div', { className: 'arch-empty', textContent: 'No complexity or churn data in loaded files.' }));
+    body.appendChild(section);
+    return;
+  }
+  const table = el('table', { className: 'arch-table' });
+  table.appendChild(el('thead', {}, [el('tr', {}, [
+    el('th', { textContent: '#' }),
+    el('th', { textContent: 'Symbol' }),
+    el('th', { textContent: 'File' }),
+    el('th', { textContent: 'Complexity' }),
+    el('th', { textContent: 'Churn' }),
+    el('th', { textContent: 'Score' }),
+  ])]));
+  const tbody = el('tbody');
+  top.forEach((h, i) => {
+    tbody.appendChild(el('tr', {}, [
+      el('td', { style: { color: 'var(--text3)' }, textContent: String(i + 1) }),
+      el('td', { className: 'arch-mono', textContent: shortenSymbolId(h.symbolId) }),
+      el('td', { style: { color: 'var(--text3)', fontSize: '11px' }, textContent: h.file }),
+      el('td', { textContent: String(h.cyclomatic) }),
+      el('td', { textContent: String(h.churn) }),
+      el('td', { textContent: h.score.toFixed(2) }),
+    ]));
+  });
+  table.appendChild(tbody);
+  section.appendChild(table);
+  body.appendChild(section);
+}
+
+function buildModularityTrend() {
+  const points = [];
+  state.communityHistory.forEach(s => {
+    if (typeof s.modularity === 'number' && s.commitSha) points.push({ sha: s.commitSha.slice(0, 7), value: s.modularity, date: s.computedAt || '' });
+  });
+  if (state.communities && typeof state.communities.modularity === 'number') {
+    points.push({ sha: (state.communities.commitSha || 'current').slice(0, 7), value: state.communities.modularity, date: state.communities.computedAt || '' });
+  }
+  return points;
+}
+
+function trendDelta(points) {
+  if (points.length < 2) return 0;
+  return points[points.length - 1].value - points[0].value;
+}
+
+function buildModularityTrendSection(points) {
+  const section = el('div', { className: 'arch-section' }, [
+    el('h3', { textContent: 'Modularity over time' }),
+    el('div', { className: 'arch-section-sub', textContent: 'Louvain modularity for every snapshot recorded in communities.history/. Falling lines hint at architectural erosion.' }),
+  ]);
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', '0 0 640 140');
+  svg.setAttribute('class', 'arch-trend');
+  const padding = { top: 12, right: 16, bottom: 28, left: 40 };
+  const width = 640, height = 140;
+  const innerW = width - padding.left - padding.right;
+  const innerH = height - padding.top - padding.bottom;
+  const min = Math.min(...points.map(p => p.value));
+  const max = Math.max(...points.map(p => p.value));
+  const range = (max - min) || 1;
+  const stepX = points.length > 1 ? innerW / (points.length - 1) : innerW;
+  const pts = points.map((p, i) => {
+    const x = padding.left + i * stepX;
+    const y = padding.top + innerH - ((p.value - min) / range) * innerH;
+    return { x, y, p };
+  });
+  const axis = document.createElementNS(ns, 'line');
+  axis.setAttribute('x1', padding.left); axis.setAttribute('y1', padding.top + innerH);
+  axis.setAttribute('x2', padding.left + innerW); axis.setAttribute('y2', padding.top + innerH);
+  axis.setAttribute('stroke', 'var(--border)'); axis.setAttribute('stroke-width', '1');
+  svg.appendChild(axis);
+  const poly = document.createElementNS(ns, 'polyline');
+  poly.setAttribute('fill', 'none');
+  poly.setAttribute('stroke', '#6366f1');
+  poly.setAttribute('stroke-width', '2');
+  poly.setAttribute('points', pts.map(p => p.x.toFixed(1) + ',' + p.y.toFixed(1)).join(' '));
+  svg.appendChild(poly);
+  pts.forEach(p => {
+    const dot = document.createElementNS(ns, 'circle');
+    dot.setAttribute('cx', p.x); dot.setAttribute('cy', p.y); dot.setAttribute('r', '3');
+    dot.setAttribute('fill', '#6366f1');
+    const title = document.createElementNS(ns, 'title');
+    title.textContent = p.p.sha + ' · modularity ' + p.p.value.toFixed(3) + (p.p.date ? ' · ' + p.p.date.split('T')[0] : '');
+    dot.appendChild(title);
+    svg.appendChild(dot);
+  });
+  // Y labels (min, max)
+  const yMin = document.createElementNS(ns, 'text');
+  yMin.setAttribute('x', '4'); yMin.setAttribute('y', (padding.top + innerH).toFixed(1));
+  yMin.setAttribute('fill', 'var(--text3)'); yMin.setAttribute('font-size', '10');
+  yMin.textContent = min.toFixed(2);
+  svg.appendChild(yMin);
+  const yMax = document.createElementNS(ns, 'text');
+  yMax.setAttribute('x', '4'); yMax.setAttribute('y', (padding.top + 8).toFixed(1));
+  yMax.setAttribute('fill', 'var(--text3)'); yMax.setAttribute('font-size', '10');
+  yMax.textContent = max.toFixed(2);
+  svg.appendChild(yMax);
+  // X labels (first and last commit)
+  if (pts.length > 0) {
+    const first = document.createElementNS(ns, 'text');
+    first.setAttribute('x', pts[0].x); first.setAttribute('y', height - 8);
+    first.setAttribute('fill', 'var(--text3)'); first.setAttribute('font-size', '10');
+    first.setAttribute('text-anchor', 'start');
+    first.textContent = pts[0].p.sha;
+    svg.appendChild(first);
+    if (pts.length > 1) {
+      const last = document.createElementNS(ns, 'text');
+      last.setAttribute('x', pts[pts.length - 1].x); last.setAttribute('y', height - 8);
+      last.setAttribute('fill', 'var(--text3)'); last.setAttribute('font-size', '10');
+      last.setAttribute('text-anchor', 'end');
+      last.textContent = pts[pts.length - 1].p.sha;
+      svg.appendChild(last);
+    }
+  }
+  section.appendChild(svg);
+  return section;
+}
+
+function buildGodNodesSection(current) {
+  const section = el('div', { className: 'arch-section' }, [
+    el('h3', { textContent: 'God nodes' }),
+    el('div', { className: 'arch-section-sub', textContent: 'Symbols bridging many communities. High centrality = high blast radius.' }),
+  ]);
+  const gods = current?.godNodes || [];
+  if (gods.length === 0) {
+    section.appendChild(el('div', { className: 'arch-empty', textContent: 'No god nodes detected. Healthy coupling.' }));
+    return section;
+  }
+  const list = el('ul', { className: 'arch-list' });
+  gods.slice(0, 10).forEach(g => {
+    list.appendChild(el('li', {}, [
+      el('span', { className: 'arch-mono', textContent: shortenSymbolId(g.symbolId) }),
+      el('span', { className: 'arch-meta', textContent: g.bridgedCommunities.length + ' communities · centrality ' + g.centralityScore.toFixed(3) }),
+    ]));
+  });
+  section.appendChild(list);
+  return section;
+}
+
+function buildHintsSection() {
+  const hints = [];
+  if (state.drift?.hint) hints.push(state.drift.hint);
+  if (state.violations?.hint) hints.push(state.violations.hint);
+  if (!state.communityHistory.length) hints.push('No history snapshots loaded. Load communities.history/ alongside communities.json to enable drift and high-severity violation classification.');
+  if (!hints.length) return el('div', {});
+  const section = el('div', { className: 'arch-section' }, [el('h3', { textContent: 'Hints' })]);
+  hints.forEach(h => section.appendChild(el('div', { className: 'arch-section-sub', textContent: '• ' + h })));
+  return section;
+}
+
+function shortenSymbolId(symbolId) {
+  const parts = (symbolId || '').split('::');
+  return parts.length === 3 ? parts[1] + ' (' + parts[0].split('/').slice(-2).join('/') + ')' : symbolId;
+}
+
+function countDeadSymbolsHeuristic() {
+  // Rough proxy: symbols with zero inDegree AND zero outDegree in the loaded edges.
+  const edges = getAllEdges();
+  const touched = new Set();
+  edges.forEach(e => { touched.add(e.from); touched.add(e.to); });
+  let dead = 0;
+  state.files.forEach(f => (f.symbols || []).forEach(s => { if (!touched.has(s.symbolId)) dead++; }));
+  return dead;
 }
 
 // ─── Prompt Output ───
@@ -1405,8 +1888,11 @@ document.getElementById('mcpToolSelect').addEventListener('change', e => {
 
 updateAll();
 
-// Auto-load from URL if default value is set (GitHub Pages)
-if (document.getElementById('urlInput').value.trim()) {
+// Auto-load from URL if default value is set (GitHub Pages).
+// Skipped on file:// because fetch() cannot cross origins from local HTML
+// files and the resulting CORS errors are noise — drag/drop or folder picker
+// are the real entry points in that mode.
+if (location.protocol !== 'file:' && document.getElementById('urlInput').value.trim()) {
   document.getElementById('urlLoadBtn').click();
 }
 </script>

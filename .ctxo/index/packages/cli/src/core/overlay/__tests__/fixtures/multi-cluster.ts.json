@@ -18,7 +18,7 @@
       "symbolId": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildDisconnectedClusterGraph::function"
     }
   ],
-  "contentHash": "10c0b510d163082a7bc63f4b9dc5d91c9579ddb6610f9fbe792882b566c7a9cd",
+  "contentHash": "94a49f7ba72fe267ca7a9b303e23615607e1cdfa5edc61871e3f37e59395ea69",
   "edges": [
     {
       "from": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildMultiClusterGraph::function",
@@ -117,42 +117,42 @@
       "message": "feat(cli): architectural intelligence (v0.8) — community detection, drift, boundary violations"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354056,
   "symbols": [
     {
       "endLine": 62,
-      "endOffset": 1933,
+      "endOffset": 1995,
       "kind": "function",
       "name": "buildMultiClusterGraph",
       "startLine": 14,
-      "startOffset": 359,
+      "startOffset": 373,
       "symbolId": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildMultiClusterGraph::function"
     },
     {
       "endLine": 77,
-      "endOffset": 2423,
+      "endOffset": 2500,
       "kind": "function",
       "name": "buildGraphWithGodNode",
       "startLine": 64,
-      "startOffset": 1935,
+      "startOffset": 1999,
       "symbolId": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildGraphWithGodNode::function"
     },
     {
       "endLine": 83,
-      "endOffset": 2592,
+      "endOffset": 2675,
       "kind": "function",
       "name": "buildIsolatedGraph",
       "startLine": 79,
-      "startOffset": 2425,
+      "startOffset": 2504,
       "symbolId": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildIsolatedGraph::function"
     },
     {
       "endLine": 107,
-      "endOffset": 3460,
+      "endOffset": 3567,
       "kind": "function",
       "name": "buildDisconnectedClusterGraph",
       "startLine": 85,
-      "startOffset": 2594,
+      "startOffset": 2679,
       "symbolId": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildDisconnectedClusterGraph::function"
     }
   ]

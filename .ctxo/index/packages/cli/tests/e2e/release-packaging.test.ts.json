@@ -6,6 +6,12 @@
   "file": "packages/cli/tests/e2e/release-packaging.test.ts",
   "intent": [
     {
+      "date": "2026-04-16T02:43:12+03:00",
+      "hash": "2ded1a911a7f195becd8d07e5a1f28368b76858f",
+      "kind": "commit",
+      "message": "perf(watch): threshold-based skip for community snapshot recompute (closes #59)"
+    },
+    {
       "date": "2026-04-16T01:43:29+03:00",
       "hash": "190f929def744a397c040aa323106b18b659dd5c",
       "kind": "commit",
@@ -24,6 +30,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776296577,
+  "lastModified": 1776354056,
   "symbols": []
 }

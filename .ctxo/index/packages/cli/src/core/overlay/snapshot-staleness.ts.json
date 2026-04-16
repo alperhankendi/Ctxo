@@ -6,7 +6,7 @@
       "symbolId": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
     }
   ],
-  "contentHash": "da935bd7a85210d19cbca4275a4c2c646fd0d05acf38e0ff7354732d0c87b203",
+  "contentHash": "53c614d33a8828dd43789bd0bebee7d06e2ad3cd41ca3397a40f1f9435c6c5c5",
   "edges": [
     {
       "from": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function",
@@ -40,24 +40,24 @@
       "message": "feat(mcp): snapshotStaleness in _meta surfaces snapshot-vs-HEAD gap (closes #55)"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354056,
   "symbols": [
     {
       "endLine": 66,
-      "endOffset": 2301,
+      "endOffset": 2367,
       "kind": "function",
       "name": "buildSnapshotStaleness",
       "startLine": 19,
-      "startOffset": 702,
+      "startOffset": 721,
       "symbolId": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
     },
     {
       "endLine": 8,
-      "endOffset": 300,
+      "endOffset": 308,
       "kind": "interface",
       "name": "SnapshotStaleness",
       "startLine": 3,
-      "startOffset": 127,
+      "startOffset": 130,
       "symbolId": "packages/cli/src/core/overlay/snapshot-staleness.ts::SnapshotStaleness::interface"
     }
   ]

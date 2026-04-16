@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "d505b85cb42ee72bd2de20eab3a9817ccfa537dc83d7a8c105659531af87d4c6",
+  "contentHash": "ddadff9215988f02f074841bd4e7fa300d42819ad37640cf7c27f132e7e0dfef",
   "edges": [
     {
       "from": "packages/cli/src/cli/__tests__/index-command-ignore.test.ts::index-command-ignore.test::variable",
@@ -24,6 +24,6 @@
       "message": "feat(config): add index.ignore and index.ignoreProjects to .ctxo/config.yaml"
     }
   ],
-  "lastModified": 1776296576,
+  "lastModified": 1776354055,
   "symbols": []
 }

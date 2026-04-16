@@ -17,8 +17,4 @@ export default defineConfig({
   banner: {
     js: '#!/usr/bin/env node',
   },
-  // Build the static report template (pages/report-template.html) after the
-  // main CLI bundle. The template inlines a minified IIFE of pages/report/*.ts
-  // and is shipped via package.json files[] for runtime lookup.
-  onSuccess: 'tsx scripts/build-report-template.ts',
 });

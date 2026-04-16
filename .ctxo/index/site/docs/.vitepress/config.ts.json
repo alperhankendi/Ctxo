@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "92ed1380f2a437ebb16248717870d733ee0c5ccb3c72cb5bee18920a3ecde1ed",
+  "contentHash": "758b1657ad79d48d97c9853fe576df9a572399486db51f4127a2f90f632d21db",
   "edges": [],
   "file": "site/docs/.vitepress/config.ts",
   "intent": [
@@ -72,6 +72,6 @@
       "message": "feat(site): VitePress docs site + Geist brand font"
     }
   ],
-  "lastModified": 1776296577,
+  "lastModified": 1776354056,
   "symbols": []
 }

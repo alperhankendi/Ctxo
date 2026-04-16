@@ -118,7 +118,7 @@
       "message": "feat(lang-go/analyzer): SSA + CHA reachability with reflect-safe heuristics"
     }
   ],
-  "lastModified": 1776296577,
+  "lastModified": 1776354056,
   "symbols": [
     {
       "endLine": 42,

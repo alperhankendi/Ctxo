@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "computedAt": "2026-04-15T23:03:58.135Z",
-  "commitSha": "190f929",
-  "modularity": 0.7270599638338109,
+  "computedAt": "2026-04-16T00:18:00.045Z",
+  "commitSha": "e50458e",
+  "modularity": 0.7075559389497134,
   "communities": [
     {
       "symbolId": "examples/community-plugin-template/src/adapter.ts::ExampleAdapter.extractComplexity::method",
@@ -161,8 +161,8 @@
     },
     {
       "symbolId": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck.run::method",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class",
@@ -181,7 +181,7 @@
     },
     {
       "symbolId": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TreeSitterCheck.run::method",
-      "communityId": 17,
+      "communityId": 18,
       "communityLabel": "TreeSitterCheck.run area"
     },
     {
@@ -191,7 +191,7 @@
     },
     {
       "symbolId": "packages/cli/src/adapters/diagnostics/checks/runtime-check.ts::TsMorphCheck.run::method",
-      "communityId": 18,
+      "communityId": 19,
       "communityLabel": "TsMorphCheck.run area"
     },
     {
@@ -206,7 +206,7 @@
     },
     {
       "symbolId": "packages/cli/src/adapters/diagnostics/checks/storage-check.ts::SqliteCacheCheck.run::method",
-      "communityId": 19,
+      "communityId": 20,
       "communityLabel": "SqliteCacheCheck.run area"
     },
     {
@@ -226,22 +226,22 @@
     },
     {
       "symbolId": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter.formatCheckLine::method",
-      "communityId": 20,
+      "communityId": 21,
       "communityLabel": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter.formatHuman::method",
-      "communityId": 20,
+      "communityId": 21,
       "communityLabel": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter.formatJson::method",
-      "communityId": 21,
+      "communityId": 22,
       "communityLabel": "packages/cli/src/adapters/diagnostics"
     },
     {
       "symbolId": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts::DoctorReporter.formatQuiet::method",
-      "communityId": 20,
+      "communityId": 21,
       "communityLabel": "packages/cli/src/adapters/diagnostics/doctor-reporter.ts"
     },
     {
@@ -251,7 +251,7 @@
     },
     {
       "symbolId": "packages/cli/src/adapters/diagnostics/health-checker.ts::HealthChecker.runAll::method",
-      "communityId": 22,
+      "communityId": 23,
       "communityLabel": "HealthChecker.runAll area"
     },
     {
@@ -261,372 +261,417 @@
     },
     {
       "symbolId": "packages/cli/src/adapters/diagnostics/health-checker.ts::HealthCheckerOptions::interface",
-      "communityId": 23,
+      "communityId": 24,
       "communityLabel": "HealthCheckerOptions area"
     },
     {
-      "symbolId": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getBatchHistory::method",
-      "communityId": 24,
+      "symbolId": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.countCommitsBetween::method",
+      "communityId": 25,
       "communityLabel": "packages/cli/src/adapters/git"
     },
     {
+      "symbolId": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getBatchHistory::method",
+      "communityId": 26,
+      "communityLabel": "SimpleGitAdapter.getBatchHistory area"
+    },
+    {
       "symbolId": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getChangedFiles::method",
-      "communityId": 25,
+      "communityId": 27,
       "communityLabel": "SimpleGitAdapter.getChangedFiles area"
     },
     {
       "symbolId": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getCommitHistory::method",
-      "communityId": 26,
+      "communityId": 28,
       "communityLabel": "SimpleGitAdapter.getCommitHistory area"
     },
     {
       "symbolId": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getFileChurn::method",
-      "communityId": 27,
+      "communityId": 29,
       "communityLabel": "SimpleGitAdapter.getFileChurn area"
     },
     {
+      "symbolId": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.getHeadSha::method",
+      "communityId": 30,
+      "communityLabel": "SimpleGitAdapter.getHeadSha area"
+    },
+    {
       "symbolId": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter.isAvailable::method",
-      "communityId": 28,
+      "communityId": 31,
       "communityLabel": "SimpleGitAdapter.isAvailable area"
     },
     {
       "symbolId": "packages/cli/src/adapters/git/simple-git-adapter.ts::SimpleGitAdapter::class",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.getAdapter::method",
-      "communityId": 30,
+      "communityId": 32,
       "communityLabel": "packages/cli/src/adapters/language"
     },
     {
       "symbolId": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.getSupportedExtensions::method",
-      "communityId": 31,
+      "communityId": 33,
       "communityLabel": "LanguageAdapterRegistry.getSupportedExtensions area"
     },
     {
       "symbolId": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry.register::method",
-      "communityId": 32,
+      "communityId": 34,
       "communityLabel": "LanguageAdapterRegistry.register area"
     },
     {
       "symbolId": "packages/cli/src/adapters/language/language-adapter-registry.ts::LanguageAdapterRegistry::class",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/adapters/language/plugin-discovery.ts::DiscoverOptions::interface",
-      "communityId": 33,
+      "communityId": 35,
       "communityLabel": "DiscoverOptions area"
     },
     {
       "symbolId": "packages/cli/src/adapters/language/plugin-discovery.ts::DiscoveredPlugin::interface",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 36,
+      "communityLabel": "discoverPlugins area"
     },
     {
       "symbolId": "packages/cli/src/adapters/language/plugin-discovery.ts::DiscoveryResult::interface",
-      "communityId": 34,
+      "communityId": 37,
       "communityLabel": "DiscoveryResult area"
     },
     {
       "symbolId": "packages/cli/src/adapters/language/plugin-discovery.ts::PluginLoadFailure::interface",
-      "communityId": 35,
+      "communityId": 38,
       "communityLabel": "PluginLoadFailure area"
     },
     {
       "symbolId": "packages/cli/src/adapters/language/plugin-discovery.ts::discoverPlugins::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 36,
+      "communityLabel": "discoverPlugins area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/find-importers.ts::handleFindImporters::function",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::CommunityOverlay::interface",
-      "communityId": 37,
+      "communityId": 40,
       "communityLabel": "packages/cli/src/adapters/mcp"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::CommunityOverlayCluster::interface",
-      "communityId": 38,
+      "communityId": 41,
       "communityLabel": "CommunityOverlayCluster area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::buildCommunityOverlay::function",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-architectural-overlay.ts::handleGetArchitecturalOverlay::function",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-blast-radius.ts::handleGetBlastRadius::function",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-change-intelligence.ts::handleGetChangeIntelligence::function",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-changed-symbols.ts::handleGetChangedSymbols::function",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-class-hierarchy.ts::handleGetClassHierarchy::function",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-context-for-task.ts::handleGetContextForTask::function",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-dead-code.ts::handleFindDeadCode::function",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-logic-slice.ts::GetLogicSliceInput::type",
-      "communityId": 39,
+      "communityId": 42,
       "communityLabel": "GetLogicSliceInput area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-logic-slice.ts::StalenessCheck::interface",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-logic-slice.ts::buildGraphAndFilesFromJsonIndex::function",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-logic-slice.ts::buildGraphFromJsonIndex::function",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-logic-slice.ts::buildGraphFromStorage::function",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-logic-slice.ts::getGraphAndFiles::function",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-logic-slice.ts::getLogicSliceInputSchema::function",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-logic-slice.ts::handleGetLogicSlice::function",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-pr-impact.ts::handleGetPrImpact::function",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-ranked-context.ts::handleGetRankedContext::function",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-symbol-importance.ts::handleGetSymbolImportance::function",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/get-why-context.ts::handleGetWhyContext::function",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/adapters/mcp/search-symbols.ts::handleSearchSymbols::function",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.clear::method",
-      "communityId": 41,
+      "communityId": 44,
       "communityLabel": "packages/cli/src/adapters/stats/session-recorder-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.ensureTable::method",
-      "communityId": 41,
+      "communityId": 44,
       "communityLabel": "packages/cli/src/adapters/stats/session-recorder-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.flushToDisk::method",
-      "communityId": 41,
+      "communityId": 44,
       "communityLabel": "packages/cli/src/adapters/stats/session-recorder-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.queryStats::method",
-      "communityId": 41,
+      "communityId": 44,
       "communityLabel": "packages/cli/src/adapters/stats/session-recorder-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter.record::method",
-      "communityId": 41,
+      "communityId": 44,
       "communityLabel": "packages/cli/src/adapters/stats/session-recorder-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/stats/session-recorder-adapter.ts::SessionRecorderAdapter::class",
-      "communityId": 42,
+      "communityId": 45,
       "communityLabel": "StatsCommand.buildReport area"
     },
     {
       "symbolId": "packages/cli/src/adapters/stats/with-recording.ts::withRecording::function",
-      "communityId": 42,
+      "communityId": 45,
       "communityLabel": "StatsCommand.buildReport area"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/__tests__/test-fixtures.ts::buildFileIndex::function",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/__tests__/test-fixtures.ts::buildSecondFileIndex::function",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
-      "symbolId": "packages/cli/src/adapters/storage/atomic-write.ts::atomicWrite::function",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
-    },
-    {
-      "symbolId": "packages/cli/src/adapters/storage/atomic-write.ts::sweepStaleTmpFiles::function",
-      "communityId": 43,
+      "symbolId": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter.readBoundaryViolations::method",
+      "communityId": 46,
       "communityLabel": "packages/cli/src/adapters/storage"
     },
     {
+      "symbolId": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter.readDriftEvents::method",
+      "communityId": 47,
+      "communityLabel": "ArchitectureArtifactsWriter.readDriftEvents area"
+    },
+    {
+      "symbolId": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter.writeBoundaryViolations::method",
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
+    },
+    {
+      "symbolId": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter.writeDriftEvents::method",
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
+    },
+    {
+      "symbolId": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriter::class",
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
+    },
+    {
+      "symbolId": "packages/cli/src/adapters/storage/architecture-artifacts-writer.ts::ArchitectureArtifactsWriterOptions::interface",
+      "communityId": 48,
+      "communityLabel": "ArchitectureArtifactsWriterOptions area"
+    },
+    {
+      "symbolId": "packages/cli/src/adapters/storage/atomic-write.ts::atomicWrite::function",
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
+    },
+    {
+      "symbolId": "packages/cli/src/adapters/storage/atomic-write.ts::sweepStaleTmpFiles::function",
+      "communityId": 49,
+      "communityLabel": "sweepStaleTmpFiles area"
+    },
+    {
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter.atomicWrite::method",
-      "communityId": 44,
+      "communityId": 50,
       "communityLabel": "packages/cli/src/adapters/storage/community-snapshot-writer.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter.historyFilename::method",
-      "communityId": 44,
+      "communityId": 50,
       "communityLabel": "packages/cli/src/adapters/storage/community-snapshot-writer.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter.listHistory::method",
-      "communityId": 45,
+      "communityId": 51,
       "communityLabel": "CommunitySnapshotWriter.safeParse area"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter.readCurrent::method",
-      "communityId": 45,
+      "communityId": 51,
       "communityLabel": "CommunitySnapshotWriter.safeParse area"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter.rotateHistory::method",
-      "communityId": 44,
+      "communityId": 50,
       "communityLabel": "packages/cli/src/adapters/storage/community-snapshot-writer.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter.safeParse::method",
-      "communityId": 45,
+      "communityId": 51,
       "communityLabel": "CommunitySnapshotWriter.safeParse area"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter.writeSnapshot::method",
-      "communityId": 44,
+      "communityId": 50,
       "communityLabel": "packages/cli/src/adapters/storage/community-snapshot-writer.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriter::class",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
+    },
+    {
+      "symbolId": "packages/cli/src/adapters/storage/community-snapshot-writer.ts::CommunitySnapshotWriterOptions::interface",
+      "communityId": 52,
+      "communityLabel": "CommunitySnapshotWriterOptions area"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.collectJsonFiles::method",
-      "communityId": 46,
+      "communityId": 53,
       "communityLabel": "packages/cli/src/adapters/storage/json-index-reader.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.readAll::method",
-      "communityId": 46,
+      "communityId": 53,
       "communityLabel": "packages/cli/src/adapters/storage/json-index-reader.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.readSingle::method",
-      "communityId": 46,
+      "communityId": 53,
       "communityLabel": "packages/cli/src/adapters/storage/json-index-reader.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter.atomicWrite::method",
-      "communityId": 47,
+      "communityId": 54,
       "communityLabel": "packages/cli/src/adapters/storage/json-index-writer.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter.delete::method",
-      "communityId": 47,
+      "communityId": 54,
       "communityLabel": "packages/cli/src/adapters/storage/json-index-writer.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter.resolveIndexPath::method",
-      "communityId": 47,
+      "communityId": 54,
       "communityLabel": "packages/cli/src/adapters/storage/json-index-writer.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter.sortKeys::method",
-      "communityId": 47,
+      "communityId": 54,
       "communityLabel": "packages/cli/src/adapters/storage/json-index-writer.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter.write::method",
-      "communityId": 47,
+      "communityId": 54,
       "communityLabel": "packages/cli/src/adapters/storage/json-index-writer.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter.writeCoChanges::method",
-      "communityId": 47,
+      "communityId": 54,
       "communityLabel": "packages/cli/src/adapters/storage/json-index-writer.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/json-index-writer.ts::JsonIndexWriter::class",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/schema-manager.ts::SchemaManager.currentVersion::method",
-      "communityId": 48,
+      "communityId": 55,
       "communityLabel": "SchemaManager.currentVersion area"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/schema-manager.ts::SchemaManager.isCompatible::method",
-      "communityId": 49,
+      "communityId": 56,
       "communityLabel": "packages/cli/src/adapters/storage/schema-manager.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/schema-manager.ts::SchemaManager.readStoredVersion::method",
-      "communityId": 49,
+      "communityId": 56,
       "communityLabel": "packages/cli/src/adapters/storage/schema-manager.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/schema-manager.ts::SchemaManager.writeVersion::method",
-      "communityId": 50,
+      "communityId": 57,
       "communityLabel": "SchemaManager.writeVersion area"
     },
     {
@@ -636,272 +681,277 @@
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.bulkWrite::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.clearIndexTables::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.close::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.createTables::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.database::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.deleteFileData::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.deleteSymbolFile::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.getAllEdges::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.getAllSymbols::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.getDb::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.getEdgesForFile::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.getEdgesFrom::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.getEdgesTo::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.getSymbolById::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.getSymbolsForFile::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.init::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.initEmpty::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.listCommunityHistory::method",
-      "communityId": 52,
+      "communityId": 59,
       "communityLabel": "SqliteStorageAdapter.listCommunityHistory area"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.listIndexedFiles::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.persist::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.persistIfNeeded::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.readCommunities::method",
-      "communityId": 53,
+      "communityId": 60,
       "communityLabel": "SqliteStorageAdapter.readCommunities area"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.readSymbolFile::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.rebuildFromJson::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.verifyIntegrity::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.writeCommunities::method",
-      "communityId": 54,
+      "communityId": 61,
       "communityLabel": "SqliteStorageAdapter.writeCommunities area"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter.writeSymbolFile::method",
-      "communityId": 51,
+      "communityId": 58,
       "communityLabel": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts"
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
+    },
+    {
+      "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapterOptions::interface",
+      "communityId": 62,
+      "communityLabel": "SqliteStorageAdapterOptions area"
     },
     {
       "symbolId": "packages/cli/src/adapters/transport/http-server-transport.ts::ServerFactory::type",
-      "communityId": 55,
+      "communityId": 63,
       "communityLabel": "packages/cli/src/adapters/transport"
     },
     {
       "symbolId": "packages/cli/src/adapters/transport/http-server-transport.ts::startHttpTransport::function",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter.start::method",
-      "communityId": 56,
+      "communityId": 64,
       "communityLabel": "packages/cli/src/adapters/watcher"
     },
     {
       "symbolId": "packages/cli/src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter.stop::method",
-      "communityId": 57,
+      "communityId": 65,
       "communityLabel": "ChokidarWatcherAdapter.stop area"
     },
     {
       "symbolId": "packages/cli/src/adapters/watcher/chokidar-watcher-adapter.ts::ChokidarWatcherAdapter::class",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
-    },
-    {
-      "symbolId": "packages/cli/src/adapters/workspace/single-package-workspace.ts::detectWorkspace::function",
       "communityId": 6,
       "communityLabel": "packages/cli/src"
     },
     {
+      "symbolId": "packages/cli/src/adapters/workspace/single-package-workspace.ts::detectWorkspace::function",
+      "communityId": 36,
+      "communityLabel": "discoverPlugins area"
+    },
+    {
       "symbolId": "packages/cli/src/cli/__tests__/fixtures/sample-project/src/greet.ts::greet::function",
-      "communityId": 58,
+      "communityId": 66,
       "communityLabel": "packages/cli/src/cli/__tests__/fixtures/sample-project/src"
     },
     {
       "symbolId": "packages/cli/src/cli/__tests__/fixtures/sample-project/src/types.ts::Role::type",
-      "communityId": 59,
+      "communityId": 67,
       "communityLabel": "Role area"
     },
     {
       "symbolId": "packages/cli/src/cli/__tests__/fixtures/sample-project/src/types.ts::User::interface",
-      "communityId": 60,
+      "communityId": 68,
       "communityLabel": "User area"
     },
     {
       "symbolId": "packages/cli/src/cli/__tests__/fixtures/sample-project/src/utils.ts::VERSION::variable",
-      "communityId": 61,
+      "communityId": 69,
       "communityLabel": "VERSION area"
     },
     {
       "symbolId": "packages/cli/src/cli/__tests__/fixtures/sample-project/src/utils.ts::formatName::function",
-      "communityId": 58,
+      "communityId": 66,
       "communityLabel": "packages/cli/src/cli/__tests__/fixtures/sample-project/src"
     },
     {
       "symbolId": "packages/cli/src/cli/ai-rules.ts::InstallResult::interface",
-      "communityId": 62,
+      "communityId": 70,
       "communityLabel": "packages/cli/src/cli"
     },
     {
       "symbolId": "packages/cli/src/cli/ai-rules.ts::PLATFORMS::variable",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/ai-rules.ts::Platform::interface",
-      "communityId": 63,
+      "communityId": 71,
       "communityLabel": "Platform area"
     },
     {
       "symbolId": "packages/cli/src/cli/ai-rules.ts::detectPlatforms::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/ai-rules.ts::ensureConfig::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/ai-rules.ts::ensureGitignore::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/ai-rules.ts::ensureMcpConfig::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/ai-rules.ts::generateRules::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/ai-rules.ts::getMcpConfigTargets::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/ai-rules.ts::installRules::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.printHelp::method",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 36,
+      "communityLabel": "discoverPlugins area"
     },
     {
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/cli-router.ts::getVersion::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 36,
+      "communityLabel": "discoverPlugins area"
     },
     {
       "symbolId": "packages/cli/src/cli/cli-router.ts::locateGitRoot::function",
-      "communityId": 64,
+      "communityId": 72,
       "communityLabel": "locateGitRoot area"
     },
     {
@@ -916,28 +966,28 @@
     },
     {
       "symbolId": "packages/cli/src/cli/doctor-command.ts::DoctorOptions::interface",
-      "communityId": 65,
+      "communityId": 73,
       "communityLabel": "DoctorOptions area"
     },
     {
       "symbolId": "packages/cli/src/cli/doctor-fix.ts::FixAttempt::interface",
-      "communityId": 66,
+      "communityId": 74,
       "communityLabel": "FixAttempt area"
     },
     {
       "symbolId": "packages/cli/src/cli/doctor-fix.ts::FixOptions::interface",
-      "communityId": 67,
+      "communityId": 75,
       "communityLabel": "FixOptions area"
     },
     {
       "symbolId": "packages/cli/src/cli/doctor-fix.ts::FixReport::interface",
-      "communityId": 68,
+      "communityId": 76,
       "communityLabel": "FixReport area"
     },
     {
       "symbolId": "packages/cli/src/cli/doctor-fix.ts::applyFixes::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/doctor-fix.ts::formatFixReport::function",
@@ -946,38 +996,38 @@
     },
     {
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.autoInstallMissingPlugins::method",
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
+    },
+    {
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.buildCommunitySnapshot::method",
       "communityId": 6,
       "communityLabel": "packages/cli/src"
     },
     {
-      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.buildCommunitySnapshot::method",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
-    },
-    {
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.buildGraphInputIndices::method",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.discoverFilesIn::method",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.discoverWorkspaces::method",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.ensureGitignore::method",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.isSupportedExtension::method",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.loadIgnoreConfig::method",
@@ -986,23 +1036,28 @@
     },
     {
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.printLanguagePreview::method",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.registerDiscoveredPlugins::method",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.run::method",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.runCheck::method",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
+    },
+    {
+      "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand.writeArchitectureArtifacts::method",
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
@@ -1011,137 +1066,137 @@
     },
     {
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.dryRun::method",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.getVersion::method",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.installHook::method",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.installHooks::method",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.run::method",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand::class",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/init-command.ts::InitOptions::interface",
-      "communityId": 69,
+      "communityId": 77,
       "communityLabel": "InitOptions area"
     },
     {
       "symbolId": "packages/cli/src/cli/install-command.ts::InstallCommand.resolveLanguages::method",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/install-command.ts::InstallCommand.run::method",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/cli/install-command.ts::InstallOptions::interface",
-      "communityId": 70,
+      "communityId": 78,
       "communityLabel": "InstallOptions area"
     },
     {
       "symbolId": "packages/cli/src/cli/install-command.ts::InstallPlan::interface",
-      "communityId": 71,
+      "communityId": 79,
       "communityLabel": "InstallPlan area"
     },
     {
       "symbolId": "packages/cli/src/cli/plugin-loader.ts::LoadPluginsOptions::interface",
-      "communityId": 72,
+      "communityId": 80,
       "communityLabel": "LoadPluginsOptions area"
     },
     {
       "symbolId": "packages/cli/src/cli/plugin-loader.ts::LoadedPlugin::interface",
-      "communityId": 73,
+      "communityId": 81,
       "communityLabel": "LoadedPlugin area"
     },
     {
       "symbolId": "packages/cli/src/cli/plugin-loader.ts::loadManifestPath::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 36,
+      "communityLabel": "discoverPlugins area"
     },
     {
       "symbolId": "packages/cli/src/cli/plugin-loader.ts::loadPlugins::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 36,
+      "communityLabel": "discoverPlugins area"
     },
     {
       "symbolId": "packages/cli/src/cli/stats-command.ts::StatsCommand.buildReport::method",
-      "communityId": 42,
+      "communityId": 45,
       "communityLabel": "StatsCommand.buildReport area"
     },
     {
       "symbolId": "packages/cli/src/cli/stats-command.ts::StatsCommand.emptyReport::method",
-      "communityId": 42,
+      "communityId": 45,
       "communityLabel": "StatsCommand.buildReport area"
     },
     {
       "symbolId": "packages/cli/src/cli/stats-command.ts::StatsCommand.formatNumber::method",
-      "communityId": 42,
+      "communityId": 45,
       "communityLabel": "StatsCommand.buildReport area"
     },
     {
       "symbolId": "packages/cli/src/cli/stats-command.ts::StatsCommand.formatTokens::method",
-      "communityId": 42,
+      "communityId": 45,
       "communityLabel": "StatsCommand.buildReport area"
     },
     {
       "symbolId": "packages/cli/src/cli/stats-command.ts::StatsCommand.isStatsEnabled::method",
-      "communityId": 42,
+      "communityId": 45,
       "communityLabel": "StatsCommand.buildReport area"
     },
     {
       "symbolId": "packages/cli/src/cli/stats-command.ts::StatsCommand.printHumanReadable::method",
-      "communityId": 42,
+      "communityId": 45,
       "communityLabel": "StatsCommand.buildReport area"
     },
     {
       "symbolId": "packages/cli/src/cli/stats-command.ts::StatsCommand.renderBar::method",
-      "communityId": 42,
+      "communityId": 45,
       "communityLabel": "StatsCommand.buildReport area"
     },
     {
       "symbolId": "packages/cli/src/cli/stats-command.ts::StatsCommand.run::method",
-      "communityId": 42,
+      "communityId": 45,
       "communityLabel": "StatsCommand.buildReport area"
     },
     {
       "symbolId": "packages/cli/src/cli/stats-command.ts::StatsCommand::class",
-      "communityId": 42,
+      "communityId": 45,
       "communityLabel": "StatsCommand.buildReport area"
     },
     {
@@ -1161,18 +1216,18 @@
     },
     {
       "symbolId": "packages/cli/src/cli/sync-command.ts::SyncCommand.run::method",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
-    },
-    {
-      "symbolId": "packages/cli/src/cli/sync-command.ts::SyncCommand::class",
       "communityId": 6,
       "communityLabel": "packages/cli/src"
     },
     {
+      "symbolId": "packages/cli/src/cli/sync-command.ts::SyncCommand::class",
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
+    },
+    {
       "symbolId": "packages/cli/src/cli/verify-command.ts::VerifyCommand.run::method",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/cli/verify-command.ts::VerifyCommand::class",
@@ -1181,28 +1236,28 @@
     },
     {
       "symbolId": "packages/cli/src/cli/version-command.ts::PluginVersionInfo::interface",
-      "communityId": 74,
+      "communityId": 82,
       "communityLabel": "PluginVersionInfo area"
     },
     {
       "symbolId": "packages/cli/src/cli/version-command.ts::RuntimeInfo::interface",
-      "communityId": 75,
+      "communityId": 83,
       "communityLabel": "RuntimeInfo area"
     },
     {
       "symbolId": "packages/cli/src/cli/version-command.ts::VersionCommand.collect::method",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 36,
+      "communityLabel": "discoverPlugins area"
     },
     {
       "symbolId": "packages/cli/src/cli/version-command.ts::VersionCommand.run::method",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 36,
+      "communityLabel": "discoverPlugins area"
     },
     {
       "symbolId": "packages/cli/src/cli/version-command.ts::VersionCommand::class",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 36,
+      "communityLabel": "discoverPlugins area"
     },
     {
       "symbolId": "packages/cli/src/cli/version-command.ts::VersionInfo::interface",
@@ -1211,18 +1266,18 @@
     },
     {
       "symbolId": "packages/cli/src/cli/version-command.ts::VersionOptions::interface",
-      "communityId": 76,
+      "communityId": 84,
       "communityLabel": "VersionOptions area"
     },
     {
       "symbolId": "packages/cli/src/cli/version-command.ts::formatJson::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 36,
+      "communityLabel": "discoverPlugins area"
     },
     {
       "symbolId": "packages/cli/src/cli/version-command.ts::formatShort::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 36,
+      "communityLabel": "discoverPlugins area"
     },
     {
       "symbolId": "packages/cli/src/cli/version-command.ts::formatVerbose::function",
@@ -1231,118 +1286,118 @@
     },
     {
       "symbolId": "packages/cli/src/cli/version-command.ts::gatherFromLivePlugins::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 36,
+      "communityLabel": "discoverPlugins area"
     },
     {
       "symbolId": "packages/cli/src/cli/version-command.ts::gatherVersionInfo::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 36,
+      "communityLabel": "discoverPlugins area"
     },
     {
       "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.getTemplatePath::method",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.openInBrowser::method",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand.run::method",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeOptions::interface",
-      "communityId": 77,
+      "communityId": 85,
       "communityLabel": "VisualizeOptions area"
     },
     {
       "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator.calculate::method",
-      "communityId": 78,
+      "communityId": 86,
       "communityLabel": "packages/cli/src/core/blast-radius"
     },
     {
       "symbolId": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusEntry::interface",
-      "communityId": 79,
+      "communityId": 87,
       "communityLabel": "BlastRadiusEntry area"
     },
     {
       "symbolId": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusResult::interface",
-      "communityId": 80,
+      "communityId": 88,
       "communityLabel": "BlastRadiusResult area"
     },
     {
       "symbolId": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::ImpactConfidence::type",
-      "communityId": 81,
+      "communityId": 89,
       "communityLabel": "ImpactConfidence area"
     },
     {
       "symbolId": "packages/cli/src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer.normalize::method",
-      "communityId": 82,
+      "communityId": 90,
       "communityLabel": "packages/cli/src/core/change-intelligence"
     },
     {
       "symbolId": "packages/cli/src/core/change-intelligence/churn-analyzer.ts::ChurnAnalyzer::class",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/change-intelligence/complexity-calculator.ts::ComplexityCalculator.calculate::method",
-      "communityId": 83,
+      "communityId": 91,
       "communityLabel": "ComplexityCalculator.calculate area"
     },
     {
       "symbolId": "packages/cli/src/core/change-intelligence/complexity-calculator.ts::ComplexityCalculator::class",
-      "communityId": 84,
+      "communityId": 92,
       "communityLabel": "packages/cli/src/core"
     },
     {
       "symbolId": "packages/cli/src/core/change-intelligence/health-scorer.ts::HealthScorer.score::method",
-      "communityId": 85,
+      "communityId": 93,
       "communityLabel": "packages/cli/src/core/change-intelligence/health-scorer.ts"
     },
     {
       "symbolId": "packages/cli/src/core/change-intelligence/health-scorer.ts::HealthScorer.toBand::method",
-      "communityId": 85,
+      "communityId": 93,
       "communityLabel": "packages/cli/src/core/change-intelligence/health-scorer.ts"
     },
     {
       "symbolId": "packages/cli/src/core/change-intelligence/health-scorer.ts::HealthScorer::class",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/co-change/co-change-analyzer.ts::aggregateCoChanges::function",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/co-change/co-change-analyzer.ts::loadCoChangeMap::function",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/config/config-schema.ts::CtxoConfig::type",
@@ -1360,28 +1415,53 @@
       "communityLabel": "packages/cli/src"
     },
     {
+      "symbolId": "packages/cli/src/core/config/config-schema.ts::DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES::variable",
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
+    },
+    {
       "symbolId": "packages/cli/src/core/config/config-schema.ts::IndexConfig::type",
-      "communityId": 86,
+      "communityId": 94,
       "communityLabel": "packages/cli/src/core/config"
     },
     {
       "symbolId": "packages/cli/src/core/config/config-schema.ts::IndexConfigSchema::variable",
-      "communityId": 87,
+      "communityId": 95,
       "communityLabel": "IndexConfigSchema area"
     },
     {
+      "symbolId": "packages/cli/src/core/config/config-schema.ts::MaskingConfig::type",
+      "communityId": 96,
+      "communityLabel": "MaskingConfig area"
+    },
+    {
+      "symbolId": "packages/cli/src/core/config/config-schema.ts::MaskingConfigSchema::variable",
+      "communityId": 97,
+      "communityLabel": "MaskingConfigSchema area"
+    },
+    {
       "symbolId": "packages/cli/src/core/config/config-schema.ts::StatsConfig::type",
-      "communityId": 88,
+      "communityId": 98,
       "communityLabel": "StatsConfig area"
     },
     {
       "symbolId": "packages/cli/src/core/config/config-schema.ts::StatsConfigSchema::variable",
-      "communityId": 89,
+      "communityId": 99,
       "communityLabel": "StatsConfigSchema area"
     },
     {
+      "symbolId": "packages/cli/src/core/config/config-schema.ts::WatchConfig::type",
+      "communityId": 100,
+      "communityLabel": "WatchConfig area"
+    },
+    {
+      "symbolId": "packages/cli/src/core/config/config-schema.ts::WatchConfigSchema::variable",
+      "communityId": 101,
+      "communityLabel": "WatchConfigSchema area"
+    },
+    {
       "symbolId": "packages/cli/src/core/config/load-config.ts::LoadedConfig::interface",
-      "communityId": 90,
+      "communityId": 102,
       "communityLabel": "LoadedConfig area"
     },
     {
@@ -1401,6 +1481,11 @@
     },
     {
       "symbolId": "packages/cli/src/core/config/load-config.ts::makeGlobMatcher::function",
+      "communityId": 36,
+      "communityLabel": "discoverPlugins area"
+    },
+    {
+      "symbolId": "packages/cli/src/core/config/load-config.ts::maskingClusterLabelPatterns::function",
       "communityId": 6,
       "communityLabel": "packages/cli/src"
     },
@@ -1410,193 +1495,198 @@
       "communityLabel": "packages/cli/src"
     },
     {
+      "symbolId": "packages/cli/src/core/config/load-config.ts::watchSnapshotMinFileChanges::function",
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
+    },
+    {
       "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleForTask::method",
-      "communityId": 91,
+      "communityId": 103,
       "communityLabel": "packages/cli/src/core/context-assembly/context-assembler.ts"
     },
     {
       "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.assembleRanked::method",
-      "communityId": 91,
+      "communityId": 103,
       "communityLabel": "packages/cli/src/core/context-assembly/context-assembler.ts"
     },
     {
       "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.buildContextEntry::method",
-      "communityId": 91,
+      "communityId": 103,
       "communityLabel": "packages/cli/src/core/context-assembly/context-assembler.ts"
     },
     {
       "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.computeScore::method",
-      "communityId": 91,
+      "communityId": 103,
       "communityLabel": "packages/cli/src/core/context-assembly/context-assembler.ts"
     },
     {
       "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.computeTextRelevance::method",
-      "communityId": 91,
+      "communityId": 103,
       "communityLabel": "packages/cli/src/core/context-assembly/context-assembler.ts"
     },
     {
       "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokens::method",
-      "communityId": 91,
+      "communityId": 103,
       "communityLabel": "packages/cli/src/core/context-assembly/context-assembler.ts"
     },
     {
       "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.estimateTokensPublic::method",
-      "communityId": 91,
+      "communityId": 103,
       "communityLabel": "packages/cli/src/core/context-assembly/context-assembler.ts"
     },
     {
       "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler.isInterfaceOrType::method",
-      "communityId": 91,
+      "communityId": 103,
       "communityLabel": "packages/cli/src/core/context-assembly/context-assembler.ts"
     },
     {
       "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextAssembler::class",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::ContextEntry::interface",
-      "communityId": 92,
+      "communityId": 104,
       "communityLabel": "packages/cli/src/core/context-assembly"
     },
     {
       "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::RankedContextResult::interface",
-      "communityId": 93,
+      "communityId": 105,
       "communityLabel": "RankedContextResult area"
     },
     {
       "symbolId": "packages/cli/src/core/context-assembly/context-assembler.ts::TaskContextResult::interface",
-      "communityId": 94,
+      "communityId": 106,
       "communityLabel": "TaskContextResult area"
     },
     {
       "symbolId": "packages/cli/src/core/context-assembly/task-context-strategy.ts::ScoringWeights::interface",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/context-assembly/task-context-strategy.ts::TaskType::type",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/context-assembly/task-context-strategy.ts::getWeightsForTask::function",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeConfidence::type",
-      "communityId": 95,
+      "communityId": 107,
       "communityLabel": "packages/cli/src/core/dead-code"
     },
     {
       "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeCascadeDepths::method",
-      "communityId": 96,
+      "communityId": 108,
       "communityLabel": "packages/cli/src/core/dead-code/dead-code-detector.ts"
     },
     {
       "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.computeConfidence::method",
-      "communityId": 96,
+      "communityId": 108,
       "communityLabel": "packages/cli/src/core/dead-code/dead-code-detector.ts"
     },
     {
       "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.describeReason::method",
-      "communityId": 96,
+      "communityId": 108,
       "communityLabel": "packages/cli/src/core/dead-code/dead-code-detector.ts"
     },
     {
       "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detect::method",
-      "communityId": 96,
+      "communityId": 108,
       "communityLabel": "packages/cli/src/core/dead-code/dead-code-detector.ts"
     },
     {
       "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.detectScaffolding::method",
-      "communityId": 96,
+      "communityId": 108,
       "communityLabel": "packages/cli/src/core/dead-code/dead-code-detector.ts"
     },
     {
       "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.isFrameworkSymbol::method",
-      "communityId": 96,
+      "communityId": 108,
       "communityLabel": "packages/cli/src/core/dead-code/dead-code-detector.ts"
     },
     {
       "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector.matchesAny::method",
-      "communityId": 96,
+      "communityId": 108,
       "communityLabel": "packages/cli/src/core/dead-code/dead-code-detector.ts"
     },
     {
       "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeDetector::class",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadCodeResult::interface",
-      "communityId": 97,
+      "communityId": 109,
       "communityLabel": "DeadCodeResult area"
     },
     {
       "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::DeadSymbolEntry::interface",
-      "communityId": 98,
+      "communityId": 110,
       "communityLabel": "DeadSymbolEntry area"
     },
     {
       "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::ScaffoldingEntry::interface",
-      "communityId": 99,
+      "communityId": 111,
       "communityLabel": "ScaffoldingEntry area"
     },
     {
       "symbolId": "packages/cli/src/core/dead-code/dead-code-detector.ts::UnusedExportEntry::interface",
-      "communityId": 100,
+      "communityId": 112,
       "communityLabel": "UnusedExportEntry area"
     },
     {
       "symbolId": "packages/cli/src/core/detail-levels/detail-formatter.ts::DetailFormatter.estimateTokens::method",
-      "communityId": 101,
+      "communityId": 113,
       "communityLabel": "packages/cli/src/core/detail-levels/detail-formatter.ts"
     },
     {
       "symbolId": "packages/cli/src/core/detail-levels/detail-formatter.ts::DetailFormatter.format::method",
-      "communityId": 101,
+      "communityId": 113,
       "communityLabel": "packages/cli/src/core/detail-levels/detail-formatter.ts"
     },
     {
       "symbolId": "packages/cli/src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL1::method",
-      "communityId": 101,
+      "communityId": 113,
       "communityLabel": "packages/cli/src/core/detail-levels/detail-formatter.ts"
     },
     {
       "symbolId": "packages/cli/src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL2::method",
-      "communityId": 101,
+      "communityId": 113,
       "communityLabel": "packages/cli/src/core/detail-levels/detail-formatter.ts"
     },
     {
       "symbolId": "packages/cli/src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL3::method",
-      "communityId": 101,
+      "communityId": 113,
       "communityLabel": "packages/cli/src/core/detail-levels/detail-formatter.ts"
     },
     {
       "symbolId": "packages/cli/src/core/detail-levels/detail-formatter.ts::DetailFormatter.formatL4::method",
-      "communityId": 101,
+      "communityId": 113,
       "communityLabel": "packages/cli/src/core/detail-levels/detail-formatter.ts"
     },
     {
       "symbolId": "packages/cli/src/core/detail-levels/detail-formatter.ts::DetailFormatter.symbolCharEstimate::method",
-      "communityId": 101,
+      "communityId": 113,
       "communityLabel": "packages/cli/src/core/detail-levels/detail-formatter.ts"
     },
     {
       "symbolId": "packages/cli/src/core/detail-levels/detail-formatter.ts::DetailFormatter.truncateToTokenBudget::method",
-      "communityId": 101,
+      "communityId": 113,
       "communityLabel": "packages/cli/src/core/detail-levels/detail-formatter.ts"
     },
     {
       "symbolId": "packages/cli/src/core/detail-levels/detail-formatter.ts::DetailFormatter::class",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/detection/detect-languages.ts::DetectionResult::interface",
-      "communityId": 102,
+      "communityId": 114,
       "communityLabel": "packages/cli/src/core/detection"
     },
     {
@@ -1606,33 +1696,33 @@
     },
     {
       "symbolId": "packages/cli/src/core/detection/detect-languages.ts::KNOWN_LANGUAGES::variable",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/core/detection/detect-languages.ts::KnownLanguage::type",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/core/detection/detect-languages.ts::LanguageNeedsOptions::interface",
-      "communityId": 103,
+      "communityId": 115,
       "communityLabel": "LanguageNeedsOptions area"
     },
     {
       "symbolId": "packages/cli/src/core/detection/detect-languages.ts::decideNeededLanguages::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/core/detection/detect-languages.ts::detectLanguages::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/core/detection/detect-languages.ts::officialPluginFor::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/core/diagnostics/types.ts::CheckContext::interface",
@@ -1646,7 +1736,7 @@
     },
     {
       "symbolId": "packages/cli/src/core/diagnostics/types.ts::CheckStatus::type",
-      "communityId": 104,
+      "communityId": 116,
       "communityLabel": "packages/cli/src/core/diagnostics"
     },
     {
@@ -1656,7 +1746,7 @@
     },
     {
       "symbolId": "packages/cli/src/core/diagnostics/types.ts::DoctorSummary::interface",
-      "communityId": 105,
+      "communityId": 117,
       "communityLabel": "DoctorSummary area"
     },
     {
@@ -1666,482 +1756,537 @@
     },
     {
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.addEdge::method",
-      "communityId": 106,
+      "communityId": 118,
       "communityLabel": "packages/cli/src/core/graph/symbol-graph.ts"
     },
     {
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.addNode::method",
-      "communityId": 107,
+      "communityId": 119,
       "communityLabel": "packages/cli/src/core/graph"
     },
     {
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.allEdges::method",
-      "communityId": 108,
+      "communityId": 120,
       "communityLabel": "SymbolGraph.allEdges area"
     },
     {
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.allNodes::method",
-      "communityId": 109,
+      "communityId": 121,
       "communityLabel": "SymbolGraph.allNodes area"
     },
     {
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.getForwardEdges::method",
-      "communityId": 110,
+      "communityId": 122,
       "communityLabel": "SymbolGraph.getForwardEdges area"
     },
     {
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.getNode::method",
-      "communityId": 111,
+      "communityId": 123,
       "communityLabel": "SymbolGraph.resolveNodeFuzzy area"
     },
     {
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.getReverseEdges::method",
-      "communityId": 112,
+      "communityId": 124,
       "communityLabel": "SymbolGraph.getReverseEdges area"
     },
     {
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.hasNode::method",
-      "communityId": 111,
+      "communityId": 123,
       "communityLabel": "SymbolGraph.resolveNodeFuzzy area"
     },
     {
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.resolveNodeFuzzy::method",
-      "communityId": 111,
+      "communityId": 123,
       "communityLabel": "SymbolGraph.resolveNodeFuzzy area"
     },
     {
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.resolveNodeId::method",
-      "communityId": 106,
+      "communityId": 118,
       "communityLabel": "packages/cli/src/core/graph/symbol-graph.ts"
     },
     {
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class",
-      "communityId": 40,
+      "communityId": 43,
+      "communityLabel": "SymbolGraph area"
+    },
+    {
+      "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisCommunityLegend::interface",
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisEdge::interface",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisFileInfo::interface",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisNode::interface",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisualizationPayload::interface",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator.calculate::method",
-      "communityId": 113,
+      "communityId": 125,
       "communityLabel": "packages/cli/src/core/importance"
     },
     {
       "symbolId": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankEntry::interface",
-      "communityId": 114,
+      "communityId": 126,
       "communityLabel": "PageRankEntry area"
     },
     {
       "symbolId": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankOptions::interface",
-      "communityId": 115,
+      "communityId": 127,
       "communityLabel": "PageRankOptions area"
     },
     {
       "symbolId": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankResult::interface",
-      "communityId": 116,
+      "communityId": 128,
       "communityLabel": "PageRankResult area"
     },
     {
       "symbolId": "packages/cli/src/core/install/package-manager.ts::InstallInvocation::interface",
-      "communityId": 117,
+      "communityId": 129,
       "communityLabel": "packages/cli/src/core/install"
     },
     {
       "symbolId": "packages/cli/src/core/install/package-manager.ts::PACKAGE_MANAGERS::variable",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/core/install/package-manager.ts::PackageManager::type",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/core/install/package-manager.ts::Resolution::interface",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/core/install/package-manager.ts::ResolveOptions::interface",
-      "communityId": 118,
+      "communityId": 130,
       "communityLabel": "ResolveOptions area"
     },
     {
       "symbolId": "packages/cli/src/core/install/package-manager.ts::buildInstallCommand::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/core/install/package-manager.ts::isPackageManager::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/core/install/package-manager.ts::resolvePackageManager::function",
-      "communityId": 6,
-      "communityLabel": "packages/cli/src"
+      "communityId": 17,
+      "communityLabel": "detectLanguages area"
     },
     {
       "symbolId": "packages/cli/src/core/intent-filter.ts::filterByIntent::function",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/core/logger.ts::Logger::interface",
-      "communityId": 119,
+      "communityId": 131,
       "communityLabel": "Logger area"
     },
     {
       "symbolId": "packages/cli/src/core/logger.ts::createLogger::function",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery.getLogicSlice::method",
-      "communityId": 120,
+      "communityId": 132,
       "communityLabel": "packages/cli/src/core/logic-slice"
     },
     {
       "symbolId": "packages/cli/src/core/logic-slice/logic-slice-query.ts::LogicSliceQuery::class",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPatternConfig::interface",
-      "communityId": 121,
+      "communityId": 133,
       "communityLabel": "packages/cli/src/core/masking"
     },
     {
       "symbolId": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline.fromConfig::method",
-      "communityId": 122,
+      "communityId": 134,
       "communityLabel": "MaskingPipeline.fromConfig area"
     },
     {
       "symbolId": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline.mask::method",
-      "communityId": 123,
+      "communityId": 135,
       "communityLabel": "MaskingPipeline.mask area"
     },
     {
       "symbolId": "packages/cli/src/core/masking/masking-pipeline.ts::MaskingPipeline::class",
-      "communityId": 124,
+      "communityId": 136,
       "communityLabel": "MaskingPipeline area"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildDisconnectedClusterGraph::function",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildGraphWithGodNode::function",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildIsolatedGraph::function",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/__tests__/fixtures/multi-cluster.ts::buildMultiClusterGraph::function",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay.classify::method",
-      "communityId": 125,
+      "communityId": 137,
       "communityLabel": "packages/cli/src/core/overlay/architectural-overlay.ts"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay.matchLayer::method",
-      "communityId": 125,
+      "communityId": 137,
       "communityLabel": "packages/cli/src/core/overlay/architectural-overlay.ts"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/architectural-overlay.ts::ArchitecturalOverlay::class",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/architectural-overlay.ts::LayerRule::interface",
-      "communityId": 126,
+      "communityId": 138,
       "communityLabel": "packages/cli/src/core/overlay"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/architectural-overlay.ts::OverlayResult::interface",
-      "communityId": 127,
+      "communityId": 139,
       "communityLabel": "OverlayResult area"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetectionResult::interface",
-      "communityId": 128,
+      "communityId": 140,
       "communityLabel": "BoundaryViolationDetectionResult area"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector.detect::method",
-      "communityId": 129,
+      "communityId": 141,
       "communityLabel": "BoundaryViolationDetector.detect area"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/boundary-violation-detector.ts::BoundaryViolationDetector::class",
-      "communityId": 36,
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
+    },
+    {
+      "symbolId": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker.isEnabled::method",
+      "communityId": 142,
+      "communityLabel": "ClusterLabelMasker.isEnabled area"
+    },
+    {
+      "symbolId": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker.mask::method",
+      "communityId": 143,
+      "communityLabel": "packages/cli/src/core/overlay/cluster-label-masker.ts"
+    },
+    {
+      "symbolId": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker.maskSnapshot::method",
+      "communityId": 143,
+      "communityLabel": "packages/cli/src/core/overlay/cluster-label-masker.ts"
+    },
+    {
+      "symbolId": "packages/cli/src/core/overlay/cluster-label-masker.ts::ClusterLabelMasker::class",
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityComputeResult::interface",
-      "communityId": 130,
+      "communityId": 144,
       "communityLabel": "CommunityComputeResult area"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.buildMemberIndex::method",
-      "communityId": 131,
-      "communityLabel": "CommunityEntry area"
+      "communityId": 145,
+      "communityLabel": "packages/cli/src/core/overlay/community-detector.ts"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.countCrossClusterEdges::method",
-      "communityId": 131,
-      "communityLabel": "CommunityEntry area"
+      "communityId": 145,
+      "communityLabel": "packages/cli/src/core/overlay/community-detector.ts"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.detect::method",
-      "communityId": 131,
-      "communityLabel": "CommunityEntry area"
+      "communityId": 145,
+      "communityLabel": "packages/cli/src/core/overlay/community-detector.ts"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.detectGodNodes::method",
-      "communityId": 131,
-      "communityLabel": "CommunityEntry area"
+      "communityId": 145,
+      "communityLabel": "packages/cli/src/core/overlay/community-detector.ts"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.normalizeCommunityIds::method",
-      "communityId": 131,
-      "communityLabel": "CommunityEntry area"
+      "communityId": 145,
+      "communityLabel": "packages/cli/src/core/overlay/community-detector.ts"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.singletonCommunities::method",
-      "communityId": 131,
-      "communityLabel": "CommunityEntry area"
+      "communityId": 145,
+      "communityLabel": "packages/cli/src/core/overlay/community-detector.ts"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector.splitDisconnectedCommunities::method",
-      "communityId": 131,
-      "communityLabel": "CommunityEntry area"
+      "communityId": 145,
+      "communityLabel": "packages/cli/src/core/overlay/community-detector.ts"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class",
-      "communityId": 131,
-      "communityLabel": "CommunityEntry area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetectorOptions::interface",
-      "communityId": 132,
+      "communityId": 146,
       "communityLabel": "CommunityDetectorOptions area"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/community-labeler.ts::labelCommunities::function",
-      "communityId": 131,
-      "communityLabel": "CommunityEntry area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetectionResult::interface",
-      "communityId": 133,
+      "communityId": 147,
       "communityLabel": "DriftDetectionResult area"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.detect::method",
-      "communityId": 134,
+      "communityId": 148,
       "communityLabel": "packages/cli/src/core/overlay/drift-detector.ts"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector.mapCommunities::method",
-      "communityId": 134,
+      "communityId": 148,
       "communityLabel": "packages/cli/src/core/overlay/drift-detector.ts"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetector::class",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftDetectorOptions::interface",
-      "communityId": 135,
+      "communityId": 149,
       "communityLabel": "DriftDetectorOptions area"
     },
     {
+      "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftEventWithStability::interface",
+      "communityId": 150,
+      "communityLabel": "DriftEventWithStability area"
+    },
+    {
+      "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftStability::type",
+      "communityId": 151,
+      "communityLabel": "DriftStability area"
+    },
+    {
+      "symbolId": "packages/cli/src/core/overlay/drift-detector.ts::DriftStabilitySummary::interface",
+      "communityId": 152,
+      "communityLabel": "DriftStabilitySummary area"
+    },
+    {
+      "symbolId": "packages/cli/src/core/overlay/snapshot-staleness.ts::SnapshotStaleness::interface",
+      "communityId": 153,
+      "communityLabel": "SnapshotStaleness area"
+    },
+    {
+      "symbolId": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function",
+      "communityId": 39,
+      "communityLabel": "IStoragePort area"
+    },
+    {
       "symbolId": "packages/cli/src/core/response-envelope.ts::ResponseMeta::interface",
-      "communityId": 136,
+      "communityId": 154,
       "communityLabel": "ResponseMeta area"
     },
     {
+      "symbolId": "packages/cli/src/core/response-envelope.ts::WrapResponseExtras::interface",
+      "communityId": 155,
+      "communityLabel": "WrapResponseExtras area"
+    },
+    {
       "symbolId": "packages/cli/src/core/response-envelope.ts::getWorkspaceMeta::function",
-      "communityId": 137,
+      "communityId": 156,
       "communityLabel": "getWorkspaceMeta area"
     },
     {
       "symbolId": "packages/cli/src/core/response-envelope.ts::setWorkspaceMeta::function",
-      "communityId": 138,
+      "communityId": 157,
       "communityLabel": "setWorkspaceMeta area"
     },
     {
       "symbolId": "packages/cli/src/core/response-envelope.ts::wrapResponse::function",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/core/search/fuzzy-corrector.ts::FuzzyCorrector.buildVocabulary::method",
-      "communityId": 139,
+      "communityId": 158,
       "communityLabel": "packages/cli/src/core/search"
     },
     {
       "symbolId": "packages/cli/src/core/search/fuzzy-corrector.ts::FuzzyCorrector.correct::method",
-      "communityId": 140,
+      "communityId": 159,
       "communityLabel": "FuzzyCorrection area"
     },
     {
       "symbolId": "packages/cli/src/core/search/fuzzy-corrector.ts::FuzzyCorrector.findClosest::method",
-      "communityId": 140,
+      "communityId": 159,
       "communityLabel": "FuzzyCorrection area"
     },
     {
       "symbolId": "packages/cli/src/core/search/fuzzy-corrector.ts::FuzzyCorrector::class",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/core/search/fuzzy-corrector.ts::damerauLevenshtein::function",
-      "communityId": 140,
+      "communityId": 159,
       "communityLabel": "FuzzyCorrection area"
     },
     {
       "symbolId": "packages/cli/src/core/search/search-engine.ts::SearchEngine.bigramBoost::method",
-      "communityId": 141,
+      "communityId": 160,
       "communityLabel": "packages/cli/src/core/search/search-engine.ts"
     },
     {
       "symbolId": "packages/cli/src/core/search/search-engine.ts::SearchEngine.bm25Search::method",
-      "communityId": 141,
+      "communityId": 160,
       "communityLabel": "packages/cli/src/core/search/search-engine.ts"
     },
     {
       "symbolId": "packages/cli/src/core/search/search-engine.ts::SearchEngine.buildIndex::method",
-      "communityId": 141,
+      "communityId": 160,
       "communityLabel": "packages/cli/src/core/search/search-engine.ts"
     },
     {
       "symbolId": "packages/cli/src/core/search/search-engine.ts::SearchEngine.buildResults::method",
-      "communityId": 141,
+      "communityId": 160,
       "communityLabel": "packages/cli/src/core/search/search-engine.ts"
     },
     {
       "symbolId": "packages/cli/src/core/search/search-engine.ts::SearchEngine.emptyResponse::method",
-      "communityId": 141,
+      "communityId": 160,
       "communityLabel": "packages/cli/src/core/search/search-engine.ts"
     },
     {
       "symbolId": "packages/cli/src/core/search/search-engine.ts::SearchEngine.extractTrigrams::method",
-      "communityId": 141,
+      "communityId": 160,
       "communityLabel": "packages/cli/src/core/search/search-engine.ts"
     },
     {
       "symbolId": "packages/cli/src/core/search/search-engine.ts::SearchEngine.getTier::method",
-      "communityId": 142,
+      "communityId": 161,
       "communityLabel": "SearchEngine.getTier area"
     },
     {
       "symbolId": "packages/cli/src/core/search/search-engine.ts::SearchEngine.mergeScores::method",
-      "communityId": 141,
+      "communityId": 160,
       "communityLabel": "packages/cli/src/core/search/search-engine.ts"
     },
     {
       "symbolId": "packages/cli/src/core/search/search-engine.ts::SearchEngine.search::method",
-      "communityId": 141,
+      "communityId": 160,
       "communityLabel": "packages/cli/src/core/search/search-engine.ts"
     },
     {
       "symbolId": "packages/cli/src/core/search/search-engine.ts::SearchEngine.updateFile::method",
-      "communityId": 141,
+      "communityId": 160,
       "communityLabel": "packages/cli/src/core/search/search-engine.ts"
     },
     {
       "symbolId": "packages/cli/src/core/search/search-engine.ts::SearchEngine::class",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.isStopWord::method",
-      "communityId": 143,
+      "communityId": 162,
       "communityLabel": "SymbolTokenizer.isStopWord area"
     },
     {
       "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitCamelCase::method",
-      "communityId": 144,
+      "communityId": 163,
       "communityLabel": "SymbolTokenizer.splitCamelCase area"
     },
     {
       "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.splitName::method",
-      "communityId": 145,
+      "communityId": 164,
       "communityLabel": "SymbolTokenizer.splitName area"
     },
     {
       "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.tokenize::method",
-      "communityId": 146,
+      "communityId": 165,
       "communityLabel": "SymbolTokenizer.tokenize area"
     },
     {
       "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.tokenizeFilePath::method",
-      "communityId": 147,
+      "communityId": 166,
       "communityLabel": "SymbolTokenizer.tokenizeFilePath area"
     },
     {
       "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer.tokenizeQuery::method",
-      "communityId": 148,
+      "communityId": 167,
       "communityLabel": "SymbolTokenizer.tokenizeQuery area"
     },
     {
       "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::SymbolTokenizer::class",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/core/search/symbol-tokenizer.ts::TokenizerOptions::interface",
-      "communityId": 149,
+      "communityId": 168,
       "communityLabel": "TokenizerOptions area"
     },
     {
       "symbolId": "packages/cli/src/core/staleness/content-hasher.ts::ContentHasher.hash::method",
-      "communityId": 150,
+      "communityId": 169,
       "communityLabel": "packages/cli/src/core/staleness"
     },
     {
       "symbolId": "packages/cli/src/core/staleness/content-hasher.ts::ContentHasher::class",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/staleness/staleness-detector.ts::StalenessDetector.check::method",
-      "communityId": 151,
+      "communityId": 170,
       "communityLabel": "StalenessDetector.check area"
     },
     {
@@ -2151,2060 +2296,2067 @@
     },
     {
       "symbolId": "packages/cli/src/core/staleness/staleness-detector.ts::StalenessWarning::interface",
-      "communityId": 152,
+      "communityId": 171,
       "communityLabel": "StalenessWarning area"
     },
     {
       "symbolId": "packages/cli/src/core/stats/stats-types.ts::StatsReport::interface",
-      "communityId": 42,
+      "communityId": 45,
       "communityLabel": "StatsCommand.buildReport area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::AntiPattern::type",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::AntiPatternSchema::variable",
-      "communityId": 153,
+      "communityId": 172,
       "communityLabel": "AntiPatternSchema area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::BlameLine::interface",
-      "communityId": 154,
+      "communityId": 173,
       "communityLabel": "BlameLine area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::BoundaryViolation::interface",
-      "communityId": 36,
-      "communityLabel": "IStoragePort area"
+      "communityId": 43,
+      "communityLabel": "SymbolGraph area"
+    },
+    {
+      "symbolId": "packages/cli/src/core/types.ts::BoundaryViolationsArtifact::interface",
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::ChangeIntelligenceScore::interface",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::ChurnData::interface",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::CoChangeEntry::interface",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::CoChangeMatrix::interface",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::CommitIntent::type",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::CommitIntentSchema::variable",
-      "communityId": 155,
+      "communityId": 174,
       "communityLabel": "CommitIntentSchema area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::CommitRecord::interface",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::CommunityEntry::interface",
-      "communityId": 131,
-      "communityLabel": "CommunityEntry area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::ComplexityMetrics::interface",
-      "communityId": 84,
+      "communityId": 92,
       "communityLabel": "packages/cli/src/core"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::ComplexityMetricsSchema::variable",
-      "communityId": 156,
+      "communityId": 175,
       "communityLabel": "ComplexityMetricsSchema area"
     },
     {
+      "symbolId": "packages/cli/src/core/types.ts::ConfidenceLevel::type",
+      "communityId": 176,
+      "communityLabel": "ConfidenceLevel area"
+    },
+    {
       "symbolId": "packages/cli/src/core/types.ts::DETAIL_LEVELS::variable",
-      "communityId": 157,
+      "communityId": 177,
       "communityLabel": "DETAIL_LEVELS area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::DetailLevel::type",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::DetailLevelSchema::variable",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::DriftEvent::interface",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
+    },
+    {
+      "symbolId": "packages/cli/src/core/types.ts::DriftEventsArtifact::interface",
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::EDGE_KINDS::variable",
-      "communityId": 158,
+      "communityId": 178,
       "communityLabel": "EDGE_KINDS area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::EDGE_QUALITY::variable",
-      "communityId": 159,
+      "communityId": 179,
       "communityLabel": "EDGE_QUALITY area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::EdgeKind::type",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::EdgeKindSchema::variable",
-      "communityId": 160,
+      "communityId": 180,
       "communityLabel": "EdgeKindSchema area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::EdgeQuality::type",
-      "communityId": 131,
-      "communityLabel": "CommunityEntry area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::FileIndex::type",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::FileIndexSchema::variable",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::FormattedSlice::interface",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::FuzzyCorrection::interface",
-      "communityId": 140,
+      "communityId": 159,
       "communityLabel": "FuzzyCorrection area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::GodNode::interface",
-      "communityId": 131,
-      "communityLabel": "CommunityEntry area"
+      "communityId": 39,
+      "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::GraphEdge::type",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::GraphEdgeSchema::variable",
-      "communityId": 161,
+      "communityId": 181,
       "communityLabel": "GraphEdgeSchema area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::LogicSliceResult::interface",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::SCORE_BANDS::variable",
-      "communityId": 162,
+      "communityId": 182,
       "communityLabel": "SCORE_BANDS area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::SYMBOL_KINDS::variable",
-      "communityId": 163,
+      "communityId": 183,
       "communityLabel": "SYMBOL_KINDS area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::ScoreBand::type",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::SearchMetrics::interface",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::SearchResponse::interface",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::SearchResult::interface",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::SymbolId::type",
-      "communityId": 164,
+      "communityId": 184,
       "communityLabel": "SymbolId area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::SymbolIdSchema::variable",
-      "communityId": 165,
+      "communityId": 185,
       "communityLabel": "SymbolIdSchema area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::SymbolKind::type",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::SymbolKindSchema::variable",
-      "communityId": 166,
+      "communityId": 186,
       "communityLabel": "SymbolKindSchema area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::SymbolNode::type",
-      "communityId": 40,
+      "communityId": 43,
       "communityLabel": "SymbolGraph area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::SymbolNodeSchema::variable",
-      "communityId": 167,
+      "communityId": 187,
       "communityLabel": "SymbolNodeSchema area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::TruncationInfo::interface",
-      "communityId": 168,
+      "communityId": 188,
       "communityLabel": "TruncationInfo area"
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::WhyContextResult::interface",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector.detect::method",
-      "communityId": 169,
+      "communityId": 189,
       "communityLabel": "packages/cli/src/core/why-context/revert-detector.ts"
     },
     {
       "symbolId": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector.isRevert::method",
-      "communityId": 169,
+      "communityId": 189,
       "communityLabel": "packages/cli/src/core/why-context/revert-detector.ts"
     },
     {
       "symbolId": "packages/cli/src/core/why-context/revert-detector.ts::RevertDetector::class",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/core/why-context/why-context-assembler.ts::WhyContextAssembler.assemble::method",
-      "communityId": 170,
+      "communityId": 190,
       "communityLabel": "packages/cli/src/core/why-context"
     },
     {
       "symbolId": "packages/cli/src/core/why-context/why-context-assembler.ts::WhyContextAssembler::class",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 39,
+      "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/ports/i-masking-port.ts::IMaskingPort::interface",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/ports/i-search-port.ts::ISearchPort::interface",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/ports/i-session-recorder-port.ts::AggregatedStats::interface",
-      "communityId": 42,
+      "communityId": 45,
       "communityLabel": "StatsCommand.buildReport area"
     },
     {
       "symbolId": "packages/cli/src/ports/i-session-recorder-port.ts::DetailLevelStats::interface",
-      "communityId": 42,
+      "communityId": 45,
       "communityLabel": "StatsCommand.buildReport area"
     },
     {
       "symbolId": "packages/cli/src/ports/i-session-recorder-port.ts::ISessionRecorderPort::interface",
-      "communityId": 42,
+      "communityId": 45,
       "communityLabel": "StatsCommand.buildReport area"
     },
     {
       "symbolId": "packages/cli/src/ports/i-session-recorder-port.ts::SessionEvent::interface",
-      "communityId": 42,
+      "communityId": 45,
       "communityLabel": "StatsCommand.buildReport area"
     },
     {
       "symbolId": "packages/cli/src/ports/i-session-recorder-port.ts::SymbolStats::interface",
-      "communityId": 42,
+      "communityId": 45,
       "communityLabel": "StatsCommand.buildReport area"
     },
     {
       "symbolId": "packages/cli/src/ports/i-session-recorder-port.ts::ToolStats::interface",
-      "communityId": 42,
+      "communityId": 45,
       "communityLabel": "StatsCommand.buildReport area"
     },
     {
       "symbolId": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface",
-      "communityId": 36,
+      "communityId": 39,
       "communityLabel": "IStoragePort area"
     },
     {
       "symbolId": "packages/cli/src/ports/i-watcher-port.ts::FileChangeEvent::type",
-      "communityId": 171,
+      "communityId": 191,
       "communityLabel": "packages/cli/src/ports"
     },
     {
       "symbolId": "packages/cli/src/ports/i-watcher-port.ts::FileChangeHandler::type",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/src/ports/i-watcher-port.ts::IWatcherPort::interface",
-      "communityId": 29,
-      "communityLabel": "createLogger area"
+      "communityId": 6,
+      "communityLabel": "packages/cli/src"
     },
     {
       "symbolId": "packages/cli/tests/e2e/fixtures/credential-fixture/src/config.ts::API_TOKEN::variable",
-      "communityId": 172,
+      "communityId": 192,
       "communityLabel": "packages/cli/tests/e2e/fixtures/credential-fixture/src"
     },
     {
       "symbolId": "packages/cli/tests/e2e/fixtures/credential-fixture/src/config.ts::AWS_KEY::variable",
-      "communityId": 173,
+      "communityId": 193,
       "communityLabel": "AWS_KEY area"
     },
     {
       "symbolId": "packages/cli/tests/e2e/fixtures/credential-fixture/src/config.ts::AWS_SECRET::variable",
-      "communityId": 174,
+      "communityId": 194,
       "communityLabel": "AWS_SECRET area"
     },
     {
       "symbolId": "packages/cli/tests/e2e/fixtures/credential-fixture/src/config.ts::AZURE_KEY::variable",
-      "communityId": 175,
+      "communityId": 195,
       "communityLabel": "AZURE_KEY area"
     },
     {
       "symbolId": "packages/cli/tests/e2e/fixtures/credential-fixture/src/config.ts::DB_PASSWORD::variable",
-      "communityId": 176,
+      "communityId": 196,
       "communityLabel": "DB_PASSWORD area"
     },
     {
       "symbolId": "packages/cli/tests/e2e/fixtures/credential-fixture/src/config.ts::JWT_TOKEN::variable",
-      "communityId": 177,
+      "communityId": 197,
       "communityLabel": "JWT_TOKEN area"
     },
     {
       "symbolId": "packages/cli/tests/e2e/fixtures/credential-fixture/src/config.ts::PRIVATE_IP::variable",
-      "communityId": 178,
+      "communityId": 198,
       "communityLabel": "PRIVATE_IP area"
     },
     {
       "symbolId": "packages/cli/tests/e2e/fixtures/credential-fixture/src/config.ts::getConfig::function",
-      "communityId": 179,
+      "communityId": 199,
       "communityLabel": "getConfig area"
     },
     {
       "symbolId": "packages/cli/tests/e2e/fixtures/credential-fixture/src/service.ts::PaymentService.process::method",
-      "communityId": 179,
+      "communityId": 199,
       "communityLabel": "getConfig area"
     },
     {
       "symbolId": "packages/cli/tests/e2e/fixtures/credential-fixture/src/service.ts::PaymentService::class",
-      "communityId": 179,
+      "communityId": 199,
       "communityLabel": "getConfig area"
     },
     {
       "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Interfaces/IUserRepository.cs::IUserRepository::interface",
-      "communityId": 180,
+      "communityId": 200,
       "communityLabel": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample"
     },
     {
       "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/BaseSyncJob.cs::BaseSyncJob.ExecuteAsync(0)::method",
-      "communityId": 181,
+      "communityId": 201,
       "communityLabel": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs"
     },
     {
       "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/BaseSyncJob.cs::BaseSyncJob::class",
-      "communityId": 182,
+      "communityId": 202,
       "communityLabel": "BaseSyncJob area"
     },
     {
       "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/UserSyncJob.cs::UserSyncJob.ExecuteAsync(0)::method",
-      "communityId": 183,
+      "communityId": 203,
       "communityLabel": "UserSyncJob.ExecuteAsync(0) area"
     },
     {
       "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/UserSyncJob.cs::UserSyncJob.UserSyncJob(1)::method",
-      "communityId": 184,
+      "communityId": 204,
       "communityLabel": "UserSyncJob.UserSyncJob(1) area"
     },
     {
       "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Jobs/UserSyncJob.cs::UserSyncJob::class",
-      "communityId": 182,
+      "communityId": 202,
       "communityLabel": "BaseSyncJob area"
     },
     {
       "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Models/User.cs::User.GetDisplayName(0)::method",
-      "communityId": 185,
+      "communityId": 205,
       "communityLabel": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Models"
     },
     {
       "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Models/User.cs::User::class",
-      "communityId": 186,
+      "communityId": 206,
       "communityLabel": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Models (2)"
     },
     {
       "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Services/UserService.cs::UserService.FindById(1)::method",
-      "communityId": 187,
+      "communityId": 207,
       "communityLabel": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Services"
     },
     {
       "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Services/UserService.cs::UserService.GetAll(0)::method",
-      "communityId": 188,
+      "communityId": 208,
       "communityLabel": "UserService.GetAll(0) area"
     },
     {
       "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Services/UserService.cs::UserService.GetUserDisplay(1)::method",
-      "communityId": 189,
+      "communityId": 209,
       "communityLabel": "UserService.GetUserDisplay(1) area"
     },
     {
       "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Services/UserService.cs::UserService.Save(1)::method",
-      "communityId": 190,
+      "communityId": 210,
       "communityLabel": "UserService.Save(1) area"
     },
     {
       "symbolId": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample/Services/UserService.cs::UserService::class",
-      "communityId": 180,
+      "communityId": 200,
       "communityLabel": "packages/lang-csharp/src/__tests__/fixtures/csharp-sample/CsharpSample"
     },
     {
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.dispose::method",
-      "communityId": 191,
+      "communityId": 211,
       "communityLabel": "packages/lang-csharp/src"
     },
     {
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.extractComplexity::method",
-      "communityId": 192,
+      "communityId": 212,
       "communityLabel": "CSharpCompositeAdapter.extractComplexity area"
     },
     {
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.extractEdges::method",
-      "communityId": 193,
+      "communityId": 213,
       "communityLabel": "CSharpCompositeAdapter.extractEdges area"
     },
     {
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.extractSymbols::method",
-      "communityId": 194,
+      "communityId": 214,
       "communityLabel": "CSharpCompositeAdapter.extractSymbols area"
     },
     {
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.getRoslynDelegate::method",
-      "communityId": 195,
+      "communityId": 215,
       "communityLabel": "CSharpCompositeAdapter.getRoslynDelegate area"
     },
     {
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.getTier::method",
-      "communityId": 196,
+      "communityId": 216,
       "communityLabel": "CSharpCompositeAdapter.getTier area"
     },
     {
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.initialize::method",
-      "communityId": 197,
-      "communityLabel": "packages/lang-csharp/src (2)"
+      "communityId": 217,
+      "communityLabel": "createLogger area"
     },
     {
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.isSupported::method",
-      "communityId": 198,
+      "communityId": 218,
       "communityLabel": "CSharpCompositeAdapter.isSupported area"
     },
     {
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.setSymbolRegistry::method",
-      "communityId": 199,
+      "communityId": 219,
       "communityLabel": "CSharpCompositeAdapter.setSymbolRegistry area"
     },
     {
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter::class",
-      "communityId": 197,
-      "communityLabel": "packages/lang-csharp/src (2)"
+      "communityId": 217,
+      "communityLabel": "createLogger area"
     },
     {
       "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.countParameters::method",
-      "communityId": 200,
+      "communityId": 220,
       "communityLabel": "packages/lang-csharp/src/csharp-adapter.ts"
     },
     {
       "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractComplexity::method",
-      "communityId": 200,
+      "communityId": 220,
       "communityLabel": "packages/lang-csharp/src/csharp-adapter.ts"
     },
     {
       "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractEdges::method",
-      "communityId": 200,
+      "communityId": 220,
       "communityLabel": "packages/lang-csharp/src/csharp-adapter.ts"
     },
     {
       "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractMethodSymbols::method",
-      "communityId": 200,
+      "communityId": 220,
       "communityLabel": "packages/lang-csharp/src/csharp-adapter.ts"
     },
     {
       "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.extractSymbols::method",
-      "communityId": 200,
+      "communityId": 220,
       "communityLabel": "packages/lang-csharp/src/csharp-adapter.ts"
     },
     {
       "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.isPublic::method",
-      "communityId": 200,
+      "communityId": 220,
       "communityLabel": "packages/lang-csharp/src/csharp-adapter.ts"
     },
     {
       "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.resolveBaseType::method",
-      "communityId": 200,
+      "communityId": 220,
       "communityLabel": "packages/lang-csharp/src/csharp-adapter.ts"
     },
     {
       "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitComplexity::method",
-      "communityId": 200,
+      "communityId": 220,
       "communityLabel": "packages/lang-csharp/src/csharp-adapter.ts"
     },
     {
       "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitEdges::method",
-      "communityId": 200,
+      "communityId": 220,
       "communityLabel": "packages/lang-csharp/src/csharp-adapter.ts"
     },
     {
       "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter.visitSymbols::method",
-      "communityId": 200,
+      "communityId": 220,
       "communityLabel": "packages/lang-csharp/src/csharp-adapter.ts"
     },
     {
       "symbolId": "packages/lang-csharp/src/csharp-adapter.ts::CSharpAdapter::class",
-      "communityId": 197,
-      "communityLabel": "packages/lang-csharp/src (2)"
+      "communityId": 217,
+      "communityLabel": "createLogger area"
     },
     {
       "symbolId": "packages/lang-csharp/src/index.ts::plugin::variable",
-      "communityId": 197,
-      "communityLabel": "packages/lang-csharp/src (2)"
+      "communityId": 217,
+      "communityLabel": "createLogger area"
     },
     {
       "symbolId": "packages/lang-csharp/src/logger.ts::Logger::interface",
-      "communityId": 201,
-      "communityLabel": "packages/lang-csharp/src (3)"
+      "communityId": 221,
+      "communityLabel": "packages/lang-csharp/src (2)"
     },
     {
       "symbolId": "packages/lang-csharp/src/logger.ts::createLogger::function",
-      "communityId": 197,
-      "communityLabel": "packages/lang-csharp/src (2)"
+      "communityId": 217,
+      "communityLabel": "createLogger area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.batchIndex::method",
-      "communityId": 197,
-      "communityLabel": "packages/lang-csharp/src (2)"
+      "communityId": 217,
+      "communityLabel": "createLogger area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.dispose::method",
-      "communityId": 202,
+      "communityId": 222,
       "communityLabel": "packages/lang-csharp/src/roslyn"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.extractComplexity::method",
-      "communityId": 203,
+      "communityId": 223,
       "communityLabel": "RoslynAdapter.extractComplexity area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.extractEdges::method",
-      "communityId": 204,
+      "communityId": 224,
       "communityLabel": "RoslynAdapter.extractEdges area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.extractSymbols::method",
-      "communityId": 205,
+      "communityId": 225,
       "communityLabel": "RoslynAdapter.extractSymbols area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.initialize::method",
-      "communityId": 197,
-      "communityLabel": "packages/lang-csharp/src (2)"
+      "communityId": 217,
+      "communityLabel": "createLogger area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.isReady::method",
-      "communityId": 197,
-      "communityLabel": "packages/lang-csharp/src (2)"
+      "communityId": 217,
+      "communityLabel": "createLogger area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.isSupported::method",
-      "communityId": 206,
+      "communityId": 226,
       "communityLabel": "RoslynAdapter.isSupported area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.reindexFile::method",
-      "communityId": 207,
+      "communityId": 227,
       "communityLabel": "RoslynAdapter.reindexFile area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.startKeepAlive::method",
-      "communityId": 197,
-      "communityLabel": "packages/lang-csharp/src (2)"
+      "communityId": 217,
+      "communityLabel": "createLogger area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
-      "communityId": 197,
-      "communityLabel": "packages/lang-csharp/src (2)"
+      "communityId": 217,
+      "communityLabel": "createLogger area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynBatchResult::interface",
-      "communityId": 197,
-      "communityLabel": "packages/lang-csharp/src (2)"
+      "communityId": 217,
+      "communityLabel": "createLogger area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynComplexity::interface",
-      "communityId": 208,
+      "communityId": 228,
       "communityLabel": "RoslynComplexity area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynEdge::interface",
-      "communityId": 209,
+      "communityId": 229,
       "communityLabel": "RoslynEdge area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynFileResult::interface",
-      "communityId": 197,
-      "communityLabel": "packages/lang-csharp/src (2)"
+      "communityId": 217,
+      "communityLabel": "createLogger area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.analyzeFile::method",
-      "communityId": 210,
+      "communityId": 230,
       "communityLabel": "packages/lang-csharp/src/roslyn/roslyn-process.ts"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.isAlive::method",
-      "communityId": 211,
+      "communityId": 231,
       "communityLabel": "RoslynKeepAlive.isAlive area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.resetInactivityTimer::method",
-      "communityId": 210,
+      "communityId": 230,
       "communityLabel": "packages/lang-csharp/src/roslyn/roslyn-process.ts"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.shutdown::method",
-      "communityId": 210,
+      "communityId": 230,
       "communityLabel": "packages/lang-csharp/src/roslyn/roslyn-process.ts"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive.start::method",
-      "communityId": 210,
+      "communityId": 230,
       "communityLabel": "packages/lang-csharp/src/roslyn/roslyn-process.ts"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynKeepAlive::class",
-      "communityId": 197,
-      "communityLabel": "packages/lang-csharp/src (2)"
+      "communityId": 217,
+      "communityLabel": "createLogger area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynProjectGraph::interface",
-      "communityId": 212,
+      "communityId": 232,
       "communityLabel": "RoslynProjectGraph area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynSymbol::interface",
-      "communityId": 213,
+      "communityId": 233,
       "communityLabel": "RoslynSymbol area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-process.ts::runBatchIndex::function",
-      "communityId": 197,
-      "communityLabel": "packages/lang-csharp/src (2)"
+      "communityId": 217,
+      "communityLabel": "createLogger area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/solution-discovery.ts::detectDotnetSdk::function",
-      "communityId": 197,
-      "communityLabel": "packages/lang-csharp/src (2)"
+      "communityId": 217,
+      "communityLabel": "createLogger area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/solution-discovery.ts::discoverSolution::function",
-      "communityId": 197,
-      "communityLabel": "packages/lang-csharp/src (2)"
+      "communityId": 217,
+      "communityLabel": "createLogger area"
     },
     {
       "symbolId": "packages/lang-csharp/src/roslyn/solution-discovery.ts::findCtxoRoslynProject::function",
-      "communityId": 197,
-      "communityLabel": "packages/lang-csharp/src (2)"
+      "communityId": 217,
+      "communityLabel": "createLogger area"
     },
     {
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.buildSymbolId::method",
-      "communityId": 214,
+      "communityId": 234,
       "communityLabel": "TreeSitterAdapter.buildSymbolId area"
     },
     {
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.countCyclomaticComplexity::method",
-      "communityId": 215,
+      "communityId": 235,
       "communityLabel": "TreeSitterAdapter.countCyclomaticComplexity area"
     },
     {
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractComplexity::method",
-      "communityId": 216,
+      "communityId": 236,
       "communityLabel": "TreeSitterAdapter.extractComplexity area"
     },
     {
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractEdges::method",
-      "communityId": 217,
+      "communityId": 237,
       "communityLabel": "TreeSitterAdapter.extractEdges area"
     },
     {
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractSymbols::method",
-      "communityId": 218,
+      "communityId": 238,
       "communityLabel": "TreeSitterAdapter.extractSymbols area"
     },
     {
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.isSupported::method",
-      "communityId": 219,
+      "communityId": 239,
       "communityLabel": "TreeSitterAdapter.isSupported area"
     },
     {
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.nodeToLineRange::method",
-      "communityId": 220,
+      "communityId": 240,
       "communityLabel": "TreeSitterAdapter.nodeToLineRange area"
     },
     {
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.parse::method",
-      "communityId": 221,
+      "communityId": 241,
       "communityLabel": "TreeSitterAdapter.parse area"
     },
     {
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter.setSymbolRegistry::method",
-      "communityId": 222,
+      "communityId": 242,
       "communityLabel": "TreeSitterAdapter.setSymbolRegistry area"
     },
     {
       "symbolId": "packages/lang-csharp/src/tree-sitter-adapter.ts::TreeSitterAdapter::class",
-      "communityId": 197,
-      "communityLabel": "packages/lang-csharp/src (2)"
+      "communityId": 217,
+      "communityLabel": "createLogger area"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.absorbBatch::method",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.buildPathRewriter::method",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.dispose::method",
-      "communityId": 224,
+      "communityId": 244,
       "communityLabel": "packages/lang-go/src/analyzer"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.ensureBatch::method",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.extractComplexity::method",
-      "communityId": 225,
+      "communityId": 245,
       "communityLabel": "GoAnalyzerAdapter.extractComplexity area"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.extractEdges::method",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.extractSymbols::method",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.getDeadSymbolIds::method",
-      "communityId": 226,
+      "communityId": 246,
       "communityLabel": "GoAnalyzerAdapter.getDeadSymbolIds area"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.initialize::method",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.isReady::method",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.isSupported::method",
-      "communityId": 227,
+      "communityId": 247,
       "communityLabel": "GoAnalyzerAdapter.isSupported area"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.normalizePath::method",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.reachabilityHasMain::method",
-      "communityId": 228,
+      "communityId": 248,
       "communityLabel": "GoAnalyzerAdapter.reachabilityHasMain area"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.reachabilityTimedOut::method",
-      "communityId": 229,
+      "communityId": 249,
       "communityLabel": "GoAnalyzerAdapter.reachabilityTimedOut area"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter.runBatch::method",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-adapter.ts::GoAnalyzerAdapter::class",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-process.ts::AnalyzerBatchResult::interface",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-process.ts::AnalyzerEdge::interface",
-      "communityId": 230,
+      "communityId": 250,
       "communityLabel": "AnalyzerEdge area"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-process.ts::AnalyzerFileResult::interface",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-process.ts::AnalyzerSymbol::interface",
-      "communityId": 231,
+      "communityId": 251,
       "communityLabel": "AnalyzerSymbol area"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/analyzer-process.ts::runBatchAnalyze::function",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/binary-build.ts::ensureAnalyzerBinary::function",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/module-discovery.ts::discoverGoModule::function",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/module-discovery.ts::findCtxoGoAnalyzerSource::function",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/toolchain-detect.ts::GoToolchainInfo::interface",
-      "communityId": 232,
+      "communityId": 252,
       "communityLabel": "GoToolchainInfo area"
     },
     {
       "symbolId": "packages/lang-go/src/analyzer/toolchain-detect.ts::detectGoToolchain::function",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.dispose::method",
-      "communityId": 233,
+      "communityId": 253,
       "communityLabel": "GoCompositeAdapter.dispose area"
     },
     {
       "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.extractComplexity::method",
-      "communityId": 234,
+      "communityId": 254,
       "communityLabel": "GoCompositeAdapter.extractComplexity area"
     },
     {
       "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.extractEdges::method",
-      "communityId": 235,
+      "communityId": 255,
       "communityLabel": "GoCompositeAdapter.extractEdges area"
     },
     {
       "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.extractSymbols::method",
-      "communityId": 236,
+      "communityId": 256,
       "communityLabel": "GoCompositeAdapter.extractSymbols area"
     },
     {
       "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.getAnalyzerDelegate::method",
-      "communityId": 237,
+      "communityId": 257,
       "communityLabel": "GoCompositeAdapter.getAnalyzerDelegate area"
     },
     {
       "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.getTier::method",
-      "communityId": 238,
+      "communityId": 258,
       "communityLabel": "GoCompositeAdapter.getTier area"
     },
     {
       "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.initialize::method",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.isSupported::method",
-      "communityId": 239,
+      "communityId": 259,
       "communityLabel": "GoCompositeAdapter.isSupported area"
     },
     {
       "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter.setSymbolRegistry::method",
-      "communityId": 240,
+      "communityId": 260,
       "communityLabel": "GoCompositeAdapter.setSymbolRegistry area"
     },
     {
       "symbolId": "packages/lang-go/src/composite-adapter.ts::GoCompositeAdapter::class",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractComplexity::method",
-      "communityId": 241,
+      "communityId": 261,
       "communityLabel": "packages/lang-go/src/go-adapter.ts"
     },
     {
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractEdges::method",
-      "communityId": 241,
+      "communityId": 261,
       "communityLabel": "packages/lang-go/src/go-adapter.ts"
     },
     {
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractImportEdges::method",
-      "communityId": 241,
+      "communityId": 261,
       "communityLabel": "packages/lang-go/src/go-adapter.ts"
     },
     {
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractReceiverType::method",
-      "communityId": 241,
+      "communityId": 261,
       "communityLabel": "packages/lang-go/src/go-adapter.ts"
     },
     {
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractSymbols::method",
-      "communityId": 241,
+      "communityId": 261,
       "communityLabel": "packages/lang-go/src/go-adapter.ts"
     },
     {
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.extractTypeSymbols::method",
-      "communityId": 241,
+      "communityId": 261,
       "communityLabel": "packages/lang-go/src/go-adapter.ts"
     },
     {
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.findFirstExportedSymbolId::method",
-      "communityId": 241,
+      "communityId": 261,
       "communityLabel": "packages/lang-go/src/go-adapter.ts"
     },
     {
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter.isExported::method",
-      "communityId": 241,
+      "communityId": 261,
       "communityLabel": "packages/lang-go/src/go-adapter.ts"
     },
     {
       "symbolId": "packages/lang-go/src/go-adapter.ts::GoAdapter::class",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/index.ts::plugin::variable",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/logger.ts::Logger::interface",
-      "communityId": 242,
+      "communityId": 262,
       "communityLabel": "packages/lang-go/src (2)"
     },
     {
       "symbolId": "packages/lang-go/src/logger.ts::createLogger::function",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.buildSymbolId::method",
-      "communityId": 243,
+      "communityId": 263,
       "communityLabel": "packages/lang-go/src (3)"
     },
     {
       "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.countCyclomaticComplexity::method",
-      "communityId": 244,
+      "communityId": 264,
       "communityLabel": "packages/lang-go/src (4)"
     },
     {
       "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractComplexity::method",
-      "communityId": 245,
+      "communityId": 265,
       "communityLabel": "packages/lang-go/src (5)"
     },
     {
       "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractEdges::method",
-      "communityId": 246,
+      "communityId": 266,
       "communityLabel": "packages/lang-go/src (6)"
     },
     {
       "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractSymbols::method",
-      "communityId": 247,
+      "communityId": 267,
       "communityLabel": "packages/lang-go/src (7)"
     },
     {
       "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.isSupported::method",
-      "communityId": 248,
+      "communityId": 268,
       "communityLabel": "packages/lang-go/src (8)"
     },
     {
       "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.nodeToLineRange::method",
-      "communityId": 249,
+      "communityId": 269,
       "communityLabel": "packages/lang-go/src (9)"
     },
     {
       "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.parse::method",
-      "communityId": 250,
+      "communityId": 270,
       "communityLabel": "packages/lang-go/src (10)"
     },
     {
       "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter.setSymbolRegistry::method",
-      "communityId": 251,
+      "communityId": 271,
       "communityLabel": "packages/lang-go/src (11)"
     },
     {
       "symbolId": "packages/lang-go/src/tree-sitter-adapter.ts::TreeSitterAdapter::class",
-      "communityId": 223,
+      "communityId": 243,
       "communityLabel": "packages/lang-go/src"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/cmd/app/main.go::main::function",
-      "communityId": 252,
+      "communityId": 272,
       "communityLabel": "packages/lang-go/test-fixtures/sample-module/cmd/app"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/dead/dead.go::LiveHelper::function",
-      "communityId": 253,
+      "communityId": 273,
       "communityLabel": "packages/lang-go/test-fixtures/sample-module/internal/dead"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/dead/dead.go::TrulyDead::function",
-      "communityId": 254,
+      "communityId": 274,
       "communityLabel": "TrulyDead area"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/embed/embed.go::Base.Identifier::method",
-      "communityId": 255,
+      "communityId": 275,
       "communityLabel": "packages/lang-go/test-fixtures/sample-module/internal/embed"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/embed/embed.go::Base::class",
-      "communityId": 256,
+      "communityId": 276,
       "communityLabel": "Base area"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/embed/embed.go::ChildJob::class",
-      "communityId": 257,
+      "communityId": 277,
       "communityLabel": "ChildJob area"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/embed/embed.go::Variant::class",
-      "communityId": 258,
+      "communityId": 278,
       "communityLabel": "Variant area"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/generic/generic.go::List::class",
-      "communityId": 259,
+      "communityId": 279,
       "communityLabel": "packages/lang-go/test-fixtures/sample-module/internal/generic"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/generic/generic.go::List[T].Add::method",
-      "communityId": 260,
+      "communityId": 280,
       "communityLabel": "List[T].Add area"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/generic/generic.go::List[T].Len::method",
-      "communityId": 261,
+      "communityId": 281,
       "communityLabel": "List[T].Len area"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/generic/generic.go::New::function",
-      "communityId": 262,
+      "communityId": 282,
       "communityLabel": "New area"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/reflective/reflective.go::Inspect::function",
-      "communityId": 263,
+      "communityId": 283,
       "communityLabel": "packages/lang-go/test-fixtures/sample-module/internal/reflective"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/reflective/reflective.go::Plugin.Run::method",
-      "communityId": 264,
+      "communityId": 284,
       "communityLabel": "Plugin.Run area"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/reflective/reflective.go::Plugin.Validate::method",
-      "communityId": 265,
+      "communityId": 285,
       "communityLabel": "Plugin.Validate area"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/reflective/reflective.go::Plugin::class",
-      "communityId": 266,
+      "communityId": 286,
       "communityLabel": "Plugin area"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::LoggingStore.Get::method",
-      "communityId": 267,
+      "communityId": 287,
       "communityLabel": "packages/lang-go/test-fixtures/sample-module/internal/store"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::LoggingStore.Put::method",
-      "communityId": 268,
+      "communityId": 288,
       "communityLabel": "LoggingStore.Put area"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::LoggingStore::class",
-      "communityId": 269,
+      "communityId": 289,
       "communityLabel": "LoggingStore area"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::MemoryStore.Get::method",
-      "communityId": 270,
+      "communityId": 290,
       "communityLabel": "MemoryStore.Get area"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::MemoryStore.Put::method",
-      "communityId": 271,
+      "communityId": 291,
       "communityLabel": "MemoryStore.Put area"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::MemoryStore::class",
-      "communityId": 272,
+      "communityId": 292,
       "communityLabel": "MemoryStore area"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::NewMemoryStore::function",
-      "communityId": 273,
+      "communityId": 293,
       "communityLabel": "NewMemoryStore area"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/internal/store/store.go::Store::interface",
-      "communityId": 274,
+      "communityId": 294,
       "communityLabel": "Store area"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/pkg/api/api.go::NewService::function",
-      "communityId": 275,
+      "communityId": 295,
       "communityLabel": "packages/lang-go/test-fixtures/sample-module/pkg/api"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/pkg/api/api.go::Service.Lookup::method",
-      "communityId": 276,
+      "communityId": 296,
       "communityLabel": "Service.Lookup area"
     },
     {
       "symbolId": "packages/lang-go/test-fixtures/sample-module/pkg/api/api.go::Service::class",
-      "communityId": 277,
+      "communityId": 297,
       "communityLabel": "Service area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor.Extract::method",
-      "communityId": 278,
+      "communityId": 298,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor.emitCallEdge::method",
-      "communityId": 279,
+      "communityId": 299,
       "communityLabel": "Extractor.emitCallEdge area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor.emitUsesFromIdent::method",
-      "communityId": 280,
+      "communityId": 300,
       "communityLabel": "Extractor.emitUsesFromIdent area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor.symbolIDForObject::method",
-      "communityId": 281,
+      "communityId": 301,
       "communityLabel": "Extractor.symbolIDForObject area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::Extractor::class",
-      "communityId": 282,
+      "communityId": 302,
       "communityLabel": "Extractor area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::NewExtractor::function",
-      "communityId": 283,
+      "communityId": 303,
       "communityLabel": "NewExtractor area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::calleeIdent::function",
-      "communityId": 284,
+      "communityId": 304,
       "communityLabel": "calleeIdent area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::funcDeclSymbolID::function",
-      "communityId": 285,
+      "communityId": 305,
       "communityLabel": "funcDeclSymbolID area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::objectKind::function",
-      "communityId": 286,
+      "communityId": 306,
       "communityLabel": "objectKind area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::objectName::function",
-      "communityId": 287,
+      "communityId": 307,
       "communityLabel": "objectName area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::receiverASTName::function",
-      "communityId": 288,
+      "communityId": 308,
       "communityLabel": "receiverASTName area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::receiverTypeName::function",
-      "communityId": 289,
+      "communityId": 309,
       "communityLabel": "receiverTypeName area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::relativeFile::function",
-      "communityId": 290,
+      "communityId": 310,
       "communityLabel": "relativeFile area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges.go::typeArgsFor::function",
-      "communityId": 291,
+      "communityId": 311,
       "communityLabel": "typeArgsFor area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::TestCrossPackageCalls::function",
-      "communityId": 292,
+      "communityId": 312,
       "communityLabel": "TestCrossPackageCalls area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::TestExtractCallsAndUses::function",
-      "communityId": 293,
+      "communityId": 313,
       "communityLabel": "TestExtractCallsAndUses area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::TestGenericCallCarriesTypeArgs::function",
-      "communityId": 294,
+      "communityId": 314,
       "communityLabel": "TestGenericCallCarriesTypeArgs area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::TestNoEdgesToStdlib::function",
-      "communityId": 295,
+      "communityId": 315,
       "communityLabel": "TestNoEdgesToStdlib area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::containsStdlib::function",
-      "communityId": 296,
+      "communityId": 316,
       "communityLabel": "containsStdlib area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::extractAllEdges::function",
-      "communityId": 297,
+      "communityId": 317,
       "communityLabel": "extractAllEdges area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::formatEdge::function",
-      "communityId": 298,
+      "communityId": 318,
       "communityLabel": "formatEdge area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::sortedKeys::function",
-      "communityId": 299,
+      "communityId": 319,
       "communityLabel": "sortedKeys area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/edges/edges_test.go::writeFixture::function",
-      "communityId": 300,
+      "communityId": 320,
       "communityLabel": "writeFixture area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Complexity::class",
-      "communityId": 301,
+      "communityId": 321,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Dead::class",
-      "communityId": 302,
+      "communityId": 322,
       "communityLabel": "Dead area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Edge::class",
-      "communityId": 303,
+      "communityId": 323,
       "communityLabel": "Edge area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::FileRecord::class",
-      "communityId": 304,
+      "communityId": 324,
       "communityLabel": "FileRecord area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::NewWriter::function",
-      "communityId": 305,
+      "communityId": 325,
       "communityLabel": "NewWriter area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Progress::class",
-      "communityId": 306,
+      "communityId": 326,
       "communityLabel": "Progress area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::ProjectEdge::class",
-      "communityId": 307,
+      "communityId": 327,
       "communityLabel": "ProjectEdge area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::ProjectEntry::class",
-      "communityId": 308,
+      "communityId": 328,
       "communityLabel": "ProjectEntry area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::ProjectRecord::class",
-      "communityId": 309,
+      "communityId": 329,
       "communityLabel": "ProjectRecord area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Summary::class",
-      "communityId": 310,
+      "communityId": 330,
       "communityLabel": "Summary area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Symbol::class",
-      "communityId": 311,
+      "communityId": 331,
       "communityLabel": "Symbol area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.Dead::method",
-      "communityId": 312,
+      "communityId": 332,
       "communityLabel": "Writer.Dead area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.File::method",
-      "communityId": 313,
+      "communityId": 333,
       "communityLabel": "Writer.File area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.Flush::method",
-      "communityId": 314,
+      "communityId": 334,
       "communityLabel": "Writer.Flush area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.Progress::method",
-      "communityId": 315,
+      "communityId": 335,
       "communityLabel": "Writer.Progress area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.Project::method",
-      "communityId": 316,
+      "communityId": 336,
       "communityLabel": "Writer.Project area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.Summary::method",
-      "communityId": 317,
+      "communityId": 337,
       "communityLabel": "Writer.Summary area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer.writeJSON::method",
-      "communityId": 318,
+      "communityId": 338,
       "communityLabel": "Writer.writeJSON area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit.go::Writer::class",
-      "communityId": 319,
+      "communityId": 339,
       "communityLabel": "Writer area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit_test.go::TestEdgeTypeArgsOmitEmpty::function",
-      "communityId": 320,
+      "communityId": 340,
       "communityLabel": "TestEdgeTypeArgsOmitEmpty area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit_test.go::TestFileRecordDefaultsEmptySlices::function",
-      "communityId": 321,
+      "communityId": 341,
       "communityLabel": "TestFileRecordDefaultsEmptySlices area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/emit/emit_test.go::TestWriterEmitsJSONLWithTypeTag::function",
-      "communityId": 322,
+      "communityId": 342,
       "communityLabel": "TestWriterEmitsJSONLWithTypeTag area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends.go::Extract::function",
-      "communityId": 323,
+      "communityId": 343,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends.go::asNamed::function",
-      "communityId": 324,
+      "communityId": 344,
       "communityLabel": "asNamed area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends.go::kindOf::function",
-      "communityId": 325,
+      "communityId": 345,
       "communityLabel": "kindOf area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends.go::relFile::function",
-      "communityId": 326,
+      "communityId": 346,
       "communityLabel": "relFile area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::TestInterfaceEmbedding::function",
-      "communityId": 327,
+      "communityId": 347,
       "communityLabel": "TestInterfaceEmbedding area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::TestSkipStdlibEmbedding::function",
-      "communityId": 328,
+      "communityId": 348,
       "communityLabel": "TestSkipStdlibEmbedding area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::TestStructEmbedding::function",
-      "communityId": 329,
+      "communityId": 349,
       "communityLabel": "TestStructEmbedding area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::contains::function",
-      "communityId": 330,
+      "communityId": 350,
       "communityLabel": "contains area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::extractAll::function",
-      "communityId": 331,
+      "communityId": 351,
       "communityLabel": "extractAll area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends/extends_test.go::writeFixture::function",
-      "communityId": 332,
+      "communityId": 352,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer/internal/extends (2)"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements.go::Extract::function",
-      "communityId": 333,
+      "communityId": 353,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements.go::kindOf::function",
-      "communityId": 334,
+      "communityId": 354,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements (2)"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements.go::relFile::function",
-      "communityId": 335,
+      "communityId": 355,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements (3)"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::TestExtractSatisfiesInterface::function",
-      "communityId": 336,
+      "communityId": 356,
       "communityLabel": "TestExtractSatisfiesInterface area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::TestNonStructNamedType::function",
-      "communityId": 337,
+      "communityId": 357,
       "communityLabel": "TestNonStructNamedType area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::containsSubstring::function",
-      "communityId": 338,
+      "communityId": 358,
       "communityLabel": "containsSubstring area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::indexOf::function",
-      "communityId": 339,
+      "communityId": 359,
       "communityLabel": "indexOf area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements/implements_test.go::writeFixture::function",
-      "communityId": 340,
+      "communityId": 360,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer/internal/implements (4)"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::LoadResult::class",
-      "communityId": 341,
+      "communityId": 361,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer/internal/load"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::Packages::function",
-      "communityId": 342,
+      "communityId": 362,
       "communityLabel": "Packages area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::PackagesWithFallback::function",
-      "communityId": 343,
+      "communityId": 363,
       "communityLabel": "PackagesWithFallback area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::hasGoFile::function",
-      "communityId": 344,
+      "communityId": 364,
       "communityLabel": "hasGoFile area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load.go::topLevelGoSubdirs::function",
-      "communityId": 345,
+      "communityId": 365,
       "communityLabel": "topLevelGoSubdirs area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::TestPackagesOnHealthyModule::function",
-      "communityId": 346,
+      "communityId": 366,
       "communityLabel": "TestPackagesOnHealthyModule area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::TestPackagesWithFallbackRecoversPartial::function",
-      "communityId": 347,
+      "communityId": 367,
       "communityLabel": "TestPackagesWithFallbackRecoversPartial area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::TestTopLevelGoSubdirsSkipsHidden::function",
-      "communityId": 348,
+      "communityId": 368,
       "communityLabel": "TestTopLevelGoSubdirsSkipsHidden area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::pkgListContainsName::function",
-      "communityId": 349,
+      "communityId": 369,
       "communityLabel": "pkgListContainsName area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::pkgNames::function",
-      "communityId": 350,
+      "communityId": 370,
       "communityLabel": "pkgNames area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/load/load_test.go::writeFixture::function",
-      "communityId": 351,
+      "communityId": 371,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer/internal/load (2)"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::Analyze::function",
-      "communityId": 352,
+      "communityId": 372,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::Result::class",
-      "communityId": 353,
+      "communityId": 373,
       "communityLabel": "Result area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::addMethodsToReachable::function",
-      "communityId": 354,
+      "communityId": 374,
       "communityLabel": "addMethodsToReachable area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::applyReflectSafe::function",
-      "communityId": 355,
+      "communityId": 375,
       "communityLabel": "applyReflectSafe area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::collectRoots::function",
-      "communityId": 356,
+      "communityId": 376,
       "communityLabel": "collectRoots area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::inModule::function",
-      "communityId": 357,
+      "communityId": 377,
       "communityLabel": "inModule area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::isExported::function",
-      "communityId": 358,
+      "communityId": 378,
       "communityLabel": "isExported area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::isReflectOrJSONCall::function",
-      "communityId": 359,
+      "communityId": 379,
       "communityLabel": "isReflectOrJSONCall area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::reachableFromGraph::function",
-      "communityId": 360,
+      "communityId": 380,
       "communityLabel": "reachableFromGraph area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::receiverName::function",
-      "communityId": 361,
+      "communityId": 381,
       "communityLabel": "receiverName area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::relFile::function",
-      "communityId": 362,
+      "communityId": 382,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach (2)"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach.go::ssaFuncSymbolID::function",
-      "communityId": 363,
+      "communityId": 383,
       "communityLabel": "ssaFuncSymbolID area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::TestBinaryReachability::function",
-      "communityId": 364,
+      "communityId": 384,
       "communityLabel": "TestBinaryReachability area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::TestJSONUnmarshalSafe::function",
-      "communityId": 365,
+      "communityId": 385,
       "communityLabel": "TestJSONUnmarshalSafe area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::TestLibraryMode::function",
-      "communityId": 366,
+      "communityId": 386,
       "communityLabel": "TestLibraryMode area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::TestReflectSafe::function",
-      "communityId": 367,
+      "communityId": 387,
       "communityLabel": "TestReflectSafe area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::analyze::function",
-      "communityId": 368,
+      "communityId": 388,
       "communityLabel": "analyze area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach/reach_test.go::writeFixture::function",
-      "communityId": 369,
+      "communityId": 389,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer/internal/reach (3)"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::Extract::function",
-      "communityId": 370,
+      "communityId": 390,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::FileSymbols::class",
-      "communityId": 371,
+      "communityId": 391,
       "communityLabel": "FileSymbols area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::SymbolID::function",
-      "communityId": 372,
+      "communityId": 392,
       "communityLabel": "SymbolID area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::makeSymbol::function",
-      "communityId": 373,
+      "communityId": 393,
       "communityLabel": "makeSymbol area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::receiverTypeName::function",
-      "communityId": 374,
+      "communityId": 394,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols (2)"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::relativeFile::function",
-      "communityId": 375,
+      "communityId": 395,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols (3)"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols.go::typeSpecKind::function",
-      "communityId": 376,
+      "communityId": 396,
       "communityLabel": "typeSpecKind area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols_test.go::TestExtract::function",
-      "communityId": 377,
+      "communityId": 397,
       "communityLabel": "TestExtract area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols_test.go::TestReceiverTypeName::function",
-      "communityId": 378,
+      "communityId": 398,
       "communityLabel": "TestReceiverTypeName area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols/symbols_test.go::writeFixture::function",
-      "communityId": 379,
+      "communityId": 399,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer/internal/symbols (4)"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/main.go::collectDead::function",
-      "communityId": 380,
+      "communityId": 400,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/main.go::main::function",
-      "communityId": 381,
+      "communityId": 401,
       "communityLabel": "main area"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/main.go::relativeFile::function",
-      "communityId": 382,
+      "communityId": 402,
       "communityLabel": "packages/lang-go/tools/ctxo-go-analyzer (2)"
     },
     {
       "symbolId": "packages/lang-go/tools/ctxo-go-analyzer/main.go::run::function",
-      "communityId": 383,
+      "communityId": 403,
       "communityLabel": "run area"
     },
     {
       "symbolId": "packages/lang-typescript/src/index.ts::plugin::variable",
-      "communityId": 384,
+      "communityId": 404,
       "communityLabel": "packages/lang-typescript/src"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.buildSymbolId::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.cleanupSourceFile::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.clearProjectSources::method",
-      "communityId": 386,
+      "communityId": 406,
       "communityLabel": "TsMorphAdapter.clearProjectSources area"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.countCyclomaticComplexity::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.emitUsesEdges::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractCallEdges::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractClasses::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractComplexity::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractEdges::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractFunctions::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractImportEdges::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractInheritanceEdges::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractInterfaces::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractReferenceEdges::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractSymbols::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractTypeAliases::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.extractVariables::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.getExportedSymbolIds::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.inferSymbolKind::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isExported::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.isSupported::method",
-      "communityId": 387,
+      "communityId": 407,
       "communityLabel": "TsMorphAdapter.isSupported area"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.loadProjectSources::method",
-      "communityId": 388,
+      "communityId": 408,
       "communityLabel": "TsMorphAdapter.loadProjectSources area"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.normalizeFilePath::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.parseSource::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveImportTarget::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveLocalCallTarget::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveRelativeImport::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveSymbolReference::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.resolveThisMethodCall::method",
-      "communityId": 385,
+      "communityId": 405,
       "communityLabel": "packages/lang-typescript/src/ts-morph-adapter.ts"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter.setSymbolRegistry::method",
-      "communityId": 389,
+      "communityId": 409,
       "communityLabel": "TsMorphAdapter.setSymbolRegistry area"
     },
     {
       "symbolId": "packages/lang-typescript/src/ts-morph-adapter.ts::TsMorphAdapter::class",
-      "communityId": 384,
+      "communityId": 404,
       "communityLabel": "packages/lang-typescript/src"
     },
     {
       "symbolId": "packages/plugin-api/src/adapter.ts::ILanguageAdapter::interface",
-      "communityId": 390,
+      "communityId": 410,
       "communityLabel": "packages/plugin-api/src"
     },
     {
       "symbolId": "packages/plugin-api/src/index.ts::SUPPORTED_API_VERSION::variable",
-      "communityId": 391,
+      "communityId": 411,
       "communityLabel": "SUPPORTED_API_VERSION area"
     },
     {
       "symbolId": "packages/plugin-api/src/plugin.ts::CtxoLanguagePlugin::interface",
-      "communityId": 392,
+      "communityId": 412,
       "communityLabel": "CtxoLanguagePlugin area"
     },
     {
       "symbolId": "packages/plugin-api/src/plugin.ts::PluginContext::interface",
-      "communityId": 393,
+      "communityId": 413,
       "communityLabel": "PluginContext area"
     },
     {
       "symbolId": "packages/plugin-api/src/plugin.ts::PluginLogger::interface",
-      "communityId": 390,
+      "communityId": 410,
       "communityLabel": "packages/plugin-api/src"
     },
     {
       "symbolId": "packages/plugin-api/src/types.ts::ComplexityMetrics::interface",
-      "communityId": 390,
+      "communityId": 410,
       "communityLabel": "packages/plugin-api/src"
     },
     {
       "symbolId": "packages/plugin-api/src/types.ts::EDGE_KINDS::variable",
-      "communityId": 394,
+      "communityId": 414,
       "communityLabel": "packages/plugin-api/src (2)"
     },
     {
       "symbolId": "packages/plugin-api/src/types.ts::EdgeKind::type",
-      "communityId": 395,
+      "communityId": 415,
       "communityLabel": "EdgeKind area"
     },
     {
       "symbolId": "packages/plugin-api/src/types.ts::GraphEdge::interface",
-      "communityId": 390,
+      "communityId": 410,
       "communityLabel": "packages/plugin-api/src"
     },
     {
       "symbolId": "packages/plugin-api/src/types.ts::SYMBOL_KINDS::variable",
-      "communityId": 396,
+      "communityId": 416,
       "communityLabel": "packages/plugin-api/src (3)"
     },
     {
       "symbolId": "packages/plugin-api/src/types.ts::SymbolId::type",
-      "communityId": 397,
+      "communityId": 417,
       "communityLabel": "packages/plugin-api/src (4)"
     },
     {
       "symbolId": "packages/plugin-api/src/types.ts::SymbolKind::type",
-      "communityId": 390,
+      "communityId": 410,
       "communityLabel": "packages/plugin-api/src"
     },
     {
       "symbolId": "packages/plugin-api/src/types.ts::SymbolNode::interface",
-      "communityId": 390,
+      "communityId": 410,
       "communityLabel": "packages/plugin-api/src"
     },
     {
       "symbolId": "packages/plugin-api/src/workspace.ts::IPackage::interface",
-      "communityId": 398,
+      "communityId": 418,
       "communityLabel": "IPackage area"
     },
     {
       "symbolId": "packages/plugin-api/src/workspace.ts::IWorkspace::interface",
-      "communityId": 390,
+      "communityId": 410,
       "communityLabel": "packages/plugin-api/src"
     }
   ],
   "godNodes": [
     {
-      "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
-      "bridgedCommunities": [
-        6,
-        7,
-        36,
-        40,
-        51
-      ],
-      "centralityScore": 0.01393
-    },
-    {
-      "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class",
-      "bridgedCommunities": [
-        6,
-        29,
-        36,
-        131
-      ],
-      "centralityScore": 0.012808
-    },
-    {
       "symbolId": "packages/cli/src/core/logger.ts::createLogger::function",
       "bridgedCommunities": [
-        6,
         7,
         36,
-        42
+        39,
+        45
       ],
-      "centralityScore": 0.01146
+      "centralityScore": 0.015012
+    },
+    {
+      "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
+      "bridgedCommunities": [
+        7,
+        17,
+        39,
+        43,
+        58
+      ],
+      "centralityScore": 0.013295
     },
     {
       "symbolId": "packages/cli/src/core/types.ts::FileIndex::type",
       "bridgedCommunities": [
-        6,
         7,
-        36,
-        40
+        39,
+        43
       ],
-      "centralityScore": 0.01028
+      "centralityScore": 0.007464
     },
     {
       "symbolId": "packages/cli/src/cli/cli-router.ts::getVersion::function",
       "bridgedCommunities": [
+        6,
         7,
-        29,
-        40,
-        42
+        17,
+        43,
+        45
       ],
-      "centralityScore": 0.004872
+      "centralityScore": 0.00589
     },
     {
       "symbolId": "packages/cli/src/cli/index-command.ts::IndexCommand::class",
       "bridgedCommunities": [
-        29,
+        17,
         36,
-        40,
-        131
+        39,
+        43
       ],
-      "centralityScore": 0.0046
+      "centralityScore": 0.004448
     },
     {
       "symbolId": "packages/cli/src/adapters/storage/sqlite-storage-adapter.ts::SqliteStorageAdapter::class",
       "bridgedCommunities": [
-        6,
-        36,
-        40
+        17,
+        39,
+        43
       ],
-      "centralityScore": 0.004418999999999999
+      "centralityScore": 0.004224
     },
     {
       "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
       "bridgedCommunities": [
-        6,
+        17,
         36,
-        40,
-        131
+        39,
+        43
       ],
-      "centralityScore": 0.002936
-    },
-    {
-      "symbolId": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class",
-      "bridgedCommunities": [
-        6,
-        29,
-        36
-      ],
-      "centralityScore": 0.002499
+      "centralityScore": 0.00284
     },
     {
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
       "bridgedCommunities": [
+        6,
         7,
-        29,
-        40,
-        42
+        36,
+        43,
+        45
       ],
-      "centralityScore": 0.002228
+      "centralityScore": 0.002695
     },
     {
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
       "bridgedCommunities": [
+        6,
         7,
-        29,
-        40,
-        42
+        36,
+        43,
+        45
       ],
-      "centralityScore": 0.002228
+      "centralityScore": 0.002695
     },
     {
-      "symbolId": "packages/cli/src/core/overlay/community-detector.ts::CommunityDetector::class",
+      "symbolId": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
       "bridgedCommunities": [
         6,
-        29,
-        40
+        17,
+        36
       ],
-      "centralityScore": 0.002097
+      "centralityScore": 0.00213
+    },
+    {
+      "symbolId": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class",
+      "bridgedCommunities": [
+        6,
+        17,
+        36
+      ],
+      "centralityScore": 0.00213
     }
   ],
   "edgeQuality": "mixed",
-  "crossClusterEdges": 192
+  "crossClusterEdges": 220
 }
