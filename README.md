@@ -41,13 +41,25 @@ One `get_blast_radius` call replaces an entire ripgrep/read spiral. One `get_pr_
 
 The agent still writes the code. It just stops writing it **blind** so the bug never has to be caught by the compiler, the tests, CI, or a user.
 
-## Index Visualizer
+## Codebase Dashboard
 
-`ctxo visualize` generates a self-contained HTML from your `.ctxo/` index  explore symbols, edges, layers, and PageRank scores as an interactive dependency graph.
+Full-stack analytics UI with eight views: File Tree, Heatmap, Co-Changes, Timeline, Architecture, MCP Explorer, and Diff. Deployed to GitHub Pages on every push.
 
-![1.00](docs/img/ui.png)
+![Codebase Dashboard](docs/img/ui.png)
 
-[Open Live Visualizer](https://alperhankendi.github.io/Ctxo/visualize.html)
+[Open Dashboard](https://alperhankendi.github.io/Ctxo/ctxo-visualizer.html)
+
+## Dependency Graph
+
+`ctxo visualize` generates a self-contained HTML from your `.ctxo/` index. Interactive force-directed graph with PageRank sizing, layer coloring, blast radius on click, and dark/light theme.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/visualize-00-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="docs/img/visualize-00-light.png">
+  <img alt="Dependency Graph" src="docs/img/visualize-00-dark.png">
+</picture>
+
+[Open Dependency Graph](https://alperhankendi.github.io/Ctxo/visualize.html)
 
 ## Links
 
