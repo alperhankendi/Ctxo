@@ -43,11 +43,11 @@ The agent still writes the code. It just stops writing it **blind** so the bug n
 
 ## Index Visualizer
 
-Ctxo ships with an interactive visualizer that renders your codebase index as a dependency graph. Explore symbols, edges, layers, and PageRank scores visually deployed automatically to GitHub Pages on every push.
+`ctxo visualize` generates a self-contained HTML from your `.ctxo/` index  explore symbols, edges, layers, and PageRank scores as an interactive dependency graph.
 
 ![1.00](docs/img/ui.png)
 
-[Open Live Visualizer](https://alperhankendi.github.io/Ctxo/ctxo-visualizer.html)
+[Open Live Visualizer](https://alperhankendi.github.io/Ctxo/visualize.html)
 
 ## Links
 
