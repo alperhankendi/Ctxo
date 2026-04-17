@@ -53,11 +53,7 @@ Full-stack analytics UI with eight views: File Tree, Heatmap, Co-Changes, Timeli
 
 `ctxo visualize` generates a self-contained HTML from your `.ctxo/` index. Interactive force-directed graph with PageRank sizing, layer coloring, blast radius on click, and dark/light theme.
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/img/visualize-00-dark.png">
-  <source media="(prefers-color-scheme: light)" srcset="docs/img/visualize-00-light.png">
-  <img alt="Dependency Graph" src="docs/img/visualize-00-dark.png">
-</picture>
+![Dependency Graph](docs/img/visualize-00-light.png)
 
 [Open Dependency Graph](https://alperhankendi.github.io/Ctxo/visualize.html)
 
