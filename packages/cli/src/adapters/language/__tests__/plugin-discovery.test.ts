@@ -186,6 +186,42 @@ describe('discoverPlugins', () => {
     expect(result.failures).toEqual([]);
   });
 
+  it('resolves bare specifiers against the manifest directory node_modules', async () => {
+    // Simulate: user installed `@ctxo/lang-fake` into their project's node_modules.
+    // The CLI is running from a different location (e.g. npx cache), so a raw
+    // `import('@ctxo/lang-fake')` from the CLI's bundle would fail. Discovery
+    // must anchor resolution at the manifest so the consumer's install wins.
+    const pkgDir = join(tmp, 'node_modules', '@ctxo', 'lang-fake');
+    mkdirSync(pkgDir, { recursive: true });
+    writeFileSync(
+      join(pkgDir, 'package.json'),
+      JSON.stringify({ name: '@ctxo/lang-fake', version: '1.0.0', type: 'module', main: 'index.mjs' }),
+    );
+    writeFileSync(
+      join(pkgDir, 'index.mjs'),
+      `export default {
+        apiVersion: '1',
+        id: 'fake',
+        name: 'Fake',
+        version: '1.0.0',
+        extensions: ['.fake'],
+        tier: 'syntax',
+        createAdapter: () => ({
+          extractSymbols: async () => [],
+          extractEdges: async () => [],
+          extractComplexity: async () => [],
+          isSupported: () => true,
+        }),
+      };`,
+    );
+    writeManifest(tmp, { devDependencies: { '@ctxo/lang-fake': '1.0.0' } });
+    const result = await discoverPlugins({ manifestPath: join(tmp, 'package.json') });
+    expect(result.failures).toEqual([]);
+    expect(result.plugins).toHaveLength(1);
+    expect(result.plugins[0]!.plugin.id).toBe('fake');
+    expect(result.plugins[0]!.specifier).toBe('@ctxo/lang-fake');
+  });
+
   it('accepts named plugin export as fallback to default', async () => {
     const pluginDir = join(tmp, 'named-export');
     await writePluginModule(

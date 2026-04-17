@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { dirname, isAbsolute, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import type { CtxoLanguagePlugin } from '@ctxo/plugin-api';
@@ -72,11 +73,19 @@ function isLocalSpecifier(spec: string): boolean {
 async function tryLoad(
   specifier: string,
   baseDir: string,
+  manifestRequire: NodeJS.Require,
 ): Promise<CtxoLanguagePlugin | PluginLoadFailure> {
   try {
-    const target = isLocalSpecifier(specifier)
-      ? pathToFileURL(resolve(baseDir, specifier)).href
-      : specifier;
+    let target: string;
+    if (isLocalSpecifier(specifier)) {
+      target = pathToFileURL(resolve(baseDir, specifier)).href;
+    } else {
+      // Resolve bare specifiers against the consumer project's node_modules,
+      // not the CLI bundle location. Matters when `ctxo` runs via npx, where
+      // import() would otherwise look in ~/.npm/_npx/<hash>/node_modules.
+      const resolvedPath = manifestRequire.resolve(specifier);
+      target = pathToFileURL(resolvedPath).href;
+    }
 
     const mod = (await import(target)) as {
       default?: unknown;
@@ -121,6 +130,7 @@ export async function discoverPlugins(options: DiscoverOptions): Promise<Discove
 
   const baseDir = dirname(manifestPath);
   const specifiers = options.explicit ?? readManifestDeps(manifestPath);
+  const manifestRequire = createRequire(pathToFileURL(manifestPath).href);
 
   const plugins: DiscoveredPlugin[] = [];
   const failures: PluginLoadFailure[] = [];
@@ -130,7 +140,7 @@ export async function discoverPlugins(options: DiscoverOptions): Promise<Discove
       log.info(`Skipping plugin ${spec} (matched ignoreProjects)`);
       continue;
     }
-    const result = await tryLoad(spec, baseDir);
+    const result = await tryLoad(spec, baseDir, manifestRequire);
     if ('apiVersion' in result) {
       plugins.push({ plugin: result, specifier: spec });
     } else {
