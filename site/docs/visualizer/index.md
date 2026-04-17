@@ -19,7 +19,19 @@ visually — the same graph the MCP tools query, but rendered for humans.
          stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
     </svg>
-    Open Visualizer →
+    Codebase Dashboard →
+  </a>
+  <a href="/Ctxo/visualize.html" target="_self"
+     style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;
+            background:linear-gradient(135deg,#0284c7,#7c3aed);color:#fff;
+            border-radius:8px;text-decoration:none;font-weight:700;
+            font-family:'JetBrains Mono',monospace;font-size:13px;
+            box-shadow:0 4px 14px rgba(2,132,199,0.25);">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/><path d="M2 12h20"/>
+    </svg>
+    Dependency Graph →
   </a>
   <a href="/cli/visualize" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;
             background:transparent;border:1px solid var(--vp-c-border);

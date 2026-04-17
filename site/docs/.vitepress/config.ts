@@ -195,7 +195,8 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: 'Tour & Screenshots', link: '/visualizer/' },
-            { text: 'Open the tool ↗', link: 'https://alperhankendi.github.io/Ctxo/ctxo-visualizer.html' },
+            { text: 'Codebase Dashboard ↗', link: 'https://alperhankendi.github.io/Ctxo/ctxo-visualizer.html' },
+            { text: 'Dependency Graph ↗', link: 'https://alperhankendi.github.io/Ctxo/visualize.html' },
           ],
         },
         {
