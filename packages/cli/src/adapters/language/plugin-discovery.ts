@@ -70,22 +70,71 @@ function isLocalSpecifier(spec: string): boolean {
   return spec.startsWith('.') || spec.startsWith('/') || isAbsolute(spec);
 }
 
+type ExportsEntry = string | { [condition: string]: ExportsEntry } | null | undefined;
+
+function pickEsmEntry(exportsField: unknown): string | undefined {
+  if (!exportsField) return undefined;
+  if (typeof exportsField === 'string') return exportsField;
+  if (typeof exportsField !== 'object') return undefined;
+  const table = exportsField as Record<string, ExportsEntry>;
+  const dot = '.' in table ? table['.'] : (exportsField as ExportsEntry);
+  if (typeof dot === 'string') return dot;
+  if (!dot || typeof dot !== 'object') return undefined;
+  for (const key of ['import', 'node', 'default'] as const) {
+    const nested = (dot as Record<string, ExportsEntry>)[key];
+    if (typeof nested === 'string') return nested;
+    if (nested && typeof nested === 'object') {
+      for (const inner of ['default', 'import', 'node'] as const) {
+        const v = (nested as Record<string, ExportsEntry>)[inner];
+        if (typeof v === 'string') return v;
+      }
+    }
+  }
+  return undefined;
+}
+
+const cliFallbackRequire = createRequire(import.meta.url);
+
+function resolvePluginEntryUrl(
+  specifier: string,
+  manifestRequire: NodeJS.Require,
+): string {
+  // Resolve bare specifiers against the consumer project's node_modules first,
+  // not the CLI bundle location. Matters when `ctxo` runs via npx, where plain
+  // import() would look in ~/.npm/_npx/<hash>/node_modules. We anchor via
+  // `${spec}/package.json` because `require.resolve(spec)` fails for ESM-only
+  // packages whose "exports" map has no "require" condition. Fall back to the
+  // CLI's own location so dev/test flows (where the CLI source lives inside
+  // the plugin's monorepo) still resolve without a populated node_modules.
+  let pkgJsonPath: string;
+  try {
+    pkgJsonPath = manifestRequire.resolve(`${specifier}/package.json`);
+  } catch (primary) {
+    try {
+      pkgJsonPath = cliFallbackRequire.resolve(`${specifier}/package.json`);
+    } catch {
+      throw primary;
+    }
+  }
+  const pkgDir = dirname(pkgJsonPath);
+  const pkgJson = JSON.parse(readFileSync(pkgJsonPath, 'utf-8')) as {
+    main?: string;
+    module?: string;
+    exports?: unknown;
+  };
+  const entry = pickEsmEntry(pkgJson.exports) ?? pkgJson.module ?? pkgJson.main ?? 'index.js';
+  return pathToFileURL(resolve(pkgDir, entry)).href;
+}
+
 async function tryLoad(
   specifier: string,
   baseDir: string,
   manifestRequire: NodeJS.Require,
 ): Promise<CtxoLanguagePlugin | PluginLoadFailure> {
   try {
-    let target: string;
-    if (isLocalSpecifier(specifier)) {
-      target = pathToFileURL(resolve(baseDir, specifier)).href;
-    } else {
-      // Resolve bare specifiers against the consumer project's node_modules,
-      // not the CLI bundle location. Matters when `ctxo` runs via npx, where
-      // import() would otherwise look in ~/.npm/_npx/<hash>/node_modules.
-      const resolvedPath = manifestRequire.resolve(specifier);
-      target = pathToFileURL(resolvedPath).href;
-    }
+    const target = isLocalSpecifier(specifier)
+      ? pathToFileURL(resolve(baseDir, specifier)).href
+      : resolvePluginEntryUrl(specifier, manifestRequire);
 
     const mod = (await import(target)) as {
       default?: unknown;
