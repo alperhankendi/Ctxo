@@ -40,7 +40,7 @@
   "license": "MIT",
   "dependencies": {
     "tree-sitter": "^0.22.4",
-    "tree-sitter-go": "^0.23.4"
+    "tree-sitter-go": "^0.25.0"
   },
   "peerDependencies": {
     "@ctxo/plugin-api": "^0.7.1"
