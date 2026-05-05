@@ -11,7 +11,7 @@
 </picture>
 
 ```Shell
-npx @ctxo/init
+npx @ctxo/cli init
 npx @ctxo/cli index
 ```
 

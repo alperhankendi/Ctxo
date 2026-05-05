@@ -8,7 +8,7 @@ Ctxo is a Model Context Protocol (MCP) server that delivers Logic-Slices to AI c
 
 - [What is Ctxo?](https://alperhankendi.github.io/Ctxo/docs/introduction/what-is-ctxo): Overview, what it is and is not, how it fits into your stack.
 - [Why Ctxo?](https://alperhankendi.github.io/Ctxo/docs/introduction/why-ctxo): Shift the fix-loop left. Proactive, not reactive.
-- [Installation](https://alperhankendi.github.io/Ctxo/docs/introduction/installation): `npx @ctxo/init`, then `npx ctxo doctor`.
+- [Installation](https://alperhankendi.github.io/Ctxo/docs/introduction/installation): `npx @ctxo/cli init`, then `npx ctxo doctor`.
 - [Quick Start](https://alperhankendi.github.io/Ctxo/docs/introduction/quick-start): Index a repo and make the first MCP call.
 - [MCP Client Setup](https://alperhankendi.github.io/Ctxo/docs/introduction/mcp-client-setup): Claude Code, Cursor, Copilot, Windsurf, Cline.
 

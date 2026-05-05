@@ -1,6 +1,6 @@
 ---
 title: "Installation"
-description: "One-liner install: npx @ctxo/init, then verify with ctxo doctor."
+description: "One-liner install: npx @ctxo/cli init, then verify with ctxo doctor."
 ---
 
 # Installation
@@ -16,7 +16,7 @@ description: "One-liner install: npx @ctxo/init, then verify with ctxo doctor."
 From the root of the repo you want to index:
 
 ```bash
-npx @ctxo/init
+npx @ctxo/cli init
 ```
 
 This detects your languages, installs the right `@ctxo/lang-*` plugins, adds
@@ -41,7 +41,7 @@ cache, broken hooks). Add `--dry-run` first if you want to preview.
 
 ## Add a language later
 
-`@ctxo/init` auto-detects what your repo uses. To add more languages after
+`@ctxo/cli init` auto-detects what your repo uses. To add more languages after
 the fact, install the plugin package directly:
 
 ::: code-group

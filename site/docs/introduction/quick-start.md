@@ -18,7 +18,7 @@ Node.js >= 20, git, and a repo with TypeScript, Go, or C# code. See
 From the root of your repo:
 
 ```bash
-npx @ctxo/init
+npx @ctxo/cli init
 ```
 
 Expected output (abridged):
