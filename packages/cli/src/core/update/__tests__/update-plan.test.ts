@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { detectChannel, compareSemver, computePackageStates, selectInstallTargets } from '../update-plan.js';
+import { detectChannel, compareSemver, computePackageStates, selectInstallTargets, isSafeVersionSpecifier } from '../update-plan.js';
 import type { RegistryResult } from '../registry-client.js';
 
 describe('detectChannel', () => {
@@ -117,5 +117,31 @@ describe('selectInstallTargets', () => {
       { name: 'd', current: '1.0.0', latest: null, channel: 'latest', status: 'unknown' },
     ]);
     expect(targets).toEqual([{ name: 'a', version: '2.0.0' }]);
+  });
+});
+
+describe('isSafeVersionSpecifier', () => {
+  it('accepts plain semver values', () => {
+    expect(isSafeVersionSpecifier('1.2.3')).toBe(true);
+    expect(isSafeVersionSpecifier('0.7.0-alpha.0')).toBe(true);
+    expect(isSafeVersionSpecifier('1.0.0+build.1')).toBe(true);
+  });
+  it('rejects values with shell metacharacters', () => {
+    expect(isSafeVersionSpecifier('1.0.0 && rm -rf /')).toBe(false);
+    expect(isSafeVersionSpecifier('1.0.0;ls')).toBe(false);
+    expect(isSafeVersionSpecifier('1.0.0|ls')).toBe(false);
+    expect(isSafeVersionSpecifier('1.0.0`ls`')).toBe(false);
+    expect(isSafeVersionSpecifier('1.0.0$(ls)')).toBe(false);
+    expect(isSafeVersionSpecifier('1.0.0^ls')).toBe(false);
+  });
+});
+
+describe('selectInstallTargets safety', () => {
+  it('drops packages whose latest contains shell metacharacters', () => {
+    const targets = selectInstallTargets([
+      { name: 'safe', current: '1.0.0', latest: '2.0.0', channel: 'latest', status: 'update' },
+      { name: 'evil', current: '1.0.0', latest: '2.0.0 && rm -rf /', channel: 'latest', status: 'update' },
+    ]);
+    expect(targets).toEqual([{ name: 'safe', version: '2.0.0' }]);
   });
 });

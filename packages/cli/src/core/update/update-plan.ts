@@ -121,5 +121,15 @@ export function computePackageStates(
 export function selectInstallTargets(states: readonly PackageState[]): ReadonlyArray<{ name: string; version: string }> {
   return states
     .filter((s): s is PackageState & { latest: string } => s.status === 'update' && typeof s.latest === 'string')
+    .filter((s) => isSafeVersionSpecifier(s.latest))
     .map((s) => ({ name: s.name, version: s.latest }));
+}
+
+// Strict semver-ish regex: digits, letters, dots, plus, minus only. Matches the
+// SEMVER_RE prefix without anchoring full structure (safe enough to feed to a
+// shell when shell:true is in effect on Windows).
+const SAFE_SPECIFIER_RE = /^[0-9A-Za-z.+-]+$/;
+
+export function isSafeVersionSpecifier(version: string): boolean {
+  return SAFE_SPECIFIER_RE.test(version);
 }
