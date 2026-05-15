@@ -13,6 +13,7 @@ import {
   resolvePackageManager,
   buildInstallCommand,
   isPackageManager,
+  isWorkspaceRoot,
 } from '../core/install/package-manager.js';
 import { runPackageManager } from '../core/install/run-package-manager.js';
 import { createLogger } from '../core/logger.js';
@@ -217,7 +218,10 @@ export class UpdateCommand {
     });
     const specifiers = targets.map((t) => `${t.name}@${t.version}`);
     const useGlobal = options.global || !this.projectHasCtxoDep();
-    const invocation = buildInstallCommand(resolution.manager, specifiers, { global: useGlobal });
+    const invocation = buildInstallCommand(resolution.manager, specifiers, {
+      global: useGlobal,
+      workspaceRoot: !useGlobal && isWorkspaceRoot(this.projectRoot),
+    });
     return {
       manager: resolution.manager,
       managerSource: resolution.source,
