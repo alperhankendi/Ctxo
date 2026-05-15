@@ -14,7 +14,7 @@ it (most commonly after `git pull` or a fresh clone).
 ## Synopsis
 
 ```shell
-npx @ctxo/cli sync
+ctxo sync
 ```
 
 No flags.
@@ -34,13 +34,13 @@ No flags.
 ## Examples
 
 ```shell
-npx @ctxo/cli sync
+ctxo sync
 ```
 
 ```shell
 # Force a clean cache, then rebuild.
 rm -rf .ctxo/.cache
-npx @ctxo/cli sync
+ctxo sync
 ```
 
 ## Exit codes

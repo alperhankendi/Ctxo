@@ -331,8 +331,8 @@ Checking if safe to delete?
 ### 1. Always Index First
 Ctxo requires a pre-built index. In CI/CD, add an indexing step:
 ```bash
-npx @ctxo/cli index          # Build index
-npx @ctxo/cli index --check  # CI gate: fail if stale
+ctxo index          # Build index
+ctxo index --check  # CI gate: fail if stale
 ```
 
 ### 2. Use `get_pr_impact` as Entry Point

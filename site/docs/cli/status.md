@@ -13,7 +13,7 @@ Files present in the index but no longer tracked by git are flagged as
 ## Synopsis
 
 ```shell
-npx @ctxo/cli status
+ctxo status
 ```
 
 No flags.
@@ -49,12 +49,12 @@ No flags.
 
 ```shell
 # Quickly verify that the project is indexed.
-npx @ctxo/cli status
+ctxo status
 ```
 
 ```shell
 # Post-pull check: if cache shows "missing", run sync.
-npx @ctxo/cli status && npx @ctxo/cli sync
+ctxo status && ctxo sync
 ```
 
 ## Exit codes

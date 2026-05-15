@@ -16,7 +16,7 @@ full batch-index cost.
 ## Synopsis
 
 ```shell
-npx @ctxo/cli watch
+ctxo watch
 ```
 
 No flags. Press `Ctrl+C` to stop; the watcher drains pending re-index tasks,
@@ -38,12 +38,12 @@ so newly committed changes are reflected immediately.
 
 ```shell
 # Start the watcher in a second terminal while you work.
-npx @ctxo/cli watch
+ctxo watch
 ```
 
 ```shell
 # Narrow debug output to just plugin and storage events.
-DEBUG=ctxo:plugin-loader,ctxo:storage npx @ctxo/cli watch
+DEBUG=ctxo:plugin-loader,ctxo:storage ctxo watch
 ```
 
 ## When to use this vs. git hooks

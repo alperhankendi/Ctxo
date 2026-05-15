@@ -95,7 +95,7 @@ NFR10: Ctxo runs with no elevated privileges; does not require sudo or admin rig
 NFR11: Index staleness is detected and reported within the MCP tool response — never silently served as fresh context
 NFR12: A crashed or stopped file watcher does not corrupt the committed index; on restart re-validates state before resuming
 NFR13: If the SQLite cache is deleted or corrupted, Ctxo rebuilds it from the committed JSON index without user intervention
-NFR14: `npx @ctxo/cli index --check` exits with a non-zero code when any source file has been modified after the index was last built
+NFR14: `ctxo index --check` exits with a non-zero code when any source file has been modified after the index was last built
 NFR15: Ctxo implements the MCP specification without extensions or deviations that break conformant MCP client compatibility
 NFR16: All five MCP tools are tested for functional equivalence across Claude Code, Cursor, and VS Code Copilot before V1 release
 NFR17: The MCP server exposes a `tools/list` response conformant with the MCP spec
@@ -108,7 +108,7 @@ Architecture & Infrastructure:
 - AR2: No starter template — custom tsup + TypeScript setup from scratch; first story is project scaffold
 - AR3: ESM-first ("type": "module"), ES2022 target, Node16 module resolution in tsconfig
 - AR4: tsup build with external: ['better-sqlite3', 'tree-sitter'] to preserve native addon .node binary resolution
-- AR5: Single dist/index.js output with bin field in package.json for npx @ctxo/cli invocation
+- AR5: Single dist/index.js output with bin field in package.json exposing the `ctxo` binary (consumed via `npm install -g @ctxo/cli` or `npx -y @ctxo/cli`)
 
 Hexagonal Architecture Rules (enforced by ESLint import/no-restricted-paths):
 - AR6: core/ NEVER imports from adapters/ — pure domain logic only
@@ -133,7 +133,7 @@ Index & Storage:
 
 CI/CD Patterns:
 - AR21: CLI commands required: ctxo index, ctxo sync, ctxo verify-index
-- AR22: CI gate pattern: npx @ctxo/cli index then git diff --exit-code .ctxo/index/
+- AR22: CI gate pattern: npx -y @ctxo/cli index then git diff --exit-code .ctxo/index/
 - AR23: Optional git hooks installed via ctxo init: post-commit (ctxo index --since HEAD~1), post-merge (ctxo sync)
 
 Testing Requirements:
@@ -194,7 +194,7 @@ Developer installs Ctxo with a single command, indexes their TypeScript codebase
 - ESLint configured with `import/no-restricted-paths`: `core/` cannot import from `adapters/`; `ports/` cannot import from `adapters/`
 - ESLint rule bans `console.log` anywhere in `src/` (use `console.error` only)
 - `vitest` configured with coverage threshold ≥ 90% for `src/core/`
-- `npx @ctxo/cli --help` exits 0 after `tsup` build
+- `ctxo --help` exits 0 after `tsup` build
 
 #### Story 1.2: Storage Foundation — IStoragePort, JSON Index Writer & SQLite Cache
 **As a** developer, **I want** a storage layer that writes per-file JSON index artifacts and maintains a local SQLite query cache, **so that** the index is git-committable and the cache is fast and recoverable.
@@ -282,7 +282,7 @@ Developer installs Ctxo with a single command, indexes their TypeScript codebase
 - Completes in ≤ 30s for 1,000-file codebase on M-series Mac (measured in E2E test)
 - `.ctxo/index/schema-version` written/updated
 - `.ctxo/.cache/` added to `.gitignore` if not present
-- `npx @ctxo/cli index` exits 0 on success, non-zero on unrecoverable error
+- `ctxo index` exits 0 on success, non-zero on unrecoverable error
 - E2E test: fixture TypeScript project → run `ctxo index` → assert `.ctxo/index/` files created
 
 ### Epic 2: Risk Intelligence — Blast Radius & Architectural Overlay
@@ -449,7 +449,7 @@ Team commits the index to git as text-based per-file JSON, CI gates stale PRs, n
 - `ctxo verify-index` runs `ctxo index` (re-indexes everything) then checks `git diff --exit-code .ctxo/index/`
 - Exits 0 if no diff (index is current)
 - Exits 1 if diff present; prints list of changed index files to stderr
-- Suitable for use in GitHub Actions `- run: npx @ctxo/cli verify-index` step
+- Suitable for use in GitHub Actions `- run: npx -y @ctxo/cli verify-index` step
 - E2E test: source modified without re-indexing → `ctxo verify-index` exits 1
 
 #### Story 5.4: Monorepo Auto-Discovery

@@ -19,7 +19,7 @@ npm i -D @ctxo/lang-typescript @ctxo/lang-go @ctxo/lang-csharp
 Or via the cli shortcut:
 
 ```bash
-npx @ctxo/cli install typescript go csharp
+ctxo install typescript go csharp
 ```
 
 ## Community plugins

@@ -13,7 +13,7 @@ index last).
 ## Synopsis
 
 ```shell
-npx @ctxo/cli doctor [options]
+ctxo doctor [options]
 ```
 
 ## Flags
@@ -68,25 +68,25 @@ This keeps the command safe to expose in shared scripts.
 
 ::: code-group
 ```shell [human report]
-npx @ctxo/cli doctor
+ctxo doctor
 ```
 
 ```shell [quiet]
 # Only print non-passing checks — good for shell prompts.
-npx @ctxo/cli doctor --quiet
+ctxo doctor --quiet
 ```
 
 ```shell [machine readable]
 # Pipe to jq for dashboards.
-npx @ctxo/cli doctor --json | jq '.checks | map(select(.status != "pass"))'
+ctxo doctor --json | jq '.checks | map(select(.status != "pass"))'
 ```
 
 ```shell [dry-run fix]
-npx @ctxo/cli doctor --fix --dry-run
+ctxo doctor --fix --dry-run
 ```
 
 ```shell [apply fixes in CI]
-npx @ctxo/cli doctor --fix --yes
+ctxo doctor --fix --yes
 ```
 :::
 

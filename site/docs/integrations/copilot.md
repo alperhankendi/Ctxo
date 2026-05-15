@@ -70,7 +70,7 @@ approval returns the impact JSON and adapts its plan.
 - **Trust the workspace.** MCP servers do not run in untrusted workspaces. If
   `ctxo` fails to start, make sure the folder is trusted.
 - **HTTP transport.** Copilot also supports `"type": "http"`. Start Ctxo with
-  `CTXO_HTTP_PORT=7337 npx @ctxo/cli mcp` and point Copilot at
+  `CTXO_HTTP_PORT=7337 ctxo mcp` and point Copilot at
   `http://localhost:7337/mcp`.
 
 ## Next steps
