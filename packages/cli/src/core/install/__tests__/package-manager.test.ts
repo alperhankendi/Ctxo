@@ -6,6 +6,7 @@ import {
   resolvePackageManager,
   buildInstallCommand,
   isPackageManager,
+  isWorkspaceRoot,
   PACKAGE_MANAGERS,
 } from '../package-manager.js';
 
@@ -188,5 +189,91 @@ describe('buildInstallCommand', () => {
 
   it('throws when no packages provided', () => {
     expect(() => buildInstallCommand('npm', [])).toThrow(/at least one package/);
+  });
+
+  it('pnpm + workspaceRoot adds -w flag (avoids ERR_PNPM_ADDING_TO_ROOT)', () => {
+    expect(buildInstallCommand('pnpm', ['@ctxo/lang-python'], { workspaceRoot: true })).toEqual({
+      command: 'pnpm',
+      args: ['add', '-D', '-w', '@ctxo/lang-python'],
+    });
+  });
+
+  it('pnpm + global ignores workspaceRoot (global never needs -w)', () => {
+    expect(
+      buildInstallCommand('pnpm', ['@ctxo/lang-python'], { global: true, workspaceRoot: true }),
+    ).toEqual({
+      command: 'pnpm',
+      args: ['add', '-g', '@ctxo/lang-python'],
+    });
+  });
+
+  it('npm / yarn / bun ignore workspaceRoot (no equivalent error)', () => {
+    expect(buildInstallCommand('npm', ['x'], { workspaceRoot: true })).toEqual({
+      command: 'npm',
+      args: ['install', '-D', 'x'],
+    });
+    expect(buildInstallCommand('yarn', ['x'], { workspaceRoot: true })).toEqual({
+      command: 'yarn',
+      args: ['add', '--dev', 'x'],
+    });
+    expect(buildInstallCommand('bun', ['x'], { workspaceRoot: true })).toEqual({
+      command: 'bun',
+      args: ['add', '-d', 'x'],
+    });
+  });
+});
+
+describe('isWorkspaceRoot', () => {
+  let tmp: string;
+
+  beforeEach(() => {
+    tmp = mkdtempSync(join(tmpdir(), 'ctxo-wsroot-'));
+  });
+
+  afterEach(() => {
+    rmSync(tmp, { recursive: true, force: true });
+  });
+
+  it('returns false for a plain project (no workspace markers)', () => {
+    writeFileSync(join(tmp, 'package.json'), JSON.stringify({ name: 'fixture' }));
+    expect(isWorkspaceRoot(tmp)).toBe(false);
+  });
+
+  it('returns true when pnpm-workspace.yaml exists', () => {
+    writeFileSync(join(tmp, 'pnpm-workspace.yaml'), 'packages:\n  - packages/*\n');
+    expect(isWorkspaceRoot(tmp)).toBe(true);
+  });
+
+  it('returns true when package.json has a workspaces array', () => {
+    writeFileSync(
+      join(tmp, 'package.json'),
+      JSON.stringify({ name: 'fixture', workspaces: ['packages/*'] }),
+    );
+    expect(isWorkspaceRoot(tmp)).toBe(true);
+  });
+
+  it('returns true when package.json has a workspaces.packages array', () => {
+    writeFileSync(
+      join(tmp, 'package.json'),
+      JSON.stringify({ name: 'fixture', workspaces: { packages: ['packages/*'] } }),
+    );
+    expect(isWorkspaceRoot(tmp)).toBe(true);
+  });
+
+  it('returns false when package.json has an empty workspaces array', () => {
+    writeFileSync(
+      join(tmp, 'package.json'),
+      JSON.stringify({ name: 'fixture', workspaces: [] }),
+    );
+    expect(isWorkspaceRoot(tmp)).toBe(false);
+  });
+
+  it('returns false when no package.json exists', () => {
+    expect(isWorkspaceRoot(tmp)).toBe(false);
+  });
+
+  it('returns false on malformed package.json (warn-and-continue)', () => {
+    writeFileSync(join(tmp, 'package.json'), '{ not valid json');
+    expect(isWorkspaceRoot(tmp)).toBe(false);
   });
 });

@@ -12,6 +12,7 @@ import {
   resolvePackageManager,
   buildInstallCommand,
   isPackageManager,
+  isWorkspaceRoot,
   PACKAGE_MANAGERS,
   type PackageManager,
   type Resolution,
@@ -79,6 +80,7 @@ export class InstallCommand {
 
     const invocation = buildInstallCommand(resolution.manager, specifiers, {
       global: options.global,
+      workspaceRoot: !options.global && isWorkspaceRoot(this.projectRoot),
     });
 
     const plan: InstallPlan = {

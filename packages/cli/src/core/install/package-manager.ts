@@ -152,13 +152,47 @@ export interface InstallInvocation {
 }
 
 /**
+ * True when `projectRoot` is the root of a pnpm workspace. Detects either
+ * `pnpm-workspace.yaml` (the explicit pnpm marker) or a `package.json` whose
+ * `workspaces` field declares sub-packages. Required so `buildInstallCommand`
+ * can append `-w` to pnpm add; pnpm 8+ refuses to install at the workspace
+ * root without it (`ERR_PNPM_ADDING_TO_ROOT`).
+ */
+export function isWorkspaceRoot(projectRoot: string): boolean {
+  if (existsSync(join(projectRoot, 'pnpm-workspace.yaml'))) return true;
+  const pkgPath = join(projectRoot, 'package.json');
+  if (!existsSync(pkgPath)) return false;
+  try {
+    const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8')) as { workspaces?: unknown };
+    const ws = pkg.workspaces;
+    if (Array.isArray(ws) && ws.length > 0) return true;
+    if (ws && typeof ws === 'object' && Array.isArray((ws as { packages?: unknown }).packages)) return true;
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+export interface BuildInstallOptions {
+  readonly global?: boolean;
+  /**
+   * True when the install is targeting the root of a pnpm/npm/yarn/bun
+   * workspace. Adds `-w` for pnpm (required) and is a no-op for the others
+   * (their CLIs do not error in the same way).
+   */
+  readonly workspaceRoot?: boolean;
+}
+
+/**
  * Build the install invocation for a chosen package manager. `global` produces
  * a globally-scoped install; otherwise the install targets devDependencies.
+ * Pass `workspaceRoot: true` when running at the root of a pnpm workspace —
+ * pnpm refuses to add to the root without `-w` (ERR_PNPM_ADDING_TO_ROOT).
  */
 export function buildInstallCommand(
   manager: PackageManager,
   packages: readonly string[],
-  options: { global?: boolean } = {},
+  options: BuildInstallOptions = {},
 ): InstallInvocation {
   if (packages.length === 0) {
     throw new Error('buildInstallCommand requires at least one package');
@@ -170,10 +204,13 @@ export function buildInstallCommand(
         args: options.global ? ['install', '-g', ...packages] : ['install', '-D', ...packages],
       };
     case 'pnpm':
-      return {
-        command: 'pnpm',
-        args: options.global ? ['add', '-g', ...packages] : ['add', '-D', ...packages],
-      };
+      if (options.global) {
+        return { command: 'pnpm', args: ['add', '-g', ...packages] };
+      }
+      if (options.workspaceRoot) {
+        return { command: 'pnpm', args: ['add', '-D', '-w', ...packages] };
+      }
+      return { command: 'pnpm', args: ['add', '-D', ...packages] };
     case 'yarn':
       return {
         command: 'yarn',
