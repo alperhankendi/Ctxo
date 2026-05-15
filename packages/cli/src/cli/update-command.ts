@@ -187,7 +187,10 @@ export class UpdateCommand {
     };
 
     if (options.check) {
-      this.emitReport(baseReport, options.json ?? false);
+      // --check never executes, so render with the print-style block so the user
+      // sees the suggested command instead of a misleading "Running..." line.
+      const checkStrategy: UpdateStrategy = plan ? 'print' : strategy;
+      this.emitReport({ ...baseReport, strategy: checkStrategy }, options.json ?? false);
       return;
     }
 

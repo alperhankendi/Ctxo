@@ -180,6 +180,25 @@ describe('UpdateCommand', () => {
     } finally { cap.restore(); rmSync(dir, { recursive: true, force: true }); }
   });
 
+  it('--check shows the suggested command, not a misleading "Running" line, when updates exist', async () => {
+    const dir = makeTempProject({ withCtxoDep: true });
+    const cap = makeCapture();
+    try {
+      const cmd = new UpdateCommand(dir, {
+        discoverInstalled: async () => [{ name: '@ctxo/cli', version: '0.7.0-alpha.0' }],
+        fetcher: makeFetcher({
+          '@ctxo/cli': { status: 200, body: JSON.stringify({ 'dist-tags': { alpha: '0.7.0-alpha.3' } }) },
+        }),
+        runner: cap.deps.runner,
+        setExitCode: cap.deps.setExitCode,
+      });
+      await cmd.run({ check: true });
+      expect(cap.capture.stdout).toContain('To update, run:');
+      expect(cap.capture.stdout).not.toContain('Running');
+      expect(cap.capture.runs).toHaveLength(0);
+    } finally { cap.restore(); rmSync(dir, { recursive: true, force: true }); }
+  });
+
   it('default mode runs the local install command when @ctxo/* is a devDependency', async () => {
     const dir = makeTempProject({ withCtxoDep: true });
     const cap = makeCapture();
