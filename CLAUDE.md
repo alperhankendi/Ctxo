@@ -26,6 +26,11 @@ pnpm --filter @ctxo/cli build     # build CLI package to dist/
 npx ctxo install                     # install language plugins (interactive)
 npx ctxo install typescript go --yes # non-interactive install of specific plugins
 npx ctxo install --dry-run --pm pnpm # preview install plan with chosen pm
+npx ctxo update                      # check + apply updates for ctxo + plugins
+npx ctxo update --check              # check only, exit 0
+npx ctxo update --print              # print install command, never execute
+npx ctxo update --global             # force a global install
+npx ctxo update --json               # machine-readable output
 npx ctxo index                       # build codebase index
 npx ctxo index --install-missing     # auto-install detected plugins, then index
 npx ctxo index --check               # CI gate: fail if index stale

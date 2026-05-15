@@ -117,3 +117,26 @@ describe('CliRouter', () => {
     exitSpy.mockRestore();
   });
 });
+
+describe('cli-router update command', () => {
+  it('parses update flags and dispatches to UpdateCommand.run', async () => {
+    const calls: Array<{ projectRoot: string; options: unknown }> = [];
+    const router = new CliRouter(process.cwd());
+    const original = await import('../update-command.js');
+    const spy = vi.spyOn(original, 'UpdateCommand' as any).mockImplementation(((projectRoot: string) => ({
+      run: async (options: unknown) => { calls.push({ projectRoot, options }); },
+    })) as any);
+
+    await router.route(['update', '--check', '--json', '--pm', 'pnpm', '--print', '--global', '--force']);
+    expect(calls).toHaveLength(1);
+    expect(calls[0]!.options).toMatchObject({
+      check: true,
+      json: true,
+      pm: 'pnpm',
+      print: true,
+      global: true,
+      force: true,
+    });
+    spy.mockRestore();
+  });
+});

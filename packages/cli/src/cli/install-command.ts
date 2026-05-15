@@ -1,5 +1,4 @@
 import { existsSync } from 'node:fs';
-import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import {
@@ -17,6 +16,7 @@ import {
   type PackageManager,
   type Resolution,
 } from '../core/install/package-manager.js';
+import { runPackageManager } from '../core/install/run-package-manager.js';
 
 export interface InstallOptions {
   readonly languages?: readonly string[];
@@ -100,7 +100,7 @@ export class InstallCommand {
       return;
     }
 
-    const code = await spawnInstall(plan.command, plan.args, this.projectRoot);
+    const code = await runPackageManager(plan.command, plan.args, this.projectRoot);
     if (code !== 0) {
       console.error(`[ctxo] ${plan.command} exited with code ${code}`);
       process.exitCode = code;
@@ -178,14 +178,6 @@ function isLockedCI(env: NodeJS.ProcessEnv): boolean {
   if (env['CI'] !== 'true' && env['CI'] !== '1') return false;
   // npm ci / pnpm --frozen-lockfile / yarn install --frozen-lockfile run in CI and must not mutate.
   return true;
-}
-
-function spawnInstall(command: string, args: readonly string[], cwd: string): Promise<number> {
-  return new Promise((resolve, reject) => {
-    const child = spawn(command, [...args], { cwd, stdio: 'inherit', shell: process.platform === 'win32' });
-    child.on('exit', (code) => resolve(code ?? 0));
-    child.on('error', (err) => reject(err));
-  });
 }
 
 export { isPackageManager, PACKAGE_MANAGERS };

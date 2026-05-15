@@ -53,6 +53,7 @@ Language adapters ship as separate npm packages and are discovered by scanning t
 ## New in v0.7
 
 - `ctxo install` — install language plugin packages
+- `ctxo update` — check npm for newer @ctxo/cli + plugins; auto-execute or print install command
 - `ctxo init` — project-aware language detection + plugin wiring
 - `ctxo index --install-missing` — auto-install missing plugins during index
 - `ctxo doctor --fix` — repair common issues

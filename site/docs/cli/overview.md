@@ -14,6 +14,7 @@ a subcommand.
 | Command | Purpose |
 | --- | --- |
 | [`ctxo install`](./install.md) | Install language plugins (auto-detects if omitted) |
+| [`ctxo update`](./update.md) | Check the npm registry for newer ctxo releases and apply them |
 | [`ctxo init`](./init.md) | Interactive setup: AI tool rules, git hooks, plugin install |
 | [`ctxo index`](./index.md) | Build the codebase index (symbols, edges, history) |
 | [`ctxo watch`](./watch.md) | File watcher for incremental re-indexing |
