@@ -9,6 +9,20 @@ description: "All ctxo commands at a glance."
 with no arguments starts the stdio MCP server; any other argument dispatches to
 a subcommand.
 
+## Calling ctxo
+
+`@ctxo/cli` ships as a scoped npm package; the binary name inside the package is `ctxo`. Three equivalent invocation forms:
+
+| Form | When to use |
+| --- | --- |
+| `npx @ctxo/cli <subcommand>` | First-time use, CI, or any project that has not added `@ctxo/cli` to its dependencies yet. Works without any prior install |
+| `npx ctxo <subcommand>` | After `@ctxo/cli` is in the project's `devDependencies` (for example after `ctxo init`). Resolves via `node_modules/.bin/ctxo` |
+| `ctxo <subcommand>` | After a global install (`npm install -g @ctxo/cli`). Works from any directory |
+
+All three forms run the same binary. State always lives in `<project>/.ctxo/` regardless of how `ctxo` is invoked — there is no user-level or system-level config.
+
+Examples below use the `npx @ctxo/cli` form so they work for every reader; substitute the shorter form if you have already installed the package.
+
 ## Command summary
 
 | Command | Purpose |

@@ -19,7 +19,7 @@ plugins that are not yet present.
 ## Synopsis
 
 ```shell
-npx ctxo install [languages...] [options]
+npx @ctxo/cli install [languages...] [options]
 ```
 
 ## Flags
@@ -58,27 +58,27 @@ The manager is resolved in this order:
 ::: code-group
 ```shell [auto-detect]
 # Detect languages in the repo and install anything missing.
-npx ctxo install
+npx @ctxo/cli install
 ```
 
 ```shell [explicit]
 # Install TypeScript and Go plugins, no prompts.
-npx ctxo install typescript go --yes
+npx @ctxo/cli install typescript go --yes
 ```
 
 ```shell [dry run]
 # Preview the plan without running the package manager.
-npx ctxo install python --dry-run --pm pnpm
+npx @ctxo/cli install python --dry-run --pm pnpm
 ```
 
 ```shell [pinned version]
 # Pin to an npm dist-tag.
-npx ctxo install typescript --version next --yes
+npx @ctxo/cli install typescript --version next --yes
 ```
 
 ```shell [global]
 # Install globally (useful for ad-hoc CLI usage without a package.json).
-npx ctxo install typescript --global
+npx @ctxo/cli install typescript --global
 ```
 :::
 

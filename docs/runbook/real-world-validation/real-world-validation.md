@@ -32,15 +32,15 @@ When Phase B lands: add Django PetClinic for Python and Spring PetClinic for Jav
    ```
 3. Build the index, recording wall time:
    ```bash
-   time npx ctxo index
+   time npx @ctxo/cli index
    ```
 4. Run doctor and capture the report:
    ```bash
-   npx ctxo doctor --json > doctor.json
+   npx @ctxo/cli doctor --json > doctor.json
    ```
 5. Smoke the main MCP tools against a hand-picked hot symbol:
    ```bash
-   npx ctxo search symbols "<hot-symbol-name>"
+   npx @ctxo/cli search symbols "<hot-symbol-name>"
    # note symbolId
    # call get_blast_radius, get_logic_slice, get_context_for_task via your MCP client
    ```

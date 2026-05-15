@@ -18,7 +18,7 @@ row `(latest)` so the channel switch is visible.
 ## Synopsis
 
 ```shell
-npx ctxo update [options]
+npx @ctxo/cli update [options]
 ```
 
 ## Flags
@@ -112,31 +112,31 @@ modes.
 ::: code-group
 ```shell [check]
 # Print the table + suggested command. Always exits 0.
-npx ctxo update --check
+npx @ctxo/cli update --check
 ```
 
 ```shell [apply]
 # Default: run the install when the project has @ctxo/* in package.json,
 # otherwise print the global command for the user to run.
-npx ctxo update
+npx @ctxo/cli update
 ```
 
 ```shell [print only]
 # Useful for CI dashboards or pasting into a chat.
-npx ctxo update --print
+npx @ctxo/cli update --print
 ```
 
 ```shell [global]
 # Force a global install regardless of project layout.
-npx ctxo update --global
+npx @ctxo/cli update --global
 ```
 
 ```shell [JSON]
-npx ctxo update --check --json
+npx @ctxo/cli update --check --json
 ```
 
 ```shell [override pm]
-npx ctxo update --check --pm pnpm
+npx @ctxo/cli update --check --pm pnpm
 ```
 :::
 

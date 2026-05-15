@@ -126,7 +126,7 @@ npx tsx ./my-ctxo-script.ts
 
 You should see 14 tool names and a JSON payload for the `SqliteStorageAdapter`
 symbol. If `listTools` returns empty, the index has not been built - run
-`npx ctxo index` in the target repo first.
+`npx @ctxo/cli index` in the target repo first.
 
 ## Tips
 

@@ -42,7 +42,7 @@ visually — the same graph the MCP tools query, but rendered for humans.
 </div>
 
 ::: tip How to get here
-Run <code>npx ctxo visualize</code> in any indexed project. The CLI generates a
+Run <code>npx @ctxo/cli visualize</code> in any indexed project. The CLI generates a
 static HTML file and opens it in your browser.
 :::
 

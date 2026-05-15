@@ -24,7 +24,7 @@ Ctxo runs entirely on the developer's machine. Its index is committed alongside 
 
 Getting started takes 30 seconds:
 ```bash
-npx ctxo index         # builds the index for the first time (~10–30s for 1,000 files)
+npx @ctxo/cli index         # builds the index for the first time (~10–30s for 1,000 files)
 ```
 ```json
 { "command": "npx", "args": ["-y", "ctxo"] }
@@ -97,7 +97,7 @@ Teams onboarding new developers onto complex codebases, or teams that have lost 
 ## Scope
 
 **V1 — TypeScript / JavaScript (full feature set):**
-Logic-Slice, Blast Radius, Architectural Overlay, Why-Context + Anti-Pattern Memory, Change Intelligence, Privacy Masking, Progressive Detail Levels (L1–L4), Monorepo auto-discovery, CI indexing gate, incremental file watching, `npx ctxo` install.
+Logic-Slice, Blast Radius, Architectural Overlay, Why-Context + Anti-Pattern Memory, Change Intelligence, Privacy Masking, Progressive Detail Levels (L1–L4), Monorepo auto-discovery, CI indexing gate, incremental file watching, `npx @ctxo/cli` install.
 
 **V1.5 — Multi-language syntax tier:**
 Go + C# via tree-sitter. Same five tools, AST-level analysis (no type inference). Addresses the backend and enterprise polyglot developer segment.

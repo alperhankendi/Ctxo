@@ -43,7 +43,7 @@ yarn add -D @ctxo/lang-go
 Or:
 
 ```bash
-npx ctxo install go --yes
+npx @ctxo/cli install go --yes
 ```
 
 For full tier, also install a Go 1.22+ toolchain. The first `ctxo index` run

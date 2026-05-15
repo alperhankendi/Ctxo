@@ -65,7 +65,7 @@ Wire the same check into a local pre-push hook so regressions are caught before 
 # .git/hooks/pre-push
 #!/usr/bin/env bash
 set -e
-npx ctxo index --check || {
+npx @ctxo/cli index --check || {
   echo "ctxo index is stale. Run 'ctxo index' and commit the result." >&2
   exit 1
 }
@@ -95,7 +95,7 @@ For large repos, `--check` still walks the full tree. If the gate is too slow, s
 A stale index produces a diff summary on stderr listing added, removed, and modified files. The expected remediation is:
 
 ```bash
-npx ctxo index
+npx @ctxo/cli index
 git add .ctxo/index
 git commit -m "chore: refresh ctxo index"
 ```

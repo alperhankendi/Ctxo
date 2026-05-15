@@ -50,8 +50,8 @@ User project
    cd /path/to/test-project
    npm install /path/to/ctxo-lang-yourlang   # local link
    npm install @ctxo/cli@next
-   npx ctxo index
-   npx ctxo doctor --quiet
+   npx @ctxo/cli index
+   npx @ctxo/cli doctor --quiet
    ```
 
    Your plugin should appear in `ctxo doctor`'s Versions section. Indexing should produce symbols in `.ctxo/index/`.

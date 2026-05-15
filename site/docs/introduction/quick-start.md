@@ -28,13 +28,13 @@ Expected output (abridged):
 [ctxo] Installing @ctxo/lang-typescript@^0.7.0-alpha.0 (devDependency)...
 [ctxo] Wrote .ctxo/config.yaml
 [ctxo] Installed git hooks: post-commit, post-merge, post-checkout
-[ctxo] Done. Run `npx ctxo index` next.
+[ctxo] Done. Run `npx @ctxo/cli index` next.
 ```
 
 ## 2. Build the index
 
 ```bash
-npx ctxo index
+npx @ctxo/cli index
 ```
 
 This walks every file tracked by git, parses symbols and edges, and enriches
@@ -57,7 +57,7 @@ pass. Run a full `ctxo index` before committing.
 ## 3. Check status
 
 ```bash
-npx ctxo status
+npx @ctxo/cli status
 ```
 
 ```
@@ -67,7 +67,7 @@ npx ctxo status
 [ctxo] Health: OK
 ```
 
-If anything looks off, run `npx ctxo doctor` for a detailed health report.
+If anything looks off, run `npx @ctxo/cli doctor` for a detailed health report.
 
 ## 4. Wire up an MCP client
 
@@ -127,6 +127,6 @@ Expected response shape:
 
 ::: tip Keep it fresh
 The git hooks installed by `ctxo init` re-index on commit, merge, and
-checkout. For active editing sessions, run `npx ctxo watch` in a spare
+checkout. For active editing sessions, run `npx @ctxo/cli watch` in a spare
 terminal for incremental re-indexing on save.
 :::

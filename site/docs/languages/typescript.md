@@ -38,10 +38,10 @@ yarn add -D @ctxo/lang-typescript
 Or via the CLI:
 
 ```bash
-npx ctxo install typescript --yes
+npx @ctxo/cli install typescript --yes
 ```
 
-After installing, run `npx ctxo index` to populate `.ctxo/index/`.
+After installing, run `npx @ctxo/cli index` to populate `.ctxo/index/`.
 
 ## What it extracts
 

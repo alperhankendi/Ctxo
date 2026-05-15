@@ -13,7 +13,7 @@ your default browser by default.
 ## Synopsis
 
 ```shell
-npx ctxo visualize [options]
+npx @ctxo/cli visualize [options]
 ```
 
 ## Flags
@@ -42,21 +42,21 @@ inspection.
 
 ::: code-group
 ```shell [default]
-npx ctxo visualize
+npx @ctxo/cli visualize
 ```
 
 ```shell [large repo]
 # Keep only the 200 most central symbols.
-npx ctxo visualize --max-nodes 200
+npx @ctxo/cli visualize --max-nodes 200
 ```
 
 ```shell [custom path, no browser]
-npx ctxo visualize --output ./reports/graph.html --no-browser
+npx @ctxo/cli visualize --output ./reports/graph.html --no-browser
 ```
 
 ```shell [CI artifact]
 # Generate the HTML in a CI job; upload it as an artifact.
-npx ctxo visualize --output artifacts/ctxo-graph.html --no-browser
+npx @ctxo/cli visualize --output artifacts/ctxo-graph.html --no-browser
 ```
 :::
 

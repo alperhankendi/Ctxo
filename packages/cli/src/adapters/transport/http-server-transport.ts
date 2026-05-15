@@ -17,8 +17,8 @@ export type ServerFactory = () => Promise<McpServer>;
  * This avoids the "already connected" error when multiple clients connect.
  *
  * Usage:
- *   CTXO_HTTP_PORT=3001 npx ctxo
- *   npx ctxo --http
+ *   CTXO_HTTP_PORT=3001 npx @ctxo/cli
+ *   npx @ctxo/cli --http
  */
 export async function startHttpTransport(
   serverFactory: ServerFactory,
