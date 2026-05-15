@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { getVersion } from './cli-router.js';
 import { discoverPlugins } from '../adapters/language/plugin-discovery.js';
 import { loadManifestPath } from './plugin-loader.js';
-import { fetchDistTagsBatch, type HttpsFetcher, type RegistryResult } from '../core/update/registry-client.js';
+import { fetchDistTagsBatch, type HttpsFetcher } from '../core/update/registry-client.js';
 import {
   computePackageStates,
   detectChannel,
@@ -152,14 +152,7 @@ export class UpdateCommand {
     }
 
     const names = installed.map((p) => p.name);
-    let results: RegistryResult[];
-    try {
-      results = await fetchDistTagsBatch(names, { fetcher: this.deps.fetcher });
-    } catch (err) {
-      this.emitError(`registry fetch failed: ${(err as Error).message}`);
-      this.deps.setExitCode?.(1);
-      return;
-    }
+    const results = await fetchDistTagsBatch(names, { fetcher: this.deps.fetcher });
 
     const allMissed = results.every((r) => !('distTags' in r));
     if (allMissed) {
