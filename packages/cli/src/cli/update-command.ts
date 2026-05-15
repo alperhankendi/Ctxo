@@ -92,3 +92,193 @@ export function formatJson(report: UpdateReport): string {
     2,
   );
 }
+
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { getVersion } from './cli-router.js';
+import { discoverPlugins } from '../adapters/language/plugin-discovery.js';
+import { loadManifestPath } from './plugin-loader.js';
+import { fetchDistTagsBatch, type HttpsFetcher, type RegistryResult } from '../core/update/registry-client.js';
+import {
+  computePackageStates,
+  detectChannel,
+  selectInstallTargets,
+} from '../core/update/update-plan.js';
+import {
+  resolvePackageManager,
+  buildInstallCommand,
+  isPackageManager,
+} from '../core/install/package-manager.js';
+import { runPackageManager } from '../core/install/run-package-manager.js';
+import { createLogger } from '../core/logger.js';
+
+const log = createLogger('ctxo:update');
+const CTXO_CLI_PACKAGE = '@ctxo/cli';
+
+export interface UpdateOptions {
+  readonly check?: boolean;
+  readonly print?: boolean;
+  readonly global?: boolean;
+  readonly json?: boolean;
+  readonly pm?: string;
+  readonly force?: boolean;
+}
+
+export interface UpdateCommandDeps {
+  readonly discoverInstalled?: (projectRoot: string) => Promise<ReadonlyArray<{ name: string; version: string }>>;
+  readonly fetcher?: HttpsFetcher;
+  readonly runner?: (command: string, args: readonly string[], cwd: string) => Promise<number>;
+  readonly setExitCode?: (code: number) => void;
+  readonly env?: NodeJS.ProcessEnv;
+}
+
+export class UpdateCommand {
+  constructor(
+    private readonly projectRoot: string,
+    private readonly deps: UpdateCommandDeps = {},
+  ) {}
+
+  async run(options: UpdateOptions = {}): Promise<void> {
+    if (options.pm && !isPackageManager(options.pm)) {
+      this.emitError(`Unknown --pm value "${options.pm}".`);
+      this.deps.setExitCode?.(1);
+      return;
+    }
+
+    const discover = this.deps.discoverInstalled ?? defaultDiscoverInstalled;
+    const installed = await discover(this.projectRoot);
+    if (installed.length === 0) {
+      this.emit(options.json ? '{}\n' : 'ctxo update — no @ctxo/* packages discovered.\n');
+      return;
+    }
+
+    const names = installed.map((p) => p.name);
+    let results: RegistryResult[];
+    try {
+      results = await fetchDistTagsBatch(names, { fetcher: this.deps.fetcher });
+    } catch (err) {
+      this.emitError(`registry fetch failed: ${(err as Error).message}`);
+      this.deps.setExitCode?.(1);
+      return;
+    }
+
+    const allMissed = results.every((r) => !('distTags' in r));
+    if (allMissed) {
+      this.emitError('registry unreachable for every package; aborting.');
+      this.deps.setExitCode?.(1);
+      return;
+    }
+
+    const states = computePackageStates(installed, results);
+    const targets = selectInstallTargets(states);
+
+    const cliVersion = getVersion();
+    const channel = detectChannel(cliVersion);
+    const plan = targets.length === 0 ? null : this.buildPlan(targets, options);
+    const strategy = this.pickStrategy(targets, options);
+
+    const baseReport: UpdateReport = {
+      ctxo: cliVersion,
+      channel,
+      packages: states,
+      plan,
+      strategy,
+      executed: false,
+    };
+
+    if (options.check) {
+      this.emitReport(baseReport, options.json ?? false);
+      return;
+    }
+
+    if (strategy === 'none' || strategy === 'print' || !plan) {
+      this.emitReport(baseReport, options.json ?? false);
+      return;
+    }
+
+    if (!options.force && !options.global && isLockedCI(this.deps.env ?? process.env)) {
+      this.emitReport({ ...baseReport, strategy: 'print' }, options.json ?? false);
+      this.emitError('CI environment with frozen lockfile detected. Refusing to mutate. Use --force or --global.');
+      this.deps.setExitCode?.(1);
+      return;
+    }
+
+    this.emitReport(baseReport, options.json ?? false);
+    const run = this.deps.runner ?? runPackageManager;
+    const code = await run(plan.command, plan.args, this.projectRoot);
+    const finalReport: UpdateReport = { ...baseReport, executed: true, exitCode: code };
+    if (options.json) this.emit(formatJson(finalReport) + '\n');
+    if (code !== 0) this.deps.setExitCode?.(code);
+  }
+
+  private buildPlan(
+    targets: ReadonlyArray<{ name: string; version: string }>,
+    options: UpdateOptions,
+  ): UpdatePlanShape {
+    const resolution = resolvePackageManager({
+      flag: options.pm,
+      projectRoot: this.projectRoot,
+      env: this.deps.env,
+    });
+    const specifiers = targets.map((t) => `${t.name}@${t.version}`);
+    const useGlobal = options.global || !this.projectHasCtxoDep();
+    const invocation = buildInstallCommand(resolution.manager, specifiers, { global: useGlobal });
+    return {
+      manager: resolution.manager,
+      managerSource: resolution.source,
+      managerDetail: resolution.detail,
+      global: useGlobal,
+      command: invocation.command,
+      args: invocation.args,
+    };
+  }
+
+  private pickStrategy(
+    targets: ReadonlyArray<{ name: string; version: string }>,
+    options: UpdateOptions,
+  ): UpdateStrategy {
+    if (targets.length === 0) return 'none';
+    if (options.print) return 'print';
+    if (options.global) return 'execute';
+    return this.projectHasCtxoDep() ? 'execute' : 'print';
+  }
+
+  private projectHasCtxoDep(): boolean {
+    const pkg = join(this.projectRoot, 'package.json');
+    if (!existsSync(pkg)) return false;
+    try {
+      const json = JSON.parse(readFileSync(pkg, 'utf-8')) as {
+        dependencies?: Record<string, string>;
+        devDependencies?: Record<string, string>;
+      };
+      const merged = { ...(json.dependencies ?? {}), ...(json.devDependencies ?? {}) };
+      return Object.keys(merged).some(
+        (name) => name === CTXO_CLI_PACKAGE || name.startsWith('@ctxo/lang-') || name.startsWith('ctxo-lang-'),
+      );
+    } catch (err) {
+      log.error(`failed to read project package.json: ${(err as Error).message}`);
+      return false;
+    }
+  }
+
+  private emit(text: string): void { process.stdout.write(text); }
+  private emitError(text: string): void { process.stderr.write(`[ctxo] ${text}\n`); }
+
+  private emitReport(report: UpdateReport, json: boolean): void {
+    if (json) this.emit(formatJson(report) + '\n');
+    else this.emit(formatText(report) + '\n');
+  }
+}
+
+async function defaultDiscoverInstalled(projectRoot: string): Promise<ReadonlyArray<{ name: string; version: string }>> {
+  const out: Array<{ name: string; version: string }> = [{ name: CTXO_CLI_PACKAGE, version: getVersion() }];
+  const manifestPath = loadManifestPath(projectRoot);
+  if (!manifestPath) return out;
+  const { plugins } = await discoverPlugins({ manifestPath });
+  for (const p of plugins) out.push({ name: p.specifier, version: p.plugin.version });
+  return out;
+}
+
+function isLockedCI(env: NodeJS.ProcessEnv): boolean {
+  return env['CI'] === 'true' || env['CI'] === '1';
+}
