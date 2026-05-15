@@ -152,6 +152,40 @@ export interface InstallInvocation {
 }
 
 /**
+ * Read every dependency in `projectRoot`'s `package.json` whose version spec
+ * starts with `workspace:` (pnpm / yarn workspaces convention, e.g.
+ * `workspace:*`, `workspace:^`, `workspace:~`). Returns a Set of package names.
+ *
+ * Used by `ctxo update` to skip these packages: their source is local, so
+ * "upgrading" them to a registry version would unlink the workspace and
+ * silently downgrade you to whatever npm has published.
+ */
+export function readWorkspaceLinks(projectRoot: string): Set<string> {
+  const links = new Set<string>();
+  const pkgPath = join(projectRoot, 'package.json');
+  if (!existsSync(pkgPath)) return links;
+  try {
+    const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8')) as {
+      dependencies?: Record<string, string>;
+      devDependencies?: Record<string, string>;
+      peerDependencies?: Record<string, string>;
+      optionalDependencies?: Record<string, string>;
+    };
+    for (const group of [pkg.dependencies, pkg.devDependencies, pkg.peerDependencies, pkg.optionalDependencies]) {
+      if (!group) continue;
+      for (const [name, spec] of Object.entries(group)) {
+        if (typeof spec === 'string' && spec.startsWith('workspace:')) {
+          links.add(name);
+        }
+      }
+    }
+    return links;
+  } catch {
+    return links;
+  }
+}
+
+/**
  * True when `projectRoot` is the root of a pnpm workspace. Detects either
  * `pnpm-workspace.yaml` (the explicit pnpm marker) or a `package.json` whose
  * `workspaces` field declares sub-packages. Required so `buildInstallCommand`

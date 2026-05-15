@@ -443,4 +443,45 @@ describe('UpdateCommand', () => {
       expect(cap.capture.exitCode).toBeUndefined();
     } finally { cap.restore(); rmSync(dir, { recursive: true, force: true }); }
   });
+
+  it('excludes workspace-linked plugins from the install plan and shows them as workspace link', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'ctxo-update-ws-'));
+    // package.json declares @ctxo/cli as a normal devDep but @ctxo/lang-typescript
+    // as a workspace link — exactly what the Ctxo monorepo itself looks like.
+    writeFileSync(
+      join(dir, 'package.json'),
+      JSON.stringify({
+        name: 'fixture-monorepo',
+        devDependencies: {
+          '@ctxo/cli': '0.9.1',
+          '@ctxo/lang-typescript': 'workspace:*',
+        },
+      }),
+    );
+    const cap = makeCapture();
+    try {
+      const cmd = new UpdateCommand(dir, {
+        discoverInstalled: async () => [
+          { name: '@ctxo/cli', version: '0.9.1' },
+          { name: '@ctxo/lang-typescript', version: '0.7.0-alpha.0' },
+        ],
+        fetcher: makeFetcher({
+          '@ctxo/cli': { status: 200, body: JSON.stringify({ 'dist-tags': { latest: '0.9.2' } }) },
+          '@ctxo/lang-typescript': { status: 200, body: JSON.stringify({ 'dist-tags': { latest: '0.7.1' } }) },
+        }),
+        runner: cap.deps.runner,
+        setExitCode: cap.deps.setExitCode,
+        env: {},
+      });
+      await cmd.run({ check: true });
+      // The table shows the plugin as workspace link with (local) in the LATEST column.
+      expect(cap.capture.stdout).toContain('@ctxo/lang-typescript');
+      expect(cap.capture.stdout).toContain('workspace link');
+      expect(cap.capture.stdout).toContain('(local)');
+      // The plan only mentions @ctxo/cli; the workspace-linked plugin is excluded.
+      expect(cap.capture.stdout).toMatch(/@ctxo\/cli@0\.9\.2/);
+      expect(cap.capture.stdout).not.toMatch(/@ctxo\/lang-typescript@0\.7\.1/);
+      expect(cap.capture.runs).toHaveLength(0);
+    } finally { cap.restore(); rmSync(dir, { recursive: true, force: true }); }
+  });
 });

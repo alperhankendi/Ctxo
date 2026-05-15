@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { detectChannel, compareSemver, computePackageStates, selectInstallTargets, isSafeVersionSpecifier } from '../update-plan.js';
+import {
+  detectChannel,
+  compareSemver,
+  computePackageStates,
+  selectInstallTargets,
+  isSafeVersionSpecifier,
+  markWorkspaceLinks,
+} from '../update-plan.js';
 import type { RegistryResult } from '../registry-client.js';
 
 describe('detectChannel', () => {
@@ -143,5 +150,40 @@ describe('selectInstallTargets safety', () => {
       { name: 'evil', current: '1.0.0', latest: '2.0.0 && rm -rf /', channel: 'latest', status: 'update' },
     ]);
     expect(targets).toEqual([{ name: 'safe', version: '2.0.0' }]);
+  });
+});
+
+describe('markWorkspaceLinks', () => {
+  it('overrides matching names to status workspace and nulls their latest', () => {
+    const out = markWorkspaceLinks(
+      [
+        { name: '@ctxo/cli', current: '0.9.1', latest: '0.9.2', channel: 'latest', status: 'update' },
+        { name: '@ctxo/lang-typescript', current: '0.7.0-alpha.0', latest: '0.7.1', channel: 'latest', status: 'update' },
+        { name: 'other', current: '1.0.0', latest: '1.0.0', channel: 'latest', status: 'current' },
+      ],
+      new Set(['@ctxo/lang-typescript']),
+    );
+    expect(out[0]).toMatchObject({ name: '@ctxo/cli', status: 'update' });
+    expect(out[1]).toMatchObject({ name: '@ctxo/lang-typescript', status: 'workspace', latest: null });
+    expect(out[2]).toMatchObject({ name: 'other', status: 'current' });
+  });
+
+  it('makes selectInstallTargets exclude the marked rows', () => {
+    const states = markWorkspaceLinks(
+      [
+        { name: 'a', current: '1.0.0', latest: '2.0.0', channel: 'latest', status: 'update' },
+        { name: 'b', current: '1.0.0', latest: '2.0.0', channel: 'latest', status: 'update' },
+      ],
+      new Set(['b']),
+    );
+    expect(selectInstallTargets(states)).toEqual([{ name: 'a', version: '2.0.0' }]);
+  });
+
+  it('is a no-op when workspaceLinkNames is empty', () => {
+    const input = [
+      { name: 'a', current: '1.0.0', latest: '2.0.0', channel: 'latest', status: 'update' as const },
+    ];
+    const out = markWorkspaceLinks(input, new Set());
+    expect(out).toEqual(input);
   });
 });

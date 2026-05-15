@@ -7,6 +7,7 @@ import {
   buildInstallCommand,
   isPackageManager,
   isWorkspaceRoot,
+  readWorkspaceLinks,
   PACKAGE_MANAGERS,
 } from '../package-manager.js';
 
@@ -275,5 +276,72 @@ describe('isWorkspaceRoot', () => {
   it('returns false on malformed package.json (warn-and-continue)', () => {
     writeFileSync(join(tmp, 'package.json'), '{ not valid json');
     expect(isWorkspaceRoot(tmp)).toBe(false);
+  });
+});
+
+describe('readWorkspaceLinks', () => {
+  let tmp: string;
+
+  beforeEach(() => {
+    tmp = mkdtempSync(join(tmpdir(), 'ctxo-wslinks-'));
+  });
+
+  afterEach(() => {
+    rmSync(tmp, { recursive: true, force: true });
+  });
+
+  it('returns empty set when no package.json exists', () => {
+    expect(readWorkspaceLinks(tmp).size).toBe(0);
+  });
+
+  it('returns empty set on malformed package.json', () => {
+    writeFileSync(join(tmp, 'package.json'), '{ not valid json');
+    expect(readWorkspaceLinks(tmp).size).toBe(0);
+  });
+
+  it('returns names of deps with workspace: prefix from devDependencies', () => {
+    writeFileSync(
+      join(tmp, 'package.json'),
+      JSON.stringify({
+        name: 'fixture',
+        devDependencies: {
+          '@ctxo/lang-typescript': 'workspace:*',
+          '@ctxo/lang-go': 'workspace:^',
+          tsx: '^4.21.0',
+        },
+      }),
+    );
+    const links = readWorkspaceLinks(tmp);
+    expect(links).toEqual(new Set(['@ctxo/lang-typescript', '@ctxo/lang-go']));
+  });
+
+  it('reads from dependencies, peerDependencies, optionalDependencies too', () => {
+    writeFileSync(
+      join(tmp, 'package.json'),
+      JSON.stringify({
+        name: 'fixture',
+        dependencies: { 'pkg-a': 'workspace:*' },
+        devDependencies: { 'pkg-b': 'workspace:^1.0.0' },
+        peerDependencies: { 'pkg-c': 'workspace:~' },
+        optionalDependencies: { 'pkg-d': 'workspace:*' },
+      }),
+    );
+    expect(readWorkspaceLinks(tmp)).toEqual(new Set(['pkg-a', 'pkg-b', 'pkg-c', 'pkg-d']));
+  });
+
+  it('ignores deps with regular version ranges', () => {
+    writeFileSync(
+      join(tmp, 'package.json'),
+      JSON.stringify({
+        name: 'fixture',
+        devDependencies: {
+          'pkg-a': '^1.0.0',
+          'pkg-b': '~2.0.0',
+          'pkg-c': 'latest',
+          'pkg-d': 'file:../local',
+        },
+      }),
+    );
+    expect(readWorkspaceLinks(tmp).size).toBe(0);
   });
 });
