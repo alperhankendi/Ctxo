@@ -205,7 +205,7 @@ export class UpdateCommand {
       return;
     }
 
-    this.emitReport(baseReport, options.json ?? false);
+    if (!options.json) this.emitReport(baseReport, false);
     const run = this.deps.runner ?? runPackageManager;
     const code = await run(plan.command, plan.args, this.projectRoot);
     const finalReport: UpdateReport = { ...baseReport, executed: true, exitCode: code };

@@ -310,6 +310,51 @@ describe('UpdateCommand', () => {
     } finally { cap.restore(); rmSync(dir, { recursive: true, force: true }); }
   });
 
+  it('--json (non-check) emits exactly one JSON document after the runner completes', async () => {
+    const dir = makeTempProject({ withCtxoDep: true });
+    const cap = makeCapture();
+    try {
+      const cmd = new UpdateCommand(dir, {
+        discoverInstalled: async () => [{ name: '@ctxo/cli', version: '0.7.0-alpha.0' }],
+        fetcher: makeFetcher({
+          '@ctxo/cli': { status: 200, body: JSON.stringify({ 'dist-tags': { alpha: '0.7.0-alpha.3' } }) },
+        }),
+        runner: cap.deps.runner,
+        setExitCode: cap.deps.setExitCode,
+      });
+      await cmd.run({ json: true });
+      // Single document — JSON.parse must succeed on the entire stdout.
+      const parsed = JSON.parse(cap.capture.stdout);
+      expect(parsed.executed).toBe(true);
+      expect(parsed.exitCode).toBe(0);
+      expect(parsed.plan).not.toBeNull();
+      expect(cap.capture.runs).toHaveLength(1);
+    } finally { cap.restore(); rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it('--check --json includes the plan and reports executed=false with no exitCode', async () => {
+    const dir = makeTempProject({ withCtxoDep: true });
+    const cap = makeCapture();
+    try {
+      const cmd = new UpdateCommand(dir, {
+        discoverInstalled: async () => [{ name: '@ctxo/cli', version: '0.7.0-alpha.0' }],
+        fetcher: makeFetcher({
+          '@ctxo/cli': { status: 200, body: JSON.stringify({ 'dist-tags': { alpha: '0.7.0-alpha.3' } }) },
+        }),
+        runner: cap.deps.runner,
+        setExitCode: cap.deps.setExitCode,
+      });
+      await cmd.run({ check: true, json: true });
+      const parsed = JSON.parse(cap.capture.stdout);
+      expect(parsed.executed).toBe(false);
+      expect(parsed.exitCode).toBeUndefined();
+      expect(parsed.plan).not.toBeNull();
+      expect(parsed.plan.args.some((s: string) => s.includes('@ctxo/cli@0.7.0-alpha.3'))).toBe(true);
+      expect(cap.capture.runs).toHaveLength(0);
+      expect(cap.capture.exitCode).toBeUndefined();
+    } finally { cap.restore(); rmSync(dir, { recursive: true, force: true }); }
+  });
+
   it('refuses to mutate in CI unless --force or --global is set', async () => {
     const dir = makeTempProject({ withCtxoDep: true });
     const cap = makeCapture();
