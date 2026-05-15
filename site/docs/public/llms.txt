@@ -10,7 +10,7 @@ Ctxo is a Model Context Protocol (MCP) server that delivers Logic-Slices to AI c
 - [Why Ctxo?](https://alperhankendi.github.io/Ctxo/docs/introduction/why-ctxo): Shift the fix-loop left. Proactive, not reactive.
 - [Installation](https://alperhankendi.github.io/Ctxo/docs/introduction/installation): `npx @ctxo/cli init`, then `npx ctxo doctor`.
 - [Quick Start](https://alperhankendi.github.io/Ctxo/docs/introduction/quick-start): Index a repo and make the first MCP call.
-- [MCP Client Setup](https://alperhankendi.github.io/Ctxo/docs/introduction/mcp-client-setup): Claude Code, Cursor, Copilot, Windsurf, Cline.
+- [MCP Client Setup](https://alperhankendi.github.io/Ctxo/docs/introduction/mcp-client-setup): Claude Code, Cursor, Copilot, Windsurf, Cline, Gemini CLI, Continue.
 
 ## Core Concepts
 
@@ -63,6 +63,8 @@ Ctxo is a Model Context Protocol (MCP) server that delivers Logic-Slices to AI c
 - [GitHub Copilot](https://alperhankendi.github.io/Ctxo/docs/integrations/copilot): Copilot Chat.
 - [Windsurf](https://alperhankendi.github.io/Ctxo/docs/integrations/windsurf): Codeium Windsurf.
 - [Cline](https://alperhankendi.github.io/Ctxo/docs/integrations/cline): VS Code extension.
+- [Gemini CLI](https://alperhankendi.github.io/Ctxo/docs/integrations/gemini-cli): Google's Gemini CLI with project-level `GEMINI.md` rules.
+- [Continue](https://alperhankendi.github.io/Ctxo/docs/integrations/continue): VS Code/JetBrains extension; per-server file under `.continue/mcpServers/`.
 - [Raw MCP Client](https://alperhankendi.github.io/Ctxo/docs/integrations/raw-mcp-client): Talk to Ctxo via SDK.
 
 ## Languages

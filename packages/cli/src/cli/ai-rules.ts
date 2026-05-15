@@ -28,6 +28,8 @@ export const PLATFORMS: Platform[] = [
   { id: 'antigravity',    name: 'Google Antigravity',  file: 'AGENTS.md',                      mode: 'create',  detectPaths: ['AGENTS.md', 'GEMINI.md', '.gemini'],       starred: false },
   { id: 'augment',        name: 'Augment Code',       file: 'augment-guidelines.md',           mode: 'create',  detectPaths: ['augment-guidelines.md', '.augment'],        starred: false },
   { id: 'amazonq',        name: 'Amazon Q',           file: '.amazonq/rules/ctxo.md',         mode: 'create',  detectPaths: ['.amazonq'],                                starred: false },
+  { id: 'gemini-cli',     name: 'Gemini CLI',          file: 'GEMINI.md',                       mode: 'append',  detectPaths: ['.gemini/settings.json', 'GEMINI.md'],      starred: false },
+  { id: 'continue',       name: 'Continue',            file: '.continue/rules/ctxo.md',         mode: 'create',  detectPaths: ['.continue'],                                starred: false },
 ];
 
 export function detectPlatforms(projectRoot: string): Set<string> {
@@ -255,6 +257,14 @@ export function getMcpConfigTargets(selectedPlatformIds: string[]): McpConfigTar
         break;
       case 'amazonq':
         targets.set('.amazonq/mcp.json', { file: '.amazonq/mcp.json', serverKey: 'mcpServers' });
+        break;
+      case 'gemini-cli':
+        // Gemini CLI reads MCP servers from .gemini/settings.json (project) or ~/.gemini/settings.json (user).
+        targets.set('.gemini/settings.json', { file: '.gemini/settings.json', serverKey: 'mcpServers' });
+        break;
+      case 'continue':
+        // Continue reads each MCP server from a standalone file under .continue/mcpServers/.
+        targets.set('.continue/mcpServers/ctxo.json', { file: '.continue/mcpServers/ctxo.json', serverKey: 'mcpServers' });
         break;
     }
   }

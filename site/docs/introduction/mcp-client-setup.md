@@ -1,6 +1,6 @@
 ---
 title: "MCP Client Setup"
-description: "Per-client config for Claude Code, Cursor, Copilot, Windsurf, and Cline. Copy-paste JSON blocks for stdio MCP."
+description: "Per-client config for Claude Code, Cursor, Copilot, Windsurf, Cline, Gemini CLI, and Continue. Copy-paste JSON blocks for stdio MCP."
 ---
 
 # MCP Client Setup
@@ -133,6 +133,51 @@ directly:
 ```
 
 See [Cline integration](/integrations/cline) for more.
+
+## Gemini CLI
+
+Gemini CLI reads MCP servers from `.gemini/settings.json` (per-project) or
+`~/.gemini/settings.json` (global). Use the same `mcpServers` schema as Claude
+Code and Cursor:
+
+```json
+{
+  "mcpServers": {
+    "ctxo": {
+      "command": "npx",
+      "args": ["@ctxo/cli", "mcp"]
+    }
+  }
+}
+```
+
+Project-level rules live in `GEMINI.md` at the repo root - `ctxo init` appends
+a marked section there. Restart `gemini` after editing.
+
+## Continue
+
+Continue keeps each MCP server in its own JSON (or YAML) file under
+`.continue/mcpServers/`. Create `.continue/mcpServers/ctxo.json`:
+
+```json
+{
+  "mcpServers": {
+    "ctxo": {
+      "command": "npx",
+      "args": ["@ctxo/cli", "mcp"]
+    }
+  }
+}
+```
+
+::: tip One file per server
+Unlike Cursor / Claude Code where one config holds every server, Continue picks
+up each `.continue/mcpServers/*.json` file separately. To add another MCP
+server, drop another file next to `ctxo.json` rather than appending to it.
+:::
+
+Project rules go to `.continue/rules/ctxo.md`. Reload Continue from the VS Code
+command palette after the install.
 
 ## Using a pinned binary instead of npx
 

@@ -8,8 +8,10 @@ description: "Bootstrap a project: git hooks + plugin install prompt."
 Bootstraps a project for ctxo. Runs three steps:
 
 1. Ensures `.ctxo/index/` and `.ctxo/config.yaml` exist.
-2. Generates MCP usage rules for the AI tools you use (Claude Code, Cursor,
-   Windsurf, etc.) and registers the ctxo MCP server in their config files.
+2. Generates MCP usage rules for the AI tools you use and registers the ctxo
+   MCP server in their config files. Supported tool ids: `claude-code`,
+   `cursor`, `github-copilot`, `windsurf`, `antigravity`, `augment`, `amazonq`,
+   `gemini-cli`, `continue`.
 3. Offers to install missing language plugins and to install git hooks that
    re-index on commit and rebuild the SQLite cache on merge.
 
@@ -38,8 +40,8 @@ npx @ctxo/cli init [options]
 | `.ctxo/index/` | Created if missing (holds per-file JSON indices) |
 | `.ctxo/config.yaml` | Default config is dropped if absent. See [config reference](./config-yaml.md) |
 | `.gitignore` | `.ctxo/.cache/` appended if not already present |
-| AI rule files | For example `.claude/claude.md`, `.cursor/rules/*.mdc`, depending on what you select |
-| AI MCP configs | For example `.mcp.json`, registering `npx -y @ctxo/cli` as a server |
+| AI rule files | Per selected tool: `CLAUDE.md`, `.cursor/rules/ctxo.mdc`, `.github/copilot-instructions.md`, `.windsurfrules`, `AGENTS.md`, `augment-guidelines.md`, `.amazonq/rules/ctxo.md`, `GEMINI.md`, `.continue/rules/ctxo.md` |
+| AI MCP configs | Per selected tool: `.mcp.json` (Claude Code / Cursor / Windsurf / Antigravity / Augment), `.vscode/mcp.json` (Copilot), `.amazonq/mcp.json`, `.gemini/settings.json`, `.continue/mcpServers/ctxo.json` |
 | `.git/hooks/post-commit` | Incremental re-index of changed files (idempotent block, marked `# ctxo-start` / `# ctxo-end`) |
 | `.git/hooks/post-merge` | Runs `ctxo sync` after `git pull` |
 
