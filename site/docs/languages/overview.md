@@ -19,6 +19,7 @@ runtime dependencies on `@ctxo/cli`.
 | TypeScript/JavaScript | `@ctxo/lang-typescript` | ts-morph                                         | `full`   | `.ts .tsx .js .jsx`        |
 | Go                    | `@ctxo/lang-go`         | `ctxo-go-analyzer` (Go 1.22+) + tree-sitter-go   | `full`   | `.go`                      |
 | C#                    | `@ctxo/lang-csharp`     | `ctxo-roslyn` (.NET SDK 8+) + tree-sitter-c-sharp | `full`  | `.cs`                      |
+| Java                  | `@ctxo/lang-java`       | tree-sitter-java                                 | `syntax` | `.java`                    |
 
 Two tiers are defined by the plugin contract:
 

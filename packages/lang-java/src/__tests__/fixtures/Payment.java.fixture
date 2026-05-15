@@ -1,0 +1,53 @@
+package com.example.payment;
+
+import java.util.List;
+import java.util.Optional;
+import com.example.gateway.Gateway;
+
+public interface Processor {
+    PaymentResult process(double amount);
+}
+
+class PaymentResult {
+    public boolean success;
+    public String message;
+
+    public PaymentResult(boolean success, String message) {
+        this.success = success;
+        this.message = message;
+    }
+}
+
+public class CardProcessor implements Processor {
+    private final Gateway gateway;
+
+    public CardProcessor(Gateway gateway) {
+        this.gateway = gateway;
+    }
+
+    @Override
+    public PaymentResult process(double amount) {
+        if (amount <= 0) {
+            return new PaymentResult(false, "invalid");
+        }
+        for (int i = 0; i < 3; i++) {
+            try {
+                gateway.charge(amount);
+                return new PaymentResult(true, "ok");
+            } catch (RuntimeException e) {
+                if (i == 2) throw e;
+            }
+        }
+        return new PaymentResult(false, "retry-exhausted");
+    }
+
+    public static String formatAmount(double amount) {
+        return amount > 0 && amount < 1000 ? "$" + amount : "out-of-range";
+    }
+}
+
+class PremiumProcessor extends CardProcessor {
+    public PremiumProcessor(Gateway gateway) {
+        super(gateway);
+    }
+}

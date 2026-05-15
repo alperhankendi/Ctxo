@@ -1,0 +1,64 @@
+{
+  "name": "@ctxo/lang-java",
+  "version": "0.8.0",
+  "description": "Ctxo Java language plugin (tree-sitter, syntax tier)",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run"
+  },
+  "keywords": [
+    "ctxo",
+    "ctxo-plugin",
+    "language-plugin",
+    "java",
+    "tree-sitter"
+  ],
+  "author": "Alper Hankendi",
+  "license": "MIT",
+  "dependencies": {
+    "tree-sitter": "^0.22.4",
+    "tree-sitter-java": "^0.23.5"
+  },
+  "peerDependencies": {
+    "@ctxo/plugin-api": "^0.7.1"
+  },
+  "devDependencies": {
+    "@ctxo/plugin-api": "workspace:*",
+    "@types/node": "^22.15.3",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alperhankendi/Ctxo.git",
+    "directory": "packages/lang-java"
+  },
+  "bugs": {
+    "url": "https://github.com/alperhankendi/Ctxo/issues"
+  },
+  "homepage": "https://github.com/alperhankendi/Ctxo#readme",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}
