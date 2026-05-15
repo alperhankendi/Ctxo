@@ -77,7 +77,7 @@ to edit anything.
 - **Build the index first.** Claude Code has no way to trigger `ctxo index`
   for you. Run it once after install and let `ctxo watch` keep it fresh.
 - **Hook-based refresh.** Add a `PostToolUse` hook in `.claude/settings.json`
-  that runs `npx @ctxo/cli index --skip-history` after `Edit`/`Write` to keep the
+  that runs `ctxo index --skip-history` after `Edit`/`Write` to keep the
   graph fresh between turns.
 - **Team config lives in git.** `.mcp.json` is meant to be committed. Use
   `~/.claude.json` only for personal overrides (e.g., `DEBUG=ctxo:*`).

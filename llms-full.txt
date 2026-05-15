@@ -6,10 +6,11 @@
 ## Setup
 
 ```bash
-npx @ctxo/cli init            # Detect languages + install plugins + wire MCP
-npx @ctxo/cli index           # Build codebase index (required once)
-npx @ctxo/cli index --check   # CI gate: fail if index stale
-npx @ctxo/cli                 # Start MCP server (stdio transport)
+npm install -g @ctxo/cli      # One-time global install (gives you the `ctxo` command)
+ctxo init                     # Detect languages + install plugins + wire MCP
+ctxo index                    # Build codebase index (required once)
+ctxo index --check            # CI gate: fail if index stale
+ctxo                          # Start MCP server (stdio transport)
 ```
 
 MCP client configuration:

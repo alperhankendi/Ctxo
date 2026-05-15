@@ -7,9 +7,10 @@ Ctxo is a Model Context Protocol (MCP) server that gives AI agents structured co
 ## Quick Start
 
 ```
-npx @ctxo/cli init     # Detect languages, install plugins, wire MCP
-npx @ctxo/cli index    # Build codebase index
-npx @ctxo/cli          # Start MCP server (stdio)
+npm install -g @ctxo/cli   # One-time global install (gives you the `ctxo` command)
+ctxo init                  # Detect languages, install plugins, wire MCP
+ctxo index                 # Build codebase index
+ctxo                       # Start MCP server (stdio)
 ```
 
 ## Package Layout (v0.7.0-alpha.0, pnpm monorepo)

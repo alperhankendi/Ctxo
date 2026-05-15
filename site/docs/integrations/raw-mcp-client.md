@@ -85,7 +85,7 @@ Ctxo also speaks MCP over HTTP. Set `CTXO_HTTP_PORT` and the server binds
 there instead of stdio:
 
 ```bash
-CTXO_HTTP_PORT=7337 npx @ctxo/cli mcp
+CTXO_HTTP_PORT=7337 ctxo mcp
 ```
 
 Then connect with the streamable HTTP transport:
@@ -126,7 +126,7 @@ npx tsx ./my-ctxo-script.ts
 
 You should see 14 tool names and a JSON payload for the `SqliteStorageAdapter`
 symbol. If `listTools` returns empty, the index has not been built - run
-`npx @ctxo/cli index` in the target repo first.
+`ctxo index` in the target repo first.
 
 ## Tips
 

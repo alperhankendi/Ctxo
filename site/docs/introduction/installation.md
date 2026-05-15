@@ -51,7 +51,7 @@ This detects your languages, installs the right `@ctxo/lang-*` plugins, adds
 git hooks, and creates a starter `.ctxo/config.yaml`.
 
 (If you have not installed globally and not yet added `@ctxo/cli` as a project
-dependency, use `npx @ctxo/cli init` here — it does the same thing.)
+dependency, use `npx -y @ctxo/cli init` here — it does the same thing.)
 
 ## 2. Verify
 

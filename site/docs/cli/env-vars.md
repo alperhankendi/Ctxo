@@ -47,7 +47,7 @@ Invalid values (non-numeric, zero, negative) fall back to the default.
 
 ```shell
 # Give large tool responses more room at the cost of token usage.
-CTXO_RESPONSE_LIMIT=16384 npx @ctxo/cli
+CTXO_RESPONSE_LIMIT=16384 ctxo
 ```
 
 ## Package manager override
@@ -57,7 +57,7 @@ CTXO_RESPONSE_LIMIT=16384 npx @ctxo/cli
 | `CTXO_PM` | `npm`, `pnpm`, `yarn`, `bun` | Forces [`ctxo install`](./install.md) to use the given manager, overriding detection from `packageManager`, lockfile, and auto-detection |
 
 ```shell
-CTXO_PM=pnpm npx @ctxo/cli install typescript go
+CTXO_PM=pnpm ctxo install typescript go
 ```
 
 ## HTTP transport (optional)
@@ -70,7 +70,7 @@ integrations that require it.
 | `CTXO_HTTP_PORT` | unset | When set, the MCP server listens on the given HTTP port instead of stdio |
 
 ```shell
-CTXO_HTTP_PORT=3001 npx @ctxo/cli
+CTXO_HTTP_PORT=3001 ctxo
 ```
 
 ## CI detection
@@ -83,17 +83,17 @@ CTXO_HTTP_PORT=3001 npx @ctxo/cli
 
 ```shell
 # Full visibility while debugging a flaky index run.
-DEBUG=ctxo:* npx @ctxo/cli index
+DEBUG=ctxo:* ctxo index
 ```
 
 ```shell
 # Narrow to plugin and storage subsystems.
-DEBUG=ctxo:plugin-loader,ctxo:plugin-discovery,ctxo:storage npx @ctxo/cli index
+DEBUG=ctxo:plugin-loader,ctxo:plugin-discovery,ctxo:storage ctxo index
 ```
 
 ```shell
 # Raise response budget for large Logic-Slice queries.
-CTXO_RESPONSE_LIMIT=16384 DEBUG=ctxo:search npx @ctxo/cli
+CTXO_RESPONSE_LIMIT=16384 DEBUG=ctxo:search ctxo
 ```
 
 ## See also

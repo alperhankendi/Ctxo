@@ -11,8 +11,9 @@
 </picture>
 
 ```Shell
-npx @ctxo/cli init
-npx @ctxo/cli index
+npm install -g @ctxo/cli   # one-time global install (gives you the `ctxo` command)
+ctxo init
+ctxo index
 ```
 
 <a href="https://alperhankendi.github.io/Ctxo/docs/">

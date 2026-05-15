@@ -9,7 +9,7 @@ Ctxo speaks MCP over stdio. Every major coding client supports stdio MCP
 servers, usually via a JSON config file. The command is always the same:
 
 ```bash
-npx @ctxo/cli mcp
+ctxo mcp
 ```
 
 What differs is *where* each client expects the config and *what field names*
@@ -211,9 +211,9 @@ If tools are missing, check the client's MCP logs. Common issues:
 | Symptom                             | Fix                                          |
 | ----------------------------------- | -------------------------------------------- |
 | `command not found: npx`            | Install Node.js >= 20 and restart the client |
-| Server starts then exits            | Run `npx @ctxo/cli mcp` in a terminal to see the real error |
-| No index loaded                     | Run `npx @ctxo/cli index` in the repo root        |
-| Stale results                       | `npx @ctxo/cli index` or start `ctxo watch`       |
+| Server starts then exits            | Run `ctxo mcp` in a terminal to see the real error |
+| No index loaded                     | Run `ctxo index` in the repo root        |
+| Stale results                       | `ctxo index` or start `ctxo watch`       |
 
 ## Next steps
 
