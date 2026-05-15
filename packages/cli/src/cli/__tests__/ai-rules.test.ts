@@ -69,6 +69,21 @@ describe('detectPlatforms', () => {
     expect(detected.has('claude-code')).toBe(true);
     expect(detected.has('github-copilot')).toBe(true);
   });
+
+  it('detects gemini-cli when .gemini/settings.json exists', () => {
+    const dir = makeTempDir();
+    mkdirSync(join(dir, '.gemini'));
+    writeFileSync(join(dir, '.gemini', 'settings.json'), '{}', 'utf-8');
+    const detected = detectPlatforms(dir);
+    expect(detected.has('gemini-cli')).toBe(true);
+  });
+
+  it('detects continue when .continue/ exists', () => {
+    const dir = makeTempDir();
+    mkdirSync(join(dir, '.continue'));
+    const detected = detectPlatforms(dir);
+    expect(detected.has('continue')).toBe(true);
+  });
 });
 
 describe('generateRules', () => {
@@ -284,6 +299,20 @@ describe('getMcpConfigTargets', () => {
   it('returns empty for no tools', () => {
     expect(getMcpConfigTargets([])).toHaveLength(0);
   });
+
+  it('returns .gemini/settings.json for gemini-cli', () => {
+    const targets = getMcpConfigTargets(['gemini-cli']);
+    expect(targets).toHaveLength(1);
+    expect(targets[0].file).toBe('.gemini/settings.json');
+    expect(targets[0].serverKey).toBe('mcpServers');
+  });
+
+  it('returns .continue/mcpServers/ctxo.json for continue', () => {
+    const targets = getMcpConfigTargets(['continue']);
+    expect(targets).toHaveLength(1);
+    expect(targets[0].file).toBe('.continue/mcpServers/ctxo.json');
+    expect(targets[0].serverKey).toBe('mcpServers');
+  });
 });
 
 describe('ensureMcpConfig', () => {
@@ -346,5 +375,28 @@ describe('ensureMcpConfig', () => {
     expect(result.action).toBe('updated');
     const config = JSON.parse(readFileSync(join(dir, '.mcp.json'), 'utf-8'));
     expect(config.mcpServers.ctxo).toBeDefined();
+  });
+
+  it('creates .gemini/settings.json with mcpServers.ctxo', () => {
+    const dir = makeTempDir();
+    const target = getMcpConfigTargets(['gemini-cli'])[0];
+    const result = ensureMcpConfig(dir, target);
+
+    expect(result.action).toBe('created');
+    const config = JSON.parse(readFileSync(join(dir, '.gemini', 'settings.json'), 'utf-8'));
+    expect(config.mcpServers.ctxo.command).toBe('npx');
+    expect(config.mcpServers.ctxo.args).toContain('@ctxo/cli');
+  });
+
+  it('creates .continue/mcpServers/ctxo.json with mcpServers.ctxo', () => {
+    const dir = makeTempDir();
+    const target = getMcpConfigTargets(['continue'])[0];
+    const result = ensureMcpConfig(dir, target);
+
+    expect(result.action).toBe('created');
+    expect(existsSync(join(dir, '.continue', 'mcpServers', 'ctxo.json'))).toBe(true);
+    const config = JSON.parse(readFileSync(join(dir, '.continue', 'mcpServers', 'ctxo.json'), 'utf-8'));
+    expect(config.mcpServers.ctxo.command).toBe('npx');
+    expect(config.mcpServers.ctxo.args).toContain('@ctxo/cli');
   });
 });

@@ -176,6 +176,8 @@ export default defineConfig({
             { text: 'GitHub Copilot', link: '/integrations/copilot' },
             { text: 'Windsurf', link: '/integrations/windsurf' },
             { text: 'Cline', link: '/integrations/cline' },
+            { text: 'Gemini CLI', link: '/integrations/gemini-cli' },
+            { text: 'Continue', link: '/integrations/continue' },
             { text: 'Raw MCP Client', link: '/integrations/raw-mcp-client' },
           ],
         },

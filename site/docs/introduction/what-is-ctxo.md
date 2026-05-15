@@ -14,7 +14,7 @@ change-health scores, all in a single sub-500ms call.
 ## What Ctxo is
 
 - An **MCP server** over stdio, compatible with Claude Code, Cursor, Copilot,
-  Windsurf, Cline, and any raw MCP client.
+  Windsurf, Cline, Gemini CLI, Continue, and any raw MCP client.
 - A **CLI** (`@ctxo/cli`) that builds and maintains a committed, deterministic
   index of your code at `.ctxo/`.
 - **14 semantic tools** spanning impact analysis (`get_blast_radius`,

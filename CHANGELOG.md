@@ -26,6 +26,14 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo with five packages. Per-packag
 - `ctxo init` warns when hooks are declined and points to watch/CI alternatives, so users know
   drift/boundary signals depend on snapshot cadence.
 - `ctxo index --skip-community` flag to opt out of community computation.
+- `ctxo init` now supports **Gemini CLI** and **Continue** as installable AI tool targets.
+  - Gemini CLI: writes `GEMINI.md` rules (append mode) and registers the ctxo MCP server at
+    `.gemini/settings.json` (`mcpServers` key).
+  - Continue: writes `.continue/rules/ctxo.md` rules and registers the ctxo MCP server at
+    `.continue/mcpServers/ctxo.json` (each MCP server is a standalone file under
+    `.continue/mcpServers/`).
+  - Brings the supported AI tool list to nine: Claude Code, Cursor, GitHub Copilot, Windsurf,
+    Antigravity, Augment, Amazon Q, Gemini CLI, Continue.
 
 ### Changed
 
