@@ -373,4 +373,44 @@ describe('UpdateCommand', () => {
       expect(cap.capture.exitCode).toBe(1);
     } finally { cap.restore(); rmSync(dir, { recursive: true, force: true }); }
   });
+
+  it('CI guard: --force allows the install to proceed', async () => {
+    const dir = makeTempProject({ withCtxoDep: true });
+    const cap = makeCapture();
+    try {
+      const cmd = new UpdateCommand(dir, {
+        discoverInstalled: async () => [{ name: '@ctxo/cli', version: '0.7.0-alpha.0' }],
+        fetcher: makeFetcher({
+          '@ctxo/cli': { status: 200, body: JSON.stringify({ 'dist-tags': { alpha: '0.7.0-alpha.3' } }) },
+        }),
+        runner: cap.deps.runner,
+        setExitCode: cap.deps.setExitCode,
+        env: { CI: 'true' },
+      });
+      await cmd.run({ force: true });
+      expect(cap.capture.runs).toHaveLength(1);
+      expect(cap.capture.exitCode).toBeUndefined();
+    } finally { cap.restore(); rmSync(dir, { recursive: true, force: true }); }
+  });
+
+  it('CI guard: --global allows the install to proceed (and uses global flags)', async () => {
+    const dir = makeTempProject({ withCtxoDep: true });
+    const cap = makeCapture();
+    try {
+      const cmd = new UpdateCommand(dir, {
+        discoverInstalled: async () => [{ name: '@ctxo/cli', version: '0.7.0-alpha.0' }],
+        fetcher: makeFetcher({
+          '@ctxo/cli': { status: 200, body: JSON.stringify({ 'dist-tags': { alpha: '0.7.0-alpha.3' } }) },
+        }),
+        runner: cap.deps.runner,
+        setExitCode: cap.deps.setExitCode,
+        env: { CI: 'true' },
+        // pm-resolved via env/lockfile but we pass --pm npm for deterministic args
+      });
+      await cmd.run({ global: true, pm: 'npm' });
+      expect(cap.capture.runs).toHaveLength(1);
+      expect(cap.capture.runs[0]!.args).toEqual(['install', '-g', '@ctxo/cli@0.7.0-alpha.3']);
+      expect(cap.capture.exitCode).toBeUndefined();
+    } finally { cap.restore(); rmSync(dir, { recursive: true, force: true }); }
+  });
 });
