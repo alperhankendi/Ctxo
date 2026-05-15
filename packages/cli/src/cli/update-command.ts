@@ -1,5 +1,26 @@
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { getVersion } from './cli-router.js';
+import { discoverPlugins } from '../adapters/language/plugin-discovery.js';
+import { loadManifestPath } from './plugin-loader.js';
+import { fetchDistTagsBatch, type HttpsFetcher, type RegistryResult } from '../core/update/registry-client.js';
+import {
+  computePackageStates,
+  detectChannel,
+  selectInstallTargets,
+} from '../core/update/update-plan.js';
+import {
+  resolvePackageManager,
+  buildInstallCommand,
+  isPackageManager,
+} from '../core/install/package-manager.js';
+import { runPackageManager } from '../core/install/run-package-manager.js';
+import { createLogger } from '../core/logger.js';
 import type { PackageManager, Resolution } from '../core/install/package-manager.js';
 import type { PackageState, Channel } from '../core/update/update-plan.js';
+
+const log = createLogger('ctxo:update');
+const CTXO_CLI_PACKAGE = '@ctxo/cli';
 
 export type UpdateStrategy = 'execute' | 'print' | 'none';
 
@@ -92,28 +113,6 @@ export function formatJson(report: UpdateReport): string {
     2,
   );
 }
-
-import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { getVersion } from './cli-router.js';
-import { discoverPlugins } from '../adapters/language/plugin-discovery.js';
-import { loadManifestPath } from './plugin-loader.js';
-import { fetchDistTagsBatch, type HttpsFetcher, type RegistryResult } from '../core/update/registry-client.js';
-import {
-  computePackageStates,
-  detectChannel,
-  selectInstallTargets,
-} from '../core/update/update-plan.js';
-import {
-  resolvePackageManager,
-  buildInstallCommand,
-  isPackageManager,
-} from '../core/install/package-manager.js';
-import { runPackageManager } from '../core/install/run-package-manager.js';
-import { createLogger } from '../core/logger.js';
-
-const log = createLogger('ctxo:update');
-const CTXO_CLI_PACKAGE = '@ctxo/cli';
 
 export interface UpdateOptions {
   readonly check?: boolean;
