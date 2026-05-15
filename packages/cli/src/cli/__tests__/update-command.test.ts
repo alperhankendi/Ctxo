@@ -393,6 +393,32 @@ describe('UpdateCommand', () => {
     } finally { cap.restore(); rmSync(dir, { recursive: true, force: true }); }
   });
 
+  it('continues when one fetch 404s and others succeed; plan excludes the 404 package', async () => {
+    const dir = makeTempProject({ withCtxoDep: true });
+    const cap = makeCapture();
+    try {
+      const cmd = new UpdateCommand(dir, {
+        discoverInstalled: async () => [
+          { name: '@ctxo/cli', version: '0.7.0-alpha.0' },
+          { name: 'ctxo-lang-kotlin', version: '0.1.0' },
+        ],
+        fetcher: makeFetcher({
+          '@ctxo/cli': { status: 200, body: JSON.stringify({ 'dist-tags': { alpha: '0.7.0-alpha.3' } }) },
+          'ctxo-lang-kotlin': { status: 404, body: '{"error":"not found"}' },
+        }),
+        runner: cap.deps.runner,
+        setExitCode: cap.deps.setExitCode,
+      });
+      await cmd.run({ check: true });
+      expect(cap.capture.exitCode).toBeUndefined();
+      expect(cap.capture.stdout).toContain('ctxo-lang-kotlin');
+      expect(cap.capture.stdout).toMatch(/(skipped|not found)/);
+      // The plan in --check mode should reference @ctxo/cli but not ctxo-lang-kotlin.
+      expect(cap.capture.stdout).toMatch(/@ctxo\/cli@0\.7\.0-alpha\.3/);
+      expect(cap.capture.stdout).not.toMatch(/ctxo-lang-kotlin@/);
+    } finally { cap.restore(); rmSync(dir, { recursive: true, force: true }); }
+  });
+
   it('CI guard: --global allows the install to proceed (and uses global flags)', async () => {
     const dir = makeTempProject({ withCtxoDep: true });
     const cap = makeCapture();
