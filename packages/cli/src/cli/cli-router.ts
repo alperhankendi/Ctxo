@@ -11,6 +11,7 @@ import { DoctorCommand } from './doctor-command.js';
 import { VisualizeCommand } from './visualize-command.js';
 import { VersionCommand } from './version-command.js';
 import { InstallCommand } from './install-command.js';
+import { UpdateCommand } from './update-command.js';
 
 export function getVersion(): string {
   let dir = import.meta.dirname;
@@ -202,6 +203,38 @@ export class CliRouter {
         break;
       }
 
+      case 'update': {
+        const flagValues: Record<string, string | boolean> = {};
+        for (let i = 1; i < args.length; i++) {
+          const a = args[i]!;
+          if (a === '--check') flagValues['check'] = true;
+          else if (a === '--print') flagValues['print'] = true;
+          else if (a === '--global' || a === '-g') flagValues['global'] = true;
+          else if (a === '--json') flagValues['json'] = true;
+          else if (a === '--force') flagValues['force'] = true;
+          else if (a === '--pm') {
+            const next = args[++i];
+            if (!next) { console.error('[ctxo] --pm requires a value'); process.exit(1); return; }
+            flagValues['pm'] = next;
+          } else {
+            console.error(`[ctxo] Unknown update flag: ${a}`);
+            process.exit(1);
+            return;
+          }
+        }
+        await new UpdateCommand(this.projectRoot, {
+          setExitCode: (code: number) => { process.exitCode = code; },
+        }).run({
+          check: flagValues['check'] === true,
+          print: flagValues['print'] === true,
+          global: flagValues['global'] === true,
+          json: flagValues['json'] === true,
+          force: flagValues['force'] === true,
+          pm: typeof flagValues['pm'] === 'string' ? flagValues['pm'] : undefined,
+        });
+        break;
+      }
+
       case 'visualize': {
         const outputIdx = args.indexOf('--output');
         const outputArg = outputIdx !== -1 ? args[outputIdx + 1] : undefined;
@@ -251,6 +284,11 @@ Usage:
   ctxo install python -y    Batch install, no prompt
   ctxo install ts --global  Install globally
   ctxo install py --dry-run Show command without running
+  ctxo update              Check + apply updates for ctxo + plugins
+  ctxo update --check      Check only, no install
+  ctxo update --print      Print install command, never execute
+  ctxo update --global     Force a global install
+  ctxo update --json       Machine-readable output
   ctxo --version                 Print core version
   ctxo --version --verbose       Print core + plugins + runtime
   ctxo --version --json          Machine-readable version payload
