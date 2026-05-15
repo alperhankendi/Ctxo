@@ -30,7 +30,7 @@ config):
   "mcpServers": {
     "ctxo": {
       "command": "npx",
-      "args": ["@ctxo/cli", "mcp"]
+      "args": ["-y", "@ctxo/cli"]
     }
   }
 }
@@ -43,7 +43,7 @@ Optional debug logging to stderr:
   "mcpServers": {
     "ctxo": {
       "command": "npx",
-      "args": ["@ctxo/cli", "mcp"],
+      "args": ["-y", "@ctxo/cli"],
       "env": { "DEBUG": "ctxo:*" }
     }
   }
@@ -62,7 +62,7 @@ Edit `~/.cursor/mcp.json` (global) or `.cursor/mcp.json` (per-project):
   "mcpServers": {
     "ctxo": {
       "command": "npx",
-      "args": ["@ctxo/cli", "mcp"]
+      "args": ["-y", "@ctxo/cli"]
     }
   }
 }
@@ -82,7 +82,7 @@ Copilot Chat (VS Code) reads MCP config from `.vscode/mcp.json`:
     "ctxo": {
       "type": "stdio",
       "command": "npx",
-      "args": ["@ctxo/cli", "mcp"]
+      "args": ["-y", "@ctxo/cli"]
     }
   }
 }
@@ -105,7 +105,7 @@ Windsurf reads from `~/.codeium/windsurf/mcp_config.json`:
   "mcpServers": {
     "ctxo": {
       "command": "npx",
-      "args": ["@ctxo/cli", "mcp"]
+      "args": ["-y", "@ctxo/cli"]
     }
   }
 }
@@ -124,7 +124,7 @@ directly:
   "mcpServers": {
     "ctxo": {
       "command": "npx",
-      "args": ["@ctxo/cli", "mcp"],
+      "args": ["-y", "@ctxo/cli"],
       "disabled": false,
       "autoApprove": []
     }
@@ -145,7 +145,7 @@ Code and Cursor:
   "mcpServers": {
     "ctxo": {
       "command": "npx",
-      "args": ["@ctxo/cli", "mcp"]
+      "args": ["-y", "@ctxo/cli"]
     }
   }
 }
@@ -164,7 +164,7 @@ Continue keeps each MCP server in its own JSON (or YAML) file under
   "mcpServers": {
     "ctxo": {
       "command": "npx",
-      "args": ["@ctxo/cli", "mcp"]
+      "args": ["-y", "@ctxo/cli"]
     }
   }
 }

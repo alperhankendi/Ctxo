@@ -13,12 +13,23 @@ Node.js >= 20, git, and a repo with TypeScript, Go, or C# code. See
 [Installation](/introduction/installation) for details.
 :::
 
+::: tip Get `ctxo` on your PATH
+This guide assumes `ctxo` is already callable. The one-time install:
+
+```bash
+npm install -g @ctxo/cli
+```
+
+Prefer not to install globally? Substitute `npx @ctxo/cli` for `ctxo` in
+every command below.
+:::
+
 ## 1. Install and initialize
 
 From the root of your repo:
 
 ```bash
-npx @ctxo/cli init
+ctxo init
 ```
 
 Expected output (abridged):
@@ -28,13 +39,13 @@ Expected output (abridged):
 [ctxo] Installing @ctxo/lang-typescript@^0.7.0-alpha.0 (devDependency)...
 [ctxo] Wrote .ctxo/config.yaml
 [ctxo] Installed git hooks: post-commit, post-merge, post-checkout
-[ctxo] Done. Run `npx @ctxo/cli index` next.
+[ctxo] Done. Run `ctxo index` next.
 ```
 
 ## 2. Build the index
 
 ```bash
-npx @ctxo/cli index
+ctxo index
 ```
 
 This walks every file tracked by git, parses symbols and edges, and enriches
@@ -57,7 +68,7 @@ pass. Run a full `ctxo index` before committing.
 ## 3. Check status
 
 ```bash
-npx @ctxo/cli status
+ctxo status
 ```
 
 ```
@@ -67,7 +78,7 @@ npx @ctxo/cli status
 [ctxo] Health: OK
 ```
 
-If anything looks off, run `npx @ctxo/cli doctor` for a detailed health report.
+If anything looks off, run `ctxo doctor` for a detailed health report.
 
 ## 4. Wire up an MCP client
 
@@ -79,7 +90,7 @@ Add Ctxo to your client's MCP config. For Claude Code, create or edit
   "mcpServers": {
     "ctxo": {
       "command": "npx",
-      "args": ["@ctxo/cli", "mcp"]
+      "args": ["-y", "@ctxo/cli"]
     }
   }
 }
@@ -127,6 +138,6 @@ Expected response shape:
 
 ::: tip Keep it fresh
 The git hooks installed by `ctxo init` re-index on commit, merge, and
-checkout. For active editing sessions, run `npx @ctxo/cli watch` in a spare
+checkout. For active editing sessions, run `ctxo watch` in a spare
 terminal for incremental re-indexing on save.
 :::
