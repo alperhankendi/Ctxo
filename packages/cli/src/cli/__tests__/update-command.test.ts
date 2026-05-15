@@ -210,6 +210,8 @@ describe('UpdateCommand', () => {
         }),
         runner: cap.deps.runner,
         setExitCode: cap.deps.setExitCode,
+        // Empty env so the CI lockfile guard does not trigger from the host CI=true.
+        env: {},
       });
       await cmd.run({});
       expect(cap.capture.runs).toHaveLength(1);
@@ -321,6 +323,8 @@ describe('UpdateCommand', () => {
         }),
         runner: cap.deps.runner,
         setExitCode: cap.deps.setExitCode,
+        // Empty env so the CI lockfile guard does not trigger from the host CI=true.
+        env: {},
       });
       await cmd.run({ json: true });
       // Single document — JSON.parse must succeed on the entire stdout.
