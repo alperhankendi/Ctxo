@@ -1,3 +1,5 @@
+import type { RegistryResult } from './registry-client.js';
+
 export type Channel = 'latest' | 'alpha' | 'beta' | 'rc' | 'next' | string;
 
 const SEMVER_RE = /^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?(?:\+[0-9A-Za-z.-]+)?$/;
@@ -66,4 +68,58 @@ export function compareSemver(a: string, b: string): -1 | 0 | 1 {
     }
   }
   return 0;
+}
+
+export type PackageStatus = 'current' | 'update' | 'ahead' | 'unknown';
+
+export interface PackageState {
+  readonly name: string;
+  readonly current: string;
+  readonly latest: string | null;
+  readonly channel: Channel;
+  readonly status: PackageStatus;
+  readonly reason?: 'registry-404' | 'registry-error' | 'timeout' | 'network';
+}
+
+export interface InstalledPackage {
+  readonly name: string;
+  readonly version: string;
+}
+
+export function computePackageStates(
+  installed: readonly InstalledPackage[],
+  results: readonly RegistryResult[],
+): PackageState[] {
+  const byName = new Map<string, RegistryResult>();
+  for (const r of results) byName.set(r.name, r);
+
+  return installed.map((pkg) => {
+    const installedChannel = detectChannel(pkg.version);
+    const result = byName.get(pkg.name);
+
+    if (!result) {
+      return { name: pkg.name, current: pkg.version, latest: null, channel: installedChannel, status: 'unknown' as const };
+    }
+    if (!('distTags' in result)) {
+      return { name: pkg.name, current: pkg.version, latest: null, channel: installedChannel, status: 'unknown' as const, reason: result.reason };
+    }
+
+    // Pick the channel we actually have a version for. If the installed channel
+    // is not published, fall back to "latest" so the row reports the real source.
+    const hasInstalledChannel = typeof result.distTags[installedChannel] === 'string';
+    const targetChannel: Channel = hasInstalledChannel ? installedChannel : 'latest';
+    const target = result.distTags[targetChannel] ?? null;
+    if (!target) {
+      return { name: pkg.name, current: pkg.version, latest: null, channel: installedChannel, status: 'unknown' as const };
+    }
+    const cmp = compareSemver(pkg.version, target);
+    const status: PackageStatus = cmp === 0 ? 'current' : cmp < 0 ? 'update' : 'ahead';
+    return { name: pkg.name, current: pkg.version, latest: target, channel: targetChannel, status };
+  });
+}
+
+export function selectInstallTargets(states: readonly PackageState[]): ReadonlyArray<{ name: string; version: string }> {
+  return states
+    .filter((s): s is PackageState & { latest: string } => s.status === 'update' && typeof s.latest === 'string')
+    .map((s) => ({ name: s.name, version: s.latest }));
 }
