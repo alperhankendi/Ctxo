@@ -1,6 +1,6 @@
 ---
 title: "Installation"
-description: "One-liner install: npx @ctxo/cli init, then verify with ctxo doctor."
+description: "Install @ctxo/cli, then run ctxo init and ctxo doctor."
 ---
 
 # Installation
@@ -11,39 +11,52 @@ description: "One-liner install: npx @ctxo/cli init, then verify with ctxo docto
 - **git** (any recent version)
 - A supported language: **TypeScript / JavaScript**, **Go**, or **C#**
 
-## Install paths
+## Install
 
-`@ctxo/cli` is a scoped npm package, so there is no unscoped `ctxo` on the
-registry. Pick whichever invocation form fits your workflow:
+The npm package is **`@ctxo/cli`** (scoped, so it sits in a namespace alongside
+the language plugins like `@ctxo/lang-typescript`). The binary it installs is
+named **`ctxo`** — that is what you run.
 
-1. **No install, ad-hoc** — run `npx @ctxo/cli …` from any directory. npx pulls
-   and runs the package on every call. Best for first-time use, CI, and one-off
-   experiments.
-2. **Project devDependency** — `npm install -D @ctxo/cli` (or just run
-   `npx @ctxo/cli init`, which adds it for you). After that, `npx ctxo …` and
-   `pnpm ctxo …` resolve to the local binary in `node_modules/.bin/ctxo`.
-3. **Global install** — `npm install -g @ctxo/cli` gives you a plain `ctxo`
-   command from any directory. State still lives in each project's `.ctxo/`
-   folder — there is no user-level or system-level config.
+::: tip Recommended for most users
+Install once globally, then call `ctxo` from any project:
 
-The steps below use the no-install form so they work for every reader.
-Substitute `ctxo …` or `npx ctxo …` once you have option 2 or 3 in place.
+```bash
+npm install -g @ctxo/cli
+```
+
+Verify with `ctxo --version`. To upgrade later: `ctxo update --global`.
+:::
+
+State always lives in each project's `<repo>/.ctxo/` directory — there is no
+user-level or system-level config. The install method only changes how the
+binary is reached, not where data goes.
+
+### Other install paths
+
+| Path | When to use |
+| --- | --- |
+| **Global** — `npm install -g @ctxo/cli` (Recommended) | You work in multiple repos and want `ctxo …` available everywhere. |
+| **Project devDependency** — `npm install -D @ctxo/cli` (or run `npx @ctxo/cli init`, which adds it for you) | You want the version pinned per-project in `package.json`. Call via `pnpm ctxo …`, `npm exec ctxo …`, or use the bare `ctxo` from a project script. |
+| **No install, ad-hoc** — `npx @ctxo/cli <subcommand>` | CI, one-off experiments, or a repo where you do not want to touch dependencies. |
 
 ## 1. Initialize
 
 From the root of the repo you want to index:
 
 ```bash
-npx @ctxo/cli init
+ctxo init
 ```
 
 This detects your languages, installs the right `@ctxo/lang-*` plugins, adds
 git hooks, and creates a starter `.ctxo/config.yaml`.
 
+(If you have not installed globally and not yet added `@ctxo/cli` as a project
+dependency, use `npx @ctxo/cli init` here — it does the same thing.)
+
 ## 2. Verify
 
 ```bash
-npx @ctxo/cli doctor
+ctxo doctor
 ```
 
 All green? You are done.
@@ -51,7 +64,7 @@ All green? You are done.
 If anything is red or yellow:
 
 ```bash
-npx @ctxo/cli doctor --fix
+ctxo doctor --fix
 ```
 
 This runs a dependency-ordered remediation pass (missing plugins, stale
@@ -87,7 +100,7 @@ Available plugins on npm:
 After install, re-index so the plugin takes effect:
 
 ```bash
-npx @ctxo/cli index
+ctxo index
 ```
 
 ## Next steps

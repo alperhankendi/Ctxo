@@ -37,7 +37,7 @@ system reads every `.md` under `.continue/rules/`).
   "mcpServers": {
     "ctxo": {
       "command": "npx",
-      "args": ["@ctxo/cli", "mcp"]
+      "args": ["-y", "@ctxo/cli"]
     }
   }
 }

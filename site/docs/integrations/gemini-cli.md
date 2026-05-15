@@ -34,7 +34,7 @@ Drop this into `.gemini/settings.json`:
   "mcpServers": {
     "ctxo": {
       "command": "npx",
-      "args": ["@ctxo/cli", "mcp"]
+      "args": ["-y", "@ctxo/cli"]
     }
   }
 }
