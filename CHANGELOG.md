@@ -34,6 +34,21 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo with five packages. Per-packag
     `.continue/mcpServers/`).
   - Brings the supported AI tool list to nine: Claude Code, Cursor, GitHub Copilot, Windsurf,
     Antigravity, Augment, Amazon Q, Gemini CLI, Continue.
+- `ctxo update` — self-update mechanism. Checks `registry.npmjs.org` for newer versions of
+  `@ctxo/cli` and every installed `@ctxo/lang-*` / `ctxo-lang-*` plugin, then either runs the
+  local install or prints the command for the user to run.
+  - Per-package channel detection: alpha installs stay on alpha, stable stays on stable. Falls
+    back to `latest` with explicit `(latest)` annotation when the chosen channel is not
+    published.
+  - Auto-execute vs print fallback: runs the install when the project has `@ctxo/*` in its
+    `package.json`; otherwise prints the global install command instead of mutating an
+    unrelated workspace.
+  - Flags: `--check` (check only, exit 0), `--print` (never execute), `--global` (force global),
+    `--json` (single-document machine-readable output), `--pm <npm|pnpm|yarn|bun>` (override
+    manager), `--force` (bypass CI lockfile guard).
+  - Rejects npm version specifiers containing shell metacharacters before passing them to the
+    package manager (defence-in-depth against a hostile registry response).
+  - Spec: `docs/superpowers/specs/2026-05-15-ctxo-update-design.md`.
 
 ### Changed
 

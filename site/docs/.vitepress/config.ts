@@ -109,6 +109,7 @@ export default defineConfig({
           items: [
             { text: 'Overview', link: '/cli/overview' },
             { text: 'ctxo install', link: '/cli/install' },
+            { text: 'ctxo update', link: '/cli/update' },
             { text: 'ctxo init', link: '/cli/init' },
             { text: 'ctxo index', link: '/cli/index' },
             { text: 'ctxo watch', link: '/cli/watch' },
