@@ -289,6 +289,8 @@ Usage:
   ctxo update --print      Print install command, never execute
   ctxo update --global     Force a global install
   ctxo update --json       Machine-readable output
+  ctxo update --pm <pm>    Override package manager (npm|pnpm|yarn|bun)
+  ctxo update --force      Bypass CI lockfile guard
   ctxo --version                 Print core version
   ctxo --version --verbose       Print core + plugins + runtime
   ctxo --version --json          Machine-readable version payload
