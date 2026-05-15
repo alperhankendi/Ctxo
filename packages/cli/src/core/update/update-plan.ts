@@ -70,7 +70,7 @@ export function compareSemver(a: string, b: string): -1 | 0 | 1 {
   return 0;
 }
 
-export type PackageStatus = 'current' | 'update' | 'ahead' | 'unknown';
+export type PackageStatus = 'current' | 'update' | 'ahead' | 'unknown' | 'workspace';
 
 export interface PackageState {
   readonly name: string;
@@ -123,6 +123,24 @@ export function selectInstallTargets(states: readonly PackageState[]): ReadonlyA
     .filter((s): s is PackageState & { latest: string } => s.status === 'update' && typeof s.latest === 'string')
     .filter((s) => isSafeVersionSpecifier(s.latest))
     .map((s) => ({ name: s.name, version: s.latest }));
+}
+
+/**
+ * Override the status of any package whose name appears in `workspaceLinkNames`
+ * to `'workspace'`. Workspace-linked packages (pnpm `workspace:*` / yarn
+ * `workspace:^`) are local source, not registry consumers — they must never
+ * appear in the install plan or be "upgraded" to a registry version. They are
+ * still shown in the report table so users see why a row is being skipped.
+ */
+export function markWorkspaceLinks(
+  states: readonly PackageState[],
+  workspaceLinkNames: ReadonlySet<string>,
+): PackageState[] {
+  return states.map((s) =>
+    workspaceLinkNames.has(s.name)
+      ? { ...s, status: 'workspace' as const, latest: null }
+      : s,
+  );
 }
 
 // Strict semver-ish regex: digits, letters, dots, plus, minus only. Matches the

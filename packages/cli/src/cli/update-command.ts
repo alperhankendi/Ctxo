@@ -7,6 +7,7 @@ import { fetchDistTagsBatch, type HttpsFetcher } from '../core/update/registry-c
 import {
   computePackageStates,
   detectChannel,
+  markWorkspaceLinks,
   selectInstallTargets,
 } from '../core/update/update-plan.js';
 import {
@@ -14,6 +15,7 @@ import {
   buildInstallCommand,
   isPackageManager,
   isWorkspaceRoot,
+  readWorkspaceLinks,
 } from '../core/install/package-manager.js';
 import { runPackageManager } from '../core/install/run-package-manager.js';
 import { createLogger } from '../core/logger.js';
@@ -56,18 +58,22 @@ export function formatText(report: UpdateReport): string {
     return lines.join('\n');
   }
 
+  const latestCell = (p: PackageState): string => {
+    if (p.status === 'workspace') return '(local)';
+    return p.latest ?? '(not found)';
+  };
+
   const nameCol = Math.max(7, ...report.packages.map((p) => p.name.length));
   const curCol = Math.max(7, ...report.packages.map((p) => p.current.length));
-  const latestCol = Math.max(15, ...report.packages.map((p) => (p.latest ?? '(not found)').length));
+  const latestCol = Math.max(15, ...report.packages.map((p) => latestCell(p).length));
 
   lines.push(
     `${'PACKAGE'.padEnd(nameCol)}  ${'CURRENT'.padEnd(curCol)}  ${`LATEST (${report.channel})`.padEnd(latestCol)}  STATUS`,
   );
   for (const pkg of report.packages) {
-    const latestText = pkg.latest ?? '(not found)';
     const statusText = renderStatus(pkg, report.channel);
     lines.push(
-      `${pkg.name.padEnd(nameCol)}  ${pkg.current.padEnd(curCol)}  ${latestText.padEnd(latestCol)}  ${statusText}`,
+      `${pkg.name.padEnd(nameCol)}  ${pkg.current.padEnd(curCol)}  ${latestCell(pkg).padEnd(latestCol)}  ${statusText}`,
     );
   }
 
@@ -90,6 +96,7 @@ function renderStatus(pkg: PackageState, reportChannel: Channel): string {
   switch (pkg.status) {
     case 'current': return 'up to date';
     case 'ahead': return 'ahead of registry';
+    case 'workspace': return 'workspace link';
     case 'unknown': return pkg.reason === 'registry-404' ? 'skipped' : `error${pkg.reason ? ` (${pkg.reason})` : ''}`;
     case 'update':
       return pkg.channel === reportChannel ? 'update' : `update (${pkg.channel})`;
@@ -162,7 +169,11 @@ export class UpdateCommand {
       return;
     }
 
-    const states = computePackageStates(installed, results);
+    const rawStates = computePackageStates(installed, results);
+    // Drop workspace-linked packages from the install plan; they live in this
+    // repo as `workspace:*` deps, not registry consumers. Keep them visible in
+    // the report so users see why they were skipped.
+    const states = markWorkspaceLinks(rawStates, readWorkspaceLinks(this.projectRoot));
     const targets = selectInstallTargets(states);
 
     const cliVersion = getVersion();
