@@ -41,7 +41,7 @@ yarn add -D @ctxo/lang-csharp
 Or:
 
 ```bash
-npx ctxo install csharp --yes
+npx @ctxo/cli install csharp --yes
 ```
 
 For full tier, install a .NET SDK 8+ alongside Node.js. The helper project

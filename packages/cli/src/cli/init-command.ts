@@ -361,8 +361,8 @@ export class InitCommand {
     const hasWork = (selectedTools as string[]).length > 0 || installGitHooks;
     if (hasWork) {
       const steps = [
-        `${pc.cyan('\u25b6')} npx ctxo index     ${pc.dim('\u2500 build codebase index')}`,
-        `${pc.cyan('\u25b6')} npx ctxo doctor    ${pc.dim('\u2500 verify everything works')}`,
+        `${pc.cyan('\u25b6')} ctxo index     ${pc.dim('\u2500 build codebase index')}`,
+        `${pc.cyan('\u25b6')} ctxo doctor    ${pc.dim('\u2500 verify everything works')}`,
       ];
       console.error('');
       console.error(box(steps, { title: pc.cyan('\u2192 Next steps'), border: pc.cyan }, pc));

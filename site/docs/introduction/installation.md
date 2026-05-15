@@ -11,6 +11,24 @@ description: "One-liner install: npx @ctxo/cli init, then verify with ctxo docto
 - **git** (any recent version)
 - A supported language: **TypeScript / JavaScript**, **Go**, or **C#**
 
+## Install paths
+
+`@ctxo/cli` is a scoped npm package, so there is no unscoped `ctxo` on the
+registry. Pick whichever invocation form fits your workflow:
+
+1. **No install, ad-hoc** — run `npx @ctxo/cli …` from any directory. npx pulls
+   and runs the package on every call. Best for first-time use, CI, and one-off
+   experiments.
+2. **Project devDependency** — `npm install -D @ctxo/cli` (or just run
+   `npx @ctxo/cli init`, which adds it for you). After that, `npx ctxo …` and
+   `pnpm ctxo …` resolve to the local binary in `node_modules/.bin/ctxo`.
+3. **Global install** — `npm install -g @ctxo/cli` gives you a plain `ctxo`
+   command from any directory. State still lives in each project's `.ctxo/`
+   folder — there is no user-level or system-level config.
+
+The steps below use the no-install form so they work for every reader.
+Substitute `ctxo …` or `npx ctxo …` once you have option 2 or 3 in place.
+
 ## 1. Initialize
 
 From the root of the repo you want to index:
@@ -25,7 +43,7 @@ git hooks, and creates a starter `.ctxo/config.yaml`.
 ## 2. Verify
 
 ```bash
-npx ctxo doctor
+npx @ctxo/cli doctor
 ```
 
 All green? You are done.
@@ -33,7 +51,7 @@ All green? You are done.
 If anything is red or yellow:
 
 ```bash
-npx ctxo doctor --fix
+npx @ctxo/cli doctor --fix
 ```
 
 This runs a dependency-ordered remediation pass (missing plugins, stale
@@ -69,7 +87,7 @@ Available plugins on npm:
 After install, re-index so the plugin takes effect:
 
 ```bash
-npx ctxo index
+npx @ctxo/cli index
 ```
 
 ## Next steps

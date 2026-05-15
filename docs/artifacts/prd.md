@@ -60,7 +60,7 @@ The paradigm shift: from *you managing the AI* → *the AI guiding you*, because
 ### User Success
 
 - **Mind-Reader Moment:** In a Ctxo-enabled session, the AI never asks "I don't see the definition for Type X" — all required interfaces, types, and helpers are present in the Logic-Slice without manual file-fetching.
-- **Time to first value:** Developer installs Ctxo, runs `npx ctxo index`, and receives their first Logic-Slice response within 5 minutes of a fresh clone.
+- **Time to first value:** Developer installs Ctxo, runs `npx @ctxo/cli index`, and receives their first Logic-Slice response within 5 minutes of a fresh clone.
 - **Zero-Noise output:** Logic-Slice context is ≤ 50–150 lines for the majority of symbol queries (vs. full file dumps spanning hundreds of lines), reducing token cost while increasing relevance.
 - **PR-Saver moment:** For codebases with revert commits in git history, `get_why_context` surfaces anti-pattern warnings in at least one AI session per team per sprint.
 
@@ -86,11 +86,11 @@ The paradigm shift: from *you managing the AI* → *the AI guiding you*, because
 
 ### V1 — MVP (TypeScript / JavaScript / TSX)
 
-Five MCP tools: `get_logic_slice`, `get_blast_radius`, `get_architectural_overlay`, `get_why_context`, `get_change_intelligence`. Progressive detail levels L1–L4. Privacy masking pipeline. Committed JSON index (`.ctxo/index/`). Incremental file watching. Monorepo auto-discovery. CI indexing gate (GitHub Actions). `npx ctxo` install. Verified: Claude Code, Cursor, VS Code Copilot.
+Five MCP tools: `get_logic_slice`, `get_blast_radius`, `get_architectural_overlay`, `get_why_context`, `get_change_intelligence`. Progressive detail levels L1–L4. Privacy masking pipeline. Committed JSON index (`.ctxo/index/`). Incremental file watching. Monorepo auto-discovery. CI indexing gate (GitHub Actions). `npx @ctxo/cli` install. Verified: Claude Code, Cursor, VS Code Copilot.
 
 ### V1.5 — Growth (Multi-language)
 
-Go + C# syntax-level support via tree-sitter adapters. `npx ctxo init` auto-configures MCP client. Dedicated documentation site. `npx ctxo status` index health CLI.
+Go + C# syntax-level support via tree-sitter adapters. `npx @ctxo/cli init` auto-configures MCP client. Dedicated documentation site. `npx @ctxo/cli status` index health CLI.
 
 ### V2+ — Vision
 
@@ -105,7 +105,7 @@ Multi-repo / cross-service dependency graphs. Natural language query interface. 
 She finds Ctxo in the Claude Code MCP server list. Thirty seconds:
 
 ```bash
-npx ctxo index
+npx @ctxo/cli index
 ```
 
 Index builds in 18 seconds. She adds the one-line MCP config and reloads Claude Code.
@@ -126,7 +126,7 @@ He reviews the `.ctxo/index/` output — one JSON file per source file, 3.2MB to
 
 The PR description writes itself: *"Adds Ctxo index — gives AI assistants full dependency context on this codebase. Pull and you're context-rich immediately."*
 
-He adds the GitHub Actions CI gate. Now every PR triggers `npx ctxo index --check` — CI fails if the index is stale. Institutional memory stays current automatically.
+He adds the GitHub Actions CI gate. Now every PR triggers `npx @ctxo/cli index --check` — CI fails if the index is stale. Institutional memory stays current automatically.
 
 Three weeks later, a new hire clones the repo. Full context on day one. Daniel never has to explain the `PaymentProcessor` dependency graph again.
 
@@ -156,9 +156,9 @@ Priya didn't know that history existed. Nobody told her. The codebase told her.
 
 He queries `InvoiceGenerator`. The response is missing `TaxCalculator` — a dependency he knows exists. He checks: feature branch, three days old, `TaxCalculator` added yesterday, index never updated.
 
-Ctxo surfaces a warning in the MCP response: *"Index for invoice-generator.ts is 3 days old and may not reflect recent changes. Run `npx ctxo index --file src/billing/invoice-generator.ts` to update."*
+Ctxo surfaces a warning in the MCP response: *"Index for invoice-generator.ts is 3 days old and may not reflect recent changes. Run `npx @ctxo/cli index --file src/billing/invoice-generator.ts` to update."*
 
-Two seconds. The next query includes `TaxCalculator`. He adds `npx ctxo watch` to his dev startup script.
+Two seconds. The next query includes `TaxCalculator`. He adds `npx @ctxo/cli watch` to his dev startup script.
 
 **Capabilities revealed:** Index staleness detection, incremental file-level re-indexing, `ctxo watch` file watcher, graceful degradation with actionable warnings.
 
@@ -223,10 +223,10 @@ Ctxo is an npm package distributed via `npx`, exposing an MCP server over stdio 
 
 ### Installation Methods
 
-- **Primary:** `npx ctxo index` — zero global install, always-latest
+- **Primary:** `npx @ctxo/cli index` — zero global install, always-latest
 - **Global install:** `npm install -g ctxo` — for teams preferring pinned versions
 - **MCP client config:** `{ "command": "npx", "args": ["-y", "ctxo"] }`
-- **CI:** `npx ctxo index --check` in GitHub Actions workflow
+- **CI:** `npx @ctxo/cli index --check` in GitHub Actions workflow
 
 ### API Surface (MCP Tools)
 
@@ -260,7 +260,7 @@ All tools return structured JSON. Privacy masking applied to all outputs before 
 - All five MCP tools with L1–L4 progressive depth
 - Privacy masking pipeline
 - Committed JSON index + `.gitignore` cache separation
-- `npx ctxo index` + incremental re-indexing + `ctxo watch`
+- `npx @ctxo/cli index` + incremental re-indexing + `ctxo watch`
 - CI indexing gate (GitHub Actions)
 - Monorepo auto-discovery
 - MCP stdio transport, verified: Claude Code, Cursor, VS Code Copilot
@@ -351,7 +351,7 @@ All tools return structured JSON. Privacy masking applied to all outputs before 
 - **NFR11:** Index staleness is detected and reported within the MCP tool response — never silently served as fresh context
 - **NFR12:** A crashed or stopped file watcher does not corrupt the committed index; on restart, the watcher re-validates index state before resuming
 - **NFR13:** If the SQLite cache is deleted or corrupted, Ctxo rebuilds it from the committed JSON index without user intervention
-- **NFR14:** `npx ctxo index --check` exits with a non-zero code when any source file has been modified after the index was last built
+- **NFR14:** `npx @ctxo/cli index --check` exits with a non-zero code when any source file has been modified after the index was last built
 
 ### Integration
 
@@ -377,7 +377,7 @@ All tools return structured JSON. Privacy masking applied to all outputs before 
 
 ### E2E Tests
 
-- **Scope:** Full `npx ctxo` CLI — index build, incremental re-index, `--check` exit codes, file watcher trigger
+- **Scope:** Full `npx @ctxo/cli` CLI — index build, incremental re-index, `--check` exit codes, file watcher trigger
 - **Approach:** Real TypeScript fixture projects on disk; CI runs on Linux (`ubuntu-latest`) against Node.js 20 and 22. Node 18 dropped after upstream EOL (2025-04); macOS/Windows supported at runtime but not continuously CI-verified.
 - **Key cases:** Index build on clean project produces valid manifest; `--check` exits non-zero after source file modification; incremental re-index updates only the changed file's JSON; `ctxo watch` detects a save and re-indexes within 2s
 

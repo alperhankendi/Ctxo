@@ -23,32 +23,32 @@ pnpm --filter @ctxo/cli test:e2e  # end-to-end tests
 pnpm --filter @ctxo/cli build     # build CLI package to dist/
 
 # Usage (consumer)
-npx ctxo install                     # install language plugins (interactive)
-npx ctxo install typescript go --yes # non-interactive install of specific plugins
-npx ctxo install --dry-run --pm pnpm # preview install plan with chosen pm
-npx ctxo update                      # check + apply updates for ctxo + plugins
-npx ctxo update --check              # check only, exit 0
-npx ctxo update --print              # print install command, never execute
-npx ctxo update --global             # force a global install
-npx ctxo update --json               # machine-readable output
-npx ctxo index                       # build codebase index
-npx ctxo index --install-missing     # auto-install detected plugins, then index
-npx ctxo index --check               # CI gate: fail if index stale
-npx ctxo index --skip-history        # fast re-index without git history
-npx ctxo index --max-history 5       # limit commit history per file
-npx ctxo watch                       # file watcher for incremental re-index
-npx ctxo sync                        # rebuild SQLite from committed JSON
-npx ctxo init                        # install git hooks + language detection/install prompt
-npx ctxo init --no-install           # init without plugin install prompt
-npx ctxo status                      # show index manifest
-npx ctxo doctor                      # health check all subsystems (--json, --quiet)
-npx ctxo doctor --fix                # dependency-ordered remediation (--dry-run, --yes)
-npx ctxo version                     # verbose version report (default)
-npx ctxo --version --verbose         # version + installed plugins list
-npx ctxo --version --json            # machine-readable version report
-npx ctxo visualize                   # generate interactive dependency graph HTML
-npx ctxo visualize --max-nodes 200   # limit to top 200 symbols by PageRank
-npx ctxo visualize --no-browser      # skip auto-opening browser
+npx @ctxo/cli install                     # install language plugins (interactive)
+npx @ctxo/cli install typescript go --yes # non-interactive install of specific plugins
+npx @ctxo/cli install --dry-run --pm pnpm # preview install plan with chosen pm
+npx @ctxo/cli update                      # check + apply updates for ctxo + plugins
+npx @ctxo/cli update --check              # check only, exit 0
+npx @ctxo/cli update --print              # print install command, never execute
+npx @ctxo/cli update --global             # force a global install
+npx @ctxo/cli update --json               # machine-readable output
+npx @ctxo/cli index                       # build codebase index
+npx @ctxo/cli index --install-missing     # auto-install detected plugins, then index
+npx @ctxo/cli index --check               # CI gate: fail if index stale
+npx @ctxo/cli index --skip-history        # fast re-index without git history
+npx @ctxo/cli index --max-history 5       # limit commit history per file
+npx @ctxo/cli watch                       # file watcher for incremental re-index
+npx @ctxo/cli sync                        # rebuild SQLite from committed JSON
+npx @ctxo/cli init                        # install git hooks + language detection/install prompt
+npx @ctxo/cli init --no-install           # init without plugin install prompt
+npx @ctxo/cli status                      # show index manifest
+npx @ctxo/cli doctor                      # health check all subsystems (--json, --quiet)
+npx @ctxo/cli doctor --fix                # dependency-ordered remediation (--dry-run, --yes)
+npx @ctxo/cli version                     # verbose version report (default)
+npx @ctxo/cli --version --verbose         # version + installed plugins list
+npx @ctxo/cli --version --json            # machine-readable version report
+npx @ctxo/cli visualize                   # generate interactive dependency graph HTML
+npx @ctxo/cli visualize --max-nodes 200   # limit to top 200 symbols by PageRank
+npx @ctxo/cli visualize --no-browser      # skip auto-opening browser
 
 # Environment
 DEBUG=ctxo:*                  # enable all debug output

@@ -212,8 +212,8 @@ If tools are missing, check the client's MCP logs. Common issues:
 | ----------------------------------- | -------------------------------------------- |
 | `command not found: npx`            | Install Node.js >= 20 and restart the client |
 | Server starts then exits            | Run `npx @ctxo/cli mcp` in a terminal to see the real error |
-| No index loaded                     | Run `npx ctxo index` in the repo root        |
-| Stale results                       | `npx ctxo index` or start `ctxo watch`       |
+| No index loaded                     | Run `npx @ctxo/cli index` in the repo root        |
+| Stale results                       | `npx @ctxo/cli index` or start `ctxo watch`       |
 
 ## Next steps
 

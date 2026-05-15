@@ -162,7 +162,7 @@ TypeScript 5.x, ESM-first (`"type": "module"`), Node.js ≥ 20, `tsconfig.json` 
 **Build Tooling:**
 tsup (esbuild-backed) with `external: ['better-sqlite3', 'tree-sitter']` to preserve
 native addon `.node` binary resolution. Single `dist/index.js` output, `bin` field
-in `package.json` for `npx ctxo` invocation.
+in `package.json` for `npx @ctxo/cli` invocation.
 
 **Testing Framework:**
 Vitest (ESM-native, fast, Jest-compatible API). Unit tests per adapter, integration
@@ -251,13 +251,13 @@ The committed JSON index enables CI-driven index freshness:
 
 **Pattern A — CI writes index (recommended):**
 ```yaml
-- run: npx ctxo index
+- run: npx @ctxo/cli index
 - run: git add .ctxo/index/ && git diff --staged --quiet || git commit -m "chore: update ctxo index [skip ci]" && git push
 ```
 
 **Pattern B — CI gate (simpler):**
 ```yaml
-- run: npx ctxo index
+- run: npx @ctxo/cli index
 - run: git diff --exit-code .ctxo/index/   # fail PR if index not committed
 ```
 
@@ -320,7 +320,7 @@ Warn-and-continue at every boundary:
 
 ### Infrastructure & Deployment
 
-- **Package**: single npm package `ctxo`, `bin` field for `npx ctxo` invocation
+- **Package**: single npm package `ctxo`, `bin` field for `npx @ctxo/cli` invocation
 - **Build**: tsup with `external: ['better-sqlite3', 'tree-sitter']`
 - **Engines**: Node.js ≥ 20
 - **MCP client config**: `{ "command": "npx", "args": ["-y", "ctxo"] }`
@@ -637,7 +637,7 @@ Clients spawn Ctxo as a stdio subprocess. Zero configuration beyond this line.
 
 **CI integration:**
 ```yaml
-- run: npx ctxo index
+- run: npx @ctxo/cli index
 - run: git diff --exit-code .ctxo/index/
 ```
 

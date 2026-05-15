@@ -19,7 +19,7 @@ discovered and indexed.
 ## Synopsis
 
 ```shell
-npx ctxo index [options]
+npx @ctxo/cli index [options]
 ```
 
 ## Flags
@@ -36,31 +36,31 @@ npx ctxo index [options]
 
 ::: code-group
 ```shell [full index]
-npx ctxo index
+npx @ctxo/cli index
 ```
 
 ```shell [CI gate]
 # Fail the build if the committed index has drifted from source.
-npx ctxo index --check
+npx @ctxo/cli index --check
 ```
 
 ```shell [fast re-index]
 # Skip git history. Useful on a fresh clone, or in hot-path benchmarks.
-npx ctxo index --skip-history
+npx @ctxo/cli index --skip-history
 ```
 
 ```shell [bounded history]
-npx ctxo index --max-history 5
+npx @ctxo/cli index --max-history 5
 ```
 
 ```shell [bootstrap]
 # Install detected plugins, then index in one command.
-npx ctxo index --install-missing
+npx @ctxo/cli index --install-missing
 ```
 
 ```shell [single file]
 # Invoked by the post-commit hook; runs in milliseconds.
-npx ctxo index --file packages/cli/src/core/logger.ts
+npx @ctxo/cli index --file packages/cli/src/core/logger.ts
 ```
 :::
 
