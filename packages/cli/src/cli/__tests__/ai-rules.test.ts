@@ -234,6 +234,8 @@ describe('ensureConfig', () => {
     expect(content).toContain('version');
     expect(content).toContain('ignore: []');
     expect(content).toContain('ignoreProjects: []');
+    expect(content).toContain('gate:');
+    expect(content).toContain('sensitivity: balanced');
   });
 
   it('generated config.yaml passes the loader and doctor checks', async () => {

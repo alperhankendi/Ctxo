@@ -282,6 +282,10 @@ index:
   ignoreProjects: []
   # - "packages/experimental-*"
   # - "examples/*"
+
+gate:
+  enabled: true
+  sensitivity: balanced   # strict | balanced | lenient
 `;
 
 export function ensureConfig(projectRoot: string): InstallResult {
