@@ -14,6 +14,7 @@ import { InstallCommand } from './install-command.js';
 import { UpdateCommand } from './update-command.js';
 import { BlastRadiusCommand } from './blast-radius-command.js';
 import { GateHookCommand } from './gate-hook-command.js';
+import { GateCommand } from './gate-command.js';
 
 export function getVersion(): string {
   let dir = import.meta.dirname;
@@ -234,6 +235,16 @@ export class CliRouter {
           force: flagValues['force'] === true,
           pm: typeof flagValues['pm'] === 'string' ? flagValues['pm'] : undefined,
         });
+        break;
+      }
+
+      case 'gate': {
+        if (args.includes('--preview')) {
+          new GateCommand(this.projectRoot).preview({ json: args.includes('--json') });
+        } else {
+          console.error('[ctxo] usage: ctxo gate --preview [--json]');
+          process.exit(1);
+        }
         break;
       }
 
