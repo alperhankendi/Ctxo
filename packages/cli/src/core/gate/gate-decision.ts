@@ -1,5 +1,7 @@
 import type { ResolvedGate } from './gate-config.js';
 
+const MAX_TOP_DEPENDENTS = 8;
+
 export interface GateInput {
   /** confirmed + likely dependents of the edited symbol (primary risk signal). */
   readonly riskCount: number;
@@ -20,7 +22,7 @@ export function formatBlockReason(
   riskCount: number,
   topDependents: readonly string[],
 ): string {
-  const list = topDependents.slice(0, 8).map((d) => `  - ${d}`).join('\n');
+  const list = topDependents.slice(0, MAX_TOP_DEPENDENTS).map((d) => `  - ${d}`).join('\n');
   return [
     `⚠ ctxo guard: "${symbolName}" is a high-impact symbol — ${riskCount} confirmed/likely dependents may break.`,
     topDependents.length > 0 ? `Top dependents:\n${list}` : '',

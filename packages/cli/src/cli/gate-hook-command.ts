@@ -15,6 +15,8 @@ import { createLogger } from '../core/logger.js';
 
 const log = createLogger('ctxo:gate-hook');
 
+const RANK_ALL = 100_000; // effectively unbounded: rank every node
+
 export interface HookPayload {
   session_id: string;
   transcript_path: string;
@@ -72,7 +74,7 @@ export class GateHookCommand {
       const blast = new BlastRadiusCalculator().calculate(graph, symbolId);
       const riskCount = blast.confirmedCount + blast.likelyCount;
 
-      const pr = new PageRankCalculator().calculate(graph, { limit: 100_000 });
+      const pr = new PageRankCalculator().calculate(graph, { limit: RANK_ALL });
       const prMap = new Map(pr.rankings.map((r) => [r.symbolId, r.score]));
       const cutoff = percentileCutoff([...prMap.values()], thresholds.percentile);
       const importanceScore = prMap.get(symbolId) ?? 0;
@@ -84,7 +86,6 @@ export class GateHookCommand {
       const name = symbolId.split('::')[1] ?? symbolId;
       const top = blast.impactedSymbols
         .filter((s) => s.confidence !== 'potential')
-        .slice(0, 8)
         .map((s) => s.symbolId);
       return { block: true, reason: formatBlockReason(name, riskCount, top) };
     } catch (err) {
@@ -94,11 +95,14 @@ export class GateHookCommand {
   }
 
   async run(): Promise<void> {
-    const payload = await this.readStdin();
-    if (payload) {
-      log.error('tool_input keys: ' + Object.keys(payload.tool_input ?? {}).join(','));
-      const decision = this.evaluate(payload);
-      if (decision.block) this.emitBlock(decision.reason ?? 'ctxo guard');
+    try {
+      const payload = await this.readStdin();
+      if (payload) {
+        const decision = this.evaluate(payload);
+        if (decision.block) this.emitBlock(decision.reason ?? 'ctxo guard');
+      }
+    } catch (err) {
+      log.error(`${(err as Error).message}`);
     }
     process.exit(0);
   }
