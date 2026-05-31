@@ -8,6 +8,43 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 
+/* ------------------------------------------------------------------ */
+/*  Claude Code safe-edit gate hook                                    */
+/* ------------------------------------------------------------------ */
+
+const CTXO_HOOK_COMMAND = 'ctxo gate-hook';
+
+export function ensureClaudeHook(projectRoot: string): InstallResult {
+  const filePath = join(projectRoot, '.claude', 'settings.json');
+  const dir = dirname(filePath);
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+
+  const ctxoEntry = { matcher: 'Edit', hooks: [{ type: 'command', command: CTXO_HOOK_COMMAND }] };
+
+  if (!existsSync(filePath)) {
+    writeFileSync(filePath, JSON.stringify({ hooks: { PreToolUse: [ctxoEntry] } }, null, 2) + '\n', 'utf-8');
+    return { file: '.claude/settings.json', action: 'created' };
+  }
+
+  let existing: Record<string, unknown>;
+  try { existing = JSON.parse(readFileSync(filePath, 'utf-8')); }
+  catch {
+    writeFileSync(filePath, JSON.stringify({ hooks: { PreToolUse: [ctxoEntry] } }, null, 2) + '\n', 'utf-8');
+    return { file: '.claude/settings.json', action: 'updated' };
+  }
+
+  const hooks = (existing.hooks ?? {}) as Record<string, unknown>;
+  const pre = (hooks.PreToolUse ?? []) as Array<{ hooks?: Array<{ command?: string }> }>;
+  if (pre.some((e) => e.hooks?.some((h) => h.command === CTXO_HOOK_COMMAND))) {
+    return { file: '.claude/settings.json', action: 'skipped' };
+  }
+  pre.push(ctxoEntry);
+  hooks.PreToolUse = pre;
+  existing.hooks = hooks;
+  writeFileSync(filePath, JSON.stringify(existing, null, 2) + '\n', 'utf-8');
+  return { file: '.claude/settings.json', action: 'updated' };
+}
+
 export interface Platform {
   id: string;
   name: string;

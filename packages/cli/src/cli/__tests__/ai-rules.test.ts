@@ -2,7 +2,7 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { mkdtempSync, rmSync, existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { PLATFORMS, generateRules, installRules, detectPlatforms, ensureGitignore, ensureConfig, getMcpConfigTargets, ensureMcpConfig, installSkills, SKILLS } from '../ai-rules.js';
+import { PLATFORMS, generateRules, installRules, detectPlatforms, ensureGitignore, ensureConfig, getMcpConfigTargets, ensureMcpConfig, installSkills, SKILLS, ensureClaudeHook } from '../ai-rules.js';
 
 const tempDirs: string[] = [];
 
@@ -421,5 +421,25 @@ describe('installSkills', () => {
   it('returns an empty list for a platform without skill support', () => {
     const root = makeTempDir();
     expect(installSkills(root, 'amazonq')).toEqual([]);
+  });
+});
+
+describe('ensureClaudeHook', () => {
+  it('creates .claude/settings.json with a PreToolUse Edit hook', () => {
+    const root = makeTempDir();
+    const res = ensureClaudeHook(root);
+    expect(res.action).not.toBe('skipped');
+    const cfg = JSON.parse(readFileSync(join(root, '.claude', 'settings.json'), 'utf-8'));
+    const entry = cfg.hooks.PreToolUse[0];
+    expect(entry.matcher).toBe('Edit');
+    expect(entry.hooks[0].command).toContain('gate-hook');
+  });
+
+  it('is idempotent (no duplicate ctxo hook)', () => {
+    const root = makeTempDir();
+    ensureClaudeHook(root);
+    ensureClaudeHook(root);
+    const cfg = JSON.parse(readFileSync(join(root, '.claude', 'settings.json'), 'utf-8'));
+    expect(cfg.hooks.PreToolUse.length).toBe(1);
   });
 });
