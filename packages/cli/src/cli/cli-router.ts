@@ -13,6 +13,7 @@ import { VersionCommand } from './version-command.js';
 import { InstallCommand } from './install-command.js';
 import { UpdateCommand } from './update-command.js';
 import { BlastRadiusCommand } from './blast-radius-command.js';
+import { GateHookCommand } from './gate-hook-command.js';
 
 export function getVersion(): string {
   let dir = import.meta.dirname;
@@ -235,6 +236,10 @@ export class CliRouter {
         });
         break;
       }
+
+      case 'gate-hook':
+        await new GateHookCommand(this.projectRoot).run();
+        break;
 
       case 'blast-radius': {
         const symbolId = args[1];
