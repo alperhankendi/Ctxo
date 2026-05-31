@@ -30,6 +30,10 @@ index:
   ignoreProjects:
     - "packages/experimental-*"
     - "examples/*"
+
+gate:
+  enabled: true
+  sensitivity: balanced
 ```
 
 ## Fields
@@ -40,8 +44,20 @@ index:
 | `stats.enabled` | boolean | `true` | Session recording opt-out. Set `false` to disable local stats capture. |
 | `index.ignore` | string[] | `[]` | Picomatch globs applied to file paths **after** `git ls-files`. |
 | `index.ignoreProjects` | string[] | `[]` | Picomatch globs applied to workspace roots. Skipped workspaces are never enumerated. |
+| `gate.enabled` | boolean | `true` | Enable or disable the safe-edit guard PreToolUse hook. |
+| `gate.sensitivity` | `strict` \| `balanced` \| `lenient` | `balanced` | How aggressively the guard flags high-impact symbols. |
 
-Unknown fields at the root are ignored for forward compatibility. Unknown fields **inside** the `stats` or `index` sections are rejected as schema violations (typos surface immediately).
+### gate.sensitivity levels
+
+| Level | PageRank percentile | Min dependents floor | Use case |
+| --- | --- | --- | --- |
+| `strict` | top 30% | 2 | Large shared codebases; flag nearly anything with dependents |
+| `balanced` | top 15% | 3 | Default - catches genuinely high-impact symbols without too much noise |
+| `lenient` | top 5% | 5 | Only block edits to truly critical symbols (god nodes, public APIs) |
+
+Run `ctxo gate --preview` after changing `sensitivity` to see which symbols would be flagged.
+
+Unknown fields at the root are ignored for forward compatibility. Unknown fields **inside** the `stats`, `index`, or `gate` sections are rejected as schema violations (typos surface immediately).
 
 ## Glob matching rules
 

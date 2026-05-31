@@ -16,6 +16,19 @@ index:
     - "packages/**/fixtures/**"
   ignoreProjects:
     - "examples/*"
+gate:
+  enabled: true
+  sensitivity: balanced   # strict | balanced (DEFAULT) | lenient
 ```
+
+The `gate:` block controls the safe-edit guard. `sensitivity` sets how aggressively the guard flags high-impact symbols:
+
+| Level | PageRank percentile | Min dependents floor |
+| --- | --- | --- |
+| `strict` | top 30% | 2 |
+| `balanced` | top 15% | 3 |
+| `lenient` | top 5% | 5 |
+
+Set `gate.enabled: false` to turn the guard off entirely.
 
 Full schema reference: [Config schema](/reference/config-schema).

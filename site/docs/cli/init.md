@@ -1,18 +1,19 @@
 ---
 title: "ctxo init"
-description: "Bootstrap a project: git hooks + plugin install prompt."
+description: "Bootstrap a project: git hooks, safe-edit guard, skills, and plugin install."
 ---
 
 # ctxo init
 
-Bootstraps a project for ctxo. Runs three steps:
+Bootstraps a project for ctxo. Runs four steps:
 
 1. Ensures `.ctxo/index/` and `.ctxo/config.yaml` exist.
 2. Generates MCP usage rules for the AI tools you use and registers the ctxo
    MCP server in their config files. Supported tool ids: `claude-code`,
    `cursor`, `github-copilot`, `windsurf`, `antigravity`, `augment`, `amazonq`,
    `gemini-cli`, `continue`.
-3. Offers to install missing language plugins and to install git hooks that
+3. Installs the safe-edit guard hook and model-invoked skills (Claude Code and Cursor).
+4. Offers to install missing language plugins and to install git hooks that
    re-index on commit and rebuild the SQLite cache on merge.
 
 Requires a git repository (run `git init` first).
@@ -42,8 +43,31 @@ ctxo init [options]
 | `.gitignore` | `.ctxo/.cache/` appended if not already present |
 | AI rule files | Per selected tool: `CLAUDE.md`, `.cursor/rules/ctxo.mdc`, `.github/copilot-instructions.md`, `.windsurfrules`, `AGENTS.md`, `augment-guidelines.md`, `.amazonq/rules/ctxo.md`, `GEMINI.md`, `.continue/rules/ctxo.md` |
 | AI MCP configs | Per selected tool: `.mcp.json` (Claude Code / Cursor / Windsurf / Antigravity / Augment), `.vscode/mcp.json` (Copilot), `.amazonq/mcp.json`, `.gemini/settings.json`, `.continue/mcpServers/ctxo.json` |
+| `.claude/settings.json` | Registers the `ctxo gate-hook` PreToolUse hook (Claude Code only) |
+| `.claude/skills/ctxo-understand/SKILL.md` | Model-invoked skill: orient at task start (Claude Code) |
+| `.claude/skills/ctxo-safe-edit/SKILL.md` | Model-invoked skill: blast radius + why-context before edits (Claude Code) |
+| `.claude/skills/ctxo-review-pr/SKILL.md` | Model-invoked skill: PR risk via `get_pr_impact` (Claude Code) |
+| `.cursor/rules/ctxo-understand.mdc` | Same skill for Cursor |
+| `.cursor/rules/ctxo-safe-edit.mdc` | Same skill for Cursor |
+| `.cursor/rules/ctxo-review-pr.mdc` | Same skill for Cursor |
 | `.git/hooks/post-commit` | Incremental re-index of changed files (idempotent block, marked `# ctxo-start` / `# ctxo-end`) |
 | `.git/hooks/post-merge` | Runs `ctxo sync` after `git pull` |
+
+## Safe-edit guard prompt
+
+When `ctxo init` detects Claude Code or Cursor, it asks whether to install the safe-edit guard. Answering yes writes the hook entry to `.claude/settings.json` and copies the three skills. The guard is enabled by default at `balanced` sensitivity; tune it via `gate:` in `.ctxo/config.yaml`:
+
+```yaml
+gate:
+  enabled: true
+  sensitivity: balanced   # strict | balanced | lenient
+```
+
+Use `ctxo gate --preview` to see which symbols the current sensitivity level would flag before committing to it. See the [Safe-Edit Guard guide](/concepts/safe-edit-guard) for the full explanation.
+
+::: tip Skills are passive instructions
+Skills are markdown files the model reads - they do not execute code. The PreToolUse hook in `.claude/settings.json` is the only thing that actually blocks an edit. Skills guide the agent toward running `get_blast_radius` proactively.
+:::
 
 ::: tip Hooks are safe to re-run
 The hook installer detects the `# ctxo-start` marker and leaves existing hooks

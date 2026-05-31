@@ -101,6 +101,7 @@ export default defineConfig({
             { text: 'PageRank Importance', link: '/concepts/pagerank' },
             { text: 'Architectural Intelligence', link: '/concepts/architectural-intelligence' },
             { text: 'Masking Pipeline', link: '/concepts/masking' },
+            { text: 'Safe-Edit Guard', link: '/concepts/safe-edit-guard' },
           ],
         },
         {
@@ -117,6 +118,8 @@ export default defineConfig({
             { text: 'ctxo status', link: '/cli/status' },
             { text: 'ctxo doctor', link: '/cli/doctor' },
             { text: 'ctxo visualize', link: '/cli/visualize' },
+            { text: 'ctxo blast-radius', link: '/cli/blast-radius' },
+            { text: 'ctxo gate', link: '/cli/gate' },
             { text: 'config.yaml reference', link: '/cli/config-yaml' },
             { text: 'Environment variables', link: '/cli/env-vars' },
           ],
