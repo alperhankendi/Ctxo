@@ -3,8 +3,7 @@ import { join, basename } from 'node:path';
 import { execFile } from 'node:child_process';
 import { ArchitectureArtifactsWriter } from '../adapters/storage/architecture-artifacts-writer.js';
 import { CommunitySnapshotWriter } from '../adapters/storage/community-snapshot-writer.js';
-import { JsonIndexReader } from '../adapters/storage/json-index-reader.js';
-import { SymbolGraph } from '../core/graph/symbol-graph.js';
+import { loadGraph } from './graph-loader.js';
 import { PageRankCalculator } from '../core/importance/pagerank-calculator.js';
 import { DeadCodeDetector } from '../core/dead-code/dead-code-detector.js';
 import { ArchitecturalOverlay } from '../core/overlay/architectural-overlay.js';
@@ -31,9 +30,8 @@ export class VisualizeCommand {
   }
 
   async run(options: VisualizeOptions = {}): Promise<void> {
-    // 1. Read index
-    const reader = new JsonIndexReader(this.ctxoRoot);
-    const indices = reader.readAll();
+    // 1. Read index and build graph
+    const { graph, indices } = loadGraph(this.ctxoRoot);
 
     if (indices.length === 0) {
       console.error('[ctxo] No index found. Run "ctxo index" first.');
@@ -42,19 +40,6 @@ export class VisualizeCommand {
     }
 
     console.error(`[ctxo] Building graph from ${indices.length} files...`);
-
-    // 2. Build SymbolGraph
-    const graph = new SymbolGraph();
-    for (const fileIndex of indices) {
-      for (const sym of fileIndex.symbols) {
-        graph.addNode(sym);
-      }
-    }
-    for (const fileIndex of indices) {
-      for (const edge of fileIndex.edges) {
-        graph.addEdge(edge);
-      }
-    }
 
     console.error(`[ctxo] Graph: ${graph.nodeCount} symbols, ${graph.edgeCount} edges`);
 
