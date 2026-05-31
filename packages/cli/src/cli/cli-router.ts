@@ -319,6 +319,9 @@ Usage:
   ctxo update --json       Machine-readable output
   ctxo update --pm <pm>    Override package manager (npm|pnpm|yarn|bun)
   ctxo update --force      Bypass CI lockfile guard
+  ctxo blast-radius <symbolId>   Blast radius for one symbol (--json for machine output)
+  ctxo gate --preview            Preview which symbols the safe-edit guard would block
+  ctxo gate --preview --json     Same, machine-readable output
   ctxo --version                 Print core version
   ctxo --version --verbose       Print core + plugins + runtime
   ctxo --version --json          Machine-readable version payload

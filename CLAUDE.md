@@ -50,6 +50,9 @@ ctxo --version --json               # machine-readable version report
 ctxo visualize                      # generate interactive dependency graph HTML
 ctxo visualize --max-nodes 200      # limit to top 200 symbols by PageRank
 ctxo visualize --no-browser         # skip auto-opening browser
+ctxo blast-radius <symbolId> --json # blast radius for one symbol, JSON to stdout
+ctxo gate --preview                 # preview which symbols the guard would block
+ctxo gate --preview --json          # same, machine-readable
 
 # Environment
 DEBUG=ctxo:*                  # enable all debug output
@@ -135,6 +138,37 @@ index:
 * `index.ignore`: per-file picomatch globs, matched against repo-relative forward-slash paths.
 * `index.ignoreProjects`: matched against workspace paths; skipped workspaces are never enumerated and their plugin deps are never imported.
 * Invalid globs surface as warnings via `ctxo doctor`; schema violations surface as fails. The loader falls back to defaults on any error (warn-and-continue).
+
+### Safe-Edit Guard
+
+A PreToolUse hook (Claude Code only) that blocks an Edit to a high-impact symbol until the agent has checked blast radius via the MCP tool. Registered in `.claude/settings.json` by `ctxo init`. Fires once per symbol per session, fail-open on any uncertainty.
+
+Gate decision: primary = blast-radius confirmed+likely dependents vs `minDependents` floor; secondary = PageRank percentile. Config in `.ctxo/config.yaml`:
+
+```yaml
+gate:
+  enabled: true       # set false to disable
+  sensitivity: balanced   # strict | balanced (DEFAULT) | lenient
+```
+
+Sensitivity levels:
+
+| Level | PageRank percentile | Min dependents floor |
+|---|---|---|
+| strict | top 30% | 2 |
+| balanced | top 15% | 3 |
+| lenient | top 5% | 5 |
+
+Use `ctxo gate --preview` to see which symbols the current config would flag before committing to a sensitivity level.
+
+**Platform support:** Claude Code = full enforcement (hook) + skills + rules. Cursor = skills + rules only (no blocking pre-edit hook). All other platforms = rules only.
+
+Three model-invoked skills installed by `ctxo init`:
+* `ctxo-understand` - orient with ctxo at the start of any task
+* `ctxo-safe-edit` - pre-edit blast radius + why-context checks
+* `ctxo-review-pr` - PR risk assessment via `get_pr_impact`
+
+Skills land in `.claude/skills/<name>/SKILL.md` (Claude Code) and `.cursor/rules/<name>.mdc` (Cursor).
 
 ## Naming Conventions
 
@@ -396,45 +430,37 @@ Frequently needed:
 * [llms.txt](llms.txt) / [llms-full.txt](llms-full.txt) — LLM-friendly project documentation
 
 <!-- ctxo-rules-start -->
-
 ## ctxo MCP Tool Usage (MANDATORY)
 
 **ALWAYS use ctxo MCP tools before reading source files or making code changes.** The ctxo index contains dependency graphs, git intent, anti-patterns, and change health that cannot be derived from reading files alone. Skipping these tools leads to blind edits and broken dependencies.
 
 ### Before ANY Code Modification
-
 1. Call `get_blast_radius` for the symbol you are about to change — understand what breaks
 2. Call `get_why_context` for the same symbol — check for revert history or anti-patterns
 3. Only then read and edit source files
 
 ### Before Starting a Task
-
-| Task Type                  | REQUIRED First Call                            |
-| -------------------------- | ---------------------------------------------- |
-| Fixing a bug               | `get_context_for_task(taskType: "fix")`        |
-| Adding/extending a feature | `get_context_for_task(taskType: "extend")`     |
-| Refactoring                | `get_context_for_task(taskType: "refactor")`   |
-| Understanding code         | `get_context_for_task(taskType: "understand")` |
+| Task Type | REQUIRED First Call |
+|---|---|
+| Fixing a bug | `get_context_for_task(taskType: "fix")` |
+| Adding/extending a feature | `get_context_for_task(taskType: "extend")` |
+| Refactoring | `get_context_for_task(taskType: "refactor")` |
+| Understanding code | `get_context_for_task(taskType: "understand")` |
 
 ### Before Reviewing a PR or Diff
-
-* Call `get_pr_impact` — single call gives full risk assessment with co-change analysis
+- Call `get_pr_impact` — single call gives full risk assessment with co-change analysis
 
 ### When Exploring or Searching Code
-
-* Use `search_symbols` for name/regex lookup — DO NOT grep source files for symbol discovery
-* Use `get_ranked_context` for natural language queries — DO NOT manually browse directories
+- Use `search_symbols` for name/regex lookup — DO NOT grep source files for symbol discovery
+- Use `get_ranked_context` for natural language queries — DO NOT manually browse directories
 
 ### Orientation in Unfamiliar Areas
-
-* Call `get_architectural_overlay` to understand layer boundaries
-* Call `get_symbol_importance` to identify critical symbols
+- Call `get_architectural_overlay` to understand layer boundaries
+- Call `get_symbol_importance` to identify critical symbols
 
 ### NEVER Do These
-
-* NEVER edit a function without first calling `get_blast_radius` on it
-* NEVER skip `get_why_context` — reverted code and anti-patterns are invisible without it
-* NEVER grep source files to find symbols when `search_symbols` exists
-* NEVER manually trace imports when `find_importers` gives the full reverse dependency graph
-
+- NEVER edit a function without first calling `get_blast_radius` on it
+- NEVER skip `get_why_context` — reverted code and anti-patterns are invisible without it
+- NEVER grep source files to find symbols when `search_symbols` exists
+- NEVER manually trace imports when `find_importers` gives the full reverse dependency graph
 <!-- ctxo-rules-end -->

@@ -18,6 +18,8 @@ Items on deck for v0.7.x / v0.8. No strict ordering — picked by impact + readi
 
 - **Community detection / graph clustering** — _shipped in v0.8 (see [CHANGELOG](../CHANGELOG.md))_. Louvain over the symbol graph powers `get_architectural_overlay` data-driven clusters, god nodes, cluster-scoped blast radius, drift signals in `get_why_context`, and boundary violations in `get_pr_impact`. Leiden remains deferred (see below).
 
+- **Safe-edit guard + ctxo skills** — _shipped in v0.8_. PreToolUse hook (Claude Code) blocks edits to high-impact symbols until blast radius is checked; three model-invoked skills (`ctxo-understand`, `ctxo-safe-edit`, `ctxo-review-pr`) installed by `ctxo init`; new `ctxo blast-radius <symbolId> --json` and `ctxo gate --preview` commands; `gate:` config with `sensitivity` dial (strict/balanced/lenient). Cursor and other tools get skills + rules; Claude Code gets full hook enforcement. See [ADR-013](architecture/ADR/adr-013-safe-edit-guard.md).
+
 ### Platform & transport
 
 - **Streamable HTTP transport** — for remote/cloud MCP usage. Today Ctxo is stdio-only. Needed for hosted scenarios and non-local clients.
@@ -43,6 +45,10 @@ Work that's been scoped and explicitly parked. Each has a known trigger to react
 
 | Item | Source | Trigger to reactivate |
 |---|---|---|
+| **Layer-3 UserPromptSubmit nudge** | Safe-edit guard v0.8 | Prompt-level reminder when the guard has been active but the agent skips skills. Deferred: PreToolUse hook already enforces; adding a nudge risks prompt noise before measuring adoption impact. |
+| **Cursor reactive `stop`-hook gate** | Safe-edit guard v0.8 | Cursor has no blocking pre-edit hook (confirmed through v3.6 changelog). Revisit if Cursor ships a pre-edit extension point. |
+| **Tier-3 platform enforcement** | Safe-edit guard v0.8 | Enforcement for platforms beyond Claude Code (Windsurf, Copilot, etc.). Depends on each platform shipping a blocking pre-tool hook. |
+| **Gate adoption telemetry** | Safe-edit guard v0.8 | Track how often the guard fires and is satisfied vs bypassed. Gate on confirmed user demand for the signal. |
 | **Leiden community detection** | v0.8 Architectural Intelligence work | Monorepos/codebases where Louvain cluster quality is insufficient (~100K+ symbols, high modularity resolution needs). Swap is additive — same `CommunitySnapshot` output shape. |
 | **Historical graph reconstruction for drift (`--since=30d`)** | v0.8 drift design | User demand for deep temporal drift analysis over re-parse cost. Snapshot-based chain is default. |
 | **GHA workflow template in `ctxo init`** | v0.8 init UX | Shipped as plain docs guidance in v0.8; wrap as interactive template when users ask. |

@@ -58,6 +58,45 @@ Full-stack analytics UI with eight views: File Tree, Heatmap, Co-Changes, Timeli
 
 [Open Dependency Graph](https://alperhankendi.github.io/Ctxo/visualize.html)
 
+## Safe-Edit Guard
+
+AI agents don't fail because they can't code. They fail because they code blind. Ctxo gives them the full picture before they write a single line.
+
+The problem: an agent opens a file, makes a targeted edit, and walks away. It never checked what else depends on that symbol. Downstream callers silently break. Tests pass because the agent only ran the ones in the same file.
+
+The safe-edit guard closes this loop deterministically. When you run `ctxo init`, it:
+
+1. Registers a **PreToolUse hook** in `.claude/settings.json` (Claude Code) that intercepts every Edit call.
+2. Installs three **model-invoked skills** (`ctxo-understand`, `ctxo-safe-edit`, `ctxo-review-pr`) so the agent knows when to check blast radius, history, and PR risk.
+
+If an agent tries to edit a high-impact symbol without first calling `get_blast_radius`, the hook blocks the edit and tells the agent what to check. Once the agent runs the tool, the edit goes through normally. Fires once per symbol per session, fail-open on any uncertainty.
+
+**Tune it:**
+
+```shell
+# Preview which symbols the guard would flag at current sensitivity
+ctxo gate --preview
+
+# Check blast radius for a specific symbol (pipe to jq, CI scripts, etc.)
+ctxo blast-radius "src/core/graph.ts::buildGraph::function" --json
+```
+
+Configure sensitivity in `.ctxo/config.yaml`:
+
+```yaml
+gate:
+  enabled: true
+  sensitivity: balanced   # strict | balanced (DEFAULT) | lenient
+```
+
+**Platform matrix:**
+
+| Platform | Hook enforcement | Skills | Rules |
+|---|---|---|---|
+| Claude Code | yes (PreToolUse blocks) | yes | yes |
+| Cursor | no (no blocking pre-edit hook) | yes | yes |
+| Other | no | where supported | yes |
+
 ## Links
 
 * [Docs](https://alperhankendi.github.io/Ctxo/docs/)  quick start, MCP tools, CLI reference, integrations
