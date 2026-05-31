@@ -12,6 +12,7 @@ import { VisualizeCommand } from './visualize-command.js';
 import { VersionCommand } from './version-command.js';
 import { InstallCommand } from './install-command.js';
 import { UpdateCommand } from './update-command.js';
+import { BlastRadiusCommand } from './blast-radius-command.js';
 
 export function getVersion(): string {
   let dir = import.meta.dirname;
@@ -232,6 +233,17 @@ export class CliRouter {
           force: flagValues['force'] === true,
           pm: typeof flagValues['pm'] === 'string' ? flagValues['pm'] : undefined,
         });
+        break;
+      }
+
+      case 'blast-radius': {
+        const symbolId = args[1];
+        if (!symbolId || symbolId.startsWith('--')) {
+          console.error('[ctxo] usage: ctxo blast-radius <symbolId> [--json]');
+          process.exit(1);
+          return;
+        }
+        new BlastRadiusCommand(this.projectRoot).run({ symbolId, json: args.includes('--json') });
         break;
       }
 
