@@ -2,7 +2,7 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { mkdtempSync, rmSync, existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { PLATFORMS, generateRules, installRules, detectPlatforms, ensureGitignore, ensureConfig, getMcpConfigTargets, ensureMcpConfig } from '../ai-rules.js';
+import { PLATFORMS, generateRules, installRules, detectPlatforms, ensureGitignore, ensureConfig, getMcpConfigTargets, ensureMcpConfig, installSkills, SKILLS } from '../ai-rules.js';
 
 const tempDirs: string[] = [];
 
@@ -398,5 +398,28 @@ describe('ensureMcpConfig', () => {
     const config = JSON.parse(readFileSync(join(dir, '.continue', 'mcpServers', 'ctxo.json'), 'utf-8'));
     expect(config.mcpServers.ctxo.command).toBe('npx');
     expect(config.mcpServers.ctxo.args).toContain('@ctxo/cli');
+  });
+});
+
+describe('installSkills', () => {
+  it('copies skills into .claude/skills for claude-code', () => {
+    const root = makeTempDir();
+    const results = installSkills(root, 'claude-code');
+    expect(results.length).toBe(SKILLS.length);
+    const f = join(root, '.claude', 'skills', 'ctxo-safe-edit', 'SKILL.md');
+    expect(existsSync(f)).toBe(true);
+    expect(readFileSync(f, 'utf-8')).toContain('Safe edit with ctxo');
+  });
+
+  it('writes cursor skills as .mdc files', () => {
+    const root = makeTempDir();
+    const results = installSkills(root, 'cursor');
+    expect(results.length).toBe(SKILLS.length);
+    expect(existsSync(join(root, '.cursor', 'rules', 'ctxo-safe-edit.mdc'))).toBe(true);
+  });
+
+  it('returns an empty list for a platform without skill support', () => {
+    const root = makeTempDir();
+    expect(installSkills(root, 'amazonq')).toEqual([]);
   });
 });

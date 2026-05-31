@@ -163,6 +163,46 @@ function escapeRegExp(s: string): string {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Skills                                                             */
+/* ------------------------------------------------------------------ */
+
+export const SKILLS = ['ctxo-understand', 'ctxo-safe-edit', 'ctxo-review-pr'] as const;
+
+/** Platforms with a markdown skill/rule directory we can drop skills into. */
+const SKILL_TARGET_DIR: Partial<Record<string, (root: string, skill: string) => string>> = {
+  'claude-code': (root, skill) => join(root, '.claude', 'skills', skill, 'SKILL.md'),
+  cursor: (root, skill) => join(root, '.cursor', 'rules', `${skill}.mdc`),
+};
+
+function skillsSourceDir(): string {
+  let dir = import.meta.dirname;
+  for (let i = 0; i < 10; i++) {
+    const candidate = join(dir, 'skills');
+    if (existsSync(join(candidate, 'ctxo-safe-edit', 'SKILL.md'))) return candidate;
+    const parent = join(dir, '..');
+    if (parent === dir) break;
+    dir = parent;
+  }
+  throw new Error('Could not locate ctxo skills/ directory.');
+}
+
+export function installSkills(projectRoot: string, platformId: string): InstallResult[] {
+  const target = SKILL_TARGET_DIR[platformId];
+  if (!target) return [];
+  const src = skillsSourceDir();
+  const out: InstallResult[] = [];
+  for (const skill of SKILLS) {
+    const from = join(src, skill, 'SKILL.md');
+    const to = target(projectRoot, skill);
+    mkdirSync(dirname(to), { recursive: true });
+    const existed = existsSync(to);
+    writeFileSync(to, readFileSync(from, 'utf-8'), 'utf-8');
+    out.push({ file: to, action: existed ? 'updated' : 'created' });
+  }
+  return out;
+}
+
+/* ------------------------------------------------------------------ */
 /*  Project scaffolding (automatic, not prompted)                      */
 /* ------------------------------------------------------------------ */
 

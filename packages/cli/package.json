@@ -12,6 +12,7 @@
   "files": [
     "dist/",
     "pages/visualize-template.html",
+    "skills/",
     "README.md",
     "llms.txt",
     "llms-full.txt"
