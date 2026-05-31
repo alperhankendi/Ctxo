@@ -18,7 +18,7 @@ Items on deck for v0.7.x / v0.8. No strict ordering — picked by impact + readi
 
 - **Community detection / graph clustering** — _shipped in v0.8 (see [CHANGELOG](../CHANGELOG.md))_. Louvain over the symbol graph powers `get_architectural_overlay` data-driven clusters, god nodes, cluster-scoped blast radius, drift signals in `get_why_context`, and boundary violations in `get_pr_impact`. Leiden remains deferred (see below).
 
-- **Safe-edit guard + ctxo skills** — _shipped in v0.8_. PreToolUse hook (Claude Code) blocks edits to high-impact symbols until blast radius is checked; three model-invoked skills (`ctxo-understand`, `ctxo-safe-edit`, `ctxo-review-pr`) installed by `ctxo init`; new `ctxo blast-radius <symbolId> --json` and `ctxo gate --preview` commands; `gate:` config with `sensitivity` dial (strict/balanced/lenient). Cursor and other tools get skills + rules; Claude Code gets full hook enforcement. See [ADR-013](architecture/ADR/adr-013-safe-edit-guard.md).
+- **Safe-edit guard + ctxo skills** - _shipped in v0.8_. PreToolUse hook (Claude Code) blocks edits to high-impact symbols until blast radius is checked; three model-invoked skills (`ctxo-understand`, `ctxo-safe-edit`, `ctxo-review-pr`) installed by `ctxo init`; new `ctxo blast-radius <symbolId> --json` and `ctxo gate --preview` commands; `gate:` config with `sensitivity` dial (strict/balanced/lenient). Cursor and other tools get skills + rules; Claude Code gets full hook enforcement. See [ADR-015](architecture/ADR/adr-015-safe-edit-guard.md).
 
 ### Platform & transport
 
