@@ -24,8 +24,8 @@ export function formatBlockReason(
 ): string {
   const list = topDependents.slice(0, MAX_TOP_DEPENDENTS).map((d) => `  - ${d}`).join('\n');
   return [
-    `⚠ ctxo guard: "${symbolName}" is a high-impact symbol — ${riskCount} confirmed/likely dependents may break.`,
+    `⚠ ctxo guard: "${symbolName}" is a high-impact symbol - ${riskCount} confirmed/likely dependents may break.`,
     topDependents.length > 0 ? `Top dependents:\n${list}` : '',
-    `Call get_blast_radius / get_why_context before editing. This guard fires once per symbol per session — re-issue the edit to proceed.`,
+    `Call get_blast_radius / get_why_context before editing. This guard fires once per symbol per session - re-issue the edit to proceed.`,
   ].filter(Boolean).join('\n');
 }
