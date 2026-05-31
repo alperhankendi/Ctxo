@@ -101,6 +101,48 @@ describe('InitCommand — non-interactive mode', () => {
 
     expect(existsSync(join(dir, '.windsurfrules'))).toBe(false);
   });
+
+  it('installs safe-edit guard for claude-code in non-interactive mode', async () => {
+    const dir = makeTempProject();
+    await new InitCommand(dir).run({ tools: ['claude-code'], yes: true, rulesOnly: false, noInstall: true });
+
+    expect(existsSync(join(dir, '.claude', 'settings.json'))).toBe(true);
+    const cfg = JSON.parse(readFileSync(join(dir, '.claude', 'settings.json'), 'utf-8'));
+    const pre = cfg.hooks?.PreToolUse ?? [];
+    expect(pre.some((e: { hooks?: Array<{ command?: string }> }) =>
+      e.hooks?.some(h => h.command?.includes('gate-hook'))
+    )).toBe(true);
+  });
+
+  it('does NOT install guard for claude-code when --rules-only', async () => {
+    const dir = makeTempProject();
+    await new InitCommand(dir).run({ tools: ['claude-code'], rulesOnly: true });
+
+    expect(existsSync(join(dir, '.claude', 'settings.json'))).toBe(false);
+  });
+});
+
+describe('InitCommand — cursor: skills + rules, no guard', () => {
+  it('writes cursor rules file', async () => {
+    const dir = makeTempProject();
+    await new InitCommand(dir).run({ tools: ['cursor'], yes: true, noInstall: true });
+
+    expect(existsSync(join(dir, '.cursor', 'rules', 'ctxo.mdc'))).toBe(true);
+  });
+
+  it('writes cursor skill .mdc files', async () => {
+    const dir = makeTempProject();
+    await new InitCommand(dir).run({ tools: ['cursor'], yes: true, noInstall: true });
+
+    expect(existsSync(join(dir, '.cursor', 'rules', 'ctxo-safe-edit.mdc'))).toBe(true);
+  });
+
+  it('does NOT create .claude/settings.json guard for cursor-only init', async () => {
+    const dir = makeTempProject();
+    await new InitCommand(dir).run({ tools: ['cursor'], yes: true, noInstall: true });
+
+    expect(existsSync(join(dir, '.claude', 'settings.json'))).toBe(false);
+  });
 });
 
 // Import vi for mocking

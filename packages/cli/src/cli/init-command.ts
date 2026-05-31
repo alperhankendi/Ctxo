@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { existsSync, readFileSync, writeFileSync, mkdirSync, chmodSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { PLATFORMS, detectPlatforms, installRules, ensureGitignore, ensureConfig, getMcpConfigTargets, ensureMcpConfig } from './ai-rules.js';
+import { PLATFORMS, detectPlatforms, installRules, ensureGitignore, ensureConfig, getMcpConfigTargets, ensureMcpConfig, installSkills, ensureClaudeHook } from './ai-rules.js';
 import {
   detectLanguages,
   decideNeededLanguages,
@@ -300,6 +300,17 @@ export class InitCommand {
       console.error('');
     }
 
+    // ── Guard prompt (claude-code only) ──
+    let installGuard = false;
+    if (!options.rulesOnly && (selectedTools as string[]).includes('claude-code')) {
+      const guard = await clack.confirm({
+        message: pc.cyan('Install the safe-edit guard? Blocks edits to high-impact symbols until blast radius is checked.'),
+        initialValue: true,
+      });
+      if (clack.isCancel(guard)) { clack.cancel('Setup cancelled.'); process.exit(0); }
+      installGuard = guard as boolean;
+    }
+
     // ── Execute with spinner ──
     const s = clack.spinner();
     s.start(pc.dim('Configuring...'));
@@ -325,6 +336,9 @@ export class InitCommand {
     for (const toolId of (selectedTools as string[])) {
       const result = installRules(this.projectRoot, toolId);
       results.push(`${pc.green('\u2713')} ${pc.bold(result.file)}  ${pc.dim(result.action)}`);
+      for (const sk of installSkills(this.projectRoot, toolId)) {
+        results.push(`${pc.green('\u2713')} ${pc.bold(sk.file)}  ${pc.dim(sk.action + ' \u2014 skill')}`);
+      }
     }
 
     // MCP server registration (automatic based on selected tools)
@@ -339,6 +353,11 @@ export class InitCommand {
     if (installGitHooks) {
       this.installHooks();
       results.push(`${pc.green('\u2713')} ${pc.bold('post-commit, post-merge')}  ${pc.dim('hooks installed')}`);
+    }
+
+    if (installGuard) {
+      const r = ensureClaudeHook(this.projectRoot);
+      if (r.action !== 'skipped') results.push(`${pc.green('\u2713')} ${pc.bold(r.file)}  ${pc.dim(r.action + ' \u2014 safe-edit guard')}`);
     }
 
     if (pluginsToInstall.length > 0) {
@@ -407,6 +426,9 @@ export class InitCommand {
     for (const toolId of toolIds) {
       const result = installRules(this.projectRoot, toolId);
       console.error(`[ctxo] \u2713 ${result.file} \u2014 ${result.action}`);
+      for (const sk of installSkills(this.projectRoot, toolId)) {
+        console.error(`[ctxo] \u2713 ${sk.file} \u2014 ${sk.action} (skill)`);
+      }
     }
 
     // MCP server registration
@@ -421,6 +443,11 @@ export class InitCommand {
     if (!options.rulesOnly) {
       this.installHooks();
       console.error('[ctxo] \u2713 Git hooks installed');
+    }
+
+    if (!options.rulesOnly && toolIds.includes('claude-code')) {
+      const r = ensureClaudeHook(this.projectRoot);
+      if (r.action !== 'skipped') console.error(`[ctxo] \u2713 ${r.file} \u2014 ${r.action} (safe-edit guard)`);
     }
 
     // Language detection + plugin install (skipped under --no-install or --rules)
@@ -466,6 +493,11 @@ export class InitCommand {
     if (!options.rulesOnly) {
       console.error('  .git/hooks/post-commit    (git hook)');
       console.error('  .git/hooks/post-merge     (git hook)');
+    }
+
+    if (!options.rulesOnly && toolIds.includes('claude-code')) {
+      console.error('  .claude/settings.json     (safe-edit guard hook)');
+      console.error('  .claude/skills/ctxo-*/SKILL.md (skills)');
     }
   }
 
