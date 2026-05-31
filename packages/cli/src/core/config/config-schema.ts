@@ -44,6 +44,17 @@ export const WatchConfigSchema = z
   })
   .strict();
 
+export const GateConfigSchema = z
+  .object({
+    enabled: z.boolean().optional(),
+    sensitivity: z.enum(['strict', 'balanced', 'lenient']).optional(),
+    /** Absolute floor: minimum confirmed+likely dependents before the gate can fire. */
+    minDependents: z.number().int().min(0).optional(),
+    /** Repo-relative significance: symbol must be in the top `percentile`% by PageRank. */
+    percentile: z.number().int().min(1).max(100).optional(),
+  })
+  .strict();
+
 export const CtxoConfigSchema = z
   .object({
     version: z.union([z.string(), z.number()]).optional(),
@@ -51,6 +62,7 @@ export const CtxoConfigSchema = z
     index: IndexConfigSchema.optional(),
     masking: MaskingConfigSchema.optional(),
     watch: WatchConfigSchema.optional(),
+    gate: GateConfigSchema.optional(),
   })
   .passthrough();
 
@@ -58,6 +70,7 @@ export type StatsConfig = z.infer<typeof StatsConfigSchema>;
 export type IndexConfig = z.infer<typeof IndexConfigSchema>;
 export type MaskingConfig = z.infer<typeof MaskingConfigSchema>;
 export type WatchConfig = z.infer<typeof WatchConfigSchema>;
+export type GateConfig = z.infer<typeof GateConfigSchema>;
 export type CtxoConfig = z.infer<typeof CtxoConfigSchema>;
 
 export const DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES = 5;
@@ -68,4 +81,5 @@ export const DEFAULT_CONFIG: CtxoConfig = {
   index: { ignore: [], ignoreProjects: [] },
   masking: { clusterLabels: [] },
   watch: { snapshotMinFileChanges: DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES },
+  gate: { enabled: true, sensitivity: 'balanced' },
 };
