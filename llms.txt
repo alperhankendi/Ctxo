@@ -51,6 +51,13 @@ Language adapters ship as separate npm packages and are discovered by scanning t
 - Finding unused code? -> find_dead_code
 - Safe to delete? -> find_importers
 
+## New in v0.8
+
+- **Safe-edit guard** - a PreToolUse hook (Claude Code) that blocks edits to high-impact symbols until the agent checks blast radius. Installed by `ctxo init`. Configure via `gate:` in `.ctxo/config.yaml` (sensitivity: strict|balanced|lenient).
+- `ctxo blast-radius <symbolId> --json` - compute blast radius for one symbol, JSON to stdout (CI scripts, jq pipelines)
+- `ctxo gate --preview [--json]` - preview which symbols the guard would flag at the current sensitivity
+- Three model-invoked skills (`ctxo-understand`, `ctxo-safe-edit`, `ctxo-review-pr`) installed to `.claude/skills/` (Claude Code) and `.cursor/rules/` (Cursor)
+
 ## New in v0.7
 
 - `ctxo install` — install language plugin packages

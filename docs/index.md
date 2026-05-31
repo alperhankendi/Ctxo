@@ -13,7 +13,7 @@
 
 - **[artifacts/epics.md](./artifacts/epics.md)** — 8 epics × 38 stories + delivery status (as of 2026-04-13)
 - **[artifacts/architecture.md](./artifacts/architecture.md)** — hexagonal architecture + tech stack
-- **[architecture/ADR/](./architecture/ADR/)** — 6 architecture decision records (immutable)
+- **[architecture/ADR/](./architecture/ADR/)** — architecture decision records (immutable)
 
 ## Conventions
 
@@ -26,6 +26,7 @@
 ## Features
 
 - **[features/architectural-intelligence.md](./features/architectural-intelligence.md)** — v0.8 community detection, drift, boundary violations, cluster-scoped blast radius
+- **[architecture/ADR/adr-015-safe-edit-guard.md](./architecture/ADR/adr-015-safe-edit-guard.md)** — ADR-015: safe-edit guard design (PreToolUse hook, skills, layered defense)
 
 ## Product & ecosystem
 

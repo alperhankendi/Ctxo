@@ -283,3 +283,49 @@ All symbols use deterministic IDs: `"<relativePath>::<name>::<kind>"`
 
 ### Resources
 - `ctxo://status` — Health check resource (confirms server is running)
+
+---
+
+## Safe-Edit Guard (v0.8+)
+
+The safe-edit guard closes the loop between MCP tool availability and agent compliance. An agent with access to get_blast_radius can still skip it. The guard makes skipping impossible for high-impact symbols on Claude Code.
+
+### How it works
+
+`ctxo init` registers a PreToolUse hook in `.claude/settings.json`:
+```json
+{ "hooks": { "PreToolUse": [{ "matcher": "Edit", "hooks": [{ "type": "command", "command": "ctxo gate-hook" }] }] } }
+```
+
+On every Edit call, `ctxo gate-hook` checks whether get_blast_radius has been called for that symbol in the current session. If not, the hook blocks the edit and returns a message: "High-impact symbol - run get_blast_radius first." Once the agent calls the tool, the edit goes through. Fires once per symbol per session. Fail-open on any error.
+
+### Gate decision
+
+A symbol is flagged if it exceeds both thresholds:
+- Blast radius: confirmed + likely dependents >= minDependents floor
+- PageRank percentile: symbol falls in top N% of the codebase by centrality
+
+Sensitivity levels (configured in `.ctxo/config.yaml`):
+- `strict`: top 30%, floor 2
+- `balanced` (default): top 15%, floor 3
+- `lenient`: top 5%, floor 5
+
+### New CLI commands
+
+- `ctxo blast-radius <symbolId> --json` - compute blast radius for one symbol, JSON to stdout
+- `ctxo gate --preview [--json]` - show which symbols would be flagged at current sensitivity
+
+### Skills
+
+Three model-invoked skill files installed to `.claude/skills/` (Claude Code) and `.cursor/rules/` (Cursor):
+- `ctxo-understand`: run get_context_for_task before reading source files
+- `ctxo-safe-edit`: run get_blast_radius and get_why_context before any edit
+- `ctxo-review-pr`: run get_pr_impact before reviewing a diff
+
+### Platform support
+
+| Platform | Hook enforcement | Skills | Rules |
+|---|---|---|---|
+| Claude Code | Yes (PreToolUse) | Yes | Yes |
+| Cursor | No (no blocking pre-edit hook in v3.6) | Yes | Yes |
+| Other platforms | No | Where supported | Yes |
