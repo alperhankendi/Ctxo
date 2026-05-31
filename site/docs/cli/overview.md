@@ -19,7 +19,7 @@ a subcommand.
 | `pnpm ctxo <subcommand>` / `npx ctxo <subcommand>` | When `@ctxo/cli` is in the project's `devDependencies` (for example after `ctxo init`). Resolves via `node_modules/.bin/ctxo` |
 | `npx -y @ctxo/cli <subcommand>` | Ad-hoc / CI / one-off, no install needed |
 
-All three forms run the same binary. State always lives in `<project>/.ctxo/` regardless of how `ctxo` is invoked — there is no user-level or system-level config.
+All three forms run the same binary. State always lives in `<project>/.ctxo/` regardless of how `ctxo` is invoked - there is no user-level or system-level config.
 
 Examples below assume `ctxo` is on your PATH from a global install (or a local `node_modules/.bin/ctxo`).
 
@@ -52,9 +52,9 @@ Examples below assume `ctxo` is on your PATH from a global install (or a local `
 
 ## Related references
 
-- [.ctxo/config.yaml reference](./config-yaml.md) — project config for index
+- [.ctxo/config.yaml reference](./config-yaml.md) - project config for index
   ignore globs and opt-out flags.
-- [Environment variables](./env-vars.md) — `DEBUG=ctxo:*` namespaces,
+- [Environment variables](./env-vars.md) - `DEBUG=ctxo:*` namespaces,
   `CTXO_RESPONSE_LIMIT`, and more.
 
 ::: tip Debug output
@@ -70,7 +70,7 @@ semantics:
 | Command | Exit | Meaning |
 | --- | --- | --- |
 | `ctxo index --check` | `0` | Index up to date |
-| `ctxo index --check` | `1` | Stale or missing files — run `ctxo index` |
+| `ctxo index --check` | `1` | Stale or missing files - run `ctxo index` |
 | `ctxo doctor` | `0` | All checks passed |
 | `ctxo doctor` | `1` | One or more checks failed |
 | `ctxo doctor --fix` | `2` | Remediation halted before completing |

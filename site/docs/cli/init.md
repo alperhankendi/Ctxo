@@ -110,7 +110,7 @@ ctxo init --dry-run
 
 ## See also
 
-- [`ctxo install`](./install.md) — the plugin installer invoked by `init`.
-- [`ctxo index`](./index.md) — the next command to run after setup.
-- [.ctxo/config.yaml reference](./config-yaml.md) — customize ignore globs and
+- [`ctxo install`](./install.md) - the plugin installer invoked by `init`.
+- [`ctxo index`](./index.md) - the next command to run after setup.
+- [.ctxo/config.yaml reference](./config-yaml.md) - customize ignore globs and
   opt out of stats.

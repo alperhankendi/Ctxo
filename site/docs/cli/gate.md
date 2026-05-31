@@ -28,7 +28,7 @@ ctxo gate --preview [--json]
 ## Human output
 
 ```
-Gate preview (sensitivity: balanced — top 15%, floor 3 dependents)
+Gate preview (sensitivity: balanced - top 15%, floor 3 dependents)
 
   src/core/graph.ts::buildGraph::function      impact 0.84  confirmed 6  likely 2
   src/adapters/storage/sqlite.ts::SqliteAdapter::class  impact 0.71  confirmed 4  likely 3
