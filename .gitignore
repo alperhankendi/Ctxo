@@ -49,3 +49,6 @@ CLAUDE.local.md
 _site/
 headers.tmp
 pages/docs/
+
+# Brainstorming specs / design docs (local only, not committed)
+docs/superpowers/
