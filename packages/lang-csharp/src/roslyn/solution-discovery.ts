@@ -59,7 +59,20 @@ export function discoverSolution(rootDir: string): string | null {
     return allSlns[0]!;
   }
 
-  // 3. .csproj fallback
+  // 3. .slnx (XML solution format, .NET 9+) — root first, then recursive
+  const rootSlnxs = findFiles(rootDir, '.slnx', 0);
+  if (rootSlnxs.length === 1) return rootSlnxs[0]!;
+  if (rootSlnxs.length > 1) {
+    log.info(`Multiple .slnx in root, picking first: ${rootSlnxs[0]}`);
+    return rootSlnxs[0]!;
+  }
+  const allSlnxs = findFiles(rootDir, '.slnx', 3);
+  if (allSlnxs.length > 0) {
+    allSlnxs.sort((a, b) => a.split('/').length - b.split('/').length);
+    return allSlnxs[0]!;
+  }
+
+  // 4. .csproj fallback
   const csprojFiles = findFiles(rootDir, '.csproj', 3);
   if (csprojFiles.length > 0) {
     log.info(`No .sln found, using .csproj: ${csprojFiles[0]}`);
