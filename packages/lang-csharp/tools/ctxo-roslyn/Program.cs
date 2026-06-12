@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Xml.Linq;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -10,7 +11,23 @@ using Microsoft.CodeAnalysis.Operations;
 
 // ── Entry Point ──────────────────────────────────────────────────────
 
-MSBuildLocator.RegisterDefaults();
+// RegisterDefaults() uses the VS installer API on Windows and fails on
+// SDK-only machines (no Visual Studio installed). Fall back to locating
+// the SDK via DOTNET_ROOT or the dotnet executable on PATH.
+try
+{
+    MSBuildLocator.RegisterDefaults();
+}
+catch (InvalidOperationException)
+{
+    var sdkPath = DiscoverDotnetSdkPath();
+    if (sdkPath == null)
+    {
+        WriteError("No MSBuild installation found. Install Visual Studio or .NET SDK 8+.");
+        return 1;
+    }
+    MSBuildLocator.RegisterMSBuildPath(sdkPath);
+}
 
 var jsonOptions = new JsonSerializerOptions
 {
@@ -46,7 +63,36 @@ workspace.WorkspaceFailed += (_, e) =>
         WriteStderr($"Workspace: {e.Diagnostic.Message}");
 };
 
-var solution = await workspace.OpenSolutionAsync(solutionPath);
+// .slnx is the XML-based solution format introduced in .NET 9.
+// MSBuildWorkspace.OpenSolutionAsync does not support it yet, so we
+// parse the XML ourselves and load each project individually.
+Solution solution;
+if (solutionPath.EndsWith(".slnx", StringComparison.OrdinalIgnoreCase))
+{
+    var slnxDoc = XDocument.Load(solutionPath);
+    var projectPaths = slnxDoc.Root?.Descendants()
+        .Where(e => e.Name.LocalName == "Project")
+        .Select(e => (string?)e.Attribute("Path"))
+        .Where(p => !string.IsNullOrEmpty(p))
+        .Select(p => Path.GetFullPath(Path.Combine(solutionDir, p!)))
+        .Where(File.Exists)
+        .ToList() ?? [];
+
+    WriteProgress($"Loading {projectPaths.Count} projects from .slnx...");
+    foreach (var projectPath in projectPaths)
+    {
+        try { await workspace.OpenProjectAsync(projectPath); }
+        catch (ArgumentException ex) when (ex.Message.Contains("already part of the workspace"))
+        {
+            // OpenProjectAsync auto-loads referenced projects; skip duplicates.
+        }
+    }
+    solution = workspace.CurrentSolution;
+}
+else
+{
+    solution = await workspace.OpenSolutionAsync(solutionPath);
+}
 var projectCount = solution.Projects.Count();
 var fileCount = solution.Projects.SelectMany(p => p.Documents).Count(d => IsUserCsFile(d.FilePath));
 
@@ -594,6 +640,47 @@ void WriteStderr(string message) =>
 
 void WriteLine(string json) =>
     Console.WriteLine(json);
+
+// ── MSBuild SDK Discovery ────────────────────────────────────────────
+
+static string? DiscoverDotnetSdkPath()
+{
+    // 1. DOTNET_ROOT environment variable (set by the dotnet installer and some CI systems)
+    var dotnetRoot = Environment.GetEnvironmentVariable("DOTNET_ROOT");
+    if (!string.IsNullOrEmpty(dotnetRoot))
+    {
+        var found = LatestSdkUnder(Path.Combine(dotnetRoot, "sdk"));
+        if (found != null) return found;
+    }
+
+    // 2. Locate dotnet.exe/dotnet on PATH and look sibling sdk/ folder
+    var pathEnv = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+    var dotnetExeName = OperatingSystem.IsWindows() ? "dotnet.exe" : "dotnet";
+    foreach (var dir in pathEnv.Split(Path.PathSeparator))
+    {
+        var candidate = Path.Combine(dir.Trim(), dotnetExeName);
+        if (!File.Exists(candidate)) continue;
+        // Resolve symlinks to get the real install root
+        var realDir = Path.GetDirectoryName(new FileInfo(candidate).ResolveLinkTarget(true)?.FullName ?? candidate)!;
+        var found = LatestSdkUnder(Path.Combine(realDir, "sdk"));
+        if (found != null) return found;
+    }
+
+    return null;
+}
+
+static string? LatestSdkUnder(string sdkDir)
+{
+    if (!Directory.Exists(sdkDir)) return null;
+    return Directory.GetDirectories(sdkDir)
+        .Where(d => Version.TryParse(Path.GetFileName(d).Split('-')[0], out _))
+        .OrderByDescending(d =>
+        {
+            Version.TryParse(Path.GetFileName(d).Split('-')[0], out var v);
+            return v;
+        })
+        .FirstOrDefault();
+}
 
 // ── Types ────────────────────────────────────────────────────────────
 
