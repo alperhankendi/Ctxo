@@ -14,24 +14,10 @@ import { PageRankCalculator } from '../core/importance/pagerank-calculator.js';
 import { CommunityDetector } from '../core/overlay/community-detector.js';
 import { loadConfig, watchSnapshotMinFileChanges } from '../core/config/load-config.js';
 import type { FileIndex, CommitIntent, AntiPattern, CommunitySnapshot } from '../core/types.js';
+import type { IIncrementalReindex, IncrementalReindexCapable } from '@ctxo/plugin-api';
 
 const DEBOUNCE_MS = 300;
 const COMMUNITY_SNAPSHOT_DEBOUNCE_MS = 5000;
-
-interface RoslynLike {
-  isReady(): boolean;
-  startKeepAlive(): Promise<boolean>;
-  reindexFile(relativePath: string): Promise<{
-    symbols: Array<{ symbolId: string; name: string; kind: string; startLine: number; endLine: number }>;
-    edges: Array<{ from: string; to: string; kind: string }>;
-    complexity: Array<{ symbolId: string; cyclomatic: number }>;
-  } | null>;
-  dispose(): Promise<void>;
-}
-
-interface CSharpCompositeLike {
-  getRoslynDelegate(): RoslynLike | null;
-}
 
 export class WatchCommand {
   private readonly projectRoot: string;
@@ -48,7 +34,8 @@ export class WatchCommand {
     const registry = new LanguageAdapterRegistry();
 
     // Plugins via discovery
-    let roslynAdapter: RoslynLike | null = null;
+    const keepAliveByExt = new Map<string, IIncrementalReindex>();
+    const activeKeepAlives = new Set<IIncrementalReindex>();
     for (const { plugin, adapter } of await loadPlugins(this.projectRoot)) {
       if (typeof adapter.initialize === 'function') {
         try {
@@ -61,16 +48,14 @@ export class WatchCommand {
 
       registry.register(plugin.extensions, adapter);
 
-      // If the plugin exposes a Roslyn delegate, attempt keep-alive for fast re-index
-      const csCandidate = adapter as unknown as Partial<CSharpCompositeLike>;
-      if (typeof csCandidate.getRoslynDelegate === 'function') {
-        const roslyn = csCandidate.getRoslynDelegate();
-        if (roslyn?.isReady()) {
-          const started = await roslyn.startKeepAlive();
-          if (started) {
-            roslynAdapter = roslyn;
-            console.error('[ctxo] C# watch: Roslyn keep-alive active (full tier, <100ms per change)');
-          }
+      // Generic feature detection: if the adapter exposes an incremental-reindex capability, use it
+      const capable = adapter as unknown as Partial<IncrementalReindexCapable>;
+      if (typeof capable.getIncrementalReindex === 'function') {
+        const cap = capable.getIncrementalReindex();
+        if (cap?.isReady() && (await cap.startKeepAlive())) {
+          for (const ext of plugin.extensions) keepAliveByExt.set(ext.toLowerCase(), cap);
+          activeKeepAlives.add(cap);
+          console.error(`[ctxo] ${plugin.id} watch: keep-alive active (full tier, fast incremental re-index)`);
         }
       }
 
@@ -102,9 +87,10 @@ export class WatchCommand {
       const relativePath = relative(this.projectRoot, filePath).replace(/\\/g, '/');
 
       try {
-        // For .cs files with Roslyn keep-alive: use incremental re-index
-        if (roslynAdapter?.isReady() && filePath.endsWith('.cs')) {
-          const result = await roslynAdapter.reindexFile(relativePath);
+        // Generic keep-alive path: use capability if registered for this file extension
+        const cap = keepAliveByExt.get(extname(filePath).toLowerCase());
+        if (cap?.isReady()) {
+          const result = await cap.reindexFile(relativePath);
           if (result) {
             const commits = await gitAdapter.getCommitHistory(relativePath);
             const intent: CommitIntent[] = commits.map((c) => ({
@@ -137,7 +123,7 @@ export class WatchCommand {
 
             writer.write(fileIndex);
             storage.writeSymbolFile(fileIndex);
-            console.error(`[ctxo] Re-indexed (Roslyn): ${relativePath}`);
+            console.error(`[ctxo] Re-indexed (keep-alive): ${relativePath}`);
             return;
           }
         }
@@ -238,9 +224,9 @@ export class WatchCommand {
         clearTimeout(timeout);
       }
       if (communitySnapshotTimer) clearTimeout(communitySnapshotTimer);
-      // Shutdown Roslyn keep-alive
-      const roslynShutdown = roslynAdapter ? roslynAdapter.dispose() : Promise.resolve();
-      roslynShutdown.then(() => {
+      // Shutdown all keep-alive capabilities
+      const shutdowns = Promise.all([...activeKeepAlives].map((c) => c.dispose()));
+      shutdowns.then(() => {
         watcher.stop().then(() => {
           storage.close();
           console.error('[ctxo] Watcher stopped');
