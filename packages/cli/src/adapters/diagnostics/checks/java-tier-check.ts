@@ -1,8 +1,8 @@
 import { createRequire } from 'node:module';
-import { spawnSync } from 'node:child_process';
-import { existsSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, readdirSync, statSync } from 'node:fs';
+import { join, dirname } from 'node:path';
 import type { IHealthCheck, CheckContext, CheckResult } from '../../../core/diagnostics/types.js';
+import { detectJavaMajor } from '../../../core/detection/detect-java-runtime.js';
 
 const require = createRequire(import.meta.url);
 
@@ -56,39 +56,71 @@ export function evaluateJavaTier(i: JavaTierInputs): CheckResult {
   };
 }
 
-function detectJreMajor(): number | undefined {
-  const home = process.env['CTXO_JAVA_HOME'] || process.env['JAVA_HOME'];
-  const bin = home
-    ? join(home, 'bin', process.platform === 'win32' ? 'java.exe' : 'java')
-    : 'java';
-  const r = spawnSync(bin, ['-version'], { encoding: 'utf-8' });
-  const text = `${r.stderr ?? ''}${r.stdout ?? ''}`;
-  const m = text.match(/version "([^"]+)"/);
-  if (!m) return undefined;
-  const parts = m[1]!.split('.');
-  const major =
-    parts[0] === '1' && parts[1] ? parseInt(parts[1]!, 10) : parseInt(parts[0]!, 10);
-  return Number.isNaN(major) ? undefined : major;
+/**
+ * Returns true only when the @ctxo/lang-java-analyzer package is installed
+ * AND its actual JAR file (`jar/ctxo-jdt-analyzer.jar`) exists on disk.
+ * A package-only install without a built/extracted jar is not sufficient for
+ * the full-tier indexer — doctor must reflect that accurately.
+ */
+export function analyzerJarPresent(): boolean {
+  try {
+    const pkgJson = require.resolve('@ctxo/lang-java-analyzer/package.json');
+    const jarPath = join(dirname(pkgJson), 'jar', 'ctxo-jdt-analyzer.jar');
+    return existsSync(jarPath);
+  } catch {
+    return false;
+  }
+}
+
+/** Directories that should never be descended into during a Java source scan. */
+const SKIP_DIRS = new Set(['node_modules', 'target', 'build', '.git']);
+
+/**
+ * Shallow-bounded recursive search for any `.java` file under `root`.
+ * Descends at most `maxDepth` directory levels (root = depth 0), skipping
+ * SKIP_DIRS at every level.  Stops and returns true as soon as one file is
+ * found to keep the work bounded.
+ */
+export function findJavaFile(root: string, maxDepth: number): boolean {
+  function walk(dir: string, depth: number): boolean {
+    let entries: string[];
+    try {
+      entries = readdirSync(dir);
+    } catch {
+      return false;
+    }
+    for (const name of entries) {
+      if (name.endsWith('.java')) {
+        try {
+          const st = statSync(join(dir, name));
+          if (st.isFile()) return true;
+        } catch {
+          /* skip unreadable entries */
+        }
+      }
+    }
+    if (depth >= maxDepth) return false;
+    for (const name of entries) {
+      if (SKIP_DIRS.has(name)) continue;
+      const child = join(dir, name);
+      try {
+        if (statSync(child).isDirectory()) {
+          if (walk(child, depth + 1)) return true;
+        }
+      } catch {
+        /* skip */
+      }
+    }
+    return false;
+  }
+  return walk(root, 0);
 }
 
 function projectHasJava(root: string): boolean {
   for (const f of ['pom.xml', 'build.gradle', 'build.gradle.kts']) {
     if (existsSync(join(root, f))) return true;
   }
-  try {
-    return readdirSync(root).some((n) => n.endsWith('.java'));
-  } catch {
-    return false;
-  }
-}
-
-function analyzerInstalled(): boolean {
-  try {
-    require.resolve('@ctxo/lang-java-analyzer/package.json');
-    return true;
-  } catch {
-    return false;
-  }
+  return findJavaFile(root, 4);
 }
 
 export class JavaTierCheck implements IHealthCheck {
@@ -98,8 +130,8 @@ export class JavaTierCheck implements IHealthCheck {
   async run(ctx: CheckContext): Promise<CheckResult> {
     return evaluateJavaTier({
       hasJava: projectHasJava(ctx.projectRoot),
-      jreMajor: detectJreMajor(),
-      analyzerInstalled: analyzerInstalled(),
+      jreMajor: detectJavaMajor(),
+      analyzerInstalled: analyzerJarPresent(),
     });
   }
 }

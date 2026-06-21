@@ -11,12 +11,29 @@ export function parseJavaMajor(output: string): number | undefined {
   return Number.isNaN(major) ? undefined : major;
 }
 
+/**
+ * Spawn `java -version` once (CTXO_JAVA_HOME → JAVA_HOME → PATH), return the
+ * parsed major version.  Returns undefined when java is not found or the
+ * version string cannot be parsed.  Always respects a 10 s timeout so
+ * a hanging JVM on a broken JAVA_HOME / network mount cannot stall the CLI.
+ */
+export function detectJavaMajor(): number | undefined {
+  const home = process.env['CTXO_JAVA_HOME'] || process.env['JAVA_HOME'];
+  const bin = home
+    ? join(home, 'bin', process.platform === 'win32' ? 'java.exe' : 'java')
+    : 'java';
+  if (home && !existsSync(bin)) return undefined;
+  const r = spawnSync(bin, ['-version'], {
+    encoding: 'utf-8',
+    timeout: 10_000,
+    windowsHide: true,
+  });
+  if (r.error || r.status === null) return undefined;
+  // java writes version to stderr; stdout may also carry it in some JVMs
+  return parseJavaMajor(`${r.stderr ?? ''}${r.stdout ?? ''}`);
+}
+
 /** True if a JRE >= 17 is reachable (CTXO_JAVA_HOME -> JAVA_HOME -> PATH). */
 export function javaRuntimeAvailable(): boolean {
-  const home = process.env['CTXO_JAVA_HOME'] || process.env['JAVA_HOME'];
-  const bin = home ? join(home, 'bin', process.platform === 'win32' ? 'java.exe' : 'java') : 'java';
-  if (home && !existsSync(bin)) return false;
-  const r = spawnSync(bin, ['-version'], { encoding: 'utf-8' });
-  const major = parseJavaMajor(`${r.stderr ?? ''}${r.stdout ?? ''}`);
-  return (major ?? 0) >= 17;
+  return (detectJavaMajor() ?? 0) >= 17;
 }
