@@ -35,6 +35,20 @@ public final class Analyzer {
         String rel = relativize(sourceFilePath);
         Dtos.FileResult fr = new Dtos.FileResult(rel);
         cu.accept(new EmitVisitor(cu, rel, fr));
+        // imports: anchor on the first top-level type symbol (JDT visits imports before types,
+        // so this must run after the visitor has populated symbols).
+        String anchor = null;
+        for (Dtos.Sym s : fr.symbols) {
+          if (s.kind.equals("class") || s.kind.equals("interface") || s.kind.equals("type")) { anchor = s.symbolId; break; }
+        }
+        if (anchor != null) {
+          for (Object o : cu.imports()) {
+            org.eclipse.jdt.core.dom.ImportDeclaration imp = (org.eclipse.jdt.core.dom.ImportDeclaration) o;
+            String fq = imp.getName().getFullyQualifiedName();
+            String last = fq.contains(".") ? fq.substring(fq.lastIndexOf('.') + 1) : fq;
+            fr.edges.add(new Dtos.Edge(anchor, fq + "::" + last + "::class", "imports"));
+          }
+        }
         byPath.put(rel, fr);
       }
     };
@@ -105,8 +119,12 @@ public final class Analyzer {
     }
 
     @Override public boolean visit(AnnotationTypeDeclaration node) {
-      addType(node.getName().getIdentifier(), "interface", node);
-      return true;
+      String name = node.getName().getIdentifier();
+      addType(name, "interface", node);
+      String prev = enclosingTypeId; enclosingTypeId = symId(name, "interface");
+      node.bodyDeclarations().forEach(b -> ((ASTNode) b).accept(this));
+      enclosingTypeId = prev;
+      return false;
     }
 
     @Override public boolean visit(MethodDeclaration node) {
@@ -148,6 +166,9 @@ public final class Analyzer {
         for (Object a : pt.typeArguments()) collectTypeUses((Type) a);
       } else if (t.isArrayType()) {
         collectTypeUses(((ArrayType) t).getElementType());
+      } else if (t.isWildcardType()) {
+        Type bound = ((WildcardType) t).getBound();
+        if (bound != null) collectTypeUses(bound);
       } else if (t.isSimpleType() || t.isQualifiedType() || t.isNameQualifiedType()) {
         if (!isPrimitiveOrJavaLang(t)) out.edges.add(new Dtos.Edge(enclosingTypeId, typeId(t, "class"), "uses"));
       }
@@ -159,14 +180,6 @@ public final class Analyzer {
       if (b.isPrimitive()) return true;
       String pkg = b.getPackage() == null ? "" : b.getPackage().getName();
       return pkg.equals("java.lang");
-    }
-
-    @Override public boolean visit(ImportDeclaration node) {
-      if (enclosingTypeId == null) return false;
-      String fq = node.getName().getFullyQualifiedName();
-      String last = fq.contains(".") ? fq.substring(fq.lastIndexOf('.') + 1) : fq;
-      out.edges.add(new Dtos.Edge(enclosingTypeId, fq + "::" + last + "::class", "imports"));
-      return false;
     }
 
     @Override public boolean visit(MethodInvocation node) {
@@ -195,13 +208,13 @@ public final class Analyzer {
       ITypeBinding b = t.resolveBinding();
       if (b != null) {
         String qn = b.getQualifiedName();
+        int lt = qn.indexOf('<'); if (lt >= 0) qn = qn.substring(0, lt);
         String last = qn.contains(".") ? qn.substring(qn.lastIndexOf('.') + 1) : qn;
-        int lt = last.indexOf('<'); if (lt >= 0) last = last.substring(0, lt);
         return last + "::" + fallbackKind;
       }
       String s = t.toString();
+      int lt2 = s.indexOf('<'); if (lt2 >= 0) s = s.substring(0, lt2);
       String last = s.contains(".") ? s.substring(s.lastIndexOf('.') + 1) : s;
-      int lt = last.indexOf('<'); if (lt >= 0) last = last.substring(0, lt);
       return last + "::" + fallbackKind;
     }
   }

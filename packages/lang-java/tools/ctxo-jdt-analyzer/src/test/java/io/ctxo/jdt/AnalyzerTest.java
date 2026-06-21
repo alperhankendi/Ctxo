@@ -21,7 +21,7 @@ class AnalyzerTest {
     assertEquals("variable", kindByName.get("count"));
     Dtos.Sym fooSym = foo.symbols.stream().filter(s -> s.name.equals("Foo")).findFirst().orElseThrow();
     assertTrue(fooSym.symbolId.endsWith("Foo.java::Foo::class"));
-    assertTrue(fooSym.startLine >= 0);
+    assertEquals(2, fooSym.startLine, "Foo class is on 0-based line 2");
   }
 
   @Test
@@ -53,5 +53,43 @@ class AnalyzerTest {
     Dtos.FileResult uses = results.stream().filter(r -> r.file.endsWith("Uses.java")).findFirst().orElseThrow();
     assertTrue(uses.edges.stream().anyMatch(e -> e.kind.equals("uses") && e.to.contains("Bar")),
         "field of type Bar should produce a uses edge");
+  }
+
+  @Test
+  void mapsEnumRecordAnnotationKindsAndConstructor() throws Exception {
+    Path root = fixtureDir();
+    List<Dtos.FileResult> results = new Analyzer(root.toString(), new String[0])
+        .analyze(List.of(root.resolve("Shapes.java").toString(), root.resolve("Bar.java").toString()));
+    Dtos.FileResult fr = results.stream().filter(r -> r.file.endsWith("Shapes.java")).findFirst().orElseThrow();
+    Map<String, String> kindByName = new HashMap<>();
+    for (Dtos.Sym s : fr.symbols) kindByName.put(s.name, s.kind);
+    assertEquals("type", kindByName.get("Kind"), "enum -> type");
+    assertEquals("class", kindByName.get("Point"), "record -> class");
+    assertEquals("interface", kindByName.get("Tag"), "annotation -> interface");
+    // constructor: a method symbol named Shapes (same as the class)
+    long ctor = fr.symbols.stream().filter(s -> s.name.equals("Shapes") && s.kind.equals("method")).count();
+    assertEquals(1, ctor, "constructor -> method");
+  }
+
+  @Test
+  void emitsImportEdgeWithFullPathTarget() throws Exception {
+    Path root = fixtureDir();
+    List<Dtos.FileResult> results = new Analyzer(root.toString(), new String[0])
+        .analyze(List.of(root.resolve("Shapes.java").toString(), root.resolve("Bar.java").toString()));
+    Dtos.FileResult fr = results.stream().filter(r -> r.file.endsWith("Shapes.java")).findFirst().orElseThrow();
+    assertTrue(fr.edges.stream().anyMatch(e -> e.kind.equals("imports") && e.to.equals("java.util.List::List::class")),
+        "import java.util.List must emit imports edge to java.util.List::List::class");
+  }
+
+  @Test
+  void usesEdgeForGenericArgumentIsWellFormed() throws Exception {
+    Path root = fixtureDir();
+    List<Dtos.FileResult> results = new Analyzer(root.toString(), new String[0])
+        .analyze(List.of(root.resolve("Shapes.java").toString(), root.resolve("Bar.java").toString()));
+    Dtos.FileResult fr = results.stream().filter(r -> r.file.endsWith("Shapes.java")).findFirst().orElseThrow();
+    // List<Bar> field: uses edge to Bar must be well-formed (no "Bar>")
+    assertTrue(fr.edges.stream().anyMatch(e -> e.kind.equals("uses") && e.to.equals("Bar::class")),
+        "generic arg Bar must yield uses edge Bar::class");
+    assertTrue(fr.edges.stream().noneMatch(e -> e.to.contains(">")), "no malformed targets with '>'");
   }
 }
