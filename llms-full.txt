@@ -22,13 +22,14 @@ MCP client configuration:
 
 ## Monorepo & Plugin Architecture (v0.7+)
 
-Ctxo is a pnpm workspace monorepo with five packages:
+Ctxo is a pnpm workspace monorepo with six packages:
 
 - `@ctxo/cli` (packages/cli) — CLI entry, composition root, MCP server, tool handlers
 - `@ctxo/plugin-api` (packages/plugin-api) — `CtxoLanguagePlugin` v1 protocol interface
 - `@ctxo/lang-typescript` — ts-morph (full tier) plugin for TS/JS
 - `@ctxo/lang-go` — tree-sitter / gopls plugin for Go
 - `@ctxo/lang-csharp` — Roslyn plugin for C#
+- `@ctxo/lang-java` — tree-sitter Java plugin (syntax tier); full tier via `@ctxo/lang-java-analyzer` companion package (JRE 17+ required)
 
 Plugin protocol v1 (`CtxoLanguagePlugin`):
 - `apiVersion: 1`

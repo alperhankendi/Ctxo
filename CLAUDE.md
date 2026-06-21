@@ -6,7 +6,7 @@ Ctxo is a **Model Context Protocol (MCP) server** that gives AI coding assistant
 
 * **Type:** npm package / CLI tool / MCP server (stdio transport)
 * **Author:** Alper Hankendi
-* **Status:** v0.7.0-alpha.0 — 14 MCP tools, pnpm monorepo with 5 packages, 987+ tests
+* **Status:** v0.7.0-alpha.0 — 14 MCP tools, pnpm monorepo with 6 packages, 987+ tests
 * **Language:** TypeScript (ESM-first, `"type": "module"`)
 * **Runtime:** Node.js >= 20
 
@@ -26,6 +26,9 @@ pnpm --filter @ctxo/cli build     # build CLI package to dist/
 npm install -g @ctxo/cli            # one-time global install (gives you the `ctxo` command)
 ctxo install                        # install language plugins (interactive)
 ctxo install typescript go --yes    # non-interactive install of specific plugins
+ctxo install java                   # syntax tier + full-tier analyzer when JRE 17+ detected
+ctxo install java --full-tier       # force full-tier analyzer install
+ctxo install java --syntax-only     # skip analyzer, syntax tier only
 ctxo install --dry-run --pm pnpm    # preview install plan with chosen pm
 ctxo update                         # check + apply updates for ctxo + plugins
 ctxo update --check                 # check only, exit 0
@@ -70,7 +73,8 @@ packages/
 ├── plugin-api/       @ctxo/plugin-api      # plugin protocol v1 types (no runtime deps on cli)
 ├── lang-typescript/  @ctxo/lang-typescript # ts-morph, full tier
 ├── lang-go/          @ctxo/lang-go         # tree-sitter Go
-└── lang-csharp/      @ctxo/lang-csharp     # Roslyn + tree-sitter + tools/ctxo-roslyn
+├── lang-csharp/      @ctxo/lang-csharp     # Roslyn + tree-sitter + tools/ctxo-roslyn
+└── lang-java/        @ctxo/lang-java       # tree-sitter Java (syntax tier); full tier via @ctxo/lang-java-analyzer companion (JRE 17+, ADR-014)
 ```
 
 ### Key Rules

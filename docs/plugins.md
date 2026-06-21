@@ -9,18 +9,31 @@ Maintained by the Ctxo core team. Guaranteed to track `@ctxo/plugin-api` ≥ 12 
 | `@ctxo/lang-typescript` | [![npm](https://img.shields.io/npm/v/@ctxo/lang-typescript)](https://www.npmjs.com/package/@ctxo/lang-typescript) | full | `.ts .tsx .js .jsx` | ts-morph; type-aware cross-file resolution |
 | `@ctxo/lang-go` | [![npm](https://img.shields.io/npm/v/@ctxo/lang-go)](https://www.npmjs.com/package/@ctxo/lang-go) | syntax | `.go` | tree-sitter; exported-symbol analysis |
 | `@ctxo/lang-csharp` | [![npm](https://img.shields.io/npm/v/@ctxo/lang-csharp)](https://www.npmjs.com/package/@ctxo/lang-csharp) | full | `.cs` | Roslyn full-tier; tree-sitter syntax fallback |
+| `@ctxo/lang-java` | [![npm](https://img.shields.io/npm/v/@ctxo/lang-java)](https://www.npmjs.com/package/@ctxo/lang-java) | syntax / full | `.java` | tree-sitter syntax tier built-in; full tier via `@ctxo/lang-java-analyzer` companion (JRE 17+ required, covers Java 8-21); detected by `pom.xml` / `build.gradle` / `build.gradle.kts` |
 
 Install:
 
 ```bash
-npm i -D @ctxo/lang-typescript @ctxo/lang-go @ctxo/lang-csharp
+npm i -D @ctxo/lang-typescript @ctxo/lang-go @ctxo/lang-csharp @ctxo/lang-java
 ```
 
 Or via the cli shortcut:
 
 ```bash
 ctxo install typescript go csharp
+ctxo install java              # syntax tier + full-tier analyzer when JRE 17+ detected
+ctxo install java --full-tier  # force full-tier analyzer install
+ctxo install java --syntax-only  # skip analyzer, syntax tier only
 ```
+
+### Java full-tier notes
+
+The `@ctxo/lang-java` plugin ships the tree-sitter syntax tier with zero setup. Full tier (resolved `calls`/`uses`/`extends`/`implements` edges, cross-file symbol IDs, generics) requires:
+
+1. **JRE 17+** on PATH (one Eclipse JDT build covers Java 8 through 21)
+2. **`@ctxo/lang-java-analyzer`** companion package (prebuilt ~15 MB JAR, integrity/provenance via npm)
+
+`ctxo install java` installs both automatically when JRE 17+ is detected. Use `--full-tier` to force or `--syntax-only` to skip the analyzer. The active tier is shown in `ctxo index` output, `ctxo doctor`, and MCP `_meta`. Downgrades to syntax tier silently when JRE or analyzer is absent. See ADR-014.
 
 ## Community plugins
 

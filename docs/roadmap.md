@@ -54,7 +54,7 @@ Work that's been scoped and explicitly parked. Each has a known trigger to react
 | **GHA workflow template in `ctxo init`** | v0.8 init UX | Shipped as plain docs guidance in v0.8; wrap as interactive template when users ask. |
 | **HEAD staleness hint in MCP `_meta`** | v0.8 init UX | Snapshot freshness is observable via `commitSha` inside `communities.json`; promote into response envelope if users report drift signal confusion. |
 | **Phase 1 Tier 3 — FTS5 search** | todo.md Phase 1 Tier 3 | Monorepos or codebases with 25K+ symbols where in-memory BM25 degrades. See [ADR-003](architecture/ADR/adr-003-fts5-search-deferred.md). |
-| **Python / Java plugins** (Phase B) | [prd.md § Phase 2](artifacts/prd.md#phase-2-plugin-architecture--language-expansion) | User demand post-v0.7; plugin protocol v1 already stable. |
+| **Python plugin** (Phase B) | [prd.md § Phase 2](artifacts/prd.md#phase-2-plugin-architecture--language-expansion) | User demand post-v0.7; plugin protocol v1 already stable. Java shipped (see ADR-014). |
 | **Framework-aware analysis** (Spring / Django ORM) | [prd.md § Phase 2](artifacts/prd.md#phase-2-plugin-architecture--language-expansion) | Requires plugin protocol v2 (semantic hooks); out of scope until multiple plugins exist. |
 | **Community plugin registry** | [prd.md § Phase 2](artifacts/prd.md#phase-2-plugin-architecture--language-expansion) | v0.8+; gate on first third-party plugin request. |
 | **Automated release pipeline** | [prd.md § Phase 2](artifacts/prd.md#phase-2-plugin-architecture--language-expansion) | Currently using changesets + manual tag; automate when release cadence exceeds ~monthly. |
