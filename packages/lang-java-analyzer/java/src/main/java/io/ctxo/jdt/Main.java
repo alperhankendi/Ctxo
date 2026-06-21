@@ -47,10 +47,11 @@ public final class Main {
   }
 
   private static void runKeepAlive(String root, Analyzer analyzer) {
+    List<String> allFiles = discoverJavaFiles(root);
     JsonObject ready = new JsonObject();
     ready.addProperty("type", "ready");
     ready.addProperty("projectCount", 1);
-    ready.addProperty("fileCount", discoverJavaFiles(root).size());
+    ready.addProperty("fileCount", allFiles.size());
     OUT.println(GSON.toJson(ready));
     try (BufferedReader in = new BufferedReader(new InputStreamReader(System.in))) {
       String line;
@@ -59,9 +60,16 @@ public final class Main {
         try {
           JsonObject req = JsonParser.parseString(line).getAsJsonObject();
           String rel = req.get("file").getAsString();
-          String abs = Paths.get(root).resolve(rel).toString();
-          List<Dtos.FileResult> r = analyzer.analyze(List.of(abs));
-          OUT.println(GSON.toJson(!r.isEmpty() ? r.get(0) : new Dtos.FileResult(rel.replace('\\', '/'))));
+          String abs = Paths.get(root).resolve(rel).toAbsolutePath().normalize().toString();
+          // Pass all project files so JDT can resolve cross-file bindings (calls, uses).
+          // allFiles may not include the requested file if it was newly created — ensure it's present.
+          List<String> filesToAnalyze = allFiles.contains(abs) ? allFiles : new ArrayList<>(allFiles);
+          if (!filesToAnalyze.contains(abs)) filesToAnalyze.add(abs);
+          List<Dtos.FileResult> r = analyzer.analyze(filesToAnalyze);
+          String normRel = rel.replace('\\', '/');
+          Dtos.FileResult target = r.stream().filter(fr -> fr.file.equals(normRel)).findFirst()
+              .orElse(new Dtos.FileResult(normRel));
+          OUT.println(GSON.toJson(target));
         } catch (Exception e) { err("keep-alive error: " + e.getMessage()); }
       }
     } catch (IOException e) { err("stdin closed: " + e.getMessage()); }
