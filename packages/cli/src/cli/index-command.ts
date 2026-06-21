@@ -70,6 +70,10 @@ interface GoCompositeLike {
   getTier(): 'full' | 'syntax' | 'unavailable';
 }
 
+interface JavaCompositeLike {
+  getTier(): 'full' | 'syntax' | 'unavailable';
+}
+
 export class IndexCommand {
   private readonly projectRoot: string;
   ctxoRoot: string;
@@ -125,7 +129,7 @@ export class IndexCommand {
 
     // Set up adapters via plugin discovery (TS, Go, C# all plugin-backed)
     const registry = new LanguageAdapterRegistry();
-    const { tsMorphLike, roslynAdapter, csharpTier, goTier } = await this.registerDiscoveredPlugins(registry, ignore.ignoreProjectPatterns);
+    const { tsMorphLike, roslynAdapter, csharpTier, goTier, javaTier } = await this.registerDiscoveredPlugins(registry, ignore.ignoreProjectPatterns);
     this.supportedExtensions = registry.getSupportedExtensions();
 
     // Emit a language-aware pre-scan so users see the plan before the work runs
@@ -296,6 +300,7 @@ export class IndexCommand {
           {
             csharpTier,
             goTier,
+            javaTier,
             tsCount: graphIndices.filter((idx) => /\.(ts|tsx|js|jsx)$/.test(idx.file)).length,
           },
           gitAdapter,
@@ -349,10 +354,12 @@ export class IndexCommand {
     const csCount = pendingIndices.filter(e => e.relativePath.endsWith('.cs')).length;
     const tsCount = pendingIndices.filter(e => /\.(ts|tsx|js|jsx)$/.test(e.relativePath)).length;
     const goCount = pendingIndices.filter(e => e.relativePath.endsWith('.go')).length;
+    const javaCount = pendingIndices.filter(e => e.relativePath.endsWith('.java')).length;
     console.error(`[ctxo] Index complete: ${processed} files indexed`);
     if (tsCount > 0) console.error(`[ctxo]   TypeScript/JS: ${tsCount} files (full tier)`);
     if (csCount > 0) console.error(`[ctxo]   C#: ${csCount} files (${csharpTier} tier${csharpTier === 'syntax' ? ' - .NET SDK 8+ for full analysis' : ''})`);
     if (goCount > 0) console.error(`[ctxo]   Go: ${goCount} files (${goTier} tier${goTier === 'syntax' ? ' - Go 1.22+ for full analysis' : ''})`);
+    if (javaCount > 0) console.error(`[ctxo]   Java: ${javaCount} files (${javaTier} tier${javaTier === 'syntax' ? ' - JRE 17+ & "ctxo install java --full-tier" for full analysis' : ''})`);
 
     // Dispose Roslyn adapter
     if (roslynAdapter) await roslynAdapter.dispose();
@@ -396,12 +403,14 @@ export class IndexCommand {
     roslynAdapter: RoslynLike | null;
     csharpTier: string;
     goTier: string;
+    javaTier: string;
   }> {
     const loaded = await loadPlugins(this.projectRoot, { ignoreProjects: ignoreProjectPatterns });
     let tsMorphLike: TsMorphLike | undefined;
     let roslynAdapter: RoslynLike | null = null;
     let csharpTier = 'unavailable';
     let goTier = 'unavailable';
+    let javaTier = 'unavailable';
 
     for (const { plugin, adapter } of loaded) {
       // Plugins that expose an initialize() lifecycle need it called before register
@@ -442,15 +451,22 @@ export class IndexCommand {
         goTier = goCandidate.getTier();
       }
 
+      // Duck-type: JavaCompositeAdapter exposes tier info
+      const javaCandidate = adapter as unknown as Partial<JavaCompositeLike>;
+      if (plugin.id === 'java' && typeof javaCandidate.getTier === 'function') {
+        javaTier = javaCandidate.getTier();
+      }
+
       const activeTier =
         plugin.id === 'csharp' ? csharpTier :
         plugin.id === 'go' ? goTier :
+        plugin.id === 'java' ? javaTier :
         plugin.tier;
       const tierSuffix = activeTier !== plugin.tier ? ` (active: ${activeTier})` : '';
       console.error(`[ctxo] Plugin ${plugin.id}@${plugin.version} (${plugin.tier} tier${tierSuffix}) — ${plugin.extensions.join(', ')}`);
     }
 
-    return { tsMorphLike, roslynAdapter, csharpTier, goTier };
+    return { tsMorphLike, roslynAdapter, csharpTier, goTier, javaTier };
   }
 
   private discoverFilesIn(root: string, ignoreFile: (p: string) => boolean = () => false): string[] {
@@ -654,7 +670,7 @@ export class IndexCommand {
 
   private buildCommunitySnapshot(
     indices: readonly FileIndex[],
-    tiers: { csharpTier: string; goTier: string; tsCount: number },
+    tiers: { csharpTier: string; goTier: string; javaTier: string; tsCount: number },
     gitAdapter: SimpleGitAdapter,
   ): CommunitySnapshot {
     const graph = new SymbolGraph();
@@ -759,11 +775,12 @@ export class IndexCommand {
 function pickEdgeQuality(tiers: {
   csharpTier: string;
   goTier: string;
+  javaTier: string;
   tsCount: number;
 }): EdgeQuality {
-  const hasSyntaxOnly = tiers.csharpTier === 'syntax' || tiers.goTier === 'syntax';
+  const hasSyntaxOnly = tiers.csharpTier === 'syntax' || tiers.goTier === 'syntax' || tiers.javaTier === 'syntax';
   const hasFull =
-    tiers.tsCount > 0 || tiers.csharpTier === 'full' || tiers.goTier === 'full';
+    tiers.tsCount > 0 || tiers.csharpTier === 'full' || tiers.goTier === 'full' || tiers.javaTier === 'full';
   if (hasSyntaxOnly && hasFull) return 'mixed';
   if (hasSyntaxOnly) return 'syntax-only';
   return 'full';
