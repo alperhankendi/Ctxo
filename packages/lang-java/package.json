@@ -39,7 +39,7 @@
     "tree-sitter-java": "^0.23.5"
   },
   "peerDependencies": {
-    "@ctxo/plugin-api": "^0.7.1"
+    "@ctxo/plugin-api": "^0.7.2"
   },
   "devDependencies": {
     "@ctxo/plugin-api": "workspace:*",
