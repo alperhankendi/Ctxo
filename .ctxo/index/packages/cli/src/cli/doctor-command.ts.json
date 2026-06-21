@@ -6,7 +6,7 @@
       "symbolId": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method"
     }
   ],
-  "contentHash": "efc2b81b1247c6d35d6de7528ecf3406edcf4d4eebba5743fe0e127e9ad05344",
+  "contentHash": "58a1a3e6399f72c61475a7e0be427fa5526d1f58f9d720374957eb8ec52e29ff",
   "edges": [
     {
       "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
@@ -53,6 +53,11 @@
       "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
       "kind": "imports",
       "to": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::JavaTierCheck::class"
     },
     {
       "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
@@ -188,6 +193,11 @@
       "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
       "kind": "calls",
       "to": "packages/cli/src/adapters/diagnostics/checks/language-coverage-check.ts::LanguageCoverageCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::JavaTierCheck::class"
     },
     {
       "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method",
@@ -297,6 +307,11 @@
     {
       "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
       "kind": "uses",
+      "to": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::JavaTierCheck::class"
+    },
+    {
+      "from": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class",
+      "kind": "uses",
       "to": "packages/cli/src/adapters/diagnostics/checks/disk-check.ts::DiskUsageCheck::class"
     },
     {
@@ -353,6 +368,12 @@
   "file": "packages/cli/src/cli/doctor-command.ts",
   "intent": [
     {
+      "date": "2026-06-21T21:03:08+03:00",
+      "hash": "2412211727c75ac7752d888e578c9d7ed97aa0c7",
+      "kind": "commit",
+      "message": "feat(cli): ctxo doctor java tier check (runtime + analyzer + actionable hint)"
+    },
+    {
       "date": "2026-04-16T01:43:29+03:00",
       "hash": "190f929def744a397c040aa323106b18b659dd5c",
       "kind": "commit",
@@ -377,33 +398,33 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776354056,
+  "lastModified": 1782064991,
   "symbols": [
     {
-      "endLine": 112,
-      "endOffset": 3901,
+      "endLine": 114,
+      "endOffset": 4013,
       "kind": "class",
       "name": "DoctorCommand",
-      "startLine": 32,
-      "startOffset": 1438,
+      "startLine": 33,
+      "startOffset": 1522,
       "symbolId": "packages/cli/src/cli/doctor-command.ts::DoctorCommand::class"
     },
     {
-      "endLine": 111,
-      "endOffset": 3898,
+      "endLine": 113,
+      "endOffset": 4010,
       "kind": "method",
       "name": "DoctorCommand.run",
-      "startLine": 41,
-      "startOffset": 1682,
+      "startLine": 42,
+      "startOffset": 1766,
       "symbolId": "packages/cli/src/cli/doctor-command.ts::DoctorCommand.run::method"
     },
     {
-      "endLine": 30,
-      "endOffset": 1434,
+      "endLine": 31,
+      "endOffset": 1518,
       "kind": "interface",
       "name": "DoctorOptions",
-      "startLine": 24,
-      "startOffset": 1303,
+      "startLine": 25,
+      "startOffset": 1387,
       "symbolId": "packages/cli/src/cli/doctor-command.ts::DoctorOptions::interface"
     }
   ]

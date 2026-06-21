@@ -1,0 +1,32 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/core/gate/percentile.ts::percentileCutoff::function"
+    }
+  ],
+  "contentHash": "0fe23fe6c2f6f1ca4dac7c0dd10fbdf739db27e5bd2d52c5665cf11afc08ad10",
+  "edges": [],
+  "file": "packages/cli/src/core/gate/percentile.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T03:35:10+03:00",
+      "hash": "67ce155906cb8badc7a8570ad019157e329dceb9",
+      "kind": "commit",
+      "message": "feat(gate): percentile cutoff helper"
+    }
+  ],
+  "lastModified": 1780236813,
+  "symbols": [
+    {
+      "endLine": 11,
+      "endOffset": 588,
+      "kind": "function",
+      "name": "percentileCutoff",
+      "startLine": 5,
+      "startOffset": 240,
+      "symbolId": "packages/cli/src/core/gate/percentile.ts::percentileCutoff::function"
+    }
+  ]
+}

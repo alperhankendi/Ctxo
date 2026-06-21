@@ -1,0 +1,320 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 19,
+      "symbolId": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.evaluate::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.run::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.emitBlock::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.readStdin::method"
+    }
+  ],
+  "contentHash": "9e5cd82c43d714259e281abc07391585f3a6156681bb2740fe8dae8bd4392858",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/gate/gate-config.ts::resolveGateThresholds::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/graph-loader.ts::loadGraph::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/gate/symbol-locator.ts::lineOfSnippet::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/gate/symbol-locator.ts::locateSymbolAtLine::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/gate/transcript-scan.ts::transcriptHasBlastCheck::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore::class"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/gate/percentile.ts::percentileCutoff::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/gate/gate-decision.ts::shouldBlock::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/gate/gate-decision.ts::formatBlockReason::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.evaluate::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.evaluate::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/gate/gate-config.ts::resolveGateThresholds::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.evaluate::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/gate/symbol-locator.ts::lineOfSnippet::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.evaluate::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/gate/symbol-locator.ts::locateSymbolAtLine::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.evaluate::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/gate/transcript-scan.ts::transcriptHasBlastCheck::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.evaluate::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/graph-loader.ts::loadGraph::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.evaluate::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/gate/percentile.ts::percentileCutoff::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.evaluate::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/gate/gate-decision.ts::shouldBlock::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.evaluate::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/gate/gate-decision.ts::formatBlockReason::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.evaluate::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.evaluate::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore::class"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.evaluate::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.evaluate::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.readStdin::method"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.evaluate::method"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.emitBlock::method"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/gate/gate-config.ts::resolveGateThresholds::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/gate/symbol-locator.ts::lineOfSnippet::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/gate/symbol-locator.ts::locateSymbolAtLine::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore::class"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/gate/transcript-scan.ts::transcriptHasBlastCheck::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/graph-loader.ts::loadGraph::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/gate/percentile.ts::percentileCutoff::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/gate/gate-decision.ts::shouldBlock::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/gate/gate-decision.ts::formatBlockReason::function"
+    }
+  ],
+  "file": "packages/cli/src/cli/gate-hook-command.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T03:52:15+03:00",
+      "hash": "31c7de21cc8b8e8ce53a8fc84ee4367ed055de4d",
+      "kind": "commit",
+      "message": "refactor(gate): wrap gate-hook run() fail-open; name magic numbers"
+    },
+    {
+      "date": "2026-05-31T03:46:00+03:00",
+      "hash": "954ea1ea58621f0f29949d5454747ba760f8e818",
+      "kind": "commit",
+      "message": "feat(cli): ctxo gate-hook PreToolUse enforcement (fail-open)"
+    }
+  ],
+  "lastModified": 1780236812,
+  "symbols": [
+    {
+      "endLine": 132,
+      "endOffset": 5611,
+      "kind": "class",
+      "name": "GateHookCommand",
+      "startLine": 28,
+      "startOffset": 1344,
+      "symbolId": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class"
+    },
+    {
+      "endLine": 94,
+      "endOffset": 4470,
+      "kind": "method",
+      "name": "GateHookCommand.evaluate",
+      "startLine": 37,
+      "startOffset": 1672,
+      "symbolId": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.evaluate::method"
+    },
+    {
+      "endLine": 107,
+      "endOffset": 4823,
+      "kind": "method",
+      "name": "GateHookCommand.run",
+      "startLine": 96,
+      "startOffset": 4476,
+      "symbolId": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.run::method"
+    },
+    {
+      "endLine": 119,
+      "endOffset": 5189,
+      "kind": "method",
+      "name": "GateHookCommand.emitBlock",
+      "startLine": 110,
+      "startOffset": 4904,
+      "symbolId": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.emitBlock::method"
+    },
+    {
+      "endLine": 131,
+      "endOffset": 5608,
+      "kind": "method",
+      "name": "GateHookCommand.readStdin",
+      "startLine": 121,
+      "startOffset": 5195,
+      "symbolId": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand.readStdin::method"
+    },
+    {
+      "endLine": 24,
+      "endOffset": 1270,
+      "kind": "interface",
+      "name": "HookPayload",
+      "startLine": 19,
+      "startOffset": 1083,
+      "symbolId": "packages/cli/src/cli/gate-hook-command.ts::HookPayload::interface"
+    },
+    {
+      "endLine": 26,
+      "endOffset": 1340,
+      "kind": "interface",
+      "name": "HookDecision",
+      "startLine": 26,
+      "startOffset": 1274,
+      "symbolId": "packages/cli/src/cli/gate-hook-command.ts::HookDecision::interface"
+    }
+  ]
+}

@@ -2,7 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 14,
+      "cyclomatic": 6,
+      "symbolId": "packages/cli/src/cli/install-command.ts::resolveJavaPackages::function"
+    },
+    {
+      "cyclomatic": 23,
       "symbolId": "packages/cli/src/cli/install-command.ts::InstallCommand.run::method"
     },
     {
@@ -10,65 +14,80 @@
       "symbolId": "packages/cli/src/cli/install-command.ts::InstallCommand.resolveLanguages::method"
     }
   ],
-  "contentHash": "9ac3270e5aacc469a60ad23c7faaf2899f71afe7f7d2f0ae041da00c4a50f273",
+  "contentHash": "15055c82f35b893dc3c326ff2df054061c5a79ed3cf06229c89ce56fafa63d50",
   "edges": [
     {
-      "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
+      "from": "packages/cli/src/cli/install-command.ts::resolveJavaPackages::function",
       "kind": "imports",
       "to": "packages/cli/src/core/detection/detect-languages.ts::KNOWN_LANGUAGES::variable"
     },
     {
-      "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
+      "from": "packages/cli/src/cli/install-command.ts::resolveJavaPackages::function",
       "kind": "imports",
       "to": "packages/cli/src/core/detection/detect-languages.ts::officialPluginFor::function"
     },
     {
-      "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
+      "from": "packages/cli/src/cli/install-command.ts::resolveJavaPackages::function",
       "kind": "imports",
       "to": "packages/cli/src/core/detection/detect-languages.ts::detectLanguages::function"
     },
     {
-      "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
+      "from": "packages/cli/src/cli/install-command.ts::resolveJavaPackages::function",
       "kind": "imports",
       "to": "packages/cli/src/core/detection/detect-languages.ts::decideNeededLanguages::function"
     },
     {
-      "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
+      "from": "packages/cli/src/cli/install-command.ts::resolveJavaPackages::function",
       "kind": "imports",
-      "to": "packages/cli/src/core/detection/detect-languages.ts::KnownLanguage::type",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::KnownLanguage::class",
       "typeOnly": true
     },
     {
-      "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
+      "from": "packages/cli/src/cli/install-command.ts::resolveJavaPackages::function",
       "kind": "imports",
       "to": "packages/cli/src/core/install/package-manager.ts::resolvePackageManager::function"
     },
     {
-      "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
+      "from": "packages/cli/src/cli/install-command.ts::resolveJavaPackages::function",
       "kind": "imports",
       "to": "packages/cli/src/core/install/package-manager.ts::buildInstallCommand::function"
     },
     {
-      "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
+      "from": "packages/cli/src/cli/install-command.ts::resolveJavaPackages::function",
       "kind": "imports",
       "to": "packages/cli/src/core/install/package-manager.ts::isPackageManager::function"
     },
     {
-      "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
+      "from": "packages/cli/src/cli/install-command.ts::resolveJavaPackages::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/install/package-manager.ts::isWorkspaceRoot::function"
+    },
+    {
+      "from": "packages/cli/src/cli/install-command.ts::resolveJavaPackages::function",
       "kind": "imports",
       "to": "packages/cli/src/core/install/package-manager.ts::PACKAGE_MANAGERS::variable"
     },
     {
-      "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
+      "from": "packages/cli/src/cli/install-command.ts::resolveJavaPackages::function",
       "kind": "imports",
-      "to": "packages/cli/src/core/install/package-manager.ts::PackageManager::type",
+      "to": "packages/cli/src/core/install/package-manager.ts::PackageManager::class",
       "typeOnly": true
     },
     {
-      "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
+      "from": "packages/cli/src/cli/install-command.ts::resolveJavaPackages::function",
       "kind": "imports",
-      "to": "packages/cli/src/core/install/package-manager.ts::Resolution::interface",
+      "to": "packages/cli/src/core/install/package-manager.ts::Resolution::class",
       "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/install-command.ts::resolveJavaPackages::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/install/run-package-manager.ts::runPackageManager::function"
+    },
+    {
+      "from": "packages/cli/src/cli/install-command.ts::resolveJavaPackages::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-java-runtime.ts::javaRuntimeAvailable::function"
     },
     {
       "from": "packages/cli/src/cli/install-command.ts::InstallCommand.run::method",
@@ -88,6 +107,16 @@
     {
       "from": "packages/cli/src/cli/install-command.ts::InstallCommand.run::method",
       "kind": "calls",
+      "to": "packages/cli/src/core/detection/detect-java-runtime.ts::javaRuntimeAvailable::function"
+    },
+    {
+      "from": "packages/cli/src/cli/install-command.ts::InstallCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/install-command.ts::resolveJavaPackages::function"
+    },
+    {
+      "from": "packages/cli/src/cli/install-command.ts::InstallCommand.run::method",
+      "kind": "calls",
       "to": "packages/cli/src/core/detection/detect-languages.ts::officialPluginFor::function"
     },
     {
@@ -103,7 +132,12 @@
     {
       "from": "packages/cli/src/cli/install-command.ts::InstallCommand.run::method",
       "kind": "calls",
-      "to": "packages/cli/src/cli/install-command.ts::spawnInstall::function"
+      "to": "packages/cli/src/core/install/package-manager.ts::isWorkspaceRoot::function"
+    },
+    {
+      "from": "packages/cli/src/cli/install-command.ts::InstallCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/install/run-package-manager.ts::runPackageManager::function"
     },
     {
       "from": "packages/cli/src/cli/install-command.ts::InstallCommand.resolveLanguages::method",
@@ -128,12 +162,17 @@
     {
       "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
       "kind": "uses",
-      "to": "packages/cli/src/core/install/package-manager.ts::Resolution::interface"
+      "to": "packages/cli/src/core/install/package-manager.ts::Resolution::class"
     },
     {
       "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
       "kind": "uses",
       "to": "packages/cli/src/core/install/package-manager.ts::resolvePackageManager::function"
+    },
+    {
+      "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/detection/detect-java-runtime.ts::javaRuntimeAvailable::function"
     },
     {
       "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
@@ -148,7 +187,17 @@
     {
       "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
       "kind": "uses",
-      "to": "packages/cli/src/core/detection/detect-languages.ts::KnownLanguage::type"
+      "to": "packages/cli/src/core/install/package-manager.ts::isWorkspaceRoot::function"
+    },
+    {
+      "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/install/run-package-manager.ts::runPackageManager::function"
+    },
+    {
+      "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/detection/detect-languages.ts::KnownLanguage::class"
     },
     {
       "from": "packages/cli/src/cli/install-command.ts::InstallCommand::class",
@@ -169,6 +218,30 @@
   "file": "packages/cli/src/cli/install-command.ts",
   "intent": [
     {
+      "date": "2026-06-21T21:44:46+03:00",
+      "hash": "0ab7f597d864a825c43be37e8dde4e07df8d4ae1",
+      "kind": "commit",
+      "message": "fix(cli): error on conflicting --full-tier and --syntax-only instead of silent override"
+    },
+    {
+      "date": "2026-06-21T21:00:28+03:00",
+      "hash": "f27d649cae7476722adc94845b714909c77ec35b",
+      "kind": "commit",
+      "message": "feat(cli): ctxo install java smart full-tier default (--full-tier/--syntax-only)"
+    },
+    {
+      "date": "2026-05-16T02:15:51+03:00",
+      "hash": "2705fec64628ae82f8e3f61346ad3c6436e0c336",
+      "kind": "commit",
+      "message": "fix(install): add -w for pnpm at workspace root + silence DEP0190 on win32 (#90)"
+    },
+    {
+      "date": "2026-05-16T00:52:48+03:00",
+      "hash": "27b4ffd3198a8ac6f7686717e5fa7771702cdb44",
+      "kind": "commit",
+      "message": "feat(cli): ctxo update — self-update mechanism for CLI + plugins (#84)"
+    },
+    {
       "date": "2026-04-13T03:41:01+03:00",
       "hash": "66563a4009d7049771020d65d812dc788de71187",
       "kind": "commit",
@@ -181,51 +254,60 @@
       "message": "feat(cli): add ctxo install command for language plugin management"
     }
   ],
-  "lastModified": 1776354056,
+  "lastModified": 1782067489,
   "symbols": [
     {
-      "endLine": 142,
-      "endOffset": 4690,
+      "endLine": 41,
+      "endOffset": 1484,
+      "kind": "function",
+      "name": "resolveJavaPackages",
+      "startLine": 35,
+      "startOffset": 1072,
+      "symbolId": "packages/cli/src/cli/install-command.ts::resolveJavaPackages::function"
+    },
+    {
+      "endLine": 175,
+      "endOffset": 6475,
       "kind": "class",
       "name": "InstallCommand",
-      "startLine": 40,
-      "startOffset": 1051,
+      "startLine": 53,
+      "startOffset": 1796,
       "symbolId": "packages/cli/src/cli/install-command.ts::InstallCommand::class"
     },
     {
-      "endLine": 110,
-      "endOffset": 3546,
+      "endLine": 143,
+      "endOffset": 5299,
       "kind": "method",
       "name": "InstallCommand.run",
-      "startLine": 43,
-      "startOffset": 1139,
+      "startLine": 56,
+      "startOffset": 1887,
       "symbolId": "packages/cli/src/cli/install-command.ts::InstallCommand.run::method"
     },
     {
-      "endLine": 141,
-      "endOffset": 4688,
+      "endLine": 174,
+      "endOffset": 6472,
       "kind": "method",
       "name": "InstallCommand.resolveLanguages",
-      "startLine": 112,
-      "startOffset": 3550,
+      "startLine": 145,
+      "startOffset": 5305,
       "symbolId": "packages/cli/src/cli/install-command.ts::InstallCommand.resolveLanguages::method"
     },
     {
-      "endLine": 28,
-      "endOffset": 751,
+      "endLine": 32,
+      "endOffset": 979,
       "kind": "interface",
       "name": "InstallOptions",
-      "startLine": 20,
-      "startOffset": 509,
+      "startLine": 22,
+      "startOffset": 663,
       "symbolId": "packages/cli/src/cli/install-command.ts::InstallOptions::interface"
     },
     {
-      "endLine": 38,
-      "endOffset": 1049,
+      "endLine": 51,
+      "endOffset": 1792,
       "kind": "interface",
       "name": "InstallPlan",
-      "startLine": 30,
-      "startOffset": 753,
+      "startLine": 43,
+      "startOffset": 1488,
       "symbolId": "packages/cli/src/cli/install-command.ts::InstallPlan::interface"
     }
   ]

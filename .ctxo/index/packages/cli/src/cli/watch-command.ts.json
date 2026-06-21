@@ -2,11 +2,11 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 23,
+      "cyclomatic": 22,
       "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method"
     }
   ],
-  "contentHash": "29381d1e45304b53f0292521d281bc8cbe7c34e5ceeb842a6e2366cfa56e7bd2",
+  "contentHash": "8ee593d00cf53fd1ce7a818088a546ea579080a29ddd561fe47ee9e4b5bd6169",
   "edges": [
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
@@ -76,25 +76,25 @@
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "to": "packages/cli/src/core/types.ts::FileIndex::class",
       "typeOnly": true
     },
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::CommitIntent::type",
+      "to": "packages/cli/src/core/types.ts::CommitIntent::class",
       "typeOnly": true
     },
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::AntiPattern::type",
+      "to": "packages/cli/src/core/types.ts::AntiPattern::class",
       "typeOnly": true
     },
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::class",
       "typeOnly": true
     },
     {
@@ -205,21 +205,33 @@
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
       "kind": "uses",
-      "to": "packages/cli/src/core/types.ts::CommitIntent::type"
+      "to": "packages/cli/src/core/types.ts::CommitIntent::class"
     },
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
       "kind": "uses",
-      "to": "packages/cli/src/core/types.ts::AntiPattern::type"
+      "to": "packages/cli/src/core/types.ts::AntiPattern::class"
     },
     {
       "from": "packages/cli/src/cli/watch-command.ts::WatchCommand::class",
       "kind": "uses",
-      "to": "packages/cli/src/core/types.ts::FileIndex::type"
+      "to": "packages/cli/src/core/types.ts::FileIndex::class"
     }
   ],
   "file": "packages/cli/src/cli/watch-command.ts",
   "intent": [
+    {
+      "date": "2026-06-21T23:03:15+03:00",
+      "hash": "d5becbf12efd7bed099bcadbb2433690776f83f4",
+      "kind": "commit",
+      "message": "fix(cli): reader recovers intent/antiPatterns, findJavaFile skips symlinks, memoize java detect, dedup watch keep-alives"
+    },
+    {
+      "date": "2026-06-21T22:23:34+03:00",
+      "hash": "57f9e16d65864ffb3b0c1640477354457f63063a",
+      "kind": "commit",
+      "message": "refactor(cli): generic watch keep-alive capability (drop per-language hardcoding)"
+    },
     {
       "date": "2026-04-16T02:43:12+03:00",
       "hash": "2ded1a911a7f195becd8d07e5a1f28368b76858f",
@@ -263,24 +275,24 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776354056,
+  "lastModified": 1782072201,
   "symbols": [
     {
-      "endLine": 255,
-      "endOffset": 10498,
+      "endLine": 240,
+      "endOffset": 10239,
       "kind": "class",
       "name": "WatchCommand",
-      "startLine": 35,
-      "startOffset": 1748,
+      "startLine": 21,
+      "startOffset": 1338,
       "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand::class"
     },
     {
-      "endLine": 253,
-      "endOffset": 10493,
+      "endLine": 238,
+      "endOffset": 10234,
       "kind": "method",
       "name": "WatchCommand.run",
-      "startLine": 44,
-      "startOffset": 1991,
+      "startLine": 30,
+      "startOffset": 1581,
       "symbolId": "packages/cli/src/cli/watch-command.ts::WatchCommand.run::method"
     }
   ]

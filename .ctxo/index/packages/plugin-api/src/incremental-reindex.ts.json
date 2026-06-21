@@ -1,0 +1,64 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "34f93fa2d182bced216b400011877ebe0e6c48406dab2b5be6add57f28ea18c4",
+  "edges": [
+    {
+      "from": "packages/plugin-api/src/incremental-reindex.ts::ReindexResult::interface",
+      "kind": "imports",
+      "to": "packages/plugin-api/src/types.ts::SymbolNode::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/plugin-api/src/incremental-reindex.ts::ReindexResult::interface",
+      "kind": "imports",
+      "to": "packages/plugin-api/src/types.ts::GraphEdge::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/plugin-api/src/incremental-reindex.ts::ReindexResult::interface",
+      "kind": "imports",
+      "to": "packages/plugin-api/src/types.ts::ComplexityMetrics::class",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/plugin-api/src/incremental-reindex.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T22:20:54+03:00",
+      "hash": "35d2d92945daa82e161d841e8410fd11f7e578a1",
+      "kind": "commit",
+      "message": "feat(plugin-api): optional IIncrementalReindex capability for watch keep-alive"
+    }
+  ],
+  "lastModified": 1782069655,
+  "symbols": [
+    {
+      "endLine": 7,
+      "endOffset": 264,
+      "kind": "interface",
+      "name": "ReindexResult",
+      "startLine": 3,
+      "startOffset": 148,
+      "symbolId": "packages/plugin-api/src/incremental-reindex.ts::ReindexResult::interface"
+    },
+    {
+      "endLine": 19,
+      "endOffset": 700,
+      "kind": "interface",
+      "name": "IIncrementalReindex",
+      "startLine": 14,
+      "startOffset": 504,
+      "symbolId": "packages/plugin-api/src/incremental-reindex.ts::IIncrementalReindex::interface"
+    },
+    {
+      "endLine": 24,
+      "endOffset": 881,
+      "kind": "interface",
+      "name": "IncrementalReindexCapable",
+      "startLine": 22,
+      "startOffset": 780,
+      "symbolId": "packages/plugin-api/src/incremental-reindex.ts::IncrementalReindexCapable::interface"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "1d5f8082fda6ab19aa68d580b607e627b9639c318e97021d35f538b87efab7c2",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/__tests__/java-adapter.test.ts::java-adapter.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/java-adapter.ts::JavaAdapter::class"
+    }
+  ],
+  "file": "packages/lang-java/src/__tests__/java-adapter.test.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T17:19:10+03:00",
+      "hash": "106e11330829e80b27068bdc2ac0b03eeed9f63e",
+      "kind": "commit",
+      "message": "fix(lang-java): declare syntax tier for foundation, cover && / || complexity + interface method"
+    },
+    {
+      "date": "2026-06-21T17:09:48+03:00",
+      "hash": "63399096431e22b096f99414f4b77d2315d78d8d",
+      "kind": "commit",
+      "message": "fix(lang-java): preserve import paths, scoped type names, stronger edge/constructor tests"
+    },
+    {
+      "date": "2026-06-21T17:01:35+03:00",
+      "hash": "72e0dfcad772aea7055aceffe502e0f3758b4fa3",
+      "kind": "commit",
+      "message": "feat(lang-java): tree-sitter symbol extraction (types + members)"
+    }
+  ],
+  "lastModified": 1782051551,
+  "symbols": []
+}

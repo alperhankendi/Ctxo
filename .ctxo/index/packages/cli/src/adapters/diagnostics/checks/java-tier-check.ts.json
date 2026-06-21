@@ -1,0 +1,175 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 10,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::evaluateJavaTier::function"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::analyzerJarPresent::function"
+    },
+    {
+      "cyclomatic": 12,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::findJavaFile::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::JavaTierCheck.run::method"
+    }
+  ],
+  "contentHash": "8bafb0de6c9eea8a9ce8a5098f78ce708886784537b8ab71e055706ddf279476",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::evaluateJavaTier::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::evaluateJavaTier::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::evaluateJavaTier::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::evaluateJavaTier::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/detection/detect-java-runtime.ts::detectJavaMajor::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::JavaTierCheck::class",
+      "kind": "implements",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::JavaTierCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::evaluateJavaTier::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::JavaTierCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::projectHasJava::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::JavaTierCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/detection/detect-java-runtime.ts::detectJavaMajor::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::JavaTierCheck.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::analyzerJarPresent::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::evaluateJavaTier::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::JavaTierCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::IHealthCheck::interface"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::JavaTierCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckContext::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::JavaTierCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/diagnostics/types.ts::CheckResult::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::JavaTierCheck::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/detection/detect-java-runtime.ts::detectJavaMajor::function"
+    }
+  ],
+  "file": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T23:03:15+03:00",
+      "hash": "d5becbf12efd7bed099bcadbb2433690776f83f4",
+      "kind": "commit",
+      "message": "fix(cli): reader recovers intent/antiPatterns, findJavaFile skips symlinks, memoize java detect, dedup watch keep-alives"
+    },
+    {
+      "date": "2026-06-21T21:37:52+03:00",
+      "hash": "9881bd26f19f46b3b60ca8c32c32deec1d3a3378",
+      "kind": "commit",
+      "message": "fix(cli): java detection timeout + dedup + doctor checks real jar + recursive java scan"
+    },
+    {
+      "date": "2026-06-21T21:03:08+03:00",
+      "hash": "2412211727c75ac7752d888e578c9d7ed97aa0c7",
+      "kind": "commit",
+      "message": "feat(cli): ctxo doctor java tier check (runtime + analyzer + actionable hint)"
+    }
+  ],
+  "lastModified": 1782072197,
+  "symbols": [
+    {
+      "endLine": 56,
+      "endOffset": 1713,
+      "kind": "function",
+      "name": "evaluateJavaTier",
+      "startLine": 15,
+      "startOffset": 561,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::evaluateJavaTier::function"
+    },
+    {
+      "endLine": 72,
+      "endOffset": 2291,
+      "kind": "function",
+      "name": "analyzerJarPresent",
+      "startLine": 64,
+      "startOffset": 2014,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::analyzerJarPresent::function"
+    },
+    {
+      "endLine": 111,
+      "endOffset": 3681,
+      "kind": "function",
+      "name": "findJavaFile",
+      "startLine": 89,
+      "startOffset": 2910,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::findJavaFile::function"
+    },
+    {
+      "endLine": 131,
+      "endOffset": 4240,
+      "kind": "class",
+      "name": "JavaTierCheck",
+      "startLine": 120,
+      "startOffset": 3888,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::JavaTierCheck::class"
+    },
+    {
+      "endLine": 130,
+      "endOffset": 4238,
+      "kind": "method",
+      "name": "JavaTierCheck.run",
+      "startLine": 124,
+      "startOffset": 4014,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::JavaTierCheck.run::method"
+    },
+    {
+      "endLine": 12,
+      "endOffset": 487,
+      "kind": "interface",
+      "name": "JavaTierInputs",
+      "startLine": 8,
+      "startOffset": 370,
+      "symbolId": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::JavaTierInputs::interface"
+    }
+  ]
+}

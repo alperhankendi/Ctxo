@@ -1,0 +1,78 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/cli/src/cli/graph-loader.ts::loadGraph::function"
+    }
+  ],
+  "contentHash": "92635054f9ac1d06b40b468931e53f3faa8599cbbdbfac9127d6a15ef33d597e",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/graph-loader.ts::loadGraph::function",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/graph-loader.ts::loadGraph::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/cli/graph-loader.ts::loadGraph::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/graph-loader.ts::loadGraph::function",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/graph-loader.ts::loadGraph::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    },
+    {
+      "from": "packages/cli/src/cli/graph-loader.ts::loadGraph::function",
+      "kind": "uses",
+      "to": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
+    },
+    {
+      "from": "packages/cli/src/cli/graph-loader.ts::loadGraph::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
+    }
+  ],
+  "file": "packages/cli/src/cli/graph-loader.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T03:41:38+03:00",
+      "hash": "8961ad92ad81ec5600ccf0ac37f8f024d01414f4",
+      "kind": "commit",
+      "message": "feat(cli): shared graph loader; visualize reuses it"
+    }
+  ],
+  "lastModified": 1780236812,
+  "symbols": [
+    {
+      "endLine": 16,
+      "endOffset": 717,
+      "kind": "function",
+      "name": "loadGraph",
+      "startLine": 10,
+      "startOffset": 372,
+      "symbolId": "packages/cli/src/cli/graph-loader.ts::loadGraph::function"
+    },
+    {
+      "endLine": 7,
+      "endOffset": 292,
+      "kind": "interface",
+      "name": "LoadedGraph",
+      "startLine": 4,
+      "startOffset": 193,
+      "symbolId": "packages/cli/src/cli/graph-loader.ts::LoadedGraph::interface"
+    }
+  ]
+}

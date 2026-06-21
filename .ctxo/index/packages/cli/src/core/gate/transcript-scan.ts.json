@@ -1,0 +1,43 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 11,
+      "symbolId": "packages/cli/src/core/gate/transcript-scan.ts::transcriptHasBlastCheck::function"
+    }
+  ],
+  "contentHash": "9b83f6dec3a10bec9c1d6c18ccb0ca0089b888d3aeaf5cefc880189769cdcccf",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/gate/transcript-scan.ts::transcriptHasBlastCheck::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/gate/transcript-scan.ts::fileAndName::function"
+    },
+    {
+      "from": "packages/cli/src/core/gate/transcript-scan.ts::transcriptHasBlastCheck::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/gate/transcript-scan.ts::fileAndName::function"
+    }
+  ],
+  "file": "packages/cli/src/core/gate/transcript-scan.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T03:38:47+03:00",
+      "hash": "56eef5755c9fc4ba4e733fbb78cd4344ab7fd79c",
+      "kind": "commit",
+      "message": "feat(gate): transcript scan for prior blast-radius checks"
+    }
+  ],
+  "lastModified": 1780236813,
+  "symbols": [
+    {
+      "endLine": 26,
+      "endOffset": 1122,
+      "kind": "function",
+      "name": "transcriptHasBlastCheck",
+      "startLine": 9,
+      "startOffset": 291,
+      "symbolId": "packages/cli/src/core/gate/transcript-scan.ts::transcriptHasBlastCheck::function"
+    }
+  ]
+}

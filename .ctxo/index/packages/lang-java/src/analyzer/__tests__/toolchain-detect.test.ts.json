@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "1804ea58c1b9e9b2ab2f16cb35651c088996b9ad5682bbb5e7c5a486409e18d1",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/analyzer/__tests__/toolchain-detect.test.ts::toolchain-detect.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/toolchain-detect.ts::parseJavaVersion::function"
+    }
+  ],
+  "file": "packages/lang-java/src/analyzer/__tests__/toolchain-detect.test.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T18:28:16+03:00",
+      "hash": "7e4d5c6bcde8f52b719df19bd36037acbe672b89",
+      "kind": "commit",
+      "message": "feat(lang-java): java toolchain detection (parse version, gate >=17)"
+    }
+  ],
+  "lastModified": 1782055741,
+  "symbols": []
+}

@@ -1,0 +1,62 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "90b51742829fcd2d776b7d5b3b0af9291a45cf6d00e9e8edd379aa9cba036990",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/__tests__/composite-adapter.test.ts::composite-adapter.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/toolchain-detect.ts::detectJavaRuntime::function"
+    },
+    {
+      "from": "packages/lang-java/src/__tests__/composite-adapter.test.ts::composite-adapter.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter::class"
+    },
+    {
+      "from": "packages/lang-java/src/__tests__/composite-adapter.test.ts::composite-adapter.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::resolveAnalyzerJar::function"
+    },
+    {
+      "from": "packages/lang-java/src/__tests__/composite-adapter.test.ts::composite-adapter.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::analyzerPackageVersion::function"
+    }
+  ],
+  "file": "packages/lang-java/src/__tests__/composite-adapter.test.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T22:58:58+03:00",
+      "hash": "85eb8c57bcb41b2bf3bd0f8a2a98189deba62220",
+      "kind": "commit",
+      "message": "fix(lang-java): skip version warn when plugin version unknown, memoize pkg resolve, stable reindex capability"
+    },
+    {
+      "date": "2026-06-21T21:42:38+03:00",
+      "hash": "befa4ef6400b91456107191d98f20a68a4868711",
+      "kind": "commit",
+      "message": "fix(lang-java): resolve analyzer across global/local installs + base-version match guard"
+    },
+    {
+      "date": "2026-06-21T20:54:59+03:00",
+      "hash": "5496f6c4ad3621041d9425b7966509ca20b839cd",
+      "kind": "commit",
+      "message": "feat(lang-java): jdt-adapter resolves jar via package + version-match guard"
+    },
+    {
+      "date": "2026-06-21T18:39:40+03:00",
+      "hash": "938d84e64dee58a01715fb80180113575afd6506",
+      "kind": "commit",
+      "message": "feat(lang-java): wire composite to JDT full tier; declare full tier"
+    },
+    {
+      "date": "2026-06-21T17:11:42+03:00",
+      "hash": "b08f1b1e19a02287117399bf4eacfef900dd5bc9",
+      "kind": "commit",
+      "message": "feat(lang-java): JavaCompositeAdapter (syntax tier seam)"
+    }
+  ],
+  "lastModified": 1782071939,
+  "symbols": []
+}

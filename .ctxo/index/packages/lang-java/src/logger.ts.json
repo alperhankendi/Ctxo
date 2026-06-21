@@ -1,0 +1,41 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 8,
+      "symbolId": "packages/lang-java/src/logger.ts::createLogger::function"
+    }
+  ],
+  "contentHash": "cc441c5a490a0cc44f4322fc80151f4a7e88b70a5543cc689f9241b60400cdc2",
+  "edges": [],
+  "file": "packages/lang-java/src/logger.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T16:55:58+03:00",
+      "hash": "01493cb8950fd64cccd99ee8f3fdee933e3196c5",
+      "kind": "commit",
+      "message": "feat(lang-java): scaffold package + minimal logger"
+    }
+  ],
+  "lastModified": 1782050160,
+  "symbols": [
+    {
+      "endLine": 30,
+      "endOffset": 1061,
+      "kind": "function",
+      "name": "createLogger",
+      "startLine": 13,
+      "startOffset": 316,
+      "symbolId": "packages/lang-java/src/logger.ts::createLogger::function"
+    },
+    {
+      "endLine": 7,
+      "endOffset": 150,
+      "kind": "interface",
+      "name": "Logger",
+      "startLine": 2,
+      "startOffset": 61,
+      "symbolId": "packages/lang-java/src/logger.ts::Logger::interface"
+    }
+  ]
+}

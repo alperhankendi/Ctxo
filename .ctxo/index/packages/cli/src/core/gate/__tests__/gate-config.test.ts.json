@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "2963dca0ab2b9a11db5496b654cdad92503b77c8d81a130e1b65225d0070266d",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/gate/__tests__/gate-config.test.ts::gate-config.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/gate/gate-config.ts::resolveGateThresholds::function"
+    }
+  ],
+  "file": "packages/cli/src/core/gate/__tests__/gate-config.test.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T03:33:21+03:00",
+      "hash": "de301859550736a42716654cea9146efbbd69a75",
+      "kind": "commit",
+      "message": "feat(gate): resolve sensitivity dial to thresholds"
+    }
+  ],
+  "lastModified": 1780236813,
+  "symbols": []
+}

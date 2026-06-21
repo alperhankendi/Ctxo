@@ -1,0 +1,181 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/core/update/update-plan.ts::detectChannel::function"
+    },
+    {
+      "cyclomatic": 28,
+      "symbolId": "packages/cli/src/core/update/update-plan.ts::compareSemver::function"
+    },
+    {
+      "cyclomatic": 9,
+      "symbolId": "packages/cli/src/core/update/update-plan.ts::computePackageStates::function"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/core/update/update-plan.ts::selectInstallTargets::function"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/core/update/update-plan.ts::markWorkspaceLinks::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/core/update/update-plan.ts::isSafeVersionSpecifier::function"
+    }
+  ],
+  "contentHash": "5bc9978348b6e1f9199ef0958c3165de4f2271436b2bc316626c3d8b67864054",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/update/update-plan.ts::detectChannel::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/registry-client.ts::RegistryResult::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/update/update-plan.ts::detectChannel::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/update/update-plan.ts::parseSemver::function"
+    },
+    {
+      "from": "packages/cli/src/core/update/update-plan.ts::compareSemver::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/update/update-plan.ts::parseSemver::function"
+    },
+    {
+      "from": "packages/cli/src/core/update/update-plan.ts::compareSemver::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/update/update-plan.ts::parseSemver::function"
+    },
+    {
+      "from": "packages/cli/src/core/update/update-plan.ts::computePackageStates::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/update/update-plan.ts::detectChannel::function"
+    },
+    {
+      "from": "packages/cli/src/core/update/update-plan.ts::computePackageStates::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/update/update-plan.ts::compareSemver::function"
+    },
+    {
+      "from": "packages/cli/src/core/update/update-plan.ts::selectInstallTargets::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/update/update-plan.ts::isSafeVersionSpecifier::function"
+    },
+    {
+      "from": "packages/cli/src/core/update/update-plan.ts::computePackageStates::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/update/registry-client.ts::RegistryResult::type"
+    }
+  ],
+  "file": "packages/cli/src/core/update/update-plan.ts",
+  "intent": [
+    {
+      "date": "2026-05-16T02:27:32+03:00",
+      "hash": "1c53eed82d7eb08d763f6dc3d45f7a762e37fe63",
+      "kind": "commit",
+      "message": "fix(update): skip workspace-linked plugins from install plan (#92)"
+    },
+    {
+      "date": "2026-05-16T00:52:48+03:00",
+      "hash": "27b4ffd3198a8ac6f7686717e5fa7771702cdb44",
+      "kind": "commit",
+      "message": "feat(cli): ctxo update — self-update mechanism for CLI + plugins (#84)"
+    }
+  ],
+  "lastModified": 1780236814,
+  "symbols": [
+    {
+      "endLine": 31,
+      "endOffset": 996,
+      "kind": "function",
+      "name": "detectChannel",
+      "startLine": 25,
+      "startOffset": 727,
+      "symbolId": "packages/cli/src/core/update/update-plan.ts::detectChannel::function"
+    },
+    {
+      "endLine": 70,
+      "endOffset": 2311,
+      "kind": "function",
+      "name": "compareSemver",
+      "startLine": 33,
+      "startOffset": 1000,
+      "symbolId": "packages/cli/src/core/update/update-plan.ts::compareSemver::function"
+    },
+    {
+      "endLine": 118,
+      "endOffset": 4309,
+      "kind": "function",
+      "name": "computePackageStates",
+      "startLine": 88,
+      "startOffset": 2774,
+      "symbolId": "packages/cli/src/core/update/update-plan.ts::computePackageStates::function"
+    },
+    {
+      "endLine": 125,
+      "endOffset": 4680,
+      "kind": "function",
+      "name": "selectInstallTargets",
+      "startLine": 120,
+      "startOffset": 4313,
+      "symbolId": "packages/cli/src/core/update/update-plan.ts::selectInstallTargets::function"
+    },
+    {
+      "endLine": 143,
+      "endOffset": 5369,
+      "kind": "function",
+      "name": "markWorkspaceLinks",
+      "startLine": 134,
+      "startOffset": 5086,
+      "symbolId": "packages/cli/src/core/update/update-plan.ts::markWorkspaceLinks::function"
+    },
+    {
+      "endLine": 152,
+      "endOffset": 5749,
+      "kind": "function",
+      "name": "isSafeVersionSpecifier",
+      "startLine": 150,
+      "startOffset": 5637,
+      "symbolId": "packages/cli/src/core/update/update-plan.ts::isSafeVersionSpecifier::function"
+    },
+    {
+      "endLine": 81,
+      "endOffset": 2673,
+      "kind": "interface",
+      "name": "PackageState",
+      "startLine": 74,
+      "startOffset": 2404,
+      "symbolId": "packages/cli/src/core/update/update-plan.ts::PackageState::interface"
+    },
+    {
+      "endLine": 86,
+      "endOffset": 2770,
+      "kind": "interface",
+      "name": "InstalledPackage",
+      "startLine": 83,
+      "startOffset": 2677,
+      "symbolId": "packages/cli/src/core/update/update-plan.ts::InstalledPackage::interface"
+    },
+    {
+      "endLine": 2,
+      "endOffset": 138,
+      "kind": "type",
+      "name": "Channel",
+      "startLine": 2,
+      "startOffset": 63,
+      "symbolId": "packages/cli/src/core/update/update-plan.ts::Channel::type"
+    },
+    {
+      "endLine": 72,
+      "endOffset": 2400,
+      "kind": "type",
+      "name": "PackageStatus",
+      "startLine": 72,
+      "startOffset": 2315,
+      "symbolId": "packages/cli/src/core/update/update-plan.ts::PackageStatus::type"
+    }
+  ]
+}

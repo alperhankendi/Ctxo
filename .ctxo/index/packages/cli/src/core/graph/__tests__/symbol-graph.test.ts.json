@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "1fb7ad2a9ffae74f082a82141590ccd0278cb06f139f3ae99de12d908af04cb6",
+  "contentHash": "1d12b1f8b390c501c467741b602a1f8dbc51e5c7e375b9c84cc7d1ccc3a4238e",
   "edges": [
     {
       "from": "packages/cli/src/core/graph/__tests__/symbol-graph.test.ts::symbol-graph.test::variable",
@@ -11,18 +11,24 @@
     {
       "from": "packages/cli/src/core/graph/__tests__/symbol-graph.test.ts::symbol-graph.test::variable",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::SymbolNode::type",
+      "to": "packages/cli/src/core/types.ts::SymbolNode::class",
       "typeOnly": true
     },
     {
       "from": "packages/cli/src/core/graph/__tests__/symbol-graph.test.ts::symbol-graph.test::variable",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::GraphEdge::type",
+      "to": "packages/cli/src/core/types.ts::GraphEdge::class",
       "typeOnly": true
     }
   ],
   "file": "packages/cli/src/core/graph/__tests__/symbol-graph.test.ts",
   "intent": [
+    {
+      "date": "2026-06-21T22:53:46+03:00",
+      "hash": "f84ed75d4ea6295a35784214d5b9ee5a57c376e2",
+      "kind": "commit",
+      "message": "fix(core): resolve name-reference edge targets by unambiguous name+kind (Java cross-file edges)"
+    },
     {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
@@ -30,6 +36,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776354056,
+  "lastModified": 1782071627,
   "symbols": []
 }

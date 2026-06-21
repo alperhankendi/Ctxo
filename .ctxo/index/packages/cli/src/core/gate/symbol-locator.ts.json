@@ -1,0 +1,63 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/cli/src/core/gate/symbol-locator.ts::lineOfSnippet::function"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/cli/src/core/gate/symbol-locator.ts::locateSymbolAtLine::function"
+    }
+  ],
+  "contentHash": "660786ecbd5f5f9b7b8ee199e7c3dbc19a036030e007e6527fd2a9943b150fa4",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/gate/symbol-locator.ts::lineOfSnippet::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/gate/symbol-locator.ts::locateSymbolAtLine::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::FileIndex::type"
+    }
+  ],
+  "file": "packages/cli/src/core/gate/symbol-locator.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T04:23:32+03:00",
+      "hash": "34a65caf0600d837fc92bc45c883506580d8cbb9",
+      "kind": "commit",
+      "message": "fix(gate): align symbol locator to 0-based index lines (gate now fires); regular dashes in reason"
+    },
+    {
+      "date": "2026-05-31T03:37:24+03:00",
+      "hash": "2a9913b33f9a7d278ba4ee7fdbc6c5289c720f1f",
+      "kind": "commit",
+      "message": "feat(gate): locate enclosing symbol from edited region"
+    }
+  ],
+  "lastModified": 1780236813,
+  "symbols": [
+    {
+      "endLine": 15,
+      "endOffset": 579,
+      "kind": "function",
+      "name": "lineOfSnippet",
+      "startLine": 7,
+      "startOffset": 296,
+      "symbolId": "packages/cli/src/core/gate/symbol-locator.ts::lineOfSnippet::function"
+    },
+    {
+      "endLine": 27,
+      "endOffset": 1085,
+      "kind": "function",
+      "name": "locateSymbolAtLine",
+      "startLine": 18,
+      "startOffset": 681,
+      "symbolId": "packages/cli/src/core/gate/symbol-locator.ts::locateSymbolAtLine::function"
+    }
+  ]
+}

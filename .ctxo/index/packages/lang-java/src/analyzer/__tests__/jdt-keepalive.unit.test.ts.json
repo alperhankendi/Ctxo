@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "0d839b9192415e04378b720c257410f741e10e02674d3035c2da0b9bbc030c88",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/analyzer/__tests__/jdt-keepalive.unit.test.ts::jdt-keepalive.unit.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive::class"
+    }
+  ],
+  "file": "packages/lang-java/src/analyzer/__tests__/jdt-keepalive.unit.test.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T22:55:51+03:00",
+      "hash": "5f9143fe275d150fd9f4d542c46355a66acfce61",
+      "kind": "commit",
+      "message": "fix(lang-java): JdtKeepAlive settles start() on early process exit + dedups concurrent same-file requests"
+    }
+  ],
+  "lastModified": 1782071752,
+  "symbols": []
+}

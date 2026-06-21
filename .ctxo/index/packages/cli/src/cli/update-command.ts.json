@@ -1,0 +1,533 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 11,
+      "symbolId": "packages/cli/src/cli/update-command.ts::formatText::function"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/cli/update-command.ts::formatJson::function"
+    },
+    {
+      "cyclomatic": 24,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateCommand.buildPlan::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateCommand.pickStrategy::method"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateCommand.projectHasCtxoDep::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateCommand.emit::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateCommand.emitError::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateCommand.emitReport::method"
+    }
+  ],
+  "contentHash": "74ada3d1db306a35b8d6a9f8077a15b6c6f8b6dd5da88b9a27de9f124da5ec03",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/cli-router.ts::getVersion::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/language/plugin-discovery.ts::discoverPlugins::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/plugin-loader.ts::loadManifestPath::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/registry-client.ts::fetchDistTagsBatch::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/registry-client.ts::HttpsFetcher::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/update-plan.ts::computePackageStates::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/update-plan.ts::detectChannel::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/update-plan.ts::markWorkspaceLinks::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/update-plan.ts::selectInstallTargets::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/install/package-manager.ts::resolvePackageManager::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/install/package-manager.ts::buildInstallCommand::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/install/package-manager.ts::isPackageManager::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/install/package-manager.ts::isWorkspaceRoot::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/install/package-manager.ts::readWorkspaceLinks::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/install/run-package-manager.ts::runPackageManager::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/install/package-manager.ts::PackageManager::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/install/package-manager.ts::Resolution::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/update-plan.ts::PackageState::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/update-plan.ts::Channel::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::renderStatus::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::formatManagerSource::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/install/package-manager.ts::isPackageManager::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand.emitError::method"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand.emit::method"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/update/registry-client.ts::fetchDistTagsBatch::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand.emitError::method"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/update/update-plan.ts::computePackageStates::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/update/update-plan.ts::markWorkspaceLinks::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/install/package-manager.ts::readWorkspaceLinks::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/update/update-plan.ts::selectInstallTargets::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/cli-router.ts::getVersion::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/update/update-plan.ts::detectChannel::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand.buildPlan::method"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand.pickStrategy::method"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand.emitReport::method"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand.emitReport::method"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::isLockedCI::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand.emitReport::method"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand.emitError::method"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand.emitReport::method"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand.emit::method"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::formatJson::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.buildPlan::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/install/package-manager.ts::resolvePackageManager::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.buildPlan::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand.projectHasCtxoDep::method"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.buildPlan::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/install/package-manager.ts::buildInstallCommand::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.buildPlan::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/install/package-manager.ts::isWorkspaceRoot::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.pickStrategy::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand.projectHasCtxoDep::method"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.emitReport::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand.emit::method"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.emitReport::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::formatJson::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.emitReport::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand.emit::method"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand.emitReport::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::formatText::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::formatText::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/update/update-plan.ts::PackageState::interface"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/install/package-manager.ts::isPackageManager::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/update/registry-client.ts::fetchDistTagsBatch::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/update/update-plan.ts::computePackageStates::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/update/update-plan.ts::markWorkspaceLinks::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/install/package-manager.ts::readWorkspaceLinks::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/update/update-plan.ts::selectInstallTargets::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/cli-router.ts::getVersion::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/update/update-plan.ts::detectChannel::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/install/run-package-manager.ts::runPackageManager::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/install/package-manager.ts::resolvePackageManager::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/install/package-manager.ts::buildInstallCommand::function"
+    },
+    {
+      "from": "packages/cli/src/cli/update-command.ts::UpdateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/install/package-manager.ts::isWorkspaceRoot::function"
+    }
+  ],
+  "file": "packages/cli/src/cli/update-command.ts",
+  "intent": [
+    {
+      "date": "2026-05-16T02:27:32+03:00",
+      "hash": "1c53eed82d7eb08d763f6dc3d45f7a762e37fe63",
+      "kind": "commit",
+      "message": "fix(update): skip workspace-linked plugins from install plan (#92)"
+    },
+    {
+      "date": "2026-05-16T02:15:51+03:00",
+      "hash": "2705fec64628ae82f8e3f61346ad3c6436e0c336",
+      "kind": "commit",
+      "message": "fix(install): add -w for pnpm at workspace root + silence DEP0190 on win32 (#90)"
+    },
+    {
+      "date": "2026-05-16T00:52:48+03:00",
+      "hash": "27b4ffd3198a8ac6f7686717e5fa7771702cdb44",
+      "kind": "commit",
+      "message": "feat(cli): ctxo update — self-update mechanism for CLI + plugins (#84)"
+    }
+  ],
+  "lastModified": 1780236813,
+  "symbols": [
+    {
+      "endLine": 92,
+      "endOffset": 3444,
+      "kind": "function",
+      "name": "formatText",
+      "startLine": 48,
+      "startOffset": 1652,
+      "symbolId": "packages/cli/src/cli/update-command.ts::formatText::function"
+    },
+    {
+      "endLine": 122,
+      "endOffset": 4447,
+      "kind": "function",
+      "name": "formatJson",
+      "startLine": 109,
+      "startOffset": 4088,
+      "symbolId": "packages/cli/src/cli/update-command.ts::formatJson::function"
+    },
+    {
+      "endLine": 280,
+      "endOffset": 10404,
+      "kind": "class",
+      "name": "UpdateCommand",
+      "startLine": 141,
+      "startOffset": 5039,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateCommand::class"
+    },
+    {
+      "endLine": 218,
+      "endOffset": 8169,
+      "kind": "method",
+      "name": "UpdateCommand.run",
+      "startLine": 147,
+      "startOffset": 5192,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateCommand.run::method"
+    },
+    {
+      "endLine": 243,
+      "endOffset": 9016,
+      "kind": "method",
+      "name": "UpdateCommand.buildPlan",
+      "startLine": 220,
+      "startOffset": 8175,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateCommand.buildPlan::method"
+    },
+    {
+      "endLine": 253,
+      "endOffset": 9353,
+      "kind": "method",
+      "name": "UpdateCommand.pickStrategy",
+      "startLine": 245,
+      "startOffset": 9022,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateCommand.pickStrategy::method"
+    },
+    {
+      "endLine": 271,
+      "endOffset": 10069,
+      "kind": "method",
+      "name": "UpdateCommand.projectHasCtxoDep",
+      "startLine": 255,
+      "startOffset": 9359,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateCommand.projectHasCtxoDep::method"
+    },
+    {
+      "endLine": 273,
+      "endOffset": 10139,
+      "kind": "method",
+      "name": "UpdateCommand.emit",
+      "startLine": 273,
+      "startOffset": 10075,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateCommand.emit::method"
+    },
+    {
+      "endLine": 274,
+      "endOffset": 10226,
+      "kind": "method",
+      "name": "UpdateCommand.emitError",
+      "startLine": 274,
+      "startOffset": 10143,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateCommand.emitError::method"
+    },
+    {
+      "endLine": 279,
+      "endOffset": 10401,
+      "kind": "method",
+      "name": "UpdateCommand.emitReport",
+      "startLine": 276,
+      "startOffset": 10232,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateCommand.emitReport::method"
+    },
+    {
+      "endLine": 36,
+      "endOffset": 1365,
+      "kind": "interface",
+      "name": "UpdatePlanShape",
+      "startLine": 29,
+      "startOffset": 1111,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdatePlanShape::interface"
+    },
+    {
+      "endLine": 46,
+      "endOffset": 1648,
+      "kind": "interface",
+      "name": "UpdateReport",
+      "startLine": 38,
+      "startOffset": 1369,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateReport::interface"
+    },
+    {
+      "endLine": 131,
+      "endOffset": 4656,
+      "kind": "interface",
+      "name": "UpdateOptions",
+      "startLine": 124,
+      "startOffset": 4451,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateOptions::interface"
+    },
+    {
+      "endLine": 139,
+      "endOffset": 5035,
+      "kind": "interface",
+      "name": "UpdateCommandDeps",
+      "startLine": 133,
+      "startOffset": 4660,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateCommandDeps::interface"
+    },
+    {
+      "endLine": 27,
+      "endOffset": 1107,
+      "kind": "type",
+      "name": "UpdateStrategy",
+      "startLine": 27,
+      "startOffset": 1049,
+      "symbolId": "packages/cli/src/cli/update-command.ts::UpdateStrategy::type"
+    }
+  ]
+}

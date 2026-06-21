@@ -1,10 +1,16 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "42c71333a9ef99ae39a27096b1e5c47bbf333bf891c03e6698c2b77a5bb83324",
+  "contentHash": "6991c26ed6b6abe34852c1e3d2b12ada60aec3d2e12bc40588af6885367b9723",
   "edges": [],
   "file": "packages/cli/src/core/config/config-schema.ts",
   "intent": [
+    {
+      "date": "2026-05-31T03:32:03+03:00",
+      "hash": "c909775fe14201814beb5c2584cbcf81b8c797cd",
+      "kind": "commit",
+      "message": "feat(gate): add gate config schema + balanced default"
+    },
     {
       "date": "2026-04-16T02:43:12+03:00",
       "hash": "2ded1a911a7f195becd8d07e5a1f28368b76858f",
@@ -24,51 +30,60 @@
       "message": "feat(config): add index.ignore and index.ignoreProjects to .ctxo/config.yaml"
     }
   ],
-  "lastModified": 1776354056,
+  "lastModified": 1780236813,
   "symbols": [
     {
-      "endLine": 56,
-      "endOffset": 1816,
+      "endLine": 68,
+      "endOffset": 2337,
       "kind": "type",
       "name": "StatsConfig",
-      "startLine": 56,
-      "startOffset": 1756,
+      "startLine": 68,
+      "startOffset": 2277,
       "symbolId": "packages/cli/src/core/config/config-schema.ts::StatsConfig::type"
     },
     {
-      "endLine": 57,
-      "endOffset": 1878,
+      "endLine": 69,
+      "endOffset": 2399,
       "kind": "type",
       "name": "IndexConfig",
-      "startLine": 57,
-      "startOffset": 1818,
+      "startLine": 69,
+      "startOffset": 2339,
       "symbolId": "packages/cli/src/core/config/config-schema.ts::IndexConfig::type"
     },
     {
-      "endLine": 58,
-      "endOffset": 1944,
+      "endLine": 70,
+      "endOffset": 2465,
       "kind": "type",
       "name": "MaskingConfig",
-      "startLine": 58,
-      "startOffset": 1880,
+      "startLine": 70,
+      "startOffset": 2401,
       "symbolId": "packages/cli/src/core/config/config-schema.ts::MaskingConfig::type"
     },
     {
-      "endLine": 59,
-      "endOffset": 2006,
+      "endLine": 71,
+      "endOffset": 2527,
       "kind": "type",
       "name": "WatchConfig",
-      "startLine": 59,
-      "startOffset": 1946,
+      "startLine": 71,
+      "startOffset": 2467,
       "symbolId": "packages/cli/src/core/config/config-schema.ts::WatchConfig::type"
     },
     {
-      "endLine": 60,
-      "endOffset": 2066,
+      "endLine": 72,
+      "endOffset": 2587,
+      "kind": "type",
+      "name": "GateConfig",
+      "startLine": 72,
+      "startOffset": 2529,
+      "symbolId": "packages/cli/src/core/config/config-schema.ts::GateConfig::type"
+    },
+    {
+      "endLine": 73,
+      "endOffset": 2647,
       "kind": "type",
       "name": "CtxoConfig",
-      "startLine": 60,
-      "startOffset": 2008,
+      "startLine": 73,
+      "startOffset": 2589,
       "symbolId": "packages/cli/src/core/config/config-schema.ts::CtxoConfig::type"
     },
     {
@@ -108,30 +123,39 @@
       "symbolId": "packages/cli/src/core/config/config-schema.ts::WatchConfigSchema::variable"
     },
     {
-      "endLine": 54,
-      "endOffset": 1751,
+      "endLine": 55,
+      "endOffset": 1925,
       "kind": "variable",
-      "name": "CtxoConfigSchema",
+      "name": "GateConfigSchema",
       "startLine": 46,
       "startOffset": 1462,
+      "symbolId": "packages/cli/src/core/config/config-schema.ts::GateConfigSchema::variable"
+    },
+    {
+      "endLine": 66,
+      "endOffset": 2272,
+      "kind": "variable",
+      "name": "CtxoConfigSchema",
+      "startLine": 57,
+      "startOffset": 1943,
       "symbolId": "packages/cli/src/core/config/config-schema.ts::CtxoConfigSchema::variable"
     },
     {
-      "endLine": 62,
-      "endOffset": 2126,
+      "endLine": 75,
+      "endOffset": 2707,
       "kind": "variable",
       "name": "DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES",
-      "startLine": 62,
-      "startOffset": 2083,
+      "startLine": 75,
+      "startOffset": 2664,
       "symbolId": "packages/cli/src/core/config/config-schema.ts::DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES::variable"
     },
     {
-      "endLine": 70,
-      "endOffset": 2385,
+      "endLine": 84,
+      "endOffset": 3019,
       "kind": "variable",
       "name": "DEFAULT_CONFIG",
-      "startLine": 64,
-      "startOffset": 2144,
+      "startLine": 77,
+      "startOffset": 2725,
       "symbolId": "packages/cli/src/core/config/config-schema.ts::DEFAULT_CONFIG::variable"
     }
   ]

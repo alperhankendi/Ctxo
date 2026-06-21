@@ -1,0 +1,57 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "b9b38ad4209cae4ce59fcf107d3b8c27300b20094888c3f37f3508c201a71fc7",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/__tests__/update-command.test.ts::update-command.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/update-command.ts::formatText::function"
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/update-command.test.ts::update-command.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/update-command.ts::formatJson::function"
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/update-command.test.ts::update-command.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateReport::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/update-command.test.ts::update-command.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/update-command.test.ts::update-command.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/registry-client.ts::HttpsFetcher::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/cli/__tests__/update-command.test.ts",
+  "intent": [
+    {
+      "date": "2026-05-16T02:27:32+03:00",
+      "hash": "1c53eed82d7eb08d763f6dc3d45f7a762e37fe63",
+      "kind": "commit",
+      "message": "fix(update): skip workspace-linked plugins from install plan (#92)"
+    },
+    {
+      "date": "2026-05-16T00:57:25+03:00",
+      "hash": "514a99227a98178c840f7f1e05dd818c5a550ca0",
+      "kind": "commit",
+      "message": "test(update): override env in tests so CI=true host doesn't trigger lockfile guard"
+    },
+    {
+      "date": "2026-05-16T00:52:48+03:00",
+      "hash": "27b4ffd3198a8ac6f7686717e5fa7771702cdb44",
+      "kind": "commit",
+      "message": "feat(cli): ctxo update — self-update mechanism for CLI + plugins (#84)"
+    }
+  ],
+  "lastModified": 1780236812,
+  "symbols": []
+}

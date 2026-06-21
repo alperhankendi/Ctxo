@@ -34,7 +34,7 @@
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.startKeepAlive::method"
     },
     {
-      "cyclomatic": 3,
+      "cyclomatic": 5,
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.reindexFile::method"
     },
     {
@@ -42,7 +42,7 @@
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.dispose::method"
     }
   ],
-  "contentHash": "baccc11fbc10fe3f6be83c2df9516b26bb6b13e96a4db68496c6ead71021df28",
+  "contentHash": "8d1e0c9acb1160af86dde73155bfb41115d278b089238f617c520edaf05de011",
   "edges": [
     {
       "from": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
@@ -77,13 +77,13 @@
     {
       "from": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
       "kind": "imports",
-      "to": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynBatchResult::interface",
+      "to": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynBatchResult::class",
       "typeOnly": true
     },
     {
       "from": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
       "kind": "imports",
-      "to": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynFileResult::interface",
+      "to": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynFileResult::class",
       "typeOnly": true
     },
     {
@@ -134,7 +134,7 @@
     {
       "from": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
       "kind": "uses",
-      "to": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynFileResult::interface"
+      "to": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynFileResult::class"
     },
     {
       "from": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
@@ -159,7 +159,7 @@
     {
       "from": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
       "kind": "uses",
-      "to": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynBatchResult::interface"
+      "to": "packages/lang-csharp/src/roslyn/roslyn-process.ts::RoslynBatchResult::class"
     },
     {
       "from": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter::class",
@@ -170,111 +170,117 @@
   "file": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts",
   "intent": [
     {
+      "date": "2026-06-21T22:21:43+03:00",
+      "hash": "a44ad6c248d2a18f89695c97c95662b679049482",
+      "kind": "commit",
+      "message": "refactor(lang-csharp): expose Roslyn keep-alive via generic getIncrementalReindex()"
+    },
+    {
       "date": "2026-04-13T02:01:42+03:00",
       "hash": "777ffddd20b586a9a44711ca77b43ea210f69d7b",
       "kind": "commit",
       "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
     }
   ],
-  "lastModified": 1776354056,
+  "lastModified": 1782069705,
   "symbols": [
     {
-      "endLine": 157,
-      "endOffset": 5382,
+      "endLine": 177,
+      "endOffset": 6050,
       "kind": "class",
       "name": "RoslynAdapter",
       "startLine": 8,
-      "startOffset": 473,
+      "startOffset": 488,
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter::class"
     },
     {
       "endLine": 21,
-      "endOffset": 967,
+      "endOffset": 982,
       "kind": "method",
       "name": "RoslynAdapter.isSupported",
       "startLine": 19,
-      "startOffset": 886,
+      "startOffset": 901,
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.isSupported::method"
     },
     {
       "endLine": 25,
-      "endOffset": 1088,
+      "endOffset": 1103,
       "kind": "method",
       "name": "RoslynAdapter.isReady",
       "startLine": 23,
-      "startOffset": 971,
+      "startOffset": 986,
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.isReady::method"
     },
     {
       "endLine": 52,
-      "endOffset": 1935,
+      "endOffset": 1950,
       "kind": "method",
       "name": "RoslynAdapter.initialize",
       "startLine": 27,
-      "startOffset": 1092,
+      "startOffset": 1107,
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.initialize::method"
     },
     {
       "endLine": 84,
-      "endOffset": 3256,
+      "endOffset": 3271,
       "kind": "method",
       "name": "RoslynAdapter.batchIndex",
       "startLine": 58,
-      "startOffset": 2087,
+      "startOffset": 2102,
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.batchIndex::method"
     },
     {
       "endLine": 99,
-      "endOffset": 3741,
+      "endOffset": 3756,
       "kind": "method",
       "name": "RoslynAdapter.extractSymbols",
       "startLine": 86,
-      "startOffset": 3260,
+      "startOffset": 3275,
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.extractSymbols::method"
     },
     {
       "endLine": 114,
-      "endOffset": 4265,
+      "endOffset": 4280,
       "kind": "method",
       "name": "RoslynAdapter.extractEdges",
       "startLine": 101,
-      "startOffset": 3745,
+      "startOffset": 3760,
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.extractEdges::method"
     },
     {
       "endLine": 124,
-      "endOffset": 4547,
+      "endOffset": 4562,
       "kind": "method",
       "name": "RoslynAdapter.extractComplexity",
       "startLine": 116,
-      "startOffset": 4269,
+      "startOffset": 4284,
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.extractComplexity::method"
     },
     {
       "endLine": 134,
-      "endOffset": 4822,
+      "endOffset": 4837,
       "kind": "method",
       "name": "RoslynAdapter.startKeepAlive",
       "startLine": 129,
-      "startOffset": 4609,
+      "startOffset": 4624,
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.startKeepAlive::method"
     },
     {
-      "endLine": 147,
-      "endOffset": 5186,
+      "endLine": 167,
+      "endOffset": 5854,
       "kind": "method",
       "name": "RoslynAdapter.reindexFile",
       "startLine": 139,
-      "startOffset": 4903,
+      "startOffset": 4918,
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.reindexFile::method"
     },
     {
-      "endLine": 156,
-      "endOffset": 5380,
+      "endLine": 176,
+      "endOffset": 6048,
       "kind": "method",
       "name": "RoslynAdapter.dispose",
-      "startLine": 149,
-      "startOffset": 5190,
+      "startLine": 169,
+      "startOffset": 5858,
       "symbolId": "packages/lang-csharp/src/roslyn/roslyn-adapter.ts::RoslynAdapter.dispose::method"
     }
   ]

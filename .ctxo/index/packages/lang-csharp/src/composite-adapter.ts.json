@@ -34,11 +34,15 @@
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.getRoslynDelegate::method"
     },
     {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.getIncrementalReindex::method"
+    },
+    {
       "cyclomatic": 3,
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.getTier::method"
     }
   ],
-  "contentHash": "ee909dec429626ab78c921041f7383c0f548920218ebd78e5cf7f06263e75544",
+  "contentHash": "3dd9fab2a4ff6f629cfcb281893378d46e8fd224eb5e3518a461806596177dbd",
   "edges": [
     {
       "from": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter::class",
@@ -84,102 +88,117 @@
   "file": "packages/lang-csharp/src/composite-adapter.ts",
   "intent": [
     {
+      "date": "2026-06-21T22:21:43+03:00",
+      "hash": "a44ad6c248d2a18f89695c97c95662b679049482",
+      "kind": "commit",
+      "message": "refactor(lang-csharp): expose Roslyn keep-alive via generic getIncrementalReindex()"
+    },
+    {
       "date": "2026-04-13T02:01:42+03:00",
       "hash": "777ffddd20b586a9a44711ca77b43ea210f69d7b",
       "kind": "commit",
       "message": "feat(lang-csharp): extract C# adapter bundle as @ctxo/lang-csharp plugin"
     }
   ],
-  "lastModified": 1776354056,
+  "lastModified": 1782069704,
   "symbols": [
     {
-      "endLine": 78,
-      "endOffset": 2870,
+      "endLine": 83,
+      "endOffset": 3054,
       "kind": "class",
       "name": "CSharpCompositeAdapter",
       "startLine": 13,
-      "startOffset": 618,
+      "startOffset": 639,
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter::class"
     },
     {
       "endLine": 41,
-      "endOffset": 1642,
+      "endOffset": 1663,
       "kind": "method",
       "name": "CSharpCompositeAdapter.initialize",
       "startLine": 18,
-      "startOffset": 837,
+      "startOffset": 858,
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.initialize::method"
     },
     {
       "endLine": 45,
-      "endOffset": 1732,
+      "endOffset": 1753,
       "kind": "method",
       "name": "CSharpCompositeAdapter.dispose",
       "startLine": 43,
-      "startOffset": 1646,
+      "startOffset": 1667,
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.dispose::method"
     },
     {
       "endLine": 49,
-      "endOffset": 1910,
+      "endOffset": 1931,
       "kind": "method",
       "name": "CSharpCompositeAdapter.extractSymbols",
       "startLine": 47,
-      "startOffset": 1736,
+      "startOffset": 1757,
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.extractSymbols::method"
     },
     {
       "endLine": 53,
-      "endOffset": 2083,
+      "endOffset": 2104,
       "kind": "method",
       "name": "CSharpCompositeAdapter.extractEdges",
       "startLine": 51,
-      "startOffset": 1914,
+      "startOffset": 1935,
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.extractEdges::method"
     },
     {
       "endLine": 57,
-      "endOffset": 2274,
+      "endOffset": 2295,
       "kind": "method",
       "name": "CSharpCompositeAdapter.extractComplexity",
       "startLine": 55,
-      "startOffset": 2087,
+      "startOffset": 2108,
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.extractComplexity::method"
     },
     {
       "endLine": 61,
-      "endOffset": 2373,
+      "endOffset": 2394,
       "kind": "method",
       "name": "CSharpCompositeAdapter.isSupported",
       "startLine": 59,
-      "startOffset": 2278,
+      "startOffset": 2299,
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.isSupported::method"
     },
     {
       "endLine": 65,
-      "endOffset": 2491,
+      "endOffset": 2512,
       "kind": "method",
       "name": "CSharpCompositeAdapter.setSymbolRegistry",
       "startLine": 63,
-      "startOffset": 2377,
+      "startOffset": 2398,
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.setSymbolRegistry::method"
     },
     {
       "endLine": 70,
-      "endOffset": 2652,
+      "endOffset": 2673,
       "kind": "method",
       "name": "CSharpCompositeAdapter.getRoslynDelegate",
       "startLine": 68,
-      "startOffset": 2581,
+      "startOffset": 2602,
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.getRoslynDelegate::method"
     },
     {
-      "endLine": 77,
-      "endOffset": 2868,
+      "endLine": 75,
+      "endOffset": 2836,
+      "kind": "method",
+      "name": "CSharpCompositeAdapter.getIncrementalReindex",
+      "startLine": 73,
+      "startOffset": 2755,
+      "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.getIncrementalReindex::method"
+    },
+    {
+      "endLine": 82,
+      "endOffset": 3052,
       "kind": "method",
       "name": "CSharpCompositeAdapter.getTier",
-      "startLine": 73,
-      "startOffset": 2714,
+      "startLine": 78,
+      "startOffset": 2898,
       "symbolId": "packages/lang-csharp/src/composite-adapter.ts::CSharpCompositeAdapter.getTier::method"
     }
   ]

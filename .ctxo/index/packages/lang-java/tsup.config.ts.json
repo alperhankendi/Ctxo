@@ -1,0 +1,17 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "652c7d3db655c23272a7da843494617e8ffff9c39fca8419d69fb4559fb0894a",
+  "edges": [],
+  "file": "packages/lang-java/tsup.config.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T16:55:58+03:00",
+      "hash": "01493cb8950fd64cccd99ee8f3fdee933e3196c5",
+      "kind": "commit",
+      "message": "feat(lang-java): scaffold package + minimal logger"
+    }
+  ],
+  "lastModified": 1782050164,
+  "symbols": []
+}

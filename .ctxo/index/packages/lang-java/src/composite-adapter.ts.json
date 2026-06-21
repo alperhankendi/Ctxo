@@ -1,0 +1,230 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.initialize::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.dispose::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.extractSymbols::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.extractEdges::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.extractComplexity::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.isSupported::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.setSymbolRegistry::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.getIncrementalReindex::method"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.buildIncrementalCapability::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.getAnalyzerDelegate::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.getTier::method"
+    }
+  ],
+  "contentHash": "e2a06f16ae6dda985440ef5b0e024fa7adeca61a801862f583ade57ac8ebfd8c",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-java/src/java-adapter.ts::JavaAdapter::class"
+    },
+    {
+      "from": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class"
+    },
+    {
+      "from": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-java/src/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter::class",
+      "kind": "implements",
+      "to": "/packages/lang-java/src/composite-adapter.ts::ILanguageAdapter::interface"
+    },
+    {
+      "from": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.initialize::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class"
+    },
+    {
+      "from": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.getIncrementalReindex::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.buildIncrementalCapability::method"
+    },
+    {
+      "from": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-java/src/java-adapter.ts::JavaAdapter::class"
+    },
+    {
+      "from": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class"
+    }
+  ],
+  "file": "packages/lang-java/src/composite-adapter.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T22:58:58+03:00",
+      "hash": "85eb8c57bcb41b2bf3bd0f8a2a98189deba62220",
+      "kind": "commit",
+      "message": "fix(lang-java): skip version warn when plugin version unknown, memoize pkg resolve, stable reindex capability"
+    },
+    {
+      "date": "2026-06-21T22:32:10+03:00",
+      "hash": "016c9f2687b92c81296621e8674f6ac37f3eee0a",
+      "kind": "commit",
+      "message": "feat(lang-java): expose getIncrementalReindex (JDT keep-alive + tree-sitter complexity)"
+    },
+    {
+      "date": "2026-06-21T18:39:40+03:00",
+      "hash": "938d84e64dee58a01715fb80180113575afd6506",
+      "kind": "commit",
+      "message": "feat(lang-java): wire composite to JDT full tier; declare full tier"
+    },
+    {
+      "date": "2026-06-21T17:11:42+03:00",
+      "hash": "b08f1b1e19a02287117399bf4eacfef900dd5bc9",
+      "kind": "commit",
+      "message": "feat(lang-java): JavaCompositeAdapter (syntax tier seam)"
+    }
+  ],
+  "lastModified": 1782071943,
+  "symbols": [
+    {
+      "endLine": 110,
+      "endOffset": 4364,
+      "kind": "class",
+      "name": "JavaCompositeAdapter",
+      "startLine": 14,
+      "startOffset": 641,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter::class"
+    },
+    {
+      "endLine": 38,
+      "endOffset": 1553,
+      "kind": "method",
+      "name": "JavaCompositeAdapter.initialize",
+      "startLine": 22,
+      "startOffset": 947,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.initialize::method"
+    },
+    {
+      "endLine": 43,
+      "endOffset": 1686,
+      "kind": "method",
+      "name": "JavaCompositeAdapter.dispose",
+      "startLine": 40,
+      "startOffset": 1557,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.dispose::method"
+    },
+    {
+      "endLine": 47,
+      "endOffset": 1847,
+      "kind": "method",
+      "name": "JavaCompositeAdapter.extractSymbols",
+      "startLine": 45,
+      "startOffset": 1690,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.extractSymbols::method"
+    },
+    {
+      "endLine": 51,
+      "endOffset": 2003,
+      "kind": "method",
+      "name": "JavaCompositeAdapter.extractEdges",
+      "startLine": 49,
+      "startOffset": 1851,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.extractEdges::method"
+    },
+    {
+      "endLine": 55,
+      "endOffset": 2158,
+      "kind": "method",
+      "name": "JavaCompositeAdapter.extractComplexity",
+      "startLine": 53,
+      "startOffset": 2007,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.extractComplexity::method"
+    },
+    {
+      "endLine": 57,
+      "endOffset": 2253,
+      "kind": "method",
+      "name": "JavaCompositeAdapter.isSupported",
+      "startLine": 57,
+      "startOffset": 2162,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.isSupported::method"
+    },
+    {
+      "endLine": 61,
+      "endOffset": 2372,
+      "kind": "method",
+      "name": "JavaCompositeAdapter.setSymbolRegistry",
+      "startLine": 59,
+      "startOffset": 2257,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.setSymbolRegistry::method"
+    },
+    {
+      "endLine": 69,
+      "endOffset": 2637,
+      "kind": "method",
+      "name": "JavaCompositeAdapter.getIncrementalReindex",
+      "startLine": 63,
+      "startOffset": 2376,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.getIncrementalReindex::method"
+    },
+    {
+      "endLine": 101,
+      "endOffset": 4124,
+      "kind": "method",
+      "name": "JavaCompositeAdapter.buildIncrementalCapability",
+      "startLine": 71,
+      "startOffset": 2641,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.buildIncrementalCapability::method"
+    },
+    {
+      "endLine": 103,
+      "endOffset": 4202,
+      "kind": "method",
+      "name": "JavaCompositeAdapter.getAnalyzerDelegate",
+      "startLine": 103,
+      "startOffset": 4128,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.getAnalyzerDelegate::method"
+    },
+    {
+      "endLine": 109,
+      "endOffset": 4362,
+      "kind": "method",
+      "name": "JavaCompositeAdapter.getTier",
+      "startLine": 105,
+      "startOffset": 4206,
+      "symbolId": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter.getTier::method"
+    }
+  ]
+}

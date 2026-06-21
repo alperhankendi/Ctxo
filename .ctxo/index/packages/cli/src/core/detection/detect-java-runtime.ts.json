@@ -1,0 +1,94 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/cli/src/core/detection/detect-java-runtime.ts::parseJavaMajor::function"
+    },
+    {
+      "cyclomatic": 14,
+      "symbolId": "packages/cli/src/core/detection/detect-java-runtime.ts::detectJavaMajor::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/core/detection/detect-java-runtime.ts::resetJavaRuntimeCacheForTests::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/core/detection/detect-java-runtime.ts::javaRuntimeAvailable::function"
+    }
+  ],
+  "contentHash": "5b8ef94a95083ba614d41b4487d38967b97a81b6b26f0322c771ef2793b1f19a",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/detection/detect-java-runtime.ts::detectJavaMajor::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/detection/detect-java-runtime.ts::parseJavaMajor::function"
+    },
+    {
+      "from": "packages/cli/src/core/detection/detect-java-runtime.ts::javaRuntimeAvailable::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/detection/detect-java-runtime.ts::detectJavaMajor::function"
+    }
+  ],
+  "file": "packages/cli/src/core/detection/detect-java-runtime.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T23:03:15+03:00",
+      "hash": "d5becbf12efd7bed099bcadbb2433690776f83f4",
+      "kind": "commit",
+      "message": "fix(cli): reader recovers intent/antiPatterns, findJavaFile skips symlinks, memoize java detect, dedup watch keep-alives"
+    },
+    {
+      "date": "2026-06-21T21:37:52+03:00",
+      "hash": "9881bd26f19f46b3b60ca8c32c32deec1d3a3378",
+      "kind": "commit",
+      "message": "fix(cli): java detection timeout + dedup + doctor checks real jar + recursive java scan"
+    },
+    {
+      "date": "2026-06-21T21:00:28+03:00",
+      "hash": "f27d649cae7476722adc94845b714909c77ec35b",
+      "kind": "commit",
+      "message": "feat(cli): ctxo install java smart full-tier default (--full-tier/--syntax-only)"
+    }
+  ],
+  "lastModified": 1782072203,
+  "symbols": [
+    {
+      "endLine": 11,
+      "endOffset": 527,
+      "kind": "function",
+      "name": "parseJavaMajor",
+      "startLine": 5,
+      "startOffset": 200,
+      "symbolId": "packages/cli/src/core/detection/detect-java-runtime.ts::parseJavaMajor::function"
+    },
+    {
+      "endLine": 52,
+      "endOffset": 1999,
+      "kind": "function",
+      "name": "detectJavaMajor",
+      "startLine": 25,
+      "startOffset": 1097,
+      "symbolId": "packages/cli/src/core/detection/detect-java-runtime.ts::detectJavaMajor::function"
+    },
+    {
+      "endLine": 61,
+      "endOffset": 2290,
+      "kind": "function",
+      "name": "resetJavaRuntimeCacheForTests",
+      "startLine": 59,
+      "startOffset": 2202,
+      "symbolId": "packages/cli/src/core/detection/detect-java-runtime.ts::resetJavaRuntimeCacheForTests::function"
+    },
+    {
+      "endLine": 66,
+      "endOffset": 2463,
+      "kind": "function",
+      "name": "javaRuntimeAvailable",
+      "startLine": 64,
+      "startOffset": 2371,
+      "symbolId": "packages/cli/src/core/detection/detect-java-runtime.ts::javaRuntimeAvailable::function"
+    }
+  ]
+}

@@ -97,6 +97,12 @@
   "file": "docs/runbook/mcp-validation/mcp-validation-test.ts",
   "intent": [
     {
+      "date": "2026-04-16T19:25:45+03:00",
+      "hash": "0c3893bcaf820fddd8f2f6c6423ec3e46e39f260",
+      "kind": "commit",
+      "message": "fix(tests): resolve pre-existing test suite failures (1044/1044 green)"
+    },
+    {
       "date": "2026-04-16T02:04:31+03:00",
       "hash": "999ca72cdb48edc8893678e48384dd1b3627d5a6",
       "kind": "commit",
@@ -115,6 +121,6 @@
       "message": "Add automated MCP validation test script to runbook"
     }
   ],
-  "lastModified": 1776354055,
+  "lastModified": 1780236810,
   "symbols": []
 }

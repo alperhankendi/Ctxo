@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "38954e3838f1598d2c2d2a146b9db2fc2decdb5aef3e1c6f11522d7486c3de97",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/__tests__/graph-loader.test.ts::graph-loader.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/graph-loader.ts::loadGraph::function"
+    }
+  ],
+  "file": "packages/cli/src/cli/__tests__/graph-loader.test.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T03:41:38+03:00",
+      "hash": "8961ad92ad81ec5600ccf0ac37f8f024d01414f4",
+      "kind": "commit",
+      "message": "feat(cli): shared graph loader; visualize reuses it"
+    }
+  ],
+  "lastModified": 1780236812,
+  "symbols": []
+}

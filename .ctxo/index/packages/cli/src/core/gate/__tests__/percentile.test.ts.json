@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "9224c160bbc5804fb9275b5bcd8646afaf5c265828e33ac732d0d3da1cb6e4f9",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/gate/__tests__/percentile.test.ts::percentile.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/gate/percentile.ts::percentileCutoff::function"
+    }
+  ],
+  "file": "packages/cli/src/core/gate/__tests__/percentile.test.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T03:35:10+03:00",
+      "hash": "67ce155906cb8badc7a8570ad019157e329dceb9",
+      "kind": "commit",
+      "message": "feat(gate): percentile cutoff helper"
+    }
+  ],
+  "lastModified": 1780236813,
+  "symbols": []
+}

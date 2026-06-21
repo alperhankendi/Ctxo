@@ -1,0 +1,156 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/cli/src/cli/gate-command.ts::GateCommand.preview::method"
+    }
+  ],
+  "contentHash": "bdd685095c1247d310547b71f4a983084ab2718722fe378a106fe2358de35aaf",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/gate/gate-config.ts::resolveGateThresholds::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/graph-loader.ts::loadGraph::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/gate/percentile.ts::percentileCutoff::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/gate/gate-decision.ts::shouldBlock::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand.preview::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand.preview::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/gate/gate-config.ts::resolveGateThresholds::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand.preview::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/graph-loader.ts::loadGraph::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand.preview::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/gate/percentile.ts::percentileCutoff::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand.preview::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/gate/gate-decision.ts::shouldBlock::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand.preview::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand.preview::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/config/load-config.ts::loadConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/gate/gate-config.ts::resolveGateThresholds::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/graph-loader.ts::loadGraph::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/importance/pagerank-calculator.ts::PageRankCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/gate/percentile.ts::percentileCutoff::function"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/gate-command.ts::GateCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/gate/gate-decision.ts::shouldBlock::function"
+    }
+  ],
+  "file": "packages/cli/src/cli/gate-command.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T03:54:44+03:00",
+      "hash": "0e4f04f7108ec870fae13925dc3081e84bd3083a",
+      "kind": "commit",
+      "message": "feat(cli): ctxo gate --preview for data-driven tuning"
+    }
+  ],
+  "lastModified": 1780236812,
+  "symbols": [
+    {
+      "endLine": 50,
+      "endOffset": 2382,
+      "kind": "class",
+      "name": "GateCommand",
+      "startLine": 13,
+      "startOffset": 601,
+      "symbolId": "packages/cli/src/cli/gate-command.ts::GateCommand::class"
+    },
+    {
+      "endLine": 49,
+      "endOffset": 2379,
+      "kind": "method",
+      "name": "GateCommand.preview",
+      "startLine": 19,
+      "startOffset": 763,
+      "symbolId": "packages/cli/src/cli/gate-command.ts::GateCommand.preview::method"
+    },
+    {
+      "endLine": 11,
+      "endOffset": 597,
+      "kind": "interface",
+      "name": "GatePreviewOptions",
+      "startLine": 11,
+      "startOffset": 542,
+      "symbolId": "packages/cli/src/cli/gate-command.ts::GatePreviewOptions::interface"
+    }
+  ]
+}

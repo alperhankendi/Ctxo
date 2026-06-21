@@ -1,0 +1,29 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "75594ad13c843b8eb80c86c248ef64807340fec873dfec73674ac246694ad0f8",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/__tests__/install-java-tier.test.ts::install-java-tier.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/install-command.ts::resolveJavaPackages::function"
+    }
+  ],
+  "file": "packages/cli/src/cli/__tests__/install-java-tier.test.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T21:44:46+03:00",
+      "hash": "0ab7f597d864a825c43be37e8dde4e07df8d4ae1",
+      "kind": "commit",
+      "message": "fix(cli): error on conflicting --full-tier and --syntax-only instead of silent override"
+    },
+    {
+      "date": "2026-06-21T21:00:28+03:00",
+      "hash": "f27d649cae7476722adc94845b714909c77ec35b",
+      "kind": "commit",
+      "message": "feat(cli): ctxo install java smart full-tier default (--full-tier/--syntax-only)"
+    }
+  ],
+  "lastModified": 1782067487,
+  "symbols": []
+}

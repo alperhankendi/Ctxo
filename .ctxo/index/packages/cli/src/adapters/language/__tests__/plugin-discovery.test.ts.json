@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "5b4f73b6f579b7cbb3e0edf4964492aa7de3dafc877ddd3aba082fe61b8e765a",
+  "contentHash": "ad473c2698bceb047f2138f99f8ddfad639408c687d7fbbde96d4839e2b26cfd",
   "edges": [
     {
       "from": "packages/cli/src/adapters/language/__tests__/plugin-discovery.test.ts::plugin-discovery.test::variable",
@@ -11,6 +11,12 @@
   ],
   "file": "packages/cli/src/adapters/language/__tests__/plugin-discovery.test.ts",
   "intent": [
+    {
+      "date": "2026-04-17T21:09:00+03:00",
+      "hash": "e040bde5c9b1ee06a84caf976dbd7fff3cb48f55",
+      "kind": "commit",
+      "message": "fix(cli): resolve language plugins from consumer project under npx"
+    },
     {
       "date": "2026-04-14T00:07:20+03:00",
       "hash": "30d5459eca9bc79be5a8f6814cbbfb4ed5c3bc14",
@@ -24,6 +30,6 @@
       "message": "test(cli): audit cleanup — add plugin protocol coverage, fix ctxo-mcp drift"
     }
   ],
-  "lastModified": 1776354055,
+  "lastModified": 1780236811,
   "symbols": []
 }

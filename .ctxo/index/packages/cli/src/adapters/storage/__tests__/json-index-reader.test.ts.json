@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "a2454f79ad18a5457dd7434ec7599462c32ba3c0754352b8963b9dad820f8a21",
+  "contentHash": "d398d5be084f2a9435d2f4dce6fcb7021868ecd4d8a73c128d90ecf6408675e1",
   "edges": [
     {
       "from": "packages/cli/src/adapters/storage/__tests__/json-index-reader.test.ts::json-index-reader.test::variable",
@@ -27,6 +27,18 @@
   "file": "packages/cli/src/adapters/storage/__tests__/json-index-reader.test.ts",
   "intent": [
     {
+      "date": "2026-06-21T23:03:15+03:00",
+      "hash": "d5becbf12efd7bed099bcadbb2433690776f83f4",
+      "kind": "commit",
+      "message": "fix(cli): reader recovers intent/antiPatterns, findJavaFile skips symlinks, memoize java detect, dedup watch keep-alives"
+    },
+    {
+      "date": "2026-06-21T21:34:32+03:00",
+      "hash": "f29f14822006ed9f4bdb3eb1f147abf5a0f1d3fd",
+      "kind": "commit",
+      "message": "fix(core): accept name-reference edge targets + resilient index read (unblocks Java inheritance edges)"
+    },
+    {
       "date": "2026-04-16T02:24:31+03:00",
       "hash": "0ef4193220fc4b421794c9eec1ad7e20948611e6",
       "kind": "commit",
@@ -39,6 +51,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776354055,
+  "lastModified": 1782072198,
   "symbols": []
 }

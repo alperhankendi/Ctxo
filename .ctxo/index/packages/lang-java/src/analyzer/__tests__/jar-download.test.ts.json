@@ -1,0 +1,28 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "1552e5b1552a318a280f7949fbd3817c01de312cdc86df6ec931b88ec5f582cc",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/analyzer/__tests__/jar-download.test.ts::jar-download.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jar-download.ts::verifySha256::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/__tests__/jar-download.test.ts::jar-download.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jar-download.ts::resolveAnalyzerJar::function"
+    }
+  ],
+  "file": "packages/lang-java/src/analyzer/__tests__/jar-download.test.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T18:29:51+03:00",
+      "hash": "bc0d6522da4bde595fd41e59abdb3f22ae23313e",
+      "kind": "commit",
+      "message": "feat(lang-java): analyzer jar resolution + SHA-256 verify (env/cache, opt-in download)"
+    }
+  ],
+  "lastModified": 1782055792,
+  "symbols": []
+}

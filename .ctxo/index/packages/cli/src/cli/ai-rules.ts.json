@@ -2,6 +2,10 @@
   "antiPatterns": [],
   "complexity": [
     {
+      "cyclomatic": 7,
+      "symbolId": "packages/cli/src/cli/ai-rules.ts::ensureClaudeHook::function"
+    },
+    {
       "cyclomatic": 3,
       "symbolId": "packages/cli/src/cli/ai-rules.ts::detectPlatforms::function"
     },
@@ -15,6 +19,10 @@
     },
     {
       "cyclomatic": 4,
+      "symbolId": "packages/cli/src/cli/ai-rules.ts::installSkills::function"
+    },
+    {
+      "cyclomatic": 4,
       "symbolId": "packages/cli/src/cli/ai-rules.ts::ensureGitignore::function"
     },
     {
@@ -22,7 +30,7 @@
       "symbolId": "packages/cli/src/cli/ai-rules.ts::ensureConfig::function"
     },
     {
-      "cyclomatic": 9,
+      "cyclomatic": 11,
       "symbolId": "packages/cli/src/cli/ai-rules.ts::getMcpConfigTargets::function"
     },
     {
@@ -30,7 +38,7 @@
       "symbolId": "packages/cli/src/cli/ai-rules.ts::ensureMcpConfig::function"
     }
   ],
-  "contentHash": "f100d1719c203f6888ec4ac4b5ede3e97b3a9db3b337f158ac8781b68d4eada0",
+  "contentHash": "c7b24e3400d18d119dcfe143370dc897cc3e5fc6faa16effef7a3e9ed4d38f81",
   "edges": [
     {
       "from": "packages/cli/src/cli/ai-rules.ts::generateRules::function",
@@ -56,10 +64,39 @@
       "from": "packages/cli/src/cli/ai-rules.ts::installRules::function",
       "kind": "calls",
       "to": "packages/cli/src/cli/ai-rules.ts::escapeRegExp::function"
+    },
+    {
+      "from": "packages/cli/src/cli/ai-rules.ts::installSkills::function",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/ai-rules.ts::skillsSourceDir::function"
     }
   ],
   "file": "packages/cli/src/cli/ai-rules.ts",
   "intent": [
+    {
+      "date": "2026-05-31T04:00:02+03:00",
+      "hash": "207805c40c086e6f6a5393b94cd79be3f31a5f91",
+      "kind": "commit",
+      "message": "feat(init): default config ships gate block"
+    },
+    {
+      "date": "2026-05-31T03:59:37+03:00",
+      "hash": "2876cbb087dcf3e05e27f82a831289d1a9f741b4",
+      "kind": "commit",
+      "message": "feat(init): register PreToolUse gate-hook in .claude/settings.json"
+    },
+    {
+      "date": "2026-05-31T03:57:11+03:00",
+      "hash": "3c6835b0bb99c6b87565e35b67c2c68a1c2b976d",
+      "kind": "commit",
+      "message": "feat(init): installSkills copies skills per platform"
+    },
+    {
+      "date": "2026-05-15T21:42:48+03:00",
+      "hash": "55abc5e38a0dc8f1a430426dc40571c01d65d5c4",
+      "kind": "commit",
+      "message": "feat(cli): add Gemini CLI and Continue to ctxo init (#82)"
+    },
     {
       "date": "2026-04-14T00:09:00+03:00",
       "hash": "6cd9f99085f9b5f1f71eb1d54a2baa953d18449c",
@@ -85,97 +122,124 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776354056,
+  "lastModified": 1780236812,
   "symbols": [
     {
-      "endLine": 40,
-      "endOffset": 2313,
+      "endLine": 45,
+      "endOffset": 2003,
+      "kind": "function",
+      "name": "ensureClaudeHook",
+      "startLine": 16,
+      "startOffset": 611,
+      "symbolId": "packages/cli/src/cli/ai-rules.ts::ensureClaudeHook::function"
+    },
+    {
+      "endLine": 79,
+      "endOffset": 4402,
       "kind": "function",
       "name": "detectPlatforms",
-      "startLine": 32,
-      "startOffset": 2051,
+      "startLine": 71,
+      "startOffset": 4132,
       "symbolId": "packages/cli/src/cli/ai-rules.ts::detectPlatforms::function"
     },
     {
-      "endLine": 107,
-      "endOffset": 5047,
+      "endLine": 146,
+      "endOffset": 7203,
       "kind": "function",
       "name": "generateRules",
-      "startLine": 99,
-      "startOffset": 4852,
+      "startLine": 138,
+      "startOffset": 7000,
       "symbolId": "packages/cli/src/cli/ai-rules.ts::generateRules::function"
     },
     {
-      "endLine": 156,
-      "endOffset": 6963,
+      "endLine": 195,
+      "endOffset": 9168,
       "kind": "function",
       "name": "installRules",
-      "startLine": 118,
-      "startOffset": 5367,
+      "startLine": 157,
+      "startOffset": 7534,
       "symbolId": "packages/cli/src/cli/ai-rules.ts::installRules::function"
     },
     {
-      "endLine": 185,
-      "endOffset": 8083,
+      "endLine": 239,
+      "endOffset": 10931,
+      "kind": "function",
+      "name": "installSkills",
+      "startLine": 225,
+      "startOffset": 10330,
+      "symbolId": "packages/cli/src/cli/ai-rules.ts::installSkills::function"
+    },
+    {
+      "endLine": 264,
+      "endOffset": 11979,
       "kind": "function",
       "name": "ensureGitignore",
-      "startLine": 168,
-      "startOffset": 7325,
+      "startLine": 247,
+      "startOffset": 11204,
       "symbolId": "packages/cli/src/cli/ai-rules.ts::ensureGitignore::function"
     },
     {
-      "endLine": 219,
-      "endOffset": 9110,
+      "endLine": 302,
+      "endOffset": 13123,
       "kind": "function",
       "name": "ensureConfig",
-      "startLine": 207,
-      "startOffset": 8677,
+      "startLine": 290,
+      "startOffset": 12678,
       "symbolId": "packages/cli/src/cli/ai-rules.ts::ensureConfig::function"
     },
     {
-      "endLine": 262,
-      "endOffset": 10596,
+      "endLine": 353,
+      "endOffset": 15174,
       "kind": "function",
       "name": "getMcpConfigTargets",
-      "startLine": 239,
-      "startOffset": 9767,
+      "startLine": 322,
+      "startOffset": 13800,
       "symbolId": "packages/cli/src/cli/ai-rules.ts::getMcpConfigTargets::function"
     },
     {
-      "endLine": 299,
-      "endOffset": 11924,
+      "endLine": 390,
+      "endOffset": 16539,
       "kind": "function",
       "name": "ensureMcpConfig",
-      "startLine": 264,
-      "startOffset": 10598,
+      "startLine": 355,
+      "startOffset": 15178,
       "symbolId": "packages/cli/src/cli/ai-rules.ts::ensureMcpConfig::function"
     },
     {
-      "endLine": 20,
-      "endOffset": 691,
+      "endLine": 57,
+      "endOffset": 2379,
       "kind": "interface",
       "name": "Platform",
-      "startLine": 10,
-      "startOffset": 329,
+      "startLine": 47,
+      "startOffset": 2007,
       "symbolId": "packages/cli/src/cli/ai-rules.ts::Platform::interface"
     },
     {
-      "endLine": 116,
-      "endOffset": 5365,
+      "endLine": 155,
+      "endOffset": 7530,
       "kind": "interface",
       "name": "InstallResult",
-      "startLine": 113,
-      "startOffset": 5270,
+      "startLine": 152,
+      "startOffset": 7432,
       "symbolId": "packages/cli/src/cli/ai-rules.ts::InstallResult::interface"
     },
     {
-      "endLine": 30,
-      "endOffset": 2048,
+      "endLine": 69,
+      "endOffset": 4127,
       "kind": "variable",
       "name": "PLATFORMS",
-      "startLine": 22,
-      "startOffset": 706,
+      "startLine": 59,
+      "startOffset": 2396,
       "symbolId": "packages/cli/src/cli/ai-rules.ts::PLATFORMS::variable"
+    },
+    {
+      "endLine": 205,
+      "endOffset": 9584,
+      "kind": "variable",
+      "name": "SKILLS",
+      "startLine": 205,
+      "startOffset": 9511,
+      "symbolId": "packages/cli/src/cli/ai-rules.ts::SKILLS::variable"
     }
   ]
 }

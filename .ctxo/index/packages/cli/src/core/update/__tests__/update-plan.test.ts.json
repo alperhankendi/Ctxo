@@ -1,0 +1,60 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "99d935f99304164cdfb5c1c6fc1df4f7274a4757c3c840cdb79dc320f852cd8a",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/update/__tests__/update-plan.test.ts::update-plan.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/update-plan.ts::detectChannel::function"
+    },
+    {
+      "from": "packages/cli/src/core/update/__tests__/update-plan.test.ts::update-plan.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/update-plan.ts::compareSemver::function"
+    },
+    {
+      "from": "packages/cli/src/core/update/__tests__/update-plan.test.ts::update-plan.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/update-plan.ts::computePackageStates::function"
+    },
+    {
+      "from": "packages/cli/src/core/update/__tests__/update-plan.test.ts::update-plan.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/update-plan.ts::selectInstallTargets::function"
+    },
+    {
+      "from": "packages/cli/src/core/update/__tests__/update-plan.test.ts::update-plan.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/update-plan.ts::isSafeVersionSpecifier::function"
+    },
+    {
+      "from": "packages/cli/src/core/update/__tests__/update-plan.test.ts::update-plan.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/update-plan.ts::markWorkspaceLinks::function"
+    },
+    {
+      "from": "packages/cli/src/core/update/__tests__/update-plan.test.ts::update-plan.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/registry-client.ts::RegistryResult::type",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/core/update/__tests__/update-plan.test.ts",
+  "intent": [
+    {
+      "date": "2026-05-16T02:27:32+03:00",
+      "hash": "1c53eed82d7eb08d763f6dc3d45f7a762e37fe63",
+      "kind": "commit",
+      "message": "fix(update): skip workspace-linked plugins from install plan (#92)"
+    },
+    {
+      "date": "2026-05-16T00:52:48+03:00",
+      "hash": "27b4ffd3198a8ac6f7686717e5fa7771702cdb44",
+      "kind": "commit",
+      "message": "feat(cli): ctxo update — self-update mechanism for CLI + plugins (#84)"
+    }
+  ],
+  "lastModified": 1780236814,
+  "symbols": []
+}

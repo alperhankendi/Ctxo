@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "3f56c0808934a39162b978040f1d5fab7f5294a08ebf61070fc06d8b5575b18e",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/__tests__/gate-command.test.ts::gate-command.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/gate-command.ts::GateCommand::class"
+    }
+  ],
+  "file": "packages/cli/src/cli/__tests__/gate-command.test.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T03:54:44+03:00",
+      "hash": "0e4f04f7108ec870fae13925dc3081e84bd3083a",
+      "kind": "commit",
+      "message": "feat(cli): ctxo gate --preview for data-driven tuning"
+    }
+  ],
+  "lastModified": 1780236812,
+  "symbols": []
+}

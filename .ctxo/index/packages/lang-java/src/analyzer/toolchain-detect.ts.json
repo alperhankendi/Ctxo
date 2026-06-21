@@ -1,0 +1,94 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-java/src/analyzer/toolchain-detect.ts::parseJavaVersion::function"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-java/src/analyzer/toolchain-detect.ts::resolveJavaBin::function"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/lang-java/src/analyzer/toolchain-detect.ts::detectJavaRuntime::function"
+    }
+  ],
+  "contentHash": "5ab36309b27c4bb802a92169881106fc15d20dda2252d0902719c9e7ca189bc2",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/analyzer/toolchain-detect.ts::parseJavaVersion::function",
+      "kind": "imports",
+      "to": "packages/lang-java/src/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/toolchain-detect.ts::detectJavaRuntime::function",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/toolchain-detect.ts::resolveJavaBin::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/toolchain-detect.ts::detectJavaRuntime::function",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/toolchain-detect.ts::parseJavaVersion::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/toolchain-detect.ts::detectJavaRuntime::function",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/toolchain-detect.ts::finalize::function"
+    }
+  ],
+  "file": "packages/lang-java/src/analyzer/toolchain-detect.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T18:35:56+03:00",
+      "hash": "7300956c1639cf23a2e9e8c1fedb667f25d07cfe",
+      "kind": "commit",
+      "message": "feat(lang-java): jdt analyzer process (spawn batch + JSONL parse)"
+    },
+    {
+      "date": "2026-06-21T18:28:16+03:00",
+      "hash": "7e4d5c6bcde8f52b719df19bd36037acbe672b89",
+      "kind": "commit",
+      "message": "feat(lang-java): java toolchain detection (parse version, gate >=17)"
+    }
+  ],
+  "lastModified": 1782056160,
+  "symbols": [
+    {
+      "endLine": 26,
+      "endOffset": 857,
+      "kind": "function",
+      "name": "parseJavaVersion",
+      "startLine": 16,
+      "startOffset": 424,
+      "symbolId": "packages/lang-java/src/analyzer/toolchain-detect.ts::parseJavaVersion::function"
+    },
+    {
+      "endLine": 36,
+      "endOffset": 1213,
+      "kind": "function",
+      "name": "resolveJavaBin",
+      "startLine": 29,
+      "startOffset": 942,
+      "symbolId": "packages/lang-java/src/analyzer/toolchain-detect.ts::resolveJavaBin::function"
+    },
+    {
+      "endLine": 56,
+      "endOffset": 2138,
+      "kind": "function",
+      "name": "detectJavaRuntime",
+      "startLine": 39,
+      "startOffset": 1288,
+      "symbolId": "packages/lang-java/src/analyzer/toolchain-detect.ts::detectJavaRuntime::function"
+    },
+    {
+      "endLine": 13,
+      "endOffset": 350,
+      "kind": "interface",
+      "name": "JavaToolchainInfo",
+      "startLine": 8,
+      "startOffset": 233,
+      "symbolId": "packages/lang-java/src/analyzer/toolchain-detect.ts::JavaToolchainInfo::interface"
+    }
+  ]
+}

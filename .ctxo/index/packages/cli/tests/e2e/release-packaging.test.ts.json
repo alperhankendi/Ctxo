@@ -1,10 +1,16 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "778ba86d7219b987d8bafbcd1affdfbfe78b15d72dea2a2125ae8119b050a3b6",
+  "contentHash": "4c85ba6e3ac2fdba3a7d69e431cbf624a0b209a12bd4c9be4fb1ce138e110130",
   "edges": [],
   "file": "packages/cli/tests/e2e/release-packaging.test.ts",
   "intent": [
+    {
+      "date": "2026-06-21T21:11:15+03:00",
+      "hash": "cbed063a4d36d47dcad6535d9ce388af1bb4a2f4",
+      "kind": "commit",
+      "message": "chore(lang-java): changeset adds @ctxo/lang-java-analyzer; plan 5 complete"
+    },
     {
       "date": "2026-04-16T02:43:12+03:00",
       "hash": "2ded1a911a7f195becd8d07e5a1f28368b76858f",
@@ -30,6 +36,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776354056,
+  "lastModified": 1782065477,
   "symbols": []
 }

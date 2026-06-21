@@ -1,0 +1,46 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "749e4339754292328357149b216bd0718ccd056df6c8b0e778428d03b43e5b75",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/update/__tests__/registry-client.test.ts::registry-client.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/registry-client.ts::fetchDistTags::function"
+    },
+    {
+      "from": "packages/cli/src/core/update/__tests__/registry-client.test.ts::registry-client.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/registry-client.ts::fetchDistTagsBatch::function"
+    },
+    {
+      "from": "packages/cli/src/core/update/__tests__/registry-client.test.ts::registry-client.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/registry-client.ts::HttpsFetcher::type",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/update/__tests__/registry-client.test.ts::registry-client.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/registry-client.ts::RegistryHit::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/update/__tests__/registry-client.test.ts::registry-client.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/update/registry-client.ts::RegistryMiss::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/core/update/__tests__/registry-client.test.ts",
+  "intent": [
+    {
+      "date": "2026-05-16T00:52:48+03:00",
+      "hash": "27b4ffd3198a8ac6f7686717e5fa7771702cdb44",
+      "kind": "commit",
+      "message": "feat(cli): ctxo update — self-update mechanism for CLI + plugins (#84)"
+    }
+  ],
+  "lastModified": 1780236814,
+  "symbols": []
+}

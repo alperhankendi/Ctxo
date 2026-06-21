@@ -1,0 +1,258 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.extractSymbols::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.walkTypeDecls::method"
+    },
+    {
+      "cyclomatic": 9,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.extractMembers::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.extractEdges::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.firstTypeSymbolId::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.resolveTypeId::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.collectImports::method"
+    },
+    {
+      "cyclomatic": 13,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.walkTypeEdges::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.typeNames::method"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.extractComplexity::method"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.countLogicalOperators::method"
+    }
+  ],
+  "contentHash": "6b4b989ca51022c5ccc4586ef51e46a44d5f6b986808738ceabb8c0d77468a85",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/java-adapter.ts::JavaAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter::class"
+    },
+    {
+      "from": "packages/lang-java/src/java-adapter.ts::JavaAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-java/src/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/lang-java/src/java-adapter.ts::JavaAdapter::class",
+      "kind": "extends",
+      "to": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter::class"
+    },
+    {
+      "from": "packages/lang-java/src/java-adapter.ts::JavaAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/java-adapter.ts::JavaAdapter.walkTypeDecls::method"
+    },
+    {
+      "from": "packages/lang-java/src/java-adapter.ts::JavaAdapter.walkTypeDecls::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/java-adapter.ts::JavaAdapter.extractMembers::method"
+    },
+    {
+      "from": "packages/lang-java/src/java-adapter.ts::JavaAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/java-adapter.ts::JavaAdapter.collectImports::method"
+    },
+    {
+      "from": "packages/lang-java/src/java-adapter.ts::JavaAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/java-adapter.ts::JavaAdapter.firstTypeSymbolId::method"
+    },
+    {
+      "from": "packages/lang-java/src/java-adapter.ts::JavaAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/java-adapter.ts::JavaAdapter.walkTypeEdges::method"
+    },
+    {
+      "from": "packages/lang-java/src/java-adapter.ts::JavaAdapter.walkTypeEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/java-adapter.ts::JavaAdapter.typeNames::method"
+    },
+    {
+      "from": "packages/lang-java/src/java-adapter.ts::JavaAdapter.walkTypeEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/java-adapter.ts::JavaAdapter.resolveTypeId::method"
+    },
+    {
+      "from": "packages/lang-java/src/java-adapter.ts::JavaAdapter.walkTypeEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/java-adapter.ts::JavaAdapter.typeNames::method"
+    },
+    {
+      "from": "packages/lang-java/src/java-adapter.ts::JavaAdapter.walkTypeEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/java-adapter.ts::JavaAdapter.resolveTypeId::method"
+    },
+    {
+      "from": "packages/lang-java/src/java-adapter.ts::JavaAdapter.walkTypeEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/java-adapter.ts::JavaAdapter.typeNames::method"
+    },
+    {
+      "from": "packages/lang-java/src/java-adapter.ts::JavaAdapter.walkTypeEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/java-adapter.ts::JavaAdapter.resolveTypeId::method"
+    },
+    {
+      "from": "packages/lang-java/src/java-adapter.ts::JavaAdapter.extractComplexity::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/java-adapter.ts::JavaAdapter.countLogicalOperators::method"
+    },
+    {
+      "from": "packages/lang-java/src/java-adapter.ts::JavaAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter::class"
+    }
+  ],
+  "file": "packages/lang-java/src/java-adapter.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T17:09:48+03:00",
+      "hash": "63399096431e22b096f99414f4b77d2315d78d8d",
+      "kind": "commit",
+      "message": "fix(lang-java): preserve import paths, scoped type names, stronger edge/constructor tests"
+    },
+    {
+      "date": "2026-06-21T17:01:35+03:00",
+      "hash": "72e0dfcad772aea7055aceffe502e0f3758b4fa3",
+      "kind": "commit",
+      "message": "feat(lang-java): tree-sitter symbol extraction (types + members)"
+    }
+  ],
+  "lastModified": 1782050990,
+  "symbols": [
+    {
+      "endLine": 295,
+      "endOffset": 10759,
+      "kind": "class",
+      "name": "JavaAdapter",
+      "startLine": 34,
+      "startOffset": 1091,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter::class"
+    },
+    {
+      "endLine": 53,
+      "endOffset": 1691,
+      "kind": "method",
+      "name": "JavaAdapter.extractSymbols",
+      "startLine": 43,
+      "startOffset": 1306,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.extractSymbols::method"
+    },
+    {
+      "endLine": 81,
+      "endOffset": 2795,
+      "kind": "method",
+      "name": "JavaAdapter.walkTypeDecls",
+      "startLine": 55,
+      "startOffset": 1695,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.walkTypeDecls::method"
+    },
+    {
+      "endLine": 117,
+      "endOffset": 4209,
+      "kind": "method",
+      "name": "JavaAdapter.extractMembers",
+      "startLine": 83,
+      "startOffset": 2799,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.extractMembers::method"
+    },
+    {
+      "endLine": 139,
+      "endOffset": 5049,
+      "kind": "method",
+      "name": "JavaAdapter.extractEdges",
+      "startLine": 121,
+      "startOffset": 4280,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.extractEdges::method"
+    },
+    {
+      "endLine": 155,
+      "endOffset": 5647,
+      "kind": "method",
+      "name": "JavaAdapter.firstTypeSymbolId",
+      "startLine": 142,
+      "startOffset": 5149,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.firstTypeSymbolId::method"
+    },
+    {
+      "endLine": 165,
+      "endOffset": 6055,
+      "kind": "method",
+      "name": "JavaAdapter.resolveTypeId",
+      "startLine": 161,
+      "startOffset": 5801,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.resolveTypeId::method"
+    },
+    {
+      "endLine": 184,
+      "endOffset": 6764,
+      "kind": "method",
+      "name": "JavaAdapter.collectImports",
+      "startLine": 171,
+      "startOffset": 6232,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.collectImports::method"
+    },
+    {
+      "endLine": 234,
+      "endOffset": 8675,
+      "kind": "method",
+      "name": "JavaAdapter.walkTypeEdges",
+      "startLine": 186,
+      "startOffset": 6768,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.walkTypeEdges::method"
+    },
+    {
+      "endLine": 248,
+      "endOffset": 9138,
+      "kind": "method",
+      "name": "JavaAdapter.typeNames",
+      "startLine": 237,
+      "startOffset": 8775,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.typeNames::method"
+    },
+    {
+      "endLine": 277,
+      "endOffset": 10197,
+      "kind": "method",
+      "name": "JavaAdapter.extractComplexity",
+      "startLine": 252,
+      "startOffset": 9209,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.extractComplexity::method"
+    },
+    {
+      "endLine": 294,
+      "endOffset": 10757,
+      "kind": "method",
+      "name": "JavaAdapter.countLogicalOperators",
+      "startLine": 283,
+      "startOffset": 10375,
+      "symbolId": "packages/lang-java/src/java-adapter.ts::JavaAdapter.countLogicalOperators::method"
+    }
+  ]
+}

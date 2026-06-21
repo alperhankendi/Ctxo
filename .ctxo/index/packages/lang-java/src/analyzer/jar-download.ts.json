@@ -1,0 +1,102 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-java/src/analyzer/jar-download.ts::verifySha256::function"
+    },
+    {
+      "cyclomatic": 8,
+      "symbolId": "packages/lang-java/src/analyzer/jar-download.ts::resolveAnalyzerJar::function"
+    },
+    {
+      "cyclomatic": 7,
+      "symbolId": "packages/lang-java/src/analyzer/jar-download.ts::downloadAnalyzerJar::function"
+    }
+  ],
+  "contentHash": "1abb76f6f46cf3df3d9cf5021f8ebf4a7233be6156dbab54abf0763faa0940ed",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/analyzer/jar-download.ts::verifySha256::function",
+      "kind": "imports",
+      "to": "packages/lang-java/src/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jar-download.ts::resolveAnalyzerJar::function",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jar-download.ts::defaultCacheRoot::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jar-download.ts::resolveAnalyzerJar::function",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jar-download.ts::verifySha256::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jar-download.ts::downloadAnalyzerJar::function",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jar-download.ts::defaultCacheRoot::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jar-download.ts::downloadAnalyzerJar::function",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jar-download.ts::verifySha256::function"
+    }
+  ],
+  "file": "packages/lang-java/src/analyzer/jar-download.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T18:29:51+03:00",
+      "hash": "bc0d6522da4bde595fd41e59abdb3f22ae23313e",
+      "kind": "commit",
+      "message": "feat(lang-java): analyzer jar resolution + SHA-256 verify (env/cache, opt-in download)"
+    }
+  ],
+  "lastModified": 1782055793,
+  "symbols": [
+    {
+      "endLine": 28,
+      "endOffset": 1042,
+      "kind": "function",
+      "name": "verifySha256",
+      "startLine": 20,
+      "startOffset": 736,
+      "symbolId": "packages/lang-java/src/analyzer/jar-download.ts::verifySha256::function"
+    },
+    {
+      "endLine": 57,
+      "endOffset": 2087,
+      "kind": "function",
+      "name": "resolveAnalyzerJar",
+      "startLine": 40,
+      "startOffset": 1387,
+      "symbolId": "packages/lang-java/src/analyzer/jar-download.ts::resolveAnalyzerJar::function"
+    },
+    {
+      "endLine": 84,
+      "endOffset": 3190,
+      "kind": "function",
+      "name": "downloadAnalyzerJar",
+      "startLine": 63,
+      "startOffset": 2245,
+      "symbolId": "packages/lang-java/src/analyzer/jar-download.ts::downloadAnalyzerJar::function"
+    },
+    {
+      "endLine": 18,
+      "endOffset": 734,
+      "kind": "interface",
+      "name": "ResolveOpts",
+      "startLine": 15,
+      "startOffset": 649,
+      "symbolId": "packages/lang-java/src/analyzer/jar-download.ts::ResolveOpts::interface"
+    },
+    {
+      "endLine": 11,
+      "endOffset": 510,
+      "kind": "variable",
+      "name": "EXPECTED_SHA256",
+      "startLine": 11,
+      "startOffset": 473,
+      "symbolId": "packages/lang-java/src/analyzer/jar-download.ts::EXPECTED_SHA256::variable"
+    }
+  ]
+}

@@ -2,7 +2,7 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 3,
+      "cyclomatic": 5,
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.addNode::method"
     },
     {
@@ -14,12 +14,16 @@
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.getNode::method"
     },
     {
-      "cyclomatic": 7,
+      "cyclomatic": 10,
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.resolveNodeId::method"
     },
     {
-      "cyclomatic": 5,
+      "cyclomatic": 9,
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.resolveNodeFuzzy::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.extractNameKind::method"
     },
     {
       "cyclomatic": 2,
@@ -42,18 +46,18 @@
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.allEdges::method"
     }
   ],
-  "contentHash": "f89288bf9d9ed20766a1b5ab1deb201bba9782e8735ad4b67c339aa2f57fee20",
+  "contentHash": "8c7c0663eab70242272711c4f5c3fdcc032f59acc95a99931d9b5c88f800b64c",
   "edges": [
     {
       "from": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::SymbolNode::type",
+      "to": "packages/cli/src/core/types.ts::SymbolNode::class",
       "typeOnly": true
     },
     {
       "from": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::GraphEdge::type",
+      "to": "packages/cli/src/core/types.ts::GraphEdge::class",
       "typeOnly": true
     },
     {
@@ -72,6 +76,16 @@
       "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.resolveNodeFuzzy::method"
     },
     {
+      "from": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.resolveNodeId::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.extractNameKind::method"
+    },
+    {
+      "from": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.resolveNodeFuzzy::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.extractNameKind::method"
+    },
+    {
       "from": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.hasNode::method",
       "kind": "calls",
       "to": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.resolveNodeFuzzy::method"
@@ -79,16 +93,22 @@
     {
       "from": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class",
       "kind": "uses",
-      "to": "packages/cli/src/core/types.ts::SymbolNode::type"
+      "to": "packages/cli/src/core/types.ts::SymbolNode::class"
     },
     {
       "from": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class",
       "kind": "uses",
-      "to": "packages/cli/src/core/types.ts::GraphEdge::type"
+      "to": "packages/cli/src/core/types.ts::GraphEdge::class"
     }
   ],
   "file": "packages/cli/src/core/graph/symbol-graph.ts",
   "intent": [
+    {
+      "date": "2026-06-21T22:53:46+03:00",
+      "hash": "f84ed75d4ea6295a35784214d5b9ee5a57c376e2",
+      "kind": "commit",
+      "message": "fix(core): resolve name-reference edge targets by unambiguous name+kind (Java cross-file edges)"
+    },
     {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
@@ -96,11 +116,11 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776354056,
+  "lastModified": 1782071629,
   "symbols": [
     {
-      "endLine": 106,
-      "endOffset": 3582,
+      "endLine": 148,
+      "endOffset": 5497,
       "kind": "class",
       "name": "SymbolGraph",
       "startLine": 2,
@@ -108,93 +128,102 @@
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph::class"
     },
     {
-      "endLine": 16,
-      "endOffset": 711,
+      "endLine": 25,
+      "endOffset": 1191,
       "kind": "method",
       "name": "SymbolGraph.addNode",
-      "startLine": 9,
-      "startOffset": 398,
+      "startLine": 10,
+      "startOffset": 472,
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.addNode::method"
     },
     {
-      "endLine": 35,
-      "endOffset": 1522,
+      "endLine": 44,
+      "endOffset": 2002,
       "kind": "method",
       "name": "SymbolGraph.addEdge",
-      "startLine": 18,
-      "startOffset": 717,
+      "startLine": 27,
+      "startOffset": 1197,
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.addEdge::method"
     },
     {
-      "endLine": 39,
-      "endOffset": 1657,
+      "endLine": 48,
+      "endOffset": 2137,
       "kind": "method",
       "name": "SymbolGraph.getNode",
-      "startLine": 37,
-      "startOffset": 1528,
+      "startLine": 46,
+      "startOffset": 2008,
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.getNode::method"
     },
     {
-      "endLine": 58,
-      "endOffset": 2325,
+      "endLine": 78,
+      "endOffset": 3285,
       "kind": "method",
       "name": "SymbolGraph.resolveNodeId",
-      "startLine": 41,
-      "startOffset": 1663,
+      "startLine": 50,
+      "startOffset": 2143,
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.resolveNodeId::method"
     },
     {
-      "endLine": 73,
-      "endOffset": 2838,
+      "endLine": 103,
+      "endOffset": 4181,
       "kind": "method",
       "name": "SymbolGraph.resolveNodeFuzzy",
-      "startLine": 60,
-      "startOffset": 2331,
+      "startLine": 80,
+      "startOffset": 3291,
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.resolveNodeFuzzy::method"
     },
     {
-      "endLine": 77,
-      "endOffset": 2948,
+      "endLine": 115,
+      "endOffset": 4753,
+      "kind": "method",
+      "name": "SymbolGraph.extractNameKind",
+      "startLine": 111,
+      "startOffset": 4487,
+      "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.extractNameKind::method"
+    },
+    {
+      "endLine": 119,
+      "endOffset": 4863,
       "kind": "method",
       "name": "SymbolGraph.getForwardEdges",
-      "startLine": 75,
-      "startOffset": 2844,
+      "startLine": 117,
+      "startOffset": 4759,
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.getForwardEdges::method"
     },
     {
-      "endLine": 81,
-      "endOffset": 3058,
+      "endLine": 123,
+      "endOffset": 4973,
       "kind": "method",
       "name": "SymbolGraph.getReverseEdges",
-      "startLine": 79,
-      "startOffset": 2954,
+      "startLine": 121,
+      "startOffset": 4869,
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.getReverseEdges::method"
     },
     {
-      "endLine": 85,
-      "endOffset": 3192,
+      "endLine": 127,
+      "endOffset": 5107,
       "kind": "method",
       "name": "SymbolGraph.hasNode",
-      "startLine": 83,
-      "startOffset": 3064,
+      "startLine": 125,
+      "startOffset": 4979,
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.hasNode::method"
     },
     {
-      "endLine": 97,
-      "endOffset": 3399,
+      "endLine": 139,
+      "endOffset": 5314,
       "kind": "method",
       "name": "SymbolGraph.allNodes",
-      "startLine": 95,
-      "startOffset": 3330,
+      "startLine": 137,
+      "startOffset": 5245,
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.allNodes::method"
     },
     {
-      "endLine": 105,
-      "endOffset": 3579,
+      "endLine": 147,
+      "endOffset": 5494,
       "kind": "method",
       "name": "SymbolGraph.allEdges",
-      "startLine": 99,
-      "startOffset": 3405,
+      "startLine": 141,
+      "startOffset": 5320,
       "symbolId": "packages/cli/src/core/graph/symbol-graph.ts::SymbolGraph.allEdges::method"
     }
   ]

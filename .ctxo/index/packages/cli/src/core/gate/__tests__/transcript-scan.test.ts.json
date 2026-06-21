@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "2c7644d0f144a5e59074bf3085ded2a1e2bfa5806e537b48e140578d73f3d5a4",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/gate/__tests__/transcript-scan.test.ts::transcript-scan.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/gate/transcript-scan.ts::transcriptHasBlastCheck::function"
+    }
+  ],
+  "file": "packages/cli/src/core/gate/__tests__/transcript-scan.test.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T03:38:47+03:00",
+      "hash": "56eef5755c9fc4ba4e733fbb78cd4344ab7fd79c",
+      "kind": "commit",
+      "message": "feat(gate): transcript scan for prior blast-radius checks"
+    }
+  ],
+  "lastModified": 1780236813,
+  "symbols": []
+}

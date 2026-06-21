@@ -1,0 +1,78 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/core/gate/gate-decision.ts::shouldBlock::function"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/core/gate/gate-decision.ts::formatBlockReason::function"
+    }
+  ],
+  "contentHash": "dcc2c4a70155652b43bb6bed2533827b50488968ed34f7f4d22a79c2f2af5492",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/gate/gate-decision.ts::shouldBlock::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/gate/gate-config.ts::ResolvedGate::interface",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/core/gate/gate-decision.ts::shouldBlock::function",
+      "kind": "uses",
+      "to": "packages/cli/src/core/gate/gate-config.ts::ResolvedGate::interface"
+    }
+  ],
+  "file": "packages/cli/src/core/gate/gate-decision.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T04:23:32+03:00",
+      "hash": "34a65caf0600d837fc92bc45c883506580d8cbb9",
+      "kind": "commit",
+      "message": "fix(gate): align symbol locator to 0-based index lines (gate now fires); regular dashes in reason"
+    },
+    {
+      "date": "2026-05-31T03:52:15+03:00",
+      "hash": "31c7de21cc8b8e8ce53a8fc84ee4367ed055de4d",
+      "kind": "commit",
+      "message": "refactor(gate): wrap gate-hook run() fail-open; name magic numbers"
+    },
+    {
+      "date": "2026-05-31T03:35:45+03:00",
+      "hash": "7eb93aed050a57081a2c2344f31d05b982e0b338",
+      "kind": "commit",
+      "message": "feat(gate): block decision + reason formatting"
+    }
+  ],
+  "lastModified": 1780236813,
+  "symbols": [
+    {
+      "endLine": 16,
+      "endOffset": 633,
+      "kind": "function",
+      "name": "shouldBlock",
+      "startLine": 13,
+      "startOffset": 427,
+      "symbolId": "packages/cli/src/core/gate/gate-decision.ts::shouldBlock::function"
+    },
+    {
+      "endLine": 30,
+      "endOffset": 1293,
+      "kind": "function",
+      "name": "formatBlockReason",
+      "startLine": 19,
+      "startOffset": 700,
+      "symbolId": "packages/cli/src/core/gate/gate-decision.ts::formatBlockReason::function"
+    },
+    {
+      "endLine": 11,
+      "endOffset": 423,
+      "kind": "interface",
+      "name": "GateInput",
+      "startLine": 4,
+      "startOffset": 90,
+      "symbolId": "packages/cli/src/core/gate/gate-decision.ts::GateInput::interface"
+    }
+  ]
+}

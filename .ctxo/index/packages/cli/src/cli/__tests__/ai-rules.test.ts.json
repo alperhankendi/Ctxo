@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "a3c40d478896147fa2d3b509bf26600580e3cb87e68a02830161cd75c4e2d252",
+  "contentHash": "014c974000cca40bccd86ccbbc55f6fdef756e0cefc2c7bd72131ca0c474226e",
   "edges": [
     {
       "from": "packages/cli/src/cli/__tests__/ai-rules.test.ts::ai-rules.test::variable",
@@ -42,10 +42,49 @@
       "from": "packages/cli/src/cli/__tests__/ai-rules.test.ts::ai-rules.test::variable",
       "kind": "imports",
       "to": "packages/cli/src/cli/ai-rules.ts::ensureMcpConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/ai-rules.test.ts::ai-rules.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::installSkills::function"
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/ai-rules.test.ts::ai-rules.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::SKILLS::variable"
+    },
+    {
+      "from": "packages/cli/src/cli/__tests__/ai-rules.test.ts::ai-rules.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureClaudeHook::function"
     }
   ],
   "file": "packages/cli/src/cli/__tests__/ai-rules.test.ts",
   "intent": [
+    {
+      "date": "2026-05-31T04:00:02+03:00",
+      "hash": "207805c40c086e6f6a5393b94cd79be3f31a5f91",
+      "kind": "commit",
+      "message": "feat(init): default config ships gate block"
+    },
+    {
+      "date": "2026-05-31T03:59:37+03:00",
+      "hash": "2876cbb087dcf3e05e27f82a831289d1a9f741b4",
+      "kind": "commit",
+      "message": "feat(init): register PreToolUse gate-hook in .claude/settings.json"
+    },
+    {
+      "date": "2026-05-31T03:57:11+03:00",
+      "hash": "3c6835b0bb99c6b87565e35b67c2c68a1c2b976d",
+      "kind": "commit",
+      "message": "feat(init): installSkills copies skills per platform"
+    },
+    {
+      "date": "2026-05-15T21:42:48+03:00",
+      "hash": "55abc5e38a0dc8f1a430426dc40571c01d65d5c4",
+      "kind": "commit",
+      "message": "feat(cli): add Gemini CLI and Continue to ctxo init (#82)"
+    },
     {
       "date": "2026-04-14T00:09:00+03:00",
       "hash": "6cd9f99085f9b5f1f71eb1d54a2baa953d18449c",
@@ -71,6 +110,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776354055,
+  "lastModified": 1780236812,
   "symbols": []
 }

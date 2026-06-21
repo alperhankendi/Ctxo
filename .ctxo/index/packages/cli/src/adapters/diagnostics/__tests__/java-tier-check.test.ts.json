@@ -1,0 +1,45 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "8f06bb608cd48580d53381d2d0d34c7387c8d0bba86ccb220e8783e5ef22d514",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/java-tier-check.test.ts::java-tier-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::evaluateJavaTier::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/java-tier-check.test.ts::java-tier-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::analyzerJarPresent::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/diagnostics/__tests__/java-tier-check.test.ts::java-tier-check.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/diagnostics/checks/java-tier-check.ts::findJavaFile::function"
+    }
+  ],
+  "file": "packages/cli/src/adapters/diagnostics/__tests__/java-tier-check.test.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T23:03:15+03:00",
+      "hash": "d5becbf12efd7bed099bcadbb2433690776f83f4",
+      "kind": "commit",
+      "message": "fix(cli): reader recovers intent/antiPatterns, findJavaFile skips symlinks, memoize java detect, dedup watch keep-alives"
+    },
+    {
+      "date": "2026-06-21T21:37:52+03:00",
+      "hash": "9881bd26f19f46b3b60ca8c32c32deec1d3a3378",
+      "kind": "commit",
+      "message": "fix(cli): java detection timeout + dedup + doctor checks real jar + recursive java scan"
+    },
+    {
+      "date": "2026-06-21T21:03:08+03:00",
+      "hash": "2412211727c75ac7752d888e578c9d7ed97aa0c7",
+      "kind": "commit",
+      "message": "feat(cli): ctxo doctor java tier check (runtime + analyzer + actionable hint)"
+    }
+  ],
+  "lastModified": 1782072196,
+  "symbols": []
+}

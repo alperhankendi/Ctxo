@@ -1,0 +1,45 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "9ee1cded6575d894b74aeb4a1128b13f583b48426d75a53f4510b5de3a4f93db",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/index.ts::plugin::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter::class"
+    }
+  ],
+  "file": "packages/lang-java/src/index.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T18:39:40+03:00",
+      "hash": "938d84e64dee58a01715fb80180113575afd6506",
+      "kind": "commit",
+      "message": "feat(lang-java): wire composite to JDT full tier; declare full tier"
+    },
+    {
+      "date": "2026-06-21T17:19:10+03:00",
+      "hash": "106e11330829e80b27068bdc2ac0b03eeed9f63e",
+      "kind": "commit",
+      "message": "fix(lang-java): declare syntax tier for foundation, cover && / || complexity + interface method"
+    },
+    {
+      "date": "2026-06-21T17:13:05+03:00",
+      "hash": "1f537fe86bddd7fe69bc390007b9b11e7bf026c2",
+      "kind": "commit",
+      "message": "feat(lang-java): plugin entry point export"
+    }
+  ],
+  "lastModified": 1782056384,
+  "symbols": [
+    {
+      "endLine": 19,
+      "endOffset": 656,
+      "kind": "variable",
+      "name": "plugin",
+      "startLine": 9,
+      "startOffset": 379,
+      "symbolId": "packages/lang-java/src/index.ts::plugin::variable"
+    }
+  ]
+}

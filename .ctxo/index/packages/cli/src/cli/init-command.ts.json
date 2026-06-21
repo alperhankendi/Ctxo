@@ -10,15 +10,15 @@
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.run::method"
     },
     {
-      "cyclomatic": 30,
+      "cyclomatic": 36,
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method"
     },
     {
-      "cyclomatic": 16,
+      "cyclomatic": 20,
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method"
     },
     {
-      "cyclomatic": 8,
+      "cyclomatic": 10,
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.dryRun::method"
     },
     {
@@ -30,7 +30,7 @@
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.installHook::method"
     }
   ],
-  "contentHash": "48ace7b9ff96a4f4e924a73873f8db479d99d562293a3a4553704395b3451f4f",
+  "contentHash": "f56e6214a92ec9288ff4c39b82fa80589a26944e5e3cb9f88316a3f61c220d35",
   "edges": [
     {
       "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
@@ -66,6 +66,16 @@
       "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
       "kind": "imports",
       "to": "packages/cli/src/cli/ai-rules.ts::ensureMcpConfig::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::installSkills::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureClaudeHook::function"
     },
     {
       "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
@@ -186,6 +196,11 @@
     {
       "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
       "kind": "calls",
+      "to": "packages/cli/src/cli/ai-rules.ts::installSkills::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
       "to": "packages/cli/src/cli/ai-rules.ts::getMcpConfigTargets::function"
     },
     {
@@ -197,6 +212,11 @@
       "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
       "kind": "calls",
       "to": "packages/cli/src/cli/init-command.ts::InitCommand.installHooks::method"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureClaudeHook::function"
     },
     {
       "from": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method",
@@ -231,6 +251,11 @@
     {
       "from": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method",
       "kind": "calls",
+      "to": "packages/cli/src/cli/ai-rules.ts::installSkills::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method",
+      "kind": "calls",
       "to": "packages/cli/src/cli/ai-rules.ts::getMcpConfigTargets::function"
     },
     {
@@ -242,6 +267,11 @@
       "from": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method",
       "kind": "calls",
       "to": "packages/cli/src/cli/init-command.ts::InitCommand.installHooks::method"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureClaudeHook::function"
     },
     {
       "from": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method",
@@ -311,6 +341,11 @@
     {
       "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
       "kind": "uses",
+      "to": "packages/cli/src/cli/ai-rules.ts::installSkills::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "uses",
       "to": "packages/cli/src/cli/ai-rules.ts::getMcpConfigTargets::function"
     },
     {
@@ -321,11 +356,28 @@
     {
       "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
       "kind": "uses",
+      "to": "packages/cli/src/cli/ai-rules.ts::ensureClaudeHook::function"
+    },
+    {
+      "from": "packages/cli/src/cli/init-command.ts::InitCommand::class",
+      "kind": "uses",
       "to": "packages/cli/src/cli/install-command.ts::InstallCommand::class"
     }
   ],
   "file": "packages/cli/src/cli/init-command.ts",
   "intent": [
+    {
+      "date": "2026-05-31T04:01:39+03:00",
+      "hash": "bbf0a8a23f41c3df090c6c9b892491dc37b764dd",
+      "kind": "commit",
+      "message": "feat(init): prompt + install skills and safe-edit guard"
+    },
+    {
+      "date": "2026-05-16T01:36:14+03:00",
+      "hash": "4367aa15ffd7eee6fa92b1e2a1f6cc40904a5ae3",
+      "kind": "commit",
+      "message": "docs: use scoped npx @ctxo/cli everywhere; add global install path (#86)"
+    },
     {
       "date": "2026-04-16T01:43:29+03:00",
       "hash": "190f929def744a397c040aa323106b18b659dd5c",
@@ -363,87 +415,87 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776354056,
+  "lastModified": 1780236813,
   "symbols": [
     {
-      "endLine": 507,
-      "endOffset": 19834,
+      "endLine": 539,
+      "endOffset": 21398,
       "kind": "class",
       "name": "InitCommand",
       "startLine": 146,
-      "startOffset": 5927,
+      "startOffset": 5960,
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand::class"
     },
     {
       "endLine": 159,
-      "endOffset": 6439,
+      "endOffset": 6472,
       "kind": "method",
       "name": "InitCommand.installHooks",
       "startLine": 154,
-      "startOffset": 6166,
+      "startOffset": 6199,
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.installHooks::method"
     },
     {
       "endLine": 170,
-      "endOffset": 6849,
+      "endOffset": 6882,
       "kind": "method",
       "name": "InitCommand.run",
       "startLine": 161,
-      "startOffset": 6445,
+      "startOffset": 6478,
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.run::method"
     },
     {
-      "endLine": 373,
-      "endOffset": 14736,
+      "endLine": 392,
+      "endOffset": 15684,
       "kind": "method",
       "name": "InitCommand.runInteractive",
       "startLine": 176,
-      "startOffset": 7080,
+      "startOffset": 7113,
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.runInteractive::method"
     },
     {
-      "endLine": 441,
-      "endOffset": 17436,
+      "endLine": 468,
+      "endOffset": 18782,
       "kind": "method",
       "name": "InitCommand.runNonInteractive",
-      "startLine": 379,
-      "startOffset": 14967,
+      "startLine": 398,
+      "startOffset": 15915,
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.runNonInteractive::method"
     },
     {
-      "endLine": 469,
-      "endOffset": 18522,
+      "endLine": 501,
+      "endOffset": 20086,
       "kind": "method",
       "name": "InitCommand.dryRun",
-      "startLine": 447,
-      "startOffset": 17667,
+      "startLine": 474,
+      "startOffset": 19013,
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.dryRun::method"
     },
     {
-      "endLine": 487,
-      "endOffset": 19249,
+      "endLine": 519,
+      "endOffset": 20813,
       "kind": "method",
       "name": "InitCommand.getVersion",
-      "startLine": 475,
-      "startOffset": 18753,
+      "startLine": 507,
+      "startOffset": 20317,
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.getVersion::method"
     },
     {
-      "endLine": 506,
-      "endOffset": 19831,
+      "endLine": 538,
+      "endOffset": 21395,
       "kind": "method",
       "name": "InitCommand.installHook",
-      "startLine": 489,
-      "startOffset": 19255,
+      "startLine": 521,
+      "startOffset": 20819,
       "symbolId": "packages/cli/src/cli/init-command.ts::InitCommand.installHook::method"
     },
     {
       "endLine": 69,
-      "endOffset": 2272,
+      "endOffset": 2305,
       "kind": "interface",
       "name": "InitOptions",
       "startLine": 62,
-      "startOffset": 2064,
+      "startOffset": 2097,
       "symbolId": "packages/cli/src/cli/init-command.ts::InitOptions::interface"
     }
   ]

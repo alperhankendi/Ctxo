@@ -1,0 +1,115 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 10,
+      "symbolId": "packages/cli/src/core/update/registry-client.ts::fetchDistTags::function"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/core/update/registry-client.ts::fetchDistTagsBatch::function"
+    }
+  ],
+  "contentHash": "cede4b02a0868e45a4a7e2f2828203d96611533f1efdd17d3460075146f3d80d",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/update/registry-client.ts::fetchDistTags::function",
+      "kind": "imports",
+      "to": "packages/cli/src/core/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/cli/src/core/update/registry-client.ts::fetchDistTags::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/update/registry-client.ts::classifyFetchError::function"
+    },
+    {
+      "from": "packages/cli/src/core/update/registry-client.ts::fetchDistTagsBatch::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/update/registry-client.ts::fetchDistTags::function"
+    }
+  ],
+  "file": "packages/cli/src/core/update/registry-client.ts",
+  "intent": [
+    {
+      "date": "2026-05-16T00:52:48+03:00",
+      "hash": "27b4ffd3198a8ac6f7686717e5fa7771702cdb44",
+      "kind": "commit",
+      "message": "feat(cli): ctxo update — self-update mechanism for CLI + plugins (#84)"
+    }
+  ],
+  "lastModified": 1780236814,
+  "symbols": [
+    {
+      "endLine": 65,
+      "endOffset": 2127,
+      "kind": "function",
+      "name": "fetchDistTags",
+      "startLine": 32,
+      "startOffset": 834,
+      "symbolId": "packages/cli/src/core/update/registry-client.ts::fetchDistTags::function"
+    },
+    {
+      "endLine": 72,
+      "endOffset": 2355,
+      "kind": "function",
+      "name": "fetchDistTagsBatch",
+      "startLine": 67,
+      "startOffset": 2131,
+      "symbolId": "packages/cli/src/core/update/registry-client.ts::fetchDistTagsBatch::function"
+    },
+    {
+      "endLine": 7,
+      "endOffset": 213,
+      "kind": "interface",
+      "name": "RegistryDistTags",
+      "startLine": 5,
+      "startOffset": 140,
+      "symbolId": "packages/cli/src/core/update/registry-client.ts::RegistryDistTags::interface"
+    },
+    {
+      "endLine": 12,
+      "endOffset": 316,
+      "kind": "interface",
+      "name": "RegistryHit",
+      "startLine": 9,
+      "startOffset": 217,
+      "symbolId": "packages/cli/src/core/update/registry-client.ts::RegistryHit::interface"
+    },
+    {
+      "endLine": 19,
+      "endOffset": 518,
+      "kind": "interface",
+      "name": "RegistryMiss",
+      "startLine": 14,
+      "startOffset": 320,
+      "symbolId": "packages/cli/src/core/update/registry-client.ts::RegistryMiss::interface"
+    },
+    {
+      "endLine": 26,
+      "endOffset": 684,
+      "kind": "interface",
+      "name": "FetchOptions",
+      "startLine": 23,
+      "startOffset": 582,
+      "symbolId": "packages/cli/src/core/update/registry-client.ts::FetchOptions::interface"
+    },
+    {
+      "endLine": 21,
+      "endOffset": 578,
+      "kind": "type",
+      "name": "RegistryResult",
+      "startLine": 21,
+      "startOffset": 522,
+      "symbolId": "packages/cli/src/core/update/registry-client.ts::RegistryResult::type"
+    },
+    {
+      "endLine": 28,
+      "endOffset": 793,
+      "kind": "type",
+      "name": "HttpsFetcher",
+      "startLine": 28,
+      "startOffset": 688,
+      "symbolId": "packages/cli/src/core/update/registry-client.ts::HttpsFetcher::type"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "b51e2d9a72a1d328cb9193a65375ec9c112c985c374ae119d0493af5e2cfe795",
+  "contentHash": "d2e3b9e608af744d706205079008f507975f667fb71f862229d4c7e08e8df1b8",
   "edges": [
     {
       "from": "packages/cli/src/adapters/storage/__tests__/architecture-artifacts-writer.test.ts::architecture-artifacts-writer.test::variable",
@@ -22,7 +22,14 @@
     }
   ],
   "file": "packages/cli/src/adapters/storage/__tests__/architecture-artifacts-writer.test.ts",
-  "intent": [],
-  "lastModified": 1776354055,
+  "intent": [
+    {
+      "date": "2026-04-16T19:22:18+03:00",
+      "hash": "3aa609655910712ef690f927ee9479c626c225e1",
+      "kind": "commit",
+      "message": "feat(ui): surface architectural intelligence in visualize + ctxo-visualizer"
+    }
+  ],
+  "lastModified": 1780236812,
   "symbols": []
 }

@@ -1,0 +1,28 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "67ee290335b040f061ad5f88e17482a87cf3fa95edfa277df5907d61da53e733",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/analyzer/__tests__/jdt-keepalive.integration.test.ts::jdt-keepalive.integration.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/toolchain-detect.ts::detectJavaRuntime::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/__tests__/jdt-keepalive.integration.test.ts::jdt-keepalive.integration.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/composite-adapter.ts::JavaCompositeAdapter::class"
+    }
+  ],
+  "file": "packages/lang-java/src/analyzer/__tests__/jdt-keepalive.integration.test.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T22:32:10+03:00",
+      "hash": "016c9f2687b92c81296621e8674f6ac37f3eee0a",
+      "kind": "commit",
+      "message": "feat(lang-java): expose getIncrementalReindex (JDT keep-alive + tree-sitter complexity)"
+    }
+  ],
+  "lastModified": 1782070356,
+  "symbols": []
+}

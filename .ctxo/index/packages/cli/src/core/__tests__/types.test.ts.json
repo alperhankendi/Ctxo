@@ -1,46 +1,57 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "6b7dc3864ef08d12fef8b3ce66f27efeef856cf0b4532b3c59ca518c58e41ec7",
+  "contentHash": "da000cf90978babde4d759fb4af31e7f0a28c2d0b4342514b265bda4357b7d90",
   "edges": [
     {
       "from": "packages/cli/src/core/__tests__/types.test.ts::types.test::variable",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::SymbolKindSchema::variable"
+      "to": "packages/cli/src/core/types.ts::SymbolKindSchema::class"
     },
     {
       "from": "packages/cli/src/core/__tests__/types.test.ts::types.test::variable",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::SymbolNodeSchema::variable"
+      "to": "packages/cli/src/core/types.ts::SymbolNodeSchema::class"
     },
     {
       "from": "packages/cli/src/core/__tests__/types.test.ts::types.test::variable",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::GraphEdgeSchema::variable"
+      "to": "packages/cli/src/core/types.ts::GraphEdgeSchema::class"
     },
     {
       "from": "packages/cli/src/core/__tests__/types.test.ts::types.test::variable",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::FileIndexSchema::variable"
+      "to": "packages/cli/src/core/types.ts::FileIndexSchema::class"
     },
     {
       "from": "packages/cli/src/core/__tests__/types.test.ts::types.test::variable",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::SymbolIdSchema::variable"
+      "to": "packages/cli/src/core/types.ts::SymbolIdSchema::class"
     },
     {
       "from": "packages/cli/src/core/__tests__/types.test.ts::types.test::variable",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::EdgeKindSchema::variable"
+      "to": "packages/cli/src/core/types.ts::EdgeKindSchema::class"
     },
     {
       "from": "packages/cli/src/core/__tests__/types.test.ts::types.test::variable",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::DetailLevelSchema::variable"
+      "to": "packages/cli/src/core/types.ts::DetailLevelSchema::class"
+    },
+    {
+      "from": "packages/cli/src/core/__tests__/types.test.ts::types.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::EdgeTargetSchema::class"
     }
   ],
   "file": "packages/cli/src/core/__tests__/types.test.ts",
   "intent": [
+    {
+      "date": "2026-06-21T21:34:32+03:00",
+      "hash": "f29f14822006ed9f4bdb3eb1f147abf5a0f1d3fd",
+      "kind": "commit",
+      "message": "fix(core): accept name-reference edge targets + resilient index read (unblocks Java inheritance edges)"
+    },
     {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
@@ -48,6 +59,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776354056,
+  "lastModified": 1782066876,
   "symbols": []
 }

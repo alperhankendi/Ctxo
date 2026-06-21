@@ -1,0 +1,106 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore.file::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore.read::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore.hasWarned::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore.recordWarned::method"
+    }
+  ],
+  "contentHash": "1dd708e618317a34a404a9c1768b3cd6da4cc51458ab8b86a73f8312dfb7be31",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore.read::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore.file::method"
+    },
+    {
+      "from": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore.hasWarned::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore.read::method"
+    },
+    {
+      "from": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore.recordWarned::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore.read::method"
+    },
+    {
+      "from": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore.recordWarned::method",
+      "kind": "calls",
+      "to": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore.file::method"
+    }
+  ],
+  "file": "packages/cli/src/adapters/gate/gate-session-store.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T03:39:21+03:00",
+      "hash": "a6cd2eb5ce4a6adb51b69a56e6137ac80be6b3af",
+      "kind": "commit",
+      "message": "feat(gate): per-session warned-symbol store"
+    }
+  ],
+  "lastModified": 1780236811,
+  "symbols": [
+    {
+      "endLine": 41,
+      "endOffset": 1377,
+      "kind": "class",
+      "name": "GateSessionStore",
+      "startLine": 7,
+      "startOffset": 295,
+      "symbolId": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore::class"
+    },
+    {
+      "endLine": 13,
+      "endOffset": 549,
+      "kind": "method",
+      "name": "GateSessionStore.file",
+      "startLine": 10,
+      "startOffset": 385,
+      "symbolId": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore.file::method"
+    },
+    {
+      "endLine": 24,
+      "endOffset": 870,
+      "kind": "method",
+      "name": "GateSessionStore.read",
+      "startLine": 15,
+      "startOffset": 555,
+      "symbolId": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore.read::method"
+    },
+    {
+      "endLine": 28,
+      "endOffset": 986,
+      "kind": "method",
+      "name": "GateSessionStore.hasWarned",
+      "startLine": 26,
+      "startOffset": 876,
+      "symbolId": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore.hasWarned::method"
+    },
+    {
+      "endLine": 40,
+      "endOffset": 1374,
+      "kind": "method",
+      "name": "GateSessionStore.recordWarned",
+      "startLine": 30,
+      "startOffset": 992,
+      "symbolId": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore.recordWarned::method"
+    }
+  ]
+}

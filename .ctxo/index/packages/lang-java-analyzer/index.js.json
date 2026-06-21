@@ -1,0 +1,41 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-java-analyzer/index.js::jarPath::function"
+    }
+  ],
+  "contentHash": "c1130adac06d04c545fbf22e43e38e315e314950990c8011215f0c8de7456a43",
+  "edges": [],
+  "file": "packages/lang-java-analyzer/index.js",
+  "intent": [
+    {
+      "date": "2026-06-21T20:49:16+03:00",
+      "hash": "8270489f2778cd02d750fa467251b90f6ee666c8",
+      "kind": "commit",
+      "message": "feat(lang-java-analyzer): new package carrying the prebuilt JDT jar"
+    }
+  ],
+  "lastModified": 1782064159,
+  "symbols": [
+    {
+      "endLine": 13,
+      "endOffset": 538,
+      "kind": "function",
+      "name": "jarPath",
+      "startLine": 10,
+      "startOffset": 418,
+      "symbolId": "packages/lang-java-analyzer/index.js::jarPath::function"
+    },
+    {
+      "endLine": 7,
+      "endOffset": 336,
+      "kind": "variable",
+      "name": "ANALYZER_VERSION",
+      "startLine": 7,
+      "startOffset": 284,
+      "symbolId": "packages/lang-java-analyzer/index.js::ANALYZER_VERSION::variable"
+    }
+  ]
+}

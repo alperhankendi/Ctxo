@@ -1,0 +1,17 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "5a72f9c917b13ede29c1ca04b85f84b2e67db9859693e74f064812e8e53a6c5e",
+  "edges": [],
+  "file": "packages/lang-java/vitest.config.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T16:55:58+03:00",
+      "hash": "01493cb8950fd64cccd99ee8f3fdee933e3196c5",
+      "kind": "commit",
+      "message": "feat(lang-java): scaffold package + minimal logger"
+    }
+  ],
+  "lastModified": 1782050165,
+  "symbols": []
+}

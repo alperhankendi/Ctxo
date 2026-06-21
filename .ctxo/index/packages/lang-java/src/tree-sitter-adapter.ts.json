@@ -1,0 +1,151 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter.isSupported::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter.setSymbolRegistry::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter.parse::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter.buildSymbolId::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter.nodeToLineRange::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter.countCyclomaticComplexity::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractSymbols::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractEdges::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractComplexity::method"
+    }
+  ],
+  "contentHash": "3ebaceb8dbe41cbfffcaff5a4a7c20c69fb917efec61c99c5873fb3b7c2fba29",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter::class",
+      "kind": "implements",
+      "to": "/packages/lang-java/src/tree-sitter-adapter.ts::ILanguageAdapter::interface"
+    }
+  ],
+  "file": "packages/lang-java/src/tree-sitter-adapter.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T16:57:26+03:00",
+      "hash": "63130403fff4afad5292f4705cc2f7c6ecd09dc7",
+      "kind": "commit",
+      "message": "feat(lang-java): add TreeSitterAdapter base class"
+    }
+  ],
+  "lastModified": 1782050247,
+  "symbols": [
+    {
+      "endLine": 62,
+      "endOffset": 2292,
+      "kind": "class",
+      "name": "TreeSitterAdapter",
+      "startLine": 8,
+      "startOffset": 483,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter::class"
+    },
+    {
+      "endLine": 24,
+      "endOffset": 1077,
+      "kind": "method",
+      "name": "TreeSitterAdapter.isSupported",
+      "startLine": 21,
+      "startOffset": 919,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter.isSupported::method"
+    },
+    {
+      "endLine": 28,
+      "endOffset": 1181,
+      "kind": "method",
+      "name": "TreeSitterAdapter.setSymbolRegistry",
+      "startLine": 26,
+      "startOffset": 1081,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter.setSymbolRegistry::method"
+    },
+    {
+      "endLine": 32,
+      "endOffset": 1266,
+      "kind": "method",
+      "name": "TreeSitterAdapter.parse",
+      "startLine": 30,
+      "startOffset": 1185,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter.parse::method"
+    },
+    {
+      "endLine": 36,
+      "endOffset": 1401,
+      "kind": "method",
+      "name": "TreeSitterAdapter.buildSymbolId",
+      "startLine": 34,
+      "startOffset": 1270,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter.buildSymbolId::method"
+    },
+    {
+      "endLine": 47,
+      "endOffset": 1707,
+      "kind": "method",
+      "name": "TreeSitterAdapter.nodeToLineRange",
+      "startLine": 38,
+      "startOffset": 1405,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter.nodeToLineRange::method"
+    },
+    {
+      "endLine": 57,
+      "endOffset": 2030,
+      "kind": "method",
+      "name": "TreeSitterAdapter.countCyclomaticComplexity",
+      "startLine": 49,
+      "startOffset": 1711,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter.countCyclomaticComplexity::method"
+    },
+    {
+      "endLine": 59,
+      "endOffset": 2115,
+      "kind": "method",
+      "name": "TreeSitterAdapter.extractSymbols",
+      "startLine": 59,
+      "startOffset": 2034,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractSymbols::method"
+    },
+    {
+      "endLine": 60,
+      "endOffset": 2196,
+      "kind": "method",
+      "name": "TreeSitterAdapter.extractEdges",
+      "startLine": 60,
+      "startOffset": 2118,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractEdges::method"
+    },
+    {
+      "endLine": 61,
+      "endOffset": 2290,
+      "kind": "method",
+      "name": "TreeSitterAdapter.extractComplexity",
+      "startLine": 61,
+      "startOffset": 2199,
+      "symbolId": "packages/lang-java/src/tree-sitter-adapter.ts::TreeSitterAdapter.extractComplexity::method"
+    }
+  ]
+}

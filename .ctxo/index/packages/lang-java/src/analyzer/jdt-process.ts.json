@@ -1,0 +1,208 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::buildAnalyzerArgs::function"
+    },
+    {
+      "cyclomatic": 14,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::runBatchIndex::function"
+    },
+    {
+      "cyclomatic": 9,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive.start::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive.isAlive::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive.analyzeFile::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive.shutdown::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive.resetIdle::method"
+    }
+  ],
+  "contentHash": "78754a302181c1eca0ff3c398329c26fc4e64364fd13c4c5dca2e3cd17015522",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-process.ts::buildAnalyzerArgs::function",
+      "kind": "imports",
+      "to": "packages/lang-java/src/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-process.ts::runBatchIndex::function",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jdt-process.ts::buildAnalyzerArgs::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive.start::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive.resetIdle::method"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive.analyzeFile::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive.resetIdle::method"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive.resetIdle::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive.shutdown::method"
+    }
+  ],
+  "file": "packages/lang-java/src/analyzer/jdt-process.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T22:55:51+03:00",
+      "hash": "5f9143fe275d150fd9f4d542c46355a66acfce61",
+      "kind": "commit",
+      "message": "fix(lang-java): JdtKeepAlive settles start() on early process exit + dedups concurrent same-file requests"
+    },
+    {
+      "date": "2026-06-21T22:26:20+03:00",
+      "hash": "f000910d270d2e6b245343bd5d0556ac9ff99efd",
+      "kind": "commit",
+      "message": "feat(lang-java): JdtKeepAlive process wrapper for watch incremental re-index"
+    },
+    {
+      "date": "2026-06-21T21:48:07+03:00",
+      "hash": "f7a8d19573b12553bea09673ea7bbb8f3c9f6ab6",
+      "kind": "commit",
+      "message": "fix(lang-java): use platform path delimiter for analyzer classpath arg"
+    },
+    {
+      "date": "2026-06-21T18:35:56+03:00",
+      "hash": "7300956c1639cf23a2e9e8c1fedb667f25d07cfe",
+      "kind": "commit",
+      "message": "feat(lang-java): jdt analyzer process (spawn batch + JSONL parse)"
+    }
+  ],
+  "lastModified": 1782071753,
+  "symbols": [
+    {
+      "endLine": 51,
+      "endOffset": 1261,
+      "kind": "function",
+      "name": "buildAnalyzerArgs",
+      "startLine": 46,
+      "startOffset": 928,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::buildAnalyzerArgs::function"
+    },
+    {
+      "endLine": 115,
+      "endOffset": 3415,
+      "kind": "function",
+      "name": "runBatchIndex",
+      "startLine": 57,
+      "startOffset": 1423,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::runBatchIndex::function"
+    },
+    {
+      "endLine": 191,
+      "endOffset": 6616,
+      "kind": "class",
+      "name": "JdtKeepAlive",
+      "startLine": 118,
+      "startOffset": 3511,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive::class"
+    },
+    {
+      "endLine": 163,
+      "endOffset": 5476,
+      "kind": "method",
+      "name": "JdtKeepAlive.start",
+      "startLine": 131,
+      "startOffset": 3935,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive.start::method"
+    },
+    {
+      "endLine": 165,
+      "endOffset": 5550,
+      "kind": "method",
+      "name": "JdtKeepAlive.isAlive",
+      "startLine": 165,
+      "startOffset": 5480,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive.isAlive::method"
+    },
+    {
+      "endLine": 180,
+      "endOffset": 6198,
+      "kind": "method",
+      "name": "JdtKeepAlive.analyzeFile",
+      "startLine": 167,
+      "startOffset": 5554,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive.analyzeFile::method"
+    },
+    {
+      "endLine": 185,
+      "endOffset": 6388,
+      "kind": "method",
+      "name": "JdtKeepAlive.shutdown",
+      "startLine": 182,
+      "startOffset": 6202,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive.shutdown::method"
+    },
+    {
+      "endLine": 190,
+      "endOffset": 6614,
+      "kind": "method",
+      "name": "JdtKeepAlive.resetIdle",
+      "startLine": 187,
+      "startOffset": 6392,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive.resetIdle::method"
+    },
+    {
+      "endLine": 14,
+      "endOffset": 361,
+      "kind": "interface",
+      "name": "JdtSymbol",
+      "startLine": 6,
+      "startOffset": 193,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::JdtSymbol::interface"
+    },
+    {
+      "endLine": 20,
+      "endOffset": 437,
+      "kind": "interface",
+      "name": "JdtEdge",
+      "startLine": 16,
+      "startOffset": 363,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::JdtEdge::interface"
+    },
+    {
+      "endLine": 28,
+      "endOffset": 574,
+      "kind": "interface",
+      "name": "JdtFileResult",
+      "startLine": 22,
+      "startOffset": 439,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::JdtFileResult::interface"
+    },
+    {
+      "endLine": 34,
+      "endOffset": 678,
+      "kind": "interface",
+      "name": "JdtBatchResult",
+      "startLine": 30,
+      "startOffset": 576,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::JdtBatchResult::interface"
+    },
+    {
+      "endLine": 40,
+      "endOffset": 791,
+      "kind": "interface",
+      "name": "RunOpts",
+      "startLine": 36,
+      "startOffset": 680,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-process.ts::RunOpts::interface"
+    }
+  ]
+}

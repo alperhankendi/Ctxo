@@ -1,0 +1,104 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-java/src/analyzer/jar-resolve.ts::baseVersionMismatch::function"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/lang-java/src/analyzer/jar-resolve.ts::resolveAnalyzerJar::function"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-java/src/analyzer/jar-resolve.ts::analyzerPackageVersion::function"
+    }
+  ],
+  "contentHash": "aef51bed497f35564d95098c5d4c4370bb58f81e43547903fe9658b91e657ff7",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/analyzer/jar-resolve.ts::baseVersionMismatch::function",
+      "kind": "imports",
+      "to": "packages/lang-java/src/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jar-resolve.ts::resolveAnalyzerJar::function",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::resolveAnalyzerPkgJson::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jar-resolve.ts::analyzerPackageVersion::function",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::resolveAnalyzerPkgJson::function"
+    }
+  ],
+  "file": "packages/lang-java/src/analyzer/jar-resolve.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T22:58:58+03:00",
+      "hash": "85eb8c57bcb41b2bf3bd0f8a2a98189deba62220",
+      "kind": "commit",
+      "message": "fix(lang-java): skip version warn when plugin version unknown, memoize pkg resolve, stable reindex capability"
+    },
+    {
+      "date": "2026-06-21T21:42:38+03:00",
+      "hash": "befa4ef6400b91456107191d98f20a68a4868711",
+      "kind": "commit",
+      "message": "fix(lang-java): resolve analyzer across global/local installs + base-version match guard"
+    },
+    {
+      "date": "2026-06-21T20:51:21+03:00",
+      "hash": "c436af389d3cf361ed86c96ffd804a8d48962311",
+      "kind": "commit",
+      "message": "feat(lang-java): resolve analyzer jar from npm package (replaces download)"
+    }
+  ],
+  "lastModified": 1782071942,
+  "symbols": [
+    {
+      "endLine": 31,
+      "endOffset": 1421,
+      "kind": "function",
+      "name": "baseVersionMismatch",
+      "startLine": 27,
+      "startOffset": 1180,
+      "symbolId": "packages/lang-java/src/analyzer/jar-resolve.ts::baseVersionMismatch::function"
+    },
+    {
+      "endLine": 121,
+      "endOffset": 4743,
+      "kind": "function",
+      "name": "resolveAnalyzerJar",
+      "startLine": 107,
+      "startOffset": 4294,
+      "symbolId": "packages/lang-java/src/analyzer/jar-resolve.ts::resolveAnalyzerJar::function"
+    },
+    {
+      "endLine": 132,
+      "endOffset": 5055,
+      "kind": "function",
+      "name": "analyzerPackageVersion",
+      "startLine": 124,
+      "startOffset": 4816,
+      "symbolId": "packages/lang-java/src/analyzer/jar-resolve.ts::analyzerPackageVersion::function"
+    },
+    {
+      "endLine": 18,
+      "endOffset": 798,
+      "kind": "variable",
+      "name": "UNKNOWN_VERSION",
+      "startLine": 18,
+      "startOffset": 773,
+      "symbolId": "packages/lang-java/src/analyzer/jar-resolve.ts::UNKNOWN_VERSION::variable"
+    },
+    {
+      "endLine": 61,
+      "endOffset": 2521,
+      "kind": "variable",
+      "name": "PLUGIN_VERSION",
+      "startLine": 61,
+      "startOffset": 2455,
+      "symbolId": "packages/lang-java/src/analyzer/jar-resolve.ts::PLUGIN_VERSION::variable"
+    }
+  ]
+}

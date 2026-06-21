@@ -1,0 +1,50 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "596fb7af8b035c02f10947b5aa1c965e51c1defe6824fa085a8fb4be3e063df0",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/analyzer/__tests__/jar-resolve.test.ts::jar-resolve.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::resolveAnalyzerJar::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/__tests__/jar-resolve.test.ts::jar-resolve.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::analyzerPackageVersion::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/__tests__/jar-resolve.test.ts::jar-resolve.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::baseVersionMismatch::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/__tests__/jar-resolve.test.ts::jar-resolve.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::UNKNOWN_VERSION::variable"
+    }
+  ],
+  "file": "packages/lang-java/src/analyzer/__tests__/jar-resolve.test.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T22:58:58+03:00",
+      "hash": "85eb8c57bcb41b2bf3bd0f8a2a98189deba62220",
+      "kind": "commit",
+      "message": "fix(lang-java): skip version warn when plugin version unknown, memoize pkg resolve, stable reindex capability"
+    },
+    {
+      "date": "2026-06-21T21:42:38+03:00",
+      "hash": "befa4ef6400b91456107191d98f20a68a4868711",
+      "kind": "commit",
+      "message": "fix(lang-java): resolve analyzer across global/local installs + base-version match guard"
+    },
+    {
+      "date": "2026-06-21T20:51:21+03:00",
+      "hash": "c436af389d3cf361ed86c96ffd804a8d48962311",
+      "kind": "commit",
+      "message": "feat(lang-java): resolve analyzer jar from npm package (replaces download)"
+    }
+  ],
+  "lastModified": 1782071940,
+  "symbols": []
+}

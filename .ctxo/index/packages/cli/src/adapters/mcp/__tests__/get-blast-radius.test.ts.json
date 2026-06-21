@@ -28,6 +28,12 @@
   "file": "packages/cli/src/adapters/mcp/__tests__/get-blast-radius.test.ts",
   "intent": [
     {
+      "date": "2026-04-16T19:25:45+03:00",
+      "hash": "0c3893bcaf820fddd8f2f6c6423ec3e46e39f260",
+      "kind": "commit",
+      "message": "fix(tests): resolve pre-existing test suite failures (1044/1044 green)"
+    },
+    {
       "date": "2026-04-16T02:24:31+03:00",
       "hash": "0ef4193220fc4b421794c9eec1ad7e20948611e6",
       "kind": "commit",
@@ -46,6 +52,6 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776354055,
+  "lastModified": 1780236811,
   "symbols": []
 }

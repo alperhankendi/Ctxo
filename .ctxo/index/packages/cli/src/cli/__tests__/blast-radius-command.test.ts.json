@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "4243d5e23e5c2760f77a9970ffb535f839f4fc0cf07ae2d44ed779fbc34f50f4",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/__tests__/blast-radius-command.test.ts::blast-radius-command.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/blast-radius-command.ts::BlastRadiusCommand::class"
+    }
+  ],
+  "file": "packages/cli/src/cli/__tests__/blast-radius-command.test.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T03:42:33+03:00",
+      "hash": "c06ad48cc825da421e767c9e1c9c64d3baf3402d",
+      "kind": "commit",
+      "message": "feat(cli): ctxo blast-radius --json subcommand"
+    }
+  ],
+  "lastModified": 1780236812,
+  "symbols": []
+}

@@ -1,0 +1,29 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "e38092a186eb6c701faabed11373c902895567e48f7785db59ed02d9aad85441",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/gate/__tests__/gate-decision.test.ts::gate-decision.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/gate/gate-decision.ts::shouldBlock::function"
+    },
+    {
+      "from": "packages/cli/src/core/gate/__tests__/gate-decision.test.ts::gate-decision.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/gate/gate-decision.ts::GateInput::interface",
+      "typeOnly": true
+    }
+  ],
+  "file": "packages/cli/src/core/gate/__tests__/gate-decision.test.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T03:35:45+03:00",
+      "hash": "7eb93aed050a57081a2c2344f31d05b982e0b338",
+      "kind": "commit",
+      "message": "feat(gate): block decision + reason formatting"
+    }
+  ],
+  "lastModified": 1780236813,
+  "symbols": []
+}

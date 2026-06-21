@@ -6,7 +6,7 @@
       "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.readAll::method"
     },
     {
-      "cyclomatic": 3,
+      "cyclomatic": 15,
       "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.readSingle::method"
     },
     {
@@ -14,18 +14,43 @@
       "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.collectJsonFiles::method"
     }
   ],
-  "contentHash": "3081611a65582867033ca4ae8b2b06f4a64cbab64d284fcf09aa9e5b7600bcb2",
+  "contentHash": "8b874172026493969796270a5fd4c2de9eaaa99f91398ef77b4e6a59fcda8692",
   "edges": [
     {
       "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::FileIndexSchema::variable"
+      "to": "packages/cli/src/core/types.ts::FileIndexSchema::class"
     },
     {
       "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
       "kind": "imports",
-      "to": "packages/cli/src/core/types.ts::FileIndex::type",
+      "to": "packages/cli/src/core/types.ts::SymbolNodeSchema::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::GraphEdgeSchema::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::CommitIntentSchema::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::AntiPatternSchema::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/types.ts::FileIndex::class",
       "typeOnly": true
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/logger.ts::createLogger::function"
     },
     {
       "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.readAll::method",
@@ -40,16 +65,54 @@
     {
       "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
       "kind": "uses",
-      "to": "packages/cli/src/core/types.ts::FileIndex::type"
+      "to": "packages/cli/src/core/types.ts::FileIndex::class"
     },
     {
       "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
       "kind": "uses",
-      "to": "packages/cli/src/core/types.ts::FileIndexSchema::variable"
+      "to": "packages/cli/src/core/types.ts::FileIndexSchema::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::SymbolNodeSchema::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::GraphEdgeSchema::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::CommitIntentSchema::class"
+    },
+    {
+      "from": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/types.ts::AntiPatternSchema::class"
     }
   ],
   "file": "packages/cli/src/adapters/storage/json-index-reader.ts",
   "intent": [
+    {
+      "date": "2026-06-21T23:03:15+03:00",
+      "hash": "d5becbf12efd7bed099bcadbb2433690776f83f4",
+      "kind": "commit",
+      "message": "fix(cli): reader recovers intent/antiPatterns, findJavaFile skips symlinks, memoize java detect, dedup watch keep-alives"
+    },
+    {
+      "date": "2026-06-21T21:34:32+03:00",
+      "hash": "f29f14822006ed9f4bdb3eb1f147abf5a0f1d3fd",
+      "kind": "commit",
+      "message": "fix(core): accept name-reference edge targets + resilient index read (unblocks Java inheritance edges)"
+    },
+    {
+      "date": "2026-04-16T19:22:18+03:00",
+      "hash": "3aa609655910712ef690f927ee9479c626c225e1",
+      "kind": "commit",
+      "message": "feat(ui): surface architectural intelligence in visualize + ctxo-visualizer"
+    },
     {
       "date": "2026-04-16T01:43:29+03:00",
       "hash": "190f929def744a397c040aa323106b18b659dd5c",
@@ -63,42 +126,42 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776354055,
+  "lastModified": 1782072199,
   "symbols": [
     {
-      "endLine": 81,
-      "endOffset": 2488,
+      "endLine": 137,
+      "endOffset": 5089,
       "kind": "class",
       "name": "JsonIndexReader",
-      "startLine": 4,
-      "startOffset": 199,
+      "startLine": 14,
+      "startOffset": 396,
       "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader::class"
     },
     {
-      "endLine": 27,
-      "endOffset": 738,
+      "endLine": 37,
+      "endOffset": 935,
       "kind": "method",
       "name": "JsonIndexReader.readAll",
-      "startLine": 11,
-      "startOffset": 361,
+      "startLine": 21,
+      "startOffset": 558,
       "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.readAll::method"
     },
     {
-      "endLine": 51,
-      "endOffset": 1473,
+      "endLine": 107,
+      "endOffset": 4074,
       "kind": "method",
       "name": "JsonIndexReader.readSingle",
-      "startLine": 29,
-      "startOffset": 744,
+      "startLine": 39,
+      "startOffset": 941,
       "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.readSingle::method"
     },
     {
-      "endLine": 80,
-      "endOffset": 2485,
+      "endLine": 136,
+      "endOffset": 5086,
       "kind": "method",
       "name": "JsonIndexReader.collectJsonFiles",
-      "startLine": 53,
-      "startOffset": 1479,
+      "startLine": 109,
+      "startOffset": 4080,
       "symbolId": "packages/cli/src/adapters/storage/json-index-reader.ts::JsonIndexReader.collectJsonFiles::method"
     }
   ]

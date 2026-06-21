@@ -6,33 +6,23 @@
       "symbolId": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
     }
   ],
-  "contentHash": "53c614d33a8828dd43789bd0bebee7d06e2ad3cd41ca3397a40f1f9435c6c5c5",
+  "contentHash": "edaa0c0c1b6b228bc91e71bcc4ea743123257b3d39b9b84431b33ced84b645df",
   "edges": [
     {
       "from": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function",
       "kind": "imports",
-      "to": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface",
+      "to": "packages/cli/src/core/types.ts::CommunitySnapshot::interface",
       "typeOnly": true
-    },
-    {
-      "from": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function",
-      "kind": "imports",
-      "to": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface",
-      "typeOnly": true
-    },
-    {
-      "from": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function",
-      "kind": "uses",
-      "to": "packages/cli/src/ports/i-storage-port.ts::IStoragePort::interface"
-    },
-    {
-      "from": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function",
-      "kind": "uses",
-      "to": "packages/cli/src/ports/i-git-port.ts::IGitPort::interface"
     }
   ],
   "file": "packages/cli/src/core/overlay/snapshot-staleness.ts",
   "intent": [
+    {
+      "date": "2026-04-16T19:29:27+03:00",
+      "hash": "2c6d73ec6b0e0f387b9a7211ea5d7890f3813f4c",
+      "kind": "commit",
+      "message": "fix(core): drop ports/ imports from snapshot-staleness to restore hexagonal boundary"
+    },
     {
       "date": "2026-04-16T02:24:31+03:00",
       "hash": "0ef4193220fc4b421794c9eec1ad7e20948611e6",
@@ -40,25 +30,43 @@
       "message": "feat(mcp): snapshotStaleness in _meta surfaces snapshot-vs-HEAD gap (closes #55)"
     }
   ],
-  "lastModified": 1776354056,
+  "lastModified": 1780236814,
   "symbols": [
     {
-      "endLine": 66,
-      "endOffset": 2367,
+      "endLine": 81,
+      "endOffset": 3017,
       "kind": "function",
       "name": "buildSnapshotStaleness",
-      "startLine": 19,
-      "startOffset": 721,
+      "startLine": 34,
+      "startOffset": 1347,
       "symbolId": "packages/cli/src/core/overlay/snapshot-staleness.ts::buildSnapshotStaleness::function"
     },
     {
-      "endLine": 8,
-      "endOffset": 308,
+      "endLine": 7,
+      "endOffset": 235,
       "kind": "interface",
       "name": "SnapshotStaleness",
-      "startLine": 3,
-      "startOffset": 130,
+      "startLine": 2,
+      "startOffset": 57,
       "symbolId": "packages/cli/src/core/overlay/snapshot-staleness.ts::SnapshotStaleness::interface"
+    },
+    {
+      "endLine": 18,
+      "endOffset": 732,
+      "kind": "interface",
+      "name": "SnapshotStalenessStorage",
+      "startLine": 16,
+      "startOffset": 633,
+      "symbolId": "packages/cli/src/core/overlay/snapshot-staleness.ts::SnapshotStalenessStorage::interface"
+    },
+    {
+      "endLine": 23,
+      "endOffset": 934,
+      "kind": "interface",
+      "name": "SnapshotStalenessGit",
+      "startLine": 20,
+      "startOffset": 736,
+      "symbolId": "packages/cli/src/core/overlay/snapshot-staleness.ts::SnapshotStalenessGit::interface"
     }
   ]
 }

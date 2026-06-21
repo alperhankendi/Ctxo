@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "6d850a8f2f0178ae72930c44d91aafb726a992dda3434d5fd1878af2d2bdaef0",
+  "contentHash": "1a985f9542413546ea68870ab6a3f3c889e885235e62267269e4de32d62270b1",
   "edges": [
     {
       "from": "packages/cli/src/core/graph/visualization-payload.ts::VisNode::interface",
@@ -19,57 +19,63 @@
   "file": "packages/cli/src/core/graph/visualization-payload.ts",
   "intent": [
     {
+      "date": "2026-04-16T19:22:18+03:00",
+      "hash": "3aa609655910712ef690f927ee9479c626c225e1",
+      "kind": "commit",
+      "message": "feat(ui): surface architectural intelligence in visualize + ctxo-visualizer"
+    },
+    {
       "date": "2026-04-13T01:25:01+03:00",
       "hash": "71d95d2904dd2e14c5447c354fc10cb8037930f0",
       "kind": "commit",
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776354056,
+  "lastModified": 1780236813,
   "symbols": [
     {
       "endLine": 23,
-      "endOffset": 716,
+      "endOffset": 739,
       "kind": "interface",
       "name": "VisNode",
       "startLine": 2,
-      "startOffset": 58,
+      "startOffset": 60,
       "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisNode::interface"
     },
     {
       "endLine": 35,
-      "endOffset": 1049,
+      "endOffset": 1084,
       "kind": "interface",
       "name": "VisEdge",
       "startLine": 25,
-      "startOffset": 718,
+      "startOffset": 743,
       "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisEdge::interface"
     },
     {
       "endLine": 41,
-      "endOffset": 1272,
+      "endOffset": 1313,
       "kind": "interface",
       "name": "VisFileInfo",
       "startLine": 37,
-      "startOffset": 1051,
+      "startOffset": 1088,
       "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisFileInfo::interface"
     },
     {
       "endLine": 47,
-      "endOffset": 1394,
+      "endOffset": 1441,
       "kind": "interface",
       "name": "VisCommunityLegend",
       "startLine": 43,
-      "startOffset": 1274,
+      "startOffset": 1317,
       "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisCommunityLegend::interface"
     },
     {
       "endLine": 67,
-      "endOffset": 2131,
+      "endOffset": 2198,
       "kind": "interface",
       "name": "VisualizationPayload",
       "startLine": 49,
-      "startOffset": 1396,
+      "startOffset": 1445,
       "symbolId": "packages/cli/src/core/graph/visualization-payload.ts::VisualizationPayload::interface"
     }
   ]

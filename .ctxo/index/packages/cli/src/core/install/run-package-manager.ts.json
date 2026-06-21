@@ -1,0 +1,44 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/core/install/run-package-manager.ts::runPackageManager::function"
+    }
+  ],
+  "contentHash": "408557f9857b474d0f56ba0a2668d7ac20031e99d3eaf4c064852d50439a53dc",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/install/run-package-manager.ts::runPackageManager::function",
+      "kind": "calls",
+      "to": "packages/cli/src/core/install/run-package-manager.ts::resolveBinary::function"
+    }
+  ],
+  "file": "packages/cli/src/core/install/run-package-manager.ts",
+  "intent": [
+    {
+      "date": "2026-05-16T02:15:51+03:00",
+      "hash": "2705fec64628ae82f8e3f61346ad3c6436e0c336",
+      "kind": "commit",
+      "message": "fix(install): add -w for pnpm at workspace root + silence DEP0190 on win32 (#90)"
+    },
+    {
+      "date": "2026-05-16T00:52:48+03:00",
+      "hash": "27b4ffd3198a8ac6f7686717e5fa7771702cdb44",
+      "kind": "commit",
+      "message": "feat(cli): ctxo update — self-update mechanism for CLI + plugins (#84)"
+    }
+  ],
+  "lastModified": 1780236813,
+  "symbols": [
+    {
+      "endLine": 25,
+      "endOffset": 1339,
+      "kind": "function",
+      "name": "runPackageManager",
+      "startLine": 18,
+      "startOffset": 946,
+      "symbolId": "packages/cli/src/core/install/run-package-manager.ts::runPackageManager::function"
+    }
+  ]
+}

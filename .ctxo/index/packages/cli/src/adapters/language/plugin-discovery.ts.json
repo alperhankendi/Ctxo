@@ -6,7 +6,7 @@
       "symbolId": "packages/cli/src/adapters/language/plugin-discovery.ts::discoverPlugins::function"
     }
   ],
-  "contentHash": "8def8f94c4d71bb3a826cf556c8bfaa5c8c238d5fe10e5a93670d6aa3d9e8ae4",
+  "contentHash": "334239a2056d44381d5870b5f1a84a5077fb4cba78cb984649777255c3030b74",
   "edges": [
     {
       "from": "packages/cli/src/adapters/language/plugin-discovery.ts::discoverPlugins::function",
@@ -27,6 +27,18 @@
   "file": "packages/cli/src/adapters/language/plugin-discovery.ts",
   "intent": [
     {
+      "date": "2026-04-17T21:19:03+03:00",
+      "hash": "4eda2859e252898d784202b8b0a1521740cba8fc",
+      "kind": "commit",
+      "message": "fix(cli): resolve ESM-only plugins via package.json with CLI fallback"
+    },
+    {
+      "date": "2026-04-17T21:09:00+03:00",
+      "hash": "e040bde5c9b1ee06a84caf976dbd7fff3cb48f55",
+      "kind": "commit",
+      "message": "fix(cli): resolve language plugins from consumer project under npx"
+    },
+    {
       "date": "2026-04-14T00:07:20+03:00",
       "hash": "30d5459eca9bc79be5a8f6814cbbfb4ed5c3bc14",
       "kind": "commit",
@@ -39,51 +51,51 @@
       "message": "feat(plugin-api): introduce plugin protocol v1 + workspace abstraction"
     }
   ],
-  "lastModified": 1776354055,
+  "lastModified": 1780236811,
   "symbols": [
     {
-      "endLine": 142,
-      "endOffset": 4764,
+      "endLine": 201,
+      "endOffset": 7265,
       "kind": "function",
       "name": "discoverPlugins",
-      "startLine": 114,
-      "startOffset": 3815,
+      "startLine": 172,
+      "startOffset": 6224,
       "symbolId": "packages/cli/src/adapters/language/plugin-discovery.ts::discoverPlugins::function"
     },
     {
-      "endLine": 28,
-      "endOffset": 1198,
+      "endLine": 29,
+      "endOffset": 1243,
       "kind": "interface",
       "name": "DiscoverOptions",
-      "startLine": 12,
-      "startOffset": 455,
+      "startLine": 13,
+      "startOffset": 500,
       "symbolId": "packages/cli/src/adapters/language/plugin-discovery.ts::DiscoverOptions::interface"
     },
     {
-      "endLine": 33,
-      "endOffset": 1306,
+      "endLine": 34,
+      "endOffset": 1351,
       "kind": "interface",
       "name": "DiscoveredPlugin",
-      "startLine": 30,
-      "startOffset": 1200,
+      "startLine": 31,
+      "startOffset": 1245,
       "symbolId": "packages/cli/src/adapters/language/plugin-discovery.ts::DiscoveredPlugin::interface"
     },
     {
-      "endLine": 38,
-      "endOffset": 1403,
+      "endLine": 39,
+      "endOffset": 1448,
       "kind": "interface",
       "name": "PluginLoadFailure",
-      "startLine": 35,
-      "startOffset": 1308,
+      "startLine": 36,
+      "startOffset": 1353,
       "symbolId": "packages/cli/src/adapters/language/plugin-discovery.ts::PluginLoadFailure::interface"
     },
     {
-      "endLine": 43,
-      "endOffset": 1541,
+      "endLine": 44,
+      "endOffset": 1586,
       "kind": "interface",
       "name": "DiscoveryResult",
-      "startLine": 40,
-      "startOffset": 1405,
+      "startLine": 41,
+      "startOffset": 1450,
       "symbolId": "packages/cli/src/adapters/language/plugin-discovery.ts::DiscoveryResult::interface"
     }
   ]

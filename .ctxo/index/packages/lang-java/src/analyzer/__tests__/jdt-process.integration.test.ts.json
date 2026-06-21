@@ -1,0 +1,28 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "3f30669581465b09b004ff3a60c51e6b451c4e04ee3e1c7978dd55b09d92e091",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/analyzer/__tests__/jdt-process.integration.test.ts::jdt-process.integration.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/toolchain-detect.ts::detectJavaRuntime::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/__tests__/jdt-process.integration.test.ts::jdt-process.integration.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jdt-process.ts::runBatchIndex::function"
+    }
+  ],
+  "file": "packages/lang-java/src/analyzer/__tests__/jdt-process.integration.test.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T18:35:56+03:00",
+      "hash": "7300956c1639cf23a2e9e8c1fedb667f25d07cfe",
+      "kind": "commit",
+      "message": "feat(lang-java): jdt analyzer process (spawn batch + JSONL parse)"
+    }
+  ],
+  "lastModified": 1782056157,
+  "symbols": []
+}

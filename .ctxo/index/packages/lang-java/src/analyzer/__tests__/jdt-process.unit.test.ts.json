@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "8f31f77ac5429dec77848f373c681bd2518069d3345b5678a8a127860c0db33c",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/analyzer/__tests__/jdt-process.unit.test.ts::jdt-process.unit.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jdt-process.ts::buildAnalyzerArgs::function"
+    }
+  ],
+  "file": "packages/lang-java/src/analyzer/__tests__/jdt-process.unit.test.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T21:48:07+03:00",
+      "hash": "f7a8d19573b12553bea09673ea7bbb8f3c9f6ab6",
+      "kind": "commit",
+      "message": "fix(lang-java): use platform path delimiter for analyzer classpath arg"
+    }
+  ],
+  "lastModified": 1782067688,
+  "symbols": []
+}

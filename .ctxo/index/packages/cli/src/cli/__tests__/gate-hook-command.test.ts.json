@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "122ab4a0c3d3468d70df14ae462d88ea27f3866d353d52832a2101a4508fb6ea",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/__tests__/gate-hook-command.test.ts::gate-hook-command.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class"
+    }
+  ],
+  "file": "packages/cli/src/cli/__tests__/gate-hook-command.test.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T03:46:00+03:00",
+      "hash": "954ea1ea58621f0f29949d5454747ba760f8e818",
+      "kind": "commit",
+      "message": "feat(cli): ctxo gate-hook PreToolUse enforcement (fail-open)"
+    }
+  ],
+  "lastModified": 1780236812,
+  "symbols": []
+}

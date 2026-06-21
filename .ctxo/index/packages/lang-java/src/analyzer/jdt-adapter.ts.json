@@ -1,0 +1,369 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.isSupported::method"
+    },
+    {
+      "cyclomatic": 3,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.isReady::method"
+    },
+    {
+      "cyclomatic": 6,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.initialize::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.extractSymbols::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.extractEdges::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.extractComplexity::method"
+    },
+    {
+      "cyclomatic": 5,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.startKeepAlive::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.reindexFileRaw::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.dispose::method"
+    },
+    {
+      "cyclomatic": 1,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.norm::method"
+    },
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.ensureBatch::method"
+    },
+    {
+      "cyclomatic": 4,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.runBatch::method"
+    }
+  ],
+  "contentHash": "514866b6876f8ef0bd86880e6aa57acf5016a4014c40ab5b069acd612fb8cb4e",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-java/src/logger.ts::createLogger::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::resolveAnalyzerJar::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::analyzerPackageVersion::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::baseVersionMismatch::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::PLUGIN_VERSION::variable"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jdt-process.ts::runBatchIndex::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive::class"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jdt-process.ts::JdtFileResult::class",
+      "typeOnly": true
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/toolchain-detect.ts::detectJavaRuntime::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class",
+      "kind": "implements",
+      "to": "/packages/lang-java/src/analyzer/jdt-adapter.ts::ILanguageAdapter::interface"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.initialize::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/toolchain-detect.ts::detectJavaRuntime::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.initialize::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::resolveAnalyzerJar::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.initialize::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::analyzerPackageVersion::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.initialize::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::baseVersionMismatch::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.isReady::method"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.ensureBatch::method"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.extractSymbols::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.norm::method"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.isReady::method"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.ensureBatch::method"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.extractEdges::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.norm::method"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.startKeepAlive::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.isReady::method"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.startKeepAlive::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive::class"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.ensureBatch::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.runBatch::method"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.runBatch::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jdt-process.ts::runBatchIndex::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.runBatch::method",
+      "kind": "calls",
+      "to": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.norm::method"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-java/src/analyzer/jdt-process.ts::JdtFileResult::class"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-java/src/analyzer/jdt-process.ts::JdtKeepAlive::class"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-java/src/analyzer/toolchain-detect.ts::detectJavaRuntime::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::resolveAnalyzerJar::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::analyzerPackageVersion::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::baseVersionMismatch::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-java/src/analyzer/jar-resolve.ts::PLUGIN_VERSION::variable"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class",
+      "kind": "uses",
+      "to": "packages/lang-java/src/analyzer/jdt-process.ts::runBatchIndex::function"
+    }
+  ],
+  "file": "packages/lang-java/src/analyzer/jdt-adapter.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T22:32:10+03:00",
+      "hash": "016c9f2687b92c81296621e8674f6ac37f3eee0a",
+      "kind": "commit",
+      "message": "feat(lang-java): expose getIncrementalReindex (JDT keep-alive + tree-sitter complexity)"
+    },
+    {
+      "date": "2026-06-21T21:42:38+03:00",
+      "hash": "befa4ef6400b91456107191d98f20a68a4868711",
+      "kind": "commit",
+      "message": "fix(lang-java): resolve analyzer across global/local installs + base-version match guard"
+    },
+    {
+      "date": "2026-06-21T20:54:59+03:00",
+      "hash": "5496f6c4ad3621041d9425b7966509ca20b839cd",
+      "kind": "commit",
+      "message": "feat(lang-java): jdt-adapter resolves jar via package + version-match guard"
+    },
+    {
+      "date": "2026-06-21T18:37:08+03:00",
+      "hash": "27ad5b0e9f3e3a0482e3d9581d7401485af484b8",
+      "kind": "commit",
+      "message": "feat(lang-java): JdtAnalyzerAdapter (batch-once, per-file cache)"
+    }
+  ],
+  "lastModified": 1782070357,
+  "symbols": [
+    {
+      "endLine": 120,
+      "endOffset": 4512,
+      "kind": "class",
+      "name": "JdtAnalyzerAdapter",
+      "startLine": 9,
+      "startOffset": 501,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class"
+    },
+    {
+      "endLine": 23,
+      "endOffset": 1035,
+      "kind": "method",
+      "name": "JdtAnalyzerAdapter.isSupported",
+      "startLine": 21,
+      "startOffset": 938,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.isSupported::method"
+    },
+    {
+      "endLine": 27,
+      "endOffset": 1139,
+      "kind": "method",
+      "name": "JdtAnalyzerAdapter.isReady",
+      "startLine": 25,
+      "startOffset": 1039,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.isReady::method"
+    },
+    {
+      "endLine": 49,
+      "endOffset": 2044,
+      "kind": "method",
+      "name": "JdtAnalyzerAdapter.initialize",
+      "startLine": 29,
+      "startOffset": 1143,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.initialize::method"
+    },
+    {
+      "endLine": 67,
+      "endOffset": 2678,
+      "kind": "method",
+      "name": "JdtAnalyzerAdapter.extractSymbols",
+      "startLine": 51,
+      "startOffset": 2048,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.extractSymbols::method"
+    },
+    {
+      "endLine": 77,
+      "endOffset": 3084,
+      "kind": "method",
+      "name": "JdtAnalyzerAdapter.extractEdges",
+      "startLine": 69,
+      "startOffset": 2682,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.extractEdges::method"
+    },
+    {
+      "endLine": 81,
+      "endOffset": 3198,
+      "kind": "method",
+      "name": "JdtAnalyzerAdapter.extractComplexity",
+      "startLine": 79,
+      "startOffset": 3088,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.extractComplexity::method"
+    },
+    {
+      "endLine": 89,
+      "endOffset": 3492,
+      "kind": "method",
+      "name": "JdtAnalyzerAdapter.startKeepAlive",
+      "startLine": 83,
+      "startOffset": 3202,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.startKeepAlive::method"
+    },
+    {
+      "endLine": 94,
+      "endOffset": 3677,
+      "kind": "method",
+      "name": "JdtAnalyzerAdapter.reindexFileRaw",
+      "startLine": 91,
+      "startOffset": 3496,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.reindexFileRaw::method"
+    },
+    {
+      "endLine": 101,
+      "endOffset": 3885,
+      "kind": "method",
+      "name": "JdtAnalyzerAdapter.dispose",
+      "startLine": 96,
+      "startOffset": 3681,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.dispose::method"
+    },
+    {
+      "endLine": 105,
+      "endOffset": 3974,
+      "kind": "method",
+      "name": "JdtAnalyzerAdapter.norm",
+      "startLine": 103,
+      "startOffset": 3889,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.norm::method"
+    },
+    {
+      "endLine": 111,
+      "endOffset": 4144,
+      "kind": "method",
+      "name": "JdtAnalyzerAdapter.ensureBatch",
+      "startLine": 107,
+      "startOffset": 3978,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.ensureBatch::method"
+    },
+    {
+      "endLine": 119,
+      "endOffset": 4510,
+      "kind": "method",
+      "name": "JdtAnalyzerAdapter.runBatch",
+      "startLine": 113,
+      "startOffset": 4148,
+      "symbolId": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter.runBatch::method"
+    }
+  ]
+}

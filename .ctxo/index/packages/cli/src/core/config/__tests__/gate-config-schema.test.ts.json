@@ -1,0 +1,28 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "3be5e436617842869cb347a81f2007fccdd442f340203d467a2991ed20d3d707",
+  "edges": [
+    {
+      "from": "packages/cli/src/core/config/__tests__/gate-config-schema.test.ts::gate-config-schema.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/config-schema.ts::CtxoConfigSchema::variable"
+    },
+    {
+      "from": "packages/cli/src/core/config/__tests__/gate-config-schema.test.ts::gate-config-schema.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/config/config-schema.ts::DEFAULT_CONFIG::variable"
+    }
+  ],
+  "file": "packages/cli/src/core/config/__tests__/gate-config-schema.test.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T03:32:03+03:00",
+      "hash": "c909775fe14201814beb5c2584cbcf81b8c797cd",
+      "kind": "commit",
+      "message": "feat(gate): add gate config schema + balanced default"
+    }
+  ],
+  "lastModified": 1780236813,
+  "symbols": []
+}

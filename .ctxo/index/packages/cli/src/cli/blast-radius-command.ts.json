@@ -1,0 +1,81 @@
+{
+  "antiPatterns": [],
+  "complexity": [
+    {
+      "cyclomatic": 2,
+      "symbolId": "packages/cli/src/cli/blast-radius-command.ts::BlastRadiusCommand.run::method"
+    }
+  ],
+  "contentHash": "52e49a98c1fb6983fd8d4e02d8d4b0f321ebc439f9134e298d52ee10dcb68f0d",
+  "edges": [
+    {
+      "from": "packages/cli/src/cli/blast-radius-command.ts::BlastRadiusCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/graph-loader.ts::loadGraph::function"
+    },
+    {
+      "from": "packages/cli/src/cli/blast-radius-command.ts::BlastRadiusCommand::class",
+      "kind": "imports",
+      "to": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/blast-radius-command.ts::BlastRadiusCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/graph-loader.ts::loadGraph::function"
+    },
+    {
+      "from": "packages/cli/src/cli/blast-radius-command.ts::BlastRadiusCommand.run::method",
+      "kind": "calls",
+      "to": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    },
+    {
+      "from": "packages/cli/src/cli/blast-radius-command.ts::BlastRadiusCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/graph-loader.ts::loadGraph::function"
+    },
+    {
+      "from": "packages/cli/src/cli/blast-radius-command.ts::BlastRadiusCommand::class",
+      "kind": "uses",
+      "to": "packages/cli/src/core/blast-radius/blast-radius-calculator.ts::BlastRadiusCalculator::class"
+    }
+  ],
+  "file": "packages/cli/src/cli/blast-radius-command.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T03:42:33+03:00",
+      "hash": "c06ad48cc825da421e767c9e1c9c64d3baf3402d",
+      "kind": "commit",
+      "message": "feat(cli): ctxo blast-radius --json subcommand"
+    }
+  ],
+  "lastModified": 1780236812,
+  "symbols": [
+    {
+      "endLine": 36,
+      "endOffset": 1307,
+      "kind": "class",
+      "name": "BlastRadiusCommand",
+      "startLine": 9,
+      "startOffset": 259,
+      "symbolId": "packages/cli/src/cli/blast-radius-command.ts::BlastRadiusCommand::class"
+    },
+    {
+      "endLine": 35,
+      "endOffset": 1304,
+      "kind": "method",
+      "name": "BlastRadiusCommand.run",
+      "startLine": 15,
+      "startOffset": 428,
+      "symbolId": "packages/cli/src/cli/blast-radius-command.ts::BlastRadiusCommand.run::method"
+    },
+    {
+      "endLine": 7,
+      "endOffset": 255,
+      "kind": "interface",
+      "name": "BlastRadiusOptions",
+      "startLine": 4,
+      "startOffset": 175,
+      "symbolId": "packages/cli/src/cli/blast-radius-command.ts::BlastRadiusOptions::interface"
+    }
+  ]
+}

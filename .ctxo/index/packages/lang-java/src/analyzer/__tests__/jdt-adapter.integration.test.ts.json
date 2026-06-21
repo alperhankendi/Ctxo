@@ -1,0 +1,34 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "432f132e7e3c04cc13e917a15d66edab299ff6bcc06375674b0fc0b079852362",
+  "edges": [
+    {
+      "from": "packages/lang-java/src/analyzer/__tests__/jdt-adapter.integration.test.ts::jdt-adapter.integration.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/toolchain-detect.ts::detectJavaRuntime::function"
+    },
+    {
+      "from": "packages/lang-java/src/analyzer/__tests__/jdt-adapter.integration.test.ts::jdt-adapter.integration.test::variable",
+      "kind": "imports",
+      "to": "packages/lang-java/src/analyzer/jdt-adapter.ts::JdtAnalyzerAdapter::class"
+    }
+  ],
+  "file": "packages/lang-java/src/analyzer/__tests__/jdt-adapter.integration.test.ts",
+  "intent": [
+    {
+      "date": "2026-06-21T20:54:59+03:00",
+      "hash": "5496f6c4ad3621041d9425b7966509ca20b839cd",
+      "kind": "commit",
+      "message": "feat(lang-java): jdt-adapter resolves jar via package + version-match guard"
+    },
+    {
+      "date": "2026-06-21T18:37:08+03:00",
+      "hash": "27ad5b0e9f3e3a0482e3d9581d7401485af484b8",
+      "kind": "commit",
+      "message": "feat(lang-java): JdtAnalyzerAdapter (batch-once, per-file cache)"
+    }
+  ],
+  "lastModified": 1782064501,
+  "symbols": []
+}

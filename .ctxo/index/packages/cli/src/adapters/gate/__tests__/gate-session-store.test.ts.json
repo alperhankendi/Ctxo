@@ -1,0 +1,23 @@
+{
+  "antiPatterns": [],
+  "complexity": [],
+  "contentHash": "b2bb49a67157ef067b1008dfca14624b2abe1accbfe27ac0228bd7246d91b55e",
+  "edges": [
+    {
+      "from": "packages/cli/src/adapters/gate/__tests__/gate-session-store.test.ts::gate-session-store.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/adapters/gate/gate-session-store.ts::GateSessionStore::class"
+    }
+  ],
+  "file": "packages/cli/src/adapters/gate/__tests__/gate-session-store.test.ts",
+  "intent": [
+    {
+      "date": "2026-05-31T03:39:21+03:00",
+      "hash": "a6cd2eb5ce4a6adb51b69a56e6137ac80be6b3af",
+      "kind": "commit",
+      "message": "feat(gate): per-session warned-symbol store"
+    }
+  ],
+  "lastModified": 1780236811,
+  "symbols": []
+}

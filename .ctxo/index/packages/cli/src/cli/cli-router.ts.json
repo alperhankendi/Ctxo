@@ -10,7 +10,7 @@
       "symbolId": "packages/cli/src/cli/cli-router.ts::locateGitRoot::function"
     },
     {
-      "cyclomatic": 53,
+      "cyclomatic": 72,
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method"
     },
     {
@@ -18,7 +18,7 @@
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.printHelp::method"
     }
   ],
-  "contentHash": "54394b97a438a2af3a5f2e1b702bd888320702a5c39f54127f67ff81956b2d22",
+  "contentHash": "e8db5fe1a963a1e48ee99bfceae54720c277d6628326026f8a31635f78309576",
   "edges": [
     {
       "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
@@ -74,6 +74,26 @@
       "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
       "kind": "imports",
       "to": "packages/cli/src/cli/install-command.ts::InstallCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/blast-radius-command.ts::BlastRadiusCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::getVersion::function",
+      "kind": "imports",
+      "to": "packages/cli/src/cli/gate-command.ts::GateCommand::class"
     },
     {
       "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
@@ -138,6 +158,26 @@
     {
       "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
       "kind": "calls",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/gate-command.ts::GateCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
+      "to": "packages/cli/src/cli/blast-radius-command.ts::BlastRadiusCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method",
+      "kind": "calls",
       "to": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class"
     },
     {
@@ -198,11 +238,73 @@
     {
       "from": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
       "kind": "uses",
+      "to": "packages/cli/src/cli/update-command.ts::UpdateCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/gate-command.ts::GateCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/gate-hook-command.ts::GateHookCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
+      "to": "packages/cli/src/cli/blast-radius-command.ts::BlastRadiusCommand::class"
+    },
+    {
+      "from": "packages/cli/src/cli/cli-router.ts::CliRouter::class",
+      "kind": "uses",
       "to": "packages/cli/src/cli/visualize-command.ts::VisualizeCommand::class"
     }
   ],
   "file": "packages/cli/src/cli/cli-router.ts",
   "intent": [
+    {
+      "date": "2026-06-21T21:00:28+03:00",
+      "hash": "f27d649cae7476722adc94845b714909c77ec35b",
+      "kind": "commit",
+      "message": "feat(cli): ctxo install java smart full-tier default (--full-tier/--syntax-only)"
+    },
+    {
+      "date": "2026-05-31T04:07:09+03:00",
+      "hash": "487f994eb3d0943147e6f600acdb6723bdec13f8",
+      "kind": "commit",
+      "message": "docs: document safe-edit guard, skills, and new commands"
+    },
+    {
+      "date": "2026-05-31T03:54:44+03:00",
+      "hash": "0e4f04f7108ec870fae13925dc3081e84bd3083a",
+      "kind": "commit",
+      "message": "feat(cli): ctxo gate --preview for data-driven tuning"
+    },
+    {
+      "date": "2026-05-31T03:46:00+03:00",
+      "hash": "954ea1ea58621f0f29949d5454747ba760f8e818",
+      "kind": "commit",
+      "message": "feat(cli): ctxo gate-hook PreToolUse enforcement (fail-open)"
+    },
+    {
+      "date": "2026-05-31T03:42:33+03:00",
+      "hash": "c06ad48cc825da421e767c9e1c9c64d3baf3402d",
+      "kind": "commit",
+      "message": "feat(cli): ctxo blast-radius --json subcommand"
+    },
+    {
+      "date": "2026-05-16T00:52:48+03:00",
+      "hash": "27b4ffd3198a8ac6f7686717e5fa7771702cdb44",
+      "kind": "commit",
+      "message": "feat(cli): ctxo update — self-update mechanism for CLI + plugins (#84)"
+    },
+    {
+      "date": "2026-04-16T19:22:18+03:00",
+      "hash": "3aa609655910712ef690f927ee9479c626c225e1",
+      "kind": "commit",
+      "message": "feat(ui): surface architectural intelligence in visualize + ctxo-visualizer"
+    },
     {
       "date": "2026-04-16T02:37:45+03:00",
       "hash": "cf42f444577b300856a167d2f4debc882db54b05",
@@ -258,51 +360,51 @@
       "message": "chore: migrate to pnpm monorepo structure"
     }
   ],
-  "lastModified": 1776354056,
+  "lastModified": 1782064832,
   "symbols": [
     {
-      "endLine": 29,
-      "endOffset": 1135,
+      "endLine": 33,
+      "endOffset": 1363,
       "kind": "function",
       "name": "getVersion",
-      "startLine": 14,
-      "startOffset": 689,
+      "startLine": 18,
+      "startOffset": 917,
       "symbolId": "packages/cli/src/cli/cli-router.ts::getVersion::function"
     },
     {
-      "endLine": 46,
-      "endOffset": 1740,
+      "endLine": 50,
+      "endOffset": 1968,
       "kind": "function",
       "name": "locateGitRoot",
-      "startLine": 37,
-      "startOffset": 1458,
+      "startLine": 41,
+      "startOffset": 1686,
       "symbolId": "packages/cli/src/cli/cli-router.ts::locateGitRoot::function"
     },
     {
-      "endLine": 260,
-      "endOffset": 10518,
+      "endLine": 335,
+      "endOffset": 13842,
       "kind": "class",
       "name": "CliRouter",
-      "startLine": 48,
-      "startOffset": 1744,
+      "startLine": 52,
+      "startOffset": 1972,
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter::class"
     },
     {
-      "endLine": 224,
-      "endOffset": 8636,
+      "endLine": 289,
+      "endOffset": 11304,
       "kind": "method",
       "name": "CliRouter.route",
-      "startLine": 58,
-      "startOffset": 2152,
+      "startLine": 62,
+      "startOffset": 2380,
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.route::method"
     },
     {
-      "endLine": 259,
-      "endOffset": 10515,
+      "endLine": 334,
+      "endOffset": 13839,
       "kind": "method",
       "name": "CliRouter.printHelp",
-      "startLine": 226,
-      "startOffset": 8642,
+      "startLine": 291,
+      "startOffset": 11310,
       "symbolId": "packages/cli/src/cli/cli-router.ts::CliRouter.printHelp::method"
     }
   ]

@@ -1,7 +1,7 @@
 {
   "antiPatterns": [],
   "complexity": [],
-  "contentHash": "89c5c1a444a4fdeefde724a53f4cb59553033c6ca01059a645270a38ff68e4b1",
+  "contentHash": "72cb72c2e5be952b090b2db568e1bbfc47d8ee0dc102a3c247b6c7e0c6894ec9",
   "edges": [
     {
       "from": "packages/cli/src/core/install/__tests__/package-manager.test.ts::package-manager.test::variable",
@@ -21,11 +21,33 @@
     {
       "from": "packages/cli/src/core/install/__tests__/package-manager.test.ts::package-manager.test::variable",
       "kind": "imports",
+      "to": "packages/cli/src/core/install/package-manager.ts::isWorkspaceRoot::function"
+    },
+    {
+      "from": "packages/cli/src/core/install/__tests__/package-manager.test.ts::package-manager.test::variable",
+      "kind": "imports",
+      "to": "packages/cli/src/core/install/package-manager.ts::readWorkspaceLinks::function"
+    },
+    {
+      "from": "packages/cli/src/core/install/__tests__/package-manager.test.ts::package-manager.test::variable",
+      "kind": "imports",
       "to": "packages/cli/src/core/install/package-manager.ts::PACKAGE_MANAGERS::variable"
     }
   ],
   "file": "packages/cli/src/core/install/__tests__/package-manager.test.ts",
   "intent": [
+    {
+      "date": "2026-05-16T02:27:32+03:00",
+      "hash": "1c53eed82d7eb08d763f6dc3d45f7a762e37fe63",
+      "kind": "commit",
+      "message": "fix(update): skip workspace-linked plugins from install plan (#92)"
+    },
+    {
+      "date": "2026-05-16T02:15:51+03:00",
+      "hash": "2705fec64628ae82f8e3f61346ad3c6436e0c336",
+      "kind": "commit",
+      "message": "fix(install): add -w for pnpm at workspace root + silence DEP0190 on win32 (#90)"
+    },
     {
       "date": "2026-04-13T02:54:21+03:00",
       "hash": "976fe9d1f2bc286792149dda4b40d1397ad50c13",
@@ -39,6 +61,6 @@
       "message": "feat(cli): add ctxo install command for language plugin management"
     }
   ],
-  "lastModified": 1776354056,
+  "lastModified": 1780236813,
   "symbols": []
 }
