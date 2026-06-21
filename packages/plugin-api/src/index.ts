@@ -16,5 +16,7 @@ export type {
   PluginLogger,
 } from './plugin.js';
 
+export type { IIncrementalReindex, ReindexResult, IncrementalReindexCapable } from './incremental-reindex.js';
+
 /** Protocol version supported by this plugin-api release. */
 export const SUPPORTED_API_VERSION = '1' as const;
