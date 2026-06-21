@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { resolveAnalyzerJar, analyzerPackageVersion, baseVersionMismatch } from '../jar-resolve.js';
+import { resolveAnalyzerJar, analyzerPackageVersion, baseVersionMismatch, UNKNOWN_VERSION } from '../jar-resolve.js';
 
 const require = createRequire(import.meta.url);
 const ENV = 'CTXO_JDT_ANALYZER_JAR';
@@ -60,5 +60,17 @@ describe('baseVersionMismatch', () => {
   });
   it('returns false for identical plain versions', () => {
     expect(baseVersionMismatch('1.2.3', '1.2.3')).toBe(false);
+  });
+  it('returns false (no mismatch) when plugin version is UNKNOWN_VERSION sentinel', () => {
+    // When the directory walk cannot find the plugin package.json, PLUGIN_VERSION
+    // falls back to UNKNOWN_VERSION ('0.0.0'). baseVersionMismatch must NOT fire
+    // in that case — returning true would cause a spurious version-mismatch warning
+    // on every run in bundled/global install scenarios.
+    expect(baseVersionMismatch(UNKNOWN_VERSION, '0.8.0')).toBe(false);
+    expect(baseVersionMismatch('0.8.0', UNKNOWN_VERSION)).toBe(false);
+    expect(baseVersionMismatch(UNKNOWN_VERSION, UNKNOWN_VERSION)).toBe(false);
+  });
+  it('UNKNOWN_VERSION equals the literal fallback string used as sentinel', () => {
+    expect(UNKNOWN_VERSION).toBe('0.0.0');
   });
 });

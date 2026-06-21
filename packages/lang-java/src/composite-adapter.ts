@@ -16,11 +16,13 @@ export class JavaCompositeAdapter implements ILanguageAdapter {
   private treeSitter: JavaAdapter;
   private analyzer: JdtAnalyzerAdapter | null = null;
   private rootDir = '';
+  private incrementalCapability: IIncrementalReindex | null = null;
 
   constructor() { this.treeSitter = new JavaAdapter(); }
 
   async initialize(rootDir: string): Promise<void> {
     this.rootDir = rootDir;
+    this.incrementalCapability = null;
     try {
       const analyzer = new JdtAnalyzerAdapter();
       await analyzer.initialize(rootDir);
@@ -38,6 +40,7 @@ export class JavaCompositeAdapter implements ILanguageAdapter {
 
   async dispose(): Promise<void> {
     if (this.analyzer) await this.analyzer.dispose();
+    this.incrementalCapability = null;
   }
 
   extractSymbols(filePath: string, source: string): Promise<SymbolNode[]> {
@@ -60,7 +63,13 @@ export class JavaCompositeAdapter implements ILanguageAdapter {
 
   getIncrementalReindex(): IIncrementalReindex | null {
     if (!this.analyzer) return null;
-    const analyzer = this.analyzer;
+    if (!this.incrementalCapability) {
+      this.incrementalCapability = this.buildIncrementalCapability(this.analyzer);
+    }
+    return this.incrementalCapability;
+  }
+
+  private buildIncrementalCapability(analyzer: JdtAnalyzerAdapter): IIncrementalReindex {
     const treeSitter = this.treeSitter;
     const rootDir = this.rootDir;
     const FULL = /^.+::.+::.+$/;

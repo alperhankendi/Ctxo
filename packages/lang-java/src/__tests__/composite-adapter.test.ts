@@ -37,6 +37,17 @@ describe('JavaCompositeAdapter (syntax fallback)', () => {
     expect(adapter.isSupported('Foo.java')).toBe(true);
     expect(adapter.isSupported('Foo.go')).toBe(false);
   });
+
+  it('getIncrementalReindex returns the same object reference on repeated calls (no duplicate-process risk)', async () => {
+    // When full tier is unavailable both calls return null; the important property
+    // is referential equality — same object (or same null) — not a new object each time.
+    const adapter = new JavaCompositeAdapter();
+    await adapter.initialize('/tmp/project');
+    const a = adapter.getIncrementalReindex();
+    const b = adapter.getIncrementalReindex();
+    // Both null (syntax tier) or both the exact same capability instance (full tier).
+    expect(a).toBe(b);
+  });
 });
 
 const jar = process.env.CTXO_JDT_ANALYZER_JAR
