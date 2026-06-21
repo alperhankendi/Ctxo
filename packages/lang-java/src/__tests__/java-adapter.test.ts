@@ -32,6 +32,7 @@ describe('JavaAdapter.extractSymbols', () => {
     const fooMethods = symbols.filter((s) => s.name === 'Foo' && s.kind === 'method');
     expect(fooMethods).toHaveLength(1); // the constructor
     expect(byName('count')).toMatchObject({ kind: 'variable' });
+    expect(byName('run')).toMatchObject({ kind: 'method' });
   });
 
   it('returns [] on unparseable source without throwing', async () => {
@@ -87,5 +88,15 @@ describe('JavaAdapter.extractComplexity', () => {
     const f = metrics.find((m) => m.symbolId === `${FILE}::f::method`);
     expect(f).toBeDefined();
     expect(f!.cyclomatic).toBe(4);
+  });
+
+  it('counts && and || operators toward complexity', async () => {
+    const adapter = new JavaAdapter();
+    const src = `class Foo { int g(int a, int b) { if (a > 0 && b > 0 || a < 0) { return 1; } return 0; } }`;
+    const metrics = await adapter.extractComplexity(FILE, src);
+    const g = metrics.find((m) => m.symbolId === `${FILE}::g::method`);
+    expect(g).toBeDefined();
+    // base 1 + if 1 + && 1 + || 1 = 4
+    expect(g!.cyclomatic).toBe(4);
   });
 });
