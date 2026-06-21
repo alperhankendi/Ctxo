@@ -1,6 +1,6 @@
 import type { ComplexityMetrics, GraphEdge, ILanguageAdapter, SymbolKind, SymbolNode } from '@ctxo/plugin-api';
 import { createLogger } from '../logger.js';
-import { resolveAnalyzerJar } from './jar-download.js';
+import { resolveAnalyzerJar, analyzerPackageVersion } from './jar-resolve.js';
 import { runBatchIndex, type JdtFileResult } from './jdt-process.js';
 import { detectJavaRuntime } from './toolchain-detect.js';
 
@@ -33,10 +33,14 @@ export class JdtAnalyzerAdapter implements ILanguageAdapter {
       log.info(`Java full tier unavailable: JRE ${java.version ?? 'not found'} (>= 17 required)`);
       return;
     }
-    const jar = resolveAnalyzerJar(ANALYZER_VERSION);
+    const jar = resolveAnalyzerJar();
     if (!jar) {
-      log.info('Java full tier unavailable: analyzer jar not present (run opt-in install for full tier)');
+      log.info('Java full tier unavailable: @ctxo/lang-java-analyzer not installed (run: ctxo install java --full-tier)');
       return;
+    }
+    const analyzerVer = analyzerPackageVersion();
+    if (analyzerVer && analyzerVer !== ANALYZER_VERSION) {
+      log.warn(`Analyzer package version ${analyzerVer} != plugin ${ANALYZER_VERSION}; using it anyway. Re-run "ctxo install java --full-tier" to align.`);
     }
     this.root = rootDir;
     this.javaBin = java.javaBin;

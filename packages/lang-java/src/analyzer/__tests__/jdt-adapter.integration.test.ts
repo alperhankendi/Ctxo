@@ -6,8 +6,8 @@ import { JdtAnalyzerAdapter } from '../jdt-adapter.js';
 
 const jar =
   process.env.CTXO_JDT_ANALYZER_JAR ??
-  resolve(import.meta.dirname, '../../../tools/ctxo-jdt-analyzer/target/ctxo-jdt-analyzer.jar');
-const fixture = resolve(import.meta.dirname, '../../../tools/ctxo-jdt-analyzer/src/test/resources/fixture');
+  resolve(import.meta.dirname, '../../../../lang-java-analyzer/jar/ctxo-jdt-analyzer.jar');
+const fixture = resolve(import.meta.dirname, '../../../../lang-java-analyzer/java/src/test/resources/fixture');
 const java = detectJavaRuntime();
 const canRun = java.available && existsSync(jar) && existsSync(fixture);
 
