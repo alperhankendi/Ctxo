@@ -23,6 +23,16 @@ describe('MaskingPipeline — git hash false positives (#3)', () => {
     const text = 'commit abc123def456789012345678901234567890ab author: dev';
     expect(pipeline.mask(text)).toBe(text);
   });
+
+  it('does NOT mask git SHA when a later file path contains a slash (why-context JSON)', () => {
+    // Real get_why_context payload: a 40-char hex SHA followed by a file path.
+    // The `/` in the path must NOT pull the hex-only SHA into the AWS_SECRET match.
+    const text =
+      '{"hash":"6c839e9396a1b2c3d4e5f60718293a4b5c6d7e8f","file":"backoffice/core/src/Base.java"}';
+    const result = pipeline.mask(text);
+    expect(result).toContain('6c839e9396a1b2c3d4e5f60718293a4b5c6d7e8f');
+    expect(result).not.toContain('[REDACTED:AWS_SECRET]');
+  });
 });
 
 describe('MaskingPipeline — AWS secret after = character (#2)', () => {

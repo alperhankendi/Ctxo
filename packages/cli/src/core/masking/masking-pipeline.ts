@@ -1,8 +1,10 @@
 const DEFAULT_PATTERNS: Array<{ regex: RegExp; label: string }> = [
   // AWS Access Key IDs (AKIA...)
   { regex: /AKIA[0-9A-Z]{16}/g, label: 'AWS_KEY' },
-  // AWS Secret Access Keys (40 char base64 containing / or + — excludes hex-only git hashes)
-  { regex: /(?<![A-Za-z0-9/+])(?=[A-Za-z0-9/+=]{40}(?![A-Za-z0-9/+=]))(?=.*[/+])[A-Za-z0-9/+=]{40}/g, label: 'AWS_SECRET' },
+  // AWS Secret Access Keys (40 char base64 containing / or +). The `[A-Za-z0-9=]*[/+]`
+  // lookahead is scoped to the token itself (not `.*`, which would reach a later `/` in
+  // the surrounding text, e.g. a file path in JSON, and wrongly redact hex-only git SHAs).
+  { regex: /(?<![A-Za-z0-9/+])(?=[A-Za-z0-9/+=]{40}(?![A-Za-z0-9/+=]))(?=[A-Za-z0-9=]*[/+])[A-Za-z0-9/+=]{40}/g, label: 'AWS_SECRET' },
   // JWT tokens (eyJ...)
   { regex: /eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/g, label: 'JWT' },
   // Private IPv4 (10.x.x.x, 172.16-31.x.x, 192.168.x.x)
