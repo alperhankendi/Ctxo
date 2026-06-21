@@ -47,6 +47,22 @@ public final class Main {
   }
 
   private static void runKeepAlive(String root, Analyzer analyzer) {
+    // PERF NOTE (known limitation): JDT's IMethodBinding resolution requires the declaring
+    // class's CompilationUnit to be included in the ASTParser.createASTs() file list.
+    // The sourcepath alone (setEnvironment's sourcepathEntries) resolves type-level references
+    // (extends, implements, uses) but NOT method bindings — so "calls" edges are silently
+    // dropped when the callee's file is absent from createASTs.
+    //
+    // Empirically verified: parsing only Foo.java with Bar.java on the sourcepath resolves
+    // the "extends Bar" edge but loses the "calls Bar.helper" edge.
+    //
+    // Therefore each keep-alive request must analyze all project files to preserve "calls"
+    // accuracy. This is O(project) JDT work per watch tick.
+    //
+    // Mitigation: the TS-side 30s per-request timeout already guards against hangs, falling
+    // back to tree-sitter gracefully. For projects with 500+ Java files this will be slow;
+    // the long-term fix is a persistent JDT environment (warm AST cache) that re-parses only
+    // the changed file and merges binding results — left as a future optimisation.
     List<String> allFiles = discoverJavaFiles(root);
     JsonObject ready = new JsonObject();
     ready.addProperty("type", "ready");
@@ -61,10 +77,14 @@ public final class Main {
           JsonObject req = JsonParser.parseString(line).getAsJsonObject();
           String rel = req.get("file").getAsString();
           String abs = Paths.get(root).resolve(rel).toAbsolutePath().normalize().toString();
-          // Pass all project files so JDT can resolve cross-file bindings (calls, uses).
-          // allFiles may not include the requested file if it was newly created — ensure it's present.
-          List<String> filesToAnalyze = allFiles.contains(abs) ? allFiles : new ArrayList<>(allFiles);
+          // Re-discover project files on every tick so newly created files are included.
+          // Also ensures the requested file is present even if it was just created.
+          allFiles = discoverJavaFiles(root);
+          List<String> filesToAnalyze = new ArrayList<>(allFiles);
           if (!filesToAnalyze.contains(abs)) filesToAnalyze.add(abs);
+          // Emit a progress line so the caller can see that work is happening (and detect
+          // stalls before the 30s timeout fires).
+          progress("reindex " + rel + " (analyzing " + filesToAnalyze.size() + " files — cross-file calls require full parse)");
           List<Dtos.FileResult> r = analyzer.analyze(filesToAnalyze);
           String normRel = rel.replace('\\', '/');
           Dtos.FileResult target = r.stream().filter(fr -> fr.file.equals(normRel)).findFirst()
