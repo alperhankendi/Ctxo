@@ -1,6 +1,14 @@
 import { readFileSync, readdirSync, existsSync, realpathSync } from 'node:fs';
 import { join, relative } from 'node:path';
-import { FileIndexSchema, type FileIndex } from '../../core/types.js';
+import {
+  FileIndexSchema,
+  SymbolNodeSchema,
+  GraphEdgeSchema,
+  type FileIndex,
+} from '../../core/types.js';
+import { createLogger } from '../../core/logger.js';
+
+const log = createLogger('ctxo:json-reader');
 
 export class JsonIndexReader {
   private readonly indexDir: string;
@@ -33,15 +41,53 @@ export class JsonIndexReader {
       const data: unknown = JSON.parse(raw);
       const result = FileIndexSchema.safeParse(data);
 
-      if (!result.success) {
-        const rel = relative(this.indexDir, absolutePath);
+      if (result.success) {
+        return result.data;
+      }
+
+      // Strict parse failed — attempt resilient recovery: keep valid items, drop invalid ones.
+      const rel = relative(this.indexDir, absolutePath);
+      const raw_data = data as Record<string, unknown>;
+
+      // Must have at least a valid file name and lastModified to be recoverable.
+      if (typeof raw_data['file'] !== 'string' || !raw_data['file'] ||
+          typeof raw_data['lastModified'] !== 'number') {
         console.error(
           `[ctxo:json-reader] Invalid schema in ${rel}: ${result.error.message}`,
         );
         return undefined;
       }
 
-      return result.data;
+      const rawSymbols = Array.isArray(raw_data['symbols']) ? raw_data['symbols'] : [];
+      const rawEdges = Array.isArray(raw_data['edges']) ? raw_data['edges'] : [];
+
+      const validSymbols = rawSymbols.filter((s) => SymbolNodeSchema.safeParse(s).success);
+      const validEdges = rawEdges.filter((e) => GraphEdgeSchema.safeParse(e).success);
+
+      const droppedSymbols = rawSymbols.length - validSymbols.length;
+      const droppedEdges = rawEdges.length - validEdges.length;
+
+      if (droppedSymbols > 0 || droppedEdges > 0) {
+        log.warn(
+          `${rel}: dropped ${droppedSymbols} invalid symbol(s) and ${droppedEdges} invalid edge(s) — kept ${validSymbols.length} symbol(s) and ${validEdges.length} edge(s)`,
+        );
+      }
+
+      // Re-parse with the filtered arrays to get a fully-typed FileIndex.
+      const recovered = FileIndexSchema.safeParse({
+        ...raw_data,
+        symbols: validSymbols,
+        edges: validEdges,
+      });
+
+      if (!recovered.success) {
+        console.error(
+          `[ctxo:json-reader] Invalid schema in ${rel}: ${result.error.message}`,
+        );
+        return undefined;
+      }
+
+      return recovered.data;
     } catch (err) {
       const rel = relative(this.indexDir, absolutePath);
       console.error(

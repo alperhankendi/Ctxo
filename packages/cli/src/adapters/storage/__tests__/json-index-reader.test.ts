@@ -95,4 +95,68 @@ describe('JsonIndexReader', () => {
     );
     spy.mockRestore();
   });
+
+  it('keeps valid symbols+edges when one edge has an invalid schema (resilient read)', () => {
+    const indexDir = join(tempDir, 'index', 'src');
+    mkdirSync(indexDir, { recursive: true });
+
+    // One valid edge + one structurally-invalid edge (missing "kind" field)
+    const data = {
+      file: 'src/Foo.java',
+      lastModified: 1711620000,
+      symbols: [
+        { symbolId: 'src/Foo.java::Foo::class', name: 'Foo', kind: 'class', startLine: 1, endLine: 10 },
+      ],
+      edges: [
+        { from: 'src/Foo.java::Foo::class', to: 'Bar::class', kind: 'extends' },
+        { from: 'src/Foo.java::Foo::class', to: 'MISSING_REQUIRED_KIND_FIELD' },
+      ],
+      intent: [],
+      antiPatterns: [],
+    };
+    writeFileSync(join(indexDir, 'Foo.java.json'), JSON.stringify(data), 'utf-8');
+
+    const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const results = reader.readAll();
+    spy.mockRestore();
+
+    expect(results).toHaveLength(1);
+    const fileIndex = results[0]!;
+    expect(fileIndex.file).toBe('src/Foo.java');
+    // Valid symbol is preserved
+    expect(fileIndex.symbols).toHaveLength(1);
+    expect(fileIndex.symbols[0]?.name).toBe('Foo');
+    // Valid edge is preserved; invalid edge is dropped
+    expect(fileIndex.edges).toHaveLength(1);
+    expect(fileIndex.edges[0]?.kind).toBe('extends');
+    expect(fileIndex.edges[0]?.to).toBe('Bar::class');
+  });
+
+  it('keeps file with valid 2-part name-ref edge target (Java inheritance edge)', () => {
+    const indexDir = join(tempDir, 'index', 'src');
+    mkdirSync(indexDir, { recursive: true });
+
+    const data = {
+      file: 'src/Dog.java',
+      lastModified: 1711620000,
+      symbols: [
+        { symbolId: 'src/Dog.java::Dog::class', name: 'Dog', kind: 'class', startLine: 1, endLine: 20 },
+      ],
+      edges: [
+        { from: 'src/Dog.java::Dog::class', to: 'Animal::class', kind: 'extends' },
+        { from: 'src/Dog.java::Dog::class', to: 'Runnable::interface', kind: 'implements' },
+      ],
+      intent: [],
+      antiPatterns: [],
+    };
+    writeFileSync(join(indexDir, 'Dog.java.json'), JSON.stringify(data), 'utf-8');
+
+    const results = reader.readAll();
+
+    expect(results).toHaveLength(1);
+    const fileIndex = results[0]!;
+    expect(fileIndex.edges).toHaveLength(2);
+    expect(fileIndex.edges[0]?.to).toBe('Animal::class');
+    expect(fileIndex.edges[1]?.to).toBe('Runnable::interface');
+  });
 });
