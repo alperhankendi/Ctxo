@@ -44,4 +44,14 @@ class AnalyzerTest {
         .analyze(List.of(root.resolve("Foo.java").toString()));
     assertTrue(results.get(0).complexity.isEmpty());
   }
+
+  @Test
+  void emitsUsesEdgeForFieldAndParameterTypes() throws Exception {
+    Path root = fixtureDir();
+    List<Dtos.FileResult> results = new Analyzer(root.toString(), new String[0])
+        .analyze(List.of(root.resolve("Uses.java").toString(), root.resolve("Bar.java").toString()));
+    Dtos.FileResult uses = results.stream().filter(r -> r.file.endsWith("Uses.java")).findFirst().orElseThrow();
+    assertTrue(uses.edges.stream().anyMatch(e -> e.kind.equals("uses") && e.to.contains("Bar")),
+        "field of type Bar should produce a uses edge");
+  }
 }

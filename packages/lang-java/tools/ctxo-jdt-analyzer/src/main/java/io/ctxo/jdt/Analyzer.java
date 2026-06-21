@@ -114,6 +114,7 @@ public final class Analyzer {
       out.symbols.add(new Dtos.Sym(symId(name, "method"), name, "method",
           line0(node.getStartPosition()), line0(node.getStartPosition() + node.getLength()),
           node.getStartPosition(), node.getStartPosition() + node.getLength()));
+      if (node.getReturnType2() != null) addUses(node.getReturnType2());
       return true;
     }
 
@@ -125,7 +126,39 @@ public final class Analyzer {
             line0(node.getStartPosition()), line0(node.getStartPosition() + node.getLength()),
             node.getStartPosition(), node.getStartPosition() + node.getLength()));
       }
+      addUses(node.getType());
       return true;
+    }
+
+    @Override public boolean visit(SingleVariableDeclaration node) {
+      addUses(node.getType());
+      return true;
+    }
+
+    private void addUses(Type t) {
+      if (enclosingTypeId == null || t == null) return;
+      collectTypeUses(t);
+    }
+
+    private void collectTypeUses(Type t) {
+      if (t == null) return;
+      if (t.isParameterizedType()) {
+        ParameterizedType pt = (ParameterizedType) t;
+        collectTypeUses(pt.getType());
+        for (Object a : pt.typeArguments()) collectTypeUses((Type) a);
+      } else if (t.isArrayType()) {
+        collectTypeUses(((ArrayType) t).getElementType());
+      } else if (t.isSimpleType() || t.isQualifiedType() || t.isNameQualifiedType()) {
+        if (!isPrimitiveOrJavaLang(t)) out.edges.add(new Dtos.Edge(enclosingTypeId, typeId(t, "class"), "uses"));
+      }
+    }
+
+    private boolean isPrimitiveOrJavaLang(Type t) {
+      ITypeBinding b = t.resolveBinding();
+      if (b == null) return false;
+      if (b.isPrimitive()) return true;
+      String pkg = b.getPackage() == null ? "" : b.getPackage().getName();
+      return pkg.equals("java.lang");
     }
 
     @Override public boolean visit(ImportDeclaration node) {
