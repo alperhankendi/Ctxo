@@ -59,6 +59,7 @@
   "devDependencies": {
     "@ctxo/lang-csharp": "workspace:*",
     "@ctxo/lang-go": "workspace:*",
+    "@ctxo/lang-java": "workspace:*",
     "@ctxo/lang-typescript": "workspace:*",
     "@types/node": "^22.15.3",
     "@types/picomatch": "^3.0.1",

@@ -69,6 +69,9 @@ importers:
       '@ctxo/lang-go':
         specifier: workspace:*
         version: link:../lang-go
+      '@ctxo/lang-java':
+        specifier: workspace:*
+        version: link:../lang-java
       '@ctxo/lang-typescript':
         specifier: workspace:*
         version: link:../lang-typescript
