@@ -42,6 +42,62 @@ ctxo install java --syntax-only
 ctxo index
 ```
 
+## Step-by-Step Install (Full Tier)
+
+The full tier needs two things at index time: a Java runtime (JRE 17+) that Ctxo can reach, and the `@ctxo/lang-java-analyzer` companion package. Choose the path that fits your project.
+
+### Global - recommended for Java / Maven / Gradle projects
+
+A pure Java project has no `package.json`, so install the plugins globally (next to a global `ctxo`). Run these one at a time:
+
+**1. Make a JRE 17+ reachable in this shell.** If `java -version` already prints 17 or newer, skip to step 2. On Windows the JDK installer often does not add `java` to PATH, so point at it for the session (PowerShell, Temurin JDK 21 example):
+
+```powershell
+$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-21.0.11.10-hotspot"
+$env:PATH = "$env:JAVA_HOME\bin;$env:PATH"
+java -version    # must print 17+ (one JDT build covers Java 8-21 sources)
+```
+
+macOS / Linux equivalent:
+
+```bash
+export JAVA_HOME="/path/to/jdk-21"
+export PATH="$JAVA_HOME/bin:$PATH"
+java -version
+```
+
+**2. Install the plugin + analyzer JAR globally:**
+
+```bash
+ctxo install java --full-tier --global
+```
+
+**3. Index your Java project:**
+
+```bash
+cd /path/to/your/java-project
+ctxo index       # look for the line: "Java: N files (full tier)"
+```
+
+**4. Confirm the active tier:**
+
+```bash
+ctxo doctor      # "Java analysis tier: full tier" + JRE detected + analyzer installed
+```
+
+> If `ctxo index` reports the syntax tier, the runtime was not reachable. Re-do step 1
+> (or persist `JAVA_HOME` / `PATH` in your environment), then re-run `ctxo index`. The
+> plugin resolves Java via `CTXO_JAVA_HOME`, then `JAVA_HOME`, then `PATH`.
+
+### Project-local - for repos that already have a package.json
+
+```bash
+ctxo install java --full-tier   # adds both packages to devDependencies
+ctxo index
+```
+
+Persist the runtime path for CI and teammates by setting `CTXO_JAVA_HOME` or `JAVA_HOME` in your shell profile or CI environment.
+
 ## How It Works
 
 `@ctxo/lang-java-analyzer` ships a prebuilt JAR inside the npm package. When `ctxo index` detects `.java` files and both JRE 17+ and the analyzer are available:
