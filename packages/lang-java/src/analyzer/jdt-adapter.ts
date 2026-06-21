@@ -1,12 +1,11 @@
 import type { ComplexityMetrics, GraphEdge, ILanguageAdapter, SymbolKind, SymbolNode } from '@ctxo/plugin-api';
 import { createLogger } from '../logger.js';
-import { resolveAnalyzerJar, analyzerPackageVersion } from './jar-resolve.js';
+import { resolveAnalyzerJar, analyzerPackageVersion, baseVersionMismatch, PLUGIN_VERSION } from './jar-resolve.js';
 import { runBatchIndex, type JdtFileResult } from './jdt-process.js';
 import { detectJavaRuntime } from './toolchain-detect.js';
 
 const log = createLogger('ctxo:lang-java');
 const FULL_SYMBOL_ID = /^.+::.+::.+$/;
-const ANALYZER_VERSION = '0.8.0';
 
 export class JdtAnalyzerAdapter implements ILanguageAdapter {
   readonly extensions = ['.java'] as const;
@@ -39,8 +38,8 @@ export class JdtAnalyzerAdapter implements ILanguageAdapter {
       return;
     }
     const analyzerVer = analyzerPackageVersion();
-    if (analyzerVer && analyzerVer !== ANALYZER_VERSION) {
-      log.warn(`Analyzer package version ${analyzerVer} != plugin ${ANALYZER_VERSION}; using it anyway. Re-run "ctxo install java --full-tier" to align.`);
+    if (analyzerVer && baseVersionMismatch(analyzerVer, PLUGIN_VERSION)) {
+      log.warn(`Analyzer package version ${analyzerVer} != plugin ${PLUGIN_VERSION}; using it anyway. Re-run "ctxo install java --full-tier" to align.`);
     }
     this.root = rootDir;
     this.javaBin = java.javaBin;

@@ -6,6 +6,11 @@ import { detectJavaRuntime } from '../analyzer/toolchain-detect.js';
 vi.mock('../analyzer/jar-resolve.js', () => ({
   resolveAnalyzerJar: vi.fn(() => null),
   analyzerPackageVersion: vi.fn(() => null),
+  baseVersionMismatch: vi.fn((a: string, b: string) => {
+    const base = (v: string) => (v.split('-')[0] ?? v).split('+')[0] ?? v;
+    return base(a) !== base(b);
+  }),
+  PLUGIN_VERSION: '0.8.0',
 }));
 
 import { JavaCompositeAdapter } from '../composite-adapter.js';
