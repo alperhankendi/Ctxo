@@ -131,6 +131,8 @@ export class JdtKeepAlive {
 
   async start(): Promise<boolean> {
     return new Promise((resolve) => {
+      let settled = false;
+      const settle = (v: boolean) => { if (!settled) { settled = true; resolve(v); } };
       this.proc = spawn(this.javaBin, ['-jar', this.jarPath, this.projectRoot, '--keep-alive'], {
         stdio: ['pipe', 'pipe', 'pipe'],
       });
@@ -143,7 +145,7 @@ export class JdtKeepAlive {
           if (!line) continue;
           try {
             const obj = JSON.parse(line);
-            if (obj.type === 'ready') { resolve(true); }
+            if (obj.type === 'ready') { settle(true); }
             else if (obj.type === 'file') {
               const norm = String(obj.file).replace(/\\/g, '/');
               const cb = this.pending.get(norm);
@@ -155,8 +157,8 @@ export class JdtKeepAlive {
         }
       });
       this.proc.stderr!.on('data', (c: Buffer) => log.error(`jdt keep-alive: ${c.toString().trim()}`));
-      this.proc.on('close', () => { this.proc = null; for (const cb of this.pending.values()) cb(null); this.pending.clear(); });
-      this.proc.on('error', (err) => { log.error(`JdtKeepAlive spawn error: ${err.message}`); resolve(false); });
+      this.proc.on('close', () => { this.proc = null; for (const cb of this.pending.values()) cb(null); this.pending.clear(); settle(false); });
+      this.proc.on('error', (err) => { log.error(`JdtKeepAlive spawn error: ${err.message}`); settle(false); });
       this.resetIdle();
     });
   }
@@ -168,6 +170,8 @@ export class JdtKeepAlive {
     const norm = relativePath.replace(/\\/g, '/');
     this.resetIdle();
     return new Promise((resolve) => {
+      const prior = this.pending.get(norm);
+      if (prior) { this.pending.delete(norm); prior(null); }
       this.pending.set(norm, resolve);
       this.proc!.stdin!.write(JSON.stringify({ file: norm }) + '\n');
       setTimeout(() => {
