@@ -14,4 +14,7 @@ describe('resolveJavaPackages', () => {
   it('--full-tier forces analyzer even without detected JRE', () => {
     expect(resolveJavaPackages({ jreAvailable: false, fullTier: true })).toEqual(['@ctxo/lang-java', '@ctxo/lang-java-analyzer']);
   });
+  it('throws on conflicting --full-tier and --syntax-only', () => {
+    expect(() => resolveJavaPackages({ jreAvailable: true, fullTier: true, syntaxOnly: true })).toThrow(/full-tier.*syntax-only|syntax-only.*full-tier/i);
+  });
 });

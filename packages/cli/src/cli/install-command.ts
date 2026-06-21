@@ -34,6 +34,7 @@ export interface InstallOptions {
 
 /** Decide the java package set from JRE availability + flags. Pure + unit-testable. */
 export function resolveJavaPackages(opts: { jreAvailable: boolean; fullTier?: boolean; syntaxOnly?: boolean }): string[] {
+  if (opts.fullTier && opts.syntaxOnly) throw new Error('Cannot combine --full-tier with --syntax-only.');
   const base = ['@ctxo/lang-java'];
   if (opts.syntaxOnly) return base;
   if (opts.fullTier || opts.jreAvailable) return [...base, '@ctxo/lang-java-analyzer'];
@@ -92,7 +93,14 @@ export class InstallCommand {
         if (!jreAvailable && !options.fullTier && !options.syntaxOnly) {
           console.error('[ctxo] JRE 17+ not found; installing Java syntax tier. Install a JRE then run "ctxo install java --full-tier" for resolved call/use edges.');
         }
-        const javaPkgs = resolveJavaPackages({ jreAvailable, fullTier: options.fullTier, syntaxOnly: options.syntaxOnly });
+        let javaPkgs: string[];
+        try {
+          javaPkgs = resolveJavaPackages({ jreAvailable, fullTier: options.fullTier, syntaxOnly: options.syntaxOnly });
+        } catch (err) {
+          console.error(`[ctxo] ${(err as Error).message}`);
+          process.exitCode = 1;
+          return;
+        }
         for (const pkg of javaPkgs) {
           specifiers.push(options.version ? `${pkg}@${options.version}` : pkg);
         }
