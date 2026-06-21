@@ -2,20 +2,20 @@
   "antiPatterns": [],
   "complexity": [
     {
-      "cyclomatic": 2,
+      "cyclomatic": 3,
       "symbolId": "packages/cli/src/core/install/run-package-manager.ts::runPackageManager::function"
     }
   ],
-  "contentHash": "408557f9857b474d0f56ba0a2668d7ac20031e99d3eaf4c064852d50439a53dc",
-  "edges": [
-    {
-      "from": "packages/cli/src/core/install/run-package-manager.ts::runPackageManager::function",
-      "kind": "calls",
-      "to": "packages/cli/src/core/install/run-package-manager.ts::resolveBinary::function"
-    }
-  ],
+  "contentHash": "656358e828e5162127460eb5f65f2bcf66408159c43fc57a7c2231152ff48152",
+  "edges": [],
   "file": "packages/cli/src/core/install/run-package-manager.ts",
   "intent": [
+    {
+      "date": "2026-06-22T00:59:44+03:00",
+      "hash": "f3210c6f4aa99aa29216397fda602a5fe1731273",
+      "kind": "commit",
+      "message": "fix(install): spawn package-manager via shell string on Windows (fixes spawn EINVAL on Node CVE-2024-27980 patched runtimes)"
+    },
     {
       "date": "2026-05-16T02:15:51+03:00",
       "hash": "2705fec64628ae82f8e3f61346ad3c6436e0c336",
@@ -29,15 +29,15 @@
       "message": "feat(cli): ctxo update — self-update mechanism for CLI + plugins (#84)"
     }
   ],
-  "lastModified": 1780236813,
+  "lastModified": 1782079187,
   "symbols": [
     {
-      "endLine": 25,
-      "endOffset": 1339,
+      "endLine": 30,
+      "endOffset": 1573,
       "kind": "function",
       "name": "runPackageManager",
-      "startLine": 18,
-      "startOffset": 946,
+      "startLine": 21,
+      "startOffset": 1100,
       "symbolId": "packages/cli/src/core/install/run-package-manager.ts::runPackageManager::function"
     }
   ]
