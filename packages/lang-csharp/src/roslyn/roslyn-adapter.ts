@@ -1,5 +1,5 @@
 import { relative, dirname, resolve } from 'node:path';
-import type { SymbolNode, GraphEdge, ComplexityMetrics, SymbolKind, ILanguageAdapter } from '@ctxo/plugin-api';
+import type { SymbolNode, GraphEdge, ComplexityMetrics, SymbolKind, ILanguageAdapter, ReindexResult } from '@ctxo/plugin-api';
 import { createLogger } from '../logger.js';
 import { detectDotnetSdk, discoverSolution, findCtxoRoslynProject } from './solution-discovery.js';
 import { runBatchIndex, RoslynKeepAlive, type RoslynBatchResult, type RoslynFileResult } from './roslyn-process.js';
@@ -137,14 +137,34 @@ export class RoslynAdapter implements ILanguageAdapter {
   /**
    * Incremental re-analysis of a single file (keep-alive mode).
    */
-  async reindexFile(relativePath: string): Promise<RoslynFileResult | null> {
+  async reindexFile(relativePath: string): Promise<ReindexResult | null> {
     if (!this.keepAlive?.isAlive()) return null;
 
     const result = await this.keepAlive.analyzeFile(relativePath);
     if (result) {
       this.cache.set(relativePath, result);
+      return {
+        symbols: result.symbols.map(s => ({
+          symbolId: s.symbolId,
+          name: s.name,
+          kind: s.kind as SymbolKind,
+          startLine: s.startLine,
+          endLine: s.endLine,
+          ...(s.startOffset != null ? { startOffset: s.startOffset } : {}),
+          ...(s.endOffset != null ? { endOffset: s.endOffset } : {}),
+        })),
+        edges: result.edges.map(e => ({
+          from: e.from,
+          to: e.to,
+          kind: e.kind as GraphEdge['kind'],
+        })),
+        complexity: result.complexity.map(c => ({
+          symbolId: c.symbolId,
+          cyclomatic: c.cyclomatic,
+        })),
+      };
     }
-    return result;
+    return null;
   }
 
   async dispose(): Promise<void> {

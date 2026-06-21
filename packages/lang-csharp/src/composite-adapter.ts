@@ -1,4 +1,4 @@
-import type { SymbolNode, GraphEdge, ComplexityMetrics, SymbolKind, ILanguageAdapter } from '@ctxo/plugin-api';
+import type { SymbolNode, GraphEdge, ComplexityMetrics, SymbolKind, ILanguageAdapter, IIncrementalReindex } from '@ctxo/plugin-api';
 import { RoslynAdapter } from './roslyn/roslyn-adapter.js';
 import { CSharpAdapter } from './csharp-adapter.js';
 import { createLogger } from './logger.js';
@@ -67,6 +67,11 @@ export class CSharpCompositeAdapter implements ILanguageAdapter {
 
   /** Exposed for cli watch/index optimizations. Null when running in syntax tier. */
   getRoslynDelegate(): RoslynAdapter | null {
+    return this.roslyn;
+  }
+
+  /** Optional watch keep-alive capability (generic). Null in syntax tier. */
+  getIncrementalReindex(): IIncrementalReindex | null {
     return this.roslyn;
   }
 
