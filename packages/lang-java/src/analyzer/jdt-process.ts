@@ -1,4 +1,4 @@
-import { spawn } from 'node:child_process';
+import { spawn, type ChildProcess } from 'node:child_process';
 import { delimiter } from 'node:path';
 import { createLogger } from '../logger.js';
 
@@ -113,4 +113,76 @@ export async function runBatchIndex(
       resolve(empty);
     });
   });
+}
+
+/** Keep-alive JDT analyzer for watch mode: stays alive, re-analyzes one file per request. */
+export class JdtKeepAlive {
+  private proc: ChildProcess | null = null;
+  private buffer = '';
+  private pending = new Map<string, (r: JdtFileResult | null) => void>();
+  private inactivityTimer: ReturnType<typeof setTimeout> | null = null;
+
+  constructor(
+    private readonly javaBin: string,
+    private readonly jarPath: string,
+    private readonly projectRoot: string,
+    private readonly idleMs = 300_000,
+  ) {}
+
+  async start(): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.proc = spawn(this.javaBin, ['-jar', this.jarPath, this.projectRoot, '--keep-alive'], {
+        stdio: ['pipe', 'pipe', 'pipe'],
+      });
+      this.proc.stdout!.on('data', (chunk: Buffer) => {
+        this.buffer += chunk.toString();
+        let nl: number;
+        while ((nl = this.buffer.indexOf('\n')) !== -1) {
+          const line = this.buffer.slice(0, nl).trim();
+          this.buffer = this.buffer.slice(nl + 1);
+          if (!line) continue;
+          try {
+            const obj = JSON.parse(line);
+            if (obj.type === 'ready') { resolve(true); }
+            else if (obj.type === 'file') {
+              const norm = String(obj.file).replace(/\\/g, '/');
+              const cb = this.pending.get(norm);
+              if (cb) { this.pending.delete(norm); cb(obj as JdtFileResult); }
+            }
+          } catch {
+            log.error(`JdtKeepAlive parse error: ${line.slice(0, 120)}`);
+          }
+        }
+      });
+      this.proc.stderr!.on('data', (c: Buffer) => log.error(`jdt keep-alive: ${c.toString().trim()}`));
+      this.proc.on('close', () => { this.proc = null; for (const cb of this.pending.values()) cb(null); this.pending.clear(); });
+      this.proc.on('error', (err) => { log.error(`JdtKeepAlive spawn error: ${err.message}`); resolve(false); });
+      this.resetIdle();
+    });
+  }
+
+  isAlive(): boolean { return this.proc !== null && !this.proc.killed; }
+
+  async analyzeFile(relativePath: string): Promise<JdtFileResult | null> {
+    if (!this.proc || !this.proc.stdin!.writable) return null;
+    const norm = relativePath.replace(/\\/g, '/');
+    this.resetIdle();
+    return new Promise((resolve) => {
+      this.pending.set(norm, resolve);
+      this.proc!.stdin!.write(JSON.stringify({ file: norm }) + '\n');
+      setTimeout(() => {
+        if (this.pending.has(norm)) { this.pending.delete(norm); log.error(`JdtKeepAlive timeout for ${norm}`); resolve(null); }
+      }, 30_000);
+    });
+  }
+
+  async shutdown(): Promise<void> {
+    if (this.inactivityTimer) clearTimeout(this.inactivityTimer);
+    if (this.proc) { this.proc.stdin!.end(); this.proc.kill(); this.proc = null; }
+  }
+
+  private resetIdle(): void {
+    if (this.inactivityTimer) clearTimeout(this.inactivityTimer);
+    this.inactivityTimer = setTimeout(() => { log.info('JdtKeepAlive idle shutdown'); void this.shutdown(); }, this.idleMs);
+  }
 }
