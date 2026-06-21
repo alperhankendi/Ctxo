@@ -1,20 +1,45 @@
 {
   "name": "@ctxo/lang-java-analyzer",
-  "version": "0.8.0-alpha.0",
+  "version": "0.8.0",
   "description": "Prebuilt Eclipse JDT Core analyzer JAR for @ctxo/lang-java full tier",
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "main": "index.js",
   "types": "index.d.ts",
-  "exports": { ".": { "types": "./index.d.ts", "import": "./index.js" }, "./package.json": "./package.json" },
-  "files": ["index.js", "index.d.ts", "jar/ctxo-jdt-analyzer.jar", "README.md"],
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "jar/ctxo-jdt-analyzer.jar",
+    "README.md"
+  ],
   "scripts": {
     "build": "mvn -q -f java/pom.xml -DskipTests package && node -e \"require('node:fs').mkdirSync('jar',{recursive:true}); require('node:fs').copyFileSync('java/target/ctxo-jdt-analyzer.jar','jar/ctxo-jdt-analyzer.jar')\"",
     "test": "mvn -q -f java/pom.xml test"
   },
-  "keywords": ["ctxo", "java", "jdt", "analyzer"],
+  "keywords": [
+    "ctxo",
+    "java",
+    "jdt",
+    "analyzer"
+  ],
   "author": "Alper Hankendi",
   "license": "MIT",
-  "repository": { "type": "git", "url": "git+https://github.com/alperhankendi/Ctxo.git", "directory": "packages/lang-java-analyzer" },
-  "publishConfig": { "access": "public", "provenance": true }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alperhankendi/Ctxo.git",
+    "directory": "packages/lang-java-analyzer"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
 }
