@@ -29,14 +29,15 @@ One JDT build covers **Java 8 through 21** - no multi-JDK setup required.
 # Check your Java version
 java -version
 
-# Install Java support (auto-selects tier based on JRE availability)
-ctxo install java
+# Install Java support globally (Java/Maven/Gradle projects have no package.json).
+# Auto-selects tier based on JRE availability.
+ctxo install java --global
 
 # Force full-tier analyzer install
-ctxo install java --full-tier
+ctxo install java --full-tier --global
 
 # Skip analyzer, syntax tier only
-ctxo install java --syntax-only
+ctxo install java --syntax-only --global
 
 # Index your Java project
 ctxo index

@@ -44,24 +44,25 @@ yarn add -D @ctxo/lang-java
 ```
 :::
 
-Or:
+Or, for a Java / Maven / Gradle project (which has no `package.json`), install
+globally with `--global`:
 
 ```bash
-ctxo install java --yes
+ctxo install java --global --yes
 ```
 
-`ctxo install java` installs the syntax tier plugin. If a JRE 17+ is detected
-on your PATH it also installs `@ctxo/lang-java-analyzer` (full tier). To force
-full tier installation regardless of detection:
+`ctxo install java --global` installs the syntax tier plugin. If a JRE 17+ is
+detected on your PATH it also installs `@ctxo/lang-java-analyzer` (full tier).
+To force full tier installation regardless of detection:
 
 ```bash
-ctxo install java --full-tier
+ctxo install java --full-tier --global
 ```
 
 To skip the analyzer and stay on tree-sitter only:
 
 ```bash
-ctxo install java --syntax-only
+ctxo install java --syntax-only --global
 ```
 
 ## What it extracts
