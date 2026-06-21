@@ -1,4 +1,4 @@
-import { execFileSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { createLogger } from '../logger.js';
@@ -40,14 +40,18 @@ export function resolveJavaBin(): string {
 export function detectJavaRuntime(): JavaToolchainInfo {
   const javaBin = resolveJavaBin();
   try {
-    const out = execFileSync(javaBin, ['-version'], { encoding: 'utf-8', timeout: 10_000, stdio: ['ignore', 'pipe', 'pipe'] });
-    return finalize(javaBin, parseJavaVersion(out));
-  } catch (err) {
-    const stderr = (err as { stderr?: Buffer | string }).stderr;
-    const text = stderr ? stderr.toString() : '';
+    // `java -version` always prints to stderr regardless of platform.
+    // Use spawnSync so we can read both stdout and stderr without relying on throws.
+    const r = spawnSync(javaBin, ['-version'], { encoding: 'utf-8', timeout: 10_000 });
+    if (r.error) throw r.error;
+    // Version text appears on stderr (JVM convention across all vendors).
+    const text = (r.stderr ?? '') + (r.stdout ?? '');
     const parsed = parseJavaVersion(text);
     if (parsed) return finalize(javaBin, parsed);
     log.info(`Java runtime not detected via ${javaBin}`);
+    return { available: false, javaBin };
+  } catch (err) {
+    log.info(`Java runtime not detected via ${javaBin}: ${(err as Error).message}`);
     return { available: false, javaBin };
   }
 }
