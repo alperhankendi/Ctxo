@@ -1,53 +1,64 @@
 import type { SymbolNode, GraphEdge, ComplexityMetrics, SymbolKind, ILanguageAdapter } from '@ctxo/plugin-api';
 import { JavaAdapter } from './java-adapter.js';
+import { JdtAnalyzerAdapter } from './analyzer/jdt-adapter.js';
 import { createLogger } from './logger.js';
 
 const log = createLogger('ctxo:lang-java');
 
 /**
  * Picks between the full-tier JDT analyzer and the syntax-tier tree-sitter
- * adapter at initialize() time. This foundation ships syntax-only: the JDT
- * branch is added in a later plan. Complexity is ALWAYS sourced from tree-sitter.
+ * adapter at initialize() time. Symbols/edges come from whichever is active;
+ * complexity is ALWAYS tree-sitter (JDT emits none).
  */
 export class JavaCompositeAdapter implements ILanguageAdapter {
   private treeSitter: JavaAdapter;
-  // private analyzer: JdtAdapter | null = null;  // wired in the full-tier plan
+  private analyzer: JdtAnalyzerAdapter | null = null;
 
-  constructor() {
-    this.treeSitter = new JavaAdapter();
-  }
+  constructor() { this.treeSitter = new JavaAdapter(); }
 
-  async initialize(_rootDir: string): Promise<void> {
-    // The full-tier plan will probe the Java runtime + verified JAR here and activate full tier.
-    log.info('Java plugin: tree-sitter syntax-tier active (full tier arrives in a later plan)');
+  async initialize(rootDir: string): Promise<void> {
+    try {
+      const analyzer = new JdtAnalyzerAdapter();
+      await analyzer.initialize(rootDir);
+      if (analyzer.isReady()) {
+        this.analyzer = analyzer;
+        log.info('Java plugin: JDT full-tier active');
+        return;
+      }
+      await analyzer.dispose();
+    } catch (err) {
+      log.warn(`Java analyzer unavailable: ${(err as Error).message}`);
+    }
+    log.info('Java plugin: tree-sitter syntax-tier active (install full tier for resolved call/use edges)');
   }
 
   async dispose(): Promise<void> {
-    // Full-tier plan: dispose the analyzer process if active.
+    if (this.analyzer) await this.analyzer.dispose();
   }
 
   extractSymbols(filePath: string, source: string): Promise<SymbolNode[]> {
-    return this.treeSitter.extractSymbols(filePath, source);
+    return (this.analyzer ?? this.treeSitter).extractSymbols(filePath, source);
   }
 
   extractEdges(filePath: string, source: string): Promise<GraphEdge[]> {
-    return this.treeSitter.extractEdges(filePath, source);
+    return (this.analyzer ?? this.treeSitter).extractEdges(filePath, source);
   }
 
   extractComplexity(filePath: string, source: string): Promise<ComplexityMetrics[]> {
-    // Always tree-sitter — JDT does not emit cyclomatic complexity.
     return this.treeSitter.extractComplexity(filePath, source);
   }
 
-  isSupported(filePath: string): boolean {
-    return filePath.toLowerCase().endsWith('.java');
-  }
+  isSupported(filePath: string): boolean { return filePath.toLowerCase().endsWith('.java'); }
 
   setSymbolRegistry(registry: Map<string, SymbolKind>): void {
     this.treeSitter.setSymbolRegistry?.(registry);
   }
 
+  getAnalyzerDelegate(): JdtAnalyzerAdapter | null { return this.analyzer; }
+
   getTier(): 'full' | 'syntax' | 'unavailable' {
-    return 'syntax';
+    if (this.analyzer) return 'full';
+    if (this.treeSitter) return 'syntax';
+    return 'unavailable';
   }
 }

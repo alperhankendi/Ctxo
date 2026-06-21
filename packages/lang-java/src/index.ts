@@ -13,7 +13,7 @@ export const plugin: CtxoLanguagePlugin = {
   name: 'Java (ctxo-jdt-analyzer + tree-sitter)',
   version: VERSION,
   extensions: ['.java'],
-  tier: 'syntax',
+  tier: 'full',
   createAdapter(_ctx: PluginContext): ILanguageAdapter {
     return new JavaCompositeAdapter();
   },
