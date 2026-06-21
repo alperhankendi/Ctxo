@@ -60,6 +60,9 @@ These six kinds are the full enum. Language plugins map their native AST nodes o
 // C# class
 "src/Ctxo.Roslyn/Analyzer.cs::Analyzer::class"
 
+// Java class
+"src/main/java/com/example/Service.java::Service::class"
+
 // Type alias
 "packages/cli/src/core/types.ts::SymbolKind::type"
 ```

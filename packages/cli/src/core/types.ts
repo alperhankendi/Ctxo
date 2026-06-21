@@ -60,6 +60,25 @@ export const SymbolIdSchema = z
   );
 export type SymbolId = z.infer<typeof SymbolIdSchema>;
 
+// ── Edge Target ─────────────────────────────────────────────────
+
+/**
+ * An edge target: either a full 3-part symbol ID ("<file>::<name>::<kind>")
+ * or a 2-part name-reference ("<name>::<kind>") for cross-file / unresolved
+ * targets. The graph builder resolves name-references by name at query time.
+ */
+export const EdgeTargetSchema = z.string().refine(
+  (s) => {
+    const parts = s.split('::');
+    if (parts.length !== 3 && parts.length !== 2) return false;
+    if (parts.some((p) => p.length === 0)) return false;
+    const kind = parts[parts.length - 1];
+    return (SYMBOL_KINDS as readonly string[]).includes(kind as string);
+  },
+  { message: 'edge target must be <file>::<name>::<kind> or <name>::<kind>' },
+);
+export type EdgeTarget = z.infer<typeof EdgeTargetSchema>;
+
 // ── Symbol Node ─────────────────────────────────────────────────
 
 export const SymbolNodeSchema = z
@@ -80,8 +99,8 @@ export type SymbolNode = z.infer<typeof SymbolNodeSchema>;
 // ── Graph Edge ──────────────────────────────────────────────────
 
 export const GraphEdgeSchema = z.object({
-  from: SymbolIdSchema,
-  to: SymbolIdSchema,
+  from: SymbolIdSchema,    // strict 3-part: from is always a local, resolved symbol
+  to: EdgeTargetSchema,    // 3-part OR 2-part name-ref for cross-file/unresolved targets
   kind: EdgeKindSchema,
   typeOnly: z.boolean().optional(),
 });

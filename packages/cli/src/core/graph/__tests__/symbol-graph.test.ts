@@ -154,4 +154,45 @@ describe('SymbolGraph', () => {
     expect(graph.getNode('src/ports/i-storage-port.js::IStoragePort::interface')?.symbolId)
       .toBe('src/ports/i-storage-port.ts::IStoragePort::interface');
   });
+
+  describe('Java name-reference edge resolution (BUG: cross-file edges dangle)', () => {
+    it('resolves 2-part name-ref "Bar::class" to unambiguous node by name+kind', () => {
+      const graph = new SymbolGraph();
+      graph.addNode(makeNode('a/Foo.java::Foo::class'));
+      graph.addNode(makeNode('b/Bar.java::Bar::class'));
+      graph.addNode(makeNode('b/Bar.java::helper::method'));
+
+      // 2-part implements target resolves by name+kind (unambiguous)
+      graph.addEdge({ from: 'a/Foo.java::Foo::class', to: 'Bar::class', kind: 'implements' });
+      expect(
+        graph.getReverseEdges('b/Bar.java::Bar::class').some(e => e.from === 'a/Foo.java::Foo::class'),
+      ).toBe(true);
+    });
+
+    it('resolves 3-part package-qualified call target "fixture.Bar::helper::method" by name+kind', () => {
+      const graph = new SymbolGraph();
+      graph.addNode(makeNode('a/Foo.java::Foo::class'));
+      graph.addNode(makeNode('b/Bar.java::Bar::class'));
+      graph.addNode(makeNode('b/Bar.java::helper::method'));
+
+      // 3-part package-qualified call target resolves by member name+kind
+      graph.addEdge({ from: 'a/Foo.java::Foo::class', to: 'fixture.Bar::helper::method', kind: 'calls' });
+      expect(
+        graph.getReverseEdges('b/Bar.java::helper::method').some(e => e.kind === 'calls'),
+      ).toBe(true);
+    });
+
+    it('does NOT resolve ambiguous 2-part ref when multiple nodes share the same name+kind', () => {
+      const g2 = new SymbolGraph();
+      g2.addNode(makeNode('x/Bar.java::Bar::class'));
+      g2.addNode(makeNode('y/Bar.java::Bar::class'));
+      g2.addNode(makeNode('z/Use.java::Use::class'));
+
+      g2.addEdge({ from: 'z/Use.java::Use::class', to: 'Bar::class', kind: 'implements' });
+
+      // Neither real Bar gets the reverse edge — left keyed by unresolved 'Bar::class'
+      expect(g2.getReverseEdges('x/Bar.java::Bar::class').length).toBe(0);
+      expect(g2.getReverseEdges('y/Bar.java::Bar::class').length).toBe(0);
+    });
+  });
 });

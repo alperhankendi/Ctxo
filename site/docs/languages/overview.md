@@ -19,6 +19,7 @@ runtime dependencies on `@ctxo/cli`.
 | TypeScript/JavaScript | `@ctxo/lang-typescript` | ts-morph                                         | `full`   | `.ts .tsx .js .jsx`        |
 | Go                    | `@ctxo/lang-go`         | `ctxo-go-analyzer` (Go 1.22+) + tree-sitter-go   | `full`   | `.go`                      |
 | C#                    | `@ctxo/lang-csharp`     | `ctxo-roslyn` (.NET SDK 8+) + tree-sitter-c-sharp | `full`  | `.cs`                      |
+| Java                  | `@ctxo/lang-java` + `@ctxo/lang-java-analyzer` | Eclipse JDT Core (JRE 17+) + tree-sitter-java | `full` | `.java` |
 
 Two tiers are defined by the plugin contract:
 
@@ -28,9 +29,11 @@ Two tiers are defined by the plugin contract:
 - **`syntax`** — tree-sitter or equivalent syntax-level parser. Produces
   symbols, `imports`, and approximate edges. Used as a graceful fallback.
 
-The Go and C# plugins advertise `tier: 'full'` and auto-downgrade to syntax at
-runtime when the Go toolchain or .NET SDK is missing. You can see the active
-tier in `ctxo doctor --json` under the language coverage check.
+The Go, C#, and Java plugins advertise `tier: 'full'` and auto-downgrade to
+syntax at runtime when the required toolchain or analyzer package is missing.
+For Java, full tier requires the `@ctxo/lang-java-analyzer` companion package
+and a JRE 17+ on PATH - not a build toolchain. You can see the active tier in
+`ctxo doctor --json` under the language coverage check.
 
 ## What gets extracted
 
@@ -48,7 +51,8 @@ plugins a project needs. Detection combines two signals:
    - `tsconfig.json` → typescript
    - `go.mod` / `go.work` → go
    - `*.csproj` / `*.sln` → csharp
-   - `pyproject.toml`, `pom.xml`, `Cargo.toml`, `Gemfile`, ... (reserved)
+   - `pom.xml` / `build.gradle` / `build.gradle.kts` → java
+   - `pyproject.toml`, `Cargo.toml`, `Gemfile`, ... (reserved)
 2. **Extension counts** from `git ls-files`, mapped through a canonical
    extension table (e.g. `.ts` and `.tsx` both map to `typescript`).
 
@@ -62,13 +66,13 @@ package manager (pnpm / npm / yarn) and add packages to `devDependencies`:
 
 ::: code-group
 ```bash [pnpm]
-pnpm add -D @ctxo/lang-typescript @ctxo/lang-go @ctxo/lang-csharp
+pnpm add -D @ctxo/lang-typescript @ctxo/lang-go @ctxo/lang-csharp @ctxo/lang-java
 ```
 ```bash [npm]
-npm install --save-dev @ctxo/lang-typescript @ctxo/lang-go @ctxo/lang-csharp
+npm install --save-dev @ctxo/lang-typescript @ctxo/lang-go @ctxo/lang-csharp @ctxo/lang-java
 ```
 ```bash [yarn]
-yarn add -D @ctxo/lang-typescript @ctxo/lang-go @ctxo/lang-csharp
+yarn add -D @ctxo/lang-typescript @ctxo/lang-go @ctxo/lang-csharp @ctxo/lang-java
 ```
 :::
 
@@ -80,6 +84,7 @@ to preview the plan without touching `package.json`.
 - [TypeScript / JavaScript](/languages/typescript)
 - [Go](/languages/go)
 - [C#](/languages/csharp)
+- [Java](/languages/java)
 - [Writing a plugin](/languages/writing-a-plugin)
 
 ## Related

@@ -11,10 +11,10 @@ Edges in the Ctxo dependency graph carry one of five kinds. The kind tells you h
 
 | Kind | Direction | Example | Emitted by |
 | --- | --- | --- | --- |
-| `imports` | module A → module B | `import { foo } from './bar'` | TypeScript, Go, C# (module-level) |
+| `imports` | module A → module B | `import { foo } from './bar'` | TypeScript, Go, C#, Java (module-level) |
 | `calls` | caller → callee | `foo()` inside `bar()` | All parsers (call-site) |
-| `extends` | subclass → base | `class A extends B` | TypeScript, C#, Go (struct embedding) |
-| `implements` | class → interface | `class A implements I` | TypeScript, C# |
+| `extends` | subclass → base | `class A extends B` | TypeScript, C#, Go (struct embedding), Java |
+| `implements` | class → interface | `class A implements I` | TypeScript, C#, Java |
 | `uses` | reference → target | type annotation, generic parameter, identifier reference | All parsers |
 
 All edges are directed. The index stores each edge as `{ from, to, kind, typeOnly? }` where `from` and `to` are [symbol IDs](/reference/symbol-ids).

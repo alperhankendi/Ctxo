@@ -7,6 +7,7 @@ import {
   SymbolIdSchema,
   EdgeKindSchema,
   DetailLevelSchema,
+  EdgeTargetSchema,
 } from '../types.js';
 
 // ── Fixtures ────────────────────────────────────────────────────
@@ -263,6 +264,87 @@ describe('GraphEdgeSchema', () => {
     const result = GraphEdgeSchema.safeParse(
       buildGraphEdge({ from: 'invalid-id' }),
     );
+    expect(result.success).toBe(false);
+  });
+
+  it('accepts edge with 2-part name-ref "to" (Bar::class)', () => {
+    const result = GraphEdgeSchema.safeParse(buildGraphEdge({ to: 'Bar::class' }));
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts edge with 2-part name-ref "to" for interface (IFoo::interface)', () => {
+    const result = GraphEdgeSchema.safeParse(buildGraphEdge({ to: 'IFoo::interface' }));
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts edge with 3-part full symbol-id "to" (src/Foo.java::Foo::class)', () => {
+    const result = GraphEdgeSchema.safeParse(
+      buildGraphEdge({ to: 'src/Foo.java::Foo::class' }),
+    );
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects 2-part "from" — from must remain strict 3-part', () => {
+    const result = GraphEdgeSchema.safeParse(buildGraphEdge({ from: 'Bar::class' }));
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects "to" with invalid kind (Bar::widget)', () => {
+    const result = GraphEdgeSchema.safeParse(buildGraphEdge({ to: 'Bar::widget' }));
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects "to" with empty name part (::class)', () => {
+    const result = GraphEdgeSchema.safeParse(buildGraphEdge({ to: '::class' }));
+    expect(result.success).toBe(false);
+  });
+});
+
+// ── EdgeTargetSchema ────────────────────────────────────────────
+
+describe('EdgeTargetSchema', () => {
+  it('accepts 3-part full symbol ID', () => {
+    const result = EdgeTargetSchema.safeParse('src/foo.ts::myFn::function');
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts 2-part name-ref with valid kind (Bar::class)', () => {
+    const result = EdgeTargetSchema.safeParse('Bar::class');
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts 2-part name-ref with interface kind (IFoo::interface)', () => {
+    const result = EdgeTargetSchema.safeParse('IFoo::interface');
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects 1-part string', () => {
+    const result = EdgeTargetSchema.safeParse('Bar');
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects 4-part string', () => {
+    const result = EdgeTargetSchema.safeParse('a::b::c::d');
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects 2-part with invalid kind (Bar::widget)', () => {
+    const result = EdgeTargetSchema.safeParse('Bar::widget');
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects 2-part with empty name (::class)', () => {
+    const result = EdgeTargetSchema.safeParse('::class');
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects 3-part with invalid kind (src/foo.ts::myFn::widget)', () => {
+    const result = EdgeTargetSchema.safeParse('src/foo.ts::myFn::widget');
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects empty string', () => {
+    const result = EdgeTargetSchema.safeParse('');
     expect(result.success).toBe(false);
   });
 });

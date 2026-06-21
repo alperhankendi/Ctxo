@@ -1,0 +1,22 @@
+import type { CtxoLanguagePlugin, PluginContext, ILanguageAdapter } from '@ctxo/plugin-api';
+import { JavaCompositeAdapter } from './composite-adapter.js';
+
+export { JavaAdapter } from './java-adapter.js';
+export { JavaCompositeAdapter } from './composite-adapter.js';
+export { TreeSitterAdapter } from './tree-sitter-adapter.js';
+
+const VERSION = '0.8.0-alpha.0';
+
+export const plugin: CtxoLanguagePlugin = {
+  apiVersion: '1',
+  id: 'java',
+  name: 'Java (ctxo-jdt-analyzer + tree-sitter)',
+  version: VERSION,
+  extensions: ['.java'],
+  tier: 'full',
+  createAdapter(_ctx: PluginContext): ILanguageAdapter {
+    return new JavaCompositeAdapter();
+  },
+};
+
+export default plugin;

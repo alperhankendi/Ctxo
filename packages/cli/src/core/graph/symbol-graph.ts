@@ -3,6 +3,7 @@ import type { SymbolNode, GraphEdge } from '../types.js';
 export class SymbolGraph {
   private readonly nodes = new Map<string, SymbolNode>();
   private readonly nodesByFileAndName = new Map<string, SymbolNode>();
+  private readonly nodesByNameAndKind = new Map<string, SymbolNode[]>();
   private readonly forwardEdges = new Map<string, GraphEdge[]>();
   private readonly reverseEdges = new Map<string, GraphEdge[]>();
   private edgeSet = new Set<string>();
@@ -10,9 +11,17 @@ export class SymbolGraph {
   addNode(node: SymbolNode): void {
     this.nodes.set(node.symbolId, node);
     // Index by file::name (ignoring kind) for fuzzy edge resolution
-    const [p0, p1] = node.symbolId.split('::');
+    const parts = node.symbolId.split('::');
+    const [p0, p1] = parts;
     if (p0 !== undefined && p1 !== undefined) {
       this.nodesByFileAndName.set(`${p0}::${p1}`, node);
+    }
+    // Index by name::kind for name-reference targets (e.g. Java "Bar::class",
+    // "fixture.Bar::helper::method") that carry name+kind but not the file path.
+    if (parts.length === 3) {
+      const nk = `${parts[1]}::${parts[2]}`;
+      const list = this.nodesByNameAndKind.get(nk);
+      if (list) list.push(node); else this.nodesByNameAndKind.set(nk, [node]);
     }
   }
 
@@ -41,7 +50,8 @@ export class SymbolGraph {
 
   private resolveNodeId(id: string): string {
     if (this.nodes.has(id)) return id;
-    const [p0, p1] = id.split('::');
+    const segs = id.split('::');
+    const [p0, p1] = segs;
     if (p0 !== undefined && p1 !== undefined) {
       const fuzzyKey = `${p0}::${p1}`;
       const match = this.nodesByFileAndName.get(fuzzyKey);
@@ -55,11 +65,22 @@ export class SymbolGraph {
         if (altMatch) return altMatch.symbolId;
       }
     }
+
+    // Final fallback: name-reference targets (e.g. Java "Bar::class" or
+    // "pkg.Bar::helper::method") carry name+kind but not the file path. Resolve
+    // by name+kind ONLY when unambiguous (exactly one node matches).
+    const nameKind = this.extractNameKind(segs);
+    if (nameKind) {
+      const candidates = this.nodesByNameAndKind.get(nameKind);
+      if (candidates && candidates.length === 1) return candidates[0]!.symbolId;
+    }
+
     return id;
   }
 
   private resolveNodeFuzzy(id: string): SymbolNode | undefined {
-    const [p0, p1] = id.split('::');
+    const segs = id.split('::');
+    const [p0, p1] = segs;
     if (p0 !== undefined && p1 !== undefined) {
       const match = this.nodesByFileAndName.get(`${p0}::${p1}`);
       if (match) return match;
@@ -67,9 +88,30 @@ export class SymbolGraph {
       // Try .js → .ts extension swap (consistent with resolveNodeId)
       const jsToTs = p0.replace(/\.js$/, '.ts');
       if (jsToTs !== p0) {
-        return this.nodesByFileAndName.get(`${jsToTs}::${p1}`);
+        const tsMatch = this.nodesByFileAndName.get(`${jsToTs}::${p1}`);
+        if (tsMatch) return tsMatch;
       }
     }
+
+    // Final fallback: name-reference targets — resolve by name+kind only when unambiguous.
+    const nameKind = this.extractNameKind(segs);
+    if (nameKind) {
+      const candidates = this.nodesByNameAndKind.get(nameKind);
+      if (candidates && candidates.length === 1) return candidates[0];
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Extracts a `name::kind` key from the segments of a reference ID, supporting:
+   *   - 2-part: `Bar::class`                  → `Bar::class`
+   *   - 3-part: `pkg.Bar::helper::method`      → `helper::method`
+   * Returns undefined for 1-part IDs (no kind information available).
+   */
+  private extractNameKind(segs: string[]): string | undefined {
+    if (segs.length === 3) return `${segs[1]}::${segs[2]}`; // pkg.Type::member::kind → member::kind
+    if (segs.length === 2) return `${segs[0]}::${segs[1]}`; // Type::kind
     return undefined;
   }
 

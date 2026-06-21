@@ -97,6 +97,24 @@ gate:
 | Cursor | no (no blocking pre-edit hook) | yes | yes |
 | Other | no | where supported | yes |
 
+## Supported Languages
+
+| Language | Plugin | Tier | Notes |
+|---|---|---|---|
+| TypeScript / JavaScript | `@ctxo/lang-typescript` | full | ts-morph; type-aware cross-file resolution |
+| Go | `@ctxo/lang-go` | syntax | tree-sitter; exported-symbol analysis |
+| C# | `@ctxo/lang-csharp` | full | Roslyn; .NET SDK 8+ for full tier, tree-sitter fallback |
+| Java | `@ctxo/lang-java` | syntax / full | tree-sitter syntax tier built-in; full tier via `@ctxo/lang-java-analyzer` companion (requires JRE 17+) |
+
+Install via the CLI shortcut:
+
+```bash
+ctxo install typescript go csharp   # syntax or full tier auto-detected
+ctxo install java                   # installs syntax tier; adds full-tier analyzer when JRE 17+ detected
+ctxo install java --full-tier       # force full-tier analyzer install
+ctxo install java --syntax-only     # skip analyzer, syntax tier only
+```
+
 ## Links
 
 * [Docs](https://alperhankendi.github.io/Ctxo/docs/)  quick start, MCP tools, CLI reference, integrations

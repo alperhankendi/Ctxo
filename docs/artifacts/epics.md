@@ -19,7 +19,7 @@ inputDocuments:
 | 4. Index Lifecycle (watch, staleness, status) | 5 | ✅ Delivered | v0.2.0 → v0.4.x | `ctxo status` added by v0.4.x |
 | 5. Team Collaboration (committed index, CI gate) | 5 | ✅ Delivered | v0.2.0 → v0.7.0 | Monorepo fully realized in v0.7.0 |
 | 6. Cross-Client Compat & Release | 5 | 🟡 ~90% | v0.2.0 → v0.7.0 | See Remaining below |
-| 7. Multi-Language (Go + C#) | 4 | ✅ Delivered | v0.3.0 → v0.7.0 | C# full-tier via Roslyn (v0.6.0) |
+| 7. Multi-Language (Go + C# + Java) | 5 | ✅ Delivered | v0.3.0 → 2026-06-21 | C# full-tier via Roslyn (v0.6.0); Java full-tier via Eclipse JDT Core (ADR-014) |
 | 8. Event-Driven Index Updates | 5 | ⏸️ Deferred | — | Replaced by CI gate + git hooks (see below) |
 
 ### Remaining (open work)
@@ -175,7 +175,7 @@ FR24: Epic 1 — Single-line MCP client config
 FR25: Epic 1 — MCP server auto-start subprocess
 FR26: Epic 6 — Cross-client compatibility
 FR27: Epic 1 — TypeScript/JavaScript/TSX support
-FR28: Epic 7 — Go + C# syntax-level support
+FR28: Epic 7 - Go + C# + Java syntax-level and full-tier support
 
 ## Epic List
 
@@ -528,8 +528,8 @@ All five MCP tools verified functional across Claude Code, Cursor, and VS Code C
 - `npm pack` → inspect tarball → no source code, no test fixtures, no `.ctxo/` artifacts included
 - Pre-publish checklist documented in `RELEASING.md`
 
-### Epic 7: Multi-Language Support — Go & C# (V1.5)
-Go and C# codebases can be indexed and queried via tree-sitter syntax-level adapters, extending all five Ctxo tools to backend polyglot developers.
+### Epic 7: Multi-Language Support - Go, C# & Java (V1.5+)
+Go, C#, and Java codebases can be indexed and queried via tree-sitter syntax-level adapters (and full-tier analysis via language-specific sidecars), extending all five Ctxo tools to backend polyglot developers.
 **FRs covered:** FR28
 
 #### Story 7.1: tree-sitter Adapter Foundation
@@ -571,6 +571,18 @@ Go and C# codebases can be indexed and queried via tree-sitter syntax-level adap
 - All 5 MCP tools return results spanning both languages where applicable
 - `ctxo status` shows per-language file counts
 - CI matrix: Linux (`ubuntu-latest`), Node 20 and 22
+
+#### Story 7.5: Java Language Plugin - Syntax + Full-Tier (ADR-014) ✅ Delivered 2026-06-21
+**As a** developer working in Java, **I want** `ctxo index` to extract symbols and dependency edges from `.java` files, **so that** all MCP tools work on my Java codebase at both syntax and full-tier analysis levels.
+
+**Acceptance Criteria:**
+- `@ctxo/lang-java` plugin implements `CtxoLanguagePlugin` protocol v1; handles `.java` extensions; project markers `pom.xml`/`build.gradle`/`build.gradle.kts`
+- Syntax tier: tree-sitter-java extracts `class`, `interface`, `method`, `field`, `enum`, `record` declarations + complexity metrics
+- Full tier: `@ctxo/lang-java-analyzer` companion package (prebuilt JAR, Eclipse JDT Core); adds resolved `calls`/`uses`/`extends`/`implements` edges, cross-file symbol IDs, generics support
+- `ctxo install java --full-tier` prompts for JRE 17+ and downloads `@ctxo/lang-java-analyzer`; auto-detects JRE when available
+- Graceful degradation: JRE absent or `@ctxo/lang-java-analyzer` not installed → falls back to tree-sitter syntax tier silently
+- Distribution model: prebuilt JAR shipped inside `@ctxo/lang-java-analyzer` npm package (no build-from-source required on developer machine) - same sidecar pattern as Roslyn (ADR-007) and Go analyzer (ADR-013)
+- E2E test: fixture Java project (Maven layout, cross-package calls) → `ctxo index` → `get_blast_radius` returns dependents with resolved edges
 
 ### Epic 8: Event-Driven Index Updates — GitHub & GitLab Integration (DONE — architectural pivot)
 

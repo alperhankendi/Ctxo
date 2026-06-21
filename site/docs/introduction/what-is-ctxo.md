@@ -22,7 +22,8 @@ change-health scores, all in a single sub-500ms call.
   navigation (`find_importers`, `get_class_hierarchy`), and health
   (`find_dead_code`, `get_change_intelligence`).
 - **Language-pluggable**: TypeScript/JavaScript (ts-morph), Go (tree-sitter),
-  and C# (Roslyn + tree-sitter) ship today; more plugins via the v1 protocol.
+  C# (Roslyn + tree-sitter), and Java (Eclipse JDT Core + tree-sitter) ship
+  today; more plugins via the v1 protocol.
 
 ## What Ctxo is NOT
 
