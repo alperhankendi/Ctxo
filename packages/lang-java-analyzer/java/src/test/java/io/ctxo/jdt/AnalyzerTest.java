@@ -82,6 +82,26 @@ class AnalyzerTest {
   }
 
   @Test
+  void staticImportEdgeTargetsOwningType() throws Exception {
+    Path root = fixtureDir();
+    List<Dtos.FileResult> results = new Analyzer(root.toString(), new String[0])
+        .analyze(List.of(root.resolve("StaticImp.java").toString()));
+    Dtos.FileResult fr = results.stream().filter(r -> r.file.endsWith("StaticImp.java")).findFirst().orElseThrow();
+    // import static java.lang.Math.max  -> owner is java.lang.Math -> edge to java.lang.Math::Math::class
+    assertTrue(fr.edges.stream().anyMatch(e -> e.kind.equals("imports") && e.to.equals("java.lang.Math::Math::class")),
+        "static import of Math.max should target owning type java.lang.Math::Math::class");
+    // must NOT produce a bogus edge to the member 'max' labeled as class
+    assertTrue(fr.edges.stream().noneMatch(e -> e.to.contains("::max::class")),
+        "no bogus edge with '::max::class'");
+    // import static java.util.Collections.*  -> on-demand static -> owner is java.util.Collections
+    assertTrue(fr.edges.stream().anyMatch(e -> e.kind.equals("imports") && e.to.equals("java.util.Collections::Collections::class")),
+        "on-demand static import of Collections.* should target java.util.Collections::Collections::class");
+    // import java.util.List (regular single-type) -> still correct
+    assertTrue(fr.edges.stream().anyMatch(e -> e.kind.equals("imports") && e.to.equals("java.util.List::List::class")),
+        "regular import java.util.List must still emit java.util.List::List::class");
+  }
+
+  @Test
   void usesEdgeForGenericArgumentIsWellFormed() throws Exception {
     Path root = fixtureDir();
     List<Dtos.FileResult> results = new Analyzer(root.toString(), new String[0])

@@ -45,8 +45,21 @@ public final class Analyzer {
           for (Object o : cu.imports()) {
             org.eclipse.jdt.core.dom.ImportDeclaration imp = (org.eclipse.jdt.core.dom.ImportDeclaration) o;
             String fq = imp.getName().getFullyQualifiedName();
-            String last = fq.contains(".") ? fq.substring(fq.lastIndexOf('.') + 1) : fq;
-            fr.edges.add(new Dtos.Edge(anchor, fq + "::" + last + "::class", "imports"));
+            if (imp.isStatic()) {
+              // For static imports the FQN is either:
+              //   import static a.b.C.member  (isOnDemand==false) -> owner = a.b.C
+              //   import static a.b.C.*       (isOnDemand==true)  -> fq is already a.b.C
+              String ownerFq = (!imp.isOnDemand() && fq.contains("."))
+                  ? fq.substring(0, fq.lastIndexOf('.'))
+                  : fq;
+              String ownerSimple = ownerFq.contains(".") ? ownerFq.substring(ownerFq.lastIndexOf('.') + 1) : ownerFq;
+              fr.edges.add(new Dtos.Edge(anchor, ownerFq + "::" + ownerSimple + "::class", "imports"));
+            } else if (!imp.isOnDemand()) {
+              // Regular single-type import: import a.b.C -> a.b.C::C::class
+              String last = fq.contains(".") ? fq.substring(fq.lastIndexOf('.') + 1) : fq;
+              fr.edges.add(new Dtos.Edge(anchor, fq + "::" + last + "::class", "imports"));
+            }
+            // Regular on-demand import (import a.b.*): fq is a package, not a type — skip.
           }
         }
         byPath.put(rel, fr);
