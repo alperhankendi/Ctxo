@@ -1,5 +1,5 @@
 import { createRequire } from 'node:module';
-import { existsSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import type { IHealthCheck, CheckContext, CheckResult } from '../../../core/diagnostics/types.js';
 import { detectJavaMajor } from '../../../core/detection/detect-java-runtime.js';
@@ -73,42 +73,37 @@ export function analyzerJarPresent(): boolean {
 }
 
 /** Directories that should never be descended into during a Java source scan. */
-const SKIP_DIRS = new Set(['node_modules', 'target', 'build', '.git']);
+const SKIP_DIRS = new Set([
+  'node_modules', 'target', 'build', 'out', 'bin',
+  '.git', '.ctxo', 'dist', 'coverage',
+]);
 
 /**
  * Shallow-bounded recursive search for any `.java` file under `root`.
  * Descends at most `maxDepth` directory levels (root = depth 0), skipping
  * SKIP_DIRS at every level.  Stops and returns true as soon as one file is
  * found to keep the work bounded.
+ *
+ * Uses Dirent entries — no extra stat calls.  Symlinked entries (both files
+ * and directories) are skipped entirely to avoid following loops.
  */
 export function findJavaFile(root: string, maxDepth: number): boolean {
   function walk(dir: string, depth: number): boolean {
-    let entries: string[];
+    let entries: import('node:fs').Dirent[];
     try {
-      entries = readdirSync(dir);
+      entries = readdirSync(dir, { withFileTypes: true });
     } catch {
       return false;
     }
-    for (const name of entries) {
-      if (name.endsWith('.java')) {
-        try {
-          const st = statSync(join(dir, name));
-          if (st.isFile()) return true;
-        } catch {
-          /* skip unreadable entries */
-        }
-      }
+    for (const entry of entries) {
+      if (entry.isSymbolicLink()) continue; // never follow symlinks
+      if (entry.isFile() && entry.name.endsWith('.java')) return true;
     }
     if (depth >= maxDepth) return false;
-    for (const name of entries) {
-      if (SKIP_DIRS.has(name)) continue;
-      const child = join(dir, name);
-      try {
-        if (statSync(child).isDirectory()) {
-          if (walk(child, depth + 1)) return true;
-        }
-      } catch {
-        /* skip */
+    for (const entry of entries) {
+      if (entry.isSymbolicLink()) continue;
+      if (entry.isDirectory() && !SKIP_DIRS.has(entry.name)) {
+        if (walk(join(dir, entry.name), depth + 1)) return true;
       }
     }
     return false;

@@ -4,6 +4,8 @@ import {
   FileIndexSchema,
   SymbolNodeSchema,
   GraphEdgeSchema,
+  CommitIntentSchema,
+  AntiPatternSchema,
   type FileIndex,
 } from '../../core/types.js';
 import { createLogger } from '../../core/logger.js';
@@ -60,16 +62,22 @@ export class JsonIndexReader {
 
       const rawSymbols = Array.isArray(raw_data['symbols']) ? raw_data['symbols'] : [];
       const rawEdges = Array.isArray(raw_data['edges']) ? raw_data['edges'] : [];
+      const rawIntent = Array.isArray(raw_data['intent']) ? raw_data['intent'] : [];
+      const rawAntiPatterns = Array.isArray(raw_data['antiPatterns']) ? raw_data['antiPatterns'] : [];
 
       const validSymbols = rawSymbols.filter((s) => SymbolNodeSchema.safeParse(s).success);
       const validEdges = rawEdges.filter((e) => GraphEdgeSchema.safeParse(e).success);
+      const validIntent = rawIntent.filter((i) => CommitIntentSchema.safeParse(i).success);
+      const validAntiPatterns = rawAntiPatterns.filter((a) => AntiPatternSchema.safeParse(a).success);
 
       const droppedSymbols = rawSymbols.length - validSymbols.length;
       const droppedEdges = rawEdges.length - validEdges.length;
+      const droppedIntent = rawIntent.length - validIntent.length;
+      const droppedAntiPatterns = rawAntiPatterns.length - validAntiPatterns.length;
 
-      if (droppedSymbols > 0 || droppedEdges > 0) {
+      if (droppedSymbols > 0 || droppedEdges > 0 || droppedIntent > 0 || droppedAntiPatterns > 0) {
         log.warn(
-          `${rel}: dropped ${droppedSymbols} invalid symbol(s) and ${droppedEdges} invalid edge(s) — kept ${validSymbols.length} symbol(s) and ${validEdges.length} edge(s)`,
+          `${rel}: dropped ${droppedSymbols} invalid symbol(s), ${droppedEdges} invalid edge(s), ${droppedIntent} invalid intent(s), ${droppedAntiPatterns} invalid antiPattern(s) — kept ${validSymbols.length} symbol(s), ${validEdges.length} edge(s), ${validIntent.length} intent(s), ${validAntiPatterns.length} antiPattern(s)`,
         );
       }
 
@@ -78,6 +86,8 @@ export class JsonIndexReader {
         ...raw_data,
         symbols: validSymbols,
         edges: validEdges,
+        intent: validIntent,
+        antiPatterns: validAntiPatterns,
       });
 
       if (!recovered.success) {

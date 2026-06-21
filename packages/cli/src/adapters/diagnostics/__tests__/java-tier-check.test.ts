@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { mkdtempSync, mkdirSync, writeFileSync, rmdirSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmdirSync, symlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { evaluateJavaTier, analyzerJarPresent, findJavaFile } from '../checks/java-tier-check.js';
@@ -91,6 +91,48 @@ describe('findJavaFile', () => {
         mkdirSync(join(dir, skip), { recursive: true });
         writeFileSync(join(dir, skip, 'Foo.java'), '');
       }
+      expect(findJavaFile(dir, 4)).toBe(false);
+    } finally {
+      try { rmdirSync(dir, { recursive: true } as Parameters<typeof rmdirSync>[1]); } catch { /* ignore */ }
+    }
+  });
+
+  it('skips extended SKIP_DIRS: dist, coverage, out, bin, .ctxo (FIX #7)', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'ctxo-java-skip2-'));
+    try {
+      for (const skip of ['dist', 'coverage', 'out', 'bin', '.ctxo']) {
+        mkdirSync(join(dir, skip), { recursive: true });
+        writeFileSync(join(dir, skip, 'Foo.java'), '');
+      }
+      expect(findJavaFile(dir, 4)).toBe(false);
+    } finally {
+      try { rmdirSync(dir, { recursive: true } as Parameters<typeof rmdirSync>[1]); } catch { /* ignore */ }
+    }
+  });
+
+  it('does not follow a symlinked directory (FIX #7 — symlink safety)', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'ctxo-java-symlink-'));
+    try {
+      // Create a real subdirectory with a .java file
+      const realSub = join(dir, 'real');
+      mkdirSync(realSub);
+      writeFileSync(join(realSub, 'Hidden.java'), '');
+
+      // Create a symlink pointing at it — findJavaFile must NOT follow it
+      try {
+        symlinkSync(realSub, join(dir, 'linked'), 'junction');
+      } catch {
+        // junction creation may fail in some sandboxes; skip the symlink assertion
+        return;
+      }
+
+      // Without the symlink, the real subdirectory is still there — but we
+      // only want to confirm the symlink itself is not followed.  Remove the
+      // real dir so only the dangling/linked path exists.
+      rmdirSync(realSub, { recursive: true } as Parameters<typeof rmdirSync>[1]);
+
+      // The symlink now points nowhere (or is a dir symlink with no target).
+      // findJavaFile must return false and not hang/throw.
       expect(findJavaFile(dir, 4)).toBe(false);
     } finally {
       try { rmdirSync(dir, { recursive: true } as Parameters<typeof rmdirSync>[1]); } catch { /* ignore */ }

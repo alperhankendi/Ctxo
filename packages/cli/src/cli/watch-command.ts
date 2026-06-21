@@ -35,7 +35,6 @@ export class WatchCommand {
 
     // Plugins via discovery
     const keepAliveByExt = new Map<string, IIncrementalReindex>();
-    const activeKeepAlives = new Set<IIncrementalReindex>();
     for (const { plugin, adapter } of await loadPlugins(this.projectRoot)) {
       if (typeof adapter.initialize === 'function') {
         try {
@@ -54,7 +53,6 @@ export class WatchCommand {
         const cap = capable.getIncrementalReindex();
         if (cap?.isReady() && (await cap.startKeepAlive())) {
           for (const ext of plugin.extensions) keepAliveByExt.set(ext.toLowerCase(), cap);
-          activeKeepAlives.add(cap);
           console.error(`[ctxo] ${plugin.id} watch: keep-alive active (full tier, fast incremental re-index)`);
         }
       }
@@ -224,8 +222,9 @@ export class WatchCommand {
         clearTimeout(timeout);
       }
       if (communitySnapshotTimer) clearTimeout(communitySnapshotTimer);
-      // Shutdown all keep-alive capabilities
-      const shutdowns = Promise.all([...activeKeepAlives].map((c) => c.dispose()));
+      // Shutdown all keep-alive capabilities (dedup via Set over Map values)
+      const uniques = new Set(keepAliveByExt.values());
+      const shutdowns = Promise.all([...uniques].map((c) => c.dispose()));
       shutdowns.then(() => {
         watcher.stop().then(() => {
           storage.close();
