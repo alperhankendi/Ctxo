@@ -124,12 +124,35 @@ export class JavaAdapter extends TreeSitterAdapter {
       const tree = this.parse(source);
       const edges: GraphEdge[] = [];
       const imports = this.collectImports(tree.rootNode);
-      this.walkTypeEdges(tree.rootNode, filePath, imports, edges);
+      const anchor = this.firstTypeSymbolId(tree.rootNode, filePath);
+      if (anchor) {
+        for (const path of imports) {
+          const lastSegment = path.includes('.') ? path.slice(path.lastIndexOf('.') + 1) : path;
+          edges.push({ from: anchor, to: `${path}::${lastSegment}::class`, kind: 'imports' });
+        }
+      }
+      this.walkTypeEdges(tree.rootNode, filePath, edges);
       return edges;
     } catch (err) {
       log.error(`Edge extraction failed for ${filePath}: ${(err as Error).message}`);
       return [];
     }
+  }
+
+  /** Return the symbolId of the first top-level type declaration in the file, or undefined. */
+  private firstTypeSymbolId(root: SyntaxNode, filePath: string): string | undefined {
+    let found: string | undefined;
+    const visit = (n: SyntaxNode) => {
+      if (found) return;
+      const kind = TYPE_DECL_KIND[n.type];
+      if (kind) {
+        const name = n.childForFieldName('name')?.text;
+        if (name) { found = this.buildSymbolId(filePath, name, kind); return; }
+      }
+      for (let i = 0; i < n.childCount; i++) visit(n.child(i)!);
+    };
+    visit(root);
+    return found;
   }
 
   /**
@@ -164,7 +187,6 @@ export class JavaAdapter extends TreeSitterAdapter {
   private walkTypeEdges(
     node: SyntaxNode,
     filePath: string,
-    imports: string[],
     out: GraphEdge[],
   ): void {
     for (let i = 0; i < node.childCount; i++) {
@@ -174,11 +196,6 @@ export class JavaAdapter extends TreeSitterAdapter {
         const name = child.childForFieldName('name')?.text;
         if (name) {
           const from = this.buildSymbolId(filePath, name, kind);
-
-          // imports edges (one per import, attributed to this type)
-          for (const path of imports) {
-            out.push({ from, to: this.resolveTypeId(path, 'class'), kind: 'imports' });
-          }
 
           if (child.type === 'class_declaration') {
             // Spike: class_declaration field superclass=superclass (child node of type "superclass")
@@ -213,15 +230,15 @@ export class JavaAdapter extends TreeSitterAdapter {
         }
       }
       // Recurse for nested types
-      this.walkTypeEdges(child, filePath, imports, out);
+      this.walkTypeEdges(child, filePath, out);
     }
   }
 
-  /** Collect all type_identifier texts recursively under a node. */
+  /** Collect all type_identifier and scoped_type_identifier texts recursively under a node. */
   private typeNames(node: SyntaxNode): string[] {
     const names: string[] = [];
     const visit = (n: SyntaxNode) => {
-      if (n.type === 'type_identifier') {
+      if (n.type === 'type_identifier' || n.type === 'scoped_type_identifier') {
         names.push(n.text);
       } else {
         for (let i = 0; i < n.childCount; i++) visit(n.child(i)!);

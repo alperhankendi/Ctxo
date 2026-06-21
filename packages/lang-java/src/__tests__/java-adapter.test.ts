@@ -29,7 +29,8 @@ describe('JavaAdapter.extractSymbols', () => {
     expect(byName('Point')).toMatchObject({ kind: 'class', symbolId: `${FILE}::Point::class` });
     expect(byName('MyAnno')).toMatchObject({ kind: 'interface' });
     expect(byName('add')).toMatchObject({ kind: 'method' });
-    expect(byName('Foo()') ?? byName('Foo')).toBeDefined();
+    const fooMethods = symbols.filter((s) => s.name === 'Foo' && s.kind === 'method');
+    expect(fooMethods).toHaveLength(1); // the constructor
     expect(byName('count')).toMatchObject({ kind: 'variable' });
   });
 
@@ -56,6 +57,14 @@ public class Foo extends Bar implements Baz, Qux {}
     const ext = edges.find((e) => e.kind === 'extends');
     expect(ext!.from).toBe(`${FILE}::Foo::class`);
     expect(ext!.to).toBe('Bar::class');
+
+    expect(edges.find((e) => e.kind === 'imports')!.to).toBe('java.util.List::List::class');
+  });
+
+  it('emits extends edge for interface extends-interfaces (incl. qualified)', async () => {
+    const adapter = new JavaAdapter();
+    const edges = await adapter.extractEdges(FILE, 'interface Sortable extends java.lang.Comparable {}');
+    expect(edges.find((e) => e.kind === 'extends' && e.to.includes('Comparable'))).toBeDefined();
   });
 
   it('returns [] on broken source without throwing', async () => {
@@ -77,6 +86,6 @@ describe('JavaAdapter.extractComplexity', () => {
     const metrics = await adapter.extractComplexity(FILE, src);
     const f = metrics.find((m) => m.symbolId === `${FILE}::f::method`);
     expect(f).toBeDefined();
-    expect(f!.cyclomatic).toBeGreaterThanOrEqual(4);
+    expect(f!.cyclomatic).toBe(4);
   });
 });
