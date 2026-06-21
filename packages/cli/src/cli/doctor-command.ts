@@ -7,6 +7,7 @@ import { DoctorReporter } from '../adapters/diagnostics/doctor-reporter.js';
 import { NodeVersionCheck, TsMorphCheck, TreeSitterCheck } from '../adapters/diagnostics/checks/runtime-check.js';
 import { VersionsCheck } from '../adapters/diagnostics/checks/versions-check.js';
 import { LanguageCoverageCheck } from '../adapters/diagnostics/checks/language-coverage-check.js';
+import { JavaTierCheck } from '../adapters/diagnostics/checks/java-tier-check.js';
 import { GitBinaryCheck, GitRepoCheck } from '../adapters/diagnostics/checks/git-check.js';
 import {
   IndexDirectoryCheck,
@@ -55,6 +56,7 @@ export class DoctorCommand {
       new TsMorphCheck(),
       new TreeSitterCheck(),
       new LanguageCoverageCheck(),
+      new JavaTierCheck(),
       new DiskUsageCheck(),
       new SymbolCountCheck(),
       new EdgeCountCheck(),
