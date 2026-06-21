@@ -219,8 +219,10 @@ Ctxo is an npm package distributed via `npx`, exposing an MCP server over stdio 
 | TSX / JSX | All | Full (tree-sitter TSX grammar) | V1 |
 | Go | All | Syntax-level (tree-sitter) | V1.5 |
 | C# | All | Syntax-level (tree-sitter) | V1.5 |
+| Java | All | Syntax-level (tree-sitter-java) | V1.5 |
 | Go (deep) | All | Type-aware (`ctxo-go-analyzer` — go/packages + go/types + ssa + callgraph/cha) | V0.8 ✅ |
 | C# (deep) | All | Type-aware (`ctxo-roslyn` — Roslyn Compiler API) | V0.6 ✅ |
+| Java (deep) | All | Type-aware (`@ctxo/lang-java-analyzer` — Eclipse JDT Core, prebuilt JAR, JRE 17+) | ADR-014 ✅ |
 
 ### Installation Methods
 
@@ -327,7 +329,7 @@ All tools return structured JSON. Privacy masking applied to all outputs before 
 ### Language Support
 
 - **FR27:** Developer can index and query TypeScript, JavaScript, and TSX/JSX codebases with full type-aware dependency resolution (V1)
-- **FR28:** Developer can index and query Go and C# codebases with syntax-level dependency resolution (V1.5)
+- **FR28:** Developer can index and query Go, C#, and Java codebases with syntax-level dependency resolution (V1.5)
 
 ## Non-Functional Requirements
 
@@ -424,7 +426,7 @@ Phase PRDs consolidated into this document on 2026-04-13. Originals preserved in
 - **Delivered on:** 2026-04-13 (monorepo migration, 5 packages, plugin protocol v1, TS/Go/C# extraction, `ctxo install`, `ctxo doctor --fix`, version visibility)
 - **Goal:** Replace bundled language adapters with plugin architecture supporting independent versioning, peer dependency isolation, and community extensibility.
 - **Scope delivered:** pnpm monorepo with `@ctxo/cli`, `@ctxo/plugin-api`, `@ctxo/lang-typescript`, `@ctxo/lang-go`, `@ctxo/lang-csharp`; `CtxoLanguagePlugin` protocol v1; `ctxo install <lang>` with auto-detection; `ctxo doctor --fix` dependency-ordered remediation; `ctxo --version` verbose + JSON output
-- **Not delivered / deferred:** Python/Java plugins (Phase B, v0.7.x); framework-aware analysis (Spring/Django ORM); full-tier analysis beyond C#; community plugin registry (v0.8+); automated release pipeline
+- **Not delivered / deferred:** Python plugin (Phase B, future); framework-aware analysis (Spring/Django ORM); community plugin registry (v0.8+); automated release pipeline
 - **Key artifacts:** [ADR-012](../architecture/ADR/adr-012-plugin-architecture-and-monorepo.md); `plugin-discovery.ts`, `language-coverage-check.ts`, `version-command.ts`, `install-command.ts`, `doctor-fix.ts`, `plugin-loader.ts`; 987+ tests across 5 packages
 - **Archive:** [prd-plugin-architecture-and-language-expansion.md](../archive/prd/prd-plugin-architecture-and-language-expansion.md)
 
@@ -436,6 +438,15 @@ Phase PRDs consolidated into this document on 2026-04-13. Originals preserved in
 - **Scope delivered:** Standalone Go binary `tools/ctxo-go-analyzer` bundled inside `@ctxo/lang-go` using `go/packages` + `go/types` + `x/tools/go/ssa` + `callgraph/cha`; `GoCompositeAdapter` picks full vs syntax tier at init; reflect-safe dead-code heuristics (reflect.{TypeOf,ValueOf,New} + json.{Marshal,Unmarshal,NewDecoder,NewEncoder}); generic `typeArgs` preserved on edge metadata; lazy binary build into `~/.cache/ctxo/lang-go-analyzer/<sourceHash-goVersion>/`; subdir fallback loader recovers partial results when the module graph has a fatal conflict; integration fixture + 47 tests (6 Go + 41 vitest) + E2E in `packages/cli/tests/e2e/go-full-tier.test.ts`.
 - **Not delivered / deferred:** Prebuilt binary distribution (decided against — Go toolchain assumption acceptable for Go-project users; revisit if telemetry shows friction); RTA-based reachability (swapped for CHA because `rta.Analyze` panics on generic code in current `x/tools`).
 - **Key artifacts:** [ADR-013](../architecture/ADR/adr-013-go-full-tier-via-ctxo-go-analyzer-binary.md); `packages/lang-go/tools/ctxo-go-analyzer/` (7 Go packages); `packages/lang-go/src/analyzer/` (composite + adapter + process + discovery + toolchain + binary-build); `packages/lang-go/src/composite-adapter.ts`.
+
+### Phase: Java Language Support (Full Tier via Eclipse JDT Core)
+
+- **Status:** Delivered (feat/lang-java-full-tier)
+- **Delivered on:** 2026-06-21
+- **Goal:** Add Java language support at both syntax and full-tier analysis levels. Syntax tier uses tree-sitter-java; full tier uses Eclipse JDT Core via a companion npm package (`@ctxo/lang-java-analyzer`) shipping a prebuilt JAR. Mirrors the Roslyn sidecar pattern (ADR-007) and Go sidecar pattern (ADR-013) with one distribution difference: the JAR is prebuilt and bundled in the npm package, not built from source on the developer machine.
+- **Scope delivered:** `@ctxo/lang-java` plugin (tree-sitter-java, syntax tier; extensions `.java`; project markers `pom.xml`/`build.gradle`/`build.gradle.kts`); `@ctxo/lang-java-analyzer` companion package (Eclipse JDT Core, full tier; resolved `calls`/`uses`/`extends`/`implements` edges + cross-file IDs + generics; complexity from tree-sitter); `ctxo install java --full-tier` opt-in flow with JRE 17+ auto-detection; graceful syntax-tier fallback when JRE unavailable.
+- **Not delivered / deferred:** Framework-aware analysis (Spring Boot, Jakarta EE annotation resolution); Maven/Gradle dependency graph indexing.
+- **Key artifacts:** [ADR-014](../architecture/ADR/adr-014-java-full-tier-via-eclipse-jdt-core.md); `packages/lang-java/`; `packages/lang-java-analyzer/`
 
 ### Phase 3: Monorepo Workspace Support
 

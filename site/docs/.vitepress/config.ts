@@ -193,6 +193,7 @@ export default defineConfig({
             { text: 'TypeScript', link: '/languages/typescript' },
             { text: 'Go', link: '/languages/go' },
             { text: 'C#', link: '/languages/csharp' },
+            { text: 'Java', link: '/languages/java' },
             { text: 'Writing a Plugin', link: '/languages/writing-a-plugin' },
           ],
         },
@@ -211,6 +212,7 @@ export default defineConfig({
           items: [
             { text: 'Blast Radius — ctxo vs Manual', link: '/comparisons/blast-radius' },
             { text: 'Dead Code — ctxo vs knip/tsr/deadcode', link: '/comparisons/dead-code' },
+            { text: 'Core Refactor - ctxo vs Coding Blind', link: '/comparisons/safe-refactor' },
           ],
         },
         {

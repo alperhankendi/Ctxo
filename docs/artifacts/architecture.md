@@ -38,9 +38,10 @@ _This document builds collaboratively through step-by-step discovery. Sections a
 | FR-9 | Monorepo: auto-discover all tsconfig.json files, merge into unified graph | V1 |
 | FR-10 | Lazy indexing: zero-setup, index builds on first request | V1 |
 | FR-11 | Incremental updates: file watcher (dev-time) + git post-commit hook | V1 |
-| FR-12 | Multi-language: Go + C# via tree-sitter syntax adapters | V1.5 |
+| FR-12 | Multi-language: Go + C# + Java via tree-sitter syntax adapters | V1.5 |
 | FR-13 | Go deep analysis: standalone `ctxo-go-analyzer` binary inside `@ctxo/lang-go` (go/packages + go/types + ssa + callgraph/cha + reflect-safe) | V0.8 ✅ |
-| FR-14 | C# deep analysis: Roslyn LSP adapter (dotnet pre-installed) | V2 |
+| FR-14 | C# deep analysis: Roslyn LSP adapter (dotnet pre-installed) | V2 ✅ |
+| FR-16 | Java deep analysis: Eclipse JDT Core via `@ctxo/lang-java-analyzer` companion package (prebuilt JAR, JRE 17+ opt-in) | ADR-014 ✅ |
 | FR-15 | Change Intelligence: code complexity scoring (cyclomatic, cognitive, nesting, param count) + change tracing (churn rate, change frequency, logical coupling) + composite health score per symbol/file | V1 |
 
 **Non-Functional Requirements:**
@@ -104,6 +105,7 @@ _This document builds collaboratively through step-by-step discovery. Sections a
 - **ts-morph** — TypeScript/JS only; tree-sitter fills the gap for other languages
 - **Go toolchain ≥ 1.22** (optional) — must be on PATH for Go full-tier via `ctxo-go-analyzer`; graceful degradation to tree-sitter syntax tier otherwise
 - **dotnet SDK ≥ 8** (optional) — must be on PATH for C# full-tier via `ctxo-roslyn`; graceful degradation to tree-sitter syntax tier otherwise
+- **JRE ≥ 17** (optional) — must be available for Java full-tier via `@ctxo/lang-java-analyzer`; graceful degradation to tree-sitter syntax tier otherwise. Auto-detected at `ctxo install java --full-tier`.
 - **git** — required; simple-git wraps the system git binary
 
 ### Cross-Cutting Concerns
@@ -304,7 +306,7 @@ type ComplexityMetrics = {
 ```
 
 Adapters lazy-loaded per file extension. Parser failure = skip file + stderr warning.
-Graceful degradation: `ctxo-go-analyzer` or `ctxo-roslyn` unavailable → fall back to tree-sitter syntax tier.
+Graceful degradation: `ctxo-go-analyzer`, `ctxo-roslyn`, or `@ctxo/lang-java-analyzer` unavailable → fall back to tree-sitter syntax tier.
 
 ### Error Handling Strategy
 
@@ -316,7 +318,7 @@ Warn-and-continue at every boundary:
 | git binary not found | `intent`/`antiPatterns` return `[]`, no crash |
 | `symbols.db` corrupt | Delete and rebuild from JSON index |
 | Symbol not in index | `{ found: false, hint: "run ctxo index to rebuild" }` |
-| ctxo-go-analyzer / Roslyn toolchain missing | Graceful degradation to tree-sitter syntax tier |
+| ctxo-go-analyzer / Roslyn / lang-java-analyzer toolchain missing | Graceful degradation to tree-sitter syntax tier |
 
 ### Infrastructure & Deployment
 
@@ -672,7 +674,8 @@ compatible with all dependencies including native addons.
 | FR-11 | Incremental updates | ✅ chokidar + `cli/index-command.ts` |
 | FR-12 | Multi-language (V1.5) | ✅ deferred — tree-sitter adapter |
 | FR-13 | Go deep analysis | ✅ v0.8 — `ctxo-go-analyzer` binary in `@ctxo/lang-go`; see [ADR-013](../architecture/ADR/adr-013-go-full-tier-via-ctxo-go-analyzer-binary.md) |
-| FR-14 | C# deep analysis (V2) | ✅ deferred — Roslyn LSP |
+| FR-14 | C# deep analysis (V2) | ✅ Roslyn via `@ctxo/lang-csharp` |
+| FR-16 | Java deep analysis | ✅ Eclipse JDT Core via `@ctxo/lang-java` (syntax tier, tree-sitter-java) + `@ctxo/lang-java-analyzer` (full tier, prebuilt JAR); see [ADR-014](../architecture/ADR/adr-014-java-full-tier-via-eclipse-jdt-core.md) |
 | FR-15 | Change Intelligence | ✅ `core/change-intelligence/` — formula TBD in story |
 | NFR-1 | Startup < 100ms | ✅ lazy init, no index load at startup |
 | NFR-2 | Context < 500ms | ✅ warm SQLite WAL + pre-built graph |

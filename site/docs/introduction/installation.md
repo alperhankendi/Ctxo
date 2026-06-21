@@ -9,7 +9,7 @@ description: "Install @ctxo/cli, then run ctxo init and ctxo doctor."
 
 - **Node.js** >= 20
 - **git** (any recent version)
-- A supported language: **TypeScript / JavaScript**, **Go**, or **C#**
+- A supported language: **TypeScript / JavaScript**, **Go**, **C#**, or **Java**
 
 ## Install
 
@@ -79,7 +79,7 @@ the fact, install the plugin package directly:
 
 ```bash [pnpm]
 pnpm add -D @ctxo/lang-typescript
-# or: @ctxo/lang-go, @ctxo/lang-csharp
+# or: @ctxo/lang-go, @ctxo/lang-csharp, @ctxo/lang-java
 ```
 
 ```bash [npm]
@@ -95,7 +95,8 @@ yarn add -D @ctxo/lang-typescript
 Available plugins on npm:
 [`@ctxo/lang-typescript`](https://www.npmjs.com/package/@ctxo/lang-typescript),
 [`@ctxo/lang-go`](https://www.npmjs.com/package/@ctxo/lang-go),
-[`@ctxo/lang-csharp`](https://www.npmjs.com/package/@ctxo/lang-csharp).
+[`@ctxo/lang-csharp`](https://www.npmjs.com/package/@ctxo/lang-csharp),
+[`@ctxo/lang-java`](https://www.npmjs.com/package/@ctxo/lang-java).
 
 After install, re-index so the plugin takes effect:
 

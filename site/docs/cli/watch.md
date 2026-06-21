@@ -11,7 +11,9 @@ the JSON index and the SQLite cache. Changes are debounced by 300 ms.
 
 For C# projects on the full tier, `ctxo watch` starts a Roslyn keep-alive
 server so each re-index round-trips in under 100 ms instead of paying the
-full batch-index cost.
+full batch-index cost. Java full tier also supports incremental keep-alive
+re-index, though very large projects may degrade to tree-sitter on timeout
+(see the [Java language page](/languages/java) for details).
 
 ## Synopsis
 

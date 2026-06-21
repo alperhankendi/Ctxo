@@ -101,10 +101,10 @@ Teams onboarding new developers onto complex codebases, or teams that have lost 
 Logic-Slice, Blast Radius, Architectural Overlay, Why-Context + Anti-Pattern Memory, Change Intelligence, Privacy Masking, Progressive Detail Levels (L1–L4), Monorepo auto-discovery, CI indexing gate, incremental file watching, `npm install -g @ctxo/cli`.
 
 **V1.5 — Multi-language syntax tier:**
-Go + C# via tree-sitter. Same five tools, AST-level analysis (no type inference). Addresses the backend and enterprise polyglot developer segment.
+Go + C# + Java via tree-sitter. Same five tools, AST-level analysis (no type inference). Addresses the backend and enterprise polyglot developer segment.
 
 **V2 — Deep language analysis:**
-Go: standalone `ctxo-go-analyzer` Go binary bundled inside `@ctxo/lang-go` (go/packages + types + SSA + CHA); delivered v0.8. C#: `ctxo-roslyn` .NET host bundled inside `@ctxo/lang-csharp`; delivered v0.6. Both require their respective toolchains on PATH; graceful tree-sitter fallback otherwise.
+Go: standalone `ctxo-go-analyzer` Go binary bundled inside `@ctxo/lang-go` (go/packages + types + SSA + CHA); delivered v0.8. C#: `ctxo-roslyn` .NET host bundled inside `@ctxo/lang-csharp`; delivered v0.6. Java: Eclipse JDT Core via `@ctxo/lang-java-analyzer` companion npm package (prebuilt JAR, JRE 17+ opt-in via `ctxo install java --full-tier`); delivered 2026-06-21 (ADR-014). All require their respective runtimes; graceful tree-sitter fallback otherwise.
 
 **Explicitly out of scope for V1:** Python support, cloud sync, SaaS model, standalone IDE plugin, remote index hosting, telemetry.
 

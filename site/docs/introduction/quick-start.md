@@ -9,7 +9,7 @@ Five steps, five minutes. At the end you will have a committed index of your
 repo and an agent making dependency-aware queries against it.
 
 ::: info Prerequisites
-Node.js >= 20, git, and a repo with TypeScript, Go, or C# code. See
+Node.js >= 20, git, and a repo with TypeScript, Go, C#, or Java code. See
 [Installation](/introduction/installation) for details.
 :::
 
