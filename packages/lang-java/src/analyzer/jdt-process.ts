@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process';
+import { delimiter } from 'node:path';
 import { createLogger } from '../logger.js';
 
 const log = createLogger('ctxo:lang-java');
@@ -40,6 +41,17 @@ export interface RunOpts {
 }
 
 /**
+ * Build the args array for the JDT analyzer process.
+ * Extracted as a pure function for unit-testability (no process spawn).
+ */
+export function buildAnalyzerArgs(jarPath: string, projectRoot: string, opts: RunOpts = {}): string[] {
+  const args = ['-jar', jarPath, projectRoot];
+  if (opts.classpathOverride?.length) args.push('--classpath', opts.classpathOverride.join(delimiter));
+  if (opts.allowBuildTools) args.push('--allow-build-tools');
+  return args;
+}
+
+/**
  * Spawn `java -jar <jar> <root> [--classpath ...] [--allow-build-tools]` in batch
  * mode and parse JSONL. Never throws — empty result on any failure.
  */
@@ -52,9 +64,7 @@ export async function runBatchIndex(
   const timeoutMs = opts.timeoutMs ?? 180_000;
   return new Promise((resolve) => {
     const empty: JdtBatchResult = { files: [], totalFiles: 0, elapsed: '' };
-    const args = ['-jar', jarPath, projectRoot];
-    if (opts.classpathOverride?.length) args.push('--classpath', opts.classpathOverride.join(';'));
-    if (opts.allowBuildTools) args.push('--allow-build-tools');
+    const args = buildAnalyzerArgs(jarPath, projectRoot, opts);
     const proc = spawn(javaBin, args, { stdio: ['ignore', 'pipe', 'pipe'], timeout: timeoutMs });
     const files: JdtFileResult[] = [];
     let totalFiles = 0,
