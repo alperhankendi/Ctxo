@@ -52,3 +52,17 @@ pages/docs/
 
 # Brainstorming specs / design docs (local only, not committed)
 docs/superpowers/
+
+# BMAD framework (local tooling, not committed)
+_bmad/
+_bmad_output/
+
+# Private notes (not for the public repo)
+docs-private/
+
+# Local agent tooling / worktrees
+.claude/skills/
+.claude/worktrees/
+
+# Build caches
+*.lscache
