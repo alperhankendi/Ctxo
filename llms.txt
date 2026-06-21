@@ -20,7 +20,7 @@ ctxo                       # Start MCP server (stdio)
 - `@ctxo/lang-typescript` — ts-morph full-tier plugin
 - `@ctxo/lang-go` — tree-sitter / gopls plugin
 - `@ctxo/lang-csharp` — Roslyn plugin
-- `@ctxo/lang-java` — tree-sitter Java plugin (syntax tier built-in; full tier via `@ctxo/lang-java-analyzer` companion, requires JRE 17+)
+- `@ctxo/lang-java` - tree-sitter Java plugin (syntax tier built-in; full tier via `@ctxo/lang-java-analyzer` companion, requires JRE 17+)
 
 Language adapters ship as separate npm packages and are discovered by scanning the project `package.json` for `@ctxo/lang-*` or `ctxo-lang-*` dependencies.
 

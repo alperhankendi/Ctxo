@@ -222,7 +222,7 @@ Ctxo is an npm package distributed via `npx`, exposing an MCP server over stdio 
 | Java | All | Syntax-level (tree-sitter-java) | V1.5 |
 | Go (deep) | All | Type-aware (`ctxo-go-analyzer` — go/packages + go/types + ssa + callgraph/cha) | V0.8 ✅ |
 | C# (deep) | All | Type-aware (`ctxo-roslyn` — Roslyn Compiler API) | V0.6 ✅ |
-| Java (deep) | All | Type-aware (`@ctxo/lang-java-analyzer` — Eclipse JDT Core, prebuilt JAR, JRE 17+) | ADR-014 ✅ |
+| Java (deep) | All | Type-aware (`@ctxo/lang-java-analyzer` - Eclipse JDT Core, prebuilt JAR, JRE 17+) | ADR-014 ✅ |
 
 ### Installation Methods
 

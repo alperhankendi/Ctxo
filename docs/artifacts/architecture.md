@@ -105,7 +105,7 @@ _This document builds collaboratively through step-by-step discovery. Sections a
 - **ts-morph** — TypeScript/JS only; tree-sitter fills the gap for other languages
 - **Go toolchain ≥ 1.22** (optional) — must be on PATH for Go full-tier via `ctxo-go-analyzer`; graceful degradation to tree-sitter syntax tier otherwise
 - **dotnet SDK ≥ 8** (optional) — must be on PATH for C# full-tier via `ctxo-roslyn`; graceful degradation to tree-sitter syntax tier otherwise
-- **JRE ≥ 17** (optional) — must be available for Java full-tier via `@ctxo/lang-java-analyzer`; graceful degradation to tree-sitter syntax tier otherwise. Auto-detected at `ctxo install java --full-tier`.
+- **JRE ≥ 17** (optional) - must be available for Java full-tier via `@ctxo/lang-java-analyzer`; graceful degradation to tree-sitter syntax tier otherwise. Auto-detected at `ctxo install java --full-tier`.
 - **git** — required; simple-git wraps the system git binary
 
 ### Cross-Cutting Concerns

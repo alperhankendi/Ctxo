@@ -29,7 +29,7 @@ Ctxo is a pnpm workspace monorepo with six packages:
 - `@ctxo/lang-typescript` — ts-morph (full tier) plugin for TS/JS
 - `@ctxo/lang-go` — tree-sitter / gopls plugin for Go
 - `@ctxo/lang-csharp` — Roslyn plugin for C#
-- `@ctxo/lang-java` — tree-sitter Java plugin (syntax tier); full tier via `@ctxo/lang-java-analyzer` companion package (JRE 17+ required)
+- `@ctxo/lang-java` - tree-sitter Java plugin (syntax tier); full tier via `@ctxo/lang-java-analyzer` companion package (JRE 17+ required)
 
 Plugin protocol v1 (`CtxoLanguagePlugin`):
 - `apiVersion: 1`

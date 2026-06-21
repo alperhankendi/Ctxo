@@ -6,7 +6,7 @@ Ctxo is a **Model Context Protocol (MCP) server** that gives AI coding assistant
 
 * **Type:** npm package / CLI tool / MCP server (stdio transport)
 * **Author:** Alper Hankendi
-* **Status:** v0.7.0-alpha.0 — 14 MCP tools, pnpm monorepo with 6 packages, 987+ tests
+* **Status:** v0.7.0-alpha.0 - 14 MCP tools, pnpm monorepo with 6 packages, 987+ tests
 * **Language:** TypeScript (ESM-first, `"type": "module"`)
 * **Runtime:** Node.js >= 20
 
