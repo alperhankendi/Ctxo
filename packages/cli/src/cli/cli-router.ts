@@ -178,6 +178,8 @@ export class CliRouter {
           else if (a === '--global' || a === '-g') flagValues['global'] = true;
           else if (a === '--dry-run') flagValues['dryRun'] = true;
           else if (a === '--force') flagValues['force'] = true;
+          else if (a === '--full-tier') flagValues['fullTier'] = true;
+          else if (a === '--syntax-only') flagValues['syntaxOnly'] = true;
           else if (a === '--pm') {
             const next = args[++i];
             if (!next) { console.error('[ctxo] --pm requires a value'); process.exit(1); return; }
@@ -200,6 +202,8 @@ export class CliRouter {
           global: flagValues['global'] === true,
           dryRun: flagValues['dryRun'] === true,
           force: flagValues['force'] === true,
+          fullTier: flagValues['fullTier'] === true,
+          syntaxOnly: flagValues['syntaxOnly'] === true,
           pm: typeof flagValues['pm'] === 'string' ? flagValues['pm'] : undefined,
           version: typeof flagValues['version'] === 'string' ? flagValues['version'] : undefined,
         });
