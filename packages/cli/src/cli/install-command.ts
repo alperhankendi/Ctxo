@@ -41,6 +41,39 @@ export function resolveJavaPackages(opts: { jreAvailable: boolean; fullTier?: bo
   return base;
 }
 
+/**
+ * Build the deduped list of npm specifiers to install for the given languages.
+ *
+ * Resolves each language to its official plugin package (java expands to its tier
+ * packages via {@link resolveJavaPackages}; javascript folds into @ctxo/lang-typescript),
+ * pins to `version` when supplied, and removes duplicates so a project that surfaces
+ * both typescript and javascript does not request @ctxo/lang-typescript twice.
+ * Pure + unit-testable.
+ */
+export function buildPluginSpecifiers(
+  languages: readonly KnownLanguage[],
+  opts: { jreAvailable: boolean; fullTier?: boolean; syntaxOnly?: boolean; version?: string },
+): string[] {
+  const out: string[] = [];
+  const seen = new Set<string>();
+  const add = (pkg: string): void => {
+    const spec = opts.version ? `${pkg}@${opts.version}` : pkg;
+    if (seen.has(spec)) return;
+    seen.add(spec);
+    out.push(spec);
+  };
+
+  for (const lang of languages) {
+    if (lang === 'java') {
+      for (const pkg of resolveJavaPackages(opts)) add(pkg);
+    } else {
+      add(officialPluginFor(lang));
+    }
+  }
+
+  return out;
+}
+
 export interface InstallPlan {
   readonly languages: readonly KnownLanguage[];
   readonly packages: readonly string[];
@@ -86,27 +119,23 @@ export class InstallCommand {
       return;
     }
 
-    const specifiers: string[] = [];
-    for (const lang of resolvedLangs) {
-      if (lang === 'java') {
-        const jreAvailable = javaRuntimeAvailable();
-        if (!jreAvailable && !options.fullTier && !options.syntaxOnly) {
-          console.error('[ctxo] JRE 17+ not found; installing Java syntax tier. Install a JRE then run "ctxo install java --full-tier" for resolved call/use edges.');
-        }
-        let javaPkgs: string[];
-        try {
-          javaPkgs = resolveJavaPackages({ jreAvailable, fullTier: options.fullTier, syntaxOnly: options.syntaxOnly });
-        } catch (err) {
-          console.error(`[ctxo] ${(err as Error).message}`);
-          process.exitCode = 1;
-          return;
-        }
-        for (const pkg of javaPkgs) {
-          specifiers.push(options.version ? `${pkg}@${options.version}` : pkg);
-        }
-      } else {
-        specifiers.push(options.version ? `${officialPluginFor(lang)}@${options.version}` : officialPluginFor(lang));
-      }
+    const jreAvailable = resolvedLangs.includes('java') ? javaRuntimeAvailable() : false;
+    if (resolvedLangs.includes('java') && !jreAvailable && !options.fullTier && !options.syntaxOnly) {
+      console.error('[ctxo] JRE 17+ not found; installing Java syntax tier. Install a JRE then run "ctxo install java --full-tier" for resolved call/use edges.');
+    }
+
+    let specifiers: string[];
+    try {
+      specifiers = buildPluginSpecifiers(resolvedLangs, {
+        jreAvailable,
+        fullTier: options.fullTier,
+        syntaxOnly: options.syntaxOnly,
+        version: options.version,
+      });
+    } catch (err) {
+      console.error(`[ctxo] ${(err as Error).message}`);
+      process.exitCode = 1;
+      return;
     }
 
     const invocation = buildInstallCommand(resolution.manager, specifiers, {

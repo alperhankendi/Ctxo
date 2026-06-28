@@ -177,4 +177,8 @@ describe('officialPluginFor', () => {
     expect(officialPluginFor('python')).toBe('@ctxo/lang-python');
     expect(officialPluginFor('typescript')).toBe('@ctxo/lang-typescript');
   });
+
+  it('maps javascript to the typescript plugin (no standalone @ctxo/lang-javascript exists)', () => {
+    expect(officialPluginFor('javascript')).toBe('@ctxo/lang-typescript');
+  });
 });
