@@ -47,6 +47,7 @@ Work that's been scoped and explicitly parked. Each has a known trigger to react
 |---|---|---|
 | **Layer-3 UserPromptSubmit nudge** | Safe-edit guard v0.8 | Prompt-level reminder when the guard has been active but the agent skips skills. Deferred: PreToolUse hook already enforces; adding a nudge risks prompt noise before measuring adoption impact. |
 | **Cursor reactive `stop`-hook gate** | Safe-edit guard v0.8 | Cursor has no blocking pre-edit hook (confirmed through v3.6 changelog). Revisit if Cursor ships a pre-edit extension point. |
+| **Coordinated `tree-sitter@^0.25.0` ecosystem upgrade** | #106 (Option 2) | Grammar plugins are pinned to exact versions against the `tree-sitter@^0.22.4` core (closing the lockfile-regen landmine). Bumping core to `^0.25.0` unblocks `tree-sitter-go@0.25` (#77) and newer `tree-sitter-c-sharp` (#78). Trigger: user demand for newer grammars; requires validating the 0.25 core API against each tree-sitter adapter. |
 | **Tier-3 platform enforcement** | Safe-edit guard v0.8 | Enforcement for platforms beyond Claude Code (Windsurf, Copilot, etc.). Depends on each platform shipping a blocking pre-tool hook. |
 | **Gate adoption telemetry** | Safe-edit guard v0.8 | Track how often the guard fires and is satisfied vs bypassed. Gate on confirmed user demand for the signal. |
 | **Leiden community detection** | v0.8 Architectural Intelligence work | Monorepos/codebases where Louvain cluster quality is insufficient (~100K+ symbols, high modularity resolution needs). Swap is additive — same `CommunitySnapshot` output shape. |

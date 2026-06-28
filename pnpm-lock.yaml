@@ -11,6 +11,9 @@ importers:
       '@changesets/cli':
         specifier: ^2.31.0
         version: 2.31.0(@types/node@22.20.0)
+      '@ctxo/cli':
+        specifier: 0.11.4
+        version: 0.11.4(graphology-types@0.24.8)
       '@ctxo/lang-csharp':
         specifier: workspace:*
         version: link:packages/lang-csharp
@@ -386,6 +389,15 @@ packages:
   '@clack/prompts@1.6.0':
     resolution: {integrity: sha512-EYlRokl8szrP9Z25qT5aepMdBjzBvHF9ZEhzIiUBc9guz/T31EqRgvD0QSgZcpE93xiwrr+OkB4nz0BZyF6fSA==}
     engines: {node: '>= 20.12.0'}
+
+  '@ctxo/cli@0.11.4':
+    resolution: {integrity: sha512-yjtimFyvYLMWHv+n/ZHwXvD3GT9SDLLIMBLI9WxjKkA5Ih7P8NYSPLRgKaDh6ImfP3S7Ehc8+e3ijb1gCD1cEw==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  '@ctxo/plugin-api@0.7.2':
+    resolution: {integrity: sha512-ntF1pACL+x6BSIgC3NBJREaejPju4aIbFtGNyaGZWXrq3OikL74Ap+0gm+tokVLuBDRfJbJbcyeCiSneTa/MzQ==}
+    engines: {node: '>=20'}
 
   '@docsearch/css@3.8.2':
     resolution: {integrity: sha512-y05ayQFyUmCXze79+56v/4HpycYF3uFqB78pLPrSV5ZKAlDuIAAJNhaRi8tTdRNXh05yxX/TyNnzD6LwSM89vQ==}
@@ -3265,6 +3277,27 @@ snapshots:
       fast-string-width: 3.0.2
       fast-wrap-ansi: 0.2.2
       sisteransi: 1.0.5
+
+  '@ctxo/cli@0.11.4(graphology-types@0.24.8)':
+    dependencies:
+      '@clack/prompts': 1.6.0
+      '@ctxo/plugin-api': 0.7.2
+      '@modelcontextprotocol/sdk': 1.29.0(zod@4.4.3)
+      chokidar: 5.0.0
+      graphology: 0.26.0(graphology-types@0.24.8)
+      graphology-communities-louvain: 2.0.2(graphology-types@0.24.8)
+      picocolors: 1.1.1
+      picomatch: 4.0.4
+      simple-git: 3.36.0
+      sql.js: 1.14.1
+      yaml: 2.9.0
+      zod: 4.4.3
+    transitivePeerDependencies:
+      - '@cfworker/json-schema'
+      - graphology-types
+      - supports-color
+
+  '@ctxo/plugin-api@0.7.2': {}
 
   '@docsearch/css@3.8.2': {}
 

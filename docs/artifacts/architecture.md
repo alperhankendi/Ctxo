@@ -158,7 +158,7 @@ npm install -D typescript tsup @types/node @types/better-sqlite3 \
 **Architectural Decisions Provided by This Setup:**
 
 **Language & Runtime:**
-TypeScript 5.x, ESM-first (`"type": "module"`), Node.js ≥ 20, `tsconfig.json` targeting
+TypeScript 6.x, ESM-first (`"type": "module"`), Node.js ≥ 20, `tsconfig.json` targeting
 `ES2022` with `Node16` module resolution. `tsx` for zero-build dev runs.
 
 **Build Tooling:**

@@ -366,7 +366,7 @@ try {
 
 | Component         | Technology                                                |
 | ----------------- | --------------------------------------------------------- |
-| Language          | TypeScript 5.x (ESM, strict)                              |
+| Language          | TypeScript 6.x (ESM, strict)                              |
 | Build             | tsup (esbuild), `external: [better-sqlite3, tree-sitter]` |
 | MCP SDK           | `@modelcontextprotocol/sdk`                               |
 | TS/JS Parser      | ts-morph (full tier)                                      |
