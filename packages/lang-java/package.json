@@ -1,6 +1,6 @@
 {
   "name": "@ctxo/lang-java",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Ctxo Java language plugin (ctxo-jdt-analyzer + tree-sitter, full tier)",
   "type": "module",
   "engines": {
