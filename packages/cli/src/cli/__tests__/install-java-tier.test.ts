@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { resolveJavaPackages } from '../install-command.js';
+import { resolveJavaPackages, buildPluginSpecifiers } from '../install-command.js';
 
 describe('resolveJavaPackages', () => {
   it('adds analyzer when JRE present and not syntax-only', () => {
@@ -16,5 +16,31 @@ describe('resolveJavaPackages', () => {
   });
   it('throws on conflicting --full-tier and --syntax-only', () => {
     expect(() => resolveJavaPackages({ jreAvailable: true, fullTier: true, syntaxOnly: true })).toThrow(/full-tier.*syntax-only|syntax-only.*full-tier/i);
+  });
+});
+
+describe('buildPluginSpecifiers', () => {
+  it('maps javascript to the typescript plugin', () => {
+    expect(buildPluginSpecifiers(['javascript'], { jreAvailable: false })).toEqual(['@ctxo/lang-typescript']);
+  });
+
+  it('dedupes typescript + javascript into a single @ctxo/lang-typescript', () => {
+    expect(buildPluginSpecifiers(['typescript', 'javascript'], { jreAvailable: false })).toEqual([
+      '@ctxo/lang-typescript',
+    ]);
+  });
+
+  it('expands java into its tier packages', () => {
+    expect(buildPluginSpecifiers(['java'], { jreAvailable: true })).toEqual([
+      '@ctxo/lang-java',
+      '@ctxo/lang-java-analyzer',
+    ]);
+  });
+
+  it('pins every specifier to the requested version', () => {
+    expect(buildPluginSpecifiers(['go', 'javascript'], { jreAvailable: false, version: '1.2.3' })).toEqual([
+      '@ctxo/lang-go@1.2.3',
+      '@ctxo/lang-typescript@1.2.3',
+    ]);
   });
 });

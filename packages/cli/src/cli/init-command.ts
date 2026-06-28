@@ -256,7 +256,7 @@ export class InitCommand {
         ));
         console.error('');
         const confirm = await clack.confirm({
-          message: pc.cyan(`Install ${missing.map(officialPluginFor).join(' ')}?`),
+          message: pc.cyan(`Install ${[...new Set(missing.map(officialPluginFor))].join(' ')}?`),
           initialValue: true,
         });
         if (clack.isCancel(confirm)) { clack.cancel('Setup cancelled.'); process.exit(0); }
@@ -364,7 +364,7 @@ export class InitCommand {
       s.stop(pc.dim('Installing language plugins...'));
       const installer = new InstallCommand(this.projectRoot);
       await installer.run({ languages: pluginsToInstall, yes: true });
-      results.push(`${pc.green('\u2713')} ${pc.bold(pluginsToInstall.map(officialPluginFor).join(', '))}  ${pc.dim('language plugins installed')}`);
+      results.push(`${pc.green('\u2713')} ${pc.bold([...new Set(pluginsToInstall.map(officialPluginFor))].join(', '))}  ${pc.dim('language plugins installed')}`);
       s.start(pc.dim('Finalizing...'));
     }
 

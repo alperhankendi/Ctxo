@@ -194,5 +194,8 @@ export function decideNeededLanguages(
 
 /** Map a language id to its canonical official npm plugin package name. */
 export function officialPluginFor(language: KnownLanguage): string {
-  return `@ctxo/lang-${language}`;
+  // .js/.jsx files are handled by the TypeScript plugin (ts-morph); there is no
+  // standalone @ctxo/lang-javascript package, so javascript resolves to it.
+  const pkgLang = language === 'javascript' ? 'typescript' : language;
+  return `@ctxo/lang-${pkgLang}`;
 }

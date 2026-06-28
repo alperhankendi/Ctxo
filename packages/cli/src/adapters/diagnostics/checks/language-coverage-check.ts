@@ -47,7 +47,7 @@ export class LanguageCoverageCheck implements IHealthCheck {
       };
     }
 
-    const packages = missing.map(officialPluginFor).join(' ');
+    const packages = [...new Set(missing.map(officialPluginFor))].join(' ');
     const shortList = missing.join(', ');
     return {
       id: this.id,
