@@ -39,7 +39,7 @@
   "author": "Alper Hankendi",
   "license": "MIT",
   "dependencies": {
-    "tree-sitter": "^0.22.4",
+    "tree-sitter": "^0.25.1",
     "tree-sitter-go": "0.23.4"
   },
   "peerDependencies": {
