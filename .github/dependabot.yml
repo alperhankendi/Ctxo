@@ -7,6 +7,13 @@ updates:
     groups:
       actions:
         patterns: ['*']
+    ignore:
+      # changesets/action v2+ requires Changesets CLI v3 and renames every
+      # input/output this workflow uses. #126 auto-merged the v1 -> v2 jump and
+      # broke the release pipeline. Hold at v1 until the CLI v3 migration is
+      # done deliberately, then drop this ignore.
+      - dependency-name: changesets/action
+        versions: ['>=2']
 
   - package-ecosystem: npm
     directory: /
