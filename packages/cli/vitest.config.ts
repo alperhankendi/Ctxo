@@ -3,6 +3,11 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     globals: true,
+    // The first test in each worker pays one-time module init (language plugins
+    // + sql.js WASM): ~6s on a cold CI runner vs ~0.8s warm. The 5s default
+    // flaked on Node 22 in PR #122.
+    testTimeout: 20_000,
+    hookTimeout: 20_000,
     include: ['src/**/__tests__/**/*.test.ts', 'tests/**/*.test.ts'],
     reporters: ['default', 'junit'],
     outputFile: {
