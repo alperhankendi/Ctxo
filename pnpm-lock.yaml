@@ -109,11 +109,11 @@ importers:
   packages/lang-csharp:
     dependencies:
       tree-sitter:
-        specifier: ^0.22.4
-        version: 0.22.4
+        specifier: ^0.25.1
+        version: 0.25.1
       tree-sitter-c-sharp:
         specifier: 0.23.1
-        version: 0.23.1(tree-sitter@0.22.4)
+        version: 0.23.1(tree-sitter@0.25.1)
     devDependencies:
       '@ctxo/plugin-api':
         specifier: workspace:*
@@ -134,11 +134,11 @@ importers:
   packages/lang-go:
     dependencies:
       tree-sitter:
-        specifier: ^0.22.4
-        version: 0.22.4
+        specifier: ^0.25.1
+        version: 0.25.1
       tree-sitter-go:
         specifier: 0.23.4
-        version: 0.23.4(tree-sitter@0.22.4)
+        version: 0.23.4(tree-sitter@0.25.1)
     devDependencies:
       '@ctxo/plugin-api':
         specifier: workspace:*
@@ -159,11 +159,11 @@ importers:
   packages/lang-java:
     dependencies:
       tree-sitter:
-        specifier: ^0.22.4
-        version: 0.22.4
+        specifier: ^0.25.1
+        version: 0.25.1
       tree-sitter-java:
         specifier: 0.23.5
-        version: 0.23.5(tree-sitter@0.22.4)
+        version: 0.23.5(tree-sitter@0.25.1)
     devDependencies:
       '@ctxo/plugin-api':
         specifier: workspace:*
@@ -2270,6 +2270,10 @@ packages:
     resolution: {integrity: sha512-9MdFxmkKaOYVTV+XVRG8ArDwwQ77XIgIPyKASB1k3JPq3M8fGQQQE3YpMOrKm6g//Ktx8ivZr8xo1Qmtqub+GA==}
     engines: {node: ^18 || ^20 || >= 21}
 
+  node-addon-api@8.9.2:
+    resolution: {integrity: sha512-VijLXbi3UACN69I0JVXJsX4tjACjNoQDgv2gTF6sx2wWEi8tkSg2eX8p5gSIFi8z2+DL3oHmY6OyKce38SDolg==}
+    engines: {node: ^18 || ^20 || >= 21}
+
   node-gyp-build@4.8.4:
     resolution: {integrity: sha512-LA4ZjwlnUblHVgq0oBF3Jl/6h/Nvs5fzBLwdEF4nuxnFdsfajde4WfxtJr3CaiH+F6ewcIB/q4jQ4UzPyid+CQ==}
     hasBin: true
@@ -2736,8 +2740,8 @@ packages:
       tree-sitter:
         optional: true
 
-  tree-sitter@0.22.4:
-    resolution: {integrity: sha512-usbHZP9/oxNsUY65MQUsduGRqDHQOou1cagUSwjhoSYAmSahjQDAVsh9s+SlZkn8X8+O1FULRGwHu7AFP3kjzg==}
+  tree-sitter@0.25.1:
+    resolution: {integrity: sha512-mrcEdkYtHfrK1A6fs3O6FxkBo0Qig5XUXqHhxUOQu0bmPo00QF4XaSx4edpazdHwxnSCjlGKGgIqWdaN4dvTLA==}
 
   trim-lines@3.0.1:
     resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
@@ -5087,6 +5091,8 @@ snapshots:
 
   node-addon-api@8.7.0: {}
 
+  node-addon-api@8.9.2: {}
+
   node-gyp-build@4.8.4: {}
 
   object-assign@4.1.1: {}
@@ -5532,30 +5538,30 @@ snapshots:
 
   tree-kill@1.2.2: {}
 
-  tree-sitter-c-sharp@0.23.1(tree-sitter@0.22.4):
+  tree-sitter-c-sharp@0.23.1(tree-sitter@0.25.1):
     dependencies:
       node-addon-api: 8.7.0
       node-gyp-build: 4.8.4
     optionalDependencies:
-      tree-sitter: 0.22.4
+      tree-sitter: 0.25.1
 
-  tree-sitter-go@0.23.4(tree-sitter@0.22.4):
+  tree-sitter-go@0.23.4(tree-sitter@0.25.1):
     dependencies:
       node-addon-api: 8.7.0
       node-gyp-build: 4.8.4
     optionalDependencies:
-      tree-sitter: 0.22.4
+      tree-sitter: 0.25.1
 
-  tree-sitter-java@0.23.5(tree-sitter@0.22.4):
+  tree-sitter-java@0.23.5(tree-sitter@0.25.1):
     dependencies:
       node-addon-api: 8.7.0
       node-gyp-build: 4.8.4
     optionalDependencies:
-      tree-sitter: 0.22.4
+      tree-sitter: 0.25.1
 
-  tree-sitter@0.22.4:
+  tree-sitter@0.25.1:
     dependencies:
-      node-addon-api: 8.7.0
+      node-addon-api: 8.9.2
       node-gyp-build: 4.8.4
 
   trim-lines@3.0.1: {}
