@@ -24,7 +24,7 @@
   "author": "Alper Hankendi",
   "license": "MIT",
   "devDependencies": {
-    "@changesets/cli": "^2.31.0",
+    "@changesets/cli": "^3.0.1",
     "@ctxo/cli": "0.11.4",
     "@ctxo/lang-csharp": "workspace:*",
     "@ctxo/lang-go": "workspace:*",
