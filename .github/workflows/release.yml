@@ -44,7 +44,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Set up JDK 21 (for @ctxo/lang-java-analyzer jar build)
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '21'
