@@ -50,7 +50,7 @@
     "graphology": "^0.26.0",
     "graphology-communities-louvain": "^2.0.2",
     "picocolors": "^1.1.1",
-    "picomatch": "^4.0.5",
+    "picomatch": "^4.0.7",
     "simple-git": "^3.27.0",
     "sql.js": "^1.14.1",
     "yaml": "^2.6.1",
