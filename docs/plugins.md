@@ -9,7 +9,7 @@ Maintained by the Ctxo core team. Guaranteed to track `@ctxo/plugin-api` ≥ 12 
 | `@ctxo/lang-typescript` | [![npm](https://img.shields.io/npm/v/@ctxo/lang-typescript)](https://www.npmjs.com/package/@ctxo/lang-typescript) | full | `.ts .tsx .js .jsx` | ts-morph; type-aware cross-file resolution |
 | `@ctxo/lang-go` | [![npm](https://img.shields.io/npm/v/@ctxo/lang-go)](https://www.npmjs.com/package/@ctxo/lang-go) | syntax | `.go` | tree-sitter; exported-symbol analysis |
 | `@ctxo/lang-csharp` | [![npm](https://img.shields.io/npm/v/@ctxo/lang-csharp)](https://www.npmjs.com/package/@ctxo/lang-csharp) | full | `.cs` | Roslyn full-tier; tree-sitter syntax fallback |
-| `@ctxo/lang-java` | [![npm](https://img.shields.io/npm/v/@ctxo/lang-java)](https://www.npmjs.com/package/@ctxo/lang-java) | syntax / full | `.java` | tree-sitter syntax tier built-in; full tier via `@ctxo/lang-java-analyzer` companion (JRE 17+ required, covers Java 8-21); detected by `pom.xml` / `build.gradle` / `build.gradle.kts` |
+| `@ctxo/lang-java` | [![npm](https://img.shields.io/npm/v/@ctxo/lang-java)](https://www.npmjs.com/package/@ctxo/lang-java) | syntax / full | `.java` | tree-sitter syntax tier built-in; full tier via `@ctxo/lang-java-analyzer` companion (JRE 11+ required, covers Java 8-21); detected by `pom.xml` / `build.gradle` / `build.gradle.kts` |
 
 Install:
 
@@ -21,7 +21,7 @@ Or via the cli shortcut:
 
 ```bash
 ctxo install typescript go csharp
-ctxo install java              # syntax tier + full-tier analyzer when JRE 17+ detected
+ctxo install java              # syntax tier + full-tier analyzer when JRE 11+ detected
 ctxo install java --full-tier  # force full-tier analyzer install
 ctxo install java --syntax-only  # skip analyzer, syntax tier only
 ```
@@ -30,10 +30,46 @@ ctxo install java --syntax-only  # skip analyzer, syntax tier only
 
 The `@ctxo/lang-java` plugin ships the tree-sitter syntax tier with zero setup. Full tier (resolved `calls`/`uses`/`extends`/`implements` edges, cross-file symbol IDs, generics) requires:
 
-1. **JRE 17+** on PATH (one Eclipse JDT build covers Java 8 through 21)
-2. **`@ctxo/lang-java-analyzer`** companion package (prebuilt ~15 MB JAR, integrity/provenance via npm)
+1. **JRE 11+** on PATH
+2. **`@ctxo/lang-java-analyzer`** companion package (prebuilt JAR, integrity/provenance via npm)
 
-`ctxo install java` installs both automatically when JRE 17+ is detected. Use `--full-tier` to force or `--syntax-only` to skip the analyzer. The active tier is shown in `ctxo index` output, `ctxo doctor`, and MCP `_meta`. Downgrades to syntax tier silently when JRE or analyzer is absent. See ADR-014.
+#### JAR variant selection — automatic, based on detected JRE
+
+The plugin selects the correct analyzer JAR **at runtime** based on the JRE version found on PATH (or `CTXO_JAVA_HOME` / `JAVA_HOME`):
+
+| JRE on PATH | JAR used | JDT Core | Analyzes source levels |
+|---|---|---|---|
+| **11 – 16** | `ctxo-jdt-analyzer-11.jar` | 3.33.0 (JavaSE-11) | Java 8 – 19 |
+| **17+** | `ctxo-jdt-analyzer-17.jar` | 3.39.0 (JavaSE-17) | Java 8 – 21 |
+| < 11 or absent | — | — | syntax tier only |
+
+No configuration needed — detection and selection are fully automatic. The active JAR variant is logged at `DEBUG=ctxo:lang-java` level and shown in `ctxo doctor`.
+
+#### Switching between Java 11 and Java 17
+
+Point `CTXO_JAVA_HOME` or `JAVA_HOME` at the desired JRE; ctxo picks the matching JAR:
+
+```bash
+# Use Java 11 full tier
+CTXO_JAVA_HOME=/path/to/jre11 ctxo index
+
+# Use Java 17 full tier
+CTXO_JAVA_HOME=/path/to/jre17 ctxo index
+
+# Override with a specific JAR regardless of JRE version
+CTXO_JDT_ANALYZER_JAR=/path/to/custom.jar ctxo index
+```
+
+#### Debug output
+
+```bash
+DEBUG=ctxo:lang-java ctxo index
+# → Java 11.0.21 detected — using java11 analyzer JAR
+# → Java analyzer ready: JRE 11.0.21, jar .../ctxo-jdt-analyzer-11.jar
+# → Java plugin: JDT full-tier active
+```
+
+`ctxo install java` installs both packages automatically when JRE 11+ is detected. Use `--full-tier` to force or `--syntax-only` to skip the analyzer. The active tier is shown in `ctxo index` output, `ctxo doctor`, and MCP `_meta`. Degrades to syntax tier silently when JRE or analyzer is absent. See [ADR-014](architecture/ADR/adr-014-java-full-tier-via-eclipse-jdt.md).
 
 ## Community plugins
 

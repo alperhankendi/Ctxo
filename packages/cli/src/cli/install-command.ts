@@ -121,7 +121,7 @@ export class InstallCommand {
 
     const jreAvailable = resolvedLangs.includes('java') ? javaRuntimeAvailable() : false;
     if (resolvedLangs.includes('java') && !jreAvailable && !options.fullTier && !options.syntaxOnly) {
-      console.error('[ctxo] JRE 17+ not found; installing Java syntax tier. Install a JRE then run "ctxo install java --full-tier" for resolved call/use edges.');
+      console.error('[ctxo] JRE 11+ not found; installing Java syntax tier. Install a JRE (11–16 or 17+) then run "ctxo install java --full-tier" for resolved call/use edges.');
     }
 
     let specifiers: string[];

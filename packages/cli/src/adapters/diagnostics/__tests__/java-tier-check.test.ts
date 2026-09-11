@@ -20,8 +20,14 @@ describe('evaluateJavaTier', () => {
     expect(r.status).toBe('warn');
     expect((r.fix ?? '').toLowerCase()).toContain('jre');
   });
-  it('pass(syntax): java present, no jre, no analyzer -> syntax tier, status pass with hint in message', () => {
+  it('warn: java present, JRE 16 (>=11), no analyzer -> install hint', () => {
     const r = evaluateJavaTier({ hasJava: true, jreMajor: 16, analyzerInstalled: false });
+    expect(r.status).toBe('warn');
+    expect(r.message).toContain('syntax');
+    expect((r.fix ?? '').toLowerCase()).toContain('full-tier');
+  });
+  it('pass(syntax): java present, JRE below 11, no analyzer -> syntax tier, status pass with hint', () => {
+    const r = evaluateJavaTier({ hasJava: true, jreMajor: 8, analyzerInstalled: false });
     expect(r.status).toBe('pass');
     expect(r.message).toContain('syntax');
   });

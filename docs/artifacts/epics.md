@@ -579,7 +579,7 @@ Go, C#, and Java codebases can be indexed and queried via tree-sitter syntax-lev
 - `@ctxo/lang-java` plugin implements `CtxoLanguagePlugin` protocol v1; handles `.java` extensions; project markers `pom.xml`/`build.gradle`/`build.gradle.kts`
 - Syntax tier: tree-sitter-java extracts `class`, `interface`, `method`, `field`, `enum`, `record` declarations + complexity metrics
 - Full tier: `@ctxo/lang-java-analyzer` companion package (prebuilt JAR, Eclipse JDT Core); adds resolved `calls`/`uses`/`extends`/`implements` edges, cross-file symbol IDs, generics support
-- `ctxo install java --full-tier` prompts for JRE 17+ and downloads `@ctxo/lang-java-analyzer`; auto-detects JRE when available
+- `ctxo install java --full-tier` prompts for JRE 11+ and downloads `@ctxo/lang-java-analyzer`; auto-detects JRE when available
 - Graceful degradation: JRE absent or `@ctxo/lang-java-analyzer` not installed → falls back to tree-sitter syntax tier silently
 - Distribution model: prebuilt JAR shipped inside `@ctxo/lang-java-analyzer` npm package (no build-from-source required on developer machine) - same sidecar pattern as Roslyn (ADR-007) and Go analyzer (ADR-013)
 - E2E test: fixture Java project (Maven layout, cross-package calls) → `ctxo index` → `get_blast_radius` returns dependents with resolved edges

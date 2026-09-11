@@ -4,13 +4,18 @@ import { join } from 'node:path';
 import { createLogger } from '../logger.js';
 
 const log = createLogger('ctxo:lang-java');
-const MIN_MAJOR = 17;
+const MIN_MAJOR = 11;
+
+/** Which analyzer JAR variant to use based on the detected JRE major version. */
+export type JarVariant = 'java11' | 'java17';
 
 export interface JavaToolchainInfo {
   available: boolean;
   major?: number;
   version?: string;
   javaBin: string;
+  /** Analyzer JAR variant compatible with this JRE (present when available=true). */
+  jarVariant?: JarVariant;
 }
 
 /** Pure parser: extract {major, version} from `java -version` text. */
@@ -36,7 +41,7 @@ export function resolveJavaBin(): string {
   return 'java';
 }
 
-/** Probe the Java runtime. `available` gates full tier on JRE >= 17. */
+/** Probe the Java runtime. `available` gates full tier on JRE >= 11. */
 export function detectJavaRuntime(): JavaToolchainInfo {
   const javaBin = resolveJavaBin();
   try {
@@ -56,9 +61,18 @@ export function detectJavaRuntime(): JavaToolchainInfo {
   }
 }
 
+function jarVariantFor(major: number): JarVariant {
+  return major >= 17 ? 'java17' : 'java11';
+}
+
 function finalize(javaBin: string, parsed: { major: number; version: string } | null): JavaToolchainInfo {
   if (!parsed) return { available: false, javaBin };
   const available = parsed.major >= MIN_MAJOR;
-  if (!available) log.info(`Java ${parsed.version} found but >= ${MIN_MAJOR} required for full tier`);
-  return { available, major: parsed.major, version: parsed.version, javaBin };
+  if (!available) {
+    log.info(`Java ${parsed.version} found but >= ${MIN_MAJOR} required for full tier`);
+    return { available, major: parsed.major, version: parsed.version, javaBin };
+  }
+  const jarVariant = jarVariantFor(parsed.major);
+  log.info(`Java ${parsed.version} detected — using ${jarVariant} analyzer JAR`);
+  return { available, major: parsed.major, version: parsed.version, javaBin, jarVariant };
 }
