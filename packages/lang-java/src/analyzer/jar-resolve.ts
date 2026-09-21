@@ -8,7 +8,10 @@ const log = createLogger('ctxo:lang-java');
 const require = createRequire(import.meta.url);
 const ANALYZER_PKG = '@ctxo/lang-java-analyzer';
 const ENV_OVERRIDE = 'CTXO_JDT_ANALYZER_JAR';
-const JAR_REL = ['jar', 'ctxo-jdt-analyzer.jar'];
+const JAR_NAMES: Record<'java11' | 'java17', string[]> = {
+  java11: ['jar', 'ctxo-jdt-analyzer-11.jar'],
+  java17: ['jar', 'ctxo-jdt-analyzer-17.jar'],
+};
 
 /**
  * Sentinel returned when the plugin's own package.json cannot be located
@@ -100,12 +103,13 @@ function resolveAnalyzerPkgJson(): string | null {
 /**
  * Resolve the full-tier analyzer JAR WITHOUT network access:
  *   1. CTXO_JDT_ANALYZER_JAR env override (dev/CI/test escape hatch), if the file exists
- *   2. the bundled jar inside the installed @ctxo/lang-java-analyzer package
+ *   2. the bundled jar inside the installed @ctxo/lang-java-analyzer package,
+ *      selected by jarVariant ('java11' or 'java17') based on detected JRE major
  *      (searched at consumer cwd first, then plugin-local node_modules)
  *   3. null  -> caller degrades to tree-sitter
  * Never throws.
  */
-export function resolveAnalyzerJar(): string | null {
+export function resolveAnalyzerJar(jarVariant: 'java11' | 'java17' = 'java17'): string | null {
   const override = process.env[ENV_OVERRIDE];
   if (override && existsSync(override)) {
     log.info(`Using analyzer jar from ${ENV_OVERRIDE}: ${override}`);
@@ -114,8 +118,17 @@ export function resolveAnalyzerJar(): string | null {
   try {
     const pkgJson = resolveAnalyzerPkgJson();
     if (!pkgJson) return null;
-    const jar = join(dirname(pkgJson), ...JAR_REL);
-    return existsSync(jar) ? jar : null;
+    const jarRel = JAR_NAMES[jarVariant];
+    const jar = join(dirname(pkgJson), ...jarRel);
+    if (existsSync(jar)) return jar;
+    // Graceful fallback: if the exact variant is missing but the other exists, prefer the other.
+    const fallbackVariant = jarVariant === 'java17' ? 'java11' : 'java17';
+    const fallbackJar = join(dirname(pkgJson), ...JAR_NAMES[fallbackVariant]);
+    if (existsSync(fallbackJar)) {
+      log.warn(`Analyzer jar for ${jarVariant} not found; falling back to ${fallbackVariant}`);
+      return fallbackJar;
+    }
+    return null;
   } catch {
     return null;
   }

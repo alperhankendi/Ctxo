@@ -21,10 +21,11 @@ export function evaluateJavaTier(i: JavaTierInputs): CheckResult {
     return { id, title, status: 'pass', message: 'no Java sources detected' };
   }
 
-  const jreOk = (i.jreMajor ?? 0) >= 17;
+  const jreOk = (i.jreMajor ?? 0) >= 11;
+  const jarVariant = (i.jreMajor ?? 0) >= 17 ? 'java17' : 'java11';
 
   if (jreOk && i.analyzerInstalled) {
-    return { id, title, status: 'pass', message: `full tier (JRE ${i.jreMajor}, analyzer installed)` };
+    return { id, title, status: 'pass', message: `full tier (JRE ${i.jreMajor}, ${jarVariant} analyzer installed)` };
   }
 
   if (jreOk && !i.analyzerInstalled) {
@@ -42,17 +43,17 @@ export function evaluateJavaTier(i: JavaTierInputs): CheckResult {
       id,
       title,
       status: 'warn',
-      message: 'syntax tier (analyzer installed but no JRE 17+)',
-      fix: 'Install a JRE 17+ and ensure it is on PATH (or set JAVA_HOME)',
+      message: 'syntax tier (analyzer installed but no JRE 11+)',
+      fix: 'Install a JRE 11+ and ensure it is on PATH (or set JAVA_HOME)',
     };
   }
 
-  // No JRE >=17, no analyzer — syntax tier only, no nag
+  // No JRE >=11, no analyzer — syntax tier only, no nag
   return {
     id,
     title,
     status: 'pass',
-    message: 'syntax tier (install JRE 17+ and run "ctxo install java --full-tier" for full tier)',
+    message: 'syntax tier (install JRE 11+ and run "ctxo install java --full-tier" for full tier)',
   };
 }
 
@@ -65,8 +66,10 @@ export function evaluateJavaTier(i: JavaTierInputs): CheckResult {
 export function analyzerJarPresent(): boolean {
   try {
     const pkgJson = require.resolve('@ctxo/lang-java-analyzer/package.json');
-    const jarPath = join(dirname(pkgJson), 'jar', 'ctxo-jdt-analyzer.jar');
-    return existsSync(jarPath);
+    const jarDir = join(dirname(pkgJson), 'jar');
+    // Accept either variant — at least one must exist for the full tier to be usable
+    return existsSync(join(jarDir, 'ctxo-jdt-analyzer-11.jar'))
+      || existsSync(join(jarDir, 'ctxo-jdt-analyzer-17.jar'));
   } catch {
     return false;
   }

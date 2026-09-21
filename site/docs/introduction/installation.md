@@ -98,6 +98,31 @@ Available plugins on npm:
 [`@ctxo/lang-csharp`](https://www.npmjs.com/package/@ctxo/lang-csharp),
 [`@ctxo/lang-java`](https://www.npmjs.com/package/@ctxo/lang-java).
 
+:::tip Java — Full tier setup and automatic JAR selection
+
+`ctxo install java` detects your JRE automatically:
+
+- **JRE 11+ present:** installs `@ctxo/lang-java` + `@ctxo/lang-java-analyzer` (full tier active).
+- **No JRE or JRE < 11:** installs `@ctxo/lang-java` only (syntax tier); a warning is printed.
+
+Override with flags:
+
+```bash
+ctxo install java --full-tier    # force analyzer install even without a JRE
+ctxo install java --syntax-only  # skip analyzer even if JRE is present
+```
+
+If full tier is installed, the correct JAR is selected automatically at runtime:
+
+| JRE on PATH | JAR used | Analyzes source levels |
+|---|---|---|
+| 11 – 16 | `ctxo-jdt-analyzer-11.jar` | Java 8 – 19 |
+| 17+ | `ctxo-jdt-analyzer-17.jar` | Java 8 – 21 |
+| < 11 or absent | — | syntax tier only |
+
+To use a specific JRE, set `JAVA_HOME`.
+:::
+
 After install, re-index so the plugin takes effect:
 
 ```bash

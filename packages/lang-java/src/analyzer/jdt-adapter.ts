@@ -30,10 +30,10 @@ export class JdtAnalyzerAdapter implements ILanguageAdapter {
   async initialize(rootDir: string): Promise<void> {
     const java = detectJavaRuntime();
     if (!java.available) {
-      log.info(`Java full tier unavailable: JRE ${java.version ?? 'not found'} (>= 17 required)`);
+      log.info(`Java full tier unavailable: JRE ${java.version ?? 'not found'} (>= 11 required)`);
       return;
     }
-    const jar = resolveAnalyzerJar();
+    const jar = resolveAnalyzerJar(java.jarVariant);
     if (!jar) {
       log.info('Java full tier unavailable: @ctxo/lang-java-analyzer not installed (run: ctxo install java --full-tier)');
       return;

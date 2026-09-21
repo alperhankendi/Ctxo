@@ -359,7 +359,7 @@ export class IndexCommand {
     if (tsCount > 0) console.error(`[ctxo]   TypeScript/JS: ${tsCount} files (full tier)`);
     if (csCount > 0) console.error(`[ctxo]   C#: ${csCount} files (${csharpTier} tier${csharpTier === 'syntax' ? ' - .NET SDK 8+ for full analysis' : ''})`);
     if (goCount > 0) console.error(`[ctxo]   Go: ${goCount} files (${goTier} tier${goTier === 'syntax' ? ' - Go 1.22+ for full analysis' : ''})`);
-    if (javaCount > 0) console.error(`[ctxo]   Java: ${javaCount} files (${javaTier} tier${javaTier === 'syntax' ? ' - JRE 17+ & "ctxo install java --full-tier" for full analysis' : ''})`);
+    if (javaCount > 0) console.error(`[ctxo]   Java: ${javaCount} files (${javaTier} tier${javaTier === 'syntax' ? ' - JRE 11+ & "ctxo install java --full-tier" for full analysis' : ''})`);
 
     // Dispose Roslyn adapter
     if (roslynAdapter) await roslynAdapter.dispose();

@@ -26,7 +26,7 @@ pnpm --filter @ctxo/cli build     # build CLI package to dist/
 npm install -g @ctxo/cli            # one-time global install (gives you the `ctxo` command)
 ctxo install                        # install language plugins (interactive)
 ctxo install typescript go --yes    # non-interactive install of specific plugins
-ctxo install java                   # syntax tier + full-tier analyzer when JRE 17+ detected
+ctxo install java                   # syntax tier + full-tier analyzer when JRE 11+ detected
 ctxo install java --full-tier       # force full-tier analyzer install
 ctxo install java --syntax-only     # skip analyzer, syntax tier only
 ctxo install --dry-run --pm pnpm    # preview install plan with chosen pm
@@ -74,7 +74,7 @@ packages/
 ├── lang-typescript/  @ctxo/lang-typescript # ts-morph, full tier
 ├── lang-go/          @ctxo/lang-go         # tree-sitter Go
 ├── lang-csharp/      @ctxo/lang-csharp     # Roslyn + tree-sitter + tools/ctxo-roslyn
-└── lang-java/        @ctxo/lang-java       # tree-sitter Java (syntax tier); full tier via @ctxo/lang-java-analyzer companion (JRE 17+, ADR-014)
+└── lang-java/        @ctxo/lang-java       # tree-sitter Java (syntax tier); full tier via @ctxo/lang-java-analyzer companion (JRE 11+, ADR-014)
 ```
 
 ### Key Rules

@@ -41,7 +41,7 @@ _This document builds collaboratively through step-by-step discovery. Sections a
 | FR-12 | Multi-language: Go + C# + Java via tree-sitter syntax adapters | V1.5 |
 | FR-13 | Go deep analysis: standalone `ctxo-go-analyzer` binary inside `@ctxo/lang-go` (go/packages + go/types + ssa + callgraph/cha + reflect-safe) | V0.8 ✅ |
 | FR-14 | C# deep analysis: Roslyn LSP adapter (dotnet pre-installed) | V2 ✅ |
-| FR-16 | Java deep analysis: Eclipse JDT Core via `@ctxo/lang-java-analyzer` companion package (prebuilt JAR, JRE 17+ opt-in) | ADR-014 ✅ |
+| FR-16 | Java deep analysis: Eclipse JDT Core via `@ctxo/lang-java-analyzer` companion package (prebuilt JAR, JRE 11+ opt-in; dual-JAR: java11/java17 variant selected at runtime) | ADR-014 ✅ |
 | FR-15 | Change Intelligence: code complexity scoring (cyclomatic, cognitive, nesting, param count) + change tracing (churn rate, change frequency, logical coupling) + composite health score per symbol/file | V1 |
 
 **Non-Functional Requirements:**

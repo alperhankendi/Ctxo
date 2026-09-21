@@ -222,7 +222,7 @@ Ctxo is an npm package distributed via `npx`, exposing an MCP server over stdio 
 | Java | All | Syntax-level (tree-sitter-java) | V1.5 |
 | Go (deep) | All | Type-aware (`ctxo-go-analyzer` — go/packages + go/types + ssa + callgraph/cha) | V0.8 ✅ |
 | C# (deep) | All | Type-aware (`ctxo-roslyn` — Roslyn Compiler API) | V0.6 ✅ |
-| Java (deep) | All | Type-aware (`@ctxo/lang-java-analyzer` - Eclipse JDT Core, prebuilt JAR, JRE 17+) | ADR-014 ✅ |
+| Java (deep) | All | Type-aware (`@ctxo/lang-java-analyzer` - Eclipse JDT Core, prebuilt JAR, JRE 11+; dual-JAR: java11/java17) | ADR-014 ✅ |
 
 ### Installation Methods
 
@@ -444,7 +444,7 @@ Phase PRDs consolidated into this document on 2026-04-13. Originals preserved in
 - **Status:** Delivered (feat/lang-java-full-tier)
 - **Delivered on:** 2026-06-21
 - **Goal:** Add Java language support at both syntax and full-tier analysis levels. Syntax tier uses tree-sitter-java; full tier uses Eclipse JDT Core via a companion npm package (`@ctxo/lang-java-analyzer`) shipping a prebuilt JAR. Mirrors the Roslyn sidecar pattern (ADR-007) and Go sidecar pattern (ADR-013) with one distribution difference: the JAR is prebuilt and bundled in the npm package, not built from source on the developer machine.
-- **Scope delivered:** `@ctxo/lang-java` plugin (tree-sitter-java, syntax tier; extensions `.java`; project markers `pom.xml`/`build.gradle`/`build.gradle.kts`); `@ctxo/lang-java-analyzer` companion package (Eclipse JDT Core, full tier; resolved `calls`/`uses`/`extends`/`implements` edges + cross-file IDs + generics; complexity from tree-sitter); `ctxo install java --full-tier` opt-in flow with JRE 17+ auto-detection; graceful syntax-tier fallback when JRE unavailable.
+- **Scope delivered:** `@ctxo/lang-java` plugin (tree-sitter-java, syntax tier; extensions `.java`; project markers `pom.xml`/`build.gradle`/`build.gradle.kts`); `@ctxo/lang-java-analyzer` companion package (Eclipse JDT Core, full tier; resolved `calls`/`uses`/`extends`/`implements` edges + cross-file IDs + generics; complexity from tree-sitter); `ctxo install java --full-tier` opt-in flow with JRE 11+ auto-detection; dual-JAR strategy: JRE 11–16 → `ctxo-jdt-analyzer-11.jar` (JDT 3.33.0), JRE 17+ → `ctxo-jdt-analyzer-17.jar` (JDT 3.39.0); graceful syntax-tier fallback when JRE unavailable.
 - **Not delivered / deferred:** Framework-aware analysis (Spring Boot, Jakarta EE annotation resolution); Maven/Gradle dependency graph indexing.
 - **Key artifacts:** [ADR-014](../architecture/ADR/adr-014-java-full-tier-via-eclipse-jdt-core.md); `packages/lang-java/`; `packages/lang-java-analyzer/`
 

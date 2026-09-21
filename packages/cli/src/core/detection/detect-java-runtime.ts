@@ -61,7 +61,7 @@ export function resetJavaRuntimeCacheForTests(): void {
   _javaMajorCache = undefined;
 }
 
-/** True if a JRE >= 17 is reachable (CTXO_JAVA_HOME -> JAVA_HOME -> PATH). */
+/** True if a JRE >= 11 is reachable (CTXO_JAVA_HOME -> JAVA_HOME -> PATH). */
 export function javaRuntimeAvailable(): boolean {
-  return (detectJavaMajor() ?? 0) >= 17;
+  return (detectJavaMajor() ?? 0) >= 11;
 }
