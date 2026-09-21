@@ -54,7 +54,7 @@
     "simple-git": "^3.27.0",
     "sql.js": "^1.14.1",
     "yaml": "^2.6.1",
-    "zod": "^4.6.2"
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@ctxo/lang-csharp": "workspace:*",
