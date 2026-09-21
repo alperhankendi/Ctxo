@@ -123,9 +123,15 @@ describe('cli-router update command', () => {
     const calls: Array<{ projectRoot: string; options: unknown }> = [];
     const router = new CliRouter(process.cwd());
     const original = await import('../update-command.js');
-    const spy = vi.spyOn(original, 'UpdateCommand' as any).mockImplementation(((projectRoot: string) => ({
-      run: async (options: unknown) => { calls.push({ projectRoot, options }); },
-    })) as any);
+    // Must be constructible: cli-router calls `new UpdateCommand(...)`. An arrow
+    // function has no [[Construct]] slot, so it throws under vitest 5.
+    const spy = vi.spyOn(original, 'UpdateCommand' as any).mockImplementation(
+      function (this: unknown, projectRoot: string) {
+        return {
+          run: async (options: unknown) => { calls.push({ projectRoot, options }); },
+        };
+      } as any,
+    );
 
     await router.route(['update', '--check', '--json', '--pm', 'pnpm', '--print', '--global', '--force']);
     expect(calls).toHaveLength(1);
