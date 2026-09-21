@@ -20,6 +20,30 @@ updates:
     schedule:
       interval: weekly
     groups:
+      # Minor/patch only. Majors are deliberately excluded so each one arrives
+      # as its own PR: #133 grouped TypeScript 7 + Vitest 4 + Changesets 3 into
+      # a single unreviewable PR that failed build, typecheck and tests at once.
       dev-dependencies:
         dependency-type: development
         patterns: ['*']
+        update-types: ['minor', 'patch']
+    ignore:
+      # tree-sitter 0.25 pulls node-addon-api 8.9.2 while the grammar packages
+      # (tree-sitter-go, -java, -c-sharp @ 0.23.x) still build against 8.7.0.
+      # #123 crashed the Node 20 vitest worker outright ("Channel closed").
+      # Lift this once the grammars ship tree-sitter 0.25 compatible releases.
+      - dependency-name: tree-sitter
+        versions: ['>=0.23']
+
+      # TypeScript 7 changed the internal compiler APIs that rollup-plugin-dts
+      # (vendored inside tsup) reaches into, breaking `tsup` dts output for all
+      # four lang-* packages with "Cannot read properties of undefined
+      # (reading 'useCaseSensitiveFileNames')". Unblock when tsup ships a
+      # rollup-plugin-dts that supports TS 7.
+      - dependency-name: typescript
+        versions: ['>=7']
+
+      # @changesets/cli v3 is the other half of the changesets/action v2 pin
+      # above. Both move together, as one deliberate release-pipeline migration.
+      - dependency-name: '@changesets/cli'
+        versions: ['>=3']
