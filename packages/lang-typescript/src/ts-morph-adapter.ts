@@ -18,6 +18,7 @@ import {
 } from '@ctxo/plugin-api';
 
 const SUPPORTED_EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx'] as const;
+const TS_MODULE_EXTENSIONS: ReadonlySet<string> = new Set(['.ts', '.tsx', '.mts', '.cts']);
 
 export class TsMorphAdapter implements ILanguageAdapter {
   readonly extensions = SUPPORTED_EXTENSIONS;
@@ -25,6 +26,8 @@ export class TsMorphAdapter implements ILanguageAdapter {
 
   private readonly project: Project;
   private symbolRegistry = new Map<string, SymbolKind>();
+  private registryFiles: Set<string> | undefined;
+  private registryFilesSize = 0;
   private projectPreloaded = false;
 
   constructor() {
@@ -45,6 +48,7 @@ export class TsMorphAdapter implements ILanguageAdapter {
   }
 
   setSymbolRegistry(registry: Map<string, SymbolKind>): void {
+    if (registry !== this.symbolRegistry) this.registryFiles = undefined;
     this.symbolRegistry = registry;
   }
 
@@ -584,31 +588,72 @@ export class TsMorphAdapter implements ILanguageAdapter {
     return `${filePath}::${name}::${kind}`;
   }
 
+  /**
+   * Resolve a relative module specifier (from the importing file) to the project-relative
+   * target file, e.g. '../types.js' -> 'src/core/types.ts'. Candidates are tried in order
+   * and the first one known to the symbol registry or the ts-morph project wins; when none
+   * is known the first candidate is returned. Candidates:
+   *  - '.js'        -> '.ts', '.tsx' (TypeScript imports use .js but sources are .ts/.tsx)
+   *  - '.jsx'       -> '.tsx'
+   *  - '.ts', '.tsx', '.mts', '.cts' -> as is
+   *  - extensionless -> '<p>.ts', '<p>.tsx', '<p>/index.ts', '<p>/index.tsx'
+   * Single-file runs do not preload the target module, so the registry is what tells
+   * './Button' (Button.tsx) or './utils' (utils/index.ts) apart from a missing '.ts' file.
+   */
   private resolveRelativeImport(fromFile: string, moduleSpecifier: string): string {
-    // Convert relative import like '../types.js' to project-relative 'src/core/types.ts'
-    const fromDir = dirname(fromFile);
-    let resolved = normalize(join(fromDir, moduleSpecifier)).replace(/\\/g, '/');
-
-    // Strip .js extension (TypeScript imports use .js but source files are .ts)
-    if (resolved.endsWith('.js')) {
-      resolved = resolved.slice(0, -3) + '.ts';
-    } else if (resolved.endsWith('.jsx')) {
-      resolved = resolved.slice(0, -4) + '.tsx';
-    } else if (!extname(resolved)) {
-      resolved += '.ts';
-    }
-
-    return resolved;
+    const base = normalize(join(dirname(fromFile), moduleSpecifier)).replace(/\\/g, '/');
+    const candidates = this.buildModuleCandidates(base);
+    return candidates.find((candidate) => this.isKnownModuleFile(candidate)) ?? candidates[0]!;
   }
 
-  private resolveImportTarget(targetFile: string, name: string): string {
-    // BUG-8/9 FIX: check symbol registry first (populated from Phase 1 of indexing)
+  private buildModuleCandidates(base: string): string[] {
+    const ext = extname(base);
+    if (ext === '.js') return [`${base.slice(0, -3)}.ts`, `${base.slice(0, -3)}.tsx`];
+    if (ext === '.jsx') return [`${base.slice(0, -4)}.tsx`];
+    if (TS_MODULE_EXTENSIONS.has(ext)) return [base];
+
+    const extensionless = [`${base}.ts`, `${base}.tsx`, `${base}/index.ts`, `${base}/index.tsx`];
+    // A dotted name such as './user.service' is extensionless too, but an unrecognised
+    // extension (./data.json) keeps resolving to itself when nothing else is known.
+    return ext ? [base, ...extensionless] : extensionless;
+  }
+
+  private isKnownModuleFile(file: string): boolean {
+    // Leading '/' makes ts-morph match the exact in-memory path, not any file with that base name.
+    return this.getRegistryFiles().has(file) || this.project.getSourceFile(`/${file}`) !== undefined;
+  }
+
+  private getRegistryFiles(): Set<string> {
+    // Registry keys are '<file>::<name>::<kind>'; collect the distinct files once per registry.
+    if (!this.registryFiles || this.registryFilesSize !== this.symbolRegistry.size) {
+      const files = new Set<string>();
+      for (const symbolId of this.symbolRegistry.keys()) {
+        const separator = symbolId.indexOf('::');
+        if (separator > 0) files.add(symbolId.slice(0, separator));
+      }
+      this.registryFiles = files;
+      this.registryFilesSize = this.symbolRegistry.size;
+    }
+    return this.registryFiles;
+  }
+
+  private findRegisteredSymbol(targetFile: string, name: string, preferredKind?: SymbolKind): string | undefined {
     const prefix = `${targetFile}::${name}::`;
+    if (preferredKind && this.symbolRegistry.has(`${prefix}${preferredKind}`)) {
+      return `${prefix}${preferredKind}`;
+    }
     for (const kind of SYMBOL_KINDS) {
       if (this.symbolRegistry.has(`${prefix}${kind}`)) {
         return `${prefix}${kind}`;
       }
     }
+    return undefined;
+  }
+
+  private resolveImportTarget(targetFile: string, name: string): string {
+    // BUG-8/9 FIX: check symbol registry first (populated from Phase 1 of indexing)
+    const registered = this.findRegisteredSymbol(targetFile, name);
+    if (registered) return registered;
 
     // Try to find the symbol in the already-parsed project to get the correct kind
     const targetSourceFile = this.project.getSourceFile(targetFile);
@@ -655,13 +700,10 @@ export class TsMorphAdapter implements ILanguageAdapter {
           if (resolved) {
             return `${this.normalizeFilePath(resolved)}::${name}::${defaultKind}`;
           }
-          // Fallback: resolve relative module specifier manually
-          const sourceDir = dirname(this.normalizeFilePath(sourceFile.getFilePath()));
-          const resolvedPath = normalize(join(sourceDir, moduleSpecifier))
-            .replace(/\\/g, '/')
-            .replace(/\.jsx$/, '.tsx')
-            .replace(/\.js$/, '.ts');
-          return `${resolvedPath}::${name}::${defaultKind}`;
+          // Fallback (target module not loaded, e.g. single-file runs): resolve the
+          // specifier manually, then take the registered kind or keep the default.
+          const targetFile = this.resolveRelativeImport(this.normalizeFilePath(sourceFile.getFilePath()), moduleSpecifier);
+          return this.findRegisteredSymbol(targetFile, name, defaultKind) ?? `${targetFile}::${name}::${defaultKind}`;
         }
       }
     }

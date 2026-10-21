@@ -58,6 +58,14 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo with five packages. Per-packag
   etc.).
 - `response-envelope` truncation whitelist now covers `clusters` and `clustersAffected`.
 
+### Fixed
+
+- `@ctxo/lang-typescript` resolves extensionless, `.tsx` and directory-index relative imports through
+  the symbol registry (`./base`, `./Button`, `./utils` -> `utils/index.ts`). `extends`, `implements`
+  and import edges no longer point at non-existent files such as `src/base::Base::class` in
+  single-file runs (`ctxo index --files` / `--commit`, post-commit hook), where the target module is
+  not loaded into the ts-morph project. Full runs are unchanged.
+
 ## [0.8.0-alpha.0] - 2026-04-13
 
 **Go full-tier semantic analysis via `ctxo-go-analyzer` binary.**
