@@ -457,6 +457,10 @@ The safe-edit guard closes the loop between MCP tool availability and agent comp
 
 On every Edit call, `ctxo gate-hook` checks whether get_blast_radius has been called for that symbol in the current session. If not, the hook blocks the edit and returns a message: "High-impact symbol - run get_blast_radius first." Once the agent calls the tool, the edit goes through. Fires once per symbol per session. Fail-open on any error.
 
+- Matcher `Edit` only: `ctxo gate-hook` ignores every other tool, so `Write` (new files, whole-file rewrites) and `NotebookEdit` are not gated.
+- Session state is a file store: the hook runs as a new process per Edit call, records the symbols it already warned about in `.ctxo/.cache/gate/<session_id>.json`, and also accepts a get_blast_radius call found in the session transcript. It survives MCP server restarts.
+- A `.claude/settings.json` that is not valid JSON (JSONC comments included) or not a settings object is never overwritten; `ctxo init` warns and leaves it. The guard is also detected in `.claude/settings.local.json` (read only).
+
 ### Gate decision
 
 A symbol is flagged if it exceeds both thresholds:
@@ -476,7 +480,7 @@ Sensitivity levels (configured in `.ctxo/config.yaml`):
 ### Skills
 
 Three model-invoked skill files installed to `.claude/skills/` (Claude Code) and `.cursor/rules/` (Cursor):
-- `ctxo-understand`: run get_context_for_task before reading source files
+- `ctxo-understand`: run get_context_for_task at the start of a task, and pick the right tool for a structural question from a question-to-tool table that covers all 14 tools (reading a file to see its contents needs no index call)
 - `ctxo-safe-edit`: run get_blast_radius and get_why_context before any edit
 - `ctxo-review-pr`: run get_pr_impact before reviewing a diff
 
@@ -487,3 +491,34 @@ Three model-invoked skill files installed to `.claude/skills/` (Claude Code) and
 | Claude Code | Yes (PreToolUse) | Yes | Yes |
 | Cursor | No (no blocking pre-edit hook in v3.6) | Yes | Yes |
 | Other platforms | No | Where supported | Yes |
+
+### Tiered rules (#159)
+
+`ctxo init` writes one ctxo block into each AI tool's rules file, between `<!-- ctxo-rules-start v<version> -->` and `<!-- ctxo-rules-end -->`. The version is the rules template version, the CLI minor in which the rules text last changed.
+
+- Compact tier, Claude Code only (`CLAUDE.md`, 4 lines of text; at most 8 non-blank lines including the markers, 6 today): written when the guard hook is registered (`.claude/settings.json` or `.claude/settings.local.json`), all three skills are in `.claude/skills/`, and `gate.enabled` is not false. It says the repo has a ctxo index, to use the ctxo tools for structural questions before grepping, that the guard blocks the first edit to a high-impact symbol until get_blast_radius is called, and names the three skills.
+- Full tier: every other client, Claude Code without one of those three, and a rules file several clients share (an `AGENTS.md` or `GEMINI.md` that is a hard link or a symlink to `CLAUDE.md`). First rule: "For structural questions (dependencies, impact, history), use ctxo tools first; reading a file to see its contents needs no index call." Then the tool guide; its modification steps end with "Only then edit the source".
+- The tier follows the disk after the skills and guard steps; `--no-guard` and `--skip skills` give the full block unless the guard and skills are already installed (they remove nothing).
+- Re-runs replace the first ctxo block in place (versioned, unversioned `<!-- ctxo-rules-start -->`, or the old unmarked body), collapse later blocks into it, and keep every byte outside the blocks, including a UTF-8 BOM and CRLF line endings. Create-mode files (`.cursor/rules/ctxo.mdc`, `AGENTS.md` and the rest) keep user content. A block from a newer ctxo, a start marker without an end marker, or an end marker without a start marker leaves the file unchanged with a warning.
+- Formatter stable: blocks and skills are written in the layout Prettier prints, and blocks, the old unmarked body and skills are compared with formatting ignored (line endings, BOM, trailing whitespace, blank lines, table padding; blocks and skills also ignore line wrapping, so `proseWrap: always` or `never` is no edit). A block a formatter reshaped is current and `unchanged`, and the tier is read from the first non-blank line. The compact tier counts a skill only when it is readable and current. A rules file ctxo cannot read is left unchanged with one warning, and init goes on.
+- Held blocks: init (real run, dry run, `--only rules`, `--rules`) and `ctxo doctor --fix` leave `CLAUDE.md` or `.cursor/rules/ctxo.mdc` unchanged when its block is pre-tier or compact, the user has not declined the guard or skills (`--no-guard`, the guard question answered no, `gate.enabled: false`, `--skip skills`), and after the skills and guard steps they are still not on disk (an unreadable `.claude/settings.json` counts as no guard). Init warns `<file>: left unchanged until the guard and skills are installed; run "ctxo init --only rules,skills,guard" or "ctxo doctor --fix"`; the dry run prints `unchanged (held)`. A file linked to a held one is held too. A file without a ctxo block is never held.
+- Skills carry a version marker, `<!-- ctxo-skill v<version> -->` (SKILLS_TEMPLATE_VERSION). An installed skill with a newer marker is left alone with a warning and is not outdated; no marker or an older one is outdated and replaced.
+
+### Granular init (#159)
+
+- Parts, run in this order: `config` (`.ctxo/config.yaml`, `.gitignore` entry, `.ctxo/index/`), `skills`, `guard`, `rules`, `mcp`, `git-hooks`.
+- `ctxo init --only <parts>` installs exactly those parts (and skips the plugin step); `ctxo init --skip <parts>` installs the rest (the plugin step still runs); `ctxo init --no-guard` does not install the guard and never asks. `-y` without `--tools` sets up all nine tools, the same set the dry run previews. `--only` cannot be combined with `--skip` or `--rules`; an unknown part exits 1.
+- `ctxo init --rules` is deprecated: the same as `--skip git-hooks,guard`, prints a notice, and still skips the plugin step.
+- The interactive guard question appears only when Claude Code is selected. Cursor gets the skills and the full block, but no guard question and no hook.
+- `ctxo init --dry-run` lists every file init would create or change (`would create`, `would update`, `unchanged`) and writes nothing.
+- Init output: `[ctxo] ✓ <file> (<created|updated|unchanged>)`, warnings as `[ctxo] ⚠ <text>`.
+
+### Agent-setup doctor checks (#159)
+
+- `ai_rules`: an outdated block (unversioned, older template, or edited), a `CLAUDE.md` block that expects the guard while it is missing, a current block in the wrong tier, several blocks in one file, a start marker without an end marker, an end marker without a start marker. A block from a newer ctxo passes, and so does a file with no ctxo block. Linked files are reported once.
+- `skills`: missing or outdated ctxo skills for Claude Code and Cursor, where expected (one ctxo skill installed, or the rules block is pre-tier or compact). Formatting is ignored, and a skill from a newer ctxo is not reported.
+- `claude_guard_hook`: an unreadable `.claude/settings.json`, or a missing guard while the `CLAUDE.md` block expects it and the gate is enabled.
+- All three warn, never fail. A versioned full block and `gate.enabled: false` are opt-outs and pass.
+- `ctxo doctor --fix` order: Config, Git hooks, Skills, Claude guard hook, AI rules, then plugins, index and cache. AI rules re-render whenever any of the three checks warned, so the tier follows the fixes. A block is held unchanged by the same rule as init while the guard or the skills it expects are not in place (unreadable settings, failed install); doctor keeps reporting them until fixed. The Skills step reports a skill from a newer ctxo as a warning line and fails on a skill path it cannot write. `--fix` never installs what the user declined, never writes an unreadable `.claude/settings.json`, and replaces edited ctxo skills with the bundled copy (copy a customised skill under another name).
+
+Design record: docs/architecture/ADR/adr-015-safe-edit-guard.md (amendment: tiered rules)

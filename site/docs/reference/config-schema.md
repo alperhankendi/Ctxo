@@ -69,7 +69,7 @@ contextsView:             # candidate contexts (file level)
 | `index.ignoreProjects` | string[] | `[]` | Picomatch globs applied to workspace roots. Skipped workspaces are never enumerated. |
 | `index.tests` | string[] | `[]` | Extra test-file globs added to the shared default list. Test files are never nodes of the contexts view. Test-framework annotations also mark test files; see [Test files](#test-files). |
 | `index.facts` | boolean | `false` | Ask plugins for code facts (protocol v2). Sets `capabilities.facts`, so `ctxo index` and `ctxo watch` call `extractFacts` on plugins that implement it and write the results into the file's index JSON under `facts`. JSON only; SQLite is unchanged. No official plugin implements `extractFacts` yet. |
-| `gate.enabled` | boolean | `true` | Enable or disable the safe-edit guard PreToolUse hook. |
+| `gate.enabled` | boolean | `true` | Enable or disable the safe-edit guard PreToolUse hook. `false` also makes `ctxo init` write the full rules block for Claude Code, and `ctxo doctor` stops expecting the guard. |
 | `gate.sensitivity` | `strict` \| `balanced` \| `lenient` | `balanced` | How aggressively the guard flags high-impact symbols. |
 | `cochange.maxCommits` | positive integer or `"all"` | `2000` | Co-change window: the last N non-merge commits from HEAD. Independent of `ctxo index --max-history`. |
 | `cochange.since` | string (`30d`, `2w`, `12m`, `1y`) | unset | Also limit the window by age, counted back from HEAD's committer date (never the wall clock). Applies together with `maxCommits`. |

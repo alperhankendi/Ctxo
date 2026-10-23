@@ -10,6 +10,7 @@ import { LanguageCoverageCheck } from '../adapters/diagnostics/checks/language-c
 import { JavaTierCheck } from '../adapters/diagnostics/checks/java-tier-check.js';
 import { CSharpTierCheck } from '../adapters/diagnostics/checks/csharp-tier-check.js';
 import { GitBinaryCheck, GitRepoCheck, GitHooksCheck } from '../adapters/diagnostics/checks/git-check.js';
+import { AiRulesCheck, SkillsCheck, ClaudeGuardHookCheck } from '../adapters/diagnostics/checks/agent-setup-check.js';
 import {
   IndexDirectoryCheck,
   IndexFreshnessCheck,
@@ -51,6 +52,9 @@ export class DoctorCommand {
       new GitBinaryCheck(),
       new GitRepoCheck(),
       new GitHooksCheck(),
+      new AiRulesCheck(),
+      new SkillsCheck(),
+      new ClaudeGuardHookCheck(),
       new IndexDirectoryCheck(),
       new IndexFreshnessCheck(),
       new SqliteCacheCheck(),

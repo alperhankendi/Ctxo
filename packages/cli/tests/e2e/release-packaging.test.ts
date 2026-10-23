@@ -72,8 +72,15 @@ describe('Release Packaging', () => {
     // R4 attribution); its final-review fixes (one data-resource identity for the impact tools, the
     // linear R4 pass, annotations only at L4, the review carries) crossed the limit at 1711.62KB,
     // so it is 1800KB. The tarball also carries the root README.md and llms*.txt, so docs count too.
-    // The owner set 2000KB ahead of the stack merge: PR 1B (1712.86KB) plus PR 2A (tiered agent
-    // rules, about 1870KB together) would cross 1800KB.
+    // On its own branch (from 1450KB), PR 2A (#159: tiered rules block and its parser, init parts
+    // pipeline, agent-setup doctor checks and fixes, about 49KB of new source shipped as JS plus
+    // source maps, and the longer docs) raised it to 1550KB (measured 1530.42KB after the rebase).
+    // The PR 2A final fix (formatter-stable blocks and normalised comparison, linked rules files,
+    // versioned skills, one hold rule shared by init, the dry run and --fix, and its JSDoc, shipped
+    // as JS and again in the source maps) raised it to 1650KB (measured 1574.88KB: the next 50KB
+    // step, 1600KB, plus 50KB of headroom). The owner set 2000KB ahead of the stack merge: PR 1B
+    // (#156, 1712.86KB) plus PR 2A (tiered agent rules, about 1870KB together) would cross 1800KB;
+    // PR 2A alone measured 1587.18KB at that change.
     expect(sizeKB).toBeLessThan(2000);
     expect(sizeKB).toBeGreaterThan(1); // Sanity: not empty (dist/ may not exist in CI pre-build)
   });

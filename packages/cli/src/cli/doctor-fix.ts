@@ -10,7 +10,22 @@ import {
   officialPluginFor,
   type KnownLanguage,
 } from '../core/detection/detect-languages.js';
-import { ensureConfig } from './ai-rules.js';
+import { classifyRulesBlock } from '../core/agent-rules/rules-block.js';
+import {
+  SKILL_PLATFORMS,
+  ensureClaudeHook,
+  ensureConfig,
+  guardExpected,
+  installRules,
+  installSkills,
+  readClaudeGuardState,
+  readRulesStates,
+  resolveRulesTier,
+  rulesFileHoldReasons,
+  skillInstallWarnings,
+  skillsExpected,
+  type RulesHoldReasons,
+} from './ai-rules.js';
 import { InstallCommand } from './install-command.js';
 import { InitCommand } from './init-command.js';
 import { IndexCommand } from './index-command.js';
@@ -29,6 +44,8 @@ export interface FixAttempt {
   readonly status: 'success' | 'skipped' | 'failed' | 'planned';
   readonly durationMs?: number;
   readonly error?: string;
+  /** What a successful attempt left undone, such as a rules file it held back; one warning line each. */
+  readonly warnings?: readonly string[];
 }
 
 export interface FixReport {
@@ -40,15 +57,28 @@ export interface FixReport {
 /**
  * Apply ordered fixes derived from a doctor report.
  *
- * Order (PRD §5.2 D4.4):
+ * Order (PRD §5.2 D4.4, with the agent-setup steps of PR 2A D13):
  *   1. Config (bootstraps defaults other steps may need)
  *   2. Git hooks (cheap; depends on .git existing)
- *   3. Language coverage (install missing plugins)
- *   4. Index (requires adapters — so run AFTER plugin install)
- *   5. SQLite cache (last; rebuild from index JSONs)
+ *   3. Skills (install missing or outdated ctxo skills where the setup expects them)
+ *   4. Claude guard hook (register ctxo gate-hook in .claude/settings.json)
+ *   5. AI rules (re-render the rules blocks; runs whenever any of the three agent checks
+ *      failed, after 3 and 4, so the tier follows the skills and guard fixed in this run)
+ *   6. Language coverage (install missing plugins)
+ *   7. Index (requires adapters, so it runs AFTER plugin install)
+ *   8. SQLite cache (last; rebuild from index JSONs)
+ *
+ * Steps 3 to 5 never install what the user declined (D5): a versioned full block in CLAUDE.md is
+ * an opt-out of the guard and the skills, and `gate.enabled: false` an opt-out of the guard only.
+ * An unreadable `.claude/settings.json` is never written; when the guard is expected, its step fails
+ * with the warning, otherwise it is skipped like any opt-out. Step 5
+ * holds a rules file (CLAUDE.md, or Cursor's) while, after steps 3 and 4, its block still expects a
+ * guard or skills that are not in place (whatever stopped them), by the same `rulesHold` rule as
+ * `ctxo init`, and reports the hold as a warning.
  *
  * Error handling (D4.6 "dependency-aware continue"):
  *   - Config failure -> skip all dependent steps
+ *   - Skills, Claude guard hook or AI rules failure -> reported; the next steps still run
  *   - Plugin install failure -> skip index (can't rebuild adapters) but DO rebuild cache
  *
  * Never fixable here: runtime, git repo, disk. Those remain as CheckResult
@@ -90,6 +120,39 @@ export async function applyFixes(report: DoctorReport, options: FixOptions): Pro
         'Git hooks',
         're-install ctxo git hooks',
         () => fixHooks(options.projectRoot),
+        options,
+      ),
+    );
+  }
+
+  if (fixableIds.has('skills')) {
+    attempts.push(
+      await run(
+        'Skills',
+        'install missing or outdated ctxo skills',
+        () => fixSkills(options.projectRoot),
+        options,
+      ),
+    );
+  }
+
+  if (fixableIds.has('claude_guard_hook')) {
+    attempts.push(
+      await run(
+        'Claude guard hook',
+        'register ctxo gate-hook in .claude/settings.json',
+        () => fixClaudeGuardHook(options.projectRoot),
+        options,
+      ),
+    );
+  }
+
+  if (fixableIds.has('ai_rules') || fixableIds.has('skills') || fixableIds.has('claude_guard_hook')) {
+    attempts.push(
+      await run(
+        'AI rules',
+        're-render ctxo rules blocks',
+        () => fixAiRules(options.projectRoot),
         options,
       ),
     );
@@ -169,10 +232,15 @@ interface FixSkipped {
   readonly skipped: string;
 }
 
+/** A fix body returns this when it did its work but left part of it undone: success with warning lines. */
+interface FixWarned {
+  readonly warnings: readonly string[];
+}
+
 async function run(
   name: string,
   action: string,
-  body: () => Promise<void | FixSkipped>,
+  body: () => Promise<void | FixSkipped | FixWarned>,
   options: FixOptions,
 ): Promise<FixAttempt> {
   if (options.dryRun) {
@@ -181,8 +249,11 @@ async function run(
   const start = Date.now();
   try {
     const outcome = await body();
-    if (outcome) {
+    if (outcome && 'skipped' in outcome) {
       return { name, action, status: 'skipped', durationMs: Date.now() - start, error: outcome.skipped };
+    }
+    if (outcome) {
+      return { name, action, status: 'success', durationMs: Date.now() - start, warnings: outcome.warnings };
     }
     return { name, action, status: 'success', durationMs: Date.now() - start };
   } catch (err) {
@@ -210,6 +281,107 @@ async function fixHooks(projectRoot: string): Promise<void | FixSkipped> {
     // installHooks already printed the warning with the blocks to add by hand.
     return { skipped: `shared hooks directory (${result.sharedScope} core.hooksPath); ctxo does not write there, add the blocks by hand` };
   }
+}
+
+/**
+ * Installs the bundled skills on every skill platform that expects them: one ctxo skill is already
+ * there, or the platform's rules block is pre-tier or compact. A deliberate opt-out expects none. A
+ * platform that fails does not stop the next one.
+ *
+ * The `installSkills` warnings are reported, not dropped. A skill left in place because a newer ctxo
+ * wrote it is fine, so its warning is a warning line under the success line. Any other warning (a skill
+ * path that cannot be read, such as a directory) leaves the skill missing, so it fails the attempt, as
+ * does an error, `<platform>: <error>`; the failure lists the warning lines too.
+ */
+async function fixSkills(projectRoot: string): Promise<void | FixSkipped | FixWarned> {
+  const platforms = SKILL_PLATFORMS.filter((id) => skillsExpected(projectRoot, id));
+  if (platforms.length === 0) return { skipped: 'no platform expects the ctxo skills' };
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  for (const id of platforms) {
+    try {
+      const { problems, notices } = skillInstallWarnings(projectRoot, id, installSkills(projectRoot, id));
+      errors.push(...problems);
+      warnings.push(...notices);
+    } catch (err) {
+      errors.push(`${id}: ${(err as Error).message}`);
+    }
+  }
+  if (errors.length > 0) throw new Error([...errors, ...warnings].join('; '));
+  if (warnings.length > 0) return { warnings };
+}
+
+/**
+ * The failure for an unreadable `.claude/settings.json`. Unlike the `ensureClaudeHook` warning (shared
+ * with init), it names one next step: the same `--fix` run that installs the guard renders the tier.
+ */
+const UNREADABLE_SETTINGS_FAILURE =
+  '.claude/settings.json is not valid JSON or not a settings object; left unchanged. Fix it, then run "ctxo doctor --fix".';
+
+/**
+ * Registers the safe-edit guard when CLAUDE.md expects it and the gate is enabled. An unreadable
+ * `.claude/settings.json` is never written; it fails the attempt only when the guard is expected, since
+ * a user who opted out expects nothing there (final review M4).
+ */
+async function fixClaudeGuardHook(projectRoot: string): Promise<void | FixSkipped> {
+  const state = readClaudeGuardState(projectRoot);
+  if (state === 'present') return { skipped: 'already registered' };
+  if (!guardExpected(projectRoot)) {
+    return { skipped: 'not expected: CLAUDE.md records an opt-out or has no ctxo block, or gate.enabled is false' };
+  }
+  if (state === 'unreadable') throw new Error(UNREADABLE_SETTINGS_FAILURE);
+  const result = ensureClaudeHook(projectRoot);
+  if (result.warning) throw new Error(result.warning);
+}
+
+/**
+ * Re-renders each rules file's ctxo block in the tier the disk supports now, so it follows the skills
+ * and guard installed earlier in the run. A block from a newer ctxo is left alone (D2). A damaged file
+ * (a start marker without an end marker, or an end marker without a start marker) is passed on too,
+ * so the writer's warning fails the attempt instead of being lost; the writer leaves it unchanged (D8).
+ *
+ * A file is held while `rulesFileHoldReasons` (the rule `ctxo init` uses too, under every linked name
+ * of the file) finds a reason, and the hold is reported: as the skip reason when nothing else
+ * rendered, otherwise as a warning line under the success line. A held file still reports a damaged
+ * block (from a dry run, which writes nothing).
+ */
+async function fixAiRules(projectRoot: string): Promise<void | FixSkipped | FixWarned> {
+  const warnings: string[] = [];
+  const holds: string[] = [];
+  let rendered = 0;
+  for (const state of readRulesStates(projectRoot)) {
+    const first = state.scan.blocks[0];
+    const damaged = state.scan.unterminated || state.scan.orphanEnd;
+    const renderable = first ? classifyRulesBlock(first).state !== 'newer' : damaged;
+    if (!renderable) continue;
+    const reasons = rulesFileHoldReasons(projectRoot, state.platformId);
+    if (reasons) {
+      holds.push(holdMessage(state.file, reasons));
+      const probe = installRules(projectRoot, state.platformId, { dryRun: true });
+      if (probe.warning) warnings.push(probe.warning);
+      continue;
+    }
+    rendered += 1;
+    const result = installRules(projectRoot, state.platformId, { tier: resolveRulesTier(projectRoot, state.platformId) });
+    if (result.warning) warnings.push(result.warning);
+  }
+  if (warnings.length > 0) throw new Error([...warnings, ...holds].join('; '));
+  if (rendered === 0) return { skipped: holds.length > 0 ? holds.join('; ') : 'no ctxo rules block to re-render' };
+  if (holds.length > 0) return { warnings: holds };
+}
+
+/**
+ * The hold line for a rules file `rulesHoldReasons` keeps back, read from disk after the Skills and
+ * Claude guard hook steps, whatever stopped them (a failed write, a partial install, an error).
+ */
+function holdMessage(file: string, reasons: RulesHoldReasons): string {
+  const why: string[] = [];
+  if (reasons.guard === 'unreadable') why.push('.claude/settings.json is unreadable');
+  if (reasons.guard === 'absent') why.push('the safe-edit guard is not registered');
+  if (reasons.missingSkills) why.push(`ctxo skills are missing (${reasons.missingSkills.join(', ')})`);
+  if (reasons.outdatedSkills) why.push(`ctxo skills are outdated (${reasons.outdatedSkills.join(', ')})`);
+  if (reasons.skillsError !== undefined) why.push(`the ctxo skills cannot be checked (${reasons.skillsError})`);
+  return `${file} left unchanged while ${why.join(' and ')}`;
 }
 
 function hasMissingPlugins(projectRoot: string): boolean {
@@ -327,6 +499,7 @@ function writeLog(
       const dur = a.durationMs != null ? ` (${a.durationMs}ms)` : '';
       const err = a.error ? ` — ${a.error}` : '';
       lines.push(`- [${a.status}] ${a.name}: ${a.action}${dur}${err}`);
+      for (const warning of a.warnings ?? []) lines.push(`  - warning: ${warning}`);
     }
     lines.push('');
     appendFileSync(path, lines.join('\n'));
@@ -343,6 +516,7 @@ export function formatFixReport(report: FixReport): string {
     const dur = a.durationMs != null ? ` (${a.durationMs}ms)` : '';
     const err = a.error ? ` — ${a.error}` : '';
     lines.push(`  ${icon} ${a.name}: ${a.action}${dur}${err}`);
+    for (const warning of a.warnings ?? []) lines.push(`      ⚠ ${warning}`);
   }
   if (report.halted && report.reason) {
     lines.push(`  ! halted: ${report.reason}`);

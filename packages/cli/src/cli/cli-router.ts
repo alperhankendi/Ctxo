@@ -5,6 +5,7 @@ import { SyncCommand } from './sync-command.js';
 import { StatusCommand } from './status-command.js';
 import { VerifyCommand } from './verify-command.js';
 import { InitCommand } from './init-command.js';
+import { INIT_PARTS, parseInitParts, type InitPart } from './init-parts.js';
 import { WatchCommand } from './watch-command.js';
 import { StatsCommand } from './stats-command.js';
 import { DoctorCommand } from './doctor-command.js';
@@ -23,6 +24,50 @@ function parsePositiveInteger(value: string | undefined): number | undefined {
   if (value === undefined || !/^\d+$/.test(value)) return undefined;
   const parsed = Number(value);
   return Number.isSafeInteger(parsed) && parsed >= 1 ? parsed : undefined;
+}
+
+interface InitPartsFlag {
+  /** The flag appears on the line, with or without a usable value. */
+  readonly present: boolean;
+  readonly parts: InitPart[];
+  /** The message to print before exiting 1, when the value is missing or names a part that does not exist. */
+  readonly error?: string;
+}
+
+/**
+ * Read `--only` or `--skip` from `ctxo init` arguments: `--only a,b`, `--only=a,b`, repeated as often as
+ * the user likes (the parts are merged). The value must be present. In the two-token spelling a next
+ * token that starts with `-` is a flag (`--dry-run`, `-y`), which ends the list before it began; in the
+ * `=` spelling the value is taken as written, so `--only=-y` names an unknown part.
+ */
+function readInitPartsFlag(args: readonly string[], flag: '--only' | '--skip'): InitPartsFlag {
+  const validParts = INIT_PARTS.join(', ');
+  const missing = `[ctxo] ${flag} requires a comma-separated list of parts: ${validParts}`;
+  const values: string[] = [];
+  let present = false;
+  for (let i = 1; i < args.length; i++) {
+    const arg = args[i]!;
+    let value: string | undefined;
+    let flagToken = false;
+    if (arg === flag) {
+      present = true;
+      value = args[i + 1];
+      flagToken = value?.startsWith('-') === true;
+      i += 1;
+    } else if (arg.startsWith(`${flag}=`)) {
+      present = true;
+      value = arg.slice(flag.length + 1);
+    } else {
+      continue;
+    }
+    if (!value || flagToken) return { present, parts: [], error: missing };
+    values.push(value);
+  }
+  const { parts, unknown } = parseInitParts(values.join(','));
+  if (unknown.length > 0) {
+    return { present, parts, error: `[ctxo] Unknown init part: ${unknown[0]}. Valid parts: ${validParts}` };
+  }
+  return { present, parts };
 }
 
 export function getVersion(): string {
@@ -201,8 +246,29 @@ export class CliRouter {
         const rulesOnly = args.includes('--rules');
         const dryRun = args.includes('--dry-run');
         const noInstall = args.includes('--no-install');
+        const noGuard = args.includes('--no-guard');
         const tools = toolsArg ? toolsArg.split(',').map(t => t.trim()) : undefined;
-        await new InitCommand(this.projectRoot).run({ tools, yes: yesArg, rulesOnly, dryRun, noInstall });
+        // Everything is checked before InitCommand exists, so a bad flag never starts an init. --only is
+        // exact, so it cannot be mixed with the narrowing flags (--skip, --rules); --no-guard combines with all.
+        const only = readInitPartsFlag(args, '--only');
+        const skip = readInitPartsFlag(args, '--skip');
+        const partsError = only.error ?? skip.error
+          ?? (only.present && (skip.present || rulesOnly) ? '[ctxo] --only cannot be combined with --skip or --rules' : undefined);
+        if (partsError) {
+          console.error(partsError);
+          process.exit(1);
+          return;
+        }
+        await new InitCommand(this.projectRoot).run({
+          tools,
+          yes: yesArg,
+          rulesOnly,
+          dryRun,
+          noInstall,
+          only: only.present ? only.parts : undefined,
+          skip: skip.present ? skip.parts : undefined,
+          noGuard,
+        });
         break;
       }
 
@@ -375,13 +441,16 @@ Usage:
   ctxo watch                Start file watcher for incremental re-indexing
   ctxo verify-index         CI gate: fail if index is stale
   ctxo status               Show index manifest
-  ctxo init                 Interactive setup (tools, rules, hooks); the post-commit hook runs ctxo index --commit HEAD
-  ctxo init --rules         Regenerate AI tool rules only
-  ctxo init --tools a,b -y  Non-interactive (claude-code,cursor,...)
-  ctxo init --dry-run       Preview what would be created
+  ctxo init                 Interactive setup (rules, skills, guard, MCP, git hooks, config); the post-commit hook runs ctxo index --commit HEAD
+  ctxo init --tools a,b -y  Non-interactive (claude-code,cursor,...); -y without --tools selects every tool
+  ctxo init --only <parts>  Install only these parts: rules,skills,guard,mcp,git-hooks,config
+  ctxo init --skip <parts>  Install everything except these parts
+  ctxo init --no-guard      Does not install the Claude Code safe-edit guard
+  ctxo init --rules         Deprecated: same as --skip git-hooks,guard
+  ctxo init --dry-run       List every file init would create or change
   ctxo stats                Show usage statistics (--json, --days N, --clear)
   ctxo doctor               Health check all subsystems (--json, --quiet)
-  ctxo doctor --fix         Apply fixes in dependency order, such as upgrading the post-commit hook (--dry-run, --yes)
+  ctxo doctor --fix         Apply fixes in dependency order: config, git hooks, skills, the safe-edit guard, rules blocks, plugins, index (--dry-run, --yes)
   ctxo visualize            Generate interactive dependency graph HTML
   ctxo visualize --max-nodes N   Limit to top N symbols by PageRank
   ctxo visualize --output PATH   Write HTML to custom path

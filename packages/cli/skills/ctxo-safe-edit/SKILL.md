@@ -13,3 +13,5 @@ Before changing a symbol, in order - do NOT skip:
 4. After editing, re-check the dependents from step 1.
 
 A deterministic guard may block the first edit of a high-impact symbol until you have run get_blast_radius. That is expected - run it, then re-issue the edit.
+
+<!-- ctxo-skill v0.13 -->

@@ -505,3 +505,203 @@ describe('cli-router subcommand --help and -h', () => {
     expect(constructed).toEqual(['SyncCommand']);
   });
 });
+
+describe('cli-router init parts flags', () => {
+  let initRuns: Array<Record<string, unknown>>;
+  let initConstructed: number;
+  let errorSpy: MockInstance<typeof console.error>;
+  let exitSpy: MockInstance<typeof process.exit>;
+
+  beforeEach(async () => {
+    initRuns = [];
+    initConstructed = 0;
+    // Replace InitCommand first: a flag that slips through validation must never run a real init in this repo.
+    // Must be constructible (see the update test above), hence a function expression.
+    const original = await import('../init-command.js');
+    vi.spyOn(original, 'InitCommand' as any).mockImplementation(
+      function (this: unknown) {
+        initConstructed += 1;
+        return {
+          run: async (options: Record<string, unknown>) => { initRuns.push(options); },
+        };
+      } as any,
+    );
+    errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  async function route(...args: string[]): Promise<void> {
+    await new CliRouter(process.cwd()).route(['init', ...args]);
+  }
+
+  function printed(): string {
+    return errorSpy.mock.calls.map((args) => String(args[0])).join('\n');
+  }
+
+  it('passes --only, --skip and --no-guard to InitCommand.run', async () => {
+    await route('--tools', 'claude-code', '--only', 'rules,skills,guard', '-y');
+    await route('--skip', 'git-hooks', '--no-guard');
+
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(initRuns).toHaveLength(2);
+    expect(initRuns[0]).toMatchObject({ tools: ['claude-code'], yes: true, only: ['rules', 'skills', 'guard'] });
+    expect(initRuns[0]!['skip']).toBeUndefined();
+    expect(initRuns[0]!['noGuard']).toBe(false);
+    expect(initRuns[1]).toMatchObject({ skip: ['git-hooks'], noGuard: true });
+    expect(initRuns[1]!['only']).toBeUndefined();
+  });
+
+  it('leaves the part options unset when the flags are absent', async () => {
+    await route('--tools', 'cursor', '--dry-run', '--no-install');
+
+    expect(initRuns).toHaveLength(1);
+    expect(initRuns[0]).toMatchObject({ tools: ['cursor'], dryRun: true, noInstall: true, rulesOnly: false, noGuard: false });
+    expect(initRuns[0]!['only']).toBeUndefined();
+    expect(initRuns[0]!['skip']).toBeUndefined();
+  });
+
+  it('keeps --rules as the rulesOnly option', async () => {
+    await route('--rules', '--skip', 'config');
+
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(initRuns[0]).toMatchObject({ rulesOnly: true, skip: ['config'] });
+  });
+
+  it('accepts the --only=<parts> and --skip=<parts> spellings and repeated flags', async () => {
+    await route('--only=rules, skills');
+    await route('--skip', 'mcp', '--skip=config,mcp');
+
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(initRuns[0]).toMatchObject({ only: ['rules', 'skills'] });
+    expect(initRuns[1]).toMatchObject({ skip: ['mcp', 'config'] });
+  });
+
+  it('passes an empty selection through for InitCommand to report', async () => {
+    await route('--only', ',');
+
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(initRuns[0]).toMatchObject({ only: [] });
+  });
+
+  it('rejects an unknown init part before constructing InitCommand', async () => {
+    await route('--only', 'rules,hooks');
+
+    expect(errorSpy).toHaveBeenCalledWith(
+      '[ctxo] Unknown init part: hooks. Valid parts: rules, skills, guard, mcp, git-hooks, config',
+    );
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(initConstructed).toBe(0);
+  });
+
+  it('rejects an unknown part given to --skip', async () => {
+    await route('--skip', 'domain');
+
+    expect(errorSpy).toHaveBeenCalledWith(
+      '[ctxo] Unknown init part: domain. Valid parts: rules, skills, guard, mcp, git-hooks, config',
+    );
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(initConstructed).toBe(0);
+  });
+
+  it.each([
+    [['--only', 'rules', '--skip', 'skills']],
+    [['--only', 'rules', '--rules']],
+    [['--rules', '--only', 'rules']],
+    [['--skip', 'skills', '--only', 'rules']],
+  ])('rejects --only combined with --skip or --rules: %j', async (args) => {
+    await route(...args);
+
+    expect(errorSpy).toHaveBeenCalledWith('[ctxo] --only cannot be combined with --skip or --rules');
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(initConstructed).toBe(0);
+  });
+
+  it('allows --only together with --no-guard', async () => {
+    await route('--only', 'rules,guard', '--no-guard');
+
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(initRuns[0]).toMatchObject({ only: ['rules', 'guard'], noGuard: true });
+  });
+
+  it.each(['--only', '--skip'])('rejects %s without a value', async (flag) => {
+    const message = `[ctxo] ${flag} requires a comma-separated list of parts: rules, skills, guard, mcp, git-hooks, config`;
+
+    await route(flag);
+    expect(errorSpy).toHaveBeenLastCalledWith(message);
+
+    await route(flag, '--dry-run');
+    expect(errorSpy).toHaveBeenLastCalledWith(message);
+
+    await route(flag, '');
+    expect(errorSpy).toHaveBeenLastCalledWith(message);
+
+    expect(exitSpy).toHaveBeenCalledTimes(3);
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(initConstructed).toBe(0);
+  });
+
+  it.each(['--only', '--skip'])('%s followed by a flag token such as -y has no value', async (flag) => {
+    const message = `[ctxo] ${flag} requires a comma-separated list of parts: rules, skills, guard, mcp, git-hooks, config`;
+
+    await route(flag, '-y');
+    expect(errorSpy).toHaveBeenLastCalledWith(message);
+    expect(printed()).not.toContain('Unknown init part');
+
+    await route('--tools', 'claude-code', flag, '-y', 'rules');
+    expect(errorSpy).toHaveBeenLastCalledWith(message);
+
+    expect(exitSpy).toHaveBeenCalledTimes(2);
+    expect(initConstructed).toBe(0);
+  });
+
+  it('handles the = spelling edges: an empty value, a comma-only value and an attached dash', async () => {
+    const missing = (flag: string): string =>
+      `[ctxo] ${flag} requires a comma-separated list of parts: rules, skills, guard, mcp, git-hooks, config`;
+
+    await route('--only=');
+    expect(errorSpy).toHaveBeenLastCalledWith(missing('--only'));
+    await route('--skip=');
+    expect(errorSpy).toHaveBeenLastCalledWith(missing('--skip'));
+    await route('--only=-y');
+    expect(errorSpy).toHaveBeenLastCalledWith('[ctxo] Unknown init part: -y. Valid parts: rules, skills, guard, mcp, git-hooks, config');
+    expect(exitSpy).toHaveBeenCalledTimes(3);
+    expect(initConstructed).toBe(0);
+
+    await route('--only=,');
+    await route('--only=rules', '--only', 'skills,rules');
+    expect(exitSpy).toHaveBeenCalledTimes(3);
+    expect(initRuns).toEqual([expect.objectContaining({ only: [] }), expect.objectContaining({ only: ['rules', 'skills'] })]);
+  });
+
+  it('help lists --only, --skip and --no-guard and marks --rules deprecated', async () => {
+    await route('--help');
+
+    const help = printed();
+    expect(help).toContain('ctxo init --only <parts>  Install only these parts: rules,skills,guard,mcp,git-hooks,config');
+    expect(help).toContain('ctxo init --skip <parts>  Install everything except these parts');
+    expect(help).toContain('ctxo init --no-guard      Does not install the Claude Code safe-edit guard');
+    expect(help).not.toContain('rules use the full block');
+    expect(help).toContain('ctxo init --rules         Deprecated: same as --skip git-hooks,guard');
+    expect(help).toContain('ctxo init --dry-run       List every file init would create or change');
+    expect(initConstructed).toBe(0);
+  });
+
+  it('help names the agent-setup remediation on the doctor --fix line', async () => {
+    await route('--help');
+
+    expect(printed()).toContain(
+      'ctxo doctor --fix         Apply fixes in dependency order: config, git hooks, skills, the safe-edit guard, rules blocks, plugins, index (--dry-run, --yes)',
+    );
+    expect(printed()).toContain('ctxo init --tools a,b -y  Non-interactive (claude-code,cursor,...); -y without --tools selects every tool');
+  });
+
+  it('help keeps the post-commit hook wording on the ctxo init line', async () => {
+    await route('--help');
+
+    expect(printed()).toMatch(/ctxo init {17}Interactive setup \(rules, skills, guard, MCP, git hooks, config\)[^\n]*post-commit hook runs ctxo index --commit HEAD/);
+  });
+});

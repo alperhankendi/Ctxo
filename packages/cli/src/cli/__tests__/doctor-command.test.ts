@@ -117,6 +117,15 @@ describe('DoctorCommand', () => {
     expect(hooks.status).not.toBe('fail');
   });
 
+  it('doctor registers ai_rules, skills, claude_guard_hook and git_hooks', async () => {
+    await new DoctorCommand(tempDir).run({ json: true });
+
+    const parsed = JSON.parse(stdoutSpy.mock.calls.map(c => c[0]).join(''));
+    const names = parsed.checks.map((c: { name: string }) => c.name);
+    expect(names).toEqual(expect.arrayContaining(['ai_rules', 'skills', 'claude_guard_hook', 'git_hooks']));
+    expect(names.indexOf('ai_rules')).toBe(names.indexOf('git_hooks') + 1);
+  });
+
   it('outputs quiet format with --quiet flag', async () => {
     setupHealthyProject();
     await seedValidDb();

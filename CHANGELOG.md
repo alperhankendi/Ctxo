@@ -136,6 +136,35 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo with five packages. Per-packag
   annotation to count as a test.
 - ADR-017: plugin protocol v2, data coupling and facts, and the `@ctxo/sql-extract` dependency
   exception. Feature doc: `docs/features/domain-knowledge.md`.
+- **Tiered agent rules (#159).** Claude Code gets a compact 4-line ctxo block in `CLAUDE.md` when the
+  safe-edit guard hook, all three skills and an enabled gate are in place; every other client, and
+  Claude Code without them, gets the full block. The tier is chosen from what is on disk after the
+  skills and guard are installed. A rules file several clients share (an `AGENTS.md` or `GEMINI.md`
+  linked to `CLAUDE.md`) gets the full block and settles in one run.
+- **Versioned rules markers (#159).** Blocks sit between `<!-- ctxo-rules-start v<version> -->` and
+  `<!-- ctxo-rules-end -->` (the rules template version) and are replaced in place, together with
+  unversioned blocks and the old unmarked body. A block from a newer ctxo, a start marker without
+  an end marker, or an end marker without a start marker leaves the file unchanged with a warning.
+- **Formatter-stable rules and skills (#159).** The blocks and the bundled skills are written in
+  Prettier's layout and compared with formatting ignored (line endings, BOM, trailing whitespace,
+  blank lines, table padding, line wrapping), so a markdown formatter and ctxo never rewrite each
+  other, and a formatted compact block no longer reads as an opt-out.
+- **Versioned skills (#159).** Each bundled skill ends with `<!-- ctxo-skill v<version> -->`. A skill
+  from a newer ctxo is left alone with a warning and is not reported as outdated.
+- **No silent opt-out (#159).** `ctxo init` (including `--only rules`, `--rules` and the dry run) and
+  `ctxo doctor --fix` leave a pre-tier or compact block unchanged while the guard or skills it
+  expects are missing and not declined, and say so: `left unchanged until the guard and skills are
+  installed; run "ctxo init --only rules,skills,guard" or "ctxo doctor --fix"`.
+- **Init parts (#159).** `ctxo init --only <parts>`, `--skip <parts>` and `--no-guard` over the parts
+  `rules`, `skills`, `guard`, `mcp`, `git-hooks` and `config`, run in one order for the interactive,
+  non-interactive and dry-run paths. `--only` cannot be combined with `--skip` or `--rules`.
+- `ctxo init --dry-run` lists every file init would create or change, with `would create`,
+  `would update` or `unchanged`, and writes nothing (#159).
+- Doctor checks `ai_rules`, `skills` and `claude_guard_hook` (#159). `ctxo doctor --fix` installs
+  missing or outdated skills and the guard, then re-renders the rules blocks in the tier that now
+  applies. It installs nothing the user declined, never writes an unreadable `.claude/settings.json`,
+  and holds the `CLAUDE.md` block until the guard and skills are in place.
+- ADR-015 amendment: tiered rules (#159).
 
 ### Changed
 
@@ -196,6 +225,21 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo with five packages. Per-packag
   `dotnet exec --fx-version` on .NET 8, 9 and 10 (#156).
 - The MCP descriptions of `get_blast_radius` (tiers by edge kind, every symbol kind), `find_dead_code`
   (`.sql` symbols) and `get_architectural_overlay` (data lists) match what the tools do (#156).
+- The full rules block opens with a narrowed rule: "For structural questions (dependencies, impact,
+  history), use ctxo tools first; reading a file to see its contents needs no index call." Step 3
+  reads "Only then edit the source", and the block has no em dashes (#159).
+- `ctxo-understand` carries a question-to-tool selection guide for all 14 tools, and its description
+  no longer tells the agent to call ctxo before reading source (#159).
+- `ctxo init -y` without `--tools` sets up all nine AI tools, the same set `--dry-run` previews; it
+  used to select none (#159).
+- `ctxo init --rules` is deprecated: it now means `--skip git-hooks,guard`, still skips the plugin
+  step, and prints a notice (#159).
+- Rules files that init used to overwrite whole (`.cursor/rules/ctxo.mdc`, `AGENTS.md`,
+  `.github/copilot-instructions.md` and the rest) keep the user's content outside the ctxo block
+  (#159).
+- `ctxo doctor --fix` replaces an edited ctxo skill with the bundled copy; copy a customised skill
+  under another name (#159).
+- Init output drops the em dash: `[ctxo] ✓ <file> (<created|updated|unchanged>)` (#159).
 
 ### Fixed
 
@@ -243,6 +287,15 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo with five packages. Per-packag
   found the symbol but no dependents or importers. `get_logic_slice` now walks a 2-part procedure's
   dependencies (each copy's full ID keeps its own body), and `get_why_context` reads the winner's
   file for a 2-part ID (#156).
+- A new `CLAUDE.md` (or `GEMINI.md`) was written without markers, so the next `ctxo init` appended a
+  second ctxo block (#159).
+- Rules files written in create mode always reported `updated`, even when nothing changed (#159).
+- A corrupt or oddly shaped `.claude/settings.json` (invalid JSON, `null`, an array, `PreToolUse`
+  as an object) was overwritten or crashed `ctxo init`. It is now left unchanged with a warning, and
+  `ctxo doctor` reports it (#159).
+- An MCP config whose root or server map is not an object crashed `ctxo init` (a string
+  `mcpServers`) or was written back without the ctxo entry (an array root). It is now treated like
+  corrupt MCP JSON and overwritten (#159).
 
 ### Compatibility
 

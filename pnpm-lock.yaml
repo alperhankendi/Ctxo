@@ -93,6 +93,9 @@ importers:
       eslint:
         specifier: ^10.6.0
         version: 10.13.0
+      prettier:
+        specifier: 2.8.8
+        version: 2.8.8
       tsup:
         specifier: ^8.4.0
         version: 8.5.1(postcss@8.5.31)(tsx@4.23.15)(typescript@6.0.3)(yaml@2.9.1)

@@ -43,9 +43,11 @@ Drop this into `.gemini/settings.json`:
 Same schema as Claude Code and Cursor. Add `"env": { "DEBUG": "ctxo:*" }` if
 you need stderr logging.
 
-The matching rules file is `GEMINI.md`. `ctxo init` appends a marked block
-between `<!-- ctxo-rules-start -->` / `<!-- ctxo-rules-end -->` so subsequent
-re-runs replace just that block without touching the rest of your file.
+The matching rules file is `GEMINI.md`. `ctxo init` writes a marked block
+between `<!-- ctxo-rules-start v<version> -->` / `<!-- ctxo-rules-end -->` so
+subsequent re-runs replace just that block without touching the rest of your
+file. Gemini CLI gets the full rules block, and so does a `GEMINI.md` that is
+a link to `CLAUDE.md` (ctxo treats the two names as one file).
 
 ## Verify
 
