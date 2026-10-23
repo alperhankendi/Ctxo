@@ -30,6 +30,7 @@ const drift: DriftEventsArtifact = {
   commitSha: 'abc1234',
   confidence: 'medium',
   snapshotsAvailable: 3,
+  distinctCommits: 3,
   events: [
     {
       symbolId: 'a.ts::A::function',
@@ -46,6 +47,7 @@ const violations: BoundaryViolationsArtifact = {
   commitSha: 'abc1234',
   confidence: 'high',
   snapshotsAvailable: 7,
+  distinctCommits: 7,
   violations: [
     {
       from: { symbolId: 'a.ts::A::function', communityId: 0, label: 'core' },

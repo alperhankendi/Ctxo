@@ -34,10 +34,11 @@ ctxo doctor [options]
 | Node version | Node >= 20 |
 | Git binary | `git` is on `PATH` |
 | Git repo | cwd is inside a git working tree |
+| Git hooks | The `post-commit` hook has exactly one current ctxo block (v2). Warns when it is missing, outdated (v1) or duplicated. In a shared global or system `core.hooksPath` directory, which ctxo will not write to, the warning says so and the fix is to add the block by hand; a current block added by hand passes. Passes outside a git repository |
 | Index directory | `.ctxo/index/` exists and is readable |
 | Index freshness | JSON index matches source hashes |
 | SQLite cache | `.ctxo/.cache/symbols.db` present and usable |
-| Config file | `.ctxo/config.yaml` is valid YAML and conforms to the schema |
+| Config file | `.ctxo/config.yaml` is valid YAML and conforms to the schema; invalid `index.*` and `cochange.include` / `cochange.exclude` globs are warned about |
 | ts-morph, tree-sitter | Runtime parsers load |
 | Language coverage | Every detected language has a registered plugin |
 | Disk usage | Free space sufficient for the index |
@@ -52,7 +53,7 @@ ctxo doctor [options]
 earlier one fails:
 
 1. **Config** — write a default `.ctxo/config.yaml` if missing or invalid.
-2. **Git hooks** — install `post-commit` and `post-merge` hooks.
+2. **Git hooks** - install or upgrade the `post-commit` and `post-merge` hooks in place (an outdated v1 post-commit block becomes v2, duplicate blocks are collapsed). A shared global or system `core.hooksPath` is skipped, not failed: the hook files are left untouched and the blocks to add by hand are printed.
 3. **Language coverage** — run [`ctxo install`](./install.md) for missing plugins.
 4. **Index** — run [`ctxo index`](./index.md) (requires step 3 to have succeeded).
 5. **SQLite cache** — run [`ctxo sync`](./sync.md).

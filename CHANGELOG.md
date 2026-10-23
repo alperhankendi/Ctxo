@@ -49,6 +49,31 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo with five packages. Per-packag
   - Rejects npm version specifiers containing shell metacharacters before passing them to the
     package manager (defence-in-depth against a hostile registry response).
   - Spec: `docs/superpowers/specs/2026-05-15-ctxo-update-design.md`.
+- **Co-change engine (#157).** `ctxo index` builds `co-changes.json` from one `git log` pass with its
+  own window, independent of `--max-history`. New `cochange:` config in `.ctxo/config.yaml`
+  (`maxCommits` 2000 or `all`, `since`, `maxFilesPerCommit` 30, `minShared` 2, `include`, `exclude`)
+  and overrides `ctxo index --cochange-commits <n|all>` and `--cochange-since <duration>`. Merge
+  commits are excluded from the log, commits above `maxFilesPerCommit` are skipped and counted
+  (`massSkipped`), renames are followed, and the applied window is recorded in the file under
+  `window`. `cochange.exclude` also vetoes files added by `cochange.include`.
+- **Incremental indexing (#157).** `ctxo index --files <path...>` and `ctxo index --commit <rev>`
+  re-index part of the index and compute co-change, communities, the snapshot, the drift and
+  boundary artifacts and the SQLite cache from the merged index. `--file` stays as an alias of
+  `--files`.
+- **Post-commit hook v2 (#157).** `# ctxo-start v2` runs `ctxo index --commit HEAD` once per commit,
+  guarded by `[ -d .ctxo ]`. `ctxo init` and `ctxo doctor --fix` upgrade older blocks in place,
+  collapse duplicate blocks, and follow `core.hooksPath`. When `core.hooksPath` comes from the global
+  or system git config (a directory shared by every repository), they write nothing and print the
+  blocks to add by hand. Detecting the scope needs git 2.26 or newer.
+- `git_hooks` doctor check: warns on a missing, outdated or duplicated post-commit block (#157).
+- `get_blast_radius` and `ctxo blast-radius` return `coChangedFiles`: up to 10 files that co-change
+  with the target's file (frequency of at least 0.5) but have no dependency path to it. Informational:
+  not counted in tiers, risk scores or the gate. `coChangeFrequency` is now filled on impacted
+  symbols, and `get_context_for_task` entries that depend on the symbol carry an optional
+  `confidence` tier (#157).
+- `distinctCommits` on `driftSignals`, `boundaryViolations` and their committed artifacts (#157).
+- `ctxo <command> --help` and `-h` print the help for every subcommand without running it (#157).
+- ADR-016: co-change engine, incremental indexing and snapshot policy.
 
 ### Changed
 
@@ -57,6 +82,45 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo with five packages. Per-packag
   exists, tools degrade to prior behaviour (regex overlay, blast radius without cluster breakdown,
   etc.).
 - `response-envelope` truncation whitelist now covers `clusters` and `clustersAffected`.
+- Drift and boundary confidence count distinct commits instead of snapshot files (fewer than 3 is
+  `low`, 3 to 6 `medium`, 7 or more `high`). `snapshotsAvailable` stays for compatibility. The hints
+  no longer suggest `ctxo index --check`, which records no snapshot (#157).
+- History keeps one community snapshot per commit. The first write after upgrading removes older
+  same-commit duplicates from `communities.history/` (this repository went from 11 files to 5);
+  no information is lost (#157).
+- Co-change reaches every blast-radius path: `get_blast_radius`, `get_pr_impact`,
+  `get_context_for_task`, `ctxo blast-radius`, the safe-edit gate hook and `ctxo gate --preview`.
+  The gate counts `confirmed + likely` dependents, so it may fire somewhat more often (#157).
+- A full `ctxo index` uses only the files it discovers and removes index entries of deleted or
+  newly ignored sources, never those of skip-worktree paths (sparse checkout). In a sparse
+  checkout, files outside the cone are absent from the co-change matrix (#157).
+- `intent[]` follows renames, so `ctxo verify-index` reports files with a rename in their history as
+  `STALE` until the next `ctxo index` after upgrading (#157).
+- `ctxo index --max-history` controls per-file intent depth only; the co-change window has its own
+  settings (#157).
+
+### Fixed
+
+- The v1 post-commit hook (`ctxo index --file` per changed file) no longer empties
+  `co-changes.json`: this repository's committed matrix had gone from 1126 entries to 0 (#157).
+- `--file` no longer empties the SQLite cache, builds `boundary-violations.json` from a one-file
+  graph, or stamps the snapshot with the wrong commit SHA (#157).
+- One commit can no longer fill the snapshot history: the v1 hook wrote up to 10 snapshots for one
+  SHA in about 11 s (#157).
+- `ctxo index --help` and `ctxo init --help` ran the command instead of printing help (#157).
+- The post-commit hook could not be upgraded once installed and ignored `core.hooksPath` (#157).
+- A dependent inside the target's own file no longer picks up an unrelated co-change entry when
+  tiering blast radius (#157).
+- Docs, hints and the declined-hooks advice claimed `ctxo index --check` builds snapshot history (#157).
+- A full `ctxo index` dropped source files with non-ASCII names (git prints them quoted), so a
+  full run and a `--commit` run disagreed, `ctxo doctor` listed their entries as orphans and
+  `ctxo doctor --fix` deleted them. `ctxo status` and language detection read the same names (#157).
+- Drift events, boundary violations and god nodes are sorted by code point, not by the machine's
+  locale, so `communities.json` and the artifacts next to it are the same on every machine (#157).
+- With `CTXO_HTTP_PORT` exported, `ctxo <command>` started the HTTP server instead of running, so
+  the post-commit hook (`ctxo index --commit HEAD`) never returned and `git commit` hung. The
+  variable now applies only when `ctxo` runs without arguments; `ctxo --http` without `--port`
+  now listens on its default port 3001 instead of failing on an invalid port (#157).
 
 ## [0.8.0-alpha.0] - 2026-04-13
 

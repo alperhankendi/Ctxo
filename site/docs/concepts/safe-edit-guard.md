@@ -51,7 +51,7 @@ session, the next edit to `buildGraph` goes through without interruption.
 
 Two signals, both must exceed the threshold:
 
-- **Blast radius** - confirmed + likely dependents (counted from the index graph)
+- **Blast radius** - confirmed + likely dependents (counted from the index graph). `likely` includes dependents upgraded by co-change history, so the guard can fire somewhat more often than it would on the graph alone; `ctxo gate --preview` shows the effect
 - **PageRank percentile** - how central the symbol is in the import graph
 
 The `sensitivity` setting in `.ctxo/config.yaml` controls both thresholds:

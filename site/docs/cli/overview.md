@@ -29,8 +29,8 @@ Examples below assume `ctxo` is on your PATH from a global install (or a local `
 | --- | --- |
 | [`ctxo install`](./install.md) | Install language plugins (auto-detects if omitted) |
 | [`ctxo update`](./update.md) | Check the npm registry for newer ctxo releases and apply them |
-| [`ctxo init`](./init.md) | Interactive setup: AI tool rules, git hooks, plugin install |
-| [`ctxo index`](./index.md) | Build the codebase index (symbols, edges, history) |
+| [`ctxo init`](./init.md) | Interactive setup: AI tool rules, git hooks (post-commit runs `ctxo index --commit HEAD`), plugin install |
+| [`ctxo index`](./index.md) | Build the codebase index (symbols, edges, history, co-change); `--files` and `--commit` re-index part of it |
 | [`ctxo watch`](./watch.md) | File watcher for incremental re-indexing |
 | [`ctxo sync`](./sync.md) | Rebuild the SQLite cache from committed JSON |
 | [`ctxo status`](./status.md) | Show index manifest, symbol counts, per-file freshness |
@@ -48,7 +48,7 @@ Examples below assume `ctxo` is on your PATH from a global install (or a local `
 | Flag | Meaning |
 | --- | --- |
 | `--version`, `-v`, `-V` | Print core version. Combine with `--verbose` or `--json` |
-| `--help`, `-h` | Print the bundled help block |
+| `--help`, `-h` | Print the bundled help block. Works after any subcommand (`ctxo index --help`, `ctxo init --help`); the subcommand is not run |
 
 ## Related references
 

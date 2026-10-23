@@ -52,6 +52,14 @@ Language adapters ship as separate npm packages and are discovered by scanning t
 - Finding unused code? -> find_dead_code
 - Safe to delete? -> find_importers
 
+## New: co-change engine, incremental indexing, one snapshot per commit (#157)
+
+- Co-change is built from one `git log` pass with its own window, independent of `--max-history` (which controls per-file intent depth only). Config: `cochange:` in `.ctxo/config.yaml` (maxCommits 2000 or "all", since, maxFilesPerCommit 30, minShared 2, include, exclude). Overrides: `ctxo index --cochange-commits <n|all>`, `--cochange-since <duration>`. Merge commits are excluded; commits above `maxFilesPerCommit` are skipped and counted (`massSkipped`); renames are followed.
+- Every blast-radius path uses co-change: get_blast_radius, get_pr_impact, get_context_for_task, `ctxo blast-radius`, the safe-edit gate hook and `ctxo gate --preview`. `likely` includes co-change-upgraded dependents, `coChangeFrequency` is filled, and get_blast_radius adds `coChangedFiles` (up to 10 files, informational). The gate may fire somewhat more often.
+- Incremental indexing: `ctxo index --files <path...>` (alias `--file`) and `ctxo index --commit <rev>` re-index part of the index and recompute everything global from the merged index. The v2 post-commit hook runs `ctxo index --commit HEAD` once per commit, guarded by `[ -d .ctxo ]`. `ctxo init` and `ctxo doctor --fix` upgrade old hook blocks in place and refuse to write into a global or system `core.hooksPath`. New `git_hooks` doctor check.
+- One community snapshot per commit. Drift and boundary confidence count `distinctCommits` (low below 3, medium 3-6, high 7+). `ctxo index --check` records no snapshot.
+- `ctxo <command> --help` prints help and runs nothing.
+
 ## New in v0.8
 
 - **Safe-edit guard** - a PreToolUse hook (Claude Code) that blocks edits to high-impact symbols until the agent checks blast radius. Installed by `ctxo init`. Configure via `gate:` in `.ctxo/config.yaml` (sensitivity: strict|balanced|lenient).

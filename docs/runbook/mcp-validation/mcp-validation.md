@@ -47,7 +47,8 @@ time pnpm --filter @ctxo/cli exec tsx src/index.ts index
 * [ ] Multi-language adapters registered: TsMorphAdapter (.ts/.tsx/.js/.jsx) + GoAdapter (.go) + CSharpAdapter (.cs)
 * [ ] Dynamic extension filter active via `registry.getSupportedExtensions()`
 * [ ] `.ctxo/index/communities.json` produced with fields: `version: 1`, `commitSha`, `modularity`, `communities`, `godNodes`, `edgeQuality`, `crossClusterEdges`
-* [ ] `.ctxo/index/communities.history/<ISO-timestamp>-<shortsha>.json` exists after this run
+* [ ] `.ctxo/index/communities.history/` holds at most one snapshot per commit: it is empty after this run (the first snapshot of the current commit is `communities.json`), and a file `<ISO-timestamp>-<shortsha>.json` appears only after a later run at a new commit. On an index written by an older version, the first write removes older same-commit duplicates (no information is lost)
+* [ ] `.ctxo/index/co-changes.json` exists with a `window` (`maxCommits`, `head`, `commitsScanned`, `commitsUsed`, `massSkipped`, `maxFilesPerCommit`, `minShared`)
 
 **Record metrics:**
 
@@ -227,6 +228,18 @@ Test with a high-impact core type to verify multi-depth traversal, risk scoring,
 * [ ] When ≥ 3 distinct clusters are touched, `multiClusterHint` present with "multi-team review recommended" text
 * [ ] When no snapshot exists (`ctxo index --skip-community`), these fields are omitted (backward compat)
 
+### 5.6b Co-Change Evidence (#157)
+
+**Verify (when `co-changes.json` exists):**
+
+* [ ] A `potential` dependent whose file co-changes with the target's file at `frequency > 0.5` is reported as `likely`, and carries `coChangeFrequency`
+* [ ] `coChangeFrequency` is also present on impacted symbols whose file has a co-change entry with the target's file but did not change tier
+* [ ] `coChangedFiles` (when present) has at most 10 entries, each `{ file, frequency, sharedCommits }` with `frequency >= 0.5`, sorted by frequency then shared commits (descending)
+* [ ] No file in `coChangedFiles` is the target's own file or the file of any impacted symbol (it lists only files with no graph path to the target)
+* [ ] `coChangedFiles` is not counted in `impactScore`, the tier counts or `overallRiskScore`, and the `confidence` and `intent` filters do not change which files are excluded
+* [ ] `coChangedFiles` is omitted when empty, and when `co-changes.json` is missing or invalid (a missing file is silent, an invalid one logs one warning; the tool then behaves as before)
+* [ ] `ctxo blast-radius <symbolId>` returns the same tiers and `coChangedFiles`
+
 ### 5.7 Edge Cases
 
 * [ ] Leaf symbol (no dependents) returns `impactScore: 0`, `confirmedCount: 0`, `likelyCount: 0`, `potentialCount: 0`
@@ -347,9 +360,10 @@ Call again WITHOUT `maxCommits`:
 
 **Verify (when `communities.json` exists):**
 
-* [ ] Response contains `driftSignals` object with `confidence`, `snapshotsAvailable`, and optional `events[]` and `hint`
-* [ ] `confidence`: `low` when `snapshotsAvailable < 3`, `medium` for 3-6, `high` for 7+
-* [ ] On low confidence a `hint` is present pointing to `post-commit` hook or `ctxo index`
+* [ ] Response contains `driftSignals` object with `confidence`, `distinctCommits`, `snapshotsAvailable`, and optional `events[]` and `hint`
+* [ ] `confidence`: `low` when `distinctCommits < 3`, `medium` for 3-6, `high` for 7+ (`distinctCommits` counts different commits in `communities.history/` other than the current one; `snapshotsAvailable` is kept for compatibility and does not drive confidence)
+* [ ] Running `ctxo index` several times on one commit does not raise `distinctCommits` or `confidence`, and reports no drift against the same commit
+* [ ] On low confidence a `hint` is present pointing to the `post-commit` hook (`ctxo init`) or `ctxo index` after commits, and says `ctxo index --check` records no snapshot
 * [ ] After running `ctxo index` twice with a symbol moving clusters (e.g., touching imports), `events[]` contains an entry for that symbol with `movedFrom.label` ≠ `movedTo.label`
 * [ ] When no `communities.json` exists, `driftSignals` field is omitted from the response
 
@@ -539,6 +553,7 @@ Call with `{ symbolId: "...", taskType: "extend" }`:
 
 * [ ] Interfaces and type definitions score highest
 * [ ] `reason` contains "type/interface" for relevant entries
+* [ ] Entries that depend on the symbol (`reason` contains "blast radius dependent") carry `confidence` (`confirmed`, `likely` or `potential`); dependencies and type entries do not. A `potential` dependent whose file co-changes with the symbol's file (frequency above 0.5) shows as `likely`, and the ranking and `reason` strings are the same as without co-change
 
 ### 10.5 Token Budget
 
@@ -1170,6 +1185,11 @@ data.entries.slice(0, 5).forEach(e => console.log('  ' + e.file1 + ' <-> ' + e.f
 * [ ] `frequency` values between 0.1 and 1.0
 * [ ] `sharedCommits` >= 2 for all entries
 * [ ] Pairs sorted by frequency descending
+* [ ] `window` records `maxCommits`, `since` (when set), `head`, `commitsScanned`, `commitsUsed`, `massSkipped`, `maxFilesPerCommit`, `minShared`
+* [ ] `ctxo index --commit HEAD` and `ctxo index --files <path>` keep every entry (the matrix equals a full run's for the same HEAD) and do not rewrite the file when nothing changed
+* [ ] `ctxo index --max-history N` does not change the matrix (the co-change window is `cochange.*` / `--cochange-commits` / `--cochange-since`)
+* [ ] Merge commits are not in the log (they are in no count), and commits above `maxFilesPerCommit` are skipped and counted in `massSkipped`
+* [ ] After a rename, the new path keeps its co-change pairs and its `intent[]` history
 
 ### 18.2 Co-Change Blast Radius Boost
 
@@ -1179,6 +1199,8 @@ data.entries.slice(0, 5).forEach(e => console.log('  ' + e.file1 + ' <-> ' + e.f
 * [ ] Imports-only entries with co-change > 0.5 upgraded from `potential` → `likely`
 * [ ] `confirmed` entries NOT affected by co-change (no downgrade)
 * [ ] Entries without co-change data have `coChangeFrequency: undefined`
+* [ ] Every blast-radius path sees the same matrix: `get_blast_radius`, `get_pr_impact`, `get_context_for_task`, `ctxo blast-radius`, `ctxo gate --preview` and the gate hook (the gate counts `confirmed + likely`, so it may fire somewhat more often)
+* [ ] `get_blast_radius` returns `coChangedFiles` as in Step 5.6b
 
 ***
 
@@ -1211,7 +1233,7 @@ const { handleGetPrImpact } = require('./packages/cli/src/adapters/mcp/get-pr-im
 
 * [ ] `boundaryViolations` present when `communities.json` exists. Shape:
   * `violations[]` each with `from`, `to`, `edgeKind`, `historicalEdgesBetweenClusters`, `severity` (`high` | `medium`)
-  * `confidence` (`low` when `snapshotsAvailable < 3`), `snapshotsAvailable`, optional `hint`
+  * `confidence` (`low` when `distinctCommits < 3`, `medium` for 3-6, `high` for 7+; boundary evidence needs at least 2 distinct commits), `distinctCommits`, `snapshotsAvailable` (kept for compatibility), optional `hint`
 * [ ] Violations only include edges where at least one endpoint is a PR-changed symbol
 * [ ] `severity: "high"` entries satisfy `historicalEdgesBetweenClusters === 0`
 * [ ] `clustersAffected[]` present — each entry has `id`, `label`, `symbolCount`; sorted by `symbolCount` desc
@@ -1797,6 +1819,8 @@ After completing all steps, fill in:
 | 19  | Co-change matrix generated during indexing                           |           |
 | 19a | Co-change entries filtered (freq >= 0.1, shared >= 2)               |           |
 | 19b | Co-change boost: potential → likely when frequency > 0.5            |           |
+| 19c | `get_blast_radius` - `coChangedFiles` (max 10, informational)       |           |
+| 19d | Drift / boundary confidence counts `distinctCommits`                |           |
 | 20  | `get_pr_impact` — returns risk assessment for changed files         |           |
 | 20a | `get_pr_impact` — riskLevel low/medium/high                         |           |
 | 20b | `get_pr_impact` — coChangedWith array per file                      |           |

@@ -58,7 +58,18 @@ Filter to high-confidence only:
       "kind": "function",
       "confidence": "confirmed",
       "riskScore": 0.91
+    },
+    {
+      "symbolId": "packages/cli/src/cli/sync-command.ts::SyncCommand::class",
+      "name": "SyncCommand",
+      "kind": "class",
+      "confidence": "likely",
+      "riskScore": 0.62,
+      "coChangeFrequency": 0.78
     }
+  ],
+  "coChangedFiles": [
+    { "file": "packages/cli/src/adapters/storage/schema-manager.ts", "frequency": 0.71, "sharedCommits": 9 }
   ],
   "byCluster": {
     "packages/cli/src/adapters/storage": 12,
@@ -77,6 +88,20 @@ If the symbol is missing from the index:
 ```json
 { "found": false, "hint": "Symbol not found. Run \"ctxo index\" to build the codebase index." }
 ```
+
+### Co-change evidence
+
+When `.ctxo/index/co-changes.json` exists, the response uses git history in two ways. Both come from the same co-change matrix that `get_pr_impact`, `get_context_for_task`, `ctxo blast-radius` and the safe-edit guard read.
+
+| Field | When present | Meaning |
+| :--- | :--- | :--- |
+| `impactedSymbols[].confidence: "likely"` | A `potential` dependent whose file co-changes with the target's file at a frequency above 0.5 | Promoted from `potential` to `likely` |
+| `impactedSymbols[].coChangeFrequency` | The dependent's file has a co-change entry with the target's file | The pair's frequency (`shared commits / min(commits of A, commits of B)`), whether or not it changed the tier |
+| `coChangedFiles` | At least one file co-changes with the target's file at `frequency >= 0.5` and has no dependency path to the target. Omitted when empty or when there is no matrix | Up to 10 files, strongest first, each with `file`, `frequency` and `sharedCommits`. **Informational**: not counted in the tiers, the risk scores, the impact score or the safe-edit guard, and not affected by the `confidence` or `intent` filters |
+
+Read `coChangedFiles` as "did I forget a file?": it lists the files that historically change together with the target but that the dependency graph cannot reach (a script, a config, a mirror of the same rule). The matrix is built by `ctxo index` from a window of recent commits that is independent of `--max-history`; see [`cochange` in the config reference](/reference/config-schema#cochange).
+
+Because the safe-edit guard counts `confirmed + likely` dependents, a co-change-upgraded dependent counts toward it, so the guard may fire somewhat more often than it did before co-change reached it. `ctxo gate --preview` shows which symbols the current sensitivity would flag.
 
 ### v0.8 cluster fields
 
@@ -118,9 +143,12 @@ broken dependencies. The static graph catches couplings that grep and manual
 reading will miss, especially through re-exports and dynamic dispatch.
 :::
 
-- **Treating `potential` as noise** — the tier comes from git co-change
-  history; two files that always change together are coupled even when the
-  parser sees no edge.
+- **Treating `potential` as noise** - import-only reach may be unused, but a
+  `potential` dependent whose file co-changes with the target's file is
+  promoted to `likely`; two files that always change together are coupled
+  even when the parser sees no call.
+- **Ignoring `coChangedFiles`** - it lists the files the graph cannot reach
+  but history ties to the target. It is informational and capped at 10.
 - **Ignoring `_meta.truncated`** — large impact sets are capped by
   `CTXO_RESPONSE_LIMIT`. If truncated, narrow with `confidence` or `intent`.
 - **Using the symbol name instead of id** — always pass the full

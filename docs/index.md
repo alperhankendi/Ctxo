@@ -27,6 +27,7 @@
 
 - **[features/architectural-intelligence.md](./features/architectural-intelligence.md)** — v0.8 community detection, drift, boundary violations, cluster-scoped blast radius
 - **[architecture/ADR/adr-015-safe-edit-guard.md](./architecture/ADR/adr-015-safe-edit-guard.md)** — ADR-015: safe-edit guard design (PreToolUse hook, skills, layered defense)
+- **[architecture/ADR/adr-016-co-change-engine-and-snapshot-policy.md](./architecture/ADR/adr-016-co-change-engine-and-snapshot-policy.md)** - ADR-016: co-change engine, incremental indexing (`--commit` hook), one snapshot per commit
 
 ## Product & ecosystem
 

@@ -97,6 +97,19 @@ gate:
 | Cursor | no (no blocking pre-edit hook) | yes | yes |
 | Other | no | where supported | yes |
 
+## Fresh on every commit
+
+A stale index is worse than none: the agent trusts a map that no longer matches the code. `ctxo init` installs a post-commit hook that runs `ctxo index --commit HEAD` once per commit. It re-indexes only the files that commit changed, refreshes the co-change matrix from git history, and records one snapshot per commit for the drift and boundary signals.
+
+```shell
+ctxo index --commit HEAD                                 # what the hook runs
+ctxo index --files src/a.ts src/b.ts                     # re-index a few files
+ctxo index --cochange-commits 500 --cochange-since 12m   # co-change window (or `cochange:` in config.yaml)
+ctxo doctor --fix                                        # upgrades an old hook block in place
+```
+
+The file you forget to touch is usually the one no import points at. Files that keep changing together are coupled anyway: `get_blast_radius` promotes a dependent that co-changes with your target from `potential` to `likely`, and lists the files with no dependency path at all as `coChangedFiles`. `ctxo index --max-history` only controls how many commits each file keeps for `get_why_context`; the co-change window has its own settings.
+
 ## Supported Languages
 
 | Language | Plugin | Tier | Notes |

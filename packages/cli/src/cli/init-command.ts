@@ -1,4 +1,4 @@
-import { join } from 'node:path';
+import { isAbsolute, join, relative } from 'node:path';
 import { existsSync, readFileSync, writeFileSync, mkdirSync, chmodSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { PLATFORMS, detectPlatforms, installRules, ensureGitignore, ensureConfig, getMcpConfigTargets, ensureMcpConfig, installSkills, ensureClaudeHook } from './ai-rules.js';
@@ -9,6 +9,16 @@ import {
   type KnownLanguage,
 } from '../core/detection/detect-languages.js';
 import { InstallCommand } from './install-command.js';
+import {
+  POST_COMMIT_CONTENT,
+  POST_MERGE_CONTENT,
+  resolveHooksDir,
+  sharedHooksScope,
+  sharedHooksWarning,
+  upsertCtxoBlock,
+  forwardSlashes,
+  type SharedHooksScope,
+} from './git-hooks.js';
 
 const requireCjs = createRequire(import.meta.url);
 
@@ -30,35 +40,16 @@ function resolveInstalledPlugins(needed: readonly KnownLanguage[]): {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Git hook content                                                   */
-/* ------------------------------------------------------------------ */
-
-const CTXO_START = '# ctxo-start';
-const CTXO_END = '# ctxo-end';
-
-const POST_COMMIT_CONTENT = `
-${CTXO_START}
-# Incremental re-index on commit (only changed files)
-if command -v ctxo >/dev/null 2>&1; then
-  for file in $(git diff --name-only HEAD~1 HEAD 2>/dev/null); do
-    ctxo index --file "$file" 2>/dev/null || true
-  done
-fi
-${CTXO_END}
-`.trim();
-
-const POST_MERGE_CONTENT = `
-${CTXO_START}
-# Rebuild SQLite cache after merge (index updated via git pull)
-if command -v ctxo >/dev/null 2>&1; then
-  ctxo sync 2>/dev/null || true
-fi
-${CTXO_END}
-`.trim();
-
-/* ------------------------------------------------------------------ */
 /*  Options                                                            */
 /* ------------------------------------------------------------------ */
+
+/** Outcome of `InitCommand.installHooks`. Not installing into a shared hooks directory is a normal outcome, not an error. */
+export interface HooksInstallResult {
+  readonly installed: boolean;
+  readonly hooksDir: string;
+  /** Set when `core.hooksPath` comes from the global or system git config, so ctxo left it alone. */
+  readonly sharedScope?: SharedHooksScope;
+}
 
 export interface InitOptions {
   tools?: string[];
@@ -152,11 +143,24 @@ export class InitCommand {
     this.projectRoot = projectRoot;
   }
 
-  installHooks(): void {
-    const hooksDir = join(this.projectRoot, '.git', 'hooks');
+  /**
+   * Installs (or upgrades in place) the post-commit and post-merge blocks in the hooks directory
+   * git uses. A `core.hooksPath` from the global or system git config points at a directory shared
+   * by every repository on the machine: nothing is written there, a warning with the blocks to add
+   * by hand goes to stderr, and the result says so. A local `core.hooksPath` is honoured.
+   */
+  installHooks(): HooksInstallResult {
+    const hooksDir = resolveHooksDir(this.projectRoot);
+    const sharedScope = sharedHooksScope(this.projectRoot);
+    if (sharedScope) {
+      console.error(sharedHooksWarning(hooksDir, sharedScope));
+      return { installed: false, hooksDir, sharedScope };
+    }
+
     mkdirSync(hooksDir, { recursive: true });
     this.installHook(hooksDir, 'post-commit', POST_COMMIT_CONTENT);
     this.installHook(hooksDir, 'post-merge', POST_MERGE_CONTENT);
+    return { installed: true, hooksDir };
   }
 
   async run(options: InitOptions = {}): Promise<void> {
@@ -294,7 +298,7 @@ export class InitCommand {
         console.error(pc.yellow('  ⚠ Drift & boundary-violation signals depend on repeated snapshots.'));
         console.error(pc.dim('    Options without hooks:'));
         console.error(pc.dim('      • run `ctxo watch` during development'));
-        console.error(pc.dim('      • add `ctxo index --check` to CI'));
+        console.error(pc.dim('      • run `ctxo index --commit HEAD` after each commit (`ctxo index --check` only verifies staleness and records no snapshot)'));
         console.error(pc.dim('      • run `ctxo init` again to install hooks later'));
       }
       console.error('');
@@ -351,8 +355,12 @@ export class InitCommand {
     }
 
     if (installGitHooks) {
-      this.installHooks();
-      results.push(`${pc.green('\u2713')} ${pc.bold('post-commit, post-merge')}  ${pc.dim('hooks installed')}`);
+      const hooks = this.installHooks();
+      results.push(
+        hooks.installed
+          ? `${pc.green('\u2713')} ${pc.bold('post-commit, post-merge')}  ${pc.dim('hooks installed')}`
+          : `${pc.yellow('!')} ${pc.bold('post-commit, post-merge')}  ${pc.dim('skipped - shared hooks directory (see warning above)')}`,
+      );
     }
 
     if (installGuard) {
@@ -441,8 +449,7 @@ export class InitCommand {
     }
 
     if (!options.rulesOnly) {
-      this.installHooks();
-      console.error('[ctxo] \u2713 Git hooks installed');
+      if (this.installHooks().installed) console.error('[ctxo] \u2713 Git hooks installed');
     }
 
     if (!options.rulesOnly && toolIds.includes('claude-code')) {
@@ -491,8 +498,11 @@ export class InitCommand {
     }
 
     if (!options.rulesOnly) {
-      console.error('  .git/hooks/post-commit    (git hook)');
-      console.error('  .git/hooks/post-merge     (git hook)');
+      const hooksDir = this.displayHooksDir();
+      const note = sharedHooksScope(this.projectRoot) ? ' - skipped: shared hooks directory' : '';
+      // padEnd(25) plus one space: a path of 25+ characters still gets a separator.
+      console.error(`  ${`${hooksDir}/post-commit`.padEnd(25)} (git hook)${note}`);
+      console.error(`  ${`${hooksDir}/post-merge`.padEnd(25)} (git hook)${note}`);
     }
 
     if (!options.rulesOnly && toolIds.includes('claude-code')) {
@@ -519,22 +529,32 @@ export class InitCommand {
     }
   }
 
+  /** The hooks directory for human output: project-relative when it sits inside the project, absolute otherwise. */
+  private displayHooksDir(): string {
+    const hooksDir = resolveHooksDir(this.projectRoot);
+    const rel = forwardSlashes(relative(this.projectRoot, hooksDir));
+    return rel === '' || rel.startsWith('..') || isAbsolute(rel) ? forwardSlashes(hooksDir) : rel;
+  }
+
   private installHook(hooksDir: string, hookName: string, hookContent: string): void {
     const hookPath = join(hooksDir, hookName);
 
-    let existing = '';
-    if (existsSync(hookPath)) {
-      existing = readFileSync(hookPath, 'utf-8');
-      if (existing.includes(CTXO_START)) return;
-    } else {
-      existing = '#!/bin/sh\n';
+    const hookExists = existsSync(hookPath);
+    const existing = hookExists ? readFileSync(hookPath, 'utf-8') : '#!/bin/sh\n';
+    const updated = upsertCtxoBlock(existing, hookContent);
+
+    if (!hookExists || updated !== existing) {
+      writeFileSync(hookPath, updated, 'utf-8');
+      chmodSync(hookPath, 0o755);
+      return;
     }
 
-    const updated = existing.endsWith('\n')
-      ? existing + '\n' + hookContent + '\n'
-      : existing + '\n\n' + hookContent + '\n';
-
-    writeFileSync(hookPath, updated, 'utf-8');
-    chmodSync(hookPath, 0o755);
+    // Content is already current. A hook that lost its exec bit (copied, restored from a backup)
+    // would silently stop firing, so restore it; failing init over a file we cannot chmod would not help.
+    try {
+      chmodSync(hookPath, 0o755);
+    } catch {
+      // best effort
+    }
   }
 }

@@ -73,6 +73,7 @@ Trim to the 5 most recent commits:
   "driftSignals": {
     "confidence": "medium",
     "snapshotsAvailable": 5,
+    "distinctCommits": 5,
     "events": [
       {
         "symbolId": "packages/cli/src/auth/service.ts::AuthService::class",
@@ -94,9 +95,12 @@ history stored in `.ctxo/index/communities.history/`. See
 | Sub-field | Meaning |
 | :--- | :--- |
 | `events[]` | Cluster transitions that include the queried symbol. Empty unless the symbol drifted. |
-| `confidence` | `"low"` when `snapshotsAvailable < 3`, `"medium"` for 3–6, `"high"` for 7+. |
-| `snapshotsAvailable` | Number of snapshots fed into the comparison. |
-| `hint` | Actionable recovery advice when confidence is low (enable post-commit hook, `ctxo watch`, or CI gate). |
+| `confidence` | `"low"` when `distinctCommits < 3`, `"medium"` for 3-6, `"high"` for 7+. |
+| `distinctCommits` | Number of different commits in the snapshot history, other than the current one. History keeps at most one snapshot per commit, so repeated index runs on one commit count once. |
+| `snapshotsAvailable` | Number of history entries fed into the comparison. Kept for compatibility; confidence is not computed from it. |
+| `hint` | Actionable recovery advice when confidence is low: install the post-commit hook (`ctxo init`) or run `ctxo index` after commits. `ctxo index --check` records no snapshot. |
+
+The current snapshot is compared with the newest history entry from a different commit, so re-indexing the same commit never reports drift against itself.
 
 When no `communities.json` exists, the `driftSignals` field is omitted entirely.
 
@@ -131,6 +135,7 @@ A symbol `AuthService` used to cluster with session/token code. Over 3 commits i
   "driftSignals": {
     "confidence": "medium",
     "snapshotsAvailable": 5,
+    "distinctCommits": 5,
     "events": [
       {
         "symbolId": ".../AuthService::class",

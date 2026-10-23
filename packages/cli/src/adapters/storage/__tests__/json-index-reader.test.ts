@@ -58,6 +58,49 @@ describe('JsonIndexReader', () => {
     spy.mockRestore();
   });
 
+  describe('readEntries', () => {
+    it('returns each entry with the path of the JSON file it was read from, not a path built from its file field', () => {
+      const writer = new JsonIndexWriter(tempDir);
+      writer.write(buildFileIndex());
+      writer.write(buildSecondFileIndex());
+      // A crafted or corrupt file whose "file" field names something else entirely.
+      writeFileSync(
+        join(tempDir, 'index', 'crafted.json'),
+        JSON.stringify(buildFileIndex({ file: 'co-changes' })),
+        'utf-8',
+      );
+
+      const entries = reader.readEntries();
+
+      expect(entries.map((entry) => [entry.index.file, entry.path]).sort()).toEqual(
+        [
+          ['co-changes', join(tempDir, 'index', 'crafted.json')],
+          ['src/bar.ts', join(tempDir, 'index', 'src', 'bar.ts.json')],
+          ['src/foo.ts', join(tempDir, 'index', 'src', 'foo.ts.json')],
+        ].sort(),
+      );
+    });
+
+    it('does not return the artifact files that live next to the entries', () => {
+      const indexDir = join(tempDir, 'index');
+      mkdirSync(join(indexDir, 'communities.history'), { recursive: true });
+      for (const artifact of ['co-changes.json', 'communities.json', 'drift-events.json', 'boundary-violations.json']) {
+        writeFileSync(join(indexDir, artifact), JSON.stringify(buildFileIndex()), 'utf-8');
+      }
+      writeFileSync(join(indexDir, 'communities.history', 'old.json'), JSON.stringify(buildFileIndex()), 'utf-8');
+
+      expect(reader.readEntries()).toEqual([]);
+    });
+
+    it('readAll returns the same indices', () => {
+      const writer = new JsonIndexWriter(tempDir);
+      writer.write(buildFileIndex());
+      writer.write(buildSecondFileIndex());
+
+      expect(reader.readAll()).toEqual(reader.readEntries().map((entry) => entry.index));
+    });
+  });
+
   it('returns empty array for empty index directory', () => {
     mkdirSync(join(tempDir, 'index'), { recursive: true });
     const results = reader.readAll();

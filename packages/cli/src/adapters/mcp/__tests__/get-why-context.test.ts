@@ -1,11 +1,11 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { SqliteStorageAdapter } from '../../storage/sqlite-storage-adapter.js';
 import { MaskingPipeline } from '../../../core/masking/masking-pipeline.js';
 import { handleGetWhyContext } from '../get-why-context.js';
-import type { FileIndex, CommitRecord, ChurnData } from '../../../core/types.js';
+import type { FileIndex, CommitRecord, ChurnData, CommunitySnapshot } from '../../../core/types.js';
 import type { IGitPort } from '../../../ports/i-git-port.js';
 
 function buildTestIndex(): FileIndex {
@@ -192,5 +192,37 @@ describe('GetWhyContextHandler', () => {
     expect(payload.driftSignals).toBeDefined();
     expect(payload.driftSignals.confidence).toBe('low');
     expect(payload.driftSignals.hint).toMatch(/post-commit|ctxo index/);
+  });
+
+  it('get_why_context driftSignals carries distinctCommits', async () => {
+    const snapshotAt = (commitSha: string): CommunitySnapshot => ({
+      version: 1,
+      computedAt: '2026-04-16T10:00:00.000Z',
+      commitSha,
+      modularity: 0.5,
+      communities: [
+        { symbolId: 'src/foo.ts::processPayment::function', communityId: 0, communityLabel: 'billing' },
+      ],
+      godNodes: [],
+      edgeQuality: 'full',
+      crossClusterEdges: 0,
+    });
+    storage.writeCommunities(snapshotAt('abc1234'));
+    // Three history snapshots over two commits: two files for sha1, one for sha2.
+    vi.spyOn(storage, 'listCommunityHistory').mockReturnValue([
+      snapshotAt('sha1'),
+      snapshotAt('sha1'),
+      snapshotAt('sha2'),
+    ]);
+    const git = createMockGit([]);
+    const handler = handleGetWhyContext(storage, git, new MaskingPipeline(), undefined, tempDir);
+
+    const result = await handler({ symbolId: 'src/foo.ts::processPayment::function' });
+    const payload = JSON.parse(result.content[0]!.text);
+
+    expect(payload.driftSignals).toBeDefined();
+    expect(payload.driftSignals.distinctCommits).toBe(2);
+    expect(payload.driftSignals.snapshotsAvailable).toBe(3);
+    expect(payload.driftSignals.confidence).toBe('low');
   });
 });

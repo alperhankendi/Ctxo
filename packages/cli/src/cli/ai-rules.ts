@@ -286,6 +286,16 @@ index:
 gate:
   enabled: true
   sensitivity: balanced   # strict | balanced | lenient
+
+# Co-change analysis: which files change together (.ctxo/index/co-changes.json).
+# Every field is optional. Uncomment the block to edit it; the values shown are the defaults.
+# cochange:
+#   maxCommits: 2000        # number or "all"
+#   # since: 12m            # optional age limit; d, w, m, y
+#   maxFilesPerCommit: 30
+#   minShared: 2
+#   include: []             # extra tracked files no plugin indexes (picomatch globs)
+#   exclude: []             # indexed files to leave out (picomatch globs)
 `;
 
 export function ensureConfig(projectRoot: string): InstallResult {

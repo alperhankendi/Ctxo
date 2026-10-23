@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { SymbolGraph } from '../../graph/symbol-graph.js';
 import { BlastRadiusCalculator } from '../blast-radius-calculator.js';
-import type { SymbolNode } from '../../types.js';
+import type { CoChangeEntry, SymbolNode } from '../../types.js';
 
 function makeNode(id: string): SymbolNode {
   const parts = id.split('::');
@@ -342,6 +342,51 @@ describe('BlastRadiusCalculator', () => {
 
     const result = calc.calculate(graph, 'src/b.ts::B::class');
     expect(result.impactedSymbols[0]!.coChangeFrequency).toBeUndefined();
+  });
+
+  it('co-change ignores a dependent in the root file itself, whatever the root file pairs with elsewhere', () => {
+    const graph = new SymbolGraph();
+    for (const id of ['src/a.ts::A::function', 'src/a.ts::Helper::function']) {
+      graph.addNode(makeNode(id));
+    }
+    // Helper lives in the same file as A and only imports it.
+    graph.addEdge({ from: 'src/a.ts::Helper::function', to: 'src/a.ts::A::function', kind: 'imports' });
+
+    // a.ts co-changes strongly with other files; that says nothing about a symbol in a.ts itself.
+    const coChangeMap = new Map<string, CoChangeEntry[]>();
+    coChangeMap.set('src/a.ts', [
+      { file1: 'src/a.ts', file2: 'src/x.ts', sharedCommits: 9, frequency: 0.9 },
+      { file1: 'src/y.ts', file2: 'src/a.ts', sharedCommits: 7, frequency: 0.7 },
+    ]);
+
+    const helper = calc.calculate(graph, 'src/a.ts::A::function', coChangeMap).impactedSymbols[0]!;
+    expect(helper.symbolId).toBe('src/a.ts::Helper::function');
+    expect(helper.confidence).toBe('potential');
+    expect(helper.coChangeFrequency).toBeUndefined();
+  });
+
+  it('co-change matches each dependent to the entry of its own file, whichever side of the pair the root is on', () => {
+    const graph = new SymbolGraph();
+    for (const id of ['src/a.ts::A::function', 'src/b.ts::B::function', 'src/c.ts::C::function', 'src/d.ts::D::function']) {
+      graph.addNode(makeNode(id));
+    }
+    for (const dependent of ['B', 'C', 'D']) {
+      graph.addEdge({ from: `src/${dependent.toLowerCase()}.ts::${dependent}::function`, to: 'src/a.ts::A::function', kind: 'imports' });
+    }
+
+    const coChangeMap = new Map<string, CoChangeEntry[]>();
+    coChangeMap.set('src/a.ts', [
+      { file1: 'src/a.ts', file2: 'src/c.ts', sharedCommits: 2, frequency: 0.3 }, // root first
+      { file1: 'src/b.ts', file2: 'src/a.ts', sharedCommits: 9, frequency: 0.9 }, // root second
+    ]);
+
+    const byId = new Map(
+      calc.calculate(graph, 'src/a.ts::A::function', coChangeMap).impactedSymbols.map((e) => [e.symbolId, e]),
+    );
+    expect(byId.get('src/b.ts::B::function')).toMatchObject({ confidence: 'likely', coChangeFrequency: 0.9 });
+    expect(byId.get('src/c.ts::C::function')).toMatchObject({ confidence: 'potential', coChangeFrequency: 0.3 });
+    expect(byId.get('src/d.ts::D::function')?.confidence).toBe('potential');
+    expect(byId.get('src/d.ts::D::function')?.coChangeFrequency).toBeUndefined();
   });
 
   it('uses-only edge → likely confidence', () => {

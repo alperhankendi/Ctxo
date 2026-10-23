@@ -94,6 +94,8 @@ Now the agent sees **which teams are affected**:
 
 A 10-symbol blast that stays in one cluster is a different beast from a 10-symbol blast that scatters across three. AI agents and PR reviewers can now catch the scattering without reading every file.
 
+The response also uses git history: dependents whose file keeps changing together with the target's file are tiered `likely`, and `coChangedFiles` lists files that co-change with the target but have no dependency path to it. See [`get_blast_radius`](/mcp-tools/get-blast-radius).
+
 ### 3. Architectural drift — `get_why_context`
 
 Drift compares the current `CommunitySnapshot` against previous ones using Jaccard overlap on cluster membership. When a symbol's cluster *label* changes (not merely its numeric id), it's drifting.
@@ -105,6 +107,7 @@ Drift compares the current `CommunitySnapshot` against previous ones using Jacca
   "driftSignals": {
     "confidence": "medium",
     "snapshotsAvailable": 5,
+    "distinctCommits": 5,
     "events": [
       {
         "symbolId": "packages/.../AuthService::class",
@@ -121,13 +124,15 @@ Drift compares the current `CommunitySnapshot` against previous ones using Jacca
 
 That is exactly the kind of silent decay an AI reviewer can now flag before it compounds.
 
-**Confidence degrades gracefully:**
+**Confidence counts distinct commits.** History keeps at most one snapshot per commit, so ten `ctxo index` runs on the same commit add nothing. `distinctCommits` is the number of different commits in the history other than the current one. `snapshotsAvailable` stays in the payload for compatibility (the number of history entries passed to the detector) and is not what confidence is computed from.
 
-| Snapshots available | Confidence | Hint surfaced? |
+| Distinct commits | Confidence | Hint surfaced? |
 | :--- | :--- | :--- |
-| `< 3` | `low` | Yes — install hooks, run `ctxo watch`, or add `ctxo index --check` to CI |
-| `3–6` | `medium` | No |
+| `< 3` | `low` | Yes - install the post-commit hook (`ctxo init`) or run `ctxo index` after commits. `ctxo index --check` records no snapshot |
+| `3-6` | `medium` | No |
 | `7+` | `high` | No |
+
+Drift compares the current snapshot with the newest history entry from a different commit, so re-running the index on one commit never reports drift against itself.
 
 ### 4. Boundary violations — `get_pr_impact`
 
@@ -140,6 +145,7 @@ A PR review signal that catches **new cross-cluster edges**:
   "boundaryViolations": {
     "confidence": "medium",
     "snapshotsAvailable": 4,
+    "distinctCommits": 4,
     "violations": [
       {
         "from": { "symbolId": ".../CheckoutFlow::class", "label": "Billing" },
@@ -157,7 +163,7 @@ A PR review signal that catches **new cross-cluster edges**:
 }
 ```
 
-**Concrete example.** A PR adds a direct call from `CheckoutFlow` to `UserPermissions`. These clusters have never shared an edge in the last 10 snapshots. `severity: "high"` with `historicalEdgesBetweenClusters: 0` is the *"you just punched a hole through a layer boundary for the first time in the repo's history"* signal. A senior reviewer would notice this — and Ctxo hands it to the AI reviewer before any human reads the PR.
+**Concrete example.** A PR adds a direct call from `CheckoutFlow` to `UserPermissions`. These clusters have never shared an edge in the last 10 snapshotted commits. `severity: "high"` with `historicalEdgesBetweenClusters: 0` is the *"you just punched a hole through a layer boundary for the first time in the repo's history"* signal. A senior reviewer would notice this, and Ctxo hands it to the AI reviewer before any human reads the PR.
 
 ## What makes this a killer differentiator
 
@@ -175,14 +181,15 @@ Community detection exists in graph databases. Git intent exists in history tool
 
 ## Cadence matters: feeding the signal
 
-Drift and boundary signals depend on snapshots accumulating over time. Quality scales with cadence. Recommended order:
+Drift and boundary signals depend on snapshots of different commits accumulating over time. History keeps **one snapshot per commit**: a second run on the same commit replaces the current snapshot instead of adding an entry. Quality therefore scales with the number of commits that have a snapshot, not with how often the index ran. Recommended order:
 
-1. **`ctxo init` with post-commit hook** — one snapshot per commit. Default in the init flow.
-2. **`ctxo watch`** during development — debounced 5 s refresh on file save (dev machines yield rich local snapshot chains).
-3. **CI gate `ctxo index --check`** — every PR adds a snapshot that the whole team shares via git.
-4. **Manual `ctxo index`** — works but drift fidelity is your responsibility.
+1. **`ctxo init` with the post-commit hook** - one snapshot per commit. Hook v2 runs `ctxo index --commit HEAD` once per commit and re-indexes only the files that commit changed. Default in the init flow.
+2. **`ctxo watch`** during development - debounced 5 s refresh on file save. It keeps the current snapshot fresh and adds no history entries for the same commit.
+3. **Manual `ctxo index`** after commits - works but drift fidelity is your responsibility.
 
-If you decline hooks during `ctxo init`, a warning prints explaining which signals degrade and how to recover. Nothing silently fails — `confidence: "low"` always flags a thin history.
+`ctxo index --check` is a CI freshness gate: it writes nothing and records no snapshot, so it does not build history.
+
+If you decline hooks during `ctxo init`, a warning prints explaining which signals degrade and how to recover. Nothing silently fails - `confidence: "low"` always flags a thin history. See [`ctxo init`](/cli/init) for the hook (upgrades, shared hooks directories) and [`ctxo doctor`](/cli/doctor) for the `git_hooks` check.
 
 ## Mission alignment
 

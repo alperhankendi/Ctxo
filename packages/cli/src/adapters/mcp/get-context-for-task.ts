@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
+import type { ICoChangePort } from '../../ports/i-co-change-port.js';
 import { ContextAssembler } from '../../core/context-assembly/context-assembler.js';
 import { JsonIndexReader } from '../storage/json-index-reader.js';
 import { getGraphAndFiles } from './get-logic-slice.js';
@@ -20,6 +21,7 @@ export function handleGetContextForTask(
   masking: IMaskingPort,
   staleness?: StalenessCheck,
   ctxoRoot = '.ctxo',
+  coChange?: ICoChangePort,
 ) {
   const assembler = new ContextAssembler();
   const indexReader = new JsonIndexReader(ctxoRoot);
@@ -39,7 +41,7 @@ export function handleGetContextForTask(
       const { graph, indexedFiles } = getGraph();
       const indices = indexReader.readAll();
 
-      const result = assembler.assembleForTask(graph, symbolId, taskType, indices, tokenBudget);
+      const result = assembler.assembleForTask(graph, symbolId, taskType, indices, tokenBudget, coChange?.readCoChangeMap());
 
       if (!result) {
         return {

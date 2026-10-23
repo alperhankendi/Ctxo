@@ -9,7 +9,9 @@
 npm install -g @ctxo/cli      # One-time global install (gives you the `ctxo` command)
 ctxo init                     # Detect languages + install plugins + wire MCP
 ctxo index                    # Build codebase index (required once)
-ctxo index --check            # CI gate: fail if index stale
+ctxo index --check            # CI gate: fail if index stale (writes nothing, records no snapshot)
+ctxo index --commit HEAD      # Re-index the files one commit changed (what the post-commit hook runs)
+ctxo index --files a.ts b.ts  # Re-index only these files (alias: --file <path>)
 ctxo                          # Start MCP server (stdio transport)
 ```
 
@@ -66,8 +68,9 @@ Parameters:
 - confidence (enum: confirmed|likely|potential, optional): Filter by tier
 - intent (string, optional): Filter by keyword
 
-Returns: impactedSymbols array with symbolId, depth, riskScore, confidence, edgeKinds.
-3-tier model: confirmed (calls/extends/implements), likely (uses/co-changed), potential (imports-only).
+Returns: impactedSymbols array with symbolId, depth, riskScore, confidence, edgeKinds, coChangeFrequency (when the dependent's file co-changes with the target's file).
+3-tier model: confirmed (calls/extends/implements), likely (uses/co-changed), potential (imports-only). A potential dependent whose file co-changes with the target's file at frequency above 0.5 is promoted to likely.
+Also returns coChangedFiles (when co-change data exists): up to 10 files that co-change with the target's file at frequency >= 0.5 but have no graph path to it, each with file, frequency, sharedCommits. Informational: not counted in tiers, risk scores or the safe-edit gate.
 
 When to use: BEFORE modifying any function or class.
 Instead of: get_logic_slice (forward deps), get_pr_impact (PR-level).
@@ -89,7 +92,7 @@ Parameters:
 - symbolId (string, required): Symbol ID
 - maxCommits (number, optional): Limit to N most recent commits
 
-Returns: commitHistory array + antiPatternWarnings (reverts, rollbacks, undo patterns).
+Returns: commitHistory array + antiPatternWarnings (reverts, rollbacks, undo patterns), and driftSignals when a community snapshot exists. driftSignals carries confidence (low below 3 distinct commits, medium 3-6, high 7+), distinctCommits (different commits in the snapshot history, other than the current one), snapshotsAvailable (history entries passed in, kept for compatibility) and an optional hint.
 
 When to use: Understanding WHY code was written this way, checking for problem history.
 Pair with: get_change_intelligence (complexity/churn scores).
@@ -129,6 +132,8 @@ Task types:
 - extend: Deps + blast radius + interfaces (adding features)
 - refactor: Importers + complexity + churn (restructuring)
 - understand: Full slice + architecture (learning)
+
+Context entries that depend on the symbol (its blast radius) carry an optional confidence tier (confirmed|likely|potential); co-change history can raise potential to likely.
 
 When to use: BEST starting point when you know the symbol AND your intent.
 
@@ -209,7 +214,7 @@ Parameters:
 - maxFiles (number, default 50): Max files
 - confidence (enum: confirmed|likely|potential, optional): Filter tier
 
-Returns: changedFiles, changedSymbols, totalImpact, riskLevel (low|medium|high), per-file blast radius, co-change data.
+Returns: changedFiles, changedSymbols, totalImpact, riskLevel (low|medium|high), per-file blast radius, co-change data (coChangedWith per file), boundaryViolations (confidence from distinctCommits) and clustersAffected.
 
 When to use: FIRST tool when reviewing a PR or evaluating recent commits.
 
@@ -284,6 +289,50 @@ All symbols use deterministic IDs: `"<relativePath>::<name>::<kind>"`
 
 ### Resources
 - `ctxo://status` — Health check resource (confirms server is running)
+
+---
+
+## Co-change, Incremental Indexing and Snapshots (#157)
+
+Co-change (files that change together in git history) feeds every blast-radius path: get_blast_radius, get_pr_impact, get_context_for_task, `ctxo blast-radius`, the gate hook and `ctxo gate --preview`.
+
+### The co-change window
+
+Built by `ctxo index` from one `git log --no-merges -M --name-status` pass over the commits reachable from HEAD. The same pass fills each file's `intent[]`, and both follow renames. The window is independent of `--max-history` (which only limits commits kept per file in `intent[]`, default 20). Config in `.ctxo/config.yaml` (all optional):
+
+```yaml
+cochange:
+  maxCommits: 2000        # last N non-merge commits from HEAD, or "all"
+  # since: 12m            # also limit by age; d, w, m, y; counted back from HEAD's committer date
+  maxFilesPerCommit: 30   # commits touching more analysed files are skipped (massSkipped)
+  minShared: 2            # shared commits needed for a pair
+  include: []             # extra tracked, non-indexed files to analyse (globs)
+  exclude: []             # indexed files to leave out (globs); also vetoes include-added files
+```
+
+- CLI overrides: `ctxo index --cochange-commits <n|all>`, `ctxo index --cochange-since <duration>` (30d, 2w, 12m, 1y).
+- A pair becomes an entry at `shared >= minShared` and `frequency = shared / min(countA, countB) >= 0.1`. The applied window is recorded in `.ctxo/index/co-changes.json` under `window`; the file is only rewritten when entries or window change.
+- `commitsScanned` counts every non-merge commit of the repository, so in a monorepo a numeric maxCommits covers fewer relevant commits than its value suggests.
+- Sparse checkout: files outside the cone are absent from the matrix, and their committed index entries are never pruned.
+- `ctxo verify-index` reports files with a rename in their history as STALE until the next `ctxo index` after upgrading, because `intent[]` now follows renames.
+
+### Incremental indexing and the post-commit hook
+
+- `ctxo index --files <path...>` (alias `--file <path>`) re-indexes the listed files. `ctxo index --commit <rev>` re-indexes the files one commit changed and removes the ones it deleted or renamed away. Both load the symbol registry from the committed index and compute co-change, communities, the snapshot, the drift and boundary artifacts and the SQLite cache from the merged index. Candidates pass the same filters as a full run.
+- A full `ctxo index` uses only the files it discovers and prunes index entries of deleted or newly ignored sources (never of skip-worktree paths).
+- `ctxo init` installs a versioned post-commit block (`# ctxo-start v2`) that runs `ctxo index --commit HEAD` once per commit, guarded by `[ -d .ctxo ]`. `ctxo init` and `ctxo doctor --fix` upgrade an older block in place, collapse duplicate blocks, and follow `core.hooksPath`. A global or system `core.hooksPath` is shared by every repository, so ctxo writes nothing there and prints the blocks to add by hand (scope detection needs git 2.26+).
+- `ctxo doctor` has a `git_hooks` check: warns on a missing, outdated or duplicated post-commit block.
+- `ctxo <command> --help` (and `-h`) prints the help and runs nothing.
+
+### One snapshot per commit
+
+`.ctxo/index/communities.json` is the current snapshot and `communities.history/` keeps at most one earlier snapshot per commit. A second run on the same commit replaces the current snapshot without archiving. Drift compares against the newest history entry from a different commit. Drift and boundary confidence count `distinctCommits` (low below 3, medium 3-6, high 7+; boundary needs at least 2). `ctxo index --check` writes nothing and records no snapshot. The first write after upgrading removes older same-commit duplicates from `communities.history/`.
+
+### Gate consequence
+
+The safe-edit gate counts confirmed + likely dependents, so co-change-upgraded dependents count and the gate may fire somewhat more often. `ctxo gate --preview` shows the effect.
+
+Design record: docs/architecture/ADR/adr-016-co-change-engine-and-snapshot-policy.md
 
 ---
 

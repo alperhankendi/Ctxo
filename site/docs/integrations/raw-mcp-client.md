@@ -85,7 +85,7 @@ Ctxo also speaks MCP over HTTP. Set `CTXO_HTTP_PORT` and the server binds
 there instead of stdio:
 
 ```bash
-CTXO_HTTP_PORT=7337 ctxo mcp
+CTXO_HTTP_PORT=7337 ctxo
 ```
 
 Then connect with the streamable HTTP transport:

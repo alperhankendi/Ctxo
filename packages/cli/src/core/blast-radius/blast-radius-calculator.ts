@@ -90,7 +90,10 @@ export class BlastRadiusCalculator {
           const nodeFile = nodeId.split('::')[0]!;
           const coEntries = coChangeMap.get(sourceFile);
           if (coEntries) {
-            const match = coEntries.find(e => e.file1 === nodeFile || e.file2 === nodeFile);
+            // Each entry pairs the root's file with one partner, so match the dependent's file against that
+            // partner. Matching either side would also hit a dependent inside the root's own file, with
+            // whatever file the first entry happens to pair the root with.
+            const match = coEntries.find(e => (e.file1 === sourceFile ? e.file2 : e.file1) === nodeFile);
             if (match) {
               coChangeFrequency = match.frequency;
               if (confidence === 'potential' && match.frequency > 0.5) {

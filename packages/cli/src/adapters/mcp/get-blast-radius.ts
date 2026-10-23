@@ -2,7 +2,9 @@ import { z } from 'zod';
 import type { IGitPort } from '../../ports/i-git-port.js';
 import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
+import type { ICoChangePort } from '../../ports/i-co-change-port.js';
 import { BlastRadiusCalculator } from '../../core/blast-radius/blast-radius-calculator.js';
+import { findCoChangedFilesForBlastRadius } from '../../core/blast-radius/co-changed-files.js';
 import { wrapResponse } from '../../core/response-envelope.js';
 import { buildSnapshotStaleness } from '../../core/overlay/snapshot-staleness.js';
 import type { ClusterLabelMasker } from '../../core/overlay/cluster-label-masker.js';
@@ -58,6 +60,7 @@ export function handleGetBlastRadius(
   ctxoRoot = '.ctxo',
   git?: IGitPort,
   clusterLabelMasker?: ClusterLabelMasker,
+  coChange?: ICoChangePort,
 ) {
   const calculator = new BlastRadiusCalculator();
   const getGraph = () => getGraphAndFiles(ctxoRoot, storage);
@@ -80,7 +83,9 @@ export function handleGetBlastRadius(
         };
       }
 
-      const result = calculator.calculate(graph, symbolId);
+      // Read per call: the port caches by mtime, so a matrix rewritten while the server runs is picked up.
+      const coChangeMap = coChange?.readCoChangeMap();
+      const result = calculator.calculate(graph, symbolId, coChangeMap);
 
       // Apply confidence filter if requested
       let symbols = result.impactedSymbols;
@@ -121,6 +126,11 @@ export function handleGetBlastRadius(
           body.multiClusterHint = clusterBreakdown.multiClusterHint;
         }
       }
+
+      // Files that change together with the root's file but have no dependency path to it. From the
+      // unfiltered result: the confidence and intent filters above shape the impactedSymbols list only.
+      const coChangedFiles = findCoChangedFilesForBlastRadius(coChangeMap, symbolId, result.impactedSymbols);
+      if (coChangedFiles.length > 0) body.coChangedFiles = coChangedFiles;
 
       const stalenessMeta = git ? await buildSnapshotStaleness(storage, git) : undefined;
       const extras = stalenessMeta ? { snapshotStaleness: stalenessMeta } : undefined;

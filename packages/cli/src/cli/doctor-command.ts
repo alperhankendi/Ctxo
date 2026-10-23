@@ -8,7 +8,7 @@ import { NodeVersionCheck, TsMorphCheck, TreeSitterCheck } from '../adapters/dia
 import { VersionsCheck } from '../adapters/diagnostics/checks/versions-check.js';
 import { LanguageCoverageCheck } from '../adapters/diagnostics/checks/language-coverage-check.js';
 import { JavaTierCheck } from '../adapters/diagnostics/checks/java-tier-check.js';
-import { GitBinaryCheck, GitRepoCheck } from '../adapters/diagnostics/checks/git-check.js';
+import { GitBinaryCheck, GitRepoCheck, GitHooksCheck } from '../adapters/diagnostics/checks/git-check.js';
 import {
   IndexDirectoryCheck,
   IndexFreshnessCheck,
@@ -49,6 +49,7 @@ export class DoctorCommand {
       new NodeVersionCheck(),
       new GitBinaryCheck(),
       new GitRepoCheck(),
+      new GitHooksCheck(),
       new IndexDirectoryCheck(),
       new IndexFreshnessCheck(),
       new SqliteCacheCheck(),

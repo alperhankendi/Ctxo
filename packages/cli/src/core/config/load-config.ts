@@ -2,9 +2,13 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import picomatch from 'picomatch';
+import { parseCoChangeSince } from '../co-change/co-change-window.js';
 import { createLogger } from '../logger.js';
 import {
   CtxoConfigSchema,
+  DEFAULT_COCHANGE_MAX_COMMITS,
+  DEFAULT_COCHANGE_MAX_FILES_PER_COMMIT,
+  DEFAULT_COCHANGE_MIN_SHARED,
   DEFAULT_CONFIG,
   DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES,
   type CtxoConfig,
@@ -77,6 +81,8 @@ export function loadConfig(ctxoRoot: string): LoadedConfig {
 
   validateGlobs(result.data.index?.ignore, 'index.ignore', invalidGlobs);
   validateGlobs(result.data.index?.ignoreProjects, 'index.ignoreProjects', invalidGlobs);
+  validateGlobs(result.data.cochange?.include, 'cochange.include', invalidGlobs);
+  validateGlobs(result.data.cochange?.exclude, 'cochange.exclude', invalidGlobs);
   for (const pattern of invalidGlobs) {
     log.warn(`Invalid glob pattern in config.yaml — ${pattern}`);
   }
@@ -104,6 +110,61 @@ export function watchSnapshotMinFileChanges(config: CtxoConfig): number {
   const value = config.watch?.snapshotMinFileChanges;
   if (typeof value === 'number' && Number.isFinite(value) && value >= 1) return value;
   return DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES;
+}
+
+/** The co-change settings with every default applied; what `buildCoChangeMatrix` and its callers use. */
+export interface ResolvedCoChangeConfig {
+  readonly maxCommits: number | 'all';
+  readonly since?: string;
+  readonly maxFilesPerCommit: number;
+  readonly minShared: number;
+  readonly include: readonly string[];
+  readonly exclude: readonly string[];
+}
+
+function isPositiveInteger(value: unknown): value is number {
+  return typeof value === 'number' && Number.isInteger(value) && value >= 1;
+}
+
+function positiveIntegerOr(value: unknown, fallback: number): number {
+  return isPositiveInteger(value) ? value : fallback;
+}
+
+function validMaxCommits(value: unknown): number | 'all' | undefined {
+  if (value === 'all') return 'all';
+  return isPositiveInteger(value) ? value : undefined;
+}
+
+function validSince(value: unknown): string | undefined {
+  return typeof value === 'string' && parseCoChangeSince(value) !== undefined ? value : undefined;
+}
+
+/**
+ * Resolves the `cochange` section. Each setting comes from the first source that has a usable value:
+ * the CLI override (`--cochange-commits`, `--cochange-since`), then `.ctxo/config.yaml`, then the
+ * built-in default (2000 commits, 30 files per commit, 2 shared commits, no `since`).
+ *
+ * A value the schema would reject is skipped rather than trusted, and so is an invalid glob. That
+ * matters for a value that did not come through `loadConfig`, and above all for `maxCommits`, where
+ * a zero or negative number would otherwise turn into an unbounded window.
+ */
+export function resolveCoChangeConfig(
+  config: CtxoConfig,
+  overrides: { maxCommits?: number | 'all'; since?: string } = {},
+): ResolvedCoChangeConfig {
+  const section = config.cochange;
+  const since = validSince(overrides.since) ?? validSince(section?.since);
+  return {
+    maxCommits:
+      validMaxCommits(overrides.maxCommits) ??
+      validMaxCommits(section?.maxCommits) ??
+      DEFAULT_COCHANGE_MAX_COMMITS,
+    ...(since !== undefined ? { since } : {}),
+    maxFilesPerCommit: positiveIntegerOr(section?.maxFilesPerCommit, DEFAULT_COCHANGE_MAX_FILES_PER_COMMIT),
+    minShared: positiveIntegerOr(section?.minShared, DEFAULT_COCHANGE_MIN_SHARED),
+    include: (section?.include ?? []).filter(isValidGlob),
+    exclude: (section?.exclude ?? []).filter(isValidGlob),
+  };
 }
 
 /**

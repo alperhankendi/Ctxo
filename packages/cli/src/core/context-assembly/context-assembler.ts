@@ -1,7 +1,7 @@
 import type { SymbolGraph } from '../graph/symbol-graph.js';
-import type { SymbolNode, SymbolKind, FileIndex } from '../types.js';
+import type { SymbolNode, SymbolKind, FileIndex, CoChangeEntry } from '../types.js';
 import { LogicSliceQuery } from '../logic-slice/logic-slice-query.js';
-import { BlastRadiusCalculator } from '../blast-radius/blast-radius-calculator.js';
+import { BlastRadiusCalculator, type ImpactConfidence } from '../blast-radius/blast-radius-calculator.js';
 import { type TaskType, type ScoringWeights, getWeightsForTask } from './task-context-strategy.js';
 
 export interface ContextEntry {
@@ -13,6 +13,11 @@ export interface ContextEntry {
   readonly reason: string;
   readonly lines: number;
   readonly tokens: number;
+  /**
+   * The blast radius tier of a dependent of the target (what breaks if the target changes). Absent on
+   * entries that are not dependents, such as the target's own dependencies.
+   */
+  readonly confidence?: ImpactConfidence;
 }
 
 export interface TaskContextResult {
@@ -47,12 +52,18 @@ export class ContextAssembler {
   private readonly logicSlice = new LogicSliceQuery();
   private readonly blastRadius = new BlastRadiusCalculator();
 
+  /**
+   * `coChangeMap` is the same lookup `get_blast_radius` uses: with it, a potential dependent whose file
+   * co-changes with the target's becomes likely. It changes the tier shown on an entry, not which entries
+   * make the context or how they rank.
+   */
   assembleForTask(
     graph: SymbolGraph,
     symbolId: string,
     taskType: TaskType,
     indices: readonly FileIndex[],
     tokenBudget = DEFAULT_TOKEN_BUDGET,
+    coChangeMap?: Map<string, CoChangeEntry[]>,
   ): TaskContextResult | undefined {
     const target = graph.getNode(symbolId);
     if (!target) return undefined;
@@ -61,7 +72,7 @@ export class ContextAssembler {
 
     // Gather forward deps + reverse deps
     const slice = this.logicSlice.getLogicSlice(graph, symbolId);
-    const blastResult = this.blastRadius.calculate(graph, symbolId);
+    const blastResult = this.blastRadius.calculate(graph, symbolId, coChangeMap);
 
     // Build candidate pool (deduplicated)
     const candidateMap = new Map<string, { node: SymbolNode; signals: Signals }>();
@@ -87,10 +98,11 @@ export class ContextAssembler {
       const existing = candidateMap.get(entry.symbolId);
       if (existing) {
         existing.signals.isDependent = true;
+        existing.signals.dependentConfidence = entry.confidence;
       } else {
         candidateMap.set(entry.symbolId, {
           node,
-          signals: { isDirectDep: false, isInterfaceOrType: this.isInterfaceOrType(node.kind), isDependent: true, complexity: 0, hasAntiPattern: false },
+          signals: { isDirectDep: false, isInterfaceOrType: this.isInterfaceOrType(node.kind), isDependent: true, dependentConfidence: entry.confidence, complexity: 0, hasAntiPattern: false },
         });
       }
     }
@@ -237,6 +249,7 @@ export class ContextAssembler {
       reason: reasons.join(', ') || 'related symbol',
       lines: node.endLine - node.startLine + 1,
       tokens: this.estimateTokens(node),
+      ...(signals.dependentConfidence ? { confidence: signals.dependentConfidence } : {}),
     };
   }
 
@@ -261,6 +274,8 @@ interface Signals {
   isDirectDep: boolean;
   isInterfaceOrType: boolean;
   isDependent: boolean;
+  /** The blast radius tier of the dependency; set exactly when `isDependent` is. */
+  dependentConfidence?: ImpactConfidence;
   complexity: number;
   hasAntiPattern: boolean;
 }

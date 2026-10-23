@@ -3,6 +3,14 @@ import { describe, it, expect } from 'vitest';
 import type { CommunityEntry, CommunitySnapshot } from '../../types.js';
 import { DriftDetector } from '../drift-detector.js';
 
+// Every snapshot is a commit of its own unless a test names the commit. The prefix keeps these
+// away from the shas tests pick by hand.
+let snapshotCounter = 0;
+
+// What the detectors tell users to do about a thin history.
+const HISTORY_HINT =
+  'Install the post-commit hook (`ctxo init`) or run `ctxo index` after commits to build history; `ctxo index --check` does not record snapshots.';
+
 function snapshot(
   communities: CommunityEntry[],
   overrides: Partial<CommunitySnapshot> = {},
@@ -10,7 +18,7 @@ function snapshot(
   return {
     version: 1,
     computedAt: '2026-04-16T10:00:00.000Z',
-    commitSha: 'sha',
+    commitSha: `auto-sha-${++snapshotCounter}`,
     modularity: 0.42,
     communities,
     godNodes: [],
@@ -114,9 +122,35 @@ describe('DriftDetector', () => {
     ]);
   });
 
+  it('sorts drift events by code point, never by locale', () => {
+    // Same shape as the test above. "Index" and "ideal" differ only in case: a code point sort puts
+    // the upper-case I first, a locale-aware sort ("ideal" before "index") puts it last.
+    const detector = new DriftDetector({ jaccardThreshold: 0.5 });
+    const prev = snapshot([
+      entry('src/ideal.ts::y::function', 0, 'alpha'),
+      entry('src/Index.ts::x::function', 0, 'alpha'),
+      entry('k1.ts::K1::function', 1, 'beta'),
+      entry('k2.ts::K2::function', 1, 'beta'),
+      entry('k3.ts::K3::function', 1, 'beta'),
+      entry('k4.ts::K4::function', 1, 'beta'),
+    ]);
+    const current = snapshot([
+      entry('src/ideal.ts::y::function', 1, 'beta'),
+      entry('src/Index.ts::x::function', 1, 'beta'),
+      entry('k1.ts::K1::function', 1, 'beta'),
+      entry('k2.ts::K2::function', 1, 'beta'),
+      entry('k3.ts::K3::function', 1, 'beta'),
+      entry('k4.ts::K4::function', 1, 'beta'),
+    ]);
+    const result = detector.detect(current, [prev]);
+    expect(result.events.map((e) => e.symbolId)).toEqual([
+      'src/Index.ts::x::function',
+      'src/ideal.ts::y::function',
+    ]);
+  });
+
   it('flags confidence as medium with 3-6 snapshots', () => {
-    const prev = snapshot([entry('a.ts::A::function', 0, 'core')]);
-    const history = [prev, prev, prev];
+    const history = Array.from({ length: 3 }, () => snapshot([entry('a.ts::A::function', 0, 'core')]));
     const current = snapshot([entry('a.ts::A::function', 0, 'core')]);
     const result = detector.detect(current, history);
     expect(result.confidence).toBe('medium');
@@ -124,11 +158,58 @@ describe('DriftDetector', () => {
   });
 
   it('flags confidence as high with 7+ snapshots', () => {
-    const prev = snapshot([entry('a.ts::A::function', 0, 'core')]);
-    const history = Array.from({ length: 7 }, () => prev);
+    const history = Array.from({ length: 7 }, () => snapshot([entry('a.ts::A::function', 0, 'core')]));
     const current = snapshot([entry('a.ts::A::function', 0, 'core')]);
     const result = detector.detect(current, history);
     expect(result.confidence).toBe('high');
+  });
+
+  it('confidence counts three distinct commits as medium even with ten snapshots', () => {
+    const current = snapshot([entry('a.ts::A::function', 0, 'core')]);
+    // Ten history snapshots over three commits: the hook archived one snapshot per run.
+    const commits = ['commit-a', 'commit-b', 'commit-c'];
+    const history = Array.from({ length: 10 }, (_, i) =>
+      snapshot([entry('a.ts::A::function', 0, 'core')], { commitSha: commits[i % commits.length]! }),
+    );
+    const result = detector.detect(current, history);
+    expect(result.snapshotsAvailable).toBe(10);
+    expect(result.distinctCommits).toBe(3);
+    expect(result.confidence).toBe('medium');
+    expect(result.hint).toBeUndefined();
+  });
+
+  it('confidence is low with a hint when every history snapshot is one commit', () => {
+    const current = snapshot([entry('a.ts::A::function', 0, 'core')]);
+    const history = Array.from({ length: 10 }, () =>
+      snapshot([entry('a.ts::A::function', 0, 'core')], { commitSha: 'commit-a' }),
+    );
+    const result = detector.detect(current, history);
+    expect(result.snapshotsAvailable).toBe(10);
+    expect(result.distinctCommits).toBe(1);
+    expect(result.confidence).toBe('low');
+    expect(result.hint).toBe(HISTORY_HINT);
+  });
+
+  it('confidence reaches high at seven distinct commits however many snapshots there are', () => {
+    const current = snapshot([entry('a.ts::A::function', 0, 'core')]);
+    const history = Array.from({ length: 14 }, (_, i) =>
+      snapshot([entry('a.ts::A::function', 0, 'core')], { commitSha: `commit-${i % 7}` }),
+    );
+    const result = detector.detect(current, history);
+    expect(result.snapshotsAvailable).toBe(14);
+    expect(result.distinctCommits).toBe(7);
+    expect(result.confidence).toBe('high');
+  });
+
+  it('does not count the current commit as history depth', () => {
+    const current = snapshot([entry('a.ts::A::function', 0, 'core')], { commitSha: 'head' });
+    const history = [
+      snapshot([entry('a.ts::A::function', 0, 'core')], { commitSha: 'head' }),
+      snapshot([entry('a.ts::A::function', 0, 'core')], { commitSha: 'commit-a' }),
+    ];
+    const result = detector.detect(current, history);
+    expect(result.snapshotsAvailable).toBe(2);
+    expect(result.distinctCommits).toBe(1);
   });
 
   it('uses the recorded community label when a drift event is emitted', () => {
@@ -307,5 +388,98 @@ describe('DriftDetector', () => {
     const result = detector2.detect(current, [prev]);
     expect(result.events[0]!.stability).toBe('unverified');
     expect(result.stability.unverified).toBeGreaterThanOrEqual(1);
+  });
+
+  it('drift skips history entries from the current commit when choosing the previous snapshot', () => {
+    const strict = new DriftDetector({ jaccardThreshold: 0.5 });
+    // A moves from the old cluster to the new one at HEAD.
+    const atHead = [
+      entry('a.ts::A::function', 1, 'new'),
+      entry('b.ts::B::function', 0, 'old'),
+      entry('c.ts::C::function', 0, 'old'),
+      entry('k.ts::K::function', 1, 'new'),
+      entry('l.ts::L::function', 1, 'new'),
+      entry('m.ts::M::function', 1, 'new'),
+    ];
+    const current = snapshot(atHead, { commitSha: 'head' });
+    // Indexes written by older versions can hold a snapshot of the current commit itself at the top
+    // of history. It is the present, not a state to compare with.
+    const sameCommit = snapshot(atHead, { commitSha: 'head' });
+    const before = snapshot(
+      [
+        entry('a.ts::A::function', 0, 'old'),
+        entry('b.ts::B::function', 0, 'old'),
+        entry('c.ts::C::function', 0, 'old'),
+        entry('k.ts::K::function', 1, 'new'),
+        entry('l.ts::L::function', 1, 'new'),
+        entry('m.ts::M::function', 1, 'new'),
+      ],
+      { commitSha: 'before' },
+    );
+
+    const result = strict.detect(current, [sameCommit, before]);
+
+    expect(result.events.map((e) => e.symbolId)).toEqual(['a.ts::A::function']);
+    expect(result.events[0]!.movedFrom.label).toBe('old');
+    expect(result.events[0]!.movedTo.label).toBe('new');
+    expect(result.snapshotsAvailable).toBe(2);
+    expect(result.distinctCommits).toBe(1);
+  });
+
+  it('drift reports no events when the only history entry is the current commit', () => {
+    const current = snapshot([entry('a.ts::A::function', 0, 'core')], { commitSha: 'head' });
+    const sameCommit = snapshot([entry('a.ts::A::function', 5, 'other')], { commitSha: 'head' });
+    const result = detector.detect(current, [sameCommit]);
+    expect(result.events).toEqual([]);
+    expect(result.snapshotsAvailable).toBe(1);
+    expect(result.distinctCommits).toBe(0);
+    expect(result.confidence).toBe('low');
+    expect(result.hint).toBe(HISTORY_HINT);
+  });
+
+  it('drift takes the anchor from the commit before the previous one, not from a copy of the previous one', () => {
+    // A bounced X -> Y -> X. Two commits back it sat in X, one commit back in Y: a transient bounce.
+    // A second snapshot of the commit one back must not stand in as the anchor: it would make the
+    // bounce look like real drift ("stable").
+    const jitterDetector = new DriftDetector({ jaccardThreshold: 0.5 });
+    const inY = [
+      entry('a.ts::A::function', 1, 'Y'),
+      entry('b.ts::B::function', 0, 'X'),
+      entry('c.ts::C::function', 0, 'X'),
+      entry('k.ts::K::function', 1, 'Y'),
+      entry('l.ts::L::function', 1, 'Y'),
+      entry('m.ts::M::function', 1, 'Y'),
+    ];
+    const inX = [
+      entry('a.ts::A::function', 0, 'X'),
+      entry('b.ts::B::function', 0, 'X'),
+      entry('c.ts::C::function', 0, 'X'),
+      entry('k.ts::K::function', 1, 'Y'),
+      entry('l.ts::L::function', 1, 'Y'),
+      entry('m.ts::M::function', 1, 'Y'),
+    ];
+    const current = snapshot(inX, { commitSha: 'head' });
+    const oneBack = snapshot(inY, { commitSha: 'one-back' });
+    const oneBackAgain = snapshot(inY, { commitSha: 'one-back' });
+    const twoBack = snapshot(inX, { commitSha: 'two-back' });
+
+    const result = jitterDetector.detect(current, [oneBack, oneBackAgain, twoBack]);
+
+    expect(result.events).toEqual([]);
+    expect(result.stability.transient).toBeGreaterThanOrEqual(1);
+    expect(result.stability.stable).toBe(0);
+    expect(result.distinctCommits).toBe(2);
+  });
+
+  it('hints no longer mention ctxo index --check as a way to build history', () => {
+    const current = snapshot([entry('a.ts::A::function', 0, 'core')]);
+    const oneEarlierCommit = [snapshot([entry('a.ts::A::function', 0, 'core')])];
+    const twoEarlierCommits = [...oneEarlierCommit, snapshot([entry('a.ts::A::function', 0, 'core')])];
+
+    for (const history of [[], oneEarlierCommit, twoEarlierCommits]) {
+      const { hint } = detector.detect(current, history);
+      expect(hint).toBe(HISTORY_HINT);
+      expect(hint).not.toMatch(/CI/);
+    }
   });
 });

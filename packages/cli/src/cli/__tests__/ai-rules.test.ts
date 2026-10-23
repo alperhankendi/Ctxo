@@ -247,6 +247,66 @@ describe('ensureConfig', () => {
     expect(loaded.invalidGlobs).toEqual([]);
   });
 
+  describe('cochange block', () => {
+    // The commented block, from its "# cochange:" line to the first line that is not part of it.
+    function cochangeBlock(content: string): string[] {
+      const lines = content.split('\n');
+      const start = lines.indexOf('# cochange:');
+      if (start === -1) return [];
+      const block = [lines[start]!];
+      for (const line of lines.slice(start + 1)) {
+        if (!line.startsWith('#   ')) break;
+        block.push(line);
+      }
+      return block;
+    }
+
+    it('lists every cochange key with its default, fully commented out', () => {
+      const dir = makeTempDir();
+      ensureConfig(dir);
+      const content = readFileSync(join(dir, '.ctxo', 'config.yaml'), 'utf-8');
+
+      const block = cochangeBlock(content).join('\n');
+      expect(block).toContain('#   maxCommits: 2000');
+      expect(block).toMatch(/^#   # since: 12m/m);
+      expect(block).toContain('#   maxFilesPerCommit: 30');
+      expect(block).toContain('#   minShared: 2');
+      expect(block).toContain('#   include: []');
+      expect(block).toContain('#   exclude: []');
+      // Fully commented: no active cochange section, so the defaults apply exactly as before.
+      expect(content.split('\n').some((line) => line.startsWith('cochange:'))).toBe(false);
+    });
+
+    it('changes neither the loaded config nor its validation', async () => {
+      const dir = makeTempDir();
+      ensureConfig(dir);
+      const { loadConfig, resolveCoChangeConfig } = await import('../../core/config/load-config.js');
+      const { DEFAULT_CONFIG } = await import('../../core/config/config-schema.js');
+
+      const loaded = loadConfig(join(dir, '.ctxo'));
+
+      expect(loaded.errors).toEqual([]);
+      expect(loaded.config.cochange).toBeUndefined();
+      expect(resolveCoChangeConfig(loaded.config)).toStrictEqual(resolveCoChangeConfig(DEFAULT_CONFIG));
+    });
+
+    it('is valid and keeps the defaults when a user uncomments it', async () => {
+      const dir = makeTempDir();
+      ensureConfig(dir);
+      const content = readFileSync(join(dir, '.ctxo', 'config.yaml'), 'utf-8');
+      const uncommented = cochangeBlock(content).map((line) => line.slice(2));
+      expect(uncommented[0]).toBe('cochange:');
+      writeFileSync(join(dir, '.ctxo', 'config.yaml'), `version: "1.0"\n${uncommented.join('\n')}\n`, 'utf-8');
+      const { loadConfig, resolveCoChangeConfig } = await import('../../core/config/load-config.js');
+      const { DEFAULT_CONFIG } = await import('../../core/config/config-schema.js');
+
+      const loaded = loadConfig(join(dir, '.ctxo'));
+
+      expect(loaded.errors).toEqual([]);
+      expect(resolveCoChangeConfig(loaded.config)).toStrictEqual(resolveCoChangeConfig(DEFAULT_CONFIG));
+    });
+  });
+
   it('skips if config.yaml already exists', () => {
     const dir = makeTempDir();
     mkdirSync(join(dir, '.ctxo'), { recursive: true });

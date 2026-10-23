@@ -57,8 +57,21 @@ either, a `potential` link between symbols in those files is upgraded to
 `likely`. This catches the case where a symbol is not structurally linked but
 *always modified together* in practice.
 
-The `coChangeFrequency` is reported on each entry so you can see why the
-upgrade happened.
+The `coChangeFrequency` is reported on each entry whose file pairs with the
+target's file, so you can see why the upgrade happened.
+
+Every blast-radius path uses the same matrix: the `get_blast_radius`,
+`get_pr_impact` and `get_context_for_task` tools, `ctxo blast-radius`, the
+safe-edit guard hook and `ctxo gate --preview`. `ctxo index` builds it from one
+`git log` pass over a window of recent commits (default 2000, set with
+`cochange.maxCommits` or `--cochange-commits`) that is independent of
+`--max-history`. Merge commits are left out of the log, commits that touch more
+than 30 files are skipped and counted, and renames are followed. See the [`cochange` config](/reference/config-schema#cochange).
+
+`get_blast_radius` and `ctxo blast-radius` also return `coChangedFiles`: up to
+10 files that co-change with the target's file (frequency of at least 0.5) but
+have no dependency path to it. It is informational and does not feed the tiers,
+the risk scores or the guard.
 
 ## Risk score
 

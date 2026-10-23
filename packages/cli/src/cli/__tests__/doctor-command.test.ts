@@ -5,8 +5,10 @@ import { tmpdir } from 'node:os';
 import initSqlJs from 'sql.js';
 import { DoctorCommand } from '../doctor-command.js';
 import { buildFileIndex } from '../../adapters/storage/__tests__/test-fixtures.js';
+import { isolateGitEnv, type IsolatedGitEnv } from './git-test-env.js';
 
 let tempDir: string;
+let gitEnv: IsolatedGitEnv;
 let errorSpy: ReturnType<typeof vi.spyOn>;
 let stdoutSpy: ReturnType<typeof vi.spyOn>;
 
@@ -51,6 +53,7 @@ async function seedValidDb(): Promise<void> {
 }
 
 beforeEach(() => {
+  gitEnv = isolateGitEnv(); // the git_hooks check reads git config; keep it off the machine's
   tempDir = mkdtempSync(join(tmpdir(), 'ctxo-doctor-'));
   errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
   stdoutSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
@@ -62,6 +65,7 @@ afterEach(() => {
   stdoutSpy.mockRestore();
   process.exitCode = undefined;
   rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+  gitEnv.restore();
 });
 
 describe('DoctorCommand', () => {
@@ -100,6 +104,17 @@ describe('DoctorCommand', () => {
     expect(parsed.checks).toBeInstanceOf(Array);
     expect(parsed.summary).toBeDefined();
     expect(parsed.summary.pass + parsed.summary.warn + parsed.summary.fail).toBe(parsed.checks.length);
+  });
+
+  it('runs the git_hooks check', async () => {
+    setupHealthyProject();
+    await seedValidDb();
+    await new DoctorCommand(tempDir).run({ json: true });
+
+    const parsed = JSON.parse(stdoutSpy.mock.calls.map(c => c[0]).join(''));
+    const hooks = parsed.checks.find((c: { name: string }) => c.name === 'git_hooks');
+    expect(hooks).toBeDefined();
+    expect(hooks.status).not.toBe('fail');
   });
 
   it('outputs quiet format with --quiet flag', async () => {

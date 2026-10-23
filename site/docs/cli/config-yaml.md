@@ -19,7 +19,16 @@ index:
 gate:
   enabled: true
   sensitivity: balanced   # strict | balanced (DEFAULT) | lenient
+cochange:
+  maxCommits: 2000        # number or "all"
+  # since: 12m            # optional; d, w, m, y; counted back from HEAD's committer date
+  maxFilesPerCommit: 30
+  minShared: 2
+  include: []             # extra tracked, non-indexed files to analyse (globs)
+  exclude: []             # indexed files to leave out of co-change (globs)
 ```
+
+The `cochange:` block sets the window and thresholds of the co-change matrix that `ctxo index` builds from git history. It is independent of `ctxo index --max-history`, which only controls how many commits each file keeps in its `intent[]`. `exclude` also removes files that `include` added.
 
 The `gate:` block controls the safe-edit guard. `sensitivity` sets how aggressively the guard flags high-impact symbols:
 

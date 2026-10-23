@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { SqliteStorageAdapter } from '../../storage/sqlite-storage-adapter.js';
 import { MaskingPipeline } from '../../../core/masking/masking-pipeline.js';
 import { JsonIndexWriter } from '../../storage/json-index-writer.js';
+import { CoChangeReader } from '../../storage/co-change-reader.js';
 import { handleGetContextForTask } from '../get-context-for-task.js';
 import type { FileIndex } from '../../../core/types.js';
 
@@ -230,5 +231,51 @@ describe('GetContextForTaskHandler', () => {
     expect(payload.totalTokens).toBeGreaterThan(0);
     const specEntries = payload.context.filter((c: { file: string }) => c.file.startsWith('tests/spec'));
     expect(specEntries.length).toBeGreaterThanOrEqual(1);
+  });
+
+  describe('co-change', () => {
+    type ContextItem = { name: string; confidence?: string };
+
+    /** Importer only imports main (a potential dependent); Consumer, from the shared fixture, calls it. */
+    function addImporterThatCoChangesWithMain(): void {
+      const writer = new JsonIndexWriter(tempDir);
+      writer.write({
+        file: 'src/importer.ts',
+        lastModified: 1,
+        symbols: [{ symbolId: 'src/importer.ts::Importer::class', name: 'Importer', kind: 'class', startLine: 0, endLine: 10 }],
+        edges: [{ from: 'src/importer.ts::Importer::class', to: 'src/main.ts::main::function', kind: 'imports' }],
+        intent: [],
+        antiPatterns: [],
+      });
+      writer.writeCoChanges({
+        version: 1,
+        timestamp: 1,
+        entries: [{ file1: 'src/importer.ts', file2: 'src/main.ts', sharedCommits: 4, frequency: 0.8 }],
+      });
+    }
+
+    function contextOf(handler: ReturnType<typeof handleGetContextForTask>): ContextItem[] {
+      const result = handler({ symbolId: 'src/main.ts::main::function', taskType: 'refactor' });
+      return JSON.parse(result.content[result.content.length - 1]!.text).context as ContextItem[];
+    }
+
+    it('shows a co-changing potential dependent with likely confidence', () => {
+      addImporterThatCoChangesWithMain();
+      const handler = handleGetContextForTask(storage, new MaskingPipeline(), undefined, tempDir, new CoChangeReader(tempDir));
+
+      const context = contextOf(handler);
+
+      expect(context.find((c) => c.name === 'Importer')?.confidence).toBe('likely');
+      expect(context.find((c) => c.name === 'Consumer')?.confidence).toBe('confirmed');
+      // Dependencies of the target are not dependents: they carry no tier.
+      expect(context.find((c) => c.name === 'Service')).not.toHaveProperty('confidence');
+    });
+
+    it('keeps that dependent potential when no co-change port is wired', () => {
+      addImporterThatCoChangesWithMain();
+      const handler = handleGetContextForTask(storage, new MaskingPipeline(), undefined, tempDir);
+
+      expect(contextOf(handler).find((c) => c.name === 'Importer')?.confidence).toBe('potential');
+    });
   });
 });

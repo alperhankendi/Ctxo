@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { SymbolGraph } from '../../graph/symbol-graph.js';
 import { ContextAssembler } from '../context-assembler.js';
-import type { SymbolNode, FileIndex } from '../../types.js';
+import type { CoChangeEntry, SymbolNode, FileIndex } from '../../types.js';
 
 function makeNode(id: string, endLine = 10): SymbolNode {
   const parts = id.split('::');
@@ -102,6 +102,70 @@ describe('ContextAssembler — assembleForTask', () => {
     expect(result).toBeDefined();
     expect(result!.warnings.length).toBeGreaterThan(0);
     expect(result!.warnings[0]).toContain('anti-pattern');
+  });
+});
+
+describe('ContextAssembler assembleForTask with co-change', () => {
+  const assembler = new ContextAssembler();
+  const ROOT = 'src/a.ts::A::function';
+
+  /** The shared graph plus E, which only imports A: a potential dependent, next to D that calls it. */
+  function graphWithImporter(): SymbolGraph {
+    const graph = buildTestGraph();
+    graph.addNode(makeNode('src/e.ts::E::function'));
+    graph.addEdge({ from: 'src/e.ts::E::function', to: ROOT, kind: 'imports' });
+    return graph;
+  }
+
+  const coChangeMap = new Map<string, CoChangeEntry[]>([
+    ['src/a.ts', [{ file1: 'src/a.ts', file2: 'src/e.ts', sharedCommits: 4, frequency: 0.8 }]],
+  ]);
+
+  const entryNamed = (name: string, map?: Map<string, CoChangeEntry[]>) =>
+    assembler.assembleForTask(graphWithImporter(), ROOT, 'refactor', buildTestIndices(), undefined, map)!
+      .context.find((c) => c.name === name);
+
+  it('tags every blast radius dependent with its confidence tier', () => {
+    expect(entryNamed('D')?.confidence).toBe('confirmed');
+    expect(entryNamed('E')?.confidence).toBe('potential');
+  });
+
+  it('leaves the tier off entries that are only dependencies of the target', () => {
+    expect(entryNamed('B')).toBeDefined();
+    expect(entryNamed('B')).not.toHaveProperty('confidence');
+  });
+
+  it('upgrades a potential dependent to likely when its file co-changes with the target above 0.5', () => {
+    expect(entryNamed('E', coChangeMap)?.confidence).toBe('likely');
+    // Other tiers are not touched by co-change.
+    expect(entryNamed('D', coChangeMap)?.confidence).toBe('confirmed');
+  });
+
+  it('does not upgrade at a co-change frequency of exactly 0.5', () => {
+    const atTheLimit = new Map<string, CoChangeEntry[]>([
+      ['src/a.ts', [{ file1: 'src/a.ts', file2: 'src/e.ts', sharedCommits: 4, frequency: 0.5 }]],
+    ]);
+
+    expect(entryNamed('E', atTheLimit)?.confidence).toBe('potential');
+  });
+
+  it('keeps the ranking of the context the same: co-change changes the tier, not the score', () => {
+    expect(entryNamed('E', coChangeMap)?.relevanceScore).toBe(entryNamed('E')?.relevanceScore);
+    expect(entryNamed('E', coChangeMap)?.reason).toBe(entryNamed('E')?.reason);
+  });
+
+  it('tags a symbol that is both a dependency and a dependent with its dependent tier', () => {
+    const graph = new SymbolGraph();
+    graph.addNode(makeNode(ROOT));
+    graph.addNode(makeNode('src/b.ts::B::class', 50));
+    graph.addEdge({ from: ROOT, to: 'src/b.ts::B::class', kind: 'imports' });
+    graph.addEdge({ from: 'src/b.ts::B::class', to: ROOT, kind: 'calls' });
+
+    const b = assembler.assembleForTask(graph, ROOT, 'refactor', buildTestIndices())!.context.find((c) => c.name === 'B');
+
+    expect(b?.reason).toContain('direct dependency');
+    expect(b?.reason).toContain('blast radius dependent');
+    expect(b?.confidence).toBe('confirmed');
   });
 });
 

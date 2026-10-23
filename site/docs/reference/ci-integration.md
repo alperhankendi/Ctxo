@@ -20,7 +20,7 @@ The command performs a dry-run index and compares against the committed `.ctxo/i
 | Index matches source tree | `0` |
 | Index is stale (missing, extra, or out-of-date files) | `1` |
 
-No files are written. `--check` is read-only and safe to run in any CI stage.
+No files are written. `--check` is read-only and safe to run in any CI stage. It also records no community snapshot, so it does not build the drift and boundary history (that comes from the post-commit hook, one snapshot per commit; see [`ctxo init`](/cli/init)).
 
 ## GitHub Actions example
 

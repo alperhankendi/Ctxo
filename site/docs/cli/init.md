@@ -14,7 +14,8 @@ Bootstraps a project for ctxo. Runs four steps:
    `gemini-cli`, `continue`.
 3. Installs the safe-edit guard hook and model-invoked skills (Claude Code and Cursor).
 4. Offers to install missing language plugins and to install git hooks that
-   re-index on commit and rebuild the SQLite cache on merge.
+   re-index each commit (`ctxo index --commit HEAD`, once per commit) and
+   rebuild the SQLite cache on merge.
 
 Requires a git repository (run `git init` first).
 
@@ -32,7 +33,7 @@ ctxo init [options]
 | `--tools <list>` | | | Comma-separated list of AI tool ids (for example `claude-code,cursor`). Implies non-interactive |
 | `--rules` | | `false` | Only regenerate AI tool rule files. Skips index dir, plugins, and git hooks |
 | `--no-install` | | `false` | Skip the language-plugin detection prompt (and the implicit install under `--yes`) |
-| `--dry-run` | | `false` | Print the files that would be created or modified and exit |
+| `--dry-run` | | `false` | Print the files that would be created or modified and exit. The hook lines name the hooks directory git resolves (so `core.hooksPath` shows up), or a skipped shared directory |
 
 ## What it writes
 
@@ -50,8 +51,10 @@ ctxo init [options]
 | `.cursor/rules/ctxo-understand.mdc` | Same skill for Cursor |
 | `.cursor/rules/ctxo-safe-edit.mdc` | Same skill for Cursor |
 | `.cursor/rules/ctxo-review-pr.mdc` | Same skill for Cursor |
-| `.git/hooks/post-commit` | Incremental re-index of changed files (idempotent block, marked `# ctxo-start` / `# ctxo-end`) |
-| `.git/hooks/post-merge` | Runs `ctxo sync` after `git pull` |
+| `post-commit` hook | Re-indexes the files the commit changed with `ctxo index --commit HEAD` (versioned block, marked `# ctxo-start v2` / `# ctxo-end`) |
+| `post-merge` hook | Runs `ctxo sync` after `git pull` (block marked `# ctxo-start` / `# ctxo-end`) |
+
+The hooks live in the directory git resolves for the repository (`git rev-parse --git-path hooks`): `.git/hooks`, or the directory `core.hooksPath` names. See [Git hooks](#git-hooks) below.
 
 ## Safe-edit guard prompt
 
@@ -70,9 +73,29 @@ Skills are markdown files the model reads - they do not execute code. The PreToo
 :::
 
 ::: tip Hooks are safe to re-run
-The hook installer detects the `# ctxo-start` marker and leaves existing hooks
-untouched. You can safely re-run `ctxo init` to pick up new AI tool rules.
+The hook installer finds the `# ctxo-start` / `# ctxo-end` block, replaces it
+in place when it is outdated, and leaves the rest of the hook file as it was.
+You can safely re-run `ctxo init` to pick up new AI tool rules or a newer hook.
 :::
+
+## Git hooks
+
+The post-commit block (version 2) is:
+
+```sh
+# ctxo-start v2
+# Incremental re-index of the files changed by this commit (one run per commit)
+if [ -d .ctxo ] && command -v ctxo >/dev/null 2>&1; then
+  ctxo index --commit HEAD >/dev/null 2>&1 || true
+fi
+# ctxo-end
+```
+
+- **One run per commit.** Version 1 ran `ctxo index --file <path>` once per changed file, which re-parsed the project for every file and wrote one community snapshot per run. Version 2 re-indexes the commit once, refreshes the co-change matrix from git, and records one snapshot for the commit. See [`ctxo index`](./index.md#incremental-runs-files-commit).
+- **Guarded.** The block does nothing unless the repository has a `.ctxo` directory and `ctxo` is on `PATH`, and it never fails a commit. The post-merge block has the same guard.
+- **Upgrades in place.** `ctxo init` and [`ctxo doctor --fix`](./doctor.md) replace an older block (including the unversioned v1 block) with the current one, keep the lines you wrote before and after it, and collapse duplicate ctxo blocks into one.
+- **Shared hooks directories are not written to.** When `core.hooksPath` is set in your global or system git config, the hooks directory is shared by every repository on the machine. `ctxo init` and `ctxo doctor --fix` then write nothing, print the two blocks to add by hand, and suggest giving this repository its own path with `git config --local core.hooksPath <dir>`. A local `core.hooksPath` is honoured. Detecting the scope needs git 2.26 or newer; on an older git the directory is treated as not shared.
+- If you decline the hooks, `ctxo init` prints which signals degrade and suggests running `ctxo index --commit HEAD` after commits. `ctxo index --check` verifies freshness only and records no snapshot.
 
 ## Examples
 

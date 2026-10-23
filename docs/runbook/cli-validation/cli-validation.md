@@ -14,15 +14,15 @@ All commands assume the monorepo root as cwd. `.ctxo/` is per-project; when vali
 
 | Command | Purpose | Flags |
 |---------|---------|-------|
-| `ctxo index` | Build codebase index | `--file <path>`, `--check`, `--skip-history`, `--max-history N`, `--skip-community` |
+| `ctxo index` | Build codebase index | `--files <path...>` (`--file <path>` alias), `--commit <rev>`, `--check`, `--skip-history`, `--max-history N`, `--skip-community`, `--cochange-commits <n\|all>`, `--cochange-since <duration>` |
 | `ctxo sync` | Rebuild SQLite from JSON index | — |
 | `ctxo status` | Show index manifest | — |
 | `ctxo verify-index` | CI gate: fail if index stale | — |
-| `ctxo init` | Install git hooks | — |
+| `ctxo init` | Install git hooks (post-commit v2 runs `ctxo index --commit HEAD`) | - |
 | `ctxo watch` | File watcher for incremental re-index | — |
 | `ctxo stats` | Show usage statistics | `--json`, `--days N`, `--clear` |
-| `ctxo doctor` | Health check all subsystems | `--json`, `--quiet` |
-| `ctxo --help` | Show help | — |
+| `ctxo doctor` | Health check all subsystems | `--json`, `--quiet`, `--fix` |
+| `ctxo --help` | Show help (also `ctxo <command> --help`, which runs nothing) | - |
 
 ***
 
@@ -38,7 +38,24 @@ pnpm --filter @ctxo/cli exec tsx src/index.ts --help
 
 * [ ] Lists all 8 commands (index, sync, watch, verify-index, status, init, stats, --help)
 * [ ] Shows `ctxo stats` with `--json, --days N, --clear` description
+* [ ] Shows the index flags `--files`, `--file`, `--commit`, `--cochange-commits`, `--cochange-since`, and the `ctxo index` line says `--max-history N` controls intent depth only
 * [ ] Output goes to stderr (not stdout)
+
+### 1.1b Subcommand `--help` Does Not Run the Command
+
+> **Safety:** a subcommand that ignores `--help` would run for real. Do this in a scratch clone, and compare `git status` and `.ctxo/` timestamps before and after.
+
+```bash
+node packages/cli/dist/index.js index --help 2>&1; echo "Exit: $?"
+node packages/cli/dist/index.js init --help 2>&1; echo "Exit: $?"
+node packages/cli/dist/index.js doctor -h 2>&1; echo "Exit: $?"
+```
+
+**Verify:**
+
+* [ ] Each prints the same help text as `ctxo --help`
+* [ ] Each exits 0
+* [ ] No index run, no `init` prompt, no hook or file written (`.ctxo/` and `.git/hooks/` are untouched)
 
 ### 1.2 Unknown Command
 
@@ -68,10 +85,11 @@ time pnpm --filter @ctxo/cli exec tsx src/index.ts index
 * [ ] Output shows `[ctxo] Community detection: M clusters (modularity X.XXX)` with modularity ≥ 0.3
 * [ ] `.ctxo/index/` contains JSON files
 * [ ] `.ctxo/index/communities.json` exists and is valid JSON (version: 1)
+* [ ] `.ctxo/index/co-changes.json` exists and its `window` records `maxCommits`, `head`, `commitsScanned`, `commitsUsed`, `massSkipped`, `maxFilesPerCommit` and `minShared`
 * [ ] No errors on stderr
 * [ ] Build time under 10 seconds
 
-> **Note:** `.ctxo/index/communities.history/<ISO>-<sha>.json` is **not** created on the first run after a wipe — rotation only kicks in from the second `ctxo index` onward. See Step 2.7.
+> **Note:** `.ctxo/index/communities.history/<ISO>-<sha>.json` is **not** created on the first run after a wipe, and not by a second run on the same commit either: history holds one snapshot per commit and gains an entry only when a run happens at a new commit. See Step 2.7.
 
 ### 2.2 `--check` Flag (CI Gate)
 
@@ -94,8 +112,9 @@ time pnpm --filter @ctxo/cli exec tsx src/index.ts index --skip-history
 **Verify:**
 
 * [ ] Index builds successfully
-* [ ] Faster than full build (no git log per file)
+* [ ] Faster than full build (no git history read)
 * [ ] `intent` arrays are empty in index JSON files
+* [ ] `.ctxo/index/co-changes.json` is not refreshed (an existing file keeps its bytes; none is created after the wipe)
 
 ### 2.4 `--max-history N` Flag
 
@@ -108,6 +127,7 @@ pnpm --filter @ctxo/cli exec tsx src/index.ts index --max-history 3
 
 * [ ] Index builds successfully
 * [ ] No file in `.ctxo/index/` has more than 3 entries in its `intent` array
+* [ ] `co-changes.json` `window.commitsScanned` is unchanged by `--max-history`: the co-change window has its own settings (Step 2.9)
 
 ```bash
 node -e "
@@ -119,18 +139,43 @@ console.log('Max intent entries:', maxIntent, maxIntent <= 3 ? 'PASS' : 'FAIL');
 "
 ```
 
-### 2.5 `--file <path>` Flag (Single File Re-index)
+### 2.5 `--files <path...>` and `--file <path>` (Incremental Re-index)
 
 ```bash
+cp .ctxo/index/co-changes.json /tmp/co-changes.before.json
+pnpm --filter @ctxo/cli exec tsx src/index.ts index --files packages/cli/src/core/types.ts packages/cli/src/core/logger.ts
 pnpm --filter @ctxo/cli exec tsx src/index.ts index --file packages/cli/src/core/types.ts
 ```
 
 **Verify:**
 
+* [ ] Output shows `[ctxo] Incremental re-index: 2 file(s) to index, 0 to remove` for `--files` and 1 file for `--file` (an alias of `--files` with one path)
+* [ ] `co-changes.json` is unchanged (same entries as `/tmp/co-changes.before.json`): an incremental run recomputes co-change from git for the whole repository, never from the listed files
+* [ ] `.ctxo/.cache/symbols.db` still holds every indexed file (status shows the same symbol count as before), not only the listed ones
 * [ ] Only `packages/cli/src/core/types.ts` is re-indexed
 * [ ] Output shows `[ctxo] Community detection (incremental, full-graph recompute): N clusters (modularity X.XXX)` — community detection reruns over the full merged graph (new file + existing committed index), not over the 1-file subgraph
 * [ ] Output shows 1 file indexed (`[ctxo] Index complete: 1 files indexed`)
 * [ ] Other index files are unchanged
+
+### 2.5b `--commit <rev>` (Re-index One Commit)
+
+> Run this in a scratch clone: it needs a commit to point at.
+
+```bash
+echo "// touched" >> packages/cli/src/core/types.ts
+git add packages/cli/src/core/types.ts && git commit -m "validation: touch types.ts"
+pnpm --filter @ctxo/cli exec tsx src/index.ts index --commit HEAD
+pnpm --filter @ctxo/cli exec tsx src/index.ts index --commit no-such-rev 2>&1; echo "Exit: $?"
+```
+
+**Verify:**
+
+* [ ] `--commit HEAD` prints `Incremental re-index: 1 file(s) to index, 0 to remove (commit HEAD)`
+* [ ] `communities.json` `commitSha` equals `git rev-parse --short HEAD`
+* [ ] `co-changes.json` `window.head` follows the new HEAD and `commitsScanned` grew by 1
+* [ ] A commit that deletes or renames a file removes the old index JSON and, for a rename, indexes the new path
+* [ ] `--commit no-such-rev` exits 1 with `cannot read the files this commit changed`, and nothing is written
+* [ ] `--commit` with no revision exits 1 with `--commit requires a revision`
 
 ### 2.6 `--skip-community` Flag (opt out of community detection)
 
@@ -148,25 +193,30 @@ time pnpm --filter @ctxo/cli exec tsx src/index.ts index --skip-community
 * [ ] If a previous `communities.json` exists, its contents are preserved (mtime unchanged, cluster count unchanged) — the flag does NOT regenerate or delete the snapshot
 * [ ] Indexing is marginally faster (no Louvain + PageRank pass)
 
-### 2.7 Snapshot History Rotation (run index twice)
+### 2.7 Snapshot History: One Snapshot per Commit
 
-> **Behavior note:** The first post-wipe `ctxo index` writes `communities.json` but does **not** create a `communities.history/` entry — history rotation is only triggered when there is a previous snapshot to rotate. So history files start appearing from the second run onward.
+> **Behavior note:** `communities.json` is the snapshot of the current HEAD. The previous commit's snapshot is archived into `communities.history/` only when a run happens at a **new** commit. Running `ctxo index` any number of times on one commit replaces `communities.json` and archives nothing, so history holds at most one snapshot per commit. Run this in a scratch clone (it makes commits).
 
 ```bash
 rm -rf .ctxo/.cache/ .ctxo/index/
-pnpm --filter @ctxo/cli exec tsx src/index.ts index  # run 1 — writes communities.json, no history
-pnpm --filter @ctxo/cli exec tsx src/index.ts index  # run 2 — rotates previous snapshot into history
-pnpm --filter @ctxo/cli exec tsx src/index.ts index  # run 3
+pnpm --filter @ctxo/cli exec tsx src/index.ts index  # run 1: writes communities.json, no history
+pnpm --filter @ctxo/cli exec tsx src/index.ts index  # run 2: same commit, replaces communities.json, no history
+git commit --allow-empty -m "validation: second commit"
+pnpm --filter @ctxo/cli exec tsx src/index.ts index  # run 3: new commit, archives the first commit's snapshot
+git commit --allow-empty -m "validation: third commit"
+pnpm --filter @ctxo/cli exec tsx src/index.ts index  # run 4
 ls .ctxo/index/communities.history/
 ```
 
 **Verify:**
 
-* [ ] After run 1: `communities.history/` is empty (or absent).
-* [ ] After run 2: exactly 1 snapshot file exists in `communities.history/`.
-* [ ] After run 3: at least 2 snapshot files exist.
-* [ ] File names are `<ISO-timestamp>-<git-short-sha>.json`.
-* [ ] Max 10 files kept (FIFO eviction; verify by running `ctxo index` 11 times after an initial snapshot exists and confirming the oldest file is removed).
+* [ ] After runs 1 and 2: `communities.history/` is empty (or absent).
+* [ ] After run 3: exactly 1 snapshot file exists, named for the previous commit.
+* [ ] After run 4: exactly 2 snapshot files exist, with two different commit SHAs.
+* [ ] File names are `<ISO-timestamp>-<git-short-sha>.json`, and no two files share a SHA.
+* [ ] Max 10 files kept (FIFO eviction by commit; verify by indexing after 11 further commits and confirming the oldest commit's file is removed).
+* [ ] `drift-events.json` and `boundary-violations.json` report `distinctCommits` equal to the number of distinct SHAs in `communities.history/` other than the current commit (0 after run 2, 1 after run 3, 2 after run 4), and `confidence` follows it (`low` below 3).
+* [ ] Upgrade healing: copy two files of the same SHA into `communities.history/` (a v1 hook leftover), run `ctxo index`; the first write leaves one file for that SHA and nothing else is lost.
 
 ### 2.8 `--max-history` Invalid Input
 
@@ -184,6 +234,33 @@ node packages/cli/dist/index.js index --max-history 2>&1; echo "Exit: $?"
 
 * [ ] All three show `[ctxo] --max-history requires a positive integer`
 * [ ] All three exit with code 1
+
+### 2.9 Co-change Window (`--cochange-commits`, `--cochange-since`, `cochange:` config)
+
+```bash
+pnpm --filter @ctxo/cli exec tsx src/index.ts index --cochange-commits 50
+pnpm --filter @ctxo/cli exec tsx src/index.ts index --cochange-commits all
+pnpm --filter @ctxo/cli exec tsx src/index.ts index --cochange-commits 500 --cochange-since 12m
+```
+
+**Verify:**
+
+* [ ] `co-changes.json` `window.maxCommits` is `50`, then `"all"`, then `500` with `since: "12m"`
+* [ ] With `all`, `window.commitsScanned` equals `git rev-list --no-merges --count HEAD`
+* [ ] `commitsUsed + massSkipped` is not larger than `commitsScanned`; merge commits are not in the log, so they are in none of these counts
+* [ ] A second run with the same options and HEAD leaves `co-changes.json` byte-identical
+* [ ] Setting `cochange.maxFilesPerCommit`, `cochange.minShared`, `cochange.include` and `cochange.exclude` in `.ctxo/config.yaml` changes the matrix (and `window`) accordingly; `exclude` also removes files added by `include`
+
+Invalid input (against the built CLI):
+
+```bash
+node packages/cli/dist/index.js index --cochange-commits abc 2>&1; echo "Exit: $?"
+node packages/cli/dist/index.js index --cochange-commits 0 2>&1; echo "Exit: $?"
+node packages/cli/dist/index.js index --cochange-since 12 2>&1; echo "Exit: $?"
+```
+
+* [ ] The first two show `--cochange-commits requires a positive integer or "all"`, the third `--cochange-since requires a duration such as 30d, 2w, 12m or 1y`
+* [ ] All three exit 1 and index nothing
 
 ***
 
@@ -305,14 +382,17 @@ pnpm --filter @ctxo/cli exec tsx src/index.ts init
 **Verify (happy path — say yes to hooks):**
 
 * [ ] Prompt message mentions architectural drift & boundary violation signals when describing hooks
-* [ ] Creates `.git/hooks/post-commit` (or updates it)
-* [ ] Creates `.git/hooks/post-merge` (or updates it)
-* [ ] Hooks contain `ctxo index` command
+* [ ] Creates the post-commit hook (or updates it) in the hooks directory `git rev-parse --git-path hooks` names (`.git/hooks`, or the directory `core.hooksPath` points at)
+* [ ] Creates the post-merge hook (or updates it) in the same directory
+* [ ] The post-commit block is `# ctxo-start v2` ... `# ctxo-end`, guarded by `[ -d .ctxo ]`, and runs `ctxo index --commit HEAD` once (not `--file`)
+* [ ] Re-running `ctxo init` leaves the hook byte-identical; an old unversioned block is replaced in place and the lines around it are kept; duplicate ctxo blocks collapse into one
+* [ ] With `core.hooksPath` in the **global** or **system** git config, init writes no hook, prints the two blocks to add by hand and continues (use a throwaway `GIT_CONFIG_GLOBAL` file; scope detection needs git 2.26+)
+* [ ] `ctxo init --dry-run` names the resolved hooks directory (or says the shared directory is skipped)
 
 **Verify (opt-out path — say no to hooks):**
 
 * [ ] Init prints a `⚠` warning that drift + boundary signals depend on snapshot cadence
-* [ ] Warning lists fallback options: `ctxo watch`, `ctxo index --check` in CI, re-run `ctxo init` later
+* [ ] Warning lists fallback options: `ctxo watch`, `ctxo index --commit HEAD` after commits (it states that `ctxo index --check` records no snapshot), re-run `ctxo init` later
 * [ ] Setup still completes successfully (only hook step skipped)
 
 ```bash
@@ -354,7 +434,7 @@ kill $WATCH_PID 2>/dev/null
 
 * [ ] Console shows `[ctxo] Community snapshot refreshed (modularity X.XXX)` after ~5 s debounce
 * [ ] `.ctxo/index/communities.json` mtime is recent
-* [ ] A new file appears in `.ctxo/index/communities.history/` (hook-less users get automatic snapshots via watch)
+* [ ] `communities.json` is rewritten; on the same commit no new file appears in `.ctxo/index/communities.history/` (watch replaces the current snapshot like any other run). After a new commit, the next watch snapshot archives the previous commit's snapshot (hook-less users get one snapshot per commit via watch)
 
 ***
 
@@ -617,6 +697,25 @@ pnpm --filter @ctxo/cli exec tsx src/index.ts doctor; echo "Exit: $?"
 
 ***
 
+### 9.6 `git_hooks` Check and `--fix`
+
+> Use a scratch clone with a repository-local hooks directory. Never run `doctor --fix` where `core.hooksPath` is shared by other repositories.
+
+```bash
+pnpm --filter @ctxo/cli exec tsx src/index.ts doctor --json | jq '.checks[] | select(.name == "git_hooks")'
+```
+
+**Verify:**
+
+* [ ] With the v2 block installed: `pass` ("ctxo post-commit hook v2")
+* [ ] With no ctxo block, a v1 (unversioned) block, or more than one ctxo block: `warn`, and the fix text names `ctxo doctor --fix`
+* [ ] `ctxo doctor --fix --dry-run` lists the hooks step and leaves the hook untouched; `ctxo doctor --fix --yes` upgrades it to v2 in place and the check passes
+* [ ] With a global or system `core.hooksPath` and no current block (missing, outdated or duplicated): `warn` ("Shared hooks directory ... ctxo does not write there"), and `--fix` reports the hooks step as skipped, not failed, with the hook files untouched
+* [ ] With a global or system `core.hooksPath` that already holds exactly one current (v2) block added by hand: `pass`
+* [ ] Outside a git repository the check passes ("Not a git repository"); `git_repo` carries the failure
+
+***
+
 ## Step 10: Cross-Command Integration
 
 ### 10.1 Index → Status → Verify Round-trip
@@ -688,19 +787,19 @@ pnpm --filter @ctxo/cli exec vitest run src/adapters/stats/__tests__/ 2>&1 | tai
 
 | # | Command | Tested | Pass |
 |---|---------|--------|------|
-| 1 | `ctxo --help` | Help output, unknown command | [ ] |
-| 2 | `ctxo index` | Full, --check, --skip-history, --max-history, --file, invalid input | [ ] |
+| 1 | `ctxo --help` | Help output, subcommand --help runs nothing, unknown command | [ ] |
+| 2 | `ctxo index` | Full, --check, --skip-history, --max-history, --files/--file, --commit, snapshot per commit, co-change window, invalid input | [ ] |
 | 3 | `ctxo sync` | Fresh sync, re-sync | [ ] |
 | 4 | `ctxo status` | Normal, without index | [ ] |
 | 5 | `ctxo verify-index` | Fresh, stale | [ ] |
-| 6 | `ctxo init` | Hook creation | [ ] |
+| 6 | `ctxo init` | Hook creation, v2 block, in-place upgrade, shared hooks directory | [ ] |
 | 7 | `ctxo watch` | Startup, clean exit | [ ] |
 | 8 | `ctxo stats` | Default, --json, --days, --clear, empty, disabled | [ ] |
-| 9 | `ctxo doctor` | Default, --json, --quiet, missing index, exit codes | [ ] |
+| 9 | `ctxo doctor` | Default, --json, --quiet, missing index, exit codes, git_hooks check and --fix | [ ] |
 | 10 | Cross-command | Index→Status→Verify, Index→Sync→Status, MCP→Stats | [ ] |
 | 11 | Unit tests | CLI + stats + diagnostics adapter tests | [ ] |
 
-**Total checks: 59**
+**Total checks: 59** (plus the checks added for #157 in Steps 1.1b, 2.5, 2.5b, 2.7, 2.9, 6 and 9.6)
 
 ***
 

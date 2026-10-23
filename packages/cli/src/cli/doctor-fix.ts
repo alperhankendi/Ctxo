@@ -164,10 +164,15 @@ function finish(
   return reason ? { attempts, halted, reason } : { attempts, halted };
 }
 
+/** A fix body returns this when it deliberately did nothing (not a failure): the attempt is reported as skipped. */
+interface FixSkipped {
+  readonly skipped: string;
+}
+
 async function run(
   name: string,
   action: string,
-  body: () => Promise<void>,
+  body: () => Promise<void | FixSkipped>,
   options: FixOptions,
 ): Promise<FixAttempt> {
   if (options.dryRun) {
@@ -175,7 +180,10 @@ async function run(
   }
   const start = Date.now();
   try {
-    await body();
+    const outcome = await body();
+    if (outcome) {
+      return { name, action, status: 'skipped', durationMs: Date.now() - start, error: outcome.skipped };
+    }
     return { name, action, status: 'success', durationMs: Date.now() - start };
   } catch (err) {
     return {
@@ -196,8 +204,12 @@ async function fixConfig(projectRoot: string): Promise<void> {
   }
 }
 
-async function fixHooks(projectRoot: string): Promise<void> {
-  new InitCommand(projectRoot).installHooks();
+async function fixHooks(projectRoot: string): Promise<void | FixSkipped> {
+  const result = new InitCommand(projectRoot).installHooks();
+  if (!result.installed) {
+    // installHooks already printed the warning with the blocks to add by hand.
+    return { skipped: `shared hooks directory (${result.sharedScope} core.hooksPath); ctxo does not write there, add the blocks by hand` };
+  }
 }
 
 function hasMissingPlugins(projectRoot: string): boolean {
@@ -266,10 +278,12 @@ function listGitFiles(projectRoot: string): Set<string> {
   try {
     const out = execFileSync(
       'git',
-      ['ls-files', '--cached', '--others', '--exclude-standard'],
+      // -z: NUL-separated, unquoted names. Quoted ones would never match an index entry, and the
+      // prune would delete the entries of every file with a non-ASCII name.
+      ['ls-files', '-z', '--cached', '--others', '--exclude-standard'],
       { cwd: projectRoot, encoding: 'utf-8', maxBuffer: 64 * 1024 * 1024 },
     );
-    return new Set(out.split('\n').filter(Boolean));
+    return new Set(out.split('\0').filter(Boolean));
   } catch {
     return new Set();
   }

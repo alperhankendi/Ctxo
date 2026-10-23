@@ -112,10 +112,11 @@ function listGitFiles(root: string): string[] {
   try {
     const out = execFileSync(
       'git',
-      ['ls-files', '--cached', '--others', '--exclude-standard'],
+      // -z: NUL-separated, unquoted names (git quotes non-ASCII paths otherwise).
+      ['ls-files', '-z', '--cached', '--others', '--exclude-standard'],
       { cwd: root, encoding: 'utf-8', maxBuffer: 64 * 1024 * 1024 },
     );
-    return out.split('\n').filter(Boolean);
+    return out.split('\0').filter(Boolean);
   } catch {
     return [];
   }

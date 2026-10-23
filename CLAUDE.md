@@ -37,16 +37,21 @@ ctxo update --global                # force a global install
 ctxo update --json                  # machine-readable output
 ctxo index                          # build codebase index
 ctxo index --install-missing        # auto-install detected plugins, then index
-ctxo index --check                  # CI gate: fail if index stale
-ctxo index --skip-history           # fast re-index without git history
-ctxo index --max-history 5          # limit commit history per file
+ctxo index --check                  # CI gate: fail if index stale (writes nothing, records no snapshot)
+ctxo index --skip-history           # fast re-index without git history (co-changes.json is left as it is)
+ctxo index --max-history 5          # limit commit history per file (intent depth only, not the co-change window)
+ctxo index --files a.ts b.ts        # re-index only these files (--file <path> is the older spelling)
+ctxo index --commit HEAD            # re-index the files one commit changed (the v2 post-commit hook runs this)
+ctxo index --cochange-commits 500   # co-change window in commits (default 2000, or "all")
+ctxo index --cochange-since 12m     # co-change window by age from HEAD (d, w, m, y)
 ctxo watch                          # file watcher for incremental re-index
 ctxo sync                           # rebuild SQLite from committed JSON
-ctxo init                           # install git hooks + language detection/install prompt
+ctxo init                           # install git hooks (post-commit v2) + language detection/install prompt
 ctxo init --no-install              # init without plugin install prompt
 ctxo status                         # show index manifest
 ctxo doctor                         # health check all subsystems (--json, --quiet)
-ctxo doctor --fix                   # dependency-ordered remediation (--dry-run, --yes)
+ctxo doctor --fix                   # dependency-ordered remediation (--dry-run, --yes); upgrades old hook blocks
+ctxo <command> --help               # print the help; the command is not run
 ctxo version                        # verbose version report (default)
 ctxo --version --verbose            # version + installed plugins list
 ctxo --version --json               # machine-readable version report
@@ -137,11 +142,19 @@ index:
   ignoreProjects:              # globs applied to workspace roots (skip discovery)
     - "packages/experimental-*"
     - "examples/*"
+cochange:                      # co-change matrix window (independent of --max-history)
+  maxCommits: 2000             # last N non-merge commits from HEAD, or "all"
+  # since: 12m                 # also limit by age (d, w, m, y), counted back from HEAD's committer date
+  maxFilesPerCommit: 30        # commits touching more analysed files are skipped (massSkipped)
+  minShared: 2                 # shared commits needed for a pair
+  include: []                  # extra tracked, non-indexed files to analyse (globs)
+  exclude: []                  # indexed files to leave out (globs); also vetoes include-added files
 ```
 
 * `index.ignore`: per-file picomatch globs, matched against repo-relative forward-slash paths.
 * `index.ignoreProjects`: matched against workspace paths; skipped workspaces are never enumerated and their plugin deps are never imported.
-* Invalid globs surface as warnings via `ctxo doctor`; schema violations surface as fails. The loader falls back to defaults on any error (warn-and-continue).
+* `cochange`: see [ADR-016](docs/architecture/ADR/adr-016-co-change-engine-and-snapshot-policy.md). One `git log` pass builds `co-changes.json` (window recorded under `window`) and every blast-radius path reads it. Overrides: `--cochange-commits`, `--cochange-since`.
+* Invalid globs (`index.*`, `cochange.include`, `cochange.exclude`) surface as warnings via `ctxo doctor`; schema violations surface as fails. The loader falls back to defaults on any error (warn-and-continue).
 
 ### Safe-Edit Guard
 
@@ -163,7 +176,7 @@ Sensitivity levels:
 | balanced | top 15% | 3 |
 | lenient | top 5% | 5 |
 
-Use `ctxo gate --preview` to see which symbols the current config would flag before committing to a sensitivity level.
+Use `ctxo gate --preview` to see which symbols the current config would flag before committing to a sensitivity level. The gate counts `confirmed + likely` dependents and `likely` includes co-change-upgraded ones, so it may fire somewhat more often than on the graph alone.
 
 **Platform support:** Claude Code = full enforcement (hook) + skills + rules. Cursor = skills + rules only (no blocking pre-edit hook). All other platforms = rules only.
 

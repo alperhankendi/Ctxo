@@ -39,7 +39,7 @@ export class ConfigFileCheck implements IHealthCheck {
           title: this.title,
           status: 'warn',
           message: `config.yaml has ${loaded.invalidGlobs.length} invalid glob pattern(s): ${loaded.invalidGlobs.join('; ')}`,
-          fix: 'Fix the listed glob patterns under index.ignore / index.ignoreProjects',
+          fix: 'Fix the listed glob patterns under index.ignore / index.ignoreProjects / cochange.include / cochange.exclude',
         };
       }
       return { id: this.id, title: this.title, status: 'pass', message: '.ctxo/config.yaml valid' };

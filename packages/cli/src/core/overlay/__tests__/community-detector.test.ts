@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
+import { compareCodepoint } from '../../compare-codepoint.js';
 import { SymbolGraph } from '../../graph/symbol-graph.js';
 import type { SymbolNode } from '../../types.js';
 import { CommunityDetector } from '../community-detector.js';
@@ -143,6 +144,35 @@ describe('CommunityDetector', () => {
     expect(result.crossClusterEdges).toBeGreaterThan(0);
   });
 
+  it('breaks god node ties by code point, never by locale', () => {
+    // Two bridges wired the same way to the same three clusters, with the same PageRank: only the id
+    // decides. "Index" and "ideal" differ only in case: a code point sort puts the upper-case I first,
+    // a locale-aware sort ("ideal" before "index") puts it last.
+    const detector = new CommunityDetector({ godNodeMinBridged: 2 });
+    const graph = buildMultiClusterGraph();
+    const bridges = ['src/ideal.ts::y::class', 'src/Index.ts::x::class'];
+    const touches = [
+      'auth/login.ts::login::function',
+      'billing/invoice.ts::Invoice::class',
+      'reporting/monthly.ts::monthlyReport::function',
+    ];
+    for (const bridge of bridges) {
+      graph.addNode(makeNode(bridge));
+      for (const target of touches) graph.addEdge({ from: target, to: bridge, kind: 'calls' });
+    }
+    const pr = pagerankFor(graph);
+
+    const result = detector.detect(graph, pr);
+
+    const godIds = result.godNodes.map((god) => god.symbolId);
+    expect(godIds).toEqual(expect.arrayContaining(bridges));
+    const [first, second] = result.godNodes.filter((god) => bridges.includes(god.symbolId));
+    // The scores really tie, so the id is what orders them.
+    expect(first!.centralityScore).toBe(second!.centralityScore);
+    expect(first!.symbolId).toBe('src/Index.ts::x::class');
+    expect(second!.symbolId).toBe('src/ideal.ts::y::class');
+  });
+
   it('returns god nodes sorted by centrality score descending', () => {
     const detector = new CommunityDetector({ godNodeMinBridged: 2 });
     const graph = buildGraphWithGodNode();
@@ -155,7 +185,7 @@ describe('CommunityDetector', () => {
       const sortedCorrectly =
         prev.centralityScore > curr.centralityScore ||
         (prev.centralityScore === curr.centralityScore &&
-          prev.symbolId.localeCompare(curr.symbolId) <= 0);
+          compareCodepoint(prev.symbolId, curr.symbolId) <= 0);
       expect(sortedCorrectly).toBe(true);
     }
   });

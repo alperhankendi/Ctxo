@@ -8,6 +8,7 @@ import {
   EdgeKindSchema,
   DetailLevelSchema,
   EdgeTargetSchema,
+  CoChangeMatrixSchema,
 } from '../types.js';
 
 // ── Fixtures ────────────────────────────────────────────────────
@@ -416,5 +417,130 @@ describe('FileIndexSchema', () => {
       }),
     );
     expect(result.success).toBe(false);
+  });
+});
+
+// ── CoChangeMatrixSchema ────────────────────────────────────────
+
+function buildCoChangeMatrix(overrides: Record<string, unknown> = {}) {
+  return {
+    version: 1,
+    timestamp: 1760000000,
+    window: {
+      maxCommits: 2000,
+      head: 'abc1234',
+      commitsScanned: 120,
+      commitsUsed: 100,
+      massSkipped: 3,
+      maxFilesPerCommit: 30,
+      minShared: 2,
+    },
+    entries: [{ file1: 'src/a.ts', file2: 'src/b.ts', sharedCommits: 5, frequency: 0.8 }],
+    ...overrides,
+  };
+}
+
+describe('CoChangeMatrixSchema', () => {
+  it('parses a matrix with window metadata', () => {
+    const input = buildCoChangeMatrix();
+
+    const result = CoChangeMatrixSchema.safeParse(input);
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data).toEqual(input);
+    }
+  });
+
+  it('parses a matrix written before the window was recorded', () => {
+    const { window: _window, ...legacy } = buildCoChangeMatrix();
+
+    const result = CoChangeMatrixSchema.safeParse(legacy);
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.window).toBeUndefined();
+      expect(result.data.entries).toHaveLength(1);
+    }
+  });
+
+  it('parses an empty matrix', () => {
+    expect(CoChangeMatrixSchema.safeParse({ version: 1, timestamp: 0, entries: [] }).success).toBe(true);
+  });
+
+  it("parses a window with maxCommits 'all' and a since duration", () => {
+    const base = buildCoChangeMatrix();
+    const result = CoChangeMatrixSchema.safeParse(
+      buildCoChangeMatrix({ window: { ...base.window, maxCommits: 'all', since: '12m' } }),
+    );
+
+    expect(result.success).toBe(true);
+  });
+
+  it('requires entries', () => {
+    const { entries: _entries, ...withoutEntries } = buildCoChangeMatrix();
+
+    expect(CoChangeMatrixSchema.safeParse(withoutEntries).success).toBe(false);
+    expect(CoChangeMatrixSchema.safeParse({}).success).toBe(false);
+  });
+
+  it('rejects an unsupported version', () => {
+    expect(CoChangeMatrixSchema.safeParse(buildCoChangeMatrix({ version: 2 })).success).toBe(false);
+    expect(CoChangeMatrixSchema.safeParse(buildCoChangeMatrix({ version: '1' })).success).toBe(false);
+  });
+
+  it('rejects a missing or non-numeric timestamp', () => {
+    const { timestamp: _timestamp, ...withoutTimestamp } = buildCoChangeMatrix();
+
+    expect(CoChangeMatrixSchema.safeParse(withoutTimestamp).success).toBe(false);
+    expect(CoChangeMatrixSchema.safeParse(buildCoChangeMatrix({ timestamp: 'now' })).success).toBe(false);
+  });
+
+  it.each([
+    ['a missing file', { file1: 'src/a.ts', sharedCommits: 5, frequency: 0.8 }],
+    ['an empty file name', { file1: '', file2: 'src/b.ts', sharedCommits: 5, frequency: 0.8 }],
+    ['a non-string file', { file1: 'src/a.ts', file2: 7, sharedCommits: 5, frequency: 0.8 }],
+    ['a string frequency', { file1: 'src/a.ts', file2: 'src/b.ts', sharedCommits: 5, frequency: '0.8' }],
+    ['a frequency above 1', { file1: 'src/a.ts', file2: 'src/b.ts', sharedCommits: 5, frequency: 1.5 }],
+    ['a negative frequency', { file1: 'src/a.ts', file2: 'src/b.ts', sharedCommits: 5, frequency: -0.1 }],
+    ['a fractional shared count', { file1: 'src/a.ts', file2: 'src/b.ts', sharedCommits: 2.5, frequency: 0.8 }],
+    ['a zero shared count', { file1: 'src/a.ts', file2: 'src/b.ts', sharedCommits: 0, frequency: 0.8 }],
+    ['a missing shared count', { file1: 'src/a.ts', file2: 'src/b.ts', frequency: 0.8 }],
+  ])('rejects an entry with %s', (_name, entry) => {
+    expect(CoChangeMatrixSchema.safeParse(buildCoChangeMatrix({ entries: [entry] })).success).toBe(false);
+  });
+
+  it('rejects the whole matrix when one entry is malformed', () => {
+    const good = { file1: 'src/a.ts', file2: 'src/b.ts', sharedCommits: 5, frequency: 0.8 };
+    const bad = { file1: 'src/c.ts', file2: 'src/d.ts', sharedCommits: 'many', frequency: 0.8 };
+
+    expect(CoChangeMatrixSchema.safeParse(buildCoChangeMatrix({ entries: [good, bad] })).success).toBe(false);
+  });
+
+  it.each([
+    ['a missing head', { head: undefined }],
+    ['a zero maxCommits', { maxCommits: 0 }],
+    ['an unknown maxCommits string', { maxCommits: 'everything' }],
+    ['a negative scan count', { commitsScanned: -1 }],
+    ['a fractional used count', { commitsUsed: 1.5 }],
+    ['a string skip count', { massSkipped: '3' }],
+    ['a zero maxFilesPerCommit', { maxFilesPerCommit: 0 }],
+    ['a zero minShared', { minShared: 0 }],
+    ['a non-string since', { since: 12 }],
+  ])('rejects window metadata with %s', (_name, patch) => {
+    const base = buildCoChangeMatrix();
+
+    expect(
+      CoChangeMatrixSchema.safeParse(buildCoChangeMatrix({ window: { ...base.window, ...patch } })).success,
+    ).toBe(false);
+  });
+
+  it('ignores keys it does not know so newer files stay readable', () => {
+    const result = CoChangeMatrixSchema.safeParse(buildCoChangeMatrix({ generatedBy: 'future' }));
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect('generatedBy' in result.data).toBe(false);
+    }
   });
 });

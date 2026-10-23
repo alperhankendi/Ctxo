@@ -66,6 +66,17 @@ task-weighted result.
       "reason": "direct dependency (interface)",
       "lines": 42,
       "tokens": 180
+    },
+    {
+      "symbolId": "packages/cli/src/cli/sync-command.ts::SyncCommand::class",
+      "name": "SyncCommand",
+      "kind": "class",
+      "file": "packages/cli/src/cli/sync-command.ts",
+      "relevanceScore": 0.61,
+      "reason": "blast radius dependent",
+      "confidence": "likely",
+      "lines": 38,
+      "tokens": 150
     }
   ],
   "totalTokens": 3820,
@@ -80,6 +91,17 @@ Symbol missing:
 ```json
 { "found": false, "hint": "Symbol not found. Run \"ctxo index\"." }
 ```
+
+### `confidence` on dependents
+
+Entries that depend on the target (the blast radius part of the context) carry
+an optional `confidence` tier: `confirmed`, `likely` or `potential`. It is the
+same tier [`get_blast_radius`](/mcp-tools/get-blast-radius) reports, including
+the co-change rule: a `potential` dependent whose file co-changes with the
+target's file (frequency above 0.5, from `.ctxo/index/co-changes.json`) is shown
+as `likely`. The field is only set on dependents, so dependencies and type
+definitions do not have it. Co-change changes the tier shown; it does not add
+entries or change their ranking.
 
 ## When to use
 

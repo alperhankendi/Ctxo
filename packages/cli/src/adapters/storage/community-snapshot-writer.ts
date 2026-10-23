@@ -8,6 +8,7 @@ import {
 import { tmpdir } from 'node:os';
 import { basename, join, resolve } from 'node:path';
 
+import { compareCodepoint } from '../../core/compare-codepoint.js';
 import { createLogger } from '../../core/logger.js';
 import type { CommunitySnapshot } from '../../core/types.js';
 import { atomicWrite } from './atomic-write.js';
@@ -18,6 +19,8 @@ const DEFAULT_HISTORY_LIMIT = 10;
 const HISTORY_DIR_NAME = 'communities.history';
 const CURRENT_FILE_NAME = 'communities.json';
 const NOCOMMIT_SHA = 'nocommit';
+/** The counter `historyFilename` puts before the extension when two archives would get the same name. */
+const COLLISION_COUNTER_RE = /^(.*)\.(\d+)\.json$/;
 
 export interface CommunitySnapshotWriterOptions {
   readonly historyLimit?: number;
@@ -56,19 +59,28 @@ export class CommunitySnapshotWriter {
     mkdirSync(this.historyDir, { recursive: true });
 
     // Archive the previous current snapshot (if any) into history BEFORE
-    // overwriting. This keeps history as "snapshots older than current" —
-    // drift and boundary-violation detectors compare current vs history[0]
-    // and must not see current in both positions.
+    // overwriting. This keeps history as "snapshots older than current".
+    // Drift and boundary-violation detectors compare current against the
+    // newest history entry from a different commit (history[0] on a clean
+    // history) and must not see current in both positions.
     //
-    // Skip archival for snapshots whose commitSha is 'nocommit' (git
-    // unavailable at write time). They have no stable anchor for drift
-    // comparison and would pollute history with indistinguishable entries.
+    // Two cases are not archived:
+    // - commitSha 'nocommit' (git unavailable at write time). Such snapshots
+    //   have no stable anchor for drift comparison and would pollute history
+    //   with indistinguishable entries.
+    // - the same commit as the new snapshot. History is a chain of commits,
+    //   not of runs: the v1 post-commit hook ran `ctxo index --file` once per
+    //   changed file (the v2 hook runs `ctxo index --commit HEAD` once) and
+    //   `ctxo watch` re-snapshots after every burst of edits, all at the same
+    //   HEAD. The new snapshot simply replaces current, so a
+    //   commit enters history once, when the next commit supersedes it.
     const currentPath = join(this.indexDir, CURRENT_FILE_NAME);
     if (existsSync(currentPath)) {
       try {
         const existingRaw = readFileSync(currentPath, 'utf-8');
         const existing = JSON.parse(existingRaw) as CommunitySnapshot;
-        if (existing.commitSha && existing.commitSha !== NOCOMMIT_SHA) {
+        const existingCommit = archivedCommit(existing);
+        if (existingCommit !== undefined && existingCommit !== snapshot.commitSha) {
           const historyFile = this.historyFilename(existing);
           this.atomicWrite(join(this.historyDir, historyFile), existingRaw);
         }
@@ -89,19 +101,25 @@ export class CommunitySnapshotWriter {
     return this.safeParse(path);
   }
 
+  /**
+   * Archived snapshots, newest first, at most one per commit. Where several
+   * files hold the same commitSha (older versions archived once per
+   * `ctxo index --file` run) the newest file wins. `limit` caps the number of
+   * commits returned. Read-only: the duplicates stay on disk until the next
+   * write rotates them out.
+   */
   listHistory(limit?: number): CommunitySnapshot[] {
     if (!existsSync(this.historyDir)) return [];
-    const entries = readdirSync(this.historyDir)
-      .filter((name) => name.endsWith('.json'))
-      .sort()
-      .reverse();
     const snapshots: CommunitySnapshot[] = [];
-    for (const name of entries) {
+    const seen = new Set<string>();
+    for (const name of this.historyNames().reverse()) {
       const snap = this.safeParse(join(this.historyDir, name));
-      if (!snap) continue;
       // Defense in depth: filter any legacy `nocommit` entries that slipped
       // into history before the writer skip-archival guard landed.
-      if (!snap.commitSha || snap.commitSha === NOCOMMIT_SHA) continue;
+      const commit = archivedCommit(snap);
+      if (!snap || commit === undefined) continue;
+      if (seen.has(commit)) continue;
+      seen.add(commit);
       snapshots.push(snap);
       if (typeof limit === 'number' && snapshots.length >= limit) break;
     }
@@ -127,15 +145,43 @@ export class CommunitySnapshotWriter {
     return candidate.slice(this.historyDir.length + 1);
   }
 
+  /** The `.json` files in the history folder, oldest first. */
+  private historyNames(): string[] {
+    return readdirSync(this.historyDir)
+      .filter((name) => name.endsWith('.json'))
+      .sort(compareHistoryNames);
+  }
+
+  /**
+   * Rotation in two steps. First the duplicates go: every file that is not
+   * the newest readable file of its commit (the copies older versions left
+   * behind, one per `ctxo index --file` run). Then, by file count, the oldest
+   * files beyond `historyLimit`. Copies therefore never use up slots, history
+   * keeps each commit at most once, and a commit's newest file is removed
+   * only together with its commit, when that is among the oldest beyond the
+   * limit. Files that stand for no commit (unreadable, 'nocommit') are not
+   * duplicates of anything and age out by count like the rest.
+   */
   private rotateHistory(): void {
     if (!existsSync(this.historyDir)) return;
-    const entries = readdirSync(this.historyDir)
-      .filter((name) => name.endsWith('.json'))
-      .sort();
-    const excess = entries.length - this.historyLimit;
-    if (excess <= 0) return;
-    for (let i = 0; i < excess; i++) {
-      const target = join(this.historyDir, entries[i]!);
+    const seen = new Set<string>();
+    const unique: string[] = []; // one file per commit, plus files that stand for none; newest first
+    const doomed: string[] = [];
+    for (const name of this.historyNames().reverse()) {
+      const commit = archivedCommit(this.safeParse(join(this.historyDir, name)));
+      if (commit !== undefined) {
+        if (seen.has(commit)) {
+          doomed.push(name);
+          continue;
+        }
+        seen.add(commit);
+      }
+      unique.push(name);
+    }
+    doomed.push(...unique.slice(this.historyLimit));
+
+    for (const name of doomed) {
+      const target = join(this.historyDir, name);
       try {
         unlinkSync(target);
       } catch (err) {
@@ -153,6 +199,34 @@ export class CommunitySnapshotWriter {
       return undefined;
     }
   }
+}
+
+/**
+ * The commit a snapshot stands for in history, or undefined when it stands for
+ * none: unreadable, no commitSha, or 'nocommit'. Those are never archived and
+ * never listed.
+ */
+function archivedCommit(snapshot: CommunitySnapshot | undefined): string | undefined {
+  const sha = snapshot?.commitSha;
+  return sha && sha !== NOCOMMIT_SHA ? sha : undefined;
+}
+
+/**
+ * Orders history file names oldest first. A name starts with the snapshot's
+ * timestamp, so comparing names is comparing time, with one exception: when
+ * two archives share a timestamp and a commit, `historyFilename` numbers the
+ * later one ("<ts>-<sha>.1.json") and "x.1.json" sorts before "x.json". The
+ * name without the counter decides first, the counter breaks the tie.
+ */
+function compareHistoryNames(a: string, b: string): number {
+  const [baseA, counterA] = splitCollisionCounter(a);
+  const [baseB, counterB] = splitCollisionCounter(b);
+  return compareCodepoint(baseA, baseB) || counterA - counterB;
+}
+
+function splitCollisionCounter(name: string): [base: string, counter: number] {
+  const match = COLLISION_COUNTER_RE.exec(name);
+  return match ? [`${match[1]}.json`, Number(match[2])] : [name, 0];
 }
 
 /**

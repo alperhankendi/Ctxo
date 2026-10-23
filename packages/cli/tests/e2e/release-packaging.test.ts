@@ -50,7 +50,7 @@ describe('Release Packaging', () => {
     expect(files.some((f: string) => f === 'package.json')).toBe(true);
   });
 
-  it('tarball size is reasonable (< 1350KB)', { timeout: 30_000 }, () => {
+  it('tarball size is reasonable (< 1450KB)', { timeout: 30_000 }, () => {
     const output = execSync('npm pack --dry-run --json', { cwd: ROOT, encoding: 'utf-8' });
 
     const info = JSON.parse(output);
@@ -60,8 +60,12 @@ describe('Release Packaging', () => {
     // 950KB → 1050KB (v0.8 graphology) → 1200KB (v0.8 follow-ups: report
     // templates, architectural-intelligence helpers, cluster-label masker,
     // snapshot staleness, drift stability filter) → 1350KB (v0.8 lang-java
-    // CLI integration: install command, doctor checks, gate handler).
-    expect(sizeKB).toBeLessThan(1350);
+    // CLI integration: install command, doctor checks, gate handler). PR 0 (co-change engine,
+    // incremental --files/--commit runs, stale-entry pruning) raised the limit to 1400KB, and the
+    // rest of PR 0 (one snapshot per commit, co-change in every blast-radius caller, hook v2 with
+    // its shared-directory guard, `--help` for every subcommand, docs shipped in the tarball) to
+    // 1450KB (measured 1420.70KB).
+    expect(sizeKB).toBeLessThan(1450);
     expect(sizeKB).toBeGreaterThan(1); // Sanity: not empty (dist/ may not exist in CI pre-build)
   });
 });

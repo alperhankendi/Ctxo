@@ -57,6 +57,17 @@ Gate preview (sensitivity: balanced - top 15%, floor 3 dependents)
 }
 ```
 
+## Co-change and the gate
+
+The gate counts `confirmed + likely` dependents against the floor. `likely`
+includes `potential` dependents that were upgraded because their file
+co-changes with the symbol's file (see
+[`ctxo blast-radius`](./blast-radius.md)), so the guard can fire somewhat more
+often than it did before co-change reached it. `ctxo gate --preview` reads the
+same `co-changes.json` and shows the effect. `coChangedFiles` is informational
+and never counts toward the gate. A missing or invalid `co-changes.json` is
+ignored and the gate uses the graph alone.
+
 ## Tuning workflow
 
 1. Run `ctxo gate --preview` at your current setting.

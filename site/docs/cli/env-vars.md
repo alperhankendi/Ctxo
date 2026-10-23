@@ -67,7 +67,7 @@ integrations that require it.
 
 | Variable | Default | Effect |
 | --- | --- | --- |
-| `CTXO_HTTP_PORT` | unset | When set, the MCP server listens on the given HTTP port instead of stdio |
+| `CTXO_HTTP_PORT` | unset | When set and `ctxo` runs without arguments, the MCP server listens on the given HTTP port instead of stdio. Ignored when a command is given (`ctxo index`, `ctxo status --help`, ...), so an exported value never turns a command into a server |
 
 ```shell
 CTXO_HTTP_PORT=3001 ctxo

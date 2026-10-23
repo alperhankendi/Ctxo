@@ -3,6 +3,7 @@ import { loadConfig } from '../core/config/load-config.js';
 import { resolveGateThresholds } from '../core/gate/gate-config.js';
 import { loadGraph } from './graph-loader.js';
 import { BlastRadiusCalculator } from '../core/blast-radius/blast-radius-calculator.js';
+import { CoChangeReader } from '../adapters/storage/co-change-reader.js';
 import { PageRankCalculator } from '../core/importance/pagerank-calculator.js';
 import { percentileCutoff } from '../core/gate/percentile.js';
 import { shouldBlock } from '../core/gate/gate-decision.js';
@@ -25,11 +26,14 @@ export class GateCommand {
     const prMap = new Map(pr.rankings.map((r) => [r.symbolId, r.score]));
     const cutoff = percentileCutoff([...prMap.values()], thresholds.percentile);
 
+    // The guard counts confirmed + likely dependents and co-change makes some of them likely, so the
+    // preview reads the matrix once and applies it to every symbol, as the hook does.
+    const coChangeMap = new CoChangeReader(this.ctxoRoot).readCoChangeMap();
     const calc = new BlastRadiusCalculator();
     const firing: Array<{ symbolId: string; riskCount: number; importance: number }> = [];
     for (const [symbolId, importance] of prMap) {
       if (importance < cutoff) continue;
-      const blast = calc.calculate(graph, symbolId);
+      const blast = calc.calculate(graph, symbolId, coChangeMap);
       const riskCount = blast.confirmedCount + blast.likelyCount;
       if (shouldBlock({ riskCount, importanceScore: importance, importanceCutoff: cutoff }, thresholds)) {
         firing.push({ symbolId, riskCount, importance: Math.round(importance * 1e4) / 1e4 });

@@ -14,6 +14,7 @@ const louvain: LouvainRunner =
   ((louvainModule as unknown) as { default?: LouvainRunner }).default ??
   (louvainModule as unknown as LouvainRunner);
 
+import { compareCodepoint } from '../compare-codepoint.js';
 import type { SymbolGraph } from '../graph/symbol-graph.js';
 import type { CommunityEntry, EdgeQuality, GodNode } from '../types.js';
 import { labelCommunities } from './community-labeler.js';
@@ -68,9 +69,7 @@ export class CommunityDetector {
     // locale-sensitive and can produce different orders on different machines
     // (e.g., Turkish locale treats dotted/dotless i specially), which would
     // poison snapshot drift comparisons across teammates or CI runners.
-    const sortedNodes = [...nodes].sort((a, b) =>
-      a.symbolId < b.symbolId ? -1 : a.symbolId > b.symbolId ? 1 : 0,
-    );
+    const sortedNodes = [...nodes].sort((a, b) => compareCodepoint(a.symbolId, b.symbolId));
 
     const gph = new UndirectedGraph();
     for (const node of sortedNodes) {
@@ -267,7 +266,7 @@ export class CommunityDetector {
       if (b.centralityScore !== a.centralityScore) {
         return b.centralityScore - a.centralityScore;
       }
-      return a.symbolId.localeCompare(b.symbolId);
+      return compareCodepoint(a.symbolId, b.symbolId);
     });
 
     return candidates.slice(0, this.godNodeMaxResults);

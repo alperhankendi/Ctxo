@@ -8,6 +8,7 @@ import { lineOfSnippet, locateSymbolAtLine } from '../core/gate/symbol-locator.j
 import { transcriptHasBlastCheck } from '../core/gate/transcript-scan.js';
 import { GateSessionStore } from '../adapters/gate/gate-session-store.js';
 import { BlastRadiusCalculator } from '../core/blast-radius/blast-radius-calculator.js';
+import { CoChangeReader } from '../adapters/storage/co-change-reader.js';
 import { PageRankCalculator } from '../core/importance/pagerank-calculator.js';
 import { percentileCutoff } from '../core/gate/percentile.js';
 import { shouldBlock, formatBlockReason } from '../core/gate/gate-decision.js';
@@ -71,7 +72,11 @@ export class GateHookCommand {
 
       const { graph } = loadGraph(this.ctxoRoot);
       if (!graph.hasNode(symbolId)) return { block: false };
-      const blast = new BlastRadiusCalculator().calculate(graph, symbolId);
+      // The guard counts confirmed + likely dependents, and co-change is what makes some of them likely.
+      // One read per hook process, and only now that the edit is known to need a blast radius. The reader
+      // never throws: a missing or invalid co-changes.json means the graph alone decides, as before.
+      const coChangeMap = new CoChangeReader(this.ctxoRoot).readCoChangeMap();
+      const blast = new BlastRadiusCalculator().calculate(graph, symbolId, coChangeMap);
       const riskCount = blast.confirmedCount + blast.likelyCount;
 
       const pr = new PageRankCalculator().calculate(graph, { limit: RANK_ALL });

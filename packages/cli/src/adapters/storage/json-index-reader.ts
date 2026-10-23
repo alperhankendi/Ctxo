@@ -12,6 +12,23 @@ import { createLogger } from '../../core/logger.js';
 
 const log = createLogger('ctxo:json-reader');
 
+/** JSON files next to the index entries that are products of Ctxo, not entries: the reader skips them. */
+export const INDEX_ARTIFACT_FILES: readonly string[] = [
+  'co-changes.json',
+  'communities.json',
+  'drift-events.json',
+  'boundary-violations.json',
+];
+
+/** The folder of archived community snapshots inside the index folder: not entries either. */
+export const COMMUNITY_HISTORY_DIR = 'communities.history';
+
+/** One index entry and the JSON file on disk it was read from. */
+export interface IndexEntry {
+  readonly path: string;
+  readonly index: FileIndex;
+}
+
 export class JsonIndexReader {
   private readonly indexDir: string;
 
@@ -20,17 +37,26 @@ export class JsonIndexReader {
   }
 
   readAll(): FileIndex[] {
+    return this.readEntries().map((entry) => entry.index);
+  }
+
+  /**
+   * Every valid index entry together with the path of the JSON file it came from. A caller that wants to
+   * delete an entry must use this path: the `file` field inside the JSON says which source file the entry
+   * is for, but a corrupt or crafted file can claim any name, such as an artifact's.
+   */
+  readEntries(): IndexEntry[] {
     if (!existsSync(this.indexDir)) {
       return [];
     }
 
     const jsonFiles = this.collectJsonFiles(this.indexDir);
-    const results: FileIndex[] = [];
+    const results: IndexEntry[] = [];
 
     for (const filePath of jsonFiles) {
       const parsed = this.readSingle(filePath);
       if (parsed) {
-        results.push(parsed);
+        results.push({ path: filePath, index: parsed });
       }
     }
 
@@ -120,15 +146,9 @@ export class JsonIndexReader {
       const fullPath = join(dir, entry.name);
       if (entry.isDirectory()) {
         // Skip non-FileIndex directories under .ctxo/index/
-        if (entry.name === 'communities.history') continue;
+        if (entry.name === COMMUNITY_HISTORY_DIR) continue;
         files.push(...this.collectJsonFiles(fullPath, visited));
-      } else if (
-        entry.name.endsWith('.json') &&
-        entry.name !== 'co-changes.json' &&
-        entry.name !== 'communities.json' &&
-        entry.name !== 'drift-events.json' &&
-        entry.name !== 'boundary-violations.json'
-      ) {
+      } else if (entry.name.endsWith('.json') && !INDEX_ARTIFACT_FILES.includes(entry.name)) {
         files.push(fullPath);
       }
     }

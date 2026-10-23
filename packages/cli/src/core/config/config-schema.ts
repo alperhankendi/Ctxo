@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { parseCoChangeSince } from '../co-change/co-change-window.js';
 
 /**
  * Zod schema for `.ctxo/config.yaml`.
@@ -55,6 +56,37 @@ export const GateConfigSchema = z
   })
   .strict();
 
+export const CoChangeConfigSchema = z
+  .object({
+    /**
+     * Size of the co-change window: the last N non-merge commits from HEAD, or "all".
+     * Default: 2000. Independent of `ctxo index --max-history`, which only sets how much
+     * per-file commit history is kept.
+     */
+    maxCommits: z
+      .union([z.number().int().min(1), z.literal('all')], { error: 'must be a positive integer or "all"' })
+      .optional(),
+    /**
+     * Narrows the window to a duration counted back from HEAD's committer date (never the wall
+     * clock): `30d`, `2w`, `12m` or `1y`. Applies together with `maxCommits`.
+     */
+    since: z
+      .string()
+      .refine((value) => parseCoChangeSince(value) !== undefined, {
+        error: 'must be a duration such as 30d, 2w, 12m or 1y',
+      })
+      .optional(),
+    /** Commits touching more analysed files than this are skipped as mass changes. Default: 30. */
+    maxFilesPerCommit: z.number().int().min(1).optional(),
+    /** A file pair becomes an entry only after this many shared commits. Default: 2. */
+    minShared: z.number().int().min(1).optional(),
+    /** Extra tracked files to analyse that no language plugin indexes, such as SQL scripts (globs). */
+    include: z.array(z.string().min(1)).optional(),
+    /** Indexed files to leave out of the analysis (globs). */
+    exclude: z.array(z.string().min(1)).optional(),
+  })
+  .strict();
+
 export const CtxoConfigSchema = z
   .object({
     version: z.union([z.string(), z.number()]).optional(),
@@ -63,6 +95,7 @@ export const CtxoConfigSchema = z
     masking: MaskingConfigSchema.optional(),
     watch: WatchConfigSchema.optional(),
     gate: GateConfigSchema.optional(),
+    cochange: CoChangeConfigSchema.optional(),
   })
   .passthrough();
 
@@ -71,9 +104,13 @@ export type IndexConfig = z.infer<typeof IndexConfigSchema>;
 export type MaskingConfig = z.infer<typeof MaskingConfigSchema>;
 export type WatchConfig = z.infer<typeof WatchConfigSchema>;
 export type GateConfig = z.infer<typeof GateConfigSchema>;
+export type CoChangeConfig = z.infer<typeof CoChangeConfigSchema>;
 export type CtxoConfig = z.infer<typeof CtxoConfigSchema>;
 
 export const DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES = 5;
+export const DEFAULT_COCHANGE_MAX_COMMITS = 2000;
+export const DEFAULT_COCHANGE_MAX_FILES_PER_COMMIT = 30;
+export const DEFAULT_COCHANGE_MIN_SHARED = 2;
 
 export const DEFAULT_CONFIG: CtxoConfig = {
   version: '1.0',
@@ -82,4 +119,11 @@ export const DEFAULT_CONFIG: CtxoConfig = {
   masking: { clusterLabels: [] },
   watch: { snapshotMinFileChanges: DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES },
   gate: { enabled: true, sensitivity: 'balanced' },
+  cochange: {
+    maxCommits: DEFAULT_COCHANGE_MAX_COMMITS,
+    maxFilesPerCommit: DEFAULT_COCHANGE_MAX_FILES_PER_COMMIT,
+    minShared: DEFAULT_COCHANGE_MIN_SHARED,
+    include: [],
+    exclude: [],
+  },
 };

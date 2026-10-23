@@ -26,12 +26,12 @@ Ctxo is a Model Context Protocol (MCP) server that delivers Logic-Slices to AI c
 
 - [Overview](https://alperhankendi.github.io/Ctxo/docs/cli/overview): All commands at a glance.
 - [ctxo install](https://alperhankendi.github.io/Ctxo/docs/cli/install): Install language plugins.
-- [ctxo init](https://alperhankendi.github.io/Ctxo/docs/cli/init): Bootstrap a project.
-- [ctxo index](https://alperhankendi.github.io/Ctxo/docs/cli/index): Build the codebase index.
+- [ctxo init](https://alperhankendi.github.io/Ctxo/docs/cli/init): Bootstrap a project (rules, plugins, versioned git hooks).
+- [ctxo index](https://alperhankendi.github.io/Ctxo/docs/cli/index): Build the codebase index; `--files` and `--commit` re-index part of it; co-change window flags.
 - [ctxo watch](https://alperhankendi.github.io/Ctxo/docs/cli/watch): Incremental re-index.
 - [ctxo sync](https://alperhankendi.github.io/Ctxo/docs/cli/sync): Rebuild SQLite from JSON.
 - [ctxo status](https://alperhankendi.github.io/Ctxo/docs/cli/status): Index manifest.
-- [ctxo doctor](https://alperhankendi.github.io/Ctxo/docs/cli/doctor): Health check + `--fix`.
+- [ctxo doctor](https://alperhankendi.github.io/Ctxo/docs/cli/doctor): Health check + `--fix` (including the `git_hooks` check).
 - [ctxo visualize](https://alperhankendi.github.io/Ctxo/docs/cli/visualize): Interactive graph HTML.
 - [config.yaml](https://alperhankendi.github.io/Ctxo/docs/cli/config-yaml): Project config file.
 - [Environment variables](https://alperhankendi.github.io/Ctxo/docs/cli/env-vars): DEBUG namespaces and friends.
@@ -87,7 +87,7 @@ Ctxo is a Model Context Protocol (MCP) server that delivers Logic-Slices to AI c
 
 ## Reference
 
-- [Config Schema](https://alperhankendi.github.io/Ctxo/docs/reference/config-schema): Full `.ctxo/config.yaml`.
+- [Config Schema](https://alperhankendi.github.io/Ctxo/docs/reference/config-schema): Full `.ctxo/config.yaml`, including the `cochange` window.
 - [Symbol IDs](https://alperhankendi.github.io/Ctxo/docs/reference/symbol-ids): `<file>::<name>::<kind>`.
 - [Edge Kinds](https://alperhankendi.github.io/Ctxo/docs/reference/edge-kinds): imports, calls, extends, implements, uses.
 - [Response Envelope](https://alperhankendi.github.io/Ctxo/docs/reference/response-envelope): `_meta` fields.

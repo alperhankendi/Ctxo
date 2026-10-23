@@ -1,9 +1,8 @@
 import { z } from 'zod';
-import { readFileSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
 import type { IStoragePort } from '../../ports/i-storage-port.js';
 import type { IGitPort } from '../../ports/i-git-port.js';
 import type { IMaskingPort } from '../../ports/i-masking-port.js';
+import type { ICoChangePort } from '../../ports/i-co-change-port.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 import { getGraphAndFiles } from './get-logic-slice.js';
 import { BlastRadiusCalculator } from '../../core/blast-radius/blast-radius-calculator.js';
@@ -11,25 +10,13 @@ import { BoundaryViolationDetector } from '../../core/overlay/boundary-violation
 import { buildSnapshotStaleness } from '../../core/overlay/snapshot-staleness.js';
 import type { ClusterLabelMasker } from '../../core/overlay/cluster-label-masker.js';
 import { wrapResponse } from '../../core/response-envelope.js';
-import { loadCoChangeMap } from '../../core/co-change/co-change-analyzer.js';
-import type { CoChangeMatrix, CoChangeEntry, CommunitySnapshot } from '../../core/types.js';
+import type { CommunitySnapshot } from '../../core/types.js';
 
 const InputSchema = z.object({
   since: z.string().optional().default('HEAD~1'),
   maxFiles: z.number().int().min(1).optional().default(50),
   confidence: z.enum(['confirmed', 'likely', 'potential']).optional(),
 });
-
-function loadCoChanges(ctxoRoot: string): Map<string, CoChangeEntry[]> | undefined {
-  const path = join(ctxoRoot, 'index', 'co-changes.json');
-  if (!existsSync(path)) return undefined;
-  try {
-    const matrix: CoChangeMatrix = JSON.parse(readFileSync(path, 'utf-8'));
-    return loadCoChangeMap(matrix);
-  } catch {
-    return undefined;
-  }
-}
 
 function computeClustersAffected(
   snapshot: CommunitySnapshot,
@@ -57,6 +44,7 @@ export function handleGetPrImpact(
   staleness?: StalenessCheck,
   ctxoRoot = '.ctxo',
   clusterLabelMasker?: ClusterLabelMasker,
+  coChange?: ICoChangePort,
 ) {
   const calculator = new BlastRadiusCalculator();
   const getGraph = () => getGraphAndFiles(ctxoRoot, storage);
@@ -82,7 +70,7 @@ export function handleGetPrImpact(
 
       // Step 2: Build graph + load co-changes
       const { graph, indexedFiles } = getGraph();
-      const coChangeMap = loadCoChanges(ctxoRoot);
+      const coChangeMap = coChange?.readCoChangeMap();
 
       // Step 3: Map files → symbols
       const allNodes = graph.allNodes();
@@ -172,7 +160,8 @@ export function handleGetPrImpact(
         if (coChangeMap) {
           const entries = coChangeMap.get(filePath);
           if (entries && entries.length > 0) {
-            coChangedWith = entries
+            // The map is the port's cached copy, shared with every other call: sort a copy of the list.
+            coChangedWith = [...entries]
               .sort((a, b) => b.frequency - a.frequency)
               .slice(0, 5)
               .map(e => e.file1 === filePath ? e.file2 : e.file1);
@@ -218,6 +207,7 @@ export function handleGetPrImpact(
           violations: relevant,
           confidence: violationResult.confidence,
           snapshotsAvailable: violationResult.snapshotsAvailable,
+          distinctCommits: violationResult.distinctCommits,
           ...(violationResult.hint ? { hint: violationResult.hint } : {}),
         };
         clustersAffected = computeClustersAffected(snapshot, changedSymbolIds);

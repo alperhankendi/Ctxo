@@ -92,6 +92,7 @@ Review a specific commit range, confirmed impacts only:
   "boundaryViolations": {
     "confidence": "medium",
     "snapshotsAvailable": 4,
+    "distinctCommits": 4,
     "violations": [
       {
         "from": { "symbolId": ".../CheckoutFlow::class", "communityId": 1, "label": "Billing" },
@@ -123,13 +124,23 @@ If the diff is empty:
   depth.
 - **`summary.highRiskSymbols`** — the symbols most likely to break something.
   Review these first.
-- **`files[].coChangedWith`** — files that historically change together with
+- **`files[].coChangedWith`** - files that historically change together with
   this one but are **not** in the current diff. A strong signal that the PR
-  may be incomplete.
-- **`boundaryViolations.violations[]`** (v0.8) — edges introduced by this PR
+  may be incomplete. It reads the same co-change matrix as
+  [`get_blast_radius`](/mcp-tools/get-blast-radius), which `ctxo index` builds
+  from a window of recent commits (see the
+  [`cochange` config](/reference/config-schema#cochange)).
+- **`boundaryViolations.violations[]`** (v0.8) - edges introduced by this PR
   between clusters that had no edges between them historically. `severity:
   "high"` + `historicalEdgesBetweenClusters: 0` is a first-ever layer
   crossing.
+- **`boundaryViolations.confidence`** - computed from `distinctCommits`, the
+  number of different commits in the snapshot history (other than the current
+  one): `low` below 3, `medium` for 3-6, `high` for 7+. Without at least 2
+  distinct commits a missing historical edge is not treated as evidence.
+  `snapshotsAvailable` is kept for compatibility and is not what confidence
+  uses. Install the post-commit hook (`ctxo init`) to build history;
+  `ctxo index --check` records no snapshot.
 - **`clustersAffected[]`** (v0.8) — distinct clusters the PR touches. A PR
   spanning 3+ clusters is usually a cross-team change.
 
@@ -137,7 +148,7 @@ If the diff is empty:
 
 A PR wires a direct call from `CheckoutFlow` (Billing cluster) to `UserPermissions` (Auth cluster). Typecheck passes. Tests pass. `riskLevel` from blast radius alone may even come back `low` — the affected set is tiny.
 
-But the last 10 snapshots show **zero** edges between these two clusters. A senior reviewer would ask "why is Billing reaching into Auth internals?" Ctxo now hands that exact question to the AI reviewer before a human ever sees the PR:
+But the last 10 snapshotted commits show **zero** edges between these two clusters. A senior reviewer would ask "why is Billing reaching into Auth internals?" Ctxo now hands that exact question to the AI reviewer before a human ever sees the PR:
 
 ```json
 "boundaryViolations": {

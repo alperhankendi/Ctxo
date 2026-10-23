@@ -15,6 +15,14 @@ import { UpdateCommand } from './update-command.js';
 import { BlastRadiusCommand } from './blast-radius-command.js';
 import { GateHookCommand } from './gate-hook-command.js';
 import { GateCommand } from './gate-command.js';
+import { parseCoChangeSince } from '../core/co-change/co-change-window.js';
+
+/** `value` as a positive integer, or undefined when it is anything else (no sign, decimals, exponent or unit). */
+function parsePositiveInteger(value: string | undefined): number | undefined {
+  if (value === undefined || !/^\d+$/.test(value)) return undefined;
+  const parsed = Number(value);
+  return Number.isSafeInteger(parsed) && parsed >= 1 ? parsed : undefined;
+}
 
 export function getVersion(): string {
   let dir = import.meta.dirname;
@@ -63,6 +71,14 @@ export class CliRouter {
   async route(args: string[]): Promise<void> {
     const command = args[0];
 
+    // --help and -h win over everything else on the line, before any flag is parsed or any command is built:
+    // `ctxo index --help` must print the help and never start an index run, and `ctxo init --help` never an init.
+    // There is one help text for the whole CLI (each command has its own lines in it).
+    if (!command || args.some((arg) => arg === '--help' || arg === '-h')) {
+      this.printHelp();
+      return;
+    }
+
     if (command === '--version' || command === '-v' || command === '-V') {
       const verbose = args.includes('--verbose');
       const json = args.includes('--json');
@@ -80,19 +96,44 @@ export class CliRouter {
       return;
     }
 
-    if (!command || command === '--help' || command === '-h') {
-      this.printHelp();
-      return;
-    }
-
     switch (command) {
       case 'index': {
-        const fileIdx = args.indexOf('--file');
-        const fileArg = fileIdx !== -1 ? args[fileIdx + 1] : undefined;
-        if (fileIdx !== -1 && (!fileArg || fileArg.startsWith('--'))) {
-          console.error('[ctxo] --file requires a path argument');
-          process.exit(1);
-          return;
+        // --files takes every value up to the next flag, --commit takes one revision, and --file is the
+        // older spelling of --files with a single path. All of them can be repeated or combined.
+        const filesArg: string[] = [];
+        let commitArg: string | undefined;
+        for (let i = 1; i < args.length; i++) {
+          const arg = args[i];
+          if (arg === '--file') {
+            const value = args[i + 1];
+            if (!value || value.startsWith('--')) {
+              console.error('[ctxo] --file requires a path argument');
+              process.exit(1);
+              return;
+            }
+            filesArg.push(value);
+            i += 1;
+          } else if (arg === '--files') {
+            const before = filesArg.length;
+            while (i + 1 < args.length && !args[i + 1]!.startsWith('--')) {
+              filesArg.push(args[i + 1]!);
+              i += 1;
+            }
+            if (filesArg.length === before) {
+              console.error('[ctxo] --files requires at least one path');
+              process.exit(1);
+              return;
+            }
+          } else if (arg === '--commit') {
+            const value = args[i + 1];
+            if (!value || value.startsWith('--')) {
+              console.error('[ctxo] --commit requires a revision (for example HEAD)');
+              process.exit(1);
+              return;
+            }
+            commitArg = value;
+            i += 1;
+          }
         }
         const checkArg = args.includes('--check');
         const skipHistory = args.includes('--skip-history');
@@ -105,12 +146,32 @@ export class CliRouter {
           process.exit(1);
           return;
         }
+        // The co-change window flags are checked here because the config resolver skips an invalid
+        // override silently, which would run a different window from the one the user asked for.
+        const cochangeCommitsIdx = args.indexOf('--cochange-commits');
+        const cochangeCommitsRaw = cochangeCommitsIdx !== -1 ? args[cochangeCommitsIdx + 1] : undefined;
+        const cochangeCommitsArg = cochangeCommitsRaw === 'all' ? 'all' : parsePositiveInteger(cochangeCommitsRaw);
+        if (cochangeCommitsIdx !== -1 && cochangeCommitsArg === undefined) {
+          console.error('[ctxo] --cochange-commits requires a positive integer or "all"');
+          process.exit(1);
+          return;
+        }
+        const cochangeSinceIdx = args.indexOf('--cochange-since');
+        const cochangeSinceArg = cochangeSinceIdx !== -1 ? args[cochangeSinceIdx + 1] : undefined;
+        if (cochangeSinceIdx !== -1 && (cochangeSinceArg === undefined || parseCoChangeSince(cochangeSinceArg) === undefined)) {
+          console.error('[ctxo] --cochange-since requires a duration such as 30d, 2w, 12m or 1y');
+          process.exit(1);
+          return;
+        }
         await new IndexCommand(this.projectRoot).run({
-          file: fileArg,
+          files: filesArg.length > 0 ? filesArg : undefined,
+          commit: commitArg,
           check: checkArg,
           skipHistory,
           skipCommunity,
           maxHistory: maxHistoryArg,
+          cochangeCommits: cochangeCommitsArg,
+          cochangeSince: cochangeSinceArg,
           installMissing,
         });
         break;
@@ -296,18 +357,26 @@ ctxo v${v} — MCP server for dependency-aware codebase context
 
 Usage:
   ctxo                      Start MCP server (stdio transport)
-  ctxo index                Build full codebase index (--max-history N, default 20)
+  ctxo index                Build full codebase index (--max-history N controls intent depth only, default 20)
   ctxo index --skip-community    Skip Louvain community detection for faster indexing
+  ctxo index --skip-history      Skip git history (no intent or anti-patterns; co-changes.json is not refreshed)
+  ctxo index --check             Fail if the index is stale; writes nothing and records no snapshot
+  ctxo index --cochange-commits <n|all>   Co-change window in commits (default 2000, or "all")
+  ctxo index --cochange-since <duration>  Co-change window by age from HEAD (30d, 2w, 12m, 1y)
+  ctxo index --files <path...>   Re-index only these files (repo-relative); the rest of the index is kept
+  ctxo index --file <path>       Same as --files with one path
+  ctxo index --commit <rev>      Re-index the files changed by the commit just made (for example HEAD), drop the ones it deleted or renamed
   ctxo sync                 Rebuild SQLite cache from committed JSON index
   ctxo watch                Start file watcher for incremental re-indexing
   ctxo verify-index         CI gate: fail if index is stale
   ctxo status               Show index manifest
-  ctxo init                 Interactive setup (tools, rules, hooks)
+  ctxo init                 Interactive setup (tools, rules, hooks); the post-commit hook runs ctxo index --commit HEAD
   ctxo init --rules         Regenerate AI tool rules only
   ctxo init --tools a,b -y  Non-interactive (claude-code,cursor,...)
   ctxo init --dry-run       Preview what would be created
   ctxo stats                Show usage statistics (--json, --days N, --clear)
   ctxo doctor               Health check all subsystems (--json, --quiet)
+  ctxo doctor --fix         Apply fixes in dependency order, such as upgrading the post-commit hook (--dry-run, --yes)
   ctxo visualize            Generate interactive dependency graph HTML
   ctxo visualize --max-nodes N   Limit to top N symbols by PageRank
   ctxo visualize --output PATH   Write HTML to custom path
@@ -330,7 +399,7 @@ Usage:
   ctxo --version --verbose       Print core + plugins + runtime
   ctxo --version --json          Machine-readable version payload
   ctxo version                   Subcommand — verbose by default
-  ctxo --help               Show this help message
+  ctxo --help               Show this help message (also ctxo <command> --help; nothing is run)
 `.trim());
   }
 }

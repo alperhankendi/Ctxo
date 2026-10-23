@@ -50,6 +50,32 @@ describe('ConfigFileCheck', () => {
     expect(result.message).toContain('tabs');
   });
 
+  it('warns on an invalid index.ignore glob and names the index globs in the fix hint', async () => {
+    // picomatch refuses patterns above 65536 characters, the one way a non-empty string fails.
+    const tooLong = 'a'.repeat(65_537);
+    writeFileSync(join(ctxoRoot, 'config.yaml'), `index:\n  ignore:\n    - "${tooLong}"\n`);
+    const result = await check.run(ctx);
+    expect(result.status).toBe('warn');
+    expect(result.message).toContain('index.ignore:');
+    expect(result.fix).toContain('index.ignore');
+    expect(result.fix).toContain('index.ignoreProjects');
+  });
+
+  it('warns on invalid cochange.include / cochange.exclude globs and names them in the fix hint', async () => {
+    const tooLong = 'a'.repeat(65_537);
+    writeFileSync(
+      join(ctxoRoot, 'config.yaml'),
+      `cochange:\n  include:\n    - "${tooLong}"\n  exclude:\n    - "${tooLong}"\n`,
+    );
+    const result = await check.run(ctx);
+    expect(result.status).toBe('warn');
+    expect(result.message).toContain('2 invalid glob pattern(s)');
+    expect(result.message).toContain('cochange.include:');
+    expect(result.message).toContain('cochange.exclude:');
+    expect(result.fix).toContain('cochange.include');
+    expect(result.fix).toContain('cochange.exclude');
+  });
+
   it('returns pass with unknown keys (no schema validation)', async () => {
     writeFileSync(join(ctxoRoot, 'config.yaml'), 'unknown_key: value\nfoo: bar\n');
     const result = await check.run(ctx);

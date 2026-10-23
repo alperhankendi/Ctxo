@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, type MockInstance } from 'vitest';
 import { CliRouter } from '../cli-router.js';
 
 describe('CliRouter', () => {
@@ -144,5 +144,337 @@ describe('cli-router update command', () => {
       force: true,
     });
     spy.mockRestore();
+  });
+});
+
+describe('cli-router index co-change flags', () => {
+  let indexRuns: Array<Record<string, unknown>>;
+  let indexConstructed: number;
+  let errorSpy: MockInstance<typeof console.error>;
+  let exitSpy: MockInstance<typeof process.exit>;
+
+  beforeEach(async () => {
+    indexRuns = [];
+    indexConstructed = 0;
+    // Replace IndexCommand first: if a flag slips through validation, nothing may index the real repo.
+    // Must be constructible (see the update test above), hence a function expression.
+    const original = await import('../index-command.js');
+    vi.spyOn(original, 'IndexCommand' as any).mockImplementation(
+      function (this: unknown) {
+        indexConstructed += 1;
+        return {
+          run: async (options: Record<string, unknown>) => { indexRuns.push(options); },
+        };
+      } as any,
+    );
+    errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  async function route(...args: string[]): Promise<void> {
+    await new CliRouter(process.cwd()).route(['index', ...args]);
+  }
+
+  it('passes --cochange-commits and --cochange-since to IndexCommand.run', async () => {
+    await route('--cochange-commits', '500', '--cochange-since', '12m');
+
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(indexRuns).toHaveLength(1);
+    expect(indexRuns[0]).toMatchObject({ cochangeCommits: 500, cochangeSince: '12m' });
+  });
+
+  it('accepts all as the value of --cochange-commits', async () => {
+    await route('--cochange-commits', 'all');
+
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(indexRuns[0]).toMatchObject({ cochangeCommits: 'all' });
+  });
+
+  it.each(['30d', '2w', '12m', '1y', '0d'])('accepts %s as the value of --cochange-since', async (since) => {
+    await route('--cochange-since', since);
+
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(indexRuns[0]).toMatchObject({ cochangeSince: since });
+  });
+
+  it('leaves both co-change options unset when the flags are absent', async () => {
+    await route('--max-history', '5');
+
+    expect(indexRuns).toHaveLength(1);
+    expect(indexRuns[0]!['cochangeCommits']).toBeUndefined();
+    expect(indexRuns[0]!['cochangeSince']).toBeUndefined();
+    expect(indexRuns[0]).toMatchObject({ maxHistory: 5 });
+  });
+
+  it('exits with error for --cochange-commits without a value', async () => {
+    await route('--cochange-commits');
+
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('--cochange-commits requires a positive integer or "all"'));
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(indexConstructed).toBe(0);
+  });
+
+  it.each(['abc', '0', '-5', '1.5', '2e3', '0x10', 'ALL', '', '--skip-history'])(
+    'exits with error for --cochange-commits %j',
+    async (value) => {
+      await route('--cochange-commits', value);
+
+      expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('--cochange-commits requires a positive integer or "all"'));
+      expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(indexConstructed).toBe(0);
+    },
+  );
+
+  it('exits with error for --cochange-since without a value', async () => {
+    await route('--cochange-since');
+
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('--cochange-since requires a duration'));
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(indexConstructed).toBe(0);
+  });
+
+  it.each(['abc', '12', '5x', '1.5m', '-3d', '30D', 'm', '', '--skip-history'])(
+    'exits with error for --cochange-since %j',
+    async (value) => {
+      await route('--cochange-since', value);
+
+      expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('--cochange-since requires a duration such as 30d, 2w, 12m or 1y'));
+      expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(indexConstructed).toBe(0);
+    },
+  );
+
+  it('documents both flags and says --max-history controls intent depth only', async () => {
+    await new CliRouter(process.cwd()).route(['--help']);
+
+    const help = errorSpy.mock.calls.map((args) => String(args[0])).join('\n');
+    expect(help).toMatch(/--max-history N[^\n]*intent depth only/);
+    expect(help).toContain('--cochange-commits <n|all>');
+    expect(help).toContain('--cochange-since <duration>');
+  });
+});
+
+describe('cli-router index --files, --file and --commit', () => {
+  let indexRuns: Array<Record<string, unknown>>;
+  let indexConstructed: number;
+  let errorSpy: MockInstance<typeof console.error>;
+  let exitSpy: MockInstance<typeof process.exit>;
+
+  beforeEach(async () => {
+    indexRuns = [];
+    indexConstructed = 0;
+    // Replace IndexCommand first: if a flag slips through validation, nothing may index the real repo.
+    const original = await import('../index-command.js');
+    vi.spyOn(original, 'IndexCommand' as any).mockImplementation(
+      function (this: unknown) {
+        indexConstructed += 1;
+        return {
+          run: async (options: Record<string, unknown>) => { indexRuns.push(options); },
+        };
+      } as any,
+    );
+    errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  async function route(...args: string[]): Promise<void> {
+    await new CliRouter(process.cwd()).route(['index', ...args]);
+  }
+
+  it('passes every value of --files up to the next flag', async () => {
+    await route('--files', 'src/a.ts', 'src/b.ts', 'docs/my notes.md', '--max-history', '5');
+
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(indexRuns).toHaveLength(1);
+    expect(indexRuns[0]).toMatchObject({ files: ['src/a.ts', 'src/b.ts', 'docs/my notes.md'], maxHistory: 5 });
+    expect(indexRuns[0]!['commit']).toBeUndefined();
+  });
+
+  it('collects the values of a repeated --files', async () => {
+    await route('--files', 'src/a.ts', '--skip-history', '--files', 'src/b.ts');
+
+    expect(indexRuns[0]).toMatchObject({ files: ['src/a.ts', 'src/b.ts'], skipHistory: true });
+  });
+
+  it('passes --commit with its one revision', async () => {
+    await route('--commit', 'HEAD', '--skip-community');
+
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(indexRuns[0]).toMatchObject({ commit: 'HEAD', skipCommunity: true });
+    expect(indexRuns[0]!['files']).toBeUndefined();
+  });
+
+  it('keeps --file as an alias of --files with one path', async () => {
+    await route('--file', 'src/a.ts');
+
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(indexRuns[0]).toMatchObject({ files: ['src/a.ts'] });
+  });
+
+  it('combines --file, --files and --commit', async () => {
+    await route('--file', 'src/a.ts', '--files', 'src/b.ts', 'src/c.ts', '--commit', 'abc1234');
+
+    expect(indexRuns[0]).toMatchObject({ files: ['src/a.ts', 'src/b.ts', 'src/c.ts'], commit: 'abc1234' });
+  });
+
+  it('leaves files and commit unset when the flags are absent', async () => {
+    await route('--max-history', '5');
+
+    expect(indexRuns).toHaveLength(1);
+    expect(indexRuns[0]!['files']).toBeUndefined();
+    expect(indexRuns[0]!['commit']).toBeUndefined();
+  });
+
+  it.each([[['--files']], [['--files', '--check']]])('exits with error for %j without a path', async (args) => {
+    await route(...args);
+
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('--files requires at least one path'));
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(indexConstructed).toBe(0);
+  });
+
+  it.each([[['--commit']], [['--commit', '--check']]])('exits with error for %j without a revision', async (args) => {
+    await route(...args);
+
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('--commit requires a revision'));
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(indexConstructed).toBe(0);
+  });
+
+  it('documents --files, --file and --commit in the help', async () => {
+    await new CliRouter(process.cwd()).route(['--help']);
+
+    const help = errorSpy.mock.calls.map((args) => String(args[0])).join('\n');
+    expect(help).toContain('--files <path...>');
+    expect(help).toContain('--file <path>');
+    expect(help).toContain('--commit <rev>');
+    // --commit is meant for the commit that was just made, which is what the post-commit hook passes.
+    expect(help).toMatch(/--commit <rev>[^\n]*commit just made[^\n]*HEAD/);
+  });
+});
+
+describe('cli-router subcommand --help and -h', () => {
+  // Every command class is replaced before routing: a subcommand that ignores --help must never run for real
+  // (a real `init` or `index` here would write hooks and files into the repository running the tests).
+  const SUBCOMMANDS = [
+    'index', 'sync', 'status', 'verify-index', 'init', 'watch', 'stats', 'doctor', 'visualize',
+    'version', 'install', 'update', 'blast-radius', 'gate', 'gate-hook',
+  ];
+
+  let constructed: string[];
+  let errorSpy: MockInstance<typeof console.error>;
+  let exitSpy: MockInstance<typeof process.exit>;
+  let previousExitCode: typeof process.exitCode;
+
+  beforeEach(async () => {
+    constructed = [];
+    previousExitCode = process.exitCode;
+    // Keyed by class name; every one of them is replaced.
+    const modules: Record<string, Record<string, unknown>> = {
+      IndexCommand: await import('../index-command.js'),
+      SyncCommand: await import('../sync-command.js'),
+      StatusCommand: await import('../status-command.js'),
+      VerifyCommand: await import('../verify-command.js'),
+      InitCommand: await import('../init-command.js'),
+      WatchCommand: await import('../watch-command.js'),
+      StatsCommand: await import('../stats-command.js'),
+      DoctorCommand: await import('../doctor-command.js'),
+      VisualizeCommand: await import('../visualize-command.js'),
+      VersionCommand: await import('../version-command.js'),
+      InstallCommand: await import('../install-command.js'),
+      UpdateCommand: await import('../update-command.js'),
+      BlastRadiusCommand: await import('../blast-radius-command.js'),
+      GateHookCommand: await import('../gate-hook-command.js'),
+      GateCommand: await import('../gate-command.js'),
+    };
+    for (const [name, mod] of Object.entries(modules)) {
+      vi.spyOn(mod, name as never).mockImplementation(
+        function (this: unknown) {
+          constructed.push(name);
+          const noop = async () => {};
+          return { run: noop, preview: noop };
+        } as never,
+      );
+    }
+    errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    process.exitCode = previousExitCode;
+  });
+
+  function printed(): string {
+    return errorSpy.mock.calls.map((args) => String(args[0])).join('\n');
+  }
+
+  it.each(['--help', '-h'])('ctxo index %s prints the help and does not index', async (flag) => {
+    await new CliRouter(process.cwd()).route(['index', flag]);
+
+    expect(constructed).toEqual([]);
+    expect(printed()).toMatch(/--max-history N[^\n]*intent depth only/);
+    expect(printed()).toContain('--cochange-commits <n|all>');
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(process.exitCode).toBe(previousExitCode);
+  });
+
+  it.each(['--help', '-h'])('ctxo init %s prints the help and does not run init', async (flag) => {
+    await new CliRouter(process.cwd()).route(['init', flag]);
+
+    expect(constructed).toEqual([]);
+    expect(printed()).toContain('ctxo init');
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(process.exitCode).toBe(previousExitCode);
+  });
+
+  it.each(SUBCOMMANDS)('ctxo %s --help prints the help, runs nothing and exits 0', async (command) => {
+    await new CliRouter(process.cwd()).route([command, '--help']);
+
+    expect(constructed).toEqual([]);
+    expect(printed()).toContain('Usage:');
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(process.exitCode).toBe(previousExitCode);
+  });
+
+  it.each(SUBCOMMANDS)('ctxo %s -h prints the help, runs nothing and exits 0', async (command) => {
+    await new CliRouter(process.cwd()).route([command, '-h']);
+
+    expect(constructed).toEqual([]);
+    expect(printed()).toContain('Usage:');
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(process.exitCode).toBe(previousExitCode);
+  });
+
+  it('prints the help when --help follows other flags, and does not parse them', async () => {
+    // --max-history 0 is invalid, but help wins: no error, no exit
+    await new CliRouter(process.cwd()).route(['index', '--max-history', '0', '--help']);
+
+    expect(constructed).toEqual([]);
+    expect(printed()).toContain('Usage:');
+    expect(printed()).not.toContain('requires a positive integer');
+    expect(exitSpy).not.toHaveBeenCalled();
+  });
+
+  it('ctxo blast-radius --help does not treat the flag as a symbol id', async () => {
+    await new CliRouter(process.cwd()).route(['blast-radius', '--help']);
+
+    expect(constructed).toEqual([]);
+    expect(printed()).not.toContain('usage: ctxo blast-radius <symbolId>');
+    expect(exitSpy).not.toHaveBeenCalled();
+  });
+
+  it('keeps running the subcommand when no help flag is given', async () => {
+    await new CliRouter(process.cwd()).route(['sync']);
+
+    expect(constructed).toEqual(['SyncCommand']);
   });
 });

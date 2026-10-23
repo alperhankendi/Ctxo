@@ -1,11 +1,13 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { mkdtempSync, rmSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { SqliteStorageAdapter } from '../../storage/sqlite-storage-adapter.js';
+import { JsonIndexWriter } from '../../storage/json-index-writer.js';
+import { CoChangeReader } from '../../storage/co-change-reader.js';
 import { MaskingPipeline } from '../../../core/masking/masking-pipeline.js';
 import { handleGetBlastRadius } from '../get-blast-radius.js';
-import type { FileIndex } from '../../../core/types.js';
+import type { CoChangeEntry, FileIndex } from '../../../core/types.js';
 
 function buildGraphIndices(): FileIndex[] {
   return [
@@ -228,5 +230,163 @@ describe('GetBlastRadiusHandler', () => {
     expect(payload.byCluster).toBeDefined();
     const totals = Object.values(payload.byCluster as Record<string, number>);
     expect(totals.reduce((sum, v) => sum + v, 0)).toBeGreaterThan(0);
+  });
+});
+
+/** b.ts imports a.ts (a potential dependent of A); c.ts has no edge to either. */
+function buildCoChangeIndices(): FileIndex[] {
+  const fileIndex = (file: string, name: string, edges: FileIndex['edges'] = []): FileIndex => ({
+    file,
+    lastModified: 1,
+    symbols: [{ symbolId: `${file}::${name}::function`, name, kind: 'function', startLine: 0, endLine: 5 }],
+    edges,
+    intent: [],
+    antiPatterns: [],
+  });
+  return [
+    fileIndex('src/a.ts', 'A'),
+    fileIndex('src/b.ts', 'B', [{ from: 'src/b.ts::B::function', to: 'src/a.ts::A::function', kind: 'imports' }]),
+    fileIndex('src/c.ts', 'C'),
+  ];
+}
+
+function pair(file1: string, file2: string, frequency: number, sharedCommits: number): CoChangeEntry {
+  return { file1, file2, sharedCommits, frequency };
+}
+
+describe('GetBlastRadiusHandler co-change', () => {
+  const ROOT = 'src/a.ts::A::function';
+  const B = 'src/b.ts::B::function';
+  let tempDir: string;
+  let storage: SqliteStorageAdapter;
+
+  beforeEach(async () => {
+    tempDir = mkdtempSync(join(tmpdir(), 'ctxo-br-cochange-'));
+    storage = new SqliteStorageAdapter(tempDir);
+    await storage.initEmpty();
+    storage.bulkWrite(buildCoChangeIndices());
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    storage.close();
+    rmSync(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+  });
+
+  function writeMatrix(entries: CoChangeEntry[]): void {
+    new JsonIndexWriter(tempDir).writeCoChanges({ version: 1, timestamp: 1, entries });
+  }
+
+  function createHandler(withReader = true) {
+    return handleGetBlastRadius(
+      storage, new MaskingPipeline(), undefined, tempDir, undefined, undefined,
+      withReader ? new CoChangeReader(tempDir) : undefined,
+    );
+  }
+
+  async function blastRadius(args: Record<string, unknown> = { symbolId: ROOT }, withReader = true) {
+    const result = await createHandler(withReader)(args);
+    return JSON.parse(result.content[0]!.text);
+  }
+
+  function entryOf(payload: { impactedSymbols: Array<{ symbolId: string }> }, symbolId: string) {
+    return payload.impactedSymbols.find((e) => e.symbolId === symbolId) as
+      { confidence: string; coChangeFrequency?: number } | undefined;
+  }
+
+  it('upgrades a co-changing potential dependent to likely and lists the co-changing files that have no graph path', async () => {
+    writeMatrix([pair('src/a.ts', 'src/b.ts', 0.8, 4), pair('src/a.ts', 'src/c.ts', 0.6, 3)]);
+
+    const payload = await blastRadius();
+
+    expect(entryOf(payload, B)?.confidence).toBe('likely');
+    expect(entryOf(payload, B)?.coChangeFrequency).toBe(0.8);
+    expect(payload.likelyCount).toBe(1);
+    expect(payload.potentialCount).toBe(0);
+    // b.ts is impacted through its edge, so only c.ts is a co-change without a graph path.
+    expect(payload.coChangedFiles).toEqual([{ file: 'src/c.ts', frequency: 0.6, sharedCommits: 3 }]);
+  });
+
+  it('keeps the dependent potential and omits coChangedFiles when no co-change reader is wired', async () => {
+    writeMatrix([pair('src/a.ts', 'src/b.ts', 0.8, 4), pair('src/a.ts', 'src/c.ts', 0.6, 3)]);
+
+    const payload = await blastRadius({ symbolId: ROOT }, false);
+
+    expect(entryOf(payload, B)?.confidence).toBe('potential');
+    expect(payload.likelyCount).toBe(0);
+    expect(payload).not.toHaveProperty('coChangedFiles');
+  });
+
+  it('omits coChangedFiles when every co-changing file already has a graph path', async () => {
+    writeMatrix([pair('src/a.ts', 'src/b.ts', 0.8, 4)]);
+
+    const payload = await blastRadius();
+
+    expect(entryOf(payload, B)?.confidence).toBe('likely');
+    expect(payload).not.toHaveProperty('coChangedFiles');
+  });
+
+  it('omits coChangedFiles and keeps the graph tiers when co-changes.json is missing', async () => {
+    const payload = await blastRadius();
+
+    expect(entryOf(payload, B)?.confidence).toBe('potential');
+    expect(payload).not.toHaveProperty('coChangedFiles');
+  });
+
+  it('treats an invalid co-changes.json as no matrix instead of failing', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    mkdirSync(join(tempDir, 'index'), { recursive: true });
+    writeFileSync(join(tempDir, 'index', 'co-changes.json'), '{ "version": 1, "entries": "nope" }');
+
+    const payload = await blastRadius();
+
+    expect(payload.error).toBeUndefined();
+    expect(entryOf(payload, B)?.confidence).toBe('potential');
+    expect(payload).not.toHaveProperty('coChangedFiles');
+  });
+
+  it('lists the same co-changed files whatever the confidence and intent filters keep', async () => {
+    writeMatrix([pair('src/a.ts', 'src/b.ts', 0.8, 4), pair('src/a.ts', 'src/c.ts', 0.6, 3)]);
+
+    const byConfidence = await blastRadius({ symbolId: ROOT, confidence: 'confirmed' });
+    const byIntent = await blastRadius({ symbolId: ROOT, intent: 'nothing-matches-this' });
+
+    for (const payload of [byConfidence, byIntent]) {
+      // The filtered-out dependent still has a graph path, so b.ts must not show up as a co-change.
+      expect(payload.impactedSymbols).toEqual([]);
+      expect(payload.coChangedFiles).toEqual([{ file: 'src/c.ts', frequency: 0.6, sharedCommits: 3 }]);
+    }
+  });
+
+  it('caps coChangedFiles at ten files, strongest first, and adds no total field', async () => {
+    const partners = Array.from({ length: 12 }, (_, i) => `src/extra${String(i).padStart(2, '0')}.ts`);
+    writeMatrix(partners.map((file, i) => pair('src/a.ts', file, 0.95 - i * 0.01, 5)));
+
+    const payload = await blastRadius();
+
+    expect(payload.coChangedFiles.map((f: { file: string }) => f.file)).toEqual(partners.slice(0, 10));
+    expect(payload).not.toHaveProperty('coChangedFilesTotal');
+  });
+
+  it('upgrades above 0.5 only, while a file without a graph path is listed from 0.5', async () => {
+    writeMatrix([pair('src/a.ts', 'src/b.ts', 0.5, 4), pair('src/a.ts', 'src/c.ts', 0.5, 3)]);
+
+    const payload = await blastRadius();
+
+    expect(entryOf(payload, B)?.confidence).toBe('potential');
+    expect(payload.coChangedFiles).toEqual([{ file: 'src/c.ts', frequency: 0.5, sharedCommits: 3 }]);
+  });
+
+  it('picks up a co-changes.json that is written while the handler is running', async () => {
+    const handler = createHandler();
+    const call = async () => JSON.parse((await handler({ symbolId: ROOT })).content[0]!.text);
+
+    expect(entryOf(await call(), B)?.confidence).toBe('potential');
+
+    writeMatrix([pair('src/a.ts', 'src/b.ts', 0.8, 4), pair('src/a.ts', 'src/c.ts', 0.6, 3)]);
+
+    const after = await call();
+    expect(entryOf(after, B)?.confidence).toBe('likely');
+    expect(after.coChangedFiles).toHaveLength(1);
   });
 });

@@ -123,11 +123,12 @@ export class OrphanedFilesCheck implements IHealthCheck {
 
   private getSourceFiles(projectRoot: string): Set<string> {
     try {
-      const output = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard'], {
+      // -z: NUL-separated, unquoted names (git quotes non-ASCII paths otherwise).
+      const output = execFileSync('git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'], {
         cwd: projectRoot,
         encoding: 'utf-8',
       });
-      return new Set(output.split('\n').map(l => l.trim()).filter(l => l.length > 0));
+      return new Set(output.split('\0').filter(l => l.length > 0));
     } catch {
       return new Set();
     }

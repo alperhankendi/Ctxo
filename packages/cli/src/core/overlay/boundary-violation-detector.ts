@@ -1,20 +1,25 @@
+import { compareCodepoint } from '../compare-codepoint.js';
 import type { SymbolGraph } from '../graph/symbol-graph.js';
 import type {
   BoundaryViolation,
   CommunityEntry,
   CommunitySnapshot,
 } from '../types.js';
+import { distinctCommitCount, priorCommitSnapshots } from './snapshot-history.js';
 
 export interface BoundaryViolationDetectionResult {
   readonly violations: BoundaryViolation[];
   readonly confidence: 'high' | 'medium' | 'low';
+  /** The number of history entries passed in (kept for compatibility; confidence is built on `distinctCommits`). */
   readonly snapshotsAvailable: number;
+  /** Commits other than the current one that the history covers; `confidence` is built on this. */
+  readonly distinctCommits: number;
   readonly hint?: string;
 }
 
 const HIGH_SEVERITY_THRESHOLD = 0;
 const MEDIUM_SEVERITY_THRESHOLD = 2;
-const MIN_SNAPSHOTS_FOR_CONFIDENCE = 2;
+const MIN_DISTINCT_COMMITS_FOR_CONFIDENCE = 2;
 
 export class BoundaryViolationDetector {
   detect(
@@ -23,9 +28,13 @@ export class BoundaryViolationDetector {
     history: readonly CommunitySnapshot[],
   ): BoundaryViolationDetectionResult {
     const snapshotsAvailable = history.length;
+    const distinctCommits = distinctCommitCount(history, current.commitSha);
     const currentAssignments = assignmentMap(current.communities);
     const currentLabels = labelMap(current.communities);
-    const historicalAssignments = history.map((snapshot) => ({
+    // The evidence is one snapshot per earlier commit: a snapshot of the current commit is not history,
+    // and several snapshots of one commit are one data point, not several.
+    const earlierCommits = priorCommitSnapshots(history, current.commitSha);
+    const historicalAssignments = earlierCommits.map((snapshot) => ({
       snapshot,
       assignments: assignmentMap(snapshot.communities),
       labels: labelMap(snapshot.communities),
@@ -44,7 +53,7 @@ export class BoundaryViolationDetector {
       const toLabel = currentLabels.get(toCommunity) ?? `community-${toCommunity}`;
 
       const historicalCount =
-        snapshotsAvailable < MIN_SNAPSHOTS_FOR_CONFIDENCE
+        distinctCommits < MIN_DISTINCT_COMMITS_FOR_CONFIDENCE
           ? -1
           : countHistoricalCrossCluster(historicalAssignments, edge.from, edge.to);
 
@@ -70,15 +79,16 @@ export class BoundaryViolationDetector {
 
     violations.sort((a, b) => {
       if (a.severity !== b.severity) return a.severity === 'high' ? -1 : 1;
-      const cmp = a.from.symbolId.localeCompare(b.from.symbolId);
-      return cmp !== 0 ? cmp : a.to.symbolId.localeCompare(b.to.symbolId);
+      const cmp = compareCodepoint(a.from.symbolId, b.from.symbolId);
+      return cmp !== 0 ? cmp : compareCodepoint(a.to.symbolId, b.to.symbolId);
     });
 
     return {
       violations,
-      confidence: confidenceFor(snapshotsAvailable),
+      confidence: confidenceFor(distinctCommits),
       snapshotsAvailable,
-      hint: hintFor(snapshotsAvailable),
+      distinctCommits,
+      hint: hintFor(distinctCommits),
     };
   }
 }
@@ -120,13 +130,13 @@ function labelMap(entries: readonly CommunityEntry[]): Map<number, string> {
   return labels;
 }
 
-function confidenceFor(snapshots: number): 'high' | 'medium' | 'low' {
-  if (snapshots >= 7) return 'high';
-  if (snapshots >= 3) return 'medium';
+function confidenceFor(distinctCommits: number): 'high' | 'medium' | 'low' {
+  if (distinctCommits >= 7) return 'high';
+  if (distinctCommits >= 3) return 'medium';
   return 'low';
 }
 
-function hintFor(snapshots: number): string | undefined {
-  if (snapshots >= MIN_SNAPSHOTS_FOR_CONFIDENCE) return undefined;
-  return 'Insufficient snapshot history — enable `ctxo init` hook or add `ctxo index --check` to CI for boundary-violation signal.';
+function hintFor(distinctCommits: number): string | undefined {
+  if (distinctCommits >= MIN_DISTINCT_COMMITS_FOR_CONFIDENCE) return undefined;
+  return 'Install the post-commit hook (`ctxo init`) or run `ctxo index` after commits to build history; `ctxo index --check` does not record snapshots.';
 }
