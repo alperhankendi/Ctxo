@@ -8,6 +8,7 @@ import { NodeVersionCheck, TsMorphCheck, TreeSitterCheck } from '../adapters/dia
 import { VersionsCheck } from '../adapters/diagnostics/checks/versions-check.js';
 import { LanguageCoverageCheck } from '../adapters/diagnostics/checks/language-coverage-check.js';
 import { JavaTierCheck } from '../adapters/diagnostics/checks/java-tier-check.js';
+import { CSharpTierCheck } from '../adapters/diagnostics/checks/csharp-tier-check.js';
 import { GitBinaryCheck, GitRepoCheck, GitHooksCheck } from '../adapters/diagnostics/checks/git-check.js';
 import {
   IndexDirectoryCheck,
@@ -58,6 +59,7 @@ export class DoctorCommand {
       new TreeSitterCheck(),
       new LanguageCoverageCheck(),
       new JavaTierCheck(),
+      new CSharpTierCheck(),
       new DiskUsageCheck(),
       new SymbolCountCheck(),
       new EdgeCountCheck(),

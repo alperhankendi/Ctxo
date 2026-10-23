@@ -13,6 +13,7 @@ import { PageRankCalculator } from '../core/importance/pagerank-calculator.js';
 import { percentileCutoff } from '../core/gate/percentile.js';
 import { shouldBlock, formatBlockReason } from '../core/gate/gate-decision.js';
 import { createLogger } from '../core/logger.js';
+import { readSourceText } from './read-source.js';
 
 const log = createLogger('ctxo:gate-hook');
 
@@ -56,7 +57,8 @@ export class GateHookCommand {
       if (!fileIndex) return { block: false };
 
       if (!existsSync(filePath)) return { block: false };
-      const source = readFileSync(filePath, 'utf-8');
+      // The same decoder the index uses, so a UTF-16 script (SSMS) gives the lines its symbols were indexed at.
+      const source = readSourceText(filePath);
       const line = lineOfSnippet(source, oldString);
       if (line === null) return { block: false };
 
@@ -71,18 +73,23 @@ export class GateHookCommand {
       }
 
       const { graph } = loadGraph(this.ctxoRoot);
-      if (!graph.hasNode(symbolId)) return { block: false };
+      const edited = graph.getNode(symbolId);
+      if (!edited) return { block: false };
+      // A copy of a table, view or procedure stands for the resource: the blast radius counts the resource's
+      // dependents (the calculator resolves that), and its importance is the winning definition's PageRank,
+      // because every data edge points at the winner.
+      const importanceId = graph.dataResourceIdentity(edited.symbolId)?.winner.symbolId ?? edited.symbolId;
       // The guard counts confirmed + likely dependents, and co-change is what makes some of them likely.
       // One read per hook process, and only now that the edit is known to need a blast radius. The reader
       // never throws: a missing or invalid co-changes.json means the graph alone decides, as before.
       const coChangeMap = new CoChangeReader(this.ctxoRoot).readCoChangeMap();
-      const blast = new BlastRadiusCalculator().calculate(graph, symbolId, coChangeMap);
+      const blast = new BlastRadiusCalculator().calculate(graph, edited.symbolId, coChangeMap);
       const riskCount = blast.confirmedCount + blast.likelyCount;
 
       const pr = new PageRankCalculator().calculate(graph, { limit: RANK_ALL });
       const prMap = new Map(pr.rankings.map((r) => [r.symbolId, r.score]));
       const cutoff = percentileCutoff([...prMap.values()], thresholds.percentile);
-      const importanceScore = prMap.get(symbolId) ?? 0;
+      const importanceScore = prMap.get(importanceId) ?? 0;
 
       const block = shouldBlock({ riskCount, importanceScore, importanceCutoff: cutoff }, thresholds);
       if (!block) return { block: false };

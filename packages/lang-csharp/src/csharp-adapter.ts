@@ -1,13 +1,26 @@
 import CSharpLanguage from 'tree-sitter-c-sharp';
 import type { SyntaxNode } from 'tree-sitter';
 import { TreeSitterAdapter } from './tree-sitter-adapter.js';
-import type { SymbolNode, GraphEdge, ComplexityMetrics, SymbolKind } from '@ctxo/plugin-api';
+import type { SymbolNode, GraphEdge, ComplexityMetrics, SymbolKind, SymbolAnnotation } from '@ctxo/plugin-api';
 
 const CSHARP_BRANCH_TYPES = [
   'if_statement', 'for_statement', 'foreach_statement',
   'while_statement', 'do_statement', 'switch_section',
   'catch_clause', 'conditional_expression',
 ];
+
+// Annotation caps shared with the Roslyn tier (protocol v2 SymbolAnnotation).
+const MAX_ANNOTATIONS = 20;
+const MAX_ENTRIES = 10;
+const MAX_VALUE_LENGTH = 200;
+const RESERVED_TYPE_KEY = 'type';
+const ATTRIBUTE_SUFFIX = 'Attribute';
+// Attribute targets that belong to another symbol than the declaration itself.
+const FOREIGN_ATTRIBUTE_TARGETS = new Set(['return', 'param', 'typevar', 'assembly', 'module', 'field']);
+const SIMPLE_ESCAPES: Record<string, string> = {
+  "'": "'", '"': '"', '\\': '\\', '0': '\0', a: '\x07', b: '\b', e: '\x1b',
+  f: '\f', n: '\n', r: '\r', t: '\t', v: '\v',
+};
 
 export class CSharpAdapter extends TreeSitterAdapter {
   readonly extensions = ['.cs'] as const;
@@ -96,11 +109,13 @@ export class CSharpAdapter extends TreeSitterAdapter {
 
       const qualifiedName = namespace ? `${namespace}.${name}` : name;
       const range = this.nodeToLineRange(node);
+      const annotations = attributeAnnotations(node);
       symbols.push({
         symbolId: this.buildSymbolId(filePath, qualifiedName, kind),
         name: qualifiedName,
         kind,
         ...range,
+        ...(annotations ? { annotations } : {}),
       });
 
       // Extract methods inside the class/struct/record
@@ -136,11 +151,13 @@ export class CSharpAdapter extends TreeSitterAdapter {
       const paramCount = this.countParameters(child);
       const qualifiedName = `${className}.${name}(${paramCount})`;
       const range = this.nodeToLineRange(child);
+      const annotations = attributeAnnotations(child);
       symbols.push({
         symbolId: this.buildSymbolId(filePath, qualifiedName, 'method'),
         name: qualifiedName,
         kind: 'method',
         ...range,
+        ...(annotations ? { annotations } : {}),
       });
     }
   }
@@ -293,4 +310,163 @@ export class CSharpAdapter extends TreeSitterAdapter {
     const qualifiedName = namespace ? `${namespace}.${baseName}` : baseName;
     return `${qualifiedName}::${baseName}::${defaultKind}`;
   }
+}
+
+// ── Attribute annotations (syntax tier) ─────────────────────────
+
+/**
+ * Annotations from the `attribute_list` children of a declaration, in source
+ * order. Literal arguments only; no `named.type` (the syntax tier never
+ * resolves types), and a source argument named `type` is dropped because the
+ * key is reserved, as in the Roslyn tier. Same caps as the Roslyn tier.
+ */
+function attributeAnnotations(declaration: SyntaxNode): SymbolAnnotation[] | undefined {
+  const annotations: SymbolAnnotation[] = [];
+  for (const list of declaration.children) {
+    if (list.type !== 'attribute_list') continue;
+    const target = list.children.find(c => c.type === 'attribute_target_specifier');
+    if (target && FOREIGN_ATTRIBUTE_TARGETS.has(target.text.replace(':', '').trim())) continue;
+
+    for (const attribute of list.children) {
+      if (attribute.type !== 'attribute') continue;
+      if (annotations.length === MAX_ANNOTATIONS) return annotations;
+      annotations.push(toAnnotation(attribute));
+    }
+  }
+  return annotations.length > 0 ? annotations : undefined;
+}
+
+function toAnnotation(attribute: SyntaxNode): SymbolAnnotation {
+  const args: string[] = [];
+  const named = new Map<string, string>();
+  const argumentList = attribute.children.find(c => c.type === 'attribute_argument_list');
+
+  for (const argument of argumentList?.children ?? []) {
+    if (argument.type !== 'attribute_argument') continue;
+    const { key, expression } = splitArgument(argument);
+    const value = expression ? literalValue(expression) : undefined;
+    if (value === undefined) continue;
+
+    if (key === undefined) {
+      if (args.length < MAX_ENTRIES) args.push(truncate(value));
+    } else if (key !== RESERVED_TYPE_KEY && named.size < MAX_ENTRIES && !named.has(key)) {
+      named.set(key, truncate(value));
+    }
+  }
+
+  return {
+    name: attributeName(attribute.childForFieldName('name')),
+    ...(args.length > 0 ? { args } : {}),
+    ...(named.size > 0 ? { named: Object.fromEntries(named) } : {}),
+  };
+}
+
+// `Name = value` parses as an assignment, `name: value` as identifier, ':', expression.
+function splitArgument(argument: SyntaxNode): { key?: string; expression?: SyntaxNode } {
+  const parts = argument.namedChildren.filter(c => c.type !== 'comment');
+  const first = parts[0];
+  if (!first) return {};
+  if (first.type === 'assignment_expression') {
+    const left = first.childForFieldName('left');
+    const right = first.childForFieldName('right');
+    if (left?.type === 'identifier' && right) return { key: identifierText(left), expression: right };
+  }
+  if (parts.length === 2 && first.type === 'identifier' && argument.children.some(c => c.type === ':')) {
+    return { key: identifierText(first), expression: parts[1] };
+  }
+  return { expression: first };
+}
+
+// Last identifier of the written name, without namespace, alias and `Attribute` suffix.
+function attributeName(nameNode: SyntaxNode | null): string {
+  if (!nameNode) return '';
+  let current = nameNode;
+  while (current.type === 'qualified_name' || current.type === 'alias_qualified_name') {
+    const next = current.childForFieldName('name');
+    if (!next) break;
+    current = next;
+  }
+  if (current.type === 'generic_name') {
+    current = current.children.find(c => c.type === 'identifier') ?? current;
+  }
+  const text = identifierText(current);
+  return text.length > ATTRIBUTE_SUFFIX.length && text.endsWith(ATTRIBUTE_SUFFIX)
+    ? text.slice(0, -ATTRIBUTE_SUFFIX.length)
+    : text;
+}
+
+function identifierText(node: SyntaxNode): string {
+  return node.text.startsWith('@') ? node.text.slice(1) : node.text;
+}
+
+/** String (regular, verbatim, raw), number and boolean literals; undefined for anything else. */
+function literalValue(node: SyntaxNode): string | undefined {
+  switch (node.type) {
+    case 'string_literal':
+      return node.children
+        .map(c => (c.type === 'string_literal_content' ? c.text : c.type === 'escape_sequence' ? decodeEscape(c.text) : ''))
+        .join('');
+    case 'verbatim_string_literal':
+      return node.text.slice(2, -1).replace(/""/g, '"');
+    case 'raw_string_literal':
+      return rawStringValue(node);
+    case 'integer_literal':
+      return integerText(node.text);
+    case 'real_literal':
+      return realText(node.text);
+    case 'boolean_literal':
+      return node.text;
+    case 'prefix_unary_expression': {
+      const operand = node.namedChildren[0];
+      if (node.children[0]?.type !== '-' || !operand) return undefined;
+      if (operand.type !== 'integer_literal' && operand.type !== 'real_literal') return undefined;
+      const value = literalValue(operand);
+      return value === undefined ? undefined : `-${value}`;
+    }
+    default:
+      return undefined;
+  }
+}
+
+function decodeEscape(sequence: string): string {
+  const kind = sequence[1] ?? '';
+  if (kind === 'u' || kind === 'x' || kind === 'U') {
+    const codePoint = parseInt(sequence.slice(2), 16);
+    return Number.isNaN(codePoint) || codePoint > 0x10ffff ? sequence : String.fromCodePoint(codePoint);
+  }
+  return SIMPLE_ESCAPES[kind] ?? sequence;
+}
+
+// A multi-line raw string drops its first and last line and the closing line's indentation.
+function rawStringValue(node: SyntaxNode): string {
+  const content = node.children.filter(c => c.type === 'raw_string_content').map(c => c.text).join('');
+  if (!content.includes('\n')) return content;
+  const lines = content.split('\n');
+  const indentation = lines[lines.length - 1]!;
+  return lines
+    .slice(1, -1)
+    .map(line => (line.startsWith(indentation) ? line.slice(indentation.length) : line.replace(/^[ \t]+/, '')))
+    .join('\n')
+    .replace(/\r$/, '');
+}
+
+// Same text as the Roslyn tier's invariant-culture value for the common forms.
+function integerText(raw: string): string | undefined {
+  const digits = raw.replace(/_/g, '').replace(/(ul|lu|u|l)$/i, '');
+  try {
+    return BigInt(digits).toString();
+  } catch {
+    return undefined;
+  }
+}
+
+function realText(raw: string): string {
+  const text = raw.replace(/_/g, '');
+  if (/[mM]$/.test(text)) return text.slice(0, -1);
+  const value = Number(text.replace(/[fFdD]$/, ''));
+  return Number.isFinite(value) ? String(value) : text;
+}
+
+function truncate(value: string): string {
+  return value.length > MAX_VALUE_LENGTH ? value.slice(0, MAX_VALUE_LENGTH) : value;
 }

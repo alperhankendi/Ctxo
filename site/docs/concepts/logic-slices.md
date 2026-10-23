@@ -37,7 +37,7 @@ on B"):
 ```
 root (symbolId)
   |
-  +-- forward edge (imports | calls | extends | implements | uses)
+  +-- forward edge (imports | calls | extends | implements | uses | reads | writes | executes)
   |     |
   |     +-- dep node -> enqueue its forward edges
   |
@@ -57,9 +57,12 @@ projects that raw result onto one of four views:
 | Level | What you get                                              | When to use                                            |
 | ----- | --------------------------------------------------------- | ------------------------------------------------------ |
 | L1    | Root symbol only, clamped to 150 lines. No dependencies.  | You already know the graph, just want the source body. |
-| L2    | Root + direct (depth-1) dependencies.                     | Default. Good for most "what does this call?" tasks.   |
-| L3    | Root + full transitive closure. No budget enforcement.    | Deep refactors. Can be large.                          |
-| L4    | Full closure, truncated to an 8K token budget.            | Safe default for sending to an LLM.                    |
+| L2    | Root + direct (depth-1) dependencies.                     | Good for most "what does this call?" tasks.            |
+| L3    | Root + full transitive closure. No budget enforcement.    | The tool's default. Deep refactors. Can be large.      |
+| L4    | Full closure, truncated to an 8K token budget, with node `annotations`. | Safe default for sending to an LLM.      |
+
+Nodes carry their `annotations` (C# attributes, SQL table `columns`) at L4 only;
+L1 to L3 leave them out.
 
 ::: tip Which level should I ask for?
 If in doubt, start with **L2**. If the agent says "I cannot see the body of
@@ -89,7 +92,7 @@ redacted without changing symbol counts or byte offsets.
 ## Related tools
 
 - **[`get_logic_slice`](/mcp-tools/get-logic-slice)** raw access to the slice
-  with explicit `detail` parameter.
+  with an explicit `level` parameter.
 - **[`get_context_for_task`](/mcp-tools/get-context-for-task)** bundles the
   logic slice with `why-context`, blast radius, or change intelligence
   depending on the task type (`fix`, `extend`, `refactor`, `understand`).

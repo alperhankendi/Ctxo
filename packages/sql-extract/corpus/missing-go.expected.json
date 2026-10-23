@@ -1,0 +1,10 @@
+{
+  "description": "Without GO a body ends at the next definition; the script is not valid T-SQL, so ScriptDom does not run it.",
+  "mode": "file",
+  "sides": ["sql-extract", "lang-sql"],
+  "definitions": [
+    { "kind": "procedure", "name": "dbo.usp_a" },
+    { "kind": "procedure", "name": "dbo.usp_b" }
+  ],
+  "accesses": { "reads": ["dbo.loans"], "writes": ["dbo.holds"], "executes": [] }
+}

@@ -75,14 +75,22 @@ export function analyzerJarPresent(): boolean {
   }
 }
 
-/** Directories that should never be descended into during a Java source scan. */
+/** Directories that should never be descended into during a source scan (`obj` holds .NET build output). */
 const SKIP_DIRS = new Set([
-  'node_modules', 'target', 'build', 'out', 'bin',
+  'node_modules', 'target', 'build', 'out', 'bin', 'obj',
   '.git', '.ctxo', 'dist', 'coverage',
 ]);
 
 /**
  * Shallow-bounded recursive search for any `.java` file under `root`.
+ * See findSourceFile for the bounds.
+ */
+export function findJavaFile(root: string, maxDepth: number): boolean {
+  return findSourceFile(root, '.java', maxDepth);
+}
+
+/**
+ * Shallow-bounded recursive search for any file ending in `extension` under `root`.
  * Descends at most `maxDepth` directory levels (root = depth 0), skipping
  * SKIP_DIRS at every level.  Stops and returns true as soon as one file is
  * found to keep the work bounded.
@@ -90,7 +98,7 @@ const SKIP_DIRS = new Set([
  * Uses Dirent entries — no extra stat calls.  Symlinked entries (both files
  * and directories) are skipped entirely to avoid following loops.
  */
-export function findJavaFile(root: string, maxDepth: number): boolean {
+export function findSourceFile(root: string, extension: string, maxDepth: number): boolean {
   function walk(dir: string, depth: number): boolean {
     let entries: import('node:fs').Dirent[];
     try {
@@ -100,7 +108,7 @@ export function findJavaFile(root: string, maxDepth: number): boolean {
     }
     for (const entry of entries) {
       if (entry.isSymbolicLink()) continue; // never follow symlinks
-      if (entry.isFile() && entry.name.endsWith('.java')) return true;
+      if (entry.isFile() && entry.name.endsWith(extension)) return true;
     }
     if (depth >= maxDepth) return false;
     for (const entry of entries) {

@@ -82,7 +82,15 @@ Payloads under the threshold are returned verbatim with `truncated: false`. Payl
 
 Only these array fields are truncatable. Every MCP tool that produces large output writes into one of them.
 
-`impactedSymbols`, `importers`, `deadSymbols`, `unusedExports`, `results`, `rankings`, `context`, `hierarchies`, `scaffolding`, `deadFiles`, `files`
+`impactedSymbols`, `importers`, `deadSymbols`, `unusedExports`, `results`, `rankings`, `context`, `hierarchies`, `scaffolding`, `deadFiles`, `files`, `clusters`, `clustersAffected`, `candidates`
+
+`candidates` is the list in [`get_architectural_overlay`](/mcp-tools/get-architectural-overlay) `mode: "contexts"`; its truncation hint points to `candidate: <id>` and `ctxo contexts --json`. In that mode `hubs` and `collisions` are **not** truncatable: they are capped at the source (50 each in the summary, with `hubsTotal` and `collisionsTotal`), so they are always returned whole.
+
+Data coupling in the same mode is capped at the source too, and nothing is added to the truncatable fields:
+
+- The summary carries counts only: `sharedTableCount` on each candidate that has shared tables, plus `dataResourcesTotal`, `sharedResourcesTotal` and `externalResourcesTotal`.
+- The `candidate: <id>` detail carries `sharedTables` (the first 15 by name, each with up to 10 accesses and `accessCount`) with `sharedTableCount`, and the candidate's own `dataResources` (the first 15 by name) with `dataResourcesTotal`.
+- When the detail is still over the threshold, trailing entries are dropped, by name order, from the longer of those two lists (`dataResources` on a tie) until it fits. The counts keep the totals, and every other field of the detail stays whole. `ctxo contexts --json` has the full lists.
 
 ::: tip
 When `_meta.truncated === true`, the calling agent should either narrow its query (using `_meta.hint`) or raise `CTXO_RESPONSE_LIMIT`. Never assume the array is complete without checking the flag.

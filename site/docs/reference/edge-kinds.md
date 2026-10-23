@@ -1,13 +1,13 @@
 ---
 title: "Edge Kinds"
-description: "imports | calls | extends | implements | uses."
+description: "imports | calls | extends | implements | uses | reads | writes | executes."
 ---
 
 # Edge Kinds
 
-Edges in the Ctxo dependency graph carry one of five kinds. The kind tells you how two symbols are related, and it controls which edges each MCP tool will traverse. The enum is closed: plugins do not invent new kinds.
+Edges in the Ctxo dependency graph carry one of eight kinds: five code kinds and three data kinds (plugin protocol v2). The kind tells you how two symbols are related, and it controls which edges each MCP tool will traverse. The enum is closed (`EDGE_KINDS` in `@ctxo/plugin-api`): plugins do not invent new kinds.
 
-## The five kinds
+## The eight kinds
 
 | Kind | Direction | Example | Emitted by |
 | --- | --- | --- | --- |
@@ -16,8 +16,11 @@ Edges in the Ctxo dependency graph carry one of five kinds. The kind tells you h
 | `extends` | subclass → base | `class A extends B` | TypeScript, C#, Go (struct embedding), Java |
 | `implements` | class → interface | `class A implements I` | TypeScript, C#, Java |
 | `uses` | reference → target | type annotation, generic parameter, identifier reference | All parsers |
+| `reads` | code → table or view | `SELECT ... FROM dbo.Loans` | SQL (view, procedure and function bodies), C# (constant SQL at known call sites) |
+| `writes` | code → table or view | `UPDATE dbo.Loans ...`, `SqlBulkCopy.DestinationTableName` | SQL, C# |
+| `executes` | code → stored procedure | `EXEC dbo.usp_CloseLoan` | SQL, C# |
 
-All edges are directed. The index stores each edge as `{ from, to, kind, typeOnly? }` where `from` and `to` are [symbol IDs](/reference/symbol-ids).
+All edges are directed. The index stores each edge as `{ from, to, kind, typeOnly? }` where `from` is a [symbol ID](/reference/symbol-ids) and `to` is a symbol ID or a 2-part name reference.
 
 ## When each is emitted
 
@@ -41,6 +44,18 @@ Emitted when a class declares conformance to an interface. In Go, implicit inter
 
 The catch-all for non-call references: type positions, generic arguments, identifier reads, and decorator targets. Use this edge when you need every mention of a symbol, not just its invocations.
 
+### reads, writes, executes (data edges)
+
+Emitted by [`@ctxo/lang-sql`](/languages/sql) from view, procedure and function bodies, and by the [C# plugin](/languages/csharp#sql-at-call-sites) for constant SQL at known data-access call sites (only when a SQL plugin is installed). `reads` comes from `FROM`, `JOIN`, `APPLY` and `MERGE ... USING`; `writes` from `INSERT`, `UPDATE`, `DELETE`, `MERGE`, `TRUNCATE TABLE`, `SELECT ... INTO` and `OUTPUT ... INTO` targets; `executes` from `EXEC` of a procedure.
+
+The target is a canonical 2-part name reference: `dbo.loans::table` for `reads` and `writes`, `dbo.usp_closeloan::procedure` for `executes` (lowercase ASCII, delimiters stripped, default schema `dbo`). The graph resolves a table reference to any `table` or `view` with that name, and a procedure reference to a `procedure`. When several files define the object, a copy outside test files and docs folders wins, then the first file in sorted path order; see [several definitions](/reference/symbol-ids#several-definitions-of-one-object). A reference that no indexed file defines stays unresolved.
+
+```json
+{ "from": "db/lending.sql::dbo.usp_closeloan::procedure", "to": "dbo.loans::table", "kind": "writes" }
+```
+
+Data edges are `confirmed` in blast radius. They stay out of symbol-level communities and boundary violations; the [contexts view](/cli/contexts) reports data coupling instead.
+
 ## JSON shape
 
 ```json
@@ -59,14 +74,14 @@ The catch-all for non-call references: type positions, generic arguments, identi
 | Tool | Traverses |
 | --- | --- |
 | [`get_logic_slice`](/mcp-tools/get-logic-slice) | all forward edges from the root |
-| [`get_blast_radius`](/mcp-tools/get-blast-radius) | reverse edges across `calls`, `uses`, `imports` |
+| [`get_blast_radius`](/mcp-tools/get-blast-radius) | all reverse edges; the kind sets the tier (`calls`, `extends`, `implements`, `reads`, `writes`, `executes` confirmed; `uses` likely; `imports` potential) |
 | [`find_importers`](/mcp-tools/find-importers) | reverse edges; filterable via `edgeKinds` |
 | [`get_class_hierarchy`](/mcp-tools/get-class-hierarchy) | `extends` and `implements` in both directions |
 
-All tools that accept an `edgeKinds` parameter validate the input against the five canonical values. Passing any other value returns `{ error: true, message: ... }`.
+All tools that accept an `edgeKinds` parameter validate the input against the eight canonical values. Passing any other value returns `{ error: true, message: ... }`.
 
 ::: tip
-When asking "who uses this?" via `find_importers`, restrict `edgeKinds` to `["calls", "uses"]` to exclude module-level imports and see only runtime dependencies.
+When asking "who uses this?" via `find_importers`, restrict `edgeKinds` to `["calls", "uses"]` to exclude module-level imports and see only runtime dependencies. For a table, `["writes"]` lists every writer.
 :::
 
 ::: warning

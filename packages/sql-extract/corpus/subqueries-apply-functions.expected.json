@@ -1,0 +1,5 @@
+{
+  "description": "Subqueries and APPLY derived tables are read, a table-valued function is skipped, and FROM inside TRIM is not a table clause.",
+  "mode": "statement",
+  "accesses": { "reads": ["dbo.holds", "dbo.loans", "dbo.members"], "writes": [], "executes": [] }
+}

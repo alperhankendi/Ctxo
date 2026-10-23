@@ -1,0 +1,5 @@
+{
+  "description": "WITH table hints and legacy parenthesized hints keep the table a read rather than a table-valued function.",
+  "mode": "statement",
+  "accesses": { "reads": ["dbo.loans", "dbo.members"], "writes": [], "executes": [] }
+}

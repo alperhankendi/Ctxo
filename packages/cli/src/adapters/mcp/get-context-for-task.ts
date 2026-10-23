@@ -10,7 +10,7 @@ import { wrapResponse } from '../../core/response-envelope.js';
 
 const TaskTypeSchema = z.enum(['fix', 'extend', 'refactor', 'understand']);
 
-const InputSchema = z.object({
+export const InputSchema = z.object({
   symbolId: z.string().min(1),
   taskType: TaskTypeSchema,
   tokenBudget: z.number().min(100).optional().default(4000),

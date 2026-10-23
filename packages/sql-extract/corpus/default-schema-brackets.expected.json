@@ -1,0 +1,5 @@
+{
+  "description": "A one-part name gets the dbo schema, and bracket delimiters are removed while the spaces inside them are kept.",
+  "mode": "statement",
+  "accesses": { "reads": ["circulation.book copies", "dbo.loans"], "writes": [], "executes": [] }
+}

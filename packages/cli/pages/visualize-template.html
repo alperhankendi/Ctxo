@@ -288,7 +288,10 @@ var EDGE_COLORS = {
   calls:      { color: '#59A14F', opacity: 0.7 },
   extends:    { color: '#B07AA1', opacity: 0.8 },
   implements: { color: '#F28E2B', opacity: 0.8 },
-  uses:       { color: '#BAB0AC', opacity: 0.35 }
+  uses:       { color: '#BAB0AC', opacity: 0.35 },
+  reads:      { color: '#76B7B2', opacity: 0.6 },
+  writes:     { color: '#9C755F', opacity: 0.7 },
+  executes:   { color: '#EDC948', opacity: 0.7 }
 };
 
 // Boundary violations override edge styling. Red for "this edge crosses
@@ -953,7 +956,10 @@ function buildEdgeLegend() {
     { name: 'calls', dashed: false },
     { name: 'extends', dashed: false },
     { name: 'implements', dashed: false },
-    { name: 'uses', dashed: true }
+    { name: 'uses', dashed: true },
+    { name: 'reads', dashed: false },
+    { name: 'writes', dashed: false },
+    { name: 'executes', dashed: false }
   ];
   edgeKinds.forEach(function(ek) {
     var ec = EDGE_COLORS[ek.name];

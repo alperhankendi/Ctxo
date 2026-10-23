@@ -74,6 +74,14 @@ jobs:
       - name: Run unit tests with coverage
         run: pnpm --filter @ctxo/cli test:unit:coverage
 
+      # lang-csharp runs its `unit` vitest project here: the tree-sitter, mocked
+      # Roslyn and packaging tests need no .NET. The `dotnet` project (Roslyn
+      # integration tests) builds the helper and runs in the dotnet-tests job.
+      - name: Run plugin-api, sql-extract and lang-sql tests, and the lang-csharp unit tests
+        run: |
+          pnpm --filter @ctxo/plugin-api --filter @ctxo/sql-extract --filter @ctxo/lang-sql test
+          pnpm --filter @ctxo/lang-csharp test --project unit
+
       - name: Unit Test Report
         uses: dorny/test-reporter@d1b5dff021aa968b288b02285a8bf47471c5928a # v3.2.0
         if: always() && github.event_name != 'pull_request'
@@ -128,6 +136,47 @@ jobs:
           path: packages/cli/coverage/
           retention-days: 14
 
+  # The release gate (`pnpm -r test`) runs the lang-csharp `dotnet` project, so pull
+  # requests run it too: the helper build and NuGet restore, the ScriptDom side of the
+  # SQL conformance corpus, SQL call sites, annotations, the restore-failure fallback
+  # and roll forward. It also runs the CLI's end-to-end C# to SQL test.
+  dotnet-tests:
+    name: .NET Integration Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: 10.9.0
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: 8.0.x
+
+      - run: pnpm install --frozen-lockfile
+
+      # Build plugin-api + lang-* so cli can resolve their dist entries at runtime.
+      - name: Build workspace packages
+        run: pnpm -r build
+
+      - name: Run the lang-csharp dotnet tests
+        run: pnpm --filter @ctxo/lang-csharp test --project dotnet
+
+      # The C# call site to SQL table chain needs the CLI core (blast radius, contexts
+      # view), which a plugin must not import, so the test lives in the CLI e2e suite.
+      # It is opt-in (CTXO_DOTNET_E2E=1), so the e2e-tests job skips it.
+      - name: Run the end-to-end C# to SQL test
+        env:
+          CTXO_DOTNET_E2E: '1'
+        run: pnpm --filter @ctxo/cli test:e2e tests/e2e/csharp-sql-call-site.test.ts
+
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -161,7 +210,7 @@ jobs:
         run: |
           echo "## Package Contents" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          for pkg in @ctxo/plugin-api @ctxo/cli @ctxo/lang-typescript @ctxo/lang-go @ctxo/lang-csharp; do
+          for pkg in @ctxo/plugin-api @ctxo/cli @ctxo/lang-typescript @ctxo/lang-go @ctxo/lang-csharp @ctxo/sql-extract @ctxo/lang-sql; do
             echo "### $pkg" >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
             pnpm --filter "$pkg" pack --dry-run 2>&1 | grep -E "^npm notice" | tee -a $GITHUB_STEP_SUMMARY

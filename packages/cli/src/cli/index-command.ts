@@ -7,8 +7,13 @@ import { ContentHasher } from '../core/staleness/content-hasher.js';
 import { LanguageAdapterRegistry } from '../adapters/language/language-adapter-registry.js';
 import { loadPlugins } from './plugin-loader.js';
 import { InstallCommand } from './install-command.js';
+import { readSourceText } from './read-source.js';
 import { changeLogSize, writeCoChangeMatrix } from './index-cochange.js';
+import { computeAndWriteContextsView } from './index-contexts-view.js';
+import { extractFileFacts } from './index-facts.js';
 import {
+  communityDetectorOptions,
+  factsRequested,
   loadConfig,
   indexIgnorePatterns,
   indexIgnoreProjectPatterns,
@@ -35,7 +40,7 @@ import { SimpleGitAdapter } from '../adapters/git/simple-git-adapter.js';
 import { RevertDetector } from '../core/why-context/revert-detector.js';
 import { canonicalizeChangeLog } from '../core/history/change-log.js';
 import { buildIntentHistory } from '../core/history/intent-history.js';
-import { CommunityDetector } from '../core/overlay/community-detector.js';
+import { CommunityDetector, type CommunityDetectorOptions } from '../core/overlay/community-detector.js';
 import { DriftDetector } from '../core/overlay/drift-detector.js';
 import { BoundaryViolationDetector } from '../core/overlay/boundary-violation-detector.js';
 import { SymbolGraph } from '../core/graph/symbol-graph.js';
@@ -69,6 +74,7 @@ interface RoslynLike {
 
 interface CSharpCompositeLike {
   getRoslynDelegate(): RoslynLike | null;
+  /** Re-read after the Roslyn batch: a failed helper switches the composite to the syntax tier. */
   getTier(): 'full' | 'syntax' | 'unavailable';
 }
 
@@ -163,7 +169,11 @@ export class IndexCommand {
 
     // Set up adapters via plugin discovery (TS, Go, C# all plugin-backed)
     const registry = new LanguageAdapterRegistry();
-    const { tsMorphLike, roslynAdapter, csharpTier, goTier, javaTier } = await this.registerDiscoveredPlugins(registry, ignore.ignoreProjectPatterns);
+    const plugins = await this.registerDiscoveredPlugins(registry, ignore.ignoreProjectPatterns, factsRequested(ignore.config));
+    const { tsMorphLike, roslynAdapter, csharpComposite, goTier, javaTier } = plugins;
+    // The C# tier as loaded; re-read after the Roslyn batch, which can switch it to the syntax tier.
+    const csharpTierAtLoad = plugins.csharpTier;
+    let csharpTier = plugins.csharpTier;
     this.supportedExtensions = registry.getSupportedExtensions();
 
     // Emit a language-aware pre-scan so users see the plan before the work runs
@@ -240,13 +250,17 @@ export class IndexCommand {
       /* non-fatal */
     }
 
-    // Phase 0: Roslyn batch index (if available, pre-caches all C# results)
+    // Phase 0: Roslyn batch index (if available, pre-caches all C# results). Full and incremental
+    // (--files, --commit) runs all come through here.
     if (roslynAdapter?.isReady()) {
       const hasCsFiles = files.some(f => f.endsWith('.cs'));
       if (hasCsFiles) {
         await roslynAdapter.batchIndex();
       }
     }
+    // When the helper failed (restore, build, timeout), the C# plugin now runs on tree-sitter: the edge
+    // quality and the summary must say so.
+    if (csharpComposite) csharpTier = csharpComposite.getTier();
 
     // Phase 1a: Extract symbols (CPU-bound, builds symbol registry for edge resolution)
     const symbolRegistry = new Map<string, SymbolKind>();
@@ -264,7 +278,7 @@ export class IndexCommand {
       const relativePath = relative(this.projectRoot, filePath).replace(/\\/g, '/');
 
       try {
-        const source = readFileSync(filePath, 'utf-8');
+        const source = readSourceText(filePath);
         const lastModified = Math.floor(Date.now() / 1000);
 
         const symbols = await adapter.extractSymbols(relativePath, source);
@@ -331,6 +345,16 @@ export class IndexCommand {
       }
     }
 
+    // Phase 1c: facts, only when requested (index.facts: true). They go into the JSON index, never SQLite.
+    if (factsRequested(ignore.config)) {
+      for (const entry of pendingIndices) {
+        const adapter = registry.getAdapter(entry.relativePath);
+        if (!adapter) continue;
+        const facts = await extractFileFacts(adapter, entry.relativePath, entry.source);
+        if (facts) entry.fileIndex.facts = facts;
+      }
+    }
+
     // Clean up pre-loaded sources
     tsMorphLike?.clearProjectSources();
 
@@ -380,11 +404,16 @@ export class IndexCommand {
     // has nothing to rebuild. A full run that only pruned rebuilds them only when no entry survives, because
     // then the project really is empty: with entries left, a run that discovered nothing (no language plugin
     // loaded here, say right after a clone) would replace the committed snapshot with an empty one.
+    // A full run on an empty index also rebuilds them when cochange.include names files: no language plugin
+    // indexes them, but their co-change makes a contexts view, and with no committed entry there is no
+    // snapshot of indexed files to protect.
+    const emptyIndex = !incremental && survivingEntries === 0;
+    const coChangeIncludesFiles = resolveCoChangeConfig(ignore.config).include.length > 0;
     const refreshProducts =
       pendingIndices.length > 0 ||
       removedPaths.size > 0 ||
       options.commit !== undefined ||
-      (stalePaths.length > 0 && survivingEntries === 0);
+      (emptyIndex && (stalePaths.length > 0 || coChangeIncludesFiles));
 
     // Co-change is built from git history and the committed entries, not from what this run discovered, so
     // it also follows a run that only pruned.
@@ -460,6 +489,7 @@ export class IndexCommand {
     //                       would produce a meaningless N-singleton snapshot (modularity 0).
     // Opt-out (--skip-community): skip entirely. Warn if a stale snapshot exists on disk.
     let communitySnapshot: CommunitySnapshot | undefined;
+    let symbolPageRank: ReadonlyMap<string, number> | undefined;
 
     if (options.skipCommunity && refreshProducts) {
       if (existsSync(join(this.ctxoRoot, 'index', 'communities.json'))) {
@@ -470,7 +500,7 @@ export class IndexCommand {
     } else if (refreshProducts) {
       try {
         const graphIndices = graphInput();
-        communitySnapshot = await this.buildCommunitySnapshot(
+        const built = await this.buildCommunitySnapshot(
           graphIndices,
           {
             csharpTier,
@@ -479,7 +509,10 @@ export class IndexCommand {
             tsCount: graphIndices.filter((idx) => /\.(ts|tsx|js|jsx)$/.test(idx.file)).length,
           },
           gitAdapter,
+          communityDetectorOptions(ignore.config),
         );
+        communitySnapshot = built.snapshot;
+        symbolPageRank = built.pagerank;
         const scope = incremental ? ' (incremental, full-graph recompute)' : '';
         console.error(
           `[ctxo] Community detection${scope}: ${countCommunities(communitySnapshot)} clusters (modularity ${communitySnapshot.modularity.toFixed(3)})`,
@@ -547,6 +580,23 @@ export class IndexCommand {
       // The full graph, like the snapshot it is compared with: after an incremental run the edges of a few
       // files alone would hide every violation that starts in a file this run did not re-index.
       this.writeArchitectureArtifacts(indexed, communitySnapshot);
+
+      // The contexts view reads the same merged index, so an incremental run writes what a full run would.
+      // Non-fatal like the artifacts above.
+      if (symbolPageRank) {
+        try {
+          computeAndWriteContextsView({
+            projectRoot: this.projectRoot,
+            ctxoRoot: this.ctxoRoot,
+            config: ignore.config,
+            indices: indexed,
+            snapshot: communitySnapshot,
+            symbolPageRank,
+          });
+        } catch (err) {
+          console.error(`[ctxo] Contexts view skipped: ${(err as Error).message}`);
+        }
+      }
     }
 
     // Ensure .ctxo/.cache/ is in .gitignore (skip during verify runs)
@@ -559,13 +609,15 @@ export class IndexCommand {
     const tsCount = pendingIndices.filter(e => /\.(ts|tsx|js|jsx)$/.test(e.relativePath)).length;
     const goCount = pendingIndices.filter(e => e.relativePath.endsWith('.go')).length;
     const javaCount = pendingIndices.filter(e => e.relativePath.endsWith('.java')).length;
+    const sqlCount = pendingIndices.filter(e => e.relativePath.toLowerCase().endsWith('.sql')).length;
     console.error(
       `[ctxo] Index complete: ${processed} files indexed${removedPaths.size > 0 ? `, ${removedPaths.size} removed` : ''}`,
     );
     if (tsCount > 0) console.error(`[ctxo]   TypeScript/JS: ${tsCount} files (full tier)`);
-    if (csCount > 0) console.error(`[ctxo]   C#: ${csCount} files (${csharpTier} tier${csharpTier === 'syntax' ? ' - .NET SDK 8+ for full analysis' : ''})`);
+    if (csCount > 0) console.error(`[ctxo]   C#: ${csCount} files (${csharpTier} tier${csharpTierNote(csharpTierAtLoad, csharpTier)})`);
     if (goCount > 0) console.error(`[ctxo]   Go: ${goCount} files (${goTier} tier${goTier === 'syntax' ? ' - Go 1.22+ for full analysis' : ''})`);
     if (javaCount > 0) console.error(`[ctxo]   Java: ${javaCount} files (${javaTier} tier${javaTier === 'syntax' ? ' - JRE 11+ & "ctxo install java --full-tier" for full analysis' : ''})`);
+    if (sqlCount > 0) console.error(`[ctxo]   SQL: ${sqlCount} files (syntax tier)`);
 
     // Dispose Roslyn adapter
     if (roslynAdapter) await roslynAdapter.dispose();
@@ -604,16 +656,19 @@ export class IndexCommand {
   private async registerDiscoveredPlugins(
     registry: LanguageAdapterRegistry,
     ignoreProjectPatterns: string[] = [],
+    facts = false,
   ): Promise<{
     tsMorphLike: TsMorphLike | undefined;
     roslynAdapter: RoslynLike | null;
+    csharpComposite: CSharpCompositeLike | null;
     csharpTier: string;
     goTier: string;
     javaTier: string;
   }> {
-    const loaded = await loadPlugins(this.projectRoot, { ignoreProjects: ignoreProjectPatterns });
+    const loaded = await loadPlugins(this.projectRoot, { ignoreProjects: ignoreProjectPatterns, facts });
     let tsMorphLike: TsMorphLike | undefined;
     let roslynAdapter: RoslynLike | null = null;
+    let csharpComposite: CSharpCompositeLike | null = null;
     let csharpTier = 'unavailable';
     let goTier = 'unavailable';
     let javaTier = 'unavailable';
@@ -647,6 +702,7 @@ export class IndexCommand {
         typeof csCandidate.getRoslynDelegate === 'function' &&
         typeof csCandidate.getTier === 'function'
       ) {
+        csharpComposite = csCandidate as CSharpCompositeLike;
         csharpTier = csCandidate.getTier();
         roslynAdapter = csCandidate.getRoslynDelegate() ?? null;
       }
@@ -672,7 +728,7 @@ export class IndexCommand {
       console.error(`[ctxo] Plugin ${plugin.id}@${plugin.version} (${plugin.tier} tier${tierSuffix}) — ${plugin.extensions.join(', ')}`);
     }
 
-    return { tsMorphLike, roslynAdapter, csharpTier, goTier, javaTier };
+    return { tsMorphLike, roslynAdapter, csharpComposite, csharpTier, goTier, javaTier };
   }
 
   private discoverFilesIn(root: string, ignoreFile: (p: string) => boolean = () => false): string[] {
@@ -813,7 +869,7 @@ export class IndexCommand {
 
       // Slow path: hash-based verification (handles git checkout, cp -p, CI)
       if (indexed.contentHash) {
-        const source = readFileSync(filePath, 'utf-8');
+        const source = readSourceText(filePath);
         const currentHash = hasher.hash(source);
         if (currentHash === indexed.contentHash) continue;
         console.error(`[ctxo] STALE: ${relativePath} (content hash differs)`);
@@ -1031,7 +1087,8 @@ export class IndexCommand {
     indices: readonly FileIndex[],
     tiers: { csharpTier: string; goTier: string; javaTier: string; tsCount: number },
     gitAdapter: SimpleGitAdapter,
-  ): Promise<CommunitySnapshot> {
+    detectorOptions: CommunityDetectorOptions,
+  ): Promise<{ snapshot: CommunitySnapshot; pagerank: ReadonlyMap<string, number> }> {
     const graph = new SymbolGraph();
     for (const fileIndex of indices) {
       for (const symbol of fileIndex.symbols) graph.addNode(symbol);
@@ -1044,11 +1101,11 @@ export class IndexCommand {
     const pagerankMap = new Map<string, number>();
     for (const entry of pagerank.rankings) pagerankMap.set(entry.symbolId, entry.score);
 
-    const detector = new CommunityDetector();
+    const detector = new CommunityDetector(detectorOptions);
     const edgeQuality = pickEdgeQuality(tiers);
     const detectResult = detector.detect(graph, pagerankMap, edgeQuality);
 
-    return {
+    const snapshot: CommunitySnapshot = {
       version: 1,
       computedAt: new Date().toISOString(),
       commitSha: await safeHeadSha(gitAdapter, this.projectRoot),
@@ -1058,6 +1115,7 @@ export class IndexCommand {
       edgeQuality: detectResult.edgeQuality,
       crossClusterEdges: detectResult.crossClusterEdges,
     };
+    return { snapshot, pagerank: pagerankMap };
   }
 
   /**
@@ -1134,6 +1192,15 @@ export class IndexCommand {
       );
     }
   }
+}
+
+/**
+ * The hint after the C# tier in the index summary. A plugin that loaded at the full tier and is at the
+ * syntax tier after the Roslyn batch lost its helper (restore or build failure): `ctxo doctor` says why.
+ */
+function csharpTierNote(tierAtLoad: string, tier: string): string {
+  if (tier !== 'syntax') return '';
+  return tierAtLoad === 'full' ? ' - the Roslyn helper failed, run "ctxo doctor"' : ' - .NET SDK 8+ for full analysis';
 }
 
 function pickEdgeQuality(tiers: {

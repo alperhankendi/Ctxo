@@ -24,21 +24,25 @@ MCP client configuration:
 
 ## Monorepo & Plugin Architecture (v0.7+)
 
-Ctxo is a pnpm workspace monorepo with six packages:
+Ctxo is a pnpm workspace monorepo:
 
-- `@ctxo/cli` (packages/cli) — CLI entry, composition root, MCP server, tool handlers
-- `@ctxo/plugin-api` (packages/plugin-api) — `CtxoLanguagePlugin` v1 protocol interface
-- `@ctxo/lang-typescript` — ts-morph (full tier) plugin for TS/JS
-- `@ctxo/lang-go` — tree-sitter / gopls plugin for Go
-- `@ctxo/lang-csharp` — Roslyn plugin for C#
+- `@ctxo/cli` (packages/cli) - CLI entry, composition root, MCP server, tool handlers
+- `@ctxo/plugin-api` (packages/plugin-api) - `CtxoLanguagePlugin` protocol interface (v1 and v2)
+- `@ctxo/lang-typescript` - ts-morph (full tier) plugin for TS/JS
+- `@ctxo/lang-go` - tree-sitter / gopls plugin for Go
+- `@ctxo/lang-csharp` - Roslyn plugin for C# (attribute annotations; SQL edges at known call sites when `@ctxo/lang-sql` is installed)
 - `@ctxo/lang-java` - tree-sitter Java plugin (syntax tier); full tier via `@ctxo/lang-java-analyzer` companion package (JRE 11+ required)
+- `@ctxo/lang-sql` (packages/lang-sql) - T-SQL plugin for `.sql` files, protocol v2 (`ctxo install sql`, alias `tsql`)
+- `@ctxo/sql-extract` (packages/sql-extract) - zero-dependency T-SQL tokenizer and recognizers; a library, not a plugin, never discovered
 
-Plugin protocol v1 (`CtxoLanguagePlugin`):
-- `apiVersion: 1`
+Plugin protocol (`CtxoLanguagePlugin`):
+- `apiVersion`: `'1'` or `'2'`, the lowest version the plugin works on. The CLI accepts both (`SUPPORTED_API_VERSIONS = ['1', '2']`) and handles their output identically; `'1'` stays accepted for at least 12 months after `'2'` ships. The official plugins declare `'1'`; `@ctxo/lang-sql` declares `'2'`.
 - `id`: unique plugin identifier
 - `extensions`: file extensions handled (e.g. `['.ts', '.tsx']`)
 - `tier`: `'syntax'` | `'full'`
 - `createAdapter(ctx)`: factory returning an `ILanguageAdapter` instance
+- v2 additions (all additive): the data kinds, `SymbolNode.annotations`, optional `extractFacts`, and `ctx.capabilities` (`facts`, `sqlCallSites`). See "Plugin Protocol v2, Data Coupling and SQL" below.
+- Dependencies: plugins import only from `@ctxo/plugin-api`; the one exception is `@ctxo/sql-extract` (ADR-017).
 
 Discovery: at startup Ctxo scans the project's `package.json` dependencies for names matching `@ctxo/lang-*` or `ctxo-lang-*` and registers them. `ctxo install` adds plugins; `ctxo index --install-missing` auto-installs plugins required by detected languages. New CLI: `ctxo doctor --fix`, `ctxo version`, and `ctxo --version --verbose|--json` for plugin/runtime diagnostics.
 
@@ -57,6 +61,8 @@ Parameters:
 - level (number 1-4, default 3): L1=signature, L2=direct deps, L3=full closure, L4=with token budget
 - intent (string, optional): Filter dependencies by keyword
 
+Nodes carry their `annotations` (C# attributes, SQL table `columns`) at L4 only; L1-L3 omit them (and nodes from the SQLite fallback have none). A 2-part data ID such as `dbo.usp_closeloan::procedure` walks the body of the winning definition; a copy's full ID walks that copy's own body.
+
 When to use: Understanding what a symbol depends on (downstream view).
 Instead of: get_blast_radius (upstream/impact), get_context_for_task (task-specific).
 
@@ -64,15 +70,16 @@ Instead of: get_blast_radius (upstream/impact), get_context_for_task (task-speci
 Find all symbols that would break if a target changes.
 
 Parameters:
-- symbolId (string, required): Symbol ID
+- symbolId (string, required): Symbol ID, or the 2-part ID of a table, view or procedure (`dbo.loans::table`)
 - confidence (enum: confirmed|likely|potential, optional): Filter by tier
 - intent (string, optional): Filter by keyword
 
 Returns: impactedSymbols array with symbolId, depth, riskScore, confidence, edgeKinds, coChangeFrequency (when the dependent's file co-changes with the target's file).
-3-tier model: confirmed (calls/extends/implements), likely (uses/co-changed), potential (imports-only). A potential dependent whose file co-changes with the target's file at frequency above 0.5 is promoted to likely.
+3-tier model by the strongest edge that reaches each dependent: confirmed (calls/extends/implements and the data edges reads/writes/executes), likely (uses/co-changed), potential (imports-only). A potential dependent whose file co-changes with the target's file at frequency above 0.5 is promoted to likely. The traversal is transitive across all tiers; riskScore falls with depth.
 Also returns coChangedFiles (when co-change data exists): up to 10 files that co-change with the target's file at frequency >= 0.5 but have no graph path to it, each with file, frequency, sharedCommits. Informational: not counted in tiers, risk scores or the safe-edit gate.
+Every copy of a table, view or procedure that several files define, and its 2-part ID, reports the same dependents (those of the winning definition).
 
-When to use: BEFORE modifying any function or class.
+When to use: BEFORE modifying any symbol, including a SQL table, view or procedure.
 Instead of: get_logic_slice (forward deps), get_pr_impact (PR-level).
 
 ### get_architectural_overlay
@@ -80,10 +87,12 @@ Get project architectural layer map.
 
 Parameters:
 - layer (string, optional): Filter by layer name
+- mode (enum: both|regex|communities|contexts, default both): "regex" layer map, "communities" Louvain clusters, "contexts" candidate bounded contexts (file level), "both" layers plus communities
+- candidate (number, optional): With mode "contexts", the id of one candidate to return in full
 
-Returns: Symbols grouped into Domain, Infrastructure, Adapter, Test, Composition, Configuration layers.
+Returns: Symbols grouped into Domain, Infrastructure, Adapter, Test, Composition, Configuration layers; with communities, data-driven clusters and god nodes. With mode "contexts", a summary: `commitSha`, `coverage`, `candidates` (`id`, `label`, `fingerprint`, `fileCount`, `cohesion`, top 5 `topTerms`), `hubs` (capped at 50, with `hubsTotal`), `collisions` (capped at 50, with `collisionsTotal`), `unclustered` count and a `hint`. Data coupling appears in the summary as counts only: `sharedTableCount` on each candidate that has shared tables, plus `dataResourcesTotal`, `sharedResourcesTotal` (resources of two or more candidates) and `externalResourcesTotal` (resources no `.sql` file defines). With `candidate: <id>`, that candidate in full (files capped at 15 with `fileCount`, cross-candidate edges, co-change pairs, `sharedTables` with `sharedTableCount`), its hubs (50), its collisions (10, each with only that candidate's own occurrences: `symbolId`, first 5 members, `memberCount`) and its own `dataResources` with `dataResourcesTotal`. `sharedTables`: the first 15 by name, each `{ name, kind?, external, accesses: [{ candidate, modes }], owner?, accessCount }` with up to 10 accesses (the asking candidate's own access always kept). `dataResources`: the first 15 by name, each `{ name, kind?, external, modes, owner?, writerCount }`. When the detail is still larger than the response limit, trailing entries are dropped by name order from the longer of the two lists (dataResources on a tie); the counts keep the totals. An unknown id or no contexts view returns `found: false` with a hint (run `ctxo index`). `ctxo contexts --json` prints the full artifact.
 
-When to use: Onboarding to a new codebase, validating layer boundaries.
+When to use: Onboarding to a new codebase, validating layer boundaries, preparing a context map (mode "contexts").
 
 ### get_why_context
 Retrieve git commit history and anti-pattern warnings for a symbol.
@@ -114,7 +123,7 @@ Parameters:
 - includeTests (boolean, default false): Include test files
 - intent (string, optional): Filter results by keyword
 
-Returns: deadSymbols (with confidence 1.0/0.9/0.7 and reason), deadFiles, unusedExports, scaffolding markers.
+Returns: deadSymbols (with confidence 1.0/0.9/0.7 and reason), deadFiles, unusedExports, scaffolding markers. Symbols in .sql files are never reported (their consumers may live outside the index).
 
 When to use: Cleanup, refactoring, confirming code is truly unused.
 Instead of: find_importers (specific symbol reverse lookup).
@@ -133,7 +142,7 @@ Task types:
 - refactor: Importers + complexity + churn (restructuring)
 - understand: Full slice + architecture (learning)
 
-Context entries that depend on the symbol (its blast radius) carry an optional confidence tier (confirmed|likely|potential); co-change history can raise potential to likely.
+Context entries that depend on the symbol (its blast radius) carry an optional confidence tier (confirmed|likely|potential); co-change history can raise potential to likely. Entries carry no symbol annotations (use get_logic_slice level 4). A 2-part data ID (`dbo.loans::table`) is accepted.
 
 When to use: BEST starting point when you know the symbol AND your intent.
 
@@ -144,6 +153,7 @@ Parameters:
 - query (string, required): Natural language search query
 - tokenBudget (number, default 4000): Max tokens for results
 - strategy (enum: combined|dependency|importance, default combined): Ranking strategy
+- searchMode (enum: fts|legacy, default fts): "fts" is BM25 with camelCase splitting, trigram fallback and automatic typo correction (reported in `fuzzyCorrection`); "legacy" is substring matching
 
 Returns: Symbols ranked by BM25 relevance + PageRank importance, packed within budget.
 
@@ -155,9 +165,10 @@ Search symbols by name or regex pattern.
 
 Parameters:
 - pattern (string, required): Substring or regex pattern
-- kind (enum: function|class|interface|method|variable|type, optional): Filter by kind
+- kind (enum: function|class|interface|method|variable|type|table|view|procedure, optional): Filter by kind (table, view and procedure come from SQL plugins)
 - filePattern (string, optional): Filter by file path substring
 - limit (number 1-100, default 25): Max results
+- mode (enum: regex|fts, default regex): "regex" is a case-insensitive regex or substring match on names; "fts" is BM25 relevance search with typo correction
 
 When to use: Know (part of) the symbol name, need its ID for other tools.
 Instead of: get_ranked_context (semantic/relevance search).
@@ -176,8 +187,8 @@ Instead of: get_pr_impact (full PR risk assessment).
 Find all symbols that depend on a given symbol (reverse dependency).
 
 Parameters:
-- symbolId (string, required): Symbol ID
-- edgeKinds (string[], optional): Filter by imports|calls|extends|implements|uses
+- symbolId (string, required): Symbol ID, or the 2-part ID of a table, view or procedure (`dbo.loans::table`; every copy gives the same importers)
+- edgeKinds (string[], optional): Filter by imports|calls|extends|implements|uses|reads|writes|executes (the last three are data access)
 - transitive (boolean, default false): Follow transitive reverse edges
 - maxDepth (number 1-10, default 5): Max BFS depth
 - intent (string, optional): Filter by keyword
@@ -199,7 +210,7 @@ Rank symbols by PageRank centrality.
 
 Parameters:
 - limit (number 1-200, default 25): Max results
-- kind (enum: function|class|interface|method|variable|type, optional): Filter
+- kind (enum: function|class|interface|method|variable|type|table|view|procedure, optional): Filter (PageRank runs on the whole graph, data edges included)
 - filePattern (string, optional): Filter by file path
 - damping (number 0-1, default 0.85): PageRank damping factor
 
@@ -251,6 +262,10 @@ Onboarding to a new codebase?
   -> get_architectural_overlay (layer map)
   -> get_symbol_importance (most critical symbols)
 
+Preparing a context map?
+  -> get_architectural_overlay(mode: "contexts") (candidate bounded contexts)
+  -> then candidate: <id> for one in full
+
 Cleaning up code?
   -> find_dead_code (unused symbols)
   -> get_change_intelligence (complexity hotspots)
@@ -274,6 +289,7 @@ All tool responses include:
 ```
 - Default truncation threshold: 8KB
 - Configurable via CTXO_RESPONSE_LIMIT environment variable
+- In `get_architectural_overlay` mode "contexts", only `candidates` is truncatable (hint: use `candidate: <id>` or `ctxo contexts --json`); `hubs` and `collisions` are capped at the source and never truncated. In the `candidate: <id>` detail, `sharedTables` and `dataResources` are not truncatable either: they are capped at 15 each and shortened from the end until the detail fits the limit, with `sharedTableCount` and `dataResourcesTotal` keeping the totals
 
 ### Intent Filtering
 4 tools accept `intent` parameter: get_blast_radius, get_logic_slice, find_importers, find_dead_code.
@@ -283,9 +299,11 @@ All tool responses include:
 
 ### Symbol ID Format
 All symbols use deterministic IDs: `"<relativePath>::<name>::<kind>"`
-- Example: `"src/core/graph/symbol-graph.ts::SymbolGraph::class"`
-- Valid kinds: function, class, interface, method, variable, type
-- Valid edge kinds: imports, calls, extends, implements, uses
+- Example: `"src/core/graph/symbol-graph.ts::SymbolGraph::class"`, `"db/lending.sql::dbo.loans::table"`
+- Valid kinds: function, class, interface, method, variable, type, table, view, procedure
+- Valid edge kinds: imports, calls, extends, implements, uses, reads, writes, executes
+- Edge targets may also be 2-part name references (`<name>::<kind>`); data edges point at canonical names such as `dbo.loans::table` (lowercase, delimiters stripped, default schema `dbo`), resolved to the defining `table` or `view`. With several definitions, the winner is a copy outside test files (default test globs; `index.tests` is not consulted), then outside `docs`/`doc`/`documentation` folders, then the codepoint-smallest symbol ID
+- Impact tools (get_blast_radius, find_importers, get_pr_impact, get_context_for_task, the gate, `ctxo blast-radius`) accept a 2-part data ID and give every copy of a multi-defined object the winner's dependents; forward edges (get_logic_slice) stay per copy; get_why_context with a 2-part ID reads the winner's file
 
 ### Resources
 - `ctxo://status` — Health check resource (confirms server is running)
@@ -333,6 +351,96 @@ cochange:
 The safe-edit gate counts confirmed + likely dependents, so co-change-upgraded dependents count and the gate may fire somewhat more often. `ctxo gate --preview` shows the effect.
 
 Design record: docs/architecture/ADR/adr-016-co-change-engine-and-snapshot-policy.md
+
+---
+
+## Contexts View (v0.13, #156)
+
+Candidate bounded contexts, computed by `ctxo index` and written to `.ctxo/index/contexts-view.json` (committed). Louvain runs on a file graph whose edges blend dependency weight (distinct symbol edges, log-normalised) and co-change frequency; hub files (fan-in or god nodes) have their edges damped by `1 / log2(2 + dependents)` and are listed separately. Groups smaller than `minCandidateFiles` fold into a neighbour; files with no edge are `unclustered`. Each candidate has a suggested label (longest common directory; PageRank fallback at the repo root), a `fingerprint`, cohesion, top terms, cross-candidate edges and co-change pairs. Collisions are type names that appear in two candidates with different member shapes (Jaccard below 0.5). No domain is named automatically.
+
+Refresh: every index run that re-indexes files (full, `--files`, `--commit`, so also every post-commit hook run); skipped by `--skip-community`; not refreshed by `ctxo watch`.
+
+Surfaces: `get_architectural_overlay({ mode: "contexts" })` (summary first, `candidate: <id>` for one in full) and `ctxo contexts [--json]` (table to stderr, full artifact to stdout; without a view it exits 0 with `found: false`).
+
+Config in `.ctxo/config.yaml` (all optional, defaults shown):
+
+```yaml
+communities:               # symbol-level Louvain
+  resolution: 1.0
+  godNodeMinBridged: 3
+  godNodeMaxResults: 25
+contextsView:
+  weights: { dependency: 1.0, coChange: 1.0, data: 0 }   # data: weight of data edges (0 = shared tables never merge candidates)
+  exclude: []              # files left out of the file graph (globs)
+  hubs: { auto: true, topPercent: 1, minDependents: 10, paths: [] }   # paths lose all their edges
+  resolution: 1.0
+  minCandidateFiles: 3
+  technicalTerms: []       # replaces the default list (Service, Repository, Controller, Handler, Manager, Dto, Impl, Async)
+index:
+  tests: []                # extra test-file globs; test files are never graph nodes
+  facts: false             # true asks plugins for code facts (protocol v2, index JSON only)
+```
+
+Design record and evidence: docs/architecture/ADR/adr-016-co-change-engine-and-snapshot-policy.md (addendum "Contexts view defaults (PR 1A)").
+
+---
+
+## Plugin Protocol v2, Data Coupling and SQL (v0.13, #156)
+
+Two services can look independent in the graph while both write the same table. Phase 1 of the domain knowledge layer makes that data coupling visible. Feature doc: docs/features/domain-knowledge.md. Design record: docs/architecture/ADR/adr-017-plugin-protocol-v2-and-data-coupling.md.
+
+### Protocol v2 (`@ctxo/plugin-api`)
+
+- Kinds: `SYMBOL_KINDS` adds `table`, `view`, `procedure`; `EDGE_KINDS` adds `reads`, `writes`, `executes`; `DATA_RESOURCE_KINDS = ['table', 'view']` is what core analyses use.
+- Annotations: `SymbolNode.annotations?: { name, args?, named? }[]`. Always on. Host-language attributes are capped at 20 per symbol, 10 positional entries and 10 named entries plus the reserved `type`, 200 characters per value; `named.type` is reserved for the fully qualified type name, and a source argument named `type` is not kept. lang-sql's `columns` annotation lists every column of a table. Core checks shape only; JSON index only.
+- Facts: `FACT_KINDS = ['literal-comparison', 'normalization', 'retry-timeout', 'endpoint']`, `CodeFact { kind, symbolId, line (0-based), text (single line, trimmed, max 200 chars), detail? }`, optional `ILanguageAdapter.extractFacts`. Called only when `index.facts: true`; results go to the file's index JSON under `facts`. No official plugin implements it yet.
+- Capabilities: `PluginContext.capabilities?: { facts?, sqlCallSites? }`, computed before any `createAdapter` call and offered to every plugin. `sqlCallSites` is set only when a plugin for `.sql` is installed.
+- Versioning: `SUPPORTED_API_VERSIONS = ['1', '2']`; plugins declare the lowest version they work on. Older CLIs skip `@ctxo/lang-sql` with a warning and drop the new kinds from a newer index with a warning.
+
+### `@ctxo/lang-sql`
+
+- `ctxo install sql` (alias `tsql`). Syntax tier, no database, no .NET. Detection, `ctxo doctor` and `ctxo index --install-missing` suggest it when the repository has at least 5 `.sql` files that are also at least 2% of its files (as `git ls-files` lists them).
+- Definitions: `CREATE [OR ALTER] TABLE | VIEW | PROC[EDURE] | FUNCTION`, `ALTER VIEW | PROC[EDURE] | FUNCTION`. Symbol IDs carry the canonical name (`db/lending.sql::dbo.loans::table`); `name` keeps the declared spelling. Functions map to `function`.
+- Accesses from view, procedure and function bodies: `FROM`, `JOIN`, `APPLY`, `MERGE ... USING` -> reads; `INSERT`, `UPDATE`, `DELETE`, `MERGE`, `TRUNCATE TABLE`, `SELECT ... INTO`, `OUTPUT ... INTO` -> writes; `EXEC` / `EXECUTE` -> executes. Temp tables, table variables, CTE names, aliases, 3- and 4-part names and the `sys` / `information_schema` schemas are skipped. Only ASCII A-Z is case-folded.
+- Limits: T-SQL only with `dbo` as the default schema; top-level DML in scripts is skipped; `ALTER TABLE ... ADD` columns count only in the defining file; a CTE name reused later in a batch without `;` is skipped by sql-extract but read by ScriptDom.
+- Size limit: a `.sql` file larger than 5 MiB is skipped (no symbols, edges or facts) with one warning per file: `skipped <file>: <n> MiB is over the 5 MiB SQL size limit`. Use `index.ignore` for dumps to silence it.
+- Several definitions of one object (migrations, docs or test copies): see "Symbol ID Format" above for the winner; every copy reports the winner's dependents, each copy keeps its own forward edges, and the contexts view gives an executing candidate the bodies of every production copy of a procedure (the winner's alone when no copy is production; docs and test copies add nothing when a production copy exists). The winner among production copies is the codepoint-smallest path, not necessarily the newest migration (`V10__` sorts before `V7__`).
+
+### SQL at C# call sites
+
+With lang-sql installed and the Roslyn tier (.NET SDK 8+), the C# helper parses constant SQL with ScriptDom at: `SqlCommand` constructor `cmdText`; `CommandText` assignments on `SqlCommand`, `DbCommand`, `IDbCommand` and subtypes (a procedure name when `CommandType = StoredProcedure` is set on the same local or in the same object initializer); Dapper `SqlMapper` methods starting with `Query` or `Execute` (`sql` argument; `commandType: CommandType.StoredProcedure` means a procedure name); the Dapper `CommandDefinition` constructor (`commandText` argument; a named or positional `commandType` of `StoredProcedure` means a procedure name; the edge belongs to the method that constructs it); `SqlBulkCopy.DestinationTableName` (writes); EF Core `FromSqlRaw`, `ExecuteSqlRaw`, `ExecuteSqlRawAsync`, `SqlQueryRaw` (EF `{0}` placeholders become parameters before parsing). Only compile-time constants count: use `const string`; `static readonly` fields, runtime strings and `CommandText +=` are non-constant. Dapper `IN @ids` is read as `IN (@ids)`. The tree-sitter fallback gives no SQL edges. `DEBUG=ctxo:roslyn` logs the constant, non-constant and unparsable counts.
+
+### C# annotations and test files
+
+- The C# plugin reports attributes in both tiers. Roslyn keeps constant arguments (strings and characters as their value, numbers in invariant culture, booleans, enum constants as `Type.Member`, `typeof(T)` as a display string, arrays flattened, nulls skipped); tree-sitter keeps literal arguments only (strings, numbers, booleans). In the Roslyn semantic path a `name:` argument arrives in `args`; tree-sitter puts it in `named`. Roslyn formats real-number exponents its own way. A source argument named `type` is dropped in both tiers (`named.type` is reserved).
+- Test files (contexts view): a test glob match, or any symbol carrying `Fact`, `Theory`, `SkippableFact`, `SkippableTheory`, `Test`, `TestCase`, `TestCaseSource`, `TestFixture`, `TestMethod`, `DataTestMethod` or `TestClass`. Once C# annotations exist in the index, a file matched only by `**/*Test.cs` or `**/*Tests.cs` needs a test annotation. Missed: test classes with only other attributes (FsCheck `[Property]`), custom attributes derived from `Fact` or `Theory` (names match exactly, base types are not resolved) and unannotated `*Tests.cs` in a bare capital `Tests/` or `Test/` folder (not a default test glob); fix with an `index.tests` glob.
+- Run a full `ctxo index` after upgrading `@ctxo/lang-csharp`: an incremental run annotates only the files it re-indexes, while the contexts view already counts the index as annotated, so name-only test matches that were not re-indexed show up as production files until the full run.
+
+### Data coupling in core and the contexts view
+
+- `reads`, `writes`, `executes` are confirmed blast-radius dependents, so the safe-edit gate also guards heavily used tables and procedures. Data edges stay out of symbol-level communities, god nodes, cross-cluster counts and boundary violations. `.sql` symbols are never dead code.
+- Contexts view artifact: top-level `dataResources` (`name`, `kind?`, `external`, `accesses` per candidate with `modes`, `writers`, `owner?` when exactly one candidate writes it) and per-candidate `sharedTables` (resources of two or more candidates). An `executes` edge to an indexed procedure adds that procedure's reads and writes, transitively; reading a view does not expand to its tables; unclustered files and test files are ignored and hubs count for their assigned candidate.
+- Procedure attribution: procedure bodies count only for the candidates that execute them, decided by canonical name (no copy of an executed procedure credits its own candidate). With several definitions, an executing candidate takes the union of the bodies of every production copy (outside test files and `docs`, `doc` or `documentation` folders), or the winner's body alone when no copy is production; docs and test copies of a procedure that has a production copy add nothing. A procedure that no candidate executes, directly or through other procedures, credits the candidate whose file holds it (with several copies, the candidate of each production copy, or of the winner when none is production); procedures that only execute each other each credit their own candidate. A procedure that only tests or unclustered files execute therefore still credits the script's candidate.
+- `contextsView.weights.data` (default 0) weights data edges between an accessing file and the defining `.sql` file in the file graph. At 0, a `.sql` file joins a candidate only through co-change, so scripts without a co-change partner stay unclustered and lower `coverage` (0.99 to 0.91 on one fixture, candidates unchanged); `contextsView.exclude` leaves them out. Table and view names and columns join the term harvest; tables take part in collisions with their columns, so a C# class and a same-name table can collide (often an entity mapped to its table: possible noise).
+- `ctxo index` appends `, <S> shared tables` to its contexts line; `ctxo contexts` prints the count and one `shared` line per shared resource (owner, several writers or read only).
+- Size: a table shared by k candidates is listed k times with k accesses each in the artifact (k squared growth); the MCP responses are capped.
+
+### Doctor: `csharp_tier`
+
+Five outcomes:
+1. No C# sources: pass, "no C# sources detected".
+2. No .NET 8+ SDK: pass, "syntax tier (install the .NET 8+ SDK for the full tier)".
+3. `@ctxo/lang-csharp` not resolvable from the project: pass, "syntax tier (@ctxo/lang-csharp not installed)".
+4. `dotnet restore` of the helper succeeds: pass, "full tier (.NET SDK <version>, Roslyn helper restores)".
+5. The restore fails or times out (120 s): warn, "syntax tier: the Roslyn helper could not restore (<first error line>)". Fix: make `Microsoft.SqlServer.TransactSql.ScriptDom` and the `Microsoft.CodeAnalysis` packages reachable from your NuGet sources (nuget.org or a mirror), then run `ctxo index`.
+
+When the helper cannot restore or build during `ctxo index`, the C# plugin falls back to tree-sitter (symbols and attribute annotations with literal arguments kept; `named.type`, non-literal argument values and SQL edges lost) and the summary reads `C#: N files (syntax tier - the Roslyn helper failed, run "ctxo doctor")`. In `ctxo watch`, a keep-alive that shut down for inactivity or crashed is restarted once on the next re-index; if that fails, the file falls back to tree-sitter instead of being written with zero symbols. The helper targets `net8.0` with `RollForward` `Major`, so the .NET host can roll forward to a newer major runtime when no 8.x is installed; the built helper has been run with `dotnet exec --fx-version` on .NET 8, 9 and 10. A lone `.csproj` without a solution now indexes in the Roslyn tier.
+
+### Upgrade notes
+
+- First re-index after upgrading rewrites the committed JSON of C# files once (annotations). Make it a full `ctxo index` (see "C# annotations and test files").
+- UTF-16 files with a BOM are decoded; their hash changes once, so `ctxo index --check` reports them stale until the next `ctxo index`.
+- Shared conformance corpus: packages/sql-extract/corpus (`<case>.sql` + `<case>.expected.json`, modes `statement` and `file`), run by sql-extract, lang-sql and (with .NET) ScriptDom.
 
 ---
 

@@ -1,23 +1,11 @@
 import { UndirectedGraph } from 'graphology';
-import type { DetailedLouvainOutput, LouvainOptions } from 'graphology-communities-louvain';
-import louvainModule from 'graphology-communities-louvain';
-
-type LouvainGraph = UndirectedGraph;
-
-interface LouvainRunner {
-  detailed(graph: LouvainGraph, options?: LouvainOptions): DetailedLouvainOutput;
-}
-
-// graphology-communities-louvain is a CJS module exposed via default export; under
-// Node16 module resolution the TS type is the module namespace, so we normalize here.
-const louvain: LouvainRunner =
-  ((louvainModule as unknown) as { default?: LouvainRunner }).default ??
-  (louvainModule as unknown as LouvainRunner);
 
 import { compareCodepoint } from '../compare-codepoint.js';
+import { DATA_EDGE_KINDS } from '../data-coupling/data-kinds.js';
 import type { SymbolGraph } from '../graph/symbol-graph.js';
 import type { CommunityEntry, EdgeQuality, GodNode } from '../types.js';
 import { labelCommunities } from './community-labeler.js';
+import { runLouvain, splitDisconnectedCommunities } from './louvain.js';
 
 export interface CommunityComputeResult {
   readonly communities: CommunityEntry[];
@@ -80,6 +68,7 @@ export class CommunityDetector {
     const weightByPair = new Map<string, number>();
     for (const edge of graph.allEdges()) {
       if (edge.from === edge.to) continue;
+      if (DATA_EDGE_KINDS.has(edge.kind)) continue;
       if (!gph.hasNode(edge.from) || !gph.hasNode(edge.to)) continue;
       const [a, b] = edge.from < edge.to ? [edge.from, edge.to] : [edge.to, edge.from];
       const key = `${a}|${b}`;
@@ -101,15 +90,10 @@ export class CommunityDetector {
       };
     }
 
-    const result = louvain.detailed(gph, {
-      resolution: this.resolution,
-      randomWalk: false,
-      fastLocalMoves: true,
-      getEdgeWeight: 'weight',
-    });
+    const result = runLouvain(gph, this.resolution);
 
-    const rawAssignments = result.communities as Record<string, number>;
-    const splitAssignments = this.splitDisconnectedCommunities(gph, rawAssignments);
+    const rawAssignments = result.communities;
+    const splitAssignments = splitDisconnectedCommunities(gph, rawAssignments);
     const normalizedAssignments = this.normalizeCommunityIds(splitAssignments, sortedNodes);
 
     const memberIndex = this.buildMemberIndex(normalizedAssignments);
@@ -142,44 +126,6 @@ export class CommunityDetector {
       communityId: i,
       communityLabel: `isolated-${i}`,
     }));
-  }
-
-  private splitDisconnectedCommunities(
-    gph: LouvainGraph,
-    assignments: Record<string, number>,
-  ): Map<string, number> {
-    const result = new Map<string, number>();
-    const membersByCommunity = new Map<number, string[]>();
-    for (const [node, communityId] of Object.entries(assignments)) {
-      const list = membersByCommunity.get(communityId) ?? [];
-      list.push(node);
-      membersByCommunity.set(communityId, list);
-    }
-
-    let nextCommunityId = 0;
-    const sortedCommunities = [...membersByCommunity.entries()].sort(([a], [b]) => a - b);
-
-    for (const [, members] of sortedCommunities) {
-      const visited = new Set<string>();
-      for (const start of [...members].sort()) {
-        if (visited.has(start)) continue;
-        const componentId = nextCommunityId++;
-        const queue = [start];
-        visited.add(start);
-        while (queue.length > 0) {
-          const node = queue.shift()!;
-          result.set(node, componentId);
-          for (const neighbor of gph.neighbors(node)) {
-            if (visited.has(neighbor)) continue;
-            if (!members.includes(neighbor)) continue;
-            visited.add(neighbor);
-            queue.push(neighbor);
-          }
-        }
-      }
-    }
-
-    return result;
   }
 
   private normalizeCommunityIds(
@@ -224,6 +170,7 @@ export class CommunityDetector {
   ): number {
     let count = 0;
     for (const edge of graph.allEdges()) {
+      if (DATA_EDGE_KINDS.has(edge.kind)) continue;
       const from = assignments.get(edge.from);
       const to = assignments.get(edge.to);
       if (from === undefined || to === undefined) continue;
@@ -245,10 +192,12 @@ export class CommunityDetector {
       const forward = graph.getForwardEdges(node.symbolId);
       const reverse = graph.getReverseEdges(node.symbolId);
       for (const edge of forward) {
+        if (DATA_EDGE_KINDS.has(edge.kind)) continue;
         const other = assignments.get(edge.to);
         if (other !== undefined && other !== ownCommunity) bridged.add(other);
       }
       for (const edge of reverse) {
+        if (DATA_EDGE_KINDS.has(edge.kind)) continue;
         const other = assignments.get(edge.from);
         if (other !== undefined && other !== ownCommunity) bridged.add(other);
       }

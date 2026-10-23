@@ -221,6 +221,7 @@ function normalizeLanguage(input: string): KnownLanguage | null {
     kt: 'kotlin',
     rb: 'ruby',
     rs: 'rust',
+    tsql: 'sql',
   };
   return aliases[lowered] ?? null;
 }

@@ -1,0 +1,5 @@
+{
+  "description": "Three- and four-part names and the sys and INFORMATION_SCHEMA schemas are skipped.",
+  "mode": "statement",
+  "accesses": { "reads": ["dbo.members"], "writes": [], "executes": [] }
+}

@@ -169,6 +169,10 @@ This is architectural review from git history — no competitor MCP server has i
 - CI gate on high-risk changes (parse `riskLevel === "high"` or `boundaryViolations.violations.length > 0`)
 - "Did I forget a file?" check via `coChangedWith`
 - "Should this span multiple teams?" check via `clustersAffected`
+- Migration review: a `CREATE OR ALTER PROCEDURE` (or table change) in a new
+  `.sql` migration reports the dependents of the procedure, like every other
+  copy of it, because the copies of a multi-defined object share one identity
+  ([several definitions](/languages/sql#several-definitions-of-one-object))
 
 ## Related tools
 

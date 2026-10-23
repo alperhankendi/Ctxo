@@ -5,10 +5,11 @@ import type { StalenessCheck } from './get-logic-slice.js';
 import { getGraphAndFiles } from './get-logic-slice.js';
 import { wrapResponse } from '../../core/response-envelope.js';
 import { filterByIntent } from '../../core/intent-filter.js';
+import { EdgeKindSchema, type EdgeKind } from '../../core/types.js';
 
-const InputSchema = z.object({
+export const InputSchema = z.object({
   symbolId: z.string().min(1),
-  edgeKinds: z.array(z.enum(['imports', 'calls', 'extends', 'implements', 'uses'])).optional(),
+  edgeKinds: z.array(EdgeKindSchema).optional(),
   transitive: z.boolean().optional().default(false),
   maxDepth: z.number().int().min(1).max(10).optional().default(5),
   intent: z.string().optional().describe('Filter results by intent keywords (e.g., "test", "adapter", "core")'),
@@ -34,11 +35,15 @@ export function handleFindImporters(
       const { symbolId, edgeKinds, transitive, maxDepth } = parsed.data;
       const { graph, indexedFiles } = getGraph();
 
-      if (!graph.hasNode(symbolId)) {
+      // Resolve the id once: a 2-part data id names its winning definition. getDependentEdges gives every
+      // copy of a table, view or procedure the importers of the resource.
+      const root = graph.getNode(symbolId);
+      if (!root) {
         return {
           content: [{ type: 'text' as const, text: JSON.stringify({ found: false, hint: 'Symbol not found. Run "ctxo index" to build the codebase index.' }) }],
         };
       }
+      const rootId = root.symbolId;
 
       const importers: Array<{
         symbolId: string;
@@ -52,10 +57,10 @@ export function handleFindImporters(
 
       if (!transitive) {
         // Direct importers only — deduplicate by symbolId, aggregate edgeKinds
-        const reverseEdges = graph.getReverseEdges(symbolId);
+        const reverseEdges = graph.getDependentEdges(rootId);
         const seen = new Map<string, typeof importers[0]>();
         for (const edge of reverseEdges) {
-          if (edgeKinds && !edgeKinds.includes(edge.kind as 'imports' | 'calls' | 'extends' | 'implements' | 'uses')) continue;
+          if (edgeKinds && !edgeKinds.includes(edge.kind as EdgeKind)) continue;
           const node = graph.getNode(edge.from);
           if (node) {
             const existing = seen.get(node.symbolId);
@@ -79,17 +84,18 @@ export function handleFindImporters(
           }
         }
       } else {
-        // BFS for transitive importers
-        const visited = new Set<string>([symbolId]);
-        const queue: Array<{ id: string; depth: number }> = [{ id: symbolId, depth: 0 }];
+        // BFS for transitive importers. No definition of the same resource counts as an importer of another.
+        const definitions = graph.dataResourceIdentity(rootId)?.definitions.map((definition) => definition.symbolId) ?? [];
+        const visited = new Set<string>([rootId, ...definitions]);
+        const queue: Array<{ id: string; depth: number }> = [{ id: rootId, depth: 0 }];
 
         while (queue.length > 0) {
           const current = queue.shift()!;
           if (current.depth >= maxDepth) continue;
 
-          const reverseEdges = graph.getReverseEdges(current.id);
+          const reverseEdges = graph.getDependentEdges(current.id);
           for (const edge of reverseEdges) {
-            if (edgeKinds && !edgeKinds.includes(edge.kind as 'imports' | 'calls' | 'extends' | 'implements' | 'uses')) continue;
+            if (edgeKinds && !edgeKinds.includes(edge.kind as EdgeKind)) continue;
             if (visited.has(edge.from)) continue;
             visited.add(edge.from);
 

@@ -1,2 +1,4 @@
 # Golden snapshots must stay LF so byte-identical comparisons hold on Windows.
 packages/cli/src/core/overlay/__tests__/fixtures/golden-community-snapshot.json text eol=lf
+# The SQL conformance corpus is shared by sql-extract, lang-sql and ScriptDom: UTF-8, LF only.
+packages/sql-extract/corpus/** text eol=lf

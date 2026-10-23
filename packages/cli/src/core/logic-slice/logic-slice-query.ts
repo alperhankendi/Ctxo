@@ -7,15 +7,17 @@ export class LogicSliceQuery {
     symbolId: string,
     maxDepth: number = Infinity,
   ): LogicSliceResult | undefined {
+    // Resolve the id once and walk from the node it names: a 2-part data id walks its winning definition, and
+    // a full id of another copy walks that copy's own edges.
     const root = graph.getNode(symbolId);
     if (!root) return undefined;
 
-    const visited = new Set<string>([symbolId]);
+    const visited = new Set<string>([root.symbolId]);
     const dependencies: SymbolNode[] = [];
     const collectedEdges: GraphEdge[] = [];
 
     // BFS transitive closure
-    const queue: Array<{ id: string; depth: number }> = [{ id: symbolId, depth: 0 }];
+    const queue: Array<{ id: string; depth: number }> = [{ id: root.symbolId, depth: 0 }];
 
     while (queue.length > 0) {
       const current = queue.shift()!;

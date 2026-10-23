@@ -96,6 +96,32 @@ describe('GetWhyContextHandler', () => {
     expect(payload.hint).toContain('ctxo index');
   });
 
+  it('a 2-part procedure id reads the history of the winning copy\'s file', async () => {
+    const procedure = (file: string): FileIndex => ({
+      file,
+      lastModified: 1,
+      symbols: [{ symbolId: `${file}::dbo.usp_close::procedure`, name: 'dbo.usp_close', kind: 'procedure', startLine: 0, endLine: 9 }],
+      edges: [],
+      intent: [],
+      antiPatterns: [],
+    });
+    storage.bulkWrite([procedure('db/migrations/V7__close_fix.sql'), procedure('db/migrations/V1__init.sql')]);
+    const asked: string[] = [];
+    const git: IGitPort = {
+      ...createMockGit([{ hash: 'abc', message: 'feat: close loans', date: '2024-01-01', author: 'dev' }]),
+      getCommitHistory: async (filePath: string) => {
+        asked.push(filePath);
+        return [{ hash: 'abc', message: 'feat: close loans', date: '2024-01-01', author: 'dev' }];
+      },
+    };
+    const handler = handleGetWhyContext(storage, git, new MaskingPipeline(), undefined, tempDir);
+
+    const payload = JSON.parse((await handler({ symbolId: 'dbo.usp_close::procedure' })).content[0]!.text);
+    expect(payload.found).toBeUndefined();
+    expect(payload.commitHistory.map((c: { message: string }) => c.message)).toEqual(['feat: close loans']);
+    expect(asked).toEqual(['db/migrations/V1__init.sql']);
+  });
+
   it('never throws — returns error shape on internal failure', async () => {
     const git = createMockGit([]);
     const handler = handleGetWhyContext(storage, git, new MaskingPipeline());

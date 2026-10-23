@@ -1,0 +1,5 @@
+{
+  "description": "A one-part UPDATE target that is an alias of the FROM clause writes the aliased table, which also stays a read.",
+  "mode": "statement",
+  "accesses": { "reads": ["dbo.holds", "dbo.loans"], "writes": ["dbo.loans"], "executes": [] }
+}

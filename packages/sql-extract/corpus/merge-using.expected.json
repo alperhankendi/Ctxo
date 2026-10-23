@@ -1,0 +1,5 @@
+{
+  "description": "MERGE writes its target, USING is read, and the UPDATE and INSERT actions after THEN are not further DML.",
+  "mode": "statement",
+  "accesses": { "reads": ["dbo.memberstaging"], "writes": ["dbo.members"], "executes": [] }
+}

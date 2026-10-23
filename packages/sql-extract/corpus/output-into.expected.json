@@ -1,0 +1,5 @@
+{
+  "description": "OUTPUT INTO writes its table, and a table variable target is skipped.",
+  "mode": "statement",
+  "accesses": { "reads": [], "writes": ["dbo.holds", "dbo.loanaudit", "dbo.loans"], "executes": [] }
+}

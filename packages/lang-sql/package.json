@@ -1,0 +1,63 @@
+{
+  "name": "@ctxo/lang-sql",
+  "version": "0.0.0",
+  "description": "Ctxo SQL language plugin (T-SQL definitions and data access)",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run"
+  },
+  "keywords": [
+    "ctxo",
+    "ctxo-plugin",
+    "language-plugin",
+    "sql",
+    "t-sql"
+  ],
+  "author": "Alper Hankendi",
+  "license": "MIT",
+  "dependencies": {
+    "@ctxo/sql-extract": "workspace:^"
+  },
+  "peerDependencies": {
+    "@ctxo/plugin-api": "^0.8.0 || ^0.9.0"
+  },
+  "devDependencies": {
+    "@ctxo/plugin-api": "workspace:*",
+    "@types/node": "^26.6.1",
+    "tsup": "^8.4.0",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alperhankendi/Ctxo.git",
+    "directory": "packages/lang-sql"
+  },
+  "bugs": {
+    "url": "https://github.com/alperhankendi/Ctxo/issues"
+  },
+  "homepage": "https://github.com/alperhankendi/Ctxo#readme",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

@@ -1,5 +1,5 @@
 import type { SymbolGraph } from '../graph/symbol-graph.js';
-import type { CoChangeEntry } from '../types.js';
+import { EDGE_KINDS, type CoChangeEntry, type EdgeKind } from '../types.js';
 
 export type ImpactConfidence = 'confirmed' | 'likely' | 'potential';
 
@@ -22,8 +22,17 @@ export interface BlastRadiusResult {
   readonly overallRiskScore: number;
 }
 
-const CONFIRMED_KINDS = new Set(['calls', 'extends', 'implements']);
-const LIKELY_KINDS = new Set(['uses']);
+/** Confidence of a dependent by edge kind. The data edges are exact references, so they are confirmed. */
+export const EDGE_KIND_CONFIDENCE: Readonly<Record<EdgeKind, ImpactConfidence>> = {
+  calls: 'confirmed',
+  extends: 'confirmed',
+  implements: 'confirmed',
+  reads: 'confirmed',
+  writes: 'confirmed',
+  executes: 'confirmed',
+  uses: 'likely',
+  imports: 'potential',
+};
 
 const CONFIDENCE_RANK: Record<ImpactConfidence, number> = {
   confirmed: 2,
@@ -32,29 +41,36 @@ const CONFIDENCE_RANK: Record<ImpactConfidence, number> = {
 };
 
 function edgeKindToConfidence(kind: string): ImpactConfidence {
-  if (CONFIRMED_KINDS.has(kind)) return 'confirmed';
-  if (LIKELY_KINDS.has(kind)) return 'likely';
-  return 'potential';
+  return (EDGE_KINDS as readonly string[]).includes(kind) ? EDGE_KIND_CONFIDENCE[kind as EdgeKind] : 'potential';
 }
 
 export class BlastRadiusCalculator {
+  /**
+   * `symbolId` may be any id `SymbolGraph.getNode` resolves, a 2-part data id included. The root is the
+   * node it names, and the root's own file is the one co-change is matched against. Dependents come from
+   * `getDependentEdges`, so every copy of a table, view or procedure, and its 2-part id, has the dependents
+   * of the resource, and no definition of the resource counts as a dependent of another.
+   */
   calculate(graph: SymbolGraph, symbolId: string, coChangeMap?: Map<string, CoChangeEntry[]>): BlastRadiusResult {
-    if (!graph.hasNode(symbolId)) {
+    const root = graph.getNode(symbolId);
+    if (!root) {
       return { impactedSymbols: [], directDependentsCount: 0, confirmedCount: 0, likelyCount: 0, potentialCount: 0, overallRiskScore: 0 };
     }
 
-    const sourceFile = symbolId.split('::')[0]!;
+    const rootId = root.symbolId;
+    const sourceFile = rootId.split('::')[0]!;
+    const definitions = graph.dataResourceIdentity(rootId)?.definitions.map((definition) => definition.symbolId) ?? [];
 
-    const visited = new Set<string>([symbolId]);
+    const visited = new Set<string>([rootId, ...definitions]);
     const rawEntries: Array<{ symbolId: string; depth: number; riskScore: number; confidence: ImpactConfidence; edgeKinds: string[]; coChangeFrequency?: number }> = [];
 
     // BFS via reverse edges (who depends on this symbol?)
-    const queue: Array<{ id: string; depth: number }> = [{ id: symbolId, depth: 0 }];
+    const queue: Array<{ id: string; depth: number }> = [{ id: rootId, depth: 0 }];
 
     while (queue.length > 0) {
       const current = queue.shift()!;
 
-      const reverseEdges = graph.getReverseEdges(current.id);
+      const reverseEdges = graph.getDependentEdges(current.id);
 
       // Group edges by source node, pick strongest confidence per node
       // confirmed > likely > potential — collect all edge kinds
@@ -117,12 +133,11 @@ export class BlastRadiusCalculator {
     }
 
     // GAP-30 FIX: compute dependentCount as blast-scope in-degree (not global)
-    const blastSet = new Set(rawEntries.map((e) => e.symbolId));
-    blastSet.add(symbolId);
+    const blastSet = new Set([rootId, ...definitions, ...rawEntries.map((e) => e.symbolId)]);
 
     const entries: BlastRadiusEntry[] = rawEntries.map((e) => ({
       ...e,
-      dependentCount: graph.getReverseEdges(e.symbolId).filter((re) => blastSet.has(re.from)).length,
+      dependentCount: graph.getDependentEdges(e.symbolId).filter((re) => blastSet.has(re.from)).length,
     }));
 
     // Sort by depth ascending

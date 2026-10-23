@@ -1,6 +1,8 @@
-export { SYMBOL_KINDS, EDGE_KINDS } from './types.js';
+export { SYMBOL_KINDS, EDGE_KINDS, DATA_RESOURCE_KINDS } from './types.js';
 export type {
   SymbolKind,
+  DataResourceKind,
+  SymbolAnnotation,
   EdgeKind,
   SymbolId,
   SymbolNode,
@@ -13,10 +15,14 @@ export type { IWorkspace, IPackage } from './workspace.js';
 export type {
   CtxoLanguagePlugin,
   PluginContext,
+  PluginCapabilities,
   PluginLogger,
 } from './plugin.js';
 
 export type { IIncrementalReindex, ReindexResult, IncrementalReindexCapable } from './incremental-reindex.js';
 
-/** Protocol version supported by this plugin-api release. */
-export const SUPPORTED_API_VERSION = '1' as const;
+export { FACT_KINDS } from './facts.js';
+export type { FactKind, CodeFact } from './facts.js';
+
+export { SUPPORTED_API_VERSIONS, SUPPORTED_API_VERSION } from './version.js';
+export type { ApiVersion } from './version.js';

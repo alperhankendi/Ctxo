@@ -119,3 +119,5 @@ Lower the budget for quick orientation, raise it for deep refactors.
 
 - Requires `ctxo index` to have run at least once.
 - Still use [`get_pr_impact`](/mcp-tools/get-pr-impact) when reviewing a diff -- that tool aggregates across every changed symbol.
+- Entries carry no symbol `annotations`. Use [`get_logic_slice`](/mcp-tools/get-logic-slice) at `level: 4` to see them.
+- For a SQL table, view or procedure, `symbolId` may also be the 2-part id (`dbo.loans::table`). Every copy of an object defined in several files gets the same dependents; see [Symbol IDs](/reference/symbol-ids#sql-names-and-2-part-data-references).

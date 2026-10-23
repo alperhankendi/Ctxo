@@ -6,7 +6,7 @@ Ctxo is a **Model Context Protocol (MCP) server** that gives AI coding assistant
 
 * **Type:** npm package / CLI tool / MCP server (stdio transport)
 * **Author:** Alper Hankendi
-* **Status:** v0.7.0-alpha.0 - 14 MCP tools, pnpm monorepo with 6 packages, 987+ tests
+* **Status:** v0.7.0-alpha.0 - 14 MCP tools, pnpm monorepo with 9 packages, 987+ tests
 * **Language:** TypeScript (ESM-first, `"type": "module"`)
 * **Runtime:** Node.js >= 20
 
@@ -29,6 +29,7 @@ ctxo install typescript go --yes    # non-interactive install of specific plugin
 ctxo install java                   # syntax tier + full-tier analyzer when JRE 11+ detected
 ctxo install java --full-tier       # force full-tier analyzer install
 ctxo install java --syntax-only     # skip analyzer, syntax tier only
+ctxo install sql                    # T-SQL plugin (alias tsql); also turns on SQL edges at known C# call sites
 ctxo install --dry-run --pm pnpm    # preview install plan with chosen pm
 ctxo update                         # check + apply updates for ctxo + plugins
 ctxo update --check                 # check only, exit 0
@@ -61,6 +62,7 @@ ctxo visualize --no-browser         # skip auto-opening browser
 ctxo blast-radius <symbolId> --json # blast radius for one symbol, JSON to stdout
 ctxo gate --preview                 # preview which symbols the guard would block
 ctxo gate --preview --json          # same, machine-readable
+ctxo contexts [--json]              # candidate contexts: table to stderr, full contexts-view.json to stdout with --json
 
 # Environment
 DEBUG=ctxo:*                  # enable all debug output
@@ -75,11 +77,14 @@ CTXO_RESPONSE_LIMIT=16384     # response truncation threshold (default 8192)
 ```
 packages/
 ├── cli/              @ctxo/cli             # primary CLI + MCP server (composition root)
-├── plugin-api/       @ctxo/plugin-api      # plugin protocol v1 types (no runtime deps on cli)
+├── plugin-api/       @ctxo/plugin-api      # plugin protocol v1 + v2 types (no runtime deps on cli)
+├── sql-extract/      @ctxo/sql-extract     # zero-dependency T-SQL tokenizer + recognizers (a library, not a plugin; ADR-017)
 ├── lang-typescript/  @ctxo/lang-typescript # ts-morph, full tier
 ├── lang-go/          @ctxo/lang-go         # tree-sitter Go
-├── lang-csharp/      @ctxo/lang-csharp     # Roslyn + tree-sitter + tools/ctxo-roslyn
-└── lang-java/        @ctxo/lang-java       # tree-sitter Java (syntax tier); full tier via @ctxo/lang-java-analyzer companion (JRE 11+, ADR-014)
+├── lang-csharp/      @ctxo/lang-csharp     # Roslyn (+ ScriptDom for SQL call sites) + tree-sitter + tools/ctxo-roslyn
+├── lang-java/        @ctxo/lang-java       # tree-sitter Java (syntax tier); full tier via @ctxo/lang-java-analyzer companion (JRE 11+, ADR-014)
+├── lang-java-analyzer/ @ctxo/lang-java-analyzer # prebuilt Eclipse JDT analyzer JARs for the Java full tier
+└── lang-sql/         @ctxo/lang-sql        # T-SQL .sql files on protocol v2 (tables, views, procedures, data edges)
 ```
 
 ### Key Rules
@@ -90,7 +95,7 @@ packages/
   * **`ports/`** **NEVER imports from** **`adapters/`**
   * **`adapters/mcp/`** **may import from** **`core/`** **and** **`ports/`** **only**
   * **Composition root (`packages/cli/src/index.ts`)** is the ONLY file that wires adapters to ports
-* **Plugins (`@ctxo/lang-*`) import only from** **`@ctxo/plugin-api`; never from** **`@ctxo/cli`.**
+* **Plugins (`@ctxo/lang-*`) import only from** **`@ctxo/plugin-api`; never from** **`@ctxo/cli`.** The one exception (ADR-017): a Ctxo-owned utility package with zero runtime dependencies, today only `@ctxo/sql-extract` (used by `@ctxo/lang-sql`).
 * **No barrel exports** (`index.ts` re-exports) — import directly from source file path
 * **Port-first rule:** every adapter MUST implement a port interface
 
@@ -142,6 +147,8 @@ index:
   ignoreProjects:              # globs applied to workspace roots (skip discovery)
     - "packages/experimental-*"
     - "examples/*"
+  tests: []                    # extra test-file globs (added to the shared defaults)
+  facts: false                 # true asks plugins for code facts (protocol v2, index JSON only)
 cochange:                      # co-change matrix window (independent of --max-history)
   maxCommits: 2000             # last N non-merge commits from HEAD, or "all"
   # since: 12m                 # also limit by age (d, w, m, y), counted back from HEAD's committer date
@@ -149,11 +156,25 @@ cochange:                      # co-change matrix window (independent of --max-h
   minShared: 2                 # shared commits needed for a pair
   include: []                  # extra tracked, non-indexed files to analyse (globs)
   exclude: []                  # indexed files to leave out (globs); also vetoes include-added files
+communities:                   # symbol-level Louvain
+  resolution: 1.0
+  godNodeMinBridged: 3
+  godNodeMaxResults: 25
+contextsView:                  # candidate contexts (file level), see ADR-016 addendum and ADR-017
+  weights: { dependency: 1.0, coChange: 1.0, data: 0 }   # data 0: shared tables are reported, never merge candidates
+  exclude: []                  # files left out of the file graph (globs)
+  hubs: { auto: true, topPercent: 1, minDependents: 10, paths: [] }   # paths lose all their edges
+  resolution: 1.0
+  minCandidateFiles: 3         # smaller groups fold into a neighbour
+  technicalTerms: []           # replaces the default list of dropped words
 ```
 
 * `index.ignore`: per-file picomatch globs, matched against repo-relative forward-slash paths.
 * `index.ignoreProjects`: matched against workspace paths; skipped workspaces are never enumerated and their plugin deps are never imported.
 * `cochange`: see [ADR-016](docs/architecture/ADR/adr-016-co-change-engine-and-snapshot-policy.md). One `git log` pass builds `co-changes.json` (window recorded under `window`) and every blast-radius path reads it. Overrides: `--cochange-commits`, `--cochange-since`.
+* `communities` and `contextsView`: see the ADR-016 addendum. `ctxo index` writes `.ctxo/index/contexts-view.json` (skipped by `--skip-community`, not refreshed by `ctxo watch`), including `dataResources` and per-candidate `sharedTables` (ADR-017).
+* `index.facts`: sets `capabilities.facts`, so plugins that implement `extractFacts` write `facts` into the index JSON. No official plugin implements it yet.
+* `index.tests`: test files are also recognised by test-framework annotations (`Fact`, `Test`, `TestMethod` and 8 more); see [domain knowledge](docs/features/domain-knowledge.md).
 * Invalid globs (`index.*`, `cochange.include`, `cochange.exclude`) surface as warnings via `ctxo doctor`; schema violations surface as fails. The loader falls back to defaults on any error (warn-and-continue).
 
 ### Safe-Edit Guard
@@ -202,7 +223,9 @@ Skills land in `.claude/skills/<name>/SKILL.md` (Claude Code) and `.cursor/rules
 
 ## Plugin Architecture
 
-Language support ships as separate plugin packages discovered at runtime by scanning the consumer project's `package.json` for `@ctxo/lang-*` and `ctxo-lang-*` names. Each plugin implements the protocol v1 contract exported by `@ctxo/plugin-api` (a stable surface with zero runtime dependencies on `@ctxo/cli`). Users opt into languages by adding plugin packages to devDependencies (or running `ctxo install`); `ctxo doctor` surfaces missing plugins and `ctxo index --install-missing` auto-installs them. See [ADR-012](docs/architecture/ADR/adr-012-plugin-architecture-and-monorepo.md).
+Language support ships as separate plugin packages discovered at runtime by scanning the consumer project's `package.json` for `@ctxo/lang-*` and `ctxo-lang-*` names. Each plugin implements the protocol contract exported by `@ctxo/plugin-api` (a stable surface with zero runtime dependencies on `@ctxo/cli`). Users opt into languages by adding plugin packages to devDependencies (or running `ctxo install`); `ctxo doctor` surfaces missing plugins and `ctxo index --install-missing` auto-installs them. See [ADR-012](docs/architecture/ADR/adr-012-plugin-architecture-and-monorepo.md).
+
+**Protocol v2** ([ADR-017](docs/architecture/ADR/adr-017-plugin-protocol-v2-and-data-coupling.md)): `SUPPORTED_API_VERSIONS = ['1', '2']`, and a plugin declares the lowest version it works on (the official plugins stay on `'1'`; `@ctxo/lang-sql` declares `'2'`). v2 adds the data kinds (`table`, `view`, `procedure`; `reads`, `writes`, `executes`; core analyses use `DATA_RESOURCE_KINDS`, never the literal `table`), `SymbolNode.annotations`, facts on request (`extractFacts`, `index.facts: true`) and `PluginContext.capabilities` (`facts`, `sqlCallSites`, the latter only when a `.sql` plugin is installed). Annotations and facts live in the JSON index only. The one dependency exception is `@ctxo/sql-extract`: a zero-dependency library, not a plugin, never discovered. Peer ranges: the official plugins `^0.7.3 || ^0.8.0 || ^0.9.0`, `@ctxo/lang-sql` `^0.8.0 || ^0.9.0`. Feature doc: [domain knowledge](docs/features/domain-knowledge.md).
 
 ```JSON
 // consumer project package.json
@@ -221,8 +244,8 @@ Language support ships as separate plugin packages discovered at runtime by scan
 | Tool                        | Purpose                                                                                                    |
 | --------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | `get_logic_slice`           | Symbol + transitive deps (L1-L4 progressive detail)                                                        |
-| `get_blast_radius`          | Impact score + affected symbols (3-tier: confirmed/likely/potential)                                       |
-| `get_architectural_overlay` | Project layer map (Domain/Infra/Adapters)                                                                  |
+| `get_blast_radius`          | Impact score + affected symbols (3-tier: confirmed/likely/potential; data edges are confirmed)             |
+| `get_architectural_overlay` | Project layer map (Domain/Infra/Adapters), communities, candidate contexts (`mode: "contexts"`, `candidate: <id>`) |
 | `get_why_context`           | Git commit intent + anti-pattern warnings                                                                  |
 | `get_change_intelligence`   | Complexity x churn composite score                                                                         |
 | `find_dead_code`            | Unreachable symbols and files                                                                              |
@@ -405,8 +428,10 @@ try {
 }
 ```
 
-* Valid symbol kinds: `function | class | interface | method | variable | type`
-* Valid edge kinds: `imports | calls | extends | implements | uses`
+* Valid symbol kinds: `function | class | interface | method | variable | type | table | view | procedure`
+* Valid edge kinds: `imports | calls | extends | implements | uses | reads | writes | executes`
+* Edge targets may be 2-part name references (`<name>::<kind>`); data edges point at canonical names such as `dbo.loans::table` (lowercase, delimiters stripped, default schema `dbo`)
+* Optional (protocol v2): `symbols[].annotations` (`[{ "name": "Trait", "args": ["Category", "Loans"] }]`; `args` and `named` are omitted when empty) and a file-level `facts` array (`{ kind, symbolId, line, text, detail? }`, only with `index.facts: true`)
 
 ## Release & npm Publishing
 

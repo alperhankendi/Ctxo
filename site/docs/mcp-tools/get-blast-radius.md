@@ -15,13 +15,37 @@ See [the mandatory sequence](/mcp-tools/tool-selection-guide#modifying-existing-
 
 | Name         | Type                                         | Required | Description                                                         |
 | ------------ | -------------------------------------------- | -------- | ------------------------------------------------------------------- |
-| `symbolId`   | string                                       | yes      | Fully-qualified symbol id (`<file>::<name>::<kind>`)                |
+| `symbolId`   | string                                       | yes      | Fully-qualified symbol id (`<file>::<name>::<kind>`), or the 2-part id of a table, view or procedure (`dbo.loans::table`) |
 | `confidence` | `"confirmed" \| "likely" \| "potential"`     | no       | Restrict results to a single tier                                   |
 | `intent`     | string                                       | no       | Keyword filter on impacted symbols (e.g. `"test"`, `"adapter"`)     |
 
 ### Confidence tiers
 
-Results are grouped into 3 confidence tiers — see [Blast Radius tiers](/concepts/blast-radius#confidence-tiers).
+Results are grouped into 3 confidence tiers by the strongest edge that reaches each dependent: `confirmed` (`calls`, `extends`, `implements` and the data edges `reads`, `writes`, `executes`), `likely` (`uses`, or co-changed) and `potential` (`imports`). The traversal follows every reverse edge, so transitive dependents appear at their depth with a lower `riskScore`. See [Blast Radius tiers](/concepts/blast-radius#confidence-tiers).
+
+### Tables, views and procedures
+
+The target can be any symbol, including a SQL `table`, `view` or `procedure` from [`@ctxo/lang-sql`](/languages/sql). Its readers and writers (SQL views, procedures and functions, and C# methods with constant SQL at known call sites) are `confirmed` dependents:
+
+```json
+{ "symbolId": "db/lending.sql::dbo.loans::table", "confidence": "confirmed" }
+```
+
+The 2-part id works too, and gives the same answer:
+
+```json
+{ "symbolId": "dbo.loans::table" }
+```
+
+When several files define the same table, view or procedure (migrations that
+`CREATE OR ALTER` it again, a docs or test copy), every copy reports the same
+dependents: every data edge points at one winning definition, and a lookup of
+any copy, or of the 2-part id, returns the winner's dependents. A procedure
+changed in a new migration therefore shows its callers, not zero. See
+[several definitions](/languages/sql#several-definitions-of-one-object) for how
+the winner is picked.
+
+Because the safe-edit guard counts `confirmed + likely` dependents, a table that many methods write is guarded like any other high-impact symbol.
 
 ## Example
 
@@ -154,6 +178,8 @@ reading will miss, especially through re-exports and dynamic dispatch.
 - **Using the symbol name instead of id** — always pass the full
   `<file>::<name>::<kind>` id. Look it up with
   [`search_symbols`](/mcp-tools/search-symbols) if you only know the name.
+  The one exception is a SQL table, view or procedure, whose 2-part id
+  (`dbo.loans::table`, as the contexts view names shared tables) is accepted.
 
 ## Related tools
 

@@ -9,6 +9,20 @@ import type {
 const L1_MAX_LINES = 150;
 const L4_TOKEN_BUDGET = 8000;
 
+/**
+ * `node` without its `annotations`. Node output leaves them out everywhere except logic slice L4, which
+ * carries them unchanged: up to 20 attributes per C# symbol plus whole column lists would shrink every
+ * other slice before its dependencies.
+ *
+ * Only a graph built from the JSON index has annotations. The SQLite fallback stores none, so even L4
+ * carries none when the graph comes from there.
+ */
+export function withoutAnnotations(node: SymbolNode): SymbolNode {
+  if (node.annotations === undefined) return node;
+  const { annotations: _annotations, ...rest } = node;
+  return rest;
+}
+
 export class DetailFormatter {
   format(slice: LogicSliceResult, level: DetailLevel): FormattedSlice {
     switch (level) {
@@ -32,7 +46,7 @@ export class DetailFormatter {
       : root;
 
     return {
-      root: clampedRoot,
+      root: withoutAnnotations(clampedRoot),
       dependencies: [],
       edges: [],
       level: 1,
@@ -48,8 +62,8 @@ export class DetailFormatter {
     const directDeps = slice.dependencies.filter((d) => directDepIds.has(d.symbolId));
 
     return {
-      root: slice.root,
-      dependencies: directDeps,
+      root: withoutAnnotations(slice.root),
+      dependencies: directDeps.map(withoutAnnotations),
       edges: directEdges,
       level: 2,
       levelDescription: 'L2: Root + direct dependencies (depth 1)',
@@ -58,8 +72,8 @@ export class DetailFormatter {
 
   private formatL3(slice: LogicSliceResult): FormattedSlice {
     return {
-      root: slice.root,
-      dependencies: slice.dependencies,
+      root: withoutAnnotations(slice.root),
+      dependencies: slice.dependencies.map(withoutAnnotations),
       edges: slice.edges,
       level: 3,
       levelDescription: 'L3: Full transitive dependency closure',
@@ -67,7 +81,8 @@ export class DetailFormatter {
   }
 
   private formatL4(slice: LogicSliceResult): FormattedSlice {
-    // L4: full closure with token budget enforcement
+    // L4: full closure with token budget enforcement. Nodes keep their annotations (see withoutAnnotations;
+    // a graph from the SQLite fallback has none to keep).
     const estimatedTokens = this.estimateTokens(slice);
 
     if (estimatedTokens > L4_TOKEN_BUDGET) {

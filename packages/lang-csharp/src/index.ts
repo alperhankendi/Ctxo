@@ -17,8 +17,9 @@ export const plugin: CtxoLanguagePlugin = {
   // Plugin advertises full-tier capability; the composite adapter downgrades to
   // syntax at runtime when .NET SDK 8+ is unavailable.
   tier: 'full',
-  createAdapter(_ctx: PluginContext): ILanguageAdapter {
-    return new CSharpCompositeAdapter();
+  createAdapter(ctx: PluginContext): ILanguageAdapter {
+    // SQL call-site edges only when a SQL plugin is loaded (protocol v2 capability; absent on v1 cores).
+    return new CSharpCompositeAdapter({ sqlCallSites: ctx.capabilities?.sqlCallSites === true });
   },
 };
 

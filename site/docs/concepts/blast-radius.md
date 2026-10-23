@@ -35,11 +35,18 @@ The algorithm lives in
 
 ## Confidence tiers
 
-| Tier        | Edge kinds                       | Meaning                                     |
-| ----------- | -------------------------------- | ------------------------------------------- |
-| `confirmed` | `calls`, `extends`, `implements` | Structural dependency. Breaks are mechanical. |
-| `likely`    | `uses`                           | Reference without a call site. Often breaks. |
-| `potential` | `imports`                        | Module-level reach only. May be unused.      |
+| Tier        | Edge kinds                                                       | Meaning                                     |
+| ----------- | ---------------------------------------------------------------- | ------------------------------------------- |
+| `confirmed` | `calls`, `extends`, `implements`, `reads`, `writes`, `executes` | Structural or data dependency. Breaks are mechanical. |
+| `likely`    | `uses`                                                           | Reference without a call site. Often breaks. |
+| `potential` | `imports`                                                        | Module-level reach only. May be unused.      |
+
+The data edges (`reads`, `writes`, `executes`, from SQL bodies and from
+constant SQL at C# call sites) are `confirmed`: renaming a column or changing a
+table breaks its readers and writers directly. Run blast radius on a table such
+as `db/lending.sql::dbo.loans::table` to see every SQL object and C# method that
+reads or writes it. Because the safe-edit guard counts `confirmed + likely`
+dependents, it also guards heavily used tables and procedures.
 
 ::: tip When to trust which tier
 - **`confirmed`** always acts on it. These break at compile time.

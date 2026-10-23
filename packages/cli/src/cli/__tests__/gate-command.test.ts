@@ -35,6 +35,35 @@ describe('GateCommand --preview', () => {
     out.mockRestore();
     rmSync(root, { recursive: true, force: true });
   });
+
+  it('lists every migration copy of a procedure that three methods execute, as the hook guards them', () => {
+    const root = mkdtempSync(join(tmpdir(), 'ctxo-gp-sql-'));
+    const index = join(root, '.ctxo', 'index');
+    const write = (file: string, symbols: unknown[], edges: unknown[] = []) => {
+      mkdirSync(join(index, file, '..'), { recursive: true });
+      writeFileSync(join(index, `${file}.json`), JSON.stringify({ file, lastModified: 0, symbols, edges, intent: [], antiPatterns: [] }));
+    };
+    const procedure = (file: string) => ({ symbolId: `${file}::dbo.usp_close::procedure`, name: 'dbo.usp_close', kind: 'procedure', startLine: 0, endLine: 3 });
+    write('db/migrations/V1__init.sql', [procedure('db/migrations/V1__init.sql')]);
+    write('db/migrations/V7__close_fix.sql', [procedure('db/migrations/V7__close_fix.sql')]);
+    for (const name of ['Close', 'Renew', 'Waive']) {
+      const symbolId = `src/Loan${name}.cs::Lending.Loan${name}.Run::method`;
+      write(`src/Loan${name}.cs`, [{ symbolId, name: `Lending.Loan${name}.Run`, kind: 'method', startLine: 0, endLine: 3 }], [
+        { from: symbolId, to: 'dbo.usp_close::procedure', kind: 'executes' },
+      ]);
+    }
+    const out = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
+
+    new GateCommand(root).preview({ json: true });
+    const printed = JSON.parse(out.mock.calls.map(c => c[0]).join(''));
+    out.mockRestore();
+    rmSync(root, { recursive: true, force: true });
+
+    expect(printed.symbols.map((s: { symbolId: string; riskCount: number }) => [s.symbolId, s.riskCount])).toEqual([
+      ['db/migrations/V1__init.sql::dbo.usp_close::procedure', 3],
+      ['db/migrations/V7__close_fix.sql::dbo.usp_close::procedure', 3],
+    ]);
+  });
 });
 
 describe('GateCommand --preview with co-change', () => {

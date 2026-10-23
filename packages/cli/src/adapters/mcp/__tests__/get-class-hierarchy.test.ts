@@ -124,6 +124,39 @@ describe('GetClassHierarchyHandler', () => {
     expect(payload.descendants[0].name).toBe('GoldenRetriever');
   });
 
+  it('reads and writes edges never appear in class hierarchies', () => {
+    storage.bulkWrite([
+      {
+        file: 'db/loans.sql',
+        lastModified: 1,
+        symbols: [{ symbolId: 'db/loans.sql::dbo.loans::table', name: 'dbo.loans', kind: 'table', startLine: 1, endLine: 9 }],
+        edges: [],
+        intent: [],
+        antiPatterns: [],
+      },
+      {
+        file: 'src/repo.ts',
+        lastModified: 1,
+        symbols: [{ symbolId: 'src/repo.ts::Repo::class', name: 'Repo', kind: 'class', startLine: 1, endLine: 9 }],
+        edges: [
+          { from: 'src/repo.ts::Repo::class', to: 'db/loans.sql::dbo.loans::table', kind: 'reads' },
+          { from: 'src/repo.ts::Repo::class', to: 'db/loans.sql::dbo.loans::table', kind: 'writes' },
+        ],
+        intent: [],
+        antiPatterns: [],
+      },
+    ]);
+    const handler = handleGetClassHierarchy(storage, new MaskingPipeline(), undefined, tempDir);
+
+    const repo = JSON.parse(handler({ symbolId: 'src/repo.ts::Repo::class', direction: 'both' }).content[0]!.text);
+    expect(repo.ancestors).toEqual([]);
+    expect(repo.descendants).toEqual([]);
+
+    const table = JSON.parse(handler({ symbolId: 'db/loans.sql::dbo.loans::table', direction: 'both' }).content[0]!.text);
+    expect(table.ancestors ?? []).toEqual([]);
+    expect(table.descendants ?? []).toEqual([]);
+  });
+
   it('excludes non-hierarchy edges (imports)', () => {
     // Cat has an importer (Util via imports), but it should not appear in hierarchy
     const handler = handleGetClassHierarchy(storage, new MaskingPipeline(), undefined, tempDir);

@@ -1,0 +1,5 @@
+{
+  "description": "Tables after FROM and JOIN are read; the aliases l and m are not tables.",
+  "mode": "statement",
+  "accesses": { "reads": ["dbo.loans", "dbo.members"], "writes": [], "executes": [] }
+}

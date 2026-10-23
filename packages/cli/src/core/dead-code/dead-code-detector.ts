@@ -1,3 +1,4 @@
+import { DATA_EDGE_KINDS } from '../data-coupling/data-kinds.js';
 import type { SymbolGraph } from '../graph/symbol-graph.js';
 import type { SymbolKind } from '../types.js';
 
@@ -40,6 +41,8 @@ export interface DeadCodeResult {
 // Patterns for files to exclude from dead code analysis
 const TEST_PATTERNS = [/__tests__/, /\.test\.ts$/, /\.spec\.ts$/, /\btests\//, /\bfixtures?\//];
 const CONFIG_PATTERNS = [/\.(config|rc)\.(ts|js|json)$/, /tsconfig/, /eslint/, /\.d\.ts$/];
+// SQL objects are reached by data edges and by runtime, never reported as dead
+const SQL_PATTERN = /\.sql$/i;
 
 // Framework lifecycle symbols — should never be flagged as dead
 const FRAMEWORK_PATTERNS = [
@@ -73,12 +76,12 @@ export class DeadCodeDetector {
     const allNodes = graph.allNodes();
 
     // Filter candidates — exclude tests/config by default
-    const candidates = options.includeTests
-      ? allNodes
-      : allNodes.filter((n) => {
-          const file = n.symbolId.split('::')[0] ?? '';
-          return !this.matchesAny(file, TEST_PATTERNS) && !this.matchesAny(file, CONFIG_PATTERNS);
-        });
+    const candidates = allNodes.filter((n) => {
+      const file = n.symbolId.split('::')[0] ?? '';
+      if (SQL_PATTERN.test(file)) return false;
+      if (options.includeTests) return true;
+      return !this.matchesAny(file, TEST_PATTERNS) && !this.matchesAny(file, CONFIG_PATTERNS);
+    });
 
     if (candidates.length === 0) {
       return { totalSymbols: 0, reachableSymbols: 0, deadSymbols: [], unusedExports: [], deadFiles: [], scaffolding: this.detectScaffolding(options.sourceContents), deadCodePercentage: 0 };
@@ -102,7 +105,9 @@ export class DeadCodeDetector {
       const incomingFromCandidates = reverseEdges.filter((e) => candidateIds.has(e.from) && e.from !== node.symbolId);
 
       if (incomingFromCandidates.length === 0) {
-        const hasOutgoing = forwardEdges.some((e) => candidateIds.has(e.to));
+        // Data edges count too: their targets (SQL objects) are never candidates, but a method that reads,
+        // writes or executes one is as much in use as a method that calls another.
+        const hasOutgoing = forwardEdges.some((e) => candidateIds.has(e.to) || DATA_EDGE_KINDS.has(e.kind));
         if (hasOutgoing || reverseEdges.length > 0) {
           entryPoints.add(node.symbolId);
         }

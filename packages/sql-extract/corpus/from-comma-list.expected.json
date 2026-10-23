@@ -1,0 +1,5 @@
+{
+  "description": "Every table in the comma list of a FROM clause is read, while commas in the select list and ORDER BY are not tables.",
+  "mode": "statement",
+  "accesses": { "reads": ["dbo.books", "dbo.loans", "dbo.members"], "writes": [], "executes": [] }
+}

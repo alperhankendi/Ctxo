@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import type { CtxoLanguagePlugin, PluginContext, ILanguageAdapter, IWorkspace } from '@ctxo/plugin-api';
+import type { CtxoLanguagePlugin, PluginCapabilities, PluginContext, ILanguageAdapter, IWorkspace } from '@ctxo/plugin-api';
 import { discoverPlugins, type DiscoveredPlugin } from '../adapters/language/plugin-discovery.js';
 import { detectWorkspace } from '../adapters/workspace/single-package-workspace.js';
 import { createLogger } from '../core/logger.js';
@@ -57,7 +57,12 @@ function resolveManifestPath(projectRoot: string): string | null {
   return existsSync(projectManifest) ? projectManifest : null;
 }
 
-function buildContext(projectRoot: string, workspace: IWorkspace, pluginId: string): PluginContext {
+function buildContext(
+  projectRoot: string,
+  workspace: IWorkspace,
+  pluginId: string,
+  capabilities: PluginCapabilities,
+): PluginContext {
   const pluginLog = createLogger(`ctxo:plugin:${pluginId}`);
   return {
     logger: {
@@ -69,6 +74,7 @@ function buildContext(projectRoot: string, workspace: IWorkspace, pluginId: stri
     projectRoot,
     workspace,
     config: {},
+    capabilities,
   };
 }
 
@@ -79,6 +85,22 @@ export interface LoadPluginsOptions {
    * Sourced from `.ctxo/config.yaml#index.ignoreProjects`.
    */
   readonly ignoreProjects?: readonly string[];
+  /** Facts extraction requested (`index.facts: true`); handed to every plugin as a capability. */
+  readonly facts?: boolean;
+}
+
+/**
+ * Capabilities the host offers every plugin. Computed once from all discovered
+ * plugins, so a host-language plugin learns that a `.sql` plugin is present.
+ */
+export function hostCapabilities(
+  plugins: readonly CtxoLanguagePlugin[],
+  options: { readonly facts: boolean },
+): PluginCapabilities {
+  return {
+    facts: options.facts,
+    sqlCallSites: plugins.some((p) => p.extensions.some((e) => e.toLowerCase() === '.sql')),
+  };
 }
 
 export async function loadPlugins(
@@ -98,10 +120,16 @@ export async function loadPlugins(
     : makeGlobMatcher(ignoreProjectPatterns.slice());
   const result = await discoverPlugins({ manifestPath, shouldSkipSpecifier });
 
+  // Computed once, from every discovered plugin, before any createAdapter call.
+  const capabilities = hostCapabilities(
+    result.plugins.map((p) => p.plugin),
+    { facts: options.facts ?? false },
+  );
+
   const loaded: LoadedPlugin[] = [];
   for (const { plugin, specifier } of result.plugins as readonly DiscoveredPlugin[]) {
     try {
-      const ctx = buildContext(projectRoot, workspace, plugin.id);
+      const ctx = buildContext(projectRoot, workspace, plugin.id, capabilities);
       const adapter = plugin.createAdapter(ctx);
       loaded.push({ plugin, adapter, specifier });
     } catch (err) {

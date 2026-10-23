@@ -11,85 +11,17 @@ import {
   utimesSync,
   writeFileSync,
 } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { tmpdir } from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { IndexCommand } from '../index-command.js';
 import { SimpleGitAdapter } from '../../adapters/git/simple-git-adapter.js';
 import { CoChangeMatrixSchema, type CoChangeMatrix, type FileIndex } from '../../core/types.js';
 import { isolateGitEnv, type IsolatedGitEnv } from './git-test-env.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const FIXTURES_DIR = join(__dirname, 'fixtures', 'sample-project');
-
-// Developer machines often set commit.gpgsign=true globally. Without these overrides every commit
-// in a temp repo would open a GPG prompt and hang the test.
-const IDENTITY = ['-c', 'commit.gpgsign=false', '-c', 'user.name=Test', '-c', 'user.email=test@test.com'];
-
-// The n-th commit of a TempProject is dated BASE_TIME + n days. "Newest first" never depends on how
-// git breaks same-second ties, a `since` window has exact edges, and the dates sit years before the
-// wall clock, so a window anchored to "now" instead of HEAD would show up as an empty one.
-const BASE_TIME = 1_700_000_000;
-const SECONDS_PER_DAY = 86_400;
+import { FIXTURES_DIR, cleanupTempProjects, createProject, trackTempDir, type TempProject } from './helpers/temp-project.js';
 
 const LONG_AGO = new Date('2001-01-01T00:00:00Z');
-
-interface TempProject {
-  readonly dir: string;
-  git(...args: string[]): string;
-  /** Stages everything that is not ignored and commits it, dated one day after the previous commit. */
-  commit(message: string): void;
-  /** Appends a comment line to each file (creating it when needed), then commits them together. */
-  commitTogether(message: string, files: readonly string[]): void;
-}
-
-// Every temp dir is registered the moment it exists, so afterEach removes it even when a later
-// setup step throws.
-const tempDirs: string[] = [];
-
-/** A git repository holding the sample project, with one commit named `init` (day 1). */
-function createProject(): TempProject {
-  const dir = mkdtempSync(join(tmpdir(), 'ctxo-cochange-'));
-  tempDirs.push(dir);
-  cpSync(FIXTURES_DIR, dir, { recursive: true });
-  let commits = 0;
-
-  const run = (args: string[], env: Record<string, string> = {}): string =>
-    execFileSync('git', args, {
-      cwd: dir,
-      encoding: 'utf-8',
-      env: { ...process.env, ...env },
-      stdio: ['ignore', 'pipe', 'pipe'],
-    }).trim();
-
-  run(['init', '-q']);
-  // Index runs write .ctxo/ and a .gitignore into the project; keep them out of later commits.
-  mkdirSync(join(dir, '.git', 'info'), { recursive: true });
-  appendFileSync(join(dir, '.git', 'info', 'exclude'), '.ctxo/\n.gitignore\n');
-
-  const project: TempProject = {
-    dir,
-    git: (...args) => run(args),
-    commit(message) {
-      commits += 1;
-      const when = `${BASE_TIME + commits * SECONDS_PER_DAY} +0000`;
-      run(['add', '-A']);
-      run([...IDENTITY, 'commit', '-q', '-m', message], { GIT_AUTHOR_DATE: when, GIT_COMMITTER_DATE: when });
-    },
-    commitTogether(message, files) {
-      for (const file of files) {
-        const full = join(dir, file);
-        mkdirSync(dirname(full), { recursive: true });
-        appendFileSync(full, `// ${message}\n`);
-      }
-      project.commit(message);
-    },
-  };
-
-  project.commit('init');
-  return project;
-}
 
 const GREET_AND_TYPES = ['src/greet.ts', 'src/types.ts'] as const;
 
@@ -139,13 +71,7 @@ describe('IndexCommand co-change', () => {
   afterEach(() => {
     vi.restoreAllMocks();
     gitEnv.restore();
-    for (const dir of tempDirs.splice(0)) {
-      try {
-        rmSync(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
-      } catch {
-        /* best effort: Windows holds simple-git / sqlite handles briefly after the test body returns */
-      }
-    }
+    cleanupTempProjects();
   });
 
   it('full index writes co-changes.json with window metadata', async () => {
@@ -324,7 +250,7 @@ describe('IndexCommand co-change', () => {
 
   it('a repository without any commit indexes without writing co-changes.json', async () => {
     const dir = mkdtempSync(join(tmpdir(), 'ctxo-cochange-nohead-'));
-    tempDirs.push(dir);
+    trackTempDir(dir);
     cpSync(FIXTURES_DIR, dir, { recursive: true });
     execFileSync('git', ['init', '-q'], { cwd: dir, stdio: ['ignore', 'pipe', 'pipe'] });
 
@@ -338,7 +264,7 @@ describe('IndexCommand co-change', () => {
   it('a shallow clone indexes with a smaller but valid window', async () => {
     commitGreetAndTypes(project, 2);
     const cloneParent = mkdtempSync(join(tmpdir(), 'ctxo-cochange-clone-'));
-    tempDirs.push(cloneParent);
+    trackTempDir(cloneParent);
     const cloneDir = join(cloneParent, 'clone');
     // file:// matters: a plain path would make git ignore --depth.
     execFileSync('git', ['clone', '-q', '--depth', '1', pathToFileURL(project.dir).href, cloneDir], {

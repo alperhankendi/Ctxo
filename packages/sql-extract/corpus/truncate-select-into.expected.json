@@ -1,0 +1,5 @@
+{
+  "description": "TRUNCATE TABLE and SELECT INTO write their targets, and a temp table target is skipped.",
+  "mode": "statement",
+  "accesses": { "reads": ["dbo.holds", "dbo.loans"], "writes": ["dbo.loansnapshot", "dbo.loanstaging"], "executes": [] }
+}

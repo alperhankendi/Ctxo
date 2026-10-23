@@ -6,6 +6,7 @@ import {
   GraphEdgeSchema,
   CommitIntentSchema,
   AntiPatternSchema,
+  CodeFactSchema,
   type FileIndex,
 } from '../../core/types.js';
 import { createLogger } from '../../core/logger.js';
@@ -18,6 +19,7 @@ export const INDEX_ARTIFACT_FILES: readonly string[] = [
   'communities.json',
   'drift-events.json',
   'boundary-violations.json',
+  'contexts-view.json',
 ];
 
 /** The folder of archived community snapshots inside the index folder: not entries either. */
@@ -91,19 +93,44 @@ export class JsonIndexReader {
       const rawIntent = Array.isArray(raw_data['intent']) ? raw_data['intent'] : [];
       const rawAntiPatterns = Array.isArray(raw_data['antiPatterns']) ? raw_data['antiPatterns'] : [];
 
-      const validSymbols = rawSymbols.filter((s) => SymbolNodeSchema.safeParse(s).success);
+      // A symbol that fails only because of its annotations is kept without them: annotations are
+      // optional metadata and must not cost the symbol.
+      let droppedAnnotations = 0;
+      const validSymbols: unknown[] = [];
+      for (const sym of rawSymbols) {
+        if (SymbolNodeSchema.safeParse(sym).success) {
+          validSymbols.push(sym);
+          continue;
+        }
+        if (sym !== null && typeof sym === 'object' && 'annotations' in sym) {
+          const { annotations: _dropped, ...withoutAnnotations } = sym as Record<string, unknown>;
+          if (SymbolNodeSchema.safeParse(withoutAnnotations).success) {
+            validSymbols.push(withoutAnnotations);
+            droppedAnnotations++;
+          }
+        }
+      }
+      // A facts value that is present but not an array is treated as absent: facts are optional metadata
+      // and must not cost the file. It counts as one dropped fact list in the warning.
+      const factsPresent = raw_data['facts'] !== undefined;
+      const rawFacts = Array.isArray(raw_data['facts']) ? raw_data['facts'] : undefined;
+      const validFacts = rawFacts?.filter((f) => CodeFactSchema.safeParse(f).success);
       const validEdges = rawEdges.filter((e) => GraphEdgeSchema.safeParse(e).success);
       const validIntent = rawIntent.filter((i) => CommitIntentSchema.safeParse(i).success);
       const validAntiPatterns = rawAntiPatterns.filter((a) => AntiPatternSchema.safeParse(a).success);
 
       const droppedSymbols = rawSymbols.length - validSymbols.length;
+      const droppedFacts = rawFacts && validFacts
+        ? rawFacts.length - validFacts.length
+        : factsPresent ? 1 : 0;
       const droppedEdges = rawEdges.length - validEdges.length;
       const droppedIntent = rawIntent.length - validIntent.length;
       const droppedAntiPatterns = rawAntiPatterns.length - validAntiPatterns.length;
 
-      if (droppedSymbols > 0 || droppedEdges > 0 || droppedIntent > 0 || droppedAntiPatterns > 0) {
+      if (droppedSymbols > 0 || droppedEdges > 0 || droppedIntent > 0 || droppedAntiPatterns > 0 ||
+          droppedAnnotations > 0 || droppedFacts > 0) {
         log.warn(
-          `${rel}: dropped ${droppedSymbols} invalid symbol(s), ${droppedEdges} invalid edge(s), ${droppedIntent} invalid intent(s), ${droppedAntiPatterns} invalid antiPattern(s) — kept ${validSymbols.length} symbol(s), ${validEdges.length} edge(s), ${validIntent.length} intent(s), ${validAntiPatterns.length} antiPattern(s)`,
+          `${rel}: dropped ${droppedSymbols} invalid symbol(s), ${droppedEdges} invalid edge(s), ${droppedIntent} invalid intent(s), ${droppedAntiPatterns} invalid antiPattern(s), ${droppedAnnotations} invalid annotation list(s), ${droppedFacts} invalid fact(s); kept ${validSymbols.length} symbol(s), ${validEdges.length} edge(s), ${validIntent.length} intent(s), ${validAntiPatterns.length} antiPattern(s)`,
         );
       }
 
@@ -114,6 +141,7 @@ export class JsonIndexReader {
         edges: validEdges,
         intent: validIntent,
         antiPatterns: validAntiPatterns,
+        facts: validFacts,
       });
 
       if (!recovered.success) {

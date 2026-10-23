@@ -11,6 +11,13 @@ using Microsoft.CodeAnalysis.Operations;
 
 // ── Entry Point ──────────────────────────────────────────────────────
 
+// SQL text needs no solution and no MSBuild, so the SQL modes run before
+// MSBuild registration.
+if (args.Length > 0 && args[0] == "--sql-extract")
+    return RunSqlExtract(args[1..]);
+if (args.Length > 0 && args[0] == "--sql-name")
+    return RunSqlName(args[1..]);
+
 // RegisterDefaults() uses the VS installer API on Windows and fails on
 // SDK-only machines (no Visual Studio installed). Fall back to locating
 // the SDK via DOTNET_ROOT or the dotnet executable on PATH.
@@ -38,11 +45,15 @@ var jsonOptions = new JsonSerializerOptions
 
 var cliArgs = Environment.GetCommandLineArgs().Skip(1).ToArray();
 var keepAlive = cliArgs.Contains("--keep-alive");
+// SQL text at known data-access call sites becomes reads, writes and executes
+// edges; the host sets the flag only when a SQL plugin is loaded.
+var sqlCallSites = cliArgs.Contains("--sql-call-sites");
+var sqlStats = new SqlStats();
 var solutionPath = cliArgs.FirstOrDefault(a => !a.StartsWith("--"));
 
 if (string.IsNullOrEmpty(solutionPath))
 {
-    WriteError("Usage: dotnet run -- <solution.sln> [--keep-alive]");
+    WriteError("Usage: dotnet run -- <solution.sln|project.csproj> [--keep-alive] [--sql-call-sites]");
     return 1;
 }
 
@@ -87,6 +98,13 @@ if (solutionPath.EndsWith(".slnx", StringComparison.OrdinalIgnoreCase))
             // OpenProjectAsync auto-loads referenced projects; skip duplicates.
         }
     }
+    solution = workspace.CurrentSolution;
+}
+else if (solutionPath.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase))
+{
+    // A repository with a lone project and no solution file. Like the .slnx
+    // loop, OpenProjectAsync also loads the projects it references.
+    await workspace.OpenProjectAsync(solutionPath);
     solution = workspace.CurrentSolution;
 }
 else
@@ -147,10 +165,18 @@ async Task RunBatchIndex(Solution sol, Dictionary<ProjectId, Compilation> comps)
     var projectGraph = BuildProjectGraph(sol);
     WriteLine(JsonSerializer.Serialize(projectGraph, jsonOptions));
 
-    // Done
+    // Done; the SQL call-site stats only when they were collected
     sw.Stop();
-    var done = new { type = "done", totalFiles, elapsed = $"{sw.Elapsed.TotalSeconds:F1}s" };
-    WriteLine(JsonSerializer.Serialize(done, jsonOptions));
+    var elapsed = sw.Elapsed.TotalSeconds.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) + "s";
+    if (sqlCallSites)
+    {
+        var sql = new { constant = sqlStats.Constant, nonConstant = sqlStats.NonConstant, unparsable = sqlStats.Unparsable };
+        WriteLine(JsonSerializer.Serialize(new { type = "done", totalFiles, elapsed, sql }, jsonOptions));
+    }
+    else
+    {
+        WriteLine(JsonSerializer.Serialize(new { type = "done", totalFiles, elapsed }, jsonOptions));
+    }
 }
 
 // ── Keep-Alive Mode ──────────────────────────────────────────────────
@@ -283,6 +309,7 @@ List<CtxoSymbol> ExtractSymbols(SyntaxNode root, SemanticModel model, string fil
             EndLine = nodeSpan.EndLinePosition.Line,
             StartOffset = node.Span.Start,
             EndOffset = node.Span.End,
+            Annotations = AttributeAnnotations.For(node, symbol, model),
         });
     }
 
@@ -373,7 +400,9 @@ List<CtxoEdge> ExtractEdges(
         var operation = model.GetOperation(body);
         if (operation == null) continue;
 
-        foreach (var op in EnumerateOperations(operation))
+        // One walk of the body serves the code edges and the SQL call sites.
+        var operations = EnumerateOperations(operation).ToList();
+        foreach (var op in operations)
         {
             switch (op)
             {
@@ -415,6 +444,20 @@ List<CtxoEdge> ExtractEdges(
                     }
                     break;
                 }
+            }
+        }
+
+        // Data edges: constant SQL text at known data-access call sites. They
+        // are optional, so a failure here never costs the file its code edges.
+        if (sqlCallSites)
+        {
+            try
+            {
+                SqlCallSites.Collect(operations, (toId, kind) => AddEdge(edges, seen, fromId, toId, kind), sqlStats);
+            }
+            catch (Exception ex)
+            {
+                WriteError($"SQL call sites skipped in {fromId}: {ex.Message}");
             }
         }
     }
@@ -641,6 +684,73 @@ void WriteStderr(string message) =>
 void WriteLine(string json) =>
     Console.WriteLine(json);
 
+// ── SQL Modes ────────────────────────────────────────────────────────
+
+// --sql-extract <file> [<file>...]: the accesses of each file's SQL text,
+// one line per file:
+// {"type":"sqlExtract","file":"<as given>","reads":[...],"writes":[...],"executes":[...],"errors":<n>}.
+// A file that cannot be read gives empty lists and errors 1.
+static int RunSqlExtract(string[] files)
+{
+    if (files.Length == 0)
+    {
+        Console.Error.WriteLine("[ctxo-roslyn] Usage: dotnet run -- --sql-extract <file> [<file>...]");
+        return 1;
+    }
+    foreach (var file in files)
+    {
+        var text = ReadSqlFile(file);
+        var accesses = text == null
+            ? new SqlText.Accesses(new SortedSet<string>(StringComparer.Ordinal), new SortedSet<string>(StringComparer.Ordinal), new SortedSet<string>(StringComparer.Ordinal), 1)
+            : SqlText.Extract(text);
+        Console.WriteLine(JsonSerializer.Serialize(new
+        {
+            type = "sqlExtract",
+            file,
+            reads = accesses.Reads,
+            writes = accesses.Writes,
+            executes = accesses.Executes,
+            errors = accesses.Errors,
+        }));
+    }
+    return 0;
+}
+
+// --sql-name <file> [<file>...]: each file holds one multipart name, such as
+// a procedure name sent without EXEC; one line per file:
+// {"type":"sqlName","file":"<as given>","name":"<schema.name>"|null}.
+static int RunSqlName(string[] files)
+{
+    if (files.Length == 0)
+    {
+        Console.Error.WriteLine("[ctxo-roslyn] Usage: dotnet run -- --sql-name <file> [<file>...]");
+        return 1;
+    }
+    foreach (var file in files)
+    {
+        var text = ReadSqlFile(file);
+        var name = text == null ? null : SqlText.CanonicalName(text);
+        Console.WriteLine(JsonSerializer.Serialize(new { type = "sqlName", file, name }));
+    }
+    return 0;
+}
+
+// UTF-8, or UTF-16 when a byte order mark says so; the mark is not part of
+// the text. Null (and a stderr message) when the file cannot be read.
+static string? ReadSqlFile(string path)
+{
+    try
+    {
+        using var reader = new StreamReader(path, new System.Text.UTF8Encoding(false), detectEncodingFromByteOrderMarks: true);
+        return reader.ReadToEnd();
+    }
+    catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException)
+    {
+        Console.Error.WriteLine($"[ctxo-roslyn] Cannot read {path}: {ex.Message}");
+        return null;
+    }
+}
+
 // ── MSBuild SDK Discovery ────────────────────────────────────────────
 
 static string? DiscoverDotnetSdkPath()
@@ -702,6 +812,7 @@ record CtxoSymbol
     [JsonPropertyName("endLine")] public int EndLine { get; init; }
     [JsonPropertyName("startOffset")] public int StartOffset { get; init; }
     [JsonPropertyName("endOffset")] public int EndOffset { get; init; }
+    [JsonPropertyName("annotations")] public List<CtxoAnnotation>? Annotations { get; init; }
 }
 
 record CtxoEdge

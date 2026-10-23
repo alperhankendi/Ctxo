@@ -1,0 +1,9 @@
+{
+  "description": "CREATE TABLE and ALTER TABLE inside a procedure body are body text: no definition, no columns, and the body's DML on the new table is an ordinary access.",
+  "mode": "file",
+  "definitions": [
+    { "kind": "table", "name": "dbo.loanbatches", "columns": ["id"] },
+    { "kind": "procedure", "name": "dbo.usp_setup" }
+  ],
+  "accesses": { "reads": ["dbo.loans"], "writes": ["dbo.loanstaging", "dbo.members"], "executes": [] }
+}

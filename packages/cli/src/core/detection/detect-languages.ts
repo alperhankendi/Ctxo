@@ -16,6 +16,7 @@ export const KNOWN_LANGUAGES = [
   'rust',
   'ruby',
   'kotlin',
+  'sql',
 ] as const;
 
 export type KnownLanguage = (typeof KNOWN_LANGUAGES)[number];
@@ -38,6 +39,7 @@ export const EXTENSION_LANGUAGE: Readonly<Record<string, KnownLanguage>> = {
   '.kts': 'kotlin',
   '.rs': 'rust',
   '.rb': 'ruby',
+  '.sql': 'sql',
 };
 
 export interface DetectionResult {

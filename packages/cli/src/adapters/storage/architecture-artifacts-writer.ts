@@ -6,12 +6,14 @@ import type {
   BoundaryViolationsArtifact,
   DriftEventsArtifact,
 } from '../../core/types.js';
+import type { ContextsView } from '../../core/contexts-view/contexts-view-builder.js';
 import { atomicWrite } from './atomic-write.js';
 
 const log = createLogger('ctxo:architecture-artifacts');
 
 const DRIFT_FILE_NAME = 'drift-events.json';
 const VIOLATIONS_FILE_NAME = 'boundary-violations.json';
+const CONTEXTS_VIEW_FILE_NAME = 'contexts-view.json';
 
 export interface ArchitectureArtifactsWriterOptions {
   /**
@@ -49,6 +51,24 @@ export class ArchitectureArtifactsWriter {
   writeBoundaryViolations(artifact: BoundaryViolationsArtifact): void {
     mkdirSync(this.indexDir, { recursive: true });
     atomicWrite(join(this.indexDir, VIOLATIONS_FILE_NAME), JSON.stringify(artifact, null, 2));
+  }
+
+  /**
+   * Writes `contexts-view.json` only when its content changed, so a rerun on the same commit leaves the file
+   * (and its mtime) alone. A file that differs in any way, a merge conflict included, is replaced.
+   * Returns true when the file was written.
+   */
+  writeContextsView(view: ContextsView): boolean {
+    const path = join(this.indexDir, CONTEXTS_VIEW_FILE_NAME);
+    const content = JSON.stringify(view, null, 2);
+    try {
+      if (readFileSync(path, 'utf-8') === content) return false;
+    } catch {
+      /* missing or unreadable: write it */
+    }
+    mkdirSync(this.indexDir, { recursive: true });
+    atomicWrite(path, content);
+    return true;
   }
 
   readDriftEvents(): DriftEventsArtifact | undefined {

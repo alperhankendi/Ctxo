@@ -1,0 +1,15 @@
+{
+  "description": "An SSDT-style script of GO-separated definitions, with GO inside a comment and a string, gives four definitions and their body accesses.",
+  "mode": "file",
+  "definitions": [
+    { "kind": "view", "name": "dbo.activeloans" },
+    { "kind": "function", "name": "dbo.fn_openloancount" },
+    { "kind": "table", "name": "dbo.loans", "columns": ["closedat", "id", "memberid"] },
+    { "kind": "procedure", "name": "dbo.usp_closeloan" }
+  ],
+  "accesses": {
+    "reads": ["dbo.activeloans", "dbo.loans"],
+    "writes": ["dbo.loanevents", "dbo.loans"],
+    "executes": ["dbo.usp_notifymember"]
+  }
+}

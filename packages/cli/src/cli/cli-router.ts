@@ -13,6 +13,7 @@ import { VersionCommand } from './version-command.js';
 import { InstallCommand } from './install-command.js';
 import { UpdateCommand } from './update-command.js';
 import { BlastRadiusCommand } from './blast-radius-command.js';
+import { ContextsCommand } from './contexts-command.js';
 import { GateHookCommand } from './gate-hook-command.js';
 import { GateCommand } from './gate-command.js';
 import { parseCoChangeSince } from '../core/co-change/co-change-window.js';
@@ -328,6 +329,10 @@ export class CliRouter {
         break;
       }
 
+      case 'contexts':
+        new ContextsCommand(this.projectRoot).run({ json: args.includes('--json') });
+        break;
+
       case 'visualize': {
         const outputIdx = args.indexOf('--output');
         const outputArg = outputIdx !== -1 ? args[outputIdx + 1] : undefined;
@@ -358,7 +363,7 @@ ctxo v${v} — MCP server for dependency-aware codebase context
 Usage:
   ctxo                      Start MCP server (stdio transport)
   ctxo index                Build full codebase index (--max-history N controls intent depth only, default 20)
-  ctxo index --skip-community    Skip Louvain community detection for faster indexing
+  ctxo index --skip-community    Skip community detection and the contexts view for faster indexing
   ctxo index --skip-history      Skip git history (no intent or anti-patterns; co-changes.json is not refreshed)
   ctxo index --check             Fail if the index is stale; writes nothing and records no snapshot
   ctxo index --cochange-commits <n|all>   Co-change window in commits (default 2000, or "all")
@@ -385,6 +390,7 @@ Usage:
   ctxo install python -y    Batch install, no prompt
   ctxo install ts --global  Install globally
   ctxo install py --dry-run Show command without running
+  ctxo install sql          SQL plugin: .sql definitions, data edges from C# call sites
   ctxo update              Check + apply updates for ctxo + plugins
   ctxo update --check      Check only, no install
   ctxo update --print      Print install command, never execute
@@ -392,7 +398,9 @@ Usage:
   ctxo update --json       Machine-readable output
   ctxo update --pm <pm>    Override package manager (npm|pnpm|yarn|bun)
   ctxo update --force      Bypass CI lockfile guard
-  ctxo blast-radius <symbolId>   Blast radius for one symbol (--json for machine output)
+  ctxo blast-radius <symbolId>   Blast radius for one symbol (--json for machine output; name::kind for a SQL object)
+  ctxo contexts             Candidate contexts from dependency and co-change clusters (table)
+  ctxo contexts --json      Same, full contexts-view.json to stdout
   ctxo gate --preview            Preview which symbols the safe-edit guard would block
   ctxo gate --preview --json     Same, machine-readable output
   ctxo --version                 Print core version

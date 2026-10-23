@@ -1,0 +1,5 @@
+{
+  "description": "A derived table after JOIN is scanned for its own reads, and its alias d is not a table.",
+  "mode": "statement",
+  "accesses": { "reads": ["dbo.loans", "dbo.members"], "writes": [], "executes": [] }
+}

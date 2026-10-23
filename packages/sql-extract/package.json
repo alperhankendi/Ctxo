@@ -1,0 +1,53 @@
+{
+  "name": "@ctxo/sql-extract",
+  "version": "0.0.0",
+  "description": "Zero-dependency T-SQL tokenizer and data-access recognizers shared by Ctxo language plugins",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "ctxo",
+    "sql",
+    "t-sql",
+    "mcp"
+  ],
+  "author": "Alper Hankendi",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^26.6.1",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alperhankendi/Ctxo.git",
+    "directory": "packages/sql-extract"
+  },
+  "bugs": {
+    "url": "https://github.com/alperhankendi/Ctxo/issues"
+  },
+  "homepage": "https://github.com/alperhankendi/Ctxo#readme",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

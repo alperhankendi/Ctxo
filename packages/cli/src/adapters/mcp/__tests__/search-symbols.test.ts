@@ -96,6 +96,28 @@ describe('SearchSymbolsHandler', () => {
     expect(payload.results.every((r: { kind: string }) => r.kind === 'class')).toBe(true);
   });
 
+  it('search_symbols filters by kind table', () => {
+    storage.bulkWrite([
+      {
+        file: 'db/loans.sql',
+        lastModified: 1,
+        symbols: [
+          { symbolId: 'db/loans.sql::dbo.loans::table', name: 'dbo.loans', kind: 'table', startLine: 1, endLine: 9 },
+          { symbolId: 'db/loans.sql::dbo.usp_close::procedure', name: 'dbo.usp_close', kind: 'procedure', startLine: 11, endLine: 20 },
+        ],
+        edges: [],
+        intent: [],
+        antiPatterns: [],
+      },
+    ]);
+    const handler = handleSearchSymbols(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = handler({ pattern: '.*', kind: 'table' });
+    const payload = JSON.parse(result.content[0]!.text);
+
+    expect(payload.error).toBeUndefined();
+    expect(payload.results.map((r: { symbolId: string }) => r.symbolId)).toEqual(['db/loans.sql::dbo.loans::table']);
+  });
+
   it('filters by filePattern', () => {
     const handler = handleSearchSymbols(storage, new MaskingPipeline(), undefined, tempDir);
     const result = handler({ pattern: '.*', filePattern: 'adapters' });

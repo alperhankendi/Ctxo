@@ -1,0 +1,6 @@
+{
+  "description": "BULK INSERT writes its target table, and a temp table target is skipped.",
+  "mode": "statement",
+  "sides": ["sql-extract", "scriptdom"],
+  "accesses": { "reads": [], "writes": ["circulation.holdimports", "dbo.loanimports"], "executes": [] }
+}

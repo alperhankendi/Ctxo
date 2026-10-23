@@ -1,0 +1,5 @@
+{
+  "description": "Nested parenthesized joins read their first table, and an UPDATE alias defined inside them is the aliased table.",
+  "mode": "statement",
+  "accesses": { "reads": ["dbo.books", "dbo.holds", "dbo.loans", "dbo.members"], "writes": ["dbo.loans"], "executes": [] }
+}

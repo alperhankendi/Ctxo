@@ -87,6 +87,76 @@ describe('FindImportersHandler', () => {
     expect(payload.importers[1].depth).toBe(2);
   });
 
+  it('find_importers accepts edgeKinds reads and writes', () => {
+    storage.bulkWrite([
+      {
+        file: 'db/loans.sql',
+        lastModified: 1,
+        symbols: [{ symbolId: 'db/loans.sql::dbo.loans::table', name: 'dbo.loans', kind: 'table', startLine: 1, endLine: 9 }],
+        edges: [],
+        intent: [],
+        antiPatterns: [],
+      },
+      {
+        file: 'src/reader.ts',
+        lastModified: 1,
+        symbols: [{ symbolId: 'src/reader.ts::Reader::class', name: 'Reader', kind: 'class', startLine: 1, endLine: 9 }],
+        edges: [{ from: 'src/reader.ts::Reader::class', to: 'db/loans.sql::dbo.loans::table', kind: 'reads' }],
+        intent: [],
+        antiPatterns: [],
+      },
+      {
+        file: 'src/writer.ts',
+        lastModified: 1,
+        symbols: [{ symbolId: 'src/writer.ts::Writer::class', name: 'Writer', kind: 'class', startLine: 1, endLine: 9 }],
+        edges: [{ from: 'src/writer.ts::Writer::class', to: 'db/loans.sql::dbo.loans::table', kind: 'writes' }],
+        intent: [],
+        antiPatterns: [],
+      },
+    ]);
+    const handler = handleFindImporters(storage, new MaskingPipeline(), undefined, tempDir);
+
+    const reads = JSON.parse(handler({ symbolId: 'db/loans.sql::dbo.loans::table', edgeKinds: ['reads'] }).content[0]!.text);
+    expect(reads.error).toBeUndefined();
+    expect(reads.importers.map((i: { symbolId: string }) => i.symbolId)).toEqual(['src/reader.ts::Reader::class']);
+
+    const writes = JSON.parse(handler({ symbolId: 'db/loans.sql::dbo.loans::table', edgeKinds: ['writes'] }).content[0]!.text);
+    expect(writes.importers.map((i: { symbolId: string }) => i.symbolId)).toEqual(['src/writer.ts::Writer::class']);
+  });
+
+  it('find_importers accepts a 2-part data id', () => {
+    const PROC_V1 = 'db/migrations/V1__init.sql::dbo.usp_close::procedure';
+    const PROC_V7 = 'db/migrations/V7__close_fix.sql::dbo.usp_close::procedure';
+    const CLOSE = 'src/LoanService.cs::Lending.LoanService.Close::method';
+    const DESK = 'src/Desk.cs::Lending.Desk.Checkout::method';
+    const method = (symbolId: string): FileIndex['symbols'][number] =>
+      ({ symbolId, name: symbolId.split('::')[1]!, kind: 'method', startLine: 1, endLine: 9 });
+    const procedure = (symbolId: string): FileIndex['symbols'][number] =>
+      ({ symbolId, name: 'dbo.usp_close', kind: 'procedure', startLine: 1, endLine: 9 });
+    storage.bulkWrite([
+      { file: 'db/migrations/V7__close_fix.sql', lastModified: 1, symbols: [procedure(PROC_V7)], edges: [], intent: [], antiPatterns: [] },
+      { file: 'db/migrations/V1__init.sql', lastModified: 1, symbols: [procedure(PROC_V1)], edges: [], intent: [], antiPatterns: [] },
+      {
+        file: 'src/LoanService.cs',
+        lastModified: 1,
+        symbols: [method(CLOSE)],
+        edges: [{ from: CLOSE, to: 'dbo.usp_close::procedure', kind: 'executes' }],
+        intent: [],
+        antiPatterns: [],
+      },
+      { file: 'src/Desk.cs', lastModified: 1, symbols: [method(DESK)], edges: [{ from: DESK, to: CLOSE, kind: 'calls' }], intent: [], antiPatterns: [] },
+    ]);
+    const handler = handleFindImporters(storage, new MaskingPipeline(), undefined, tempDir);
+    const importers = (args: Record<string, unknown>) =>
+      (JSON.parse(handler(args).content[0]!.text) as { importers: Array<{ symbolId: string; depth: number }> }).importers
+        .map((i) => [i.symbolId, i.depth]);
+
+    for (const symbolId of ['dbo.usp_close::procedure', PROC_V1, PROC_V7]) {
+      expect(importers({ symbolId })).toEqual([[CLOSE, 1]]);
+      expect(importers({ symbolId, transitive: true })).toEqual([[CLOSE, 1], [DESK, 2]]);
+    }
+  });
+
   it('filters by edgeKinds', () => {
     // D has importers: B (via calls). Filter to imports only → empty
     const handler = handleFindImporters(storage, new MaskingPipeline(), undefined, tempDir);

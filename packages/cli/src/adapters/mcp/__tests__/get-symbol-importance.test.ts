@@ -108,6 +108,33 @@ describe('GetSymbolImportanceHandler', () => {
     expect(payload.rankings.every((r: { kind: string }) => r.kind === 'interface')).toBe(true);
   });
 
+  it('get_symbol_importance accepts kind procedure', () => {
+    storage.bulkWrite([
+      {
+        file: 'db/close.sql',
+        lastModified: 1,
+        symbols: [{ symbolId: 'db/close.sql::dbo.usp_close::procedure', name: 'dbo.usp_close', kind: 'procedure', startLine: 1, endLine: 9 }],
+        edges: [],
+        intent: [],
+        antiPatterns: [],
+      },
+      {
+        file: 'src/e.ts',
+        lastModified: 1,
+        symbols: [{ symbolId: 'src/e.ts::E::function', name: 'E', kind: 'function', startLine: 1, endLine: 5 }],
+        edges: [{ from: 'src/e.ts::E::function', to: 'db/close.sql::dbo.usp_close::procedure', kind: 'executes' }],
+        intent: [],
+        antiPatterns: [],
+      },
+    ]);
+    const handler = handleGetSymbolImportance(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = handler({ kind: 'procedure' });
+    const payload = JSON.parse(result.content[0]!.text);
+
+    expect(payload.error).toBeUndefined();
+    expect(payload.rankings.map((r: { symbolId: string }) => r.symbolId)).toEqual(['db/close.sql::dbo.usp_close::procedure']);
+  });
+
   it('filters by filePattern', () => {
     const handler = handleGetSymbolImportance(storage, new MaskingPipeline(), undefined, tempDir);
     const result = handler({ filePattern: 'src/c' });

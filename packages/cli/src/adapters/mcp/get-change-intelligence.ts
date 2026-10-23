@@ -7,7 +7,7 @@ import { JsonIndexReader } from '../storage/json-index-reader.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 import { HealthScorer } from '../../core/change-intelligence/health-scorer.js';
 
-const InputSchema = z.object({
+export const InputSchema = z.object({
   symbolId: z.string().min(1),
 });
 

@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, statSync, utimesSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -9,6 +9,8 @@ import type {
   DriftEventsArtifact,
 } from '../../../core/types.js';
 import { ArchitectureArtifactsWriter } from '../architecture-artifacts-writer.js';
+import { resolveContextsViewConfig } from '../../../core/config/load-config.js';
+import type { ContextsView } from '../../../core/contexts-view/contexts-view-builder.js';
 
 let ctxoRoot: string;
 
@@ -97,6 +99,36 @@ describe('ArchitectureArtifactsWriter', () => {
     expect(() => new ArchitectureArtifactsWriter('/some/real/project/.ctxo')).toThrow(
       /refusing to write to non-tmp path/,
     );
+  });
+
+  it('writeContextsView writes once and returns false without touching an identical file', () => {
+    const view: ContextsView = {
+      version: 1,
+      commitSha: 'abc1234',
+      settings: resolveContextsViewConfig({ version: '1.0' }),
+      coverage: { files: 0, covered: 0, ratio: 0 },
+      candidates: [],
+      hubs: [],
+      unclustered: { count: 0, files: [] },
+      collisions: [],
+      dataResources: [],
+    };
+    const writer = new ArchitectureArtifactsWriter(ctxoRoot);
+    const path = join(ctxoRoot, 'index', 'contexts-view.json');
+
+    expect(writer.writeContextsView(view)).toBe(true);
+    const bytes = readFileSync(path);
+    expect(bytes.toString('utf-8')).toBe(JSON.stringify(view, null, 2));
+    // An old mtime that only a rewrite would change.
+    utimesSync(path, 1_600_000_000, 1_600_000_000);
+    const before = statSync(path).mtimeMs;
+
+    expect(writer.writeContextsView(view)).toBe(false);
+    expect(readFileSync(path).equals(bytes)).toBe(true);
+    expect(statSync(path).mtimeMs).toBe(before);
+
+    expect(writer.writeContextsView({ ...view, commitSha: 'def5678' })).toBe(true);
+    expect(readFileSync(path, 'utf-8')).toContain('def5678');
   });
 
   it('allows production paths when opted in', () => {

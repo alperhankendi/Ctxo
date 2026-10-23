@@ -39,6 +39,35 @@ function buildCyclicGraph(): SymbolGraph {
 describe('LogicSliceQuery', () => {
   const query = new LogicSliceQuery();
 
+  describe('data resource copies', () => {
+    const V1 = 'db/migrations/V1__init.sql::dbo.usp_close::procedure';
+    const V7 = 'db/migrations/V7__close_fix.sql::dbo.usp_close::procedure';
+
+    function copiesGraph(): SymbolGraph {
+      const graph = new SymbolGraph();
+      for (const id of [V7, V1, 'db/loans.sql::dbo.loans::table', 'db/audit.sql::dbo.audit::table']) graph.addNode(makeNode(id));
+      graph.addEdge({ from: V1, to: 'dbo.loans::table', kind: 'writes' });
+      graph.addEdge({ from: V7, to: 'dbo.loans::table', kind: 'writes' });
+      graph.addEdge({ from: V7, to: 'dbo.audit::table', kind: 'writes' });
+      return graph;
+    }
+
+    it('a 2-part procedure id walks the winner\'s dependencies', () => {
+      const result = query.getLogicSlice(copiesGraph(), 'dbo.usp_close::procedure');
+      expect(result?.root.symbolId).toBe(V1);
+      expect(result?.dependencies.map((node) => node.symbolId)).toEqual(['db/loans.sql::dbo.loans::table']);
+      expect(result?.edges.map((edge) => edge.from)).toEqual([V1]);
+    });
+
+    it('a later procedure copy keeps its own body\'s dependencies', () => {
+      const result = query.getLogicSlice(copiesGraph(), V7);
+      expect(result?.dependencies.map((node) => node.symbolId)).toEqual([
+        'db/loans.sql::dbo.loans::table',
+        'db/audit.sql::dbo.audit::table',
+      ]);
+    });
+  });
+
   it('returns root symbol with no dependencies when isolated', () => {
     const graph = new SymbolGraph();
     graph.addNode(makeNode('src/a.ts::A::function'));

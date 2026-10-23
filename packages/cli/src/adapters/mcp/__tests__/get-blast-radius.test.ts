@@ -231,6 +231,54 @@ describe('GetBlastRadiusHandler', () => {
     const totals = Object.values(payload.byCluster as Record<string, number>);
     expect(totals.reduce((sum, v) => sum + v, 0)).toBeGreaterThan(0);
   });
+
+  it('a 2-part table id gives the winner\'s blast radius', async () => {
+    const WINNER = 'db/migrations/V1__init.sql::dbo.loans::table';
+    const DOCS_COPY = 'docs/db/schema.sql::dbo.loans::table';
+    const table = (symbolId: string): FileIndex['symbols'][number] =>
+      ({ symbolId, name: 'dbo.loans', kind: 'table', startLine: 0, endLine: 9 });
+    storage.bulkWrite([
+      { file: 'docs/db/schema.sql', lastModified: 1, symbols: [table(DOCS_COPY)], edges: [], intent: [], antiPatterns: [] },
+      { file: 'db/migrations/V1__init.sql', lastModified: 1, symbols: [table(WINNER)], edges: [], intent: [], antiPatterns: [] },
+      {
+        file: 'src/LoanReport.cs',
+        lastModified: 1,
+        symbols: [{ symbolId: 'src/LoanReport.cs::Lending.LoanReport.Run::method', name: 'Lending.LoanReport.Run', kind: 'method', startLine: 0, endLine: 9 }],
+        edges: [{ from: 'src/LoanReport.cs::Lending.LoanReport.Run::method', to: 'dbo.loans::table', kind: 'reads' }],
+        intent: [],
+        antiPatterns: [],
+      },
+    ]);
+    storage.writeCommunities({
+      version: 1,
+      computedAt: '2026-04-16T10:00:00.000Z',
+      commitSha: 'abc1234',
+      modularity: 0.5,
+      communities: [
+        { symbolId: WINNER, communityId: 0, communityLabel: 'loans' },
+        { symbolId: 'src/LoanReport.cs::Lending.LoanReport.Run::method', communityId: 1, communityLabel: 'reports' },
+      ],
+      godNodes: [],
+      edgeQuality: 'full',
+      crossClusterEdges: 1,
+    });
+    const handler = handleGetBlastRadius(storage, new MaskingPipeline(), undefined, tempDir);
+    // The payload echoes the id as given, and `_meta.totalBytes` follows its length; the rest must match.
+    const blast = async (symbolId: string) => {
+      const payload = JSON.parse((await handler({ symbolId })).content[0]!.text);
+      expect(payload.symbolId).toBe(symbolId);
+      delete payload.symbolId;
+      delete payload._meta;
+      return payload;
+    };
+
+    const winner = await blast(WINNER);
+    expect(winner.impactedSymbols.map((e: { symbolId: string }) => e.symbolId)).toEqual(['src/LoanReport.cs::Lending.LoanReport.Run::method']);
+    expect(winner.crossClusterEdges).toBe(1);
+    expect(await blast('dbo.loans::table')).toEqual(winner);
+    // A losing copy has the same dependents; its own cluster (none here) is the root of the cluster count.
+    expect((await blast(DOCS_COPY)).impactedSymbols).toEqual(winner.impactedSymbols);
+  });
 });
 
 /** b.ts imports a.ts (a potential dependent of A); c.ts has no edge to either. */

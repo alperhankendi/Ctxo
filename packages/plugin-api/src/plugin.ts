@@ -1,5 +1,6 @@
 import type { ILanguageAdapter } from './adapter.js';
 import type { IWorkspace } from './workspace.js';
+import type { ApiVersion } from './version.js';
 
 /**
  * Minimal logger shape passed to plugins. Matches the `debug`-style namespaced
@@ -14,6 +15,17 @@ export interface PluginLogger {
 }
 
 /**
+ * Host capabilities computed by core before any `createAdapter` call
+ * (protocol v2). Absent fields mean false.
+ */
+export interface PluginCapabilities {
+  /** True when facts were requested (`index.facts: true`); `extractFacts` is then called. */
+  readonly facts?: boolean;
+  /** True when a loaded plugin handles `.sql` files, so host-language plugins may emit SQL call-site edges (reads/writes/executes). */
+  readonly sqlCallSites?: boolean;
+}
+
+/**
  * Runtime context handed to `createAdapter`. All paths are absolute.
  */
 export interface PluginContext {
@@ -22,6 +34,8 @@ export interface PluginContext {
   readonly workspace: IWorkspace;
   /** Per-plugin configuration block from `.ctxo/config.yaml#languages.config.<id>`. */
   readonly config: Record<string, unknown>;
+  /** Protocol v2 host capabilities. Absent on v1 cores. */
+  readonly capabilities?: PluginCapabilities;
 }
 
 /**
@@ -30,8 +44,11 @@ export interface PluginContext {
  * against this interface.
  */
 export interface CtxoLanguagePlugin {
-  /** Protocol version. v0.7 introduces '1'. Future breaking changes bump to '2'. */
-  readonly apiVersion: '1';
+  /**
+   * Protocol version: the lowest version this plugin works on. Versions gate
+   * loading only; core handles output identically for '1' and '2'.
+   */
+  readonly apiVersion: ApiVersion;
 
   /** Short identifier. Used for CLI (`ctxo install python` → id: 'python'). */
   readonly id: string;

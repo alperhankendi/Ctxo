@@ -1,4 +1,5 @@
 import { compareCodepoint } from '../compare-codepoint.js';
+import { DATA_EDGE_KINDS } from '../data-coupling/data-kinds.js';
 import type { SymbolGraph } from '../graph/symbol-graph.js';
 import type {
   BoundaryViolation,
@@ -44,6 +45,7 @@ export class BoundaryViolationDetector {
 
     for (const edge of graph.allEdges()) {
       if (edge.from === edge.to) continue;
+      if (DATA_EDGE_KINDS.has(edge.kind)) continue;
       const fromCommunity = currentAssignments.get(edge.from);
       const toCommunity = currentAssignments.get(edge.to);
       if (fromCommunity === undefined || toCommunity === undefined) continue;

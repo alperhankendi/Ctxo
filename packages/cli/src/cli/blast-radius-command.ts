@@ -17,15 +17,17 @@ export class BlastRadiusCommand {
 
   run(options: BlastRadiusOptions): void {
     const { graph } = loadGraph(this.ctxoRoot);
-    if (!graph.hasNode(options.symbolId)) {
+    // Resolve the id once, as the get_blast_radius tool does: a 2-part data id names its winning definition.
+    const root = graph.getNode(options.symbolId);
+    if (!root) {
       process.stdout.write(JSON.stringify({ found: false, symbolId: options.symbolId }) + '\n');
       return;
     }
     // Same tiering as the get_blast_radius tool: co-change upgrades a potential dependent to likely.
     const coChangeMap = new CoChangeReader(this.ctxoRoot).readCoChangeMap();
-    const result = new BlastRadiusCalculator().calculate(graph, options.symbolId, coChangeMap);
+    const result = new BlastRadiusCalculator().calculate(graph, root.symbolId, coChangeMap);
 
-    const coChangedFiles = findCoChangedFilesForBlastRadius(coChangeMap, options.symbolId, result.impactedSymbols);
+    const coChangedFiles = findCoChangedFilesForBlastRadius(coChangeMap, root.symbolId, result.impactedSymbols);
 
     const payload = {
       found: true,

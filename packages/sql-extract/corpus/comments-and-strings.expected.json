@@ -1,0 +1,5 @@
+{
+  "description": "Line comments, nested block comments and string literals never produce accesses.",
+  "mode": "statement",
+  "accesses": { "reads": ["dbo.loans"], "writes": [], "executes": [] }
+}

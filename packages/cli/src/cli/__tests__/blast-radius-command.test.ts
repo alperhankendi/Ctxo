@@ -71,6 +71,36 @@ describe('BlastRadiusCommand', () => {
     expect(JSON.parse(out.mock.calls.map(c => c[0]).join('')).found).toBe(false);
     rmSync(root, { recursive: true, force: true });
   });
+
+  it('a 2-part table id gives the winner\'s dependents and the co-changed files of the winner\'s file', () => {
+    const root = mkdtempSync(join(tmpdir(), 'ctxo-br-data-'));
+    const index = join(root, '.ctxo', 'index');
+    const write = (file: string, symbols: unknown[], edges: unknown[] = []) => {
+      mkdirSync(join(index, file, '..'), { recursive: true });
+      writeFileSync(join(index, `${file}.json`), JSON.stringify({ file, lastModified: 0, symbols, edges, intent: [], antiPatterns: [] }));
+    };
+    const table = (file: string) => ({ symbolId: `${file}::dbo.loans::table`, name: 'dbo.loans', kind: 'table', startLine: 1, endLine: 3 });
+    const REPORT = 'src/LoanReport.cs::Lending.LoanReport.Run::method';
+    write('db/migrations/V1__init.sql', [table('db/migrations/V1__init.sql')]);
+    write('docs/db/schema.sql', [table('docs/db/schema.sql')]);
+    write('src/LoanReport.cs', [{ symbolId: REPORT, name: 'Lending.LoanReport.Run', kind: 'method', startLine: 1, endLine: 3 }], [
+      { from: REPORT, to: 'dbo.loans::table', kind: 'reads' },
+    ]);
+    writeFileSync(join(index, 'co-changes.json'), JSON.stringify({
+      version: 1, timestamp: 1,
+      entries: [{ file1: 'db/migrations/V1__init.sql', file2: 'src/Seed.cs', sharedCommits: 4, frequency: 0.8 }],
+    }));
+    const out = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
+
+    new BlastRadiusCommand(root).run({ symbolId: 'dbo.loans::table', json: true });
+    const printed = JSON.parse(out.mock.calls.map(c => c[0]).join(''));
+    rmSync(root, { recursive: true, force: true });
+
+    expect(printed.found).toBe(true);
+    expect(printed.symbolId).toBe('dbo.loans::table');
+    expect(printed.impactedSymbols).toEqual([{ symbolId: REPORT, confidence: 'confirmed', depth: 1 }]);
+    expect(printed.coChangedFiles).toEqual([{ file: 'src/Seed.cs', frequency: 0.8, sharedCommits: 4 }]);
+  });
 });
 
 describe('BlastRadiusCommand co-change', () => {

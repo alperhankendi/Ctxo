@@ -60,6 +60,7 @@
     "@ctxo/lang-csharp": "workspace:*",
     "@ctxo/lang-go": "workspace:*",
     "@ctxo/lang-java": "workspace:*",
+    "@ctxo/lang-sql": "workspace:*",
     "@ctxo/lang-typescript": "workspace:*",
     "@types/node": "^26.6.1",
     "@types/picomatch": "^4.0.3",

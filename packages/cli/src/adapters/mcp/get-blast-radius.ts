@@ -47,7 +47,7 @@ function computeClusterBreakdown(
   return { byCluster, crossClusterCount, multiClusterHint };
 }
 
-const InputSchema = z.object({
+export const InputSchema = z.object({
   symbolId: z.string().min(1),
   confidence: z.enum(['confirmed', 'likely', 'potential']).optional(),
   intent: z.string().optional().describe('Filter results by intent keywords (e.g., "test", "adapter", "security")'),
@@ -77,15 +77,18 @@ export function handleGetBlastRadius(
       const { symbolId } = parsed.data;
       const { graph, indexedFiles } = getGraph();
 
-      if (!graph.hasNode(symbolId)) {
+      // Resolve the id once: a 2-part data id names its winning definition. The response echoes the id as given.
+      const root = graph.getNode(symbolId);
+      if (!root) {
         return {
           content: [{ type: 'text' as const, text: JSON.stringify({ found: false, hint: 'Symbol not found. Run "ctxo index" to build the codebase index.' }) }],
         };
       }
+      const rootId = root.symbolId;
 
       // Read per call: the port caches by mtime, so a matrix rewritten while the server runs is picked up.
       const coChangeMap = coChange?.readCoChangeMap();
-      const result = calculator.calculate(graph, symbolId, coChangeMap);
+      const result = calculator.calculate(graph, rootId, coChangeMap);
 
       // Apply confidence filter if requested
       let symbols = result.impactedSymbols;
@@ -106,7 +109,7 @@ export function handleGetBlastRadius(
           ? clusterLabelMasker.maskSnapshot(rawSnapshot)
           : rawSnapshot;
       const clusterBreakdown = snapshot
-        ? computeClusterBreakdown(snapshot, symbolId, symbols.map((s) => s.symbolId))
+        ? computeClusterBreakdown(snapshot, rootId, symbols.map((s) => s.symbolId))
         : undefined;
 
       const body: Record<string, unknown> = {
@@ -129,7 +132,7 @@ export function handleGetBlastRadius(
 
       // Files that change together with the root's file but have no dependency path to it. From the
       // unfiltered result: the confidence and intent filters above shape the impactedSymbols list only.
-      const coChangedFiles = findCoChangedFilesForBlastRadius(coChangeMap, symbolId, result.impactedSymbols);
+      const coChangedFiles = findCoChangedFilesForBlastRadius(coChangeMap, rootId, result.impactedSymbols);
       if (coChangedFiles.length > 0) body.coChangedFiles = coChangedFiles;
 
       const stalenessMeta = git ? await buildSnapshotStaleness(storage, git) : undefined;

@@ -13,22 +13,24 @@ ctxo index                 # Build codebase index
 ctxo                       # Start MCP server (stdio)
 ```
 
-## Package Layout (v0.7.0-alpha.0, pnpm monorepo)
+## Package Layout (pnpm monorepo)
 
-- `@ctxo/cli` — CLI + MCP server (formerly `ctxo-mcp`)
-- `@ctxo/plugin-api` — `CtxoLanguagePlugin` v1 interface (apiVersion, id, extensions, tier, createAdapter)
-- `@ctxo/lang-typescript` — ts-morph full-tier plugin
-- `@ctxo/lang-go` — tree-sitter / gopls plugin
-- `@ctxo/lang-csharp` — Roslyn plugin
+- `@ctxo/cli` - CLI + MCP server (formerly `ctxo-mcp`)
+- `@ctxo/plugin-api` - `CtxoLanguagePlugin` interface, protocol v1 and v2 (`SUPPORTED_API_VERSIONS = ['1', '2']`; v2 adds data kinds, annotations, facts on request and host capabilities)
+- `@ctxo/lang-typescript` - ts-morph full-tier plugin
+- `@ctxo/lang-go` - tree-sitter / gopls plugin
+- `@ctxo/lang-csharp` - Roslyn plugin (attribute annotations; SQL edges at known call sites when `@ctxo/lang-sql` is installed)
 - `@ctxo/lang-java` - tree-sitter Java plugin (syntax tier built-in; full tier via `@ctxo/lang-java-analyzer` companion, requires JRE 11+)
+- `@ctxo/lang-sql` - T-SQL plugin for `.sql` files (protocol v2): tables, views, procedures, functions and their reads/writes/executes
+- `@ctxo/sql-extract` - zero-dependency T-SQL tokenizer and recognizers (a library, not a plugin; the one dependency plugins may take besides `@ctxo/plugin-api`)
 
 Language adapters ship as separate npm packages and are discovered by scanning the project `package.json` for `@ctxo/lang-*` or `ctxo-lang-*` dependencies.
 
 ## 14 Tools
 
 - get_logic_slice: Symbol + transitive dependencies (L1-L4 detail levels)
-- get_blast_radius: What breaks if a symbol changes (3-tier: confirmed/likely/potential)
-- get_architectural_overlay: Project layer map (Domain/Infrastructure/Adapter)
+- get_blast_radius: What breaks if a symbol changes (3-tier: confirmed/likely/potential; data edges are confirmed)
+- get_architectural_overlay: Project layer map (Domain/Infrastructure/Adapter), Louvain communities, and candidate bounded contexts (mode: "contexts")
 - get_why_context: Git commit intent + anti-pattern warnings (reverts, rollbacks)
 - get_change_intelligence: Complexity x churn composite score
 - find_dead_code: Unreachable symbols and files
@@ -51,6 +53,7 @@ Language adapters ship as separate npm packages and are discovered by scanning t
 - Don't know the symbol name? -> search_symbols or get_ranked_context
 - Finding unused code? -> find_dead_code
 - Safe to delete? -> find_importers
+- Preparing a context map? -> get_architectural_overlay(mode: "contexts")
 
 ## New: co-change engine, incremental indexing, one snapshot per commit (#157)
 
@@ -59,6 +62,23 @@ Language adapters ship as separate npm packages and are discovered by scanning t
 - Incremental indexing: `ctxo index --files <path...>` (alias `--file`) and `ctxo index --commit <rev>` re-index part of the index and recompute everything global from the merged index. The v2 post-commit hook runs `ctxo index --commit HEAD` once per commit, guarded by `[ -d .ctxo ]`. `ctxo init` and `ctxo doctor --fix` upgrade old hook blocks in place and refuse to write into a global or system `core.hooksPath`. New `git_hooks` doctor check.
 - One community snapshot per commit. Drift and boundary confidence count `distinctCommits` (low below 3, medium 3-6, high 7+). `ctxo index --check` records no snapshot.
 - `ctxo <command> --help` prints help and runs nothing.
+
+## New in v0.13
+
+- **Contexts view (#156)** - `ctxo index` writes `.ctxo/index/contexts-view.json`: candidate bounded contexts from file-level clustering of dependency and co-change edges, with hub files damped. Each candidate has a suggested label, cohesion, top terms, cross-candidate edges and co-change pairs; type names with different shapes in different candidates are listed as collisions. Recomputed on every index run that re-indexes files (and every post-commit hook run); skipped by `--skip-community`; not refreshed by `ctxo watch`.
+- `get_architectural_overlay` `mode: "contexts"` returns a summary of all candidates (hubs and collisions capped at 50); `candidate: <id>` returns one candidate in full. `mode` (overlay), `searchMode` (get_ranked_context) and `mode` (search_symbols) are now registered, so clients can send them. The unused `fuzzy` parameter is gone (typo correction is automatic in `fts` mode).
+- `ctxo contexts [--json]` - candidates as a table (stderr) or the full artifact (stdout).
+- New config in `.ctxo/config.yaml`: `communities:` (resolution, godNodeMinBridged, godNodeMaxResults), `contextsView:` (weights, exclude, hubs, resolution, minCandidateFiles, technicalTerms) and `index.tests` (extra test globs).
+- **Plugin protocol v2 (#156)** - new symbol kinds `table`, `view`, `procedure` and edge kinds `reads`, `writes`, `executes`; typed symbol `annotations` (`name`, `args`, `named`); code facts on request (`index.facts: true`); host capabilities (`facts`, `sqlCallSites`). The CLI loads plugins declaring `apiVersion` '1' or '2'; a plugin declares the lowest version it works on.
+- **`@ctxo/lang-sql`** - `ctxo install sql` (alias `tsql`). T-SQL definitions become symbols (tables with a `columns` annotation); view, procedure and function bodies give reads/writes/executes edges to canonical `schema.name` targets (default `dbo`). T-SQL only; top-level DML in scripts is skipped. Suggested by detection when the repository has at least 5 `.sql` files that are also at least 2% of its files.
+- **SQL size limit** - a `.sql` file larger than 5 MiB is skipped with one warning (`skipped <file>: <n> MiB is over the 5 MiB SQL size limit`) and gets no symbols or edges, so a data dump cannot crash `ctxo index`.
+- **SQL at C# call sites** - with lang-sql installed and the .NET SDK 8+, constant SQL at ADO.NET, Dapper (including the `CommandDefinition` constructor), `SqlBulkCopy` and EF Core raw SQL call sites becomes data edges (ScriptDom). Use `const string`; `static readonly` SQL is invisible. The C# plugin also reports attribute annotations (10 named entries plus the reserved `type`).
+- **Data coupling** - data edges are `confirmed` blast-radius dependents (the gate guards heavily used tables) and stay out of symbol-level communities; `.sql` symbols are never dead code. The contexts view adds `dataResources` and per-candidate `sharedTables` (ownership, external resources); `contextsView.weights.data` defaults to 0. Overlay summary: `sharedTableCount`, `dataResourcesTotal`, `sharedResourcesTotal`, `externalResourcesTotal`; `candidate: <id>` detail: up to 15 `sharedTables` and 15 `dataResources`, fewer when the response limit requires.
+- **Procedures in the contexts view** - a stored procedure's reads and writes count for the candidates that execute it (by canonical name), not for the candidate holding the script; a procedure nobody executes credits its own candidate. With several copies, the bodies of every production copy count (the winner's alone when no copy is production), and docs and test copies add nothing when a production copy exists. A C# class and a same-name table can show up as a collision (possible noise).
+- **One identity per data resource** - when several files define a table, view or procedure, references resolve to a copy outside test files, then outside docs folders, then the codepoint-smallest path (`index.tests` is not consulted). Every copy, and the 2-part ID (`dbo.loans::table`), gives the same dependents in get_blast_radius, find_importers, get_pr_impact, get_context_for_task, the gate and `ctxo blast-radius`. get_logic_slice walks each copy's own body (the winner's for a 2-part ID); get_why_context with a 2-part ID reads the winner's file history.
+- **Annotations in MCP output** - get_logic_slice includes node `annotations` at L4 only; L1-L3 and get_context_for_task omit them.
+- **Test files by annotation** - `Fact`, `Theory`, `SkippableFact`, `SkippableTheory`, `Test`, `TestCase`, `TestCaseSource`, `TestFixture`, `TestMethod`, `DataTestMethod`, `TestClass` mark test files; name-only `*Test.cs` / `*Tests.cs` matches need one once C# annotations exist. Attributes derived from `Fact` or `Theory` and bare capital `Tests/` folders are not recognised: add `index.tests`. Run a full `ctxo index` after upgrading `@ctxo/lang-csharp`.
+- **`csharp_tier` doctor check** - warns when the Roslyn helper cannot restore its NuGet packages (ScriptDom); the C# plugin then falls back to tree-sitter. The helper declares `RollForward` `Major`, so it can run on a newer .NET runtime when no .NET 8 runtime is installed. `ctxo watch` restarts an idle or crashed Roslyn keep-alive once and falls back to tree-sitter if that fails, instead of writing a C# file with zero symbols.
 
 ## New in v0.8
 
@@ -78,7 +98,9 @@ Language adapters ship as separate npm packages and are discovered by scanning t
 
 ## Key Concepts
 
-- Symbol ID format: "file::name::kind" (e.g., "src/foo.ts::myFn::function")
+- Symbol ID format: "file::name::kind" (e.g., "src/foo.ts::myFn::function", "db/lending.sql::dbo.loans::table")
+- Symbol kinds: function, class, interface, method, variable, type, table, view, procedure
+- Edge kinds: imports, calls, extends, implements, uses, reads, writes, executes (data edges point at 2-part names such as "dbo.loans::table")
 - All responses include _meta: { totalItems, returnedItems, truncated, totalBytes }
 - 4 tools support intent filtering: get_blast_radius, get_logic_slice, find_importers, find_dead_code
 - Large responses auto-truncated at 8KB (configurable via CTXO_RESPONSE_LIMIT)

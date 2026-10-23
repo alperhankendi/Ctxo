@@ -98,6 +98,26 @@ describe('GetLogicSliceHandler', () => {
     expect(payload.message).toBeDefined();
   });
 
+  it('get_logic_slice walks dependencies from a 2-part procedure id', () => {
+    const PROC = 'db/procs.sql::dbo.usp_close::procedure';
+    storage.bulkWrite([
+      { file: 'db/loans.sql', lastModified: 1, symbols: [{ symbolId: 'db/loans.sql::dbo.loans::table', name: 'dbo.loans', kind: 'table', startLine: 0, endLine: 9 }], edges: [], intent: [], antiPatterns: [] },
+      {
+        file: 'db/procs.sql',
+        lastModified: 1,
+        symbols: [{ symbolId: PROC, name: 'dbo.usp_close', kind: 'procedure', startLine: 0, endLine: 9 }],
+        edges: [{ from: PROC, to: 'dbo.loans::table', kind: 'writes' }],
+        intent: [],
+        antiPatterns: [],
+      },
+    ]);
+
+    const payload = JSON.parse(handler({ symbolId: 'dbo.usp_close::procedure', level: 3 }).content[0]!.text);
+    expect(payload.root.symbolId).toBe(PROC);
+    expect(payload.dependencies.map((d: { symbolId: string }) => d.symbolId)).toEqual(['db/loans.sql::dbo.loans::table']);
+    expect(payload.edges).toEqual([{ from: PROC, to: 'db/loans.sql::dbo.loans::table', kind: 'writes' }]);
+  });
+
   it('returns correct shape for detail level 1', () => {
     const result = handler({ symbolId: 'src/foo.ts::processPayment::function', level: 1 });
 

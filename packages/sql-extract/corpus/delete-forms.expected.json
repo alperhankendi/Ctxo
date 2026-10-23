@@ -1,0 +1,5 @@
+{
+  "description": "DELETE FROM target writes without a read, and DELETE alias FROM table writes the aliased table while the FROM clause is read.",
+  "mode": "statement",
+  "accesses": { "reads": ["dbo.holds", "dbo.members"], "writes": ["dbo.holds"], "executes": [] }
+}

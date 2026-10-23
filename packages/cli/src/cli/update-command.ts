@@ -280,7 +280,7 @@ export class UpdateCommand {
   }
 }
 
-async function defaultDiscoverInstalled(projectRoot: string): Promise<ReadonlyArray<{ name: string; version: string }>> {
+export async function defaultDiscoverInstalled(projectRoot: string): Promise<ReadonlyArray<{ name: string; version: string }>> {
   const out: Array<{ name: string; version: string }> = [{ name: CTXO_CLI_PACKAGE, version: getVersion() }];
   const manifestPath = loadManifestPath(projectRoot);
   if (!manifestPath) return out;

@@ -2,7 +2,8 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdtempSync, rmSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { loadManifestPath, loadPlugins } from '../plugin-loader.js';
+import type { CtxoLanguagePlugin } from '@ctxo/plugin-api';
+import { hostCapabilities, loadManifestPath, loadPlugins } from '../plugin-loader.js';
 
 describe('loadManifestPath', () => {
   let tmp: string;
@@ -77,5 +78,35 @@ describe('loadPlugins', () => {
       expect(typeof adapter.extractComplexity).toBe('function');
       expect(typeof adapter.isSupported).toBe('function');
     }
+  });
+});
+
+function fakePlugin(id: string, extensions: string[]): CtxoLanguagePlugin {
+  return {
+    apiVersion: '2',
+    id,
+    name: id,
+    version: '0.0.1',
+    extensions,
+    tier: 'syntax',
+    createAdapter: () => ({
+      extractSymbols: async () => [],
+      extractEdges: async () => [],
+      extractComplexity: async () => [],
+      isSupported: () => true,
+    }),
+  };
+}
+
+describe('hostCapabilities', () => {
+  it('sets sqlCallSites only when a plugin lists .sql', () => {
+    const ts = fakePlugin('typescript', ['.ts', '.tsx']);
+    expect(hostCapabilities([ts], { facts: false }).sqlCallSites).toBe(false);
+    expect(hostCapabilities([ts, fakePlugin('sql', ['.SQL'])], { facts: false }).sqlCallSites).toBe(true);
+  });
+
+  it('copies the facts option', () => {
+    expect(hostCapabilities([], { facts: true }).facts).toBe(true);
+    expect(hostCapabilities([], { facts: false }).facts).toBe(false);
   });
 });

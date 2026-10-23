@@ -5,11 +5,12 @@ import type { StalenessCheck } from './get-logic-slice.js';
 import { getGraphAndFiles } from './get-logic-slice.js';
 import { wrapResponse } from '../../core/response-envelope.js';
 import { SearchEngine } from '../../core/search/search-engine.js';
+import { SymbolKindSchema } from '../../core/types.js';
 import type { ISearchPort } from '../../ports/i-search-port.js';
 
-const InputSchema = z.object({
+export const InputSchema = z.object({
   pattern: z.string().min(1),
-  kind: z.enum(['function', 'class', 'interface', 'method', 'variable', 'type']).optional(),
+  kind: SymbolKindSchema.optional(),
   filePattern: z.string().optional(),
   limit: z.number().int().min(1).max(100).optional().default(25),
   mode: z.enum(['regex', 'fts']).optional().default('regex'),

@@ -1,0 +1,7 @@
+CREATE PROCEDURE dbo.usp_A
+AS
+SELECT 'GO' AS Marker FROM dbo.Loans
+
+CREATE PROCEDURE dbo.usp_B
+AS
+DELETE FROM dbo.Holds

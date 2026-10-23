@@ -12,7 +12,7 @@ import type { ClusterLabelMasker } from '../../core/overlay/cluster-label-masker
 import { wrapResponse } from '../../core/response-envelope.js';
 import type { CommunitySnapshot } from '../../core/types.js';
 
-const InputSchema = z.object({
+export const InputSchema = z.object({
   since: z.string().optional().default('HEAD~1'),
   maxFiles: z.number().int().min(1).optional().default(50),
   confidence: z.enum(['confirmed', 'likely', 'potential']).optional(),

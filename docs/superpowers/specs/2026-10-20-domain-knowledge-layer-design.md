@@ -211,7 +211,7 @@ There are two hard-coded test pattern lists today (`dead-code-detector.ts`, `arc
   - Hubs are reported separately and assigned to the candidate of their strongest remaining edge, if any.
 - **Clustering:** Louvain with `resolution` (default 1.0), the same determinism measures as `CommunityDetector` (sorted nodes, `randomWalk: false`, codepoint ordering) and its `splitDisconnectedCommunities`.
 - **Post-processing:** candidates with fewer than `minCandidateFiles` (default 3) files fold into the neighbouring candidate with the strongest total weight; isolated small groups go to `unclustered`.
-- **Identity and labels:** candidate IDs are sequential by size desc, then label; each also carries a `fingerprint` (hash of its sorted members). The suggested label is the longest common directory prefix of the members, or, when that is the repo root, the directory of the member with the highest file-level PageRank. No automatic domain naming.
+- **Identity and labels:** labels are computed first, then IDs: candidate IDs are sequential by size desc, then final label, then first member; each also carries a `fingerprint` (hash of its sorted members). The suggested label (K34) starts as the longest common directory of the members, joined with `/` and keeping the original spelling; when that is the repo root, it is the directory of the member with the highest file-level PageRank (ties: first member), and `.` if that is the root too. Then, in one refinement pass, every label shared by two or more candidates is replaced, for each of them, by the directory of its own top-PageRank member (`.` at the root); labels may still repeat after it. No automatic domain naming.
 - **Per candidate:** `id`, `label`, `fingerprint`, `files` (capped list plus count), `cohesion` (internal weight / (internal + boundary weight)), `topTerms` (7.3), `sharedTables` (added by PR 1B), `crossEdges` (to other candidates, with counts by kind) and `coChangePairs` crossing candidates (top N).
 - **Output:** `{ candidates, unclustered, hubs, settings, coverage: { files, covered, ratio } }`.
 - Numbers are tuned on the fixture and recorded with their evidence in ADR-016's addendum or the PR description.
@@ -247,6 +247,8 @@ index:
 - `JsonIndexReader` must skip `contexts-view.json` (it parses every unknown JSON file as a FileIndex).
 
 ### 7.4a Experiment: change-set unit for co-change (K20)
+
+Measured in PR 1A and left out; tracked in #165.
 
 - Commits are not always the unit of a logical change. Our own flow lands one PR as many small commits (test, code, docs), so files changed in different commits of one PR never count as co-changing.
 - Add `cochange.unit: commit | merge` (default `commit`, so the oracle comparison stays like for like).

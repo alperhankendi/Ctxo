@@ -92,6 +92,18 @@ describe('JsonIndexReader', () => {
       expect(reader.readEntries()).toEqual([]);
     });
 
+    it('readAll skips contexts-view.json without logging a schema error', () => {
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      new JsonIndexWriter(tempDir).write(buildFileIndex());
+      writeFileSync(join(tempDir, 'index', 'contexts-view.json'), JSON.stringify({ version: 1, candidates: [] }), 'utf-8');
+
+      const files = reader.readAll().map((index) => index.file);
+
+      expect(files).toEqual(['src/foo.ts']);
+      expect(errorSpy).not.toHaveBeenCalled();
+      errorSpy.mockRestore();
+    });
+
     it('readAll returns the same indices', () => {
       const writer = new JsonIndexWriter(tempDir);
       writer.write(buildFileIndex());
@@ -270,5 +282,97 @@ describe('JsonIndexReader', () => {
     expect(fileIndex.antiPatterns).toHaveLength(1);
     expect(fileIndex.antiPatterns[0]?.hash).toBe('bbb');
     expect(fileIndex.intent).toHaveLength(1);
+  });
+
+  it('readAll keeps a symbol and drops only its invalid annotations', () => {
+    const indexDir = join(tempDir, 'index', 'src');
+    mkdirSync(indexDir, { recursive: true });
+    const data = {
+      file: 'src/Loan.cs',
+      lastModified: 1,
+      symbols: [
+        {
+          symbolId: 'src/Loan.cs::Loan::class', name: 'Loan', kind: 'class', startLine: 1, endLine: 9,
+          annotations: [{ name: 'Table', args: [1] }],
+        },
+      ],
+      edges: [],
+      intent: [],
+      antiPatterns: [],
+    };
+    writeFileSync(join(indexDir, 'Loan.cs.json'), JSON.stringify(data), 'utf-8');
+
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const results = reader.readAll();
+    const warnings = spy.mock.calls.map((c) => String(c[0])).filter((w) => w.includes('WARN'));
+    spy.mockRestore();
+
+    expect(results).toHaveLength(1);
+    expect(results[0]!.symbols).toHaveLength(1);
+    expect(results[0]!.symbols[0]!.name).toBe('Loan');
+    expect(results[0]!.symbols[0]!.annotations).toBeUndefined();
+    expect(warnings).toHaveLength(1);
+  });
+
+  it('readAll keeps the valid facts of a file and drops invalid ones', () => {
+    const indexDir = join(tempDir, 'index', 'src');
+    mkdirSync(indexDir, { recursive: true });
+    const good = { kind: 'endpoint', symbolId: 'src/Api.cs::Api::class', line: 2, text: 'GET /loans' };
+    const data = {
+      file: 'src/Api.cs',
+      lastModified: 1,
+      symbols: [{ symbolId: 'src/Api.cs::Api::class', name: 'Api', kind: 'class', startLine: 1, endLine: 9 }],
+      edges: [],
+      intent: [],
+      antiPatterns: [],
+      facts: [good, { ...good, kind: 'mystery' }, { ...good, line: -1 }],
+    };
+    writeFileSync(join(indexDir, 'Api.cs.json'), JSON.stringify(data), 'utf-8');
+
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const results = reader.readAll();
+    spy.mockRestore();
+
+    expect(results).toHaveLength(1);
+    expect(results[0]!.facts).toEqual([good]);
+  });
+
+  it('readAll keeps a file whose facts value is not an array and treats it as absent', () => {
+    const indexDir = join(tempDir, 'index', 'src');
+    mkdirSync(indexDir, { recursive: true });
+    const data = {
+      file: 'src/Api.cs',
+      lastModified: 1,
+      symbols: [{ symbolId: 'src/Api.cs::Api::class', name: 'Api', kind: 'class', startLine: 1, endLine: 9 }],
+      edges: [],
+      intent: [],
+      antiPatterns: [],
+      facts: 'not-an-array',
+    };
+    writeFileSync(join(indexDir, 'Api.cs.json'), JSON.stringify(data), 'utf-8');
+
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const results = reader.readAll();
+    const warnings = spy.mock.calls.map((c) => String(c[0])).filter((w) => w.includes('WARN'));
+    spy.mockRestore();
+
+    expect(results).toHaveLength(1);
+    expect(results[0]!.symbols).toHaveLength(1);
+    expect(results[0]!.facts).toBeUndefined();
+    expect(warnings).toHaveLength(1);
+  });
+
+  it('annotations and facts survive a JsonIndexWriter round trip', () => {
+    const base = buildFileIndex();
+    const symbol = { ...base.symbols[0]!, annotations: [{ name: 'Route', args: ['loans'], named: { Name: 'list' } }] };
+    const fact = { kind: 'normalization' as const, symbolId: symbol.symbolId, line: 1, text: 'x.trim()' };
+    const fileIndex = { ...base, symbols: [symbol], facts: [fact] };
+
+    new JsonIndexWriter(tempDir).write(fileIndex);
+    const results = reader.readAll();
+
+    expect(results).toHaveLength(1);
+    expect(results[0]!.symbols[0]!.annotations).toEqual(symbol.annotations);
+    expect(results[0]!.facts).toEqual([fact]);
   });
 });

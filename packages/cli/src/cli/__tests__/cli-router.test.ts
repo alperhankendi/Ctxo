@@ -147,6 +147,32 @@ describe('cli-router update command', () => {
   });
 });
 
+describe('cli-router contexts command', () => {
+  it('routes contexts --json to ContextsCommand.run', async () => {
+    const calls: Array<{ projectRoot: string; options: unknown }> = [];
+    const original = await import('../contexts-command.js');
+    // Must be constructible (see the update test above), hence a function expression.
+    const spy = vi.spyOn(original, 'ContextsCommand' as any).mockImplementation(
+      function (this: unknown, projectRoot: string) {
+        return { run: (options: unknown) => { calls.push({ projectRoot, options }); } };
+      } as any,
+    );
+    await new CliRouter(process.cwd()).route(['contexts', '--json']);
+    expect(calls).toHaveLength(1);
+    expect(calls[0]!.options).toEqual({ json: true });
+    spy.mockRestore();
+  });
+
+  it('help documents ctxo contexts and ctxo contexts --json', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    await new CliRouter(process.cwd()).route(['--help']);
+    const help = errorSpy.mock.calls.map((a) => String(a[0])).join('\n');
+    errorSpy.mockRestore();
+    expect(help).toContain('ctxo contexts             Candidate contexts from dependency and co-change clusters (table)');
+    expect(help).toContain('ctxo contexts --json      Same, full contexts-view.json to stdout');
+  });
+});
+
 describe('cli-router index co-change flags', () => {
   let indexRuns: Array<Record<string, unknown>>;
   let indexConstructed: number;
@@ -366,7 +392,7 @@ describe('cli-router subcommand --help and -h', () => {
   // (a real `init` or `index` here would write hooks and files into the repository running the tests).
   const SUBCOMMANDS = [
     'index', 'sync', 'status', 'verify-index', 'init', 'watch', 'stats', 'doctor', 'visualize',
-    'version', 'install', 'update', 'blast-radius', 'gate', 'gate-hook',
+    'version', 'install', 'update', 'blast-radius', 'contexts', 'gate', 'gate-hook',
   ];
 
   let constructed: string[];
@@ -392,6 +418,7 @@ describe('cli-router subcommand --help and -h', () => {
       InstallCommand: await import('../install-command.js'),
       UpdateCommand: await import('../update-command.js'),
       BlastRadiusCommand: await import('../blast-radius-command.js'),
+      ContextsCommand: await import('../contexts-command.js'),
       GateHookCommand: await import('../gate-hook-command.js'),
       GateCommand: await import('../gate-command.js'),
     };

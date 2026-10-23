@@ -173,6 +173,40 @@ describe('CommunityDetector', () => {
     expect(second!.symbolId).toBe('src/ideal.ts::y::class');
   });
 
+  it('god nodes with equal centrality are ordered and capped by code point', () => {
+    // Upper-case B sorts before lower-case a by code point; a locale-aware sort would keep a instead.
+    const detector = new CommunityDetector({ godNodeMinBridged: 2, godNodeMaxResults: 1 });
+    const graph = buildMultiClusterGraph();
+    const bridges = ['hub/B.ts::B::class', 'hub/a.ts::a::class'];
+    // Each cluster member touches at most one bridge, so only the two bridges reach two communities.
+    const touches: Record<string, string[]> = {
+      'hub/B.ts::B::class': [
+        'auth/login.ts::login::function',
+        'billing/invoice.ts::Invoice::class',
+        'reporting/monthly.ts::monthlyReport::function',
+      ],
+      'hub/a.ts::a::class': [
+        'auth/session.ts::Session::class',
+        'billing/charge.ts::charge::function',
+        'reporting/export.ts::exportCsv::function',
+      ],
+    };
+    for (const bridge of bridges) {
+      graph.addNode(makeNode(bridge));
+      for (const target of touches[bridge]!) graph.addEdge({ from: target, to: bridge, kind: 'calls' });
+    }
+
+    const uncapped = new CommunityDetector({ godNodeMinBridged: 2 }).detect(graph, pagerankFor(graph));
+    expect(uncapped.godNodes.map((god) => god.symbolId)).toEqual(bridges);
+    const [first, second] = uncapped.godNodes;
+    expect(first!.bridgedCommunities.length).toBe(second!.bridgedCommunities.length);
+    expect(first!.centralityScore).toBe(second!.centralityScore);
+
+    const result = detector.detect(graph, pagerankFor(graph));
+
+    expect(result.godNodes.map((god) => god.symbolId)).toEqual(['hub/B.ts::B::class']);
+  });
+
   it('returns god nodes sorted by centrality score descending', () => {
     const detector = new CommunityDetector({ godNodeMinBridged: 2 });
     const graph = buildGraphWithGodNode();
@@ -188,5 +222,47 @@ describe('CommunityDetector', () => {
           compareCodepoint(prev.symbolId, curr.symbolId) <= 0);
       expect(sortedCorrectly).toBe(true);
     }
+  });
+
+  describe('data edges', () => {
+    function buildDataGraph(groups = 2): SymbolGraph {
+      const graph = new SymbolGraph();
+      const table = 'db/t.sql::dbo.t::table';
+      graph.addNode(makeNode(table));
+      const files = ['a/x.ts', 'b/y.ts', 'c/z.ts', 'd/w.ts'].slice(0, groups);
+      files.forEach((file, i) => {
+        const f1 = `${file}::F1::function`;
+        const f2 = `${file}::F2::function`;
+        graph.addNode(makeNode(f1));
+        graph.addNode(makeNode(f2));
+        graph.addEdge({ from: f1, to: f2, kind: 'calls' });
+        graph.addEdge({ from: f2, to: f1, kind: 'calls' });
+        graph.addEdge({ from: f1, to: table, kind: i % 2 === 0 ? 'reads' : 'writes' });
+        graph.addEdge({ from: f2, to: table, kind: 'reads' });
+      });
+      return graph;
+    }
+
+    it('data edges do not join communities', () => {
+      const graph = buildDataGraph();
+      const result = new CommunityDetector().detect(graph, pagerankFor(graph));
+      const idOf = (id: string) => result.communities.find((c) => c.symbolId === id)!.communityId;
+      const tableCommunity = idOf('db/t.sql::dbo.t::table');
+      const members = result.communities.filter((c) => c.communityId === tableCommunity);
+      expect(members).toHaveLength(1);
+      expect(idOf('a/x.ts::F1::function')).not.toBe(idOf('b/y.ts::F1::function'));
+    });
+
+    it('crossClusterEdges ignores data edges', () => {
+      const graph = buildDataGraph();
+      const result = new CommunityDetector().detect(graph, pagerankFor(graph));
+      expect(result.crossClusterEdges).toBe(0);
+    });
+
+    it('a table is never a god node', () => {
+      const graph = buildDataGraph(4);
+      const result = new CommunityDetector({ godNodeMinBridged: 1 }).detect(graph, pagerankFor(graph));
+      expect(result.godNodes.map((g) => g.symbolId)).not.toContain('db/t.sql::dbo.t::table');
+    });
   });
 });

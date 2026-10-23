@@ -118,6 +118,25 @@ describe('detectLanguages', () => {
     expect(result.byExtension.typescript).toBe(2);
   });
 
+  it('counts .sql files as sql and maps it to @ctxo/lang-sql', () => {
+    touch(tempDir, 'db/tables/Loans.sql', 'create table dbo.Loans (id int);');
+    touch(tempDir, 'db/tables/Members.sql', 'create table dbo.Members (id int);');
+    touch(tempDir, 'db/legacy/Fines.SQL', 'create table dbo.Fines (id int);');
+    commitAll(tempDir);
+    const result = detectLanguages(tempDir);
+    expect(result.byExtension.sql).toBe(3);
+    expect(result.unknownExtensions).toEqual({});
+    expect(officialPluginFor('sql')).toBe('@ctxo/lang-sql');
+  });
+
+  it('flags sql as a needed language from five committed .sql files', () => {
+    for (const name of ['Loans', 'Members', 'Fines', 'Holds', 'Branches']) {
+      touch(tempDir, `db/tables/${name}.sql`, `create table dbo.${name} (id int);`);
+    }
+    commitAll(tempDir);
+    expect(decideNeededLanguages(detectLanguages(tempDir))).toEqual(['sql']);
+  });
+
   it('reports both manifest and extension signals when both exist', () => {
     touch(tempDir, 'go.mod', 'module x');
     touch(tempDir, 'a.go', '');
@@ -168,6 +187,15 @@ describe('decideNeededLanguages', () => {
       unknownExtensions: {},
     });
     expect(needed).not.toContain('typescript');
+  });
+
+  it('needs sql when at least 5 .sql files make up at least 2% of the files', () => {
+    const extensionOnly = (count: number, totalFiles: number) =>
+      decideNeededLanguages({ byManifest: {}, byExtension: { sql: count }, totalFiles, unknownExtensions: {} });
+
+    expect(extensionOnly(5, 250)).toContain('sql');
+    expect(extensionOnly(4, 10)).not.toContain('sql');
+    expect(extensionOnly(5, 251)).not.toContain('sql');
   });
 
   it('respects custom thresholds', () => {

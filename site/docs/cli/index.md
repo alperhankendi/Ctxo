@@ -13,6 +13,7 @@ anti-pattern detection and the co-change matrix, and writes:
 - `.ctxo/index/<path>.json` - one JSON document per source file (committed).
 - `.ctxo/index/co-changes.json` - files that change together, from a window of recent commits (committed).
 - `.ctxo/index/communities.json` plus `communities.history/` - the current community snapshot and one snapshot per earlier commit (committed).
+- `.ctxo/index/contexts-view.json` - candidate bounded contexts, computed from the merged index, the co-change matrix and the community snapshot (committed). Skipped by `--skip-community`. Read it with [`ctxo contexts`](./contexts.md).
 - `.ctxo/.cache/symbols.db` - local SQLite cache (gitignored, rebuilt from JSON).
 
 Supports monorepos: if `package.json` declares `workspaces`, each workspace is
@@ -36,7 +37,7 @@ ctxo index [options]
 | `--max-history <N>` | `20` | Limit the number of commits kept per file in `intent[]`. Controls intent depth only; it does not change the co-change window |
 | `--cochange-commits <n\|all>` | `2000` | Co-change window in commits (the last N non-merge commits from HEAD), or `all`. Overrides `cochange.maxCommits` |
 | `--cochange-since <duration>` | | Also limit the co-change window by age, counted back from HEAD's committer date: `30d`, `2w`, `12m`, `1y`. Overrides `cochange.since` |
-| `--skip-community` | `false` | Skip community detection (no new snapshot for this run) |
+| `--skip-community` | `false` | Skip community detection (no new snapshot for this run) and the contexts view (`contexts-view.json` is left as it is) |
 | `--install-missing` | `false` | Before indexing, detect languages in the repo and install any missing plugins |
 
 ## Examples
@@ -91,8 +92,8 @@ plus the fresh ones), never from the touched files alone:
 - Cross-file edges resolve against the symbol registry of the committed index.
 - The SQLite cache is rebuilt from the merged index.
 - The co-change matrix is recomputed from git for the whole repository.
-- Communities, the snapshot, and the drift and boundary artifacts come from the
-  full graph.
+- Communities, the snapshot, the drift and boundary artifacts and the contexts
+  view come from the full graph.
 
 A path is indexed only if a full run would index it: a registered language
 plugin handles it, `index.ignore` and `index.ignoreProjects` do not exclude it,
@@ -156,6 +157,7 @@ or with a mismatched content hash is reported as stale.
 ## See also
 
 - [`ctxo watch`](./watch.md) — keep the index fresh during development.
+- [`ctxo contexts`](./contexts.md) - show the candidate contexts `ctxo index` computed.
 - [`ctxo status`](./status.md) — inspect the existing index.
 - [`ctxo sync`](./sync.md) — rebuild the SQLite cache without re-parsing sources.
 - [.ctxo/config.yaml](./config-yaml.md) — `index.ignore` and `index.ignoreProjects`

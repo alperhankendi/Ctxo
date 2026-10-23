@@ -379,4 +379,21 @@ describe('BoundaryViolationDetector', () => {
     const result = detector.detect(graph, current, []);
     expect(result.violations[0]!.from.label).toBe('');
   });
+
+  it('data edges never produce boundary violations', () => {
+    const graph = new SymbolGraph();
+    graph.addNode(makeNode('src/a.ts::A::function'));
+    graph.addNode(makeNode('db/t.sql::dbo.t::table'));
+    graph.addNode(makeNode('db/p.sql::dbo.p::procedure'));
+    graph.addEdge({ from: 'src/a.ts::A::function', to: 'db/t.sql::dbo.t::table', kind: 'reads' });
+    graph.addEdge({ from: 'src/a.ts::A::function', to: 'db/t.sql::dbo.t::table', kind: 'writes' });
+    graph.addEdge({ from: 'src/a.ts::A::function', to: 'db/p.sql::dbo.p::procedure', kind: 'executes' });
+    const current = snapshot([
+      { symbolId: 'src/a.ts::A::function', communityId: 0, communityLabel: 'app' },
+      { symbolId: 'db/t.sql::dbo.t::table', communityId: 1, communityLabel: 'data' },
+      { symbolId: 'db/p.sql::dbo.p::procedure', communityId: 2, communityLabel: 'procs' },
+    ]);
+    const result = new BoundaryViolationDetector().detect(graph, current, []);
+    expect(result.violations).toEqual([]);
+  });
 });

@@ -445,13 +445,16 @@ function archCommunityColor(id) {
   return p[((id % p.length) + p.length) % p.length];
 }
 
-const KIND_COLORS = { function: '#3b82f6', class: '#a855f7', interface: '#14b8a6', method: '#f97316', variable: '#6b7280', type: '#5eead4' };
+const KIND_COLORS = { function: '#3b82f6', class: '#a855f7', interface: '#14b8a6', method: '#f97316', variable: '#6b7280', type: '#5eead4', table: '#eab308', view: '#84cc16', procedure: '#ec4899' };
 const EDGE_STYLES = {
   imports: { color: '#6b7280', dash: [], width: 1.5 },
   calls:   { color: '#3b82f6', dash: [6,3], width: 1.5 },
   extends: { color: '#ef4444', dash: [], width: 2.5 },
   implements: { color: '#22c55e', dash: [3,3], width: 1.5 },
   uses:    { color: '#9ca3b8', dash: [2,2], width: 1 },
+  reads:   { color: '#14b8a6', dash: [4,2], width: 1.5 },
+  writes:  { color: '#f43f5e', dash: [], width: 2 },
+  executes: { color: '#eab308', dash: [6,2], width: 1.5 },
 };
 
 // ─── Helpers ───
@@ -1781,7 +1784,7 @@ document.getElementById('mcpConnectBtn').addEventListener('click', async () => {
     // 3. Search symbols (by kind, max 100 each)
     statusEl.textContent = '3/7 Loading symbols...';
     let totalSyms = 0;
-    for (const kind of ['class', 'function', 'method', 'interface', 'type', 'variable']) {
+    for (const kind of ['class', 'function', 'method', 'interface', 'type', 'variable', 'table', 'view', 'procedure']) {
       const data = extractJson(await mcpCall(url, 'tools/call', { name: 'search_symbols', arguments: { pattern: '.*', limit: 100, kind } }));
       (data?.results || []).forEach(s => {
         const fp = s.symbolId ? s.symbolId.split('::')[0] : (s.file || 'unknown');

@@ -21,7 +21,7 @@ not about to change a **critical** symbol. Pair with
 | Name          | Type                                                                       | Required | Description                                      |
 | ------------- | -------------------------------------------------------------------------- | -------- | ------------------------------------------------ |
 | `limit`       | number (1-200)                                                             | no       | Max rankings returned. Default `25`              |
-| `kind`        | `"function" \| "class" \| "interface" \| "method" \| "variable" \| "type"` | no       | Filter to a single symbol kind                   |
+| `kind`        | `"function" \| "class" \| "interface" \| "method" \| "variable" \| "type" \| "table" \| "view" \| "procedure"` | no       | Filter to a single symbol kind (`table`, `view` and `procedure` come from SQL plugins) |
 | `filePattern` | string                                                                     | no       | Case-insensitive substring match on file path    |
 | `damping`     | number (0-1)                                                               | no       | PageRank damping factor. Default `0.85`          |
 
@@ -73,6 +73,10 @@ Most important symbols under `packages/cli/src/core`:
 so scores remain comparable across calls. Filtering before would distort the
 ranking by removing inbound edges.
 :::
+
+- **Data edges count.** The graph includes `reads`, `writes` and `executes`, so
+  a table that many procedures and methods touch ranks high. Use
+  `kind: "table"` to rank the tables alone.
 
 - **`converged: false`** means the algorithm hit its 100-iteration cap. The ranking is still usable but less stable -- consider lowering `damping` slightly.
 - **Requires** `ctxo index`.

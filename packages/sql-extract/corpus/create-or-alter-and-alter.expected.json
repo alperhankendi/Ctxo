@@ -1,0 +1,11 @@
+{
+  "description": "CREATE OR ALTER and plain ALTER define objects, and ALTER TABLE ADD adds columns to a table defined in the same file.",
+  "mode": "file",
+  "definitions": [
+    { "kind": "table", "name": "dbo.holds", "columns": ["expiresat", "id", "loanid"] },
+    { "kind": "view", "name": "dbo.openholds" },
+    { "kind": "procedure", "name": "dbo.usp_expireholds" },
+    { "kind": "procedure", "name": "dbo.usp_touchhold" }
+  ],
+  "accesses": { "reads": ["dbo.holds", "dbo.loans"], "writes": ["dbo.holds"], "executes": [] }
+}

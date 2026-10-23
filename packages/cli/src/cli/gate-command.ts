@@ -31,7 +31,9 @@ export class GateCommand {
     const coChangeMap = new CoChangeReader(this.ctxoRoot).readCoChangeMap();
     const calc = new BlastRadiusCalculator();
     const firing: Array<{ symbolId: string; riskCount: number; importance: number }> = [];
-    for (const [symbolId, importance] of prMap) {
+    for (const symbolId of prMap.keys()) {
+      // As the hook does: a copy of a table, view or procedure has the winning definition's importance.
+      const importance = prMap.get(graph.dataResourceIdentity(symbolId)?.winner.symbolId ?? symbolId) ?? 0;
       if (importance < cutoff) continue;
       const blast = calc.calculate(graph, symbolId, coChangeMap);
       const riskCount = blast.confirmedCount + blast.likelyCount;

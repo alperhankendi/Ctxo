@@ -42,6 +42,10 @@ Onboarding a new codebase?
   -> get_architectural_overlay (layer map)
   -> get_symbol_importance     (most critical symbols)
 
+Preparing a context map?
+  -> get_architectural_overlay(mode: "contexts")   (candidate bounded contexts)
+  -> then candidate: <id> for one candidate in full
+
 Cleaning up code?
   -> find_dead_code          (unused symbols / files)
   -> get_change_intelligence (complexity x churn hotspots)
@@ -82,6 +86,7 @@ Start with [`get_pr_impact`](/mcp-tools/get-pr-impact) — it combines changed-s
 - Don't know the name? Use [`get_ranked_context`](/mcp-tools/get-ranked-context) with a natural language query.
 - Know the pattern? Use [`search_symbols`](/mcp-tools/search-symbols) with a name or regex.
 - Need the big picture? [`get_architectural_overlay`](/mcp-tools/get-architectural-overlay) + [`get_symbol_importance`](/mcp-tools/get-symbol-importance).
+- Preparing a context map? [`get_architectural_overlay`](/mcp-tools/get-architectural-overlay) with `mode: "contexts"`, then `candidate: <id>` for one candidate in full.
 
 ### Checking safety before a delete or rename
 

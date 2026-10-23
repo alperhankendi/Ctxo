@@ -18,6 +18,8 @@ export const IndexConfigSchema = z
   .object({
     ignore: z.array(z.string().min(1)).optional(),
     ignoreProjects: z.array(z.string().min(1)).optional(),
+    facts: z.boolean().optional(),
+    tests: z.array(z.string().min(1)).optional(),
   })
   .strict();
 
@@ -87,6 +89,52 @@ export const CoChangeConfigSchema = z
   })
   .strict();
 
+export const CommunitiesConfigSchema = z
+  .object({
+    /** Louvain resolution: higher gives more, smaller communities. Default: 1.0. */
+    resolution: z.number().positive().optional(),
+    /** Minimum number of communities a symbol must bridge to count as a god node. Default: 3. */
+    godNodeMinBridged: z.number().int().min(1).optional(),
+    /** Maximum number of god nodes reported. Default: 25. */
+    godNodeMaxResults: z.number().int().min(0).optional(),
+  })
+  .strict();
+
+export const ContextsViewConfigSchema = z
+  .object({
+    /** Blend of the file-edge signals. Defaults: dependency 1.0, coChange 1.0, data 0 (shared tables are a finding, not a clustering weight). */
+    weights: z
+      .object({
+        dependency: z.number().min(0).optional(),
+        coChange: z.number().min(0).optional(),
+        data: z.number().min(0).optional(),
+      })
+      .strict()
+      .optional(),
+    /** Files to leave out of the file graph (globs). */
+    exclude: z.array(z.string().min(1)).optional(),
+    hubs: z
+      .object({
+        /** Detect hubs automatically (fan-in and god nodes). Default: true. */
+        auto: z.boolean().optional(),
+        /** A file is a fan-in hub when it is in the top `topPercent`% by dependents. Default: 1. */
+        topPercent: z.number().positive().max(100).optional(),
+        /** Minimum distinct dependent files for a fan-in hub. Default: 10. */
+        minDependents: z.number().int().min(1).optional(),
+        /** Files that lose all their edges (globs). */
+        paths: z.array(z.string().min(1)).optional(),
+      })
+      .strict()
+      .optional(),
+    /** Louvain resolution for the file graph. Default: 1.0. */
+    resolution: z.number().positive().optional(),
+    /** Candidates with fewer files fold into a neighbour. Default: 3. */
+    minCandidateFiles: z.number().int().min(1).optional(),
+    /** Words dropped from candidate terms; replaces the default list. */
+    technicalTerms: z.array(z.string().min(1)).optional(),
+  })
+  .strict();
+
 export const CtxoConfigSchema = z
   .object({
     version: z.union([z.string(), z.number()]).optional(),
@@ -96,6 +144,8 @@ export const CtxoConfigSchema = z
     watch: WatchConfigSchema.optional(),
     gate: GateConfigSchema.optional(),
     cochange: CoChangeConfigSchema.optional(),
+    communities: CommunitiesConfigSchema.optional(),
+    contextsView: ContextsViewConfigSchema.optional(),
   })
   .passthrough();
 
@@ -105,12 +155,24 @@ export type MaskingConfig = z.infer<typeof MaskingConfigSchema>;
 export type WatchConfig = z.infer<typeof WatchConfigSchema>;
 export type GateConfig = z.infer<typeof GateConfigSchema>;
 export type CoChangeConfig = z.infer<typeof CoChangeConfigSchema>;
+export type CommunitiesConfig = z.infer<typeof CommunitiesConfigSchema>;
+export type ContextsViewConfig = z.infer<typeof ContextsViewConfigSchema>;
 export type CtxoConfig = z.infer<typeof CtxoConfigSchema>;
 
 export const DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES = 5;
 export const DEFAULT_COCHANGE_MAX_COMMITS = 2000;
 export const DEFAULT_COCHANGE_MAX_FILES_PER_COMMIT = 30;
 export const DEFAULT_COCHANGE_MIN_SHARED = 2;
+export const DEFAULT_TECHNICAL_TERMS: readonly string[] = [
+  'Service',
+  'Repository',
+  'Controller',
+  'Handler',
+  'Manager',
+  'Dto',
+  'Impl',
+  'Async',
+];
 
 export const DEFAULT_CONFIG: CtxoConfig = {
   version: '1.0',

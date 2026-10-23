@@ -76,6 +76,13 @@ describe('ConfigFileCheck', () => {
     expect(result.fix).toContain('cochange.exclude');
   });
 
+  it('fails and names the key for a typo under contextsView.hubs', async () => {
+    writeFileSync(join(ctxoRoot, 'config.yaml'), 'contextsView:\n  hubs:\n    minDependent: 5\n');
+    const result = await check.run(ctx);
+    expect(result.status).toBe('fail');
+    expect(result.message).toContain('contextsView.hubs');
+  });
+
   it('returns pass with unknown keys (no schema validation)', async () => {
     writeFileSync(join(ctxoRoot, 'config.yaml'), 'unknown_key: value\nfoo: bar\n');
     const result = await check.run(ctx);

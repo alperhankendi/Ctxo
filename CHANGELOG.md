@@ -74,6 +74,68 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo with five packages. Per-packag
 - `distinctCommits` on `driftSignals`, `boundaryViolations` and their committed artifacts (#157).
 - `ctxo <command> --help` and `-h` print the help for every subcommand without running it (#157).
 - ADR-016: co-change engine, incremental indexing and snapshot policy.
+- **Contexts view (#156 Phase 1).** `ctxo index` writes `.ctxo/index/contexts-view.json`: candidate
+  bounded contexts from file-level Louvain over a blend of dependency and co-change edges, with hub
+  files damped. Each candidate has a suggested label, fingerprint, cohesion, top terms,
+  cross-candidate edges and co-change pairs; type names whose shapes differ between candidates are
+  listed as collisions. The view is recomputed on every index run that re-indexes files (and on every post-commit
+  hook run), skipped by `--skip-community`, and not refreshed by `ctxo watch`.
+- `get_architectural_overlay` gains `mode: "contexts"` (summary of every candidate, with hubs and
+  collisions capped at 50) and a `candidate: <id>` argument that returns one candidate in full.
+  `candidates` joins the truncatable fields of the response envelope.
+- `ctxo contexts` prints the candidates as a table (stderr); `ctxo contexts --json` prints the full
+  `contexts-view.json` (stdout).
+- Config: `communities:` (`resolution`, `godNodeMinBridged`, `godNodeMaxResults`), `contextsView:`
+  (`weights`, `exclude`, `hubs`, `resolution`, `minCandidateFiles`, `technicalTerms`) and
+  `index.tests` (extra test-file globs). One shared test-file classifier with default globs for
+  TypeScript, Go, C#, Java and Python now backs the contexts view.
+- ADR-016 addendum: contexts view defaults and their evidence.
+- **Plugin protocol v2 (#156 Phase 1).** `@ctxo/plugin-api` adds the symbol kinds `table`, `view` and
+  `procedure`, the edge kinds `reads`, `writes` and `executes`, and `DATA_RESOURCE_KINDS`; typed symbol
+  `annotations` (`SymbolAnnotation`: `name`, `args`, `named`); the facts protocol (`FACT_KINDS`,
+  `CodeFact`, an optional `extractFacts`), called only on request; host capabilities
+  (`PluginCapabilities` with `facts` and `sqlCallSites`, on `PluginContext.capabilities`); and
+  `SUPPORTED_API_VERSIONS = ['1', '2']`. The CLI loads plugins that declare either version. Annotations
+  and facts live in the JSON index only.
+- **`@ctxo/sql-extract`**: a zero-dependency T-SQL tokenizer with access and definition recognizers
+  (`extractSqlAccesses`, `extractSqlDefinitions`), shared by the SQL plugin and, later, by other
+  language hosts. A conformance corpus in `packages/sql-extract/corpus` keeps it in agreement with the
+  C# side.
+- **`@ctxo/lang-sql`**: a protocol v2 plugin for `.sql` files (T-SQL). Tables, views, procedures and
+  functions become symbols (tables carry a `columns` annotation), and their bodies give `reads`,
+  `writes` and `executes` edges to canonical `schema.name` targets (default schema `dbo`).
+  `ctxo install sql` (alias `tsql`) installs it, and language detection, `ctxo doctor` and
+  `ctxo index --install-missing` suggest it when the repository has at least 5 `.sql` files that are
+  also at least 2% of its files.
+- C# attribute annotations: `@ctxo/lang-csharp` reports the attributes written on each symbol in both
+  the Roslyn and the tree-sitter tier (20 per symbol, 10 positional entries and 10 named entries plus
+  the reserved `type`, 200 characters per value; a source argument named `type` is dropped in both
+  tiers). The Roslyn tier keeps constant arguments, including strings, enum constants, `typeof(T)`
+  and arrays; the tree-sitter tier keeps literal arguments only (strings, numbers, booleans).
+- SQL edges at C# call sites: with `@ctxo/lang-sql` installed, the Roslyn helper parses constant SQL at
+  known ADO.NET (`SqlCommand`, `CommandText`, `CommandType.StoredProcedure`), Dapper, `SqlBulkCopy` and
+  EF Core raw SQL call sites with ScriptDom and adds `reads`, `writes` and `executes` edges from the
+  calling method. Only compile-time constants count.
+- Dapper `CommandDefinition` is a known call site: its constructor's `commandText` is parsed, and a
+  `commandType` argument of `CommandType.StoredProcedure` (named or positional) makes it a procedure
+  name (#156).
+- Contexts view: `dataResources` (every table or view a candidate reads or writes, with access modes,
+  writers, the owning candidate and an `external` flag) and `sharedTables` per candidate (resources of
+  two or more candidates). `get_architectural_overlay` `mode: "contexts"` gives counts in the summary
+  (`sharedTableCount`, `dataResourcesTotal`, `sharedResourcesTotal`, `externalResourcesTotal`) and up to
+  15 `sharedTables` and 15 `dataResources` in the `candidate: <id>` detail, fewer when the response
+  limit requires; `ctxo contexts` lists the shared tables and `ctxo index` prints their count.
+- Config: `index.facts` (request code facts) and `contextsView.weights.data` (default 0: shared tables
+  are a finding, not a clustering weight).
+- `csharp_tier` doctor check: reports the C# tier and warns when the Roslyn helper cannot restore its
+  NuGet packages, with the first error line and a fix hint.
+- Test files are recognised by test-framework annotations (`Fact`, `Theory`, `SkippableFact`,
+  `SkippableTheory`, `Test`, `TestCase`, `TestCaseSource`, `TestFixture`, `TestMethod`,
+  `DataTestMethod`, `TestClass`). An annotated file is a test file whatever its path; once C#
+  annotations exist in the index, a file matched only by `**/*Test.cs` or `**/*Tests.cs` needs a test
+  annotation to count as a test.
+- ADR-017: plugin protocol v2, data coupling and facts, and the `@ctxo/sql-extract` dependency
+  exception. Feature doc: `docs/features/domain-knowledge.md`.
 
 ### Changed
 
@@ -98,6 +160,42 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo with five packages. Per-packag
   `STALE` until the next `ctxo index` after upgrading (#157).
 - `ctxo index --max-history` controls per-file intent depth only; the co-change window has its own
   settings (#157).
+- `reads`, `writes` and `executes` are `confirmed` blast-radius tiers, so the safe-edit gate also
+  guards heavily used tables and procedures (#156).
+- C# users see a one-time change in their committed index JSON on the first re-index after upgrading:
+  annotations are always on (#156).
+- **Run a full `ctxo index` after upgrading `@ctxo/lang-csharp`.** An incremental run (`--files`,
+  `--commit`, and so the post-commit hook) annotates only the files it re-indexes, but the contexts
+  view already counts the index as annotated: until a full run, name-only `*Test.cs` / `*Tests.cs`
+  matches that were not re-indexed show up as production files. A bare capital `Tests/` or `Test/`
+  folder is not a default test glob (`**/tests/**` is case-sensitive); add it to `index.tests` (#156).
+- When several files define the same table, view or procedure, data references resolve to a
+  definition outside test files (default test globs), then outside `docs`, `doc` and
+  `documentation` folders, then to the codepoint-smallest symbol ID. `index.tests` is not consulted;
+  `index.ignore` can drop docs or test copies (#156).
+- Contexts view: a stored procedure's reads and writes count for the candidates that execute it,
+  decided by its canonical name, and no longer for the candidate that holds the script. A procedure
+  that no candidate executes still credits its own candidate. When several files define it, the
+  bodies of every production copy count (the winner's alone when no copy is production), and docs
+  and test copies of a procedure that has a production copy add nothing (#156).
+- `get_logic_slice` returns symbol `annotations` at `L4` only; `L1` to `L3` and `get_context_for_task`
+  leave them out, so attribute arguments and column lists no longer crowd out dependencies (#156).
+- Data edges stay out of symbol-level communities, god nodes, cross-cluster counts and boundary
+  violations; data coupling is reported by the contexts view (#156).
+- Symbols in `.sql` files are never reported as dead code (#156).
+- UTF-16 source files with a byte order mark (as SSMS saves SQL scripts) are decoded by `ctxo index`,
+  `--check` and `ctxo watch`. Their content hash changes once, so `ctxo index --check` reports them
+  stale until the next `ctxo index`; UTF-8 files are unchanged (#156).
+- The Roslyn helper now restores `Microsoft.SqlServer.TransactSql.ScriptDom` from NuGet for every C#
+  user. When the restore or build fails (for example a private or offline feed without the package),
+  `@ctxo/lang-csharp` falls back to the tree-sitter tier: symbols and attribute annotations (literal
+  arguments only) are kept, Roslyn-tier details and SQL call-site edges are lost, `ctxo index`
+  reports the syntax tier and `ctxo doctor` warns (#156).
+- The Roslyn helper declares `RollForward` `Major`, so it can roll forward to a newer major .NET
+  runtime when no .NET 8 runtime is installed. The built helper has been run with
+  `dotnet exec --fx-version` on .NET 8, 9 and 10 (#156).
+- The MCP descriptions of `get_blast_radius` (tiers by edge kind, every symbol kind), `find_dead_code`
+  (`.sql` symbols) and `get_architectural_overlay` (data lists) match what the tools do (#156).
 
 ### Fixed
 
@@ -121,6 +219,44 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo with five packages. Per-packag
   the post-commit hook (`ctxo index --commit HEAD`) never returned and `git commit` hung. The
   variable now applies only when `ctxo` runs without arguments; `ctxo --http` without `--port`
   now listens on its default port 3001 instead of failing on an invalid port (#157).
+- `get_architectural_overlay` `mode`, `get_ranked_context` `searchMode` and `search_symbols` `mode`
+  were accepted by the handlers but missing from the registered tool schemas, so MCP clients could
+  never send them. They are registered now, and a test compares both schemas (#156).
+- God nodes with equal scores are ordered by code point, not by the machine's locale (#156).
+- A C# repository with a lone `.csproj` and no solution file now indexes in the Roslyn tier: the
+  helper opened the project as a solution and found no symbols (#156).
+- A failed Roslyn helper restore or build no longer leaves every C# file with zero symbols; the plugin
+  falls back to tree-sitter (#156).
+- `ctxo watch` no longer hangs when the Roslyn helper exits before it is ready (#156).
+- A huge `.sql` file (a data dump or seed script) no longer crashes `ctxo index` or the post-commit
+  hook by exhausting memory: `@ctxo/lang-sql` skips `.sql` files larger than 5 MiB, with one warning
+  per file (`skipped <file>: <n> MiB is over the 5 MiB SQL size limit`) and no symbols or edges for
+  it (#156).
+- `ctxo watch` no longer writes a C# file with zero symbols after the Roslyn keep-alive shut down for
+  inactivity or crashed: the next re-index restarts it once, and falls back to tree-sitter if the
+  restart fails (#156).
+- The impact tools agree for every copy of a table, view or procedure that several files define, and
+  for its 2-part ID (`dbo.loans::table`): `get_blast_radius`, `find_importers` (direct and
+  transitive), `get_pr_impact`, `get_context_for_task`, the safe-edit gate and `ctxo blast-radius`
+  report the dependents of the winning definition. A non-winning copy, such as a
+  `CREATE OR ALTER PROCEDURE` in a new migration, used to report zero dependents, and a 2-part ID
+  found the symbol but no dependents or importers. `get_logic_slice` now walks a 2-part procedure's
+  dependencies (each copy's full ID keeps its own body), and `get_why_context` reads the winner's
+  file for a 2-part ID (#156).
+
+### Compatibility
+
+- Older CLIs skip `@ctxo/lang-sql` (protocol v2) with a warning, and drop the new symbol and edge kinds
+  with a warning when they read an index written by this version. `@ctxo/lang-sql` needs a CLI that
+  accepts protocol v2.
+- The official plugins accept `@ctxo/plugin-api` `^0.7.3 || ^0.8.0 || ^0.9.0` as a peer;
+  `@ctxo/lang-sql` accepts `^0.8.0 || ^0.9.0`. Existing plugins stay on protocol v1, so upgrading one
+  never breaks an older CLI.
+
+### Removed
+
+- The unused `fuzzy` parameter of `get_ranked_context`. Typo correction stays automatic in `fts`
+  mode and is reported in `fuzzyCorrection`; a client that still sends `fuzzy` gets a normal answer (#156).
 
 ## [0.8.0-alpha.0] - 2026-04-13
 

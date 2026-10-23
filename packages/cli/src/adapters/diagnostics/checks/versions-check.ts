@@ -28,7 +28,7 @@ export class VersionsCheck implements IHealthCheck {
         title: this.title,
         status: 'warn',
         message,
-        fix: `Upgrade or replace plugins with apiVersion != ${info.pluginApiVersion}: ${incompatible.map((p) => p.name).join(', ')}`,
+        fix: `Upgrade or replace plugins whose apiVersion is not one of ${info.pluginApiVersions.join(', ')}: ${incompatible.map((p) => p.name).join(', ')}`,
         value: formatVerbose(info),
       };
     }
@@ -53,5 +53,5 @@ async function collectInfo(ctx: CheckContext): Promise<VersionInfo> {
 function buildSummary(info: VersionInfo): string {
   const pluginCount = info.plugins.length;
   const pluginLabel = pluginCount === 0 ? 'no plugins' : `${pluginCount} plugin${pluginCount === 1 ? '' : 's'}`;
-  return `ctxo ${info.ctxo} (API ${info.pluginApiVersion}) — ${pluginLabel}, Node ${info.runtime.node}`;
+  return `ctxo ${info.ctxo} (API ${info.pluginApiVersions.join(', ')}) - ${pluginLabel}, Node ${info.runtime.node}`;
 }

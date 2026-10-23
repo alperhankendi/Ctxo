@@ -1,0 +1,5 @@
+{
+  "description": "DELETE without FROM writes its two-part target, in the dbo schema or another one, and reads nothing.",
+  "mode": "statement",
+  "accesses": { "reads": [], "writes": ["dbo.holds", "lending.reservations"], "executes": [] }
+}

@@ -339,4 +339,35 @@ describe('DeadCodeDetector', () => {
 
     expect(result.scaffolding).toEqual([]);
   });
+
+  it('symbols of .sql files are never reported as dead and are not counted', () => {
+    const graph = new SymbolGraph();
+    graph.addNode(makeNode('db/t.sql::dbo.t::table'));
+    graph.addNode(makeNode('db/p.SQL::dbo.p::procedure'));
+    const result = detector.detect(graph);
+    expect(result.deadSymbols.map((d) => d.symbolId)).toEqual([]);
+    expect(result.totalSymbols).toBe(0);
+  });
+
+  it('a method whose only outgoing edges are data edges is an entry point like any method with outgoing edges', () => {
+    const graph = new SymbolGraph();
+    graph.addNode(makeNode('db/loans.sql::dbo.loans::table'));
+    graph.addNode(makeNode('db/close.sql::dbo.usp_close::procedure'));
+    const reader = 'src/LoanReport.cs::Lending.LoanReport.Run::method';
+    const writer = 'src/AuditLog.cs::Lending.AuditLog.Append::method';
+    const executor = 'src/LoanService.cs::Lending.LoanService.Close::method';
+    const caller = 'src/Desk.cs::Lending.Desk.Checkout::method';
+    const helper = 'src/Desk.cs::Lending.Desk.Stamp::method';
+    for (const id of [reader, writer, executor, caller, helper]) graph.addNode(makeNode(id));
+    graph.addEdge({ from: reader, to: 'dbo.loans::table', kind: 'reads' });
+    // No .sql file defines dbo.audit: the edge stays unresolved and still counts.
+    graph.addEdge({ from: writer, to: 'dbo.audit::table', kind: 'writes' });
+    graph.addEdge({ from: executor, to: 'dbo.usp_close::procedure', kind: 'executes' });
+    graph.addEdge({ from: caller, to: helper, kind: 'calls' });
+
+    const result = detector.detect(graph);
+
+    expect(result.deadSymbols).toEqual([]);
+    expect(result.unusedExports.map((u) => u.symbolId).sort()).toEqual([caller, writer, reader, executor].sort());
+  });
 });

@@ -1,3 +1,4 @@
+import type { CodeFact } from './facts.js';
 import type { SymbolNode, GraphEdge, ComplexityMetrics, SymbolKind } from './types.js';
 
 /**
@@ -9,11 +10,22 @@ export interface ILanguageAdapter {
   /** Extract symbol nodes from a single source file. */
   extractSymbols(filePath: string, source: string): Promise<SymbolNode[]>;
 
-  /** Extract graph edges (imports/calls/extends/implements/uses) from a file. */
+  /**
+   * Extract graph edges from a file. Each edge kind is one of `EDGE_KINDS`:
+   * the code kinds (imports, calls, extends, implements, uses) and the data
+   * kinds (reads, writes, executes).
+   */
   extractEdges(filePath: string, source: string): Promise<GraphEdge[]>;
 
   /** Compute per-symbol cyclomatic complexity for a file. */
   extractComplexity(filePath: string, source: string): Promise<ComplexityMetrics[]>;
+
+  /**
+   * Extract code facts from a file (protocol v2). Called only when facts are
+   * requested (`PluginCapabilities.facts`). See `CodeFact` for the line and
+   * text rules.
+   */
+  extractFacts?(filePath: string, source: string): Promise<CodeFact[]>;
 
   /**
    * True if this adapter should handle the given file path. Implementations

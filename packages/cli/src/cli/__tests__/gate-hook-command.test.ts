@@ -84,6 +84,61 @@ describe('GateHookCommand.evaluate', () => {
   });
 });
 
+describe('GateHookCommand.evaluate on a UTF-16 source', () => {
+  it('locates the edited line in a UTF-16 file with a BOM, as the index reads it', () => {
+    const root = fixture();
+    const text = 'export function A() {\n  return 1;\n}\n';
+    for (const [bom, body] of [
+      [[0xff, 0xfe], Buffer.from(text, 'utf16le')],
+      [[0xfe, 0xff], Buffer.from(text, 'utf16le').swap16()],
+    ] as const) {
+      writeFileSync(join(root, 'src', 'a.ts'), Buffer.concat([Buffer.from(bom), body]));
+      const res = new GateHookCommand(root).evaluate({
+        session_id: `utf16-${bom[0]}`,
+        transcript_path: join(root, 'none.jsonl'),
+        tool_name: 'Edit',
+        tool_input: { file_path: join(root, 'src', 'a.ts'), old_string: 'return 1;', new_string: 'return 2;' },
+      });
+      expect(res.block).toBe(true);
+    }
+    rmSync(root, { recursive: true, force: true });
+  });
+});
+
+describe('GateHookCommand.evaluate on SQL definitions', () => {
+  it('guards an edit to a new migration copy of a procedure that three methods execute', () => {
+    const root = mkdtempSync(join(tmpdir(), 'ctxo-gh-sql-'));
+    const index = join(root, '.ctxo', 'index');
+    const write = (file: string, symbols: unknown[], edges: unknown[] = []) => {
+      mkdirSync(join(index, file, '..'), { recursive: true });
+      writeFileSync(join(index, `${file}.json`), JSON.stringify({ file, lastModified: 0, symbols, edges, intent: [], antiPatterns: [] }));
+    };
+    const procedure = (file: string) => ({ symbolId: `${file}::dbo.usp_close::procedure`, name: 'dbo.usp_close', kind: 'procedure', startLine: 0, endLine: 3 });
+    write('db/migrations/V1__init.sql', [procedure('db/migrations/V1__init.sql')]);
+    write('db/migrations/V7__close_fix.sql', [procedure('db/migrations/V7__close_fix.sql')]);
+    for (const name of ['Close', 'Renew', 'Waive']) {
+      const symbolId = `src/Loan${name}.cs::Lending.Loan${name}.Run::method`;
+      write(`src/Loan${name}.cs`, [{ symbolId, name: `Lending.Loan${name}.Run`, kind: 'method', startLine: 0, endLine: 3 }], [
+        { from: symbolId, to: 'dbo.usp_close::procedure', kind: 'executes' },
+      ]);
+    }
+    mkdirSync(join(root, 'db', 'migrations'), { recursive: true });
+    const script = join(root, 'db', 'migrations', 'V7__close_fix.sql');
+    writeFileSync(script, 'CREATE OR ALTER PROCEDURE dbo.usp_close AS\nBEGIN\n  UPDATE dbo.loans SET closed = 1;\nEND\n');
+
+    const res = new GateHookCommand(root).evaluate({
+      session_id: 's1',
+      transcript_path: join(root, 'none.jsonl'),
+      tool_name: 'Edit',
+      tool_input: { file_path: script, old_string: 'SET closed = 1', new_string: 'SET closed = 2' },
+    });
+    rmSync(root, { recursive: true, force: true });
+
+    expect(res.block).toBe(true);
+    expect(res.reason).toContain('3 confirmed/likely');
+  });
+});
+
 describe('GateHookCommand.evaluate with co-change', () => {
   /** A is called by B and C (2 confirmed) and only imported by D (potential): one short of minDependents (3). */
   const BORDERLINE = { B: 'calls', C: 'calls', D: 'imports' };

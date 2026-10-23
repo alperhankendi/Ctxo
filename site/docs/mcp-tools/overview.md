@@ -31,7 +31,7 @@ See [the mandatory sequence](/mcp-tools/tool-selection-guide#modifying-existing-
 
 | Tool | Purpose |
 | --- | --- |
-| [`get_architectural_overlay`](/mcp-tools/get-architectural-overlay) | Regex layers (Domain / Adapter / Ports / ...) + v0.8 data-driven community clusters with god nodes |
+| [`get_architectural_overlay`](/mcp-tools/get-architectural-overlay) | Regex layers (Domain / Adapter / Ports / ...), data-driven community clusters with god nodes, and candidate bounded contexts (`mode: "contexts"`) |
 | [`find_importers`](/mcp-tools/find-importers) | Reverse dependency lookup — who uses this symbol? |
 | [`get_class_hierarchy`](/mcp-tools/get-class-hierarchy) | Class inheritance tree (ancestors + descendants) |
 | [`get_symbol_importance`](/mcp-tools/get-symbol-importance) | PageRank centrality ranking of symbols |

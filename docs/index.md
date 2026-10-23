@@ -28,6 +28,8 @@
 - **[features/architectural-intelligence.md](./features/architectural-intelligence.md)** — v0.8 community detection, drift, boundary violations, cluster-scoped blast radius
 - **[architecture/ADR/adr-015-safe-edit-guard.md](./architecture/ADR/adr-015-safe-edit-guard.md)** — ADR-015: safe-edit guard design (PreToolUse hook, skills, layered defense)
 - **[architecture/ADR/adr-016-co-change-engine-and-snapshot-policy.md](./architecture/ADR/adr-016-co-change-engine-and-snapshot-policy.md)** - ADR-016: co-change engine, incremental indexing (`--commit` hook), one snapshot per commit
+- **[features/domain-knowledge.md](./features/domain-knowledge.md)** - domain knowledge layer, phase 1 (#156): data coupling, plugin protocol v2 (data kinds, annotations, facts, capabilities), `@ctxo/lang-sql`, SQL at C# call sites, annotation-based test detection
+- **[architecture/ADR/adr-017-plugin-protocol-v2-and-data-coupling.md](./architecture/ADR/adr-017-plugin-protocol-v2-and-data-coupling.md)** - ADR-017: plugin protocol v2, data coupling and facts, the `@ctxo/sql-extract` dependency exception
 
 ## Product & ecosystem
 

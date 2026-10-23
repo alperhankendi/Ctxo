@@ -1,8 +1,10 @@
-import { SUPPORTED_API_VERSION } from '@ctxo/plugin-api';
+import { SUPPORTED_API_VERSIONS } from '@ctxo/plugin-api';
 import type { CtxoLanguagePlugin } from '@ctxo/plugin-api';
 import { getVersion } from './cli-router.js';
 import { discoverPlugins, type DiscoveredPlugin } from '../adapters/language/plugin-discovery.js';
 import { loadManifestPath } from './plugin-loader.js';
+
+const NEWEST_API_VERSION: string = SUPPORTED_API_VERSIONS[SUPPORTED_API_VERSIONS.length - 1]!;
 
 export interface PluginVersionInfo {
   /** npm package name, e.g. "@ctxo/lang-typescript" or community "ctxo-lang-kotlin" */
@@ -13,7 +15,7 @@ export interface PluginVersionInfo {
   version: string;
   /** Plugin protocol version declared by the plugin */
   apiVersion: string;
-  /** True when apiVersion matches the core's SUPPORTED_API_VERSION */
+  /** True when apiVersion is one of the core's SUPPORTED_API_VERSIONS */
   compatible: boolean;
 }
 
@@ -25,7 +27,10 @@ export interface RuntimeInfo {
 
 export interface VersionInfo {
   ctxo: string;
+  /** The newest protocol version the core supports. */
   pluginApiVersion: string;
+  /** Every protocol version the core loads. */
+  pluginApiVersions: readonly string[];
   plugins: PluginVersionInfo[];
   runtime: RuntimeInfo;
 }
@@ -40,12 +45,13 @@ export function gatherVersionInfo(discovered: readonly DiscoveredPlugin[]): Vers
     id: plugin.id,
     version: plugin.version,
     apiVersion: plugin.apiVersion,
-    compatible: plugin.apiVersion === SUPPORTED_API_VERSION,
+    compatible: (SUPPORTED_API_VERSIONS as readonly string[]).includes(plugin.apiVersion),
   }));
 
   return {
     ctxo: getVersion(),
-    pluginApiVersion: SUPPORTED_API_VERSION,
+    pluginApiVersion: NEWEST_API_VERSION,
+    pluginApiVersions: SUPPORTED_API_VERSIONS,
     plugins,
     runtime: {
       node: process.version,
@@ -62,7 +68,7 @@ export function formatShort(info: VersionInfo): string {
 export function formatVerbose(info: VersionInfo): string {
   const lines: string[] = [];
   lines.push(`ctxo ${info.ctxo}`);
-  lines.push(`Plugin API: ${info.pluginApiVersion}`);
+  lines.push(`Plugin API: ${info.pluginApiVersions.join(', ')}`);
   lines.push(`Runtime:    Node ${info.runtime.node} on ${info.runtime.platform}/${info.runtime.arch}`);
   lines.push('');
   if (info.plugins.length === 0) {
@@ -81,7 +87,7 @@ export function formatVerbose(info: VersionInfo): string {
     `  ${'NAME'.padEnd(nameCol)}  ${'VERSION'.padEnd(verCol)}  ${'API'.padEnd(apiCol)}  STATUS`,
   );
   for (const p of info.plugins) {
-    const status = p.compatible ? 'OK' : `incompatible (core wants ${info.pluginApiVersion})`;
+    const status = p.compatible ? 'OK' : `incompatible (core supports ${info.pluginApiVersions.join(', ')})`;
     lines.push(
       `  ${p.name.padEnd(nameCol)}  ${p.version.padEnd(verCol)}  ${p.apiVersion.padEnd(apiCol)}  ${status}`,
     );

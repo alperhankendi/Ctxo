@@ -5,8 +5,12 @@ import type { StalenessCheck } from './get-logic-slice.js';
 import { getGraphAndFiles } from './get-logic-slice.js';
 import type { SymbolGraph } from '../../core/graph/symbol-graph.js';
 import { wrapResponse } from '../../core/response-envelope.js';
+import type { EdgeKind } from '../../core/types.js';
 
-const InputSchema = z.object({
+/** The edge kinds that make up a class hierarchy. Data access edges (reads, writes, executes) never do. */
+export const HIERARCHY_EDGE_KINDS: ReadonlySet<EdgeKind> = new Set<EdgeKind>(['extends', 'implements']);
+
+export const InputSchema = z.object({
   symbolId: z.string().min(1).optional(),
   direction: z.enum(['ancestors', 'descendants', 'both']).optional().default('both'),
 });
@@ -61,7 +65,7 @@ export function handleGetClassHierarchy(
     const ancestors: HierarchyEntry[] = [];
     const descendants: HierarchyEntry[] = [];
 
-    const isHierarchyEdge = (kind: string) => kind === 'extends' || kind === 'implements';
+    const isHierarchyEdge = (kind: string) => HIERARCHY_EDGE_KINDS.has(kind as EdgeKind);
 
     // Ancestors: follow forward edges (this symbol extends/implements X)
     if (direction === 'ancestors' || direction === 'both') {
@@ -142,7 +146,7 @@ export function handleGetClassHierarchy(
     stalenessCheck: StalenessCheck | undefined,
     indexedFiles: string[],
   ) {
-    const isHierarchyEdge = (kind: string) => kind === 'extends' || kind === 'implements';
+    const isHierarchyEdge = (kind: string) => HIERARCHY_EDGE_KINDS.has(kind as EdgeKind);
     const hierarchyEdges = graph.allEdges().filter((e) => isHierarchyEdge(e.kind));
 
     // Collect all nodes involved in hierarchy edges

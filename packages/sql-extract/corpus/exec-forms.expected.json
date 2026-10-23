@@ -1,0 +1,5 @@
+{
+  "description": "EXEC and EXECUTE of a procedure name execute it, also after @rc =, while EXEC of a string, EXEC of a variable and EXECUTE AS do not.",
+  "mode": "statement",
+  "accesses": { "reads": [], "writes": [], "executes": ["dbo.usp_audit", "dbo.usp_closeloan", "dbo.usp_notify"] }
+}

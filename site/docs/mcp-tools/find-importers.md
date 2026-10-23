@@ -19,8 +19,8 @@ picture (including co-change coupling that has no static edge), escalate to
 
 | Name         | Type                                                                         | Required | Description                                                     |
 | ------------ | ---------------------------------------------------------------------------- | -------- | --------------------------------------------------------------- |
-| `symbolId`   | string                                                                       | yes      | Fully-qualified symbol id                                       |
-| `edgeKinds`  | `("imports" \| "calls" \| "extends" \| "implements" \| "uses")[]`            | no       | Restrict to specific edge kinds (default: all)                  |
+| `symbolId`   | string                                                                       | yes      | Fully-qualified symbol id, or the 2-part id of a table, view or procedure (`dbo.loans::table`) |
+| `edgeKinds`  | `("imports" \| "calls" \| "extends" \| "implements" \| "uses" \| "reads" \| "writes" \| "executes")[]` | no       | Restrict to specific edge kinds (default: all). `reads`, `writes` and `executes` are data access |
 | `transitive` | boolean                                                                      | no       | Walk the graph recursively. Default `false`                     |
 | `maxDepth`   | number (1-10)                                                                | no       | BFS depth when `transitive: true`. Default `5`                  |
 | `intent`     | string                                                                       | no       | Keyword filter on results (e.g. `"test"`, `"adapter"`)          |
@@ -82,6 +82,7 @@ hop appears once with a single `edgeKind` and a `depth` counter.
 
 - **Rename / delete safety check** -- zero importers? Safe. Many? Use [`get_blast_radius`](/mcp-tools/get-blast-radius) for the risk score.
 - **Interface consumer map** -- `edgeKinds: ["implements"]` lists every concrete adapter.
+- **Who writes this table?** -- on a SQL table such as `db/lending.sql::dbo.loans::table`, or its 2-part id `dbo.loans::table` (the name the contexts view gives a shared table), `edgeKinds: ["writes"]` lists every procedure and C# method that writes it (with [`@ctxo/lang-sql`](/languages/sql) installed). Direct and transitive lookups give the same importers for every copy of a table or procedure defined in several files, because every data edge points at one winning definition; see [several definitions](/languages/sql#several-definitions-of-one-object).
 - **Impact narrowing** -- `intent: "test"` to see only test callers, or `intent: "adapter"` for adapters.
 
 ## Pitfalls

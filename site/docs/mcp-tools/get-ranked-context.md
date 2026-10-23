@@ -7,7 +7,7 @@ description: "Natural-language search ranked by BM25 relevance and PageRank impo
 
 Ask a natural-language question, get back the most relevant symbols in your
 codebase -- ranked by a blend of textual relevance (BM25, camelCase-aware,
-trigram fallback, fuzzy correction) and structural importance (PageRank), then
+trigram fallback, typo correction) and structural importance (PageRank), then
 greedily packed to fit your token budget.
 
 ::: tip When to use
@@ -23,7 +23,6 @@ which takes a name or regex.
 | `query`       | string                                        | yes      | Free-text query (e.g. `"how do we mask secrets in responses"`)     |
 | `tokenBudget` | number (min 100)                              | no       | Packing budget. Default `4000`                                     |
 | `strategy`    | `"combined" \| "dependency" \| "importance"` | no       | Ranking blend. Default `"combined"`                                |
-| `fuzzy`       | boolean                                       | no       | Enable typo-tolerant fuzzy correction. Default `true`              |
 | `searchMode`  | `"fts" \| "legacy"`                          | no       | `fts` = BM25 engine, `legacy` = substring matcher. Default `"fts"` |
 
 ### Strategies
@@ -74,7 +73,7 @@ which takes a name or regex.
 1. **Tokenization** -- splits names on camelCase, snake_case, and kebab-case so `SecretMasker` matches `secret mask`.
 2. **BM25 ranking** -- classic term-frequency scoring across the symbol corpus.
 3. **Trigram fallback** -- if no BM25 hits, falls back to trigram similarity.
-4. **Fuzzy correction** -- `fuzzy: true` runs edit-distance correction on the query and reports the substitution in `fuzzyCorrection`.
+4. **Typo correction** -- in `fts` mode typo correction runs automatically and is reported in `fuzzyCorrection`.
 5. **Importance blend** -- final score mixes BM25 relevance with normalized reverse-edge count (a lightweight PageRank proxy).
 6. **Token packing** -- greedy pack until `tokenBudget` is reached.
 

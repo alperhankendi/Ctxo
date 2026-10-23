@@ -1,0 +1,5 @@
+{
+  "description": "CTE names, temp tables and table variables are not tables, while a table inside a CTE body is read.",
+  "mode": "statement",
+  "accesses": { "reads": ["dbo.loans"], "writes": [], "executes": [] }
+}

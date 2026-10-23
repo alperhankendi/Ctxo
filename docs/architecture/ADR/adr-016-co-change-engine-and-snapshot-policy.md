@@ -6,7 +6,7 @@
 | **Date** | 2026-10-21 |
 | **Deciders** | Alper Hankendi |
 | **Decision** | Build co-change from one `git log` pass with its own window (independent of `--max-history`), re-index one commit at a time with `ctxo index --commit HEAD` from a versioned post-commit hook, keep one community snapshot per commit, count drift and boundary confidence in distinct commits, and give every blast-radius caller the same co-change matrix. |
-| **Relates to** | [#157](https://github.com/alperhankendi/Ctxo/issues/157), [ADR-001](adr-001-storage-split-json-index-sqlite-cache.md), [ADR-012](adr-012-plugin-architecture-and-monorepo.md), [ADR-015](adr-015-safe-edit-guard.md) |
+| **Relates to** | [#157](https://github.com/alperhankendi/Ctxo/issues/157), [#156](https://github.com/alperhankendi/Ctxo/issues/156) (addendum), [ADR-001](adr-001-storage-split-json-index-sqlite-cache.md), [ADR-012](adr-012-plugin-architecture-and-monorepo.md), [ADR-015](adr-015-safe-edit-guard.md) |
 
 ---
 
@@ -165,3 +165,102 @@ The commit run is **3.0x faster** than the per-file loop. The gain does not come
 ### Deferred
 
 - A co-change log cache keyed by SHA. Not needed at 0.25 s; add it if a repository's pass exceeds 2 s.
+
+---
+
+## Addendum: Contexts view defaults (PR 1A)
+
+Date: 2026-10-22. Relates to [#156](https://github.com/alperhankendi/Ctxo/issues/156) (Phase 1 of the domain knowledge layer). PR 1A builds the **contexts view** on top of this ADR's co-change matrix: file-level candidate contexts written to `.ctxo/index/contexts-view.json` by `ctxo index`, read through `get_architectural_overlay({ mode: "contexts" })` and `ctxo contexts`. This addendum records the defaults, the rulings made while building it, the evidence, and one measured experiment that was left out.
+
+### Defaults (K4)
+
+| Setting | Default | Notes |
+|---|---|---|
+| `contextsView.weights.dependency` / `.coChange` | 1.0 / 1.0 | edge weight `w = dependency * dep + coChange * co` |
+| `contextsView.hubs.auto` | `true` | fan-in hubs and god nodes |
+| `contextsView.hubs.topPercent` | 1 | a fan-in hub is in the top 1% of files by distinct dependent files |
+| `contextsView.hubs.minDependents` | 10 | and has at least this many dependent files |
+| `contextsView.resolution` | 1.0 | file-graph Louvain |
+| `contextsView.minCandidateFiles` | 3 | smaller groups fold into a neighbour |
+| `communities.resolution` / `godNodeMinBridged` / `godNodeMaxResults` | 1.0 / 3 / 25 | symbol-level Louvain, now configurable |
+| `index.tests` | `[]` | extra test globs on top of the shared default list |
+
+- **Nodes** are indexed non-test files (minus `index.ignore` and `contextsView.exclude`) plus co-change-only files brought in by `cochange.include`. Files missing from the working tree are never nodes.
+- **Dependency weight** counts distinct symbol edges between a file pair in both directions (1.0 for `calls`, `extends`, `implements`, `uses`; 0.5 for `imports`) and normalises as `log2(1 + count) / log2(1 + maxCount)`. **Co-change weight** is the pair's `frequency`.
+- **Hub damping** multiplies every edge touching a hub by `1 / log2(2 + dependents)`. Files matching `hubs.paths` lose all their edges.
+- **Clustering** is Louvain with the same determinism measures as the symbol-level detector, then `splitDisconnectedCommunities`, then folding of groups below `minCandidateFiles`.
+
+### Designer calls
+
+The spec left these open; they are decided as follows and the owner may override them.
+
+1. Co-change-only files are nodes, which gives the co-change-only view on repositories without a language plugin.
+2. File-level PageRank is the sum of the file's symbol PageRank scores from the run that feeds community detection.
+3. The fan-in cut is `max(1, ceil(nodes * topPercent / 100))` files and includes every file tied with the last; an edge between two hubs takes both factors; a configured hub has damping 0; a hub's candidate comes from its strongest neighbour that sits in a candidate.
+4. Folding takes the smallest small group first into the neighbour with the largest total weight, and repeats until no small group has a neighbour.
+5. Candidate IDs start at 1 and are ordered by size, then label, then first member. The label (K34) is the longest common directory of the members; at the repo root it is the directory of the member with the highest file-level PageRank, and `.` if that is the root too. When two or more candidates share a label, each takes its own top-PageRank member's directory, in one pass, so labels may still repeat. The `fingerprint` is the first 16 hex characters of SHA-256 over the sorted members.
+6. The artifact keeps full member lists. Edge weights are rounded to 6 decimals before Louvain (cross-machine stability); `cohesion`, `ratio`, `damping` and `minJaccard` are rounded to 3. There is no timestamp, only `commitSha`, so the bytes depend only on the input.
+7. `crossEdges` count outgoing distinct symbol edges by kind; `coChangePairs` keep the top 10 per candidate.
+8. Terms are type names, enum members and their tokens; the technical-word list (`contextsView.technicalTerms`) replaces the default and drops a word anywhere in a name. A collision is the same case-insensitive type name in two candidates whose member sets have Jaccard similarity below 0.5.
+
+### Further rulings
+
+- **Cohesion excludes hub edges.** Cohesion is internal weight over internal plus boundary weight, counted without the edges that touch hubs, so one popular file cannot decide a candidate's score.
+- **`crossEdges` and `coChangePairs` count only candidate members.** Hub files assigned to a candidate do not add to its cross-candidate edges or pairs.
+- **Exact damping.** The graph uses exactly `1 / log2(2 + dependents)`. The displayed `damping` is that value rounded to 3 decimals and the weights are rounded to 6, so the file shows a rounded number while the graph uses the exact one.
+- **Symbols are sorted per file** before they enter the file graph, so the output does not depend on the order in which a plugin returns symbols.
+- **K32: hub damping stays on by default.** On the fixture it is neutral for the hub case, and agreement with the oracle's units is 0.794 with damping against 0.833 without. The synthetic acceptance case still needs it (two areas that share only a hub land in different candidates with damping and merge without it), and the fixture's own co-change blend already keeps the hub from merging the areas.
+- **K30: the strict reading is not met.** The acceptance wording "the shared hub no longer merges the four unrelated areas" passes: the four areas' majorities land in 3 distinct candidates, no candidate holds the majority of more than 2 areas, and cutting or damping the hub does not change their placement. The stricter reading "four areas, four candidates" is not met, because two areas share a candidate through their own direct links and cross-cutting technical co-change, not through the hub. A deferred roadmap item covers filtering cross-cutting technical change sets from the co-change signal.
+- **K35: the default test globs stay.** One default name-based test glob matched a production file on the fixture. No test folder escaped the defaults. Revisit in PR 1B with test-annotation detection; teams can already add globs with `index.tests`.
+- **Surfaces.** `get_architectural_overlay({ mode: "contexts" })` is summary-first (K33): all candidates in brief, hubs and collisions capped at 50 with totals. `candidate: <id>` returns one candidate in full, with its files capped at 15, its hubs (50) and its collisions (10, each with at most 5 of its own occurrences and the first 5 members of each). `ctxo contexts --json` prints the full artifact. Only `candidates` is truncatable in the response envelope; hubs and collisions are capped at the source.
+- **Refresh cadence.** The view is recomputed on every full or incremental `ctxo index` run that re-indexes files and on every post-commit hook run, and skipped by `--skip-community`. `ctxo watch` does not refresh it.
+
+### Evidence
+
+Validated on a private production repository (826 indexed files, 318 of them tests; full history, 976 co-change commits used, 1431 pairs), with the dev build of this branch and no `contextsView` section in the config, so every default applied. Aggregate numbers only.
+
+| Measure | Value |
+|---|---|
+| Candidates | 12 (sizes 67 down to 4) |
+| `coverage.ratio` | 510 / 515 = 0.990 (0.922 over the oracle's whole universe of 553 files, which includes 37 script files that are not nodes) |
+| Hubs | 17 (7 fan-in plus god node, 10 god node only), all assigned to a candidate; damping 0.154 to 0.387 |
+| Unclustered | 5 (each has no edge at all) |
+| Collisions | 5 (minimum Jaccard 0 to 0.111, each across 2 candidates) |
+| Cohesion | 0.624 to 0.838 |
+| Determinism | `contexts-view.json` byte-identical across 4 default index runs |
+| Contexts-view step in `ctxo index` | about 0.85 s of a 31 s warm index (76 s cold); the file-graph build is over 95% of the step |
+
+- **Hub case.** Before, in the symbol-level communities of the same run, the largest community (621 symbols, 124 files) held the shared factory interface and spanned all four areas. After, that interface is a hub (88 dependents, damping 0.154). The four areas' majorities land in 3 distinct candidates. Cutting the hub completely, or turning damping off, leaves the placement of all 83 area files unchanged: the remaining co-location of two areas (13 and 7 files) comes from 35 direct file pairs (co-change weight 12.3 against dependency weight 0.24).
+- **Against the oracle's 81 units** (folders or single endpoint files, 553 files): 53 units sit in one candidate and 25 are split; 0.794 of the covered files sit in their unit's majority candidate (homogeneity 0.541, completeness 0.794, V-measure 0.644). Most splits are shared or platform units scattered by design (12) and large features split along an internal seam (7); 3 are split by cross-cutting co-change through a shared base and 3 lose one file to its only dependency partner. Eleven of 12 candidates merge two or more units (6.75 on average), which is expected because the oracle's unit is small.
+- **Labels.** 9 of 12 labels were the project's source root: the longest common directory of a nested single project is that project folder, and the PageRank fallback only applied at the repo root. K34's refinement pass handles this case.
+- **Tuning** (one setting at a time, about 30 trials): coverage stayed at 0.977 or higher and collisions at 4 to 6 in every trial. Only `resolution` 2.5 or higher gives four distinct majorities, and only by a majority flip with 30 split units and 0.716 agreement. Lowering `weights.coChange` makes the hub case worse. Resolution 1.25, `weights.coChange` 0.5 and `weights.dependency` 2 each reach 0.822 to 0.825 agreement with the same hub outcome. No default changed.
+
+### Alternatives rejected
+
+- **Symbol-level contexts.** Louvain over symbols puts a shared interface and hundreds of symbols into one community; the file level, with co-change as a second signal, is what a context map reasons about.
+- **Leiden.** Still deferred (see the roadmap); the same file graph can feed it later without changing the artifact.
+- **A data-access weight before PR 1B.** Tables and views are not nodes until the plugin protocol v2 work; adding a placeholder signal now would be tuned against nothing.
+
+### K20 experiment: change-set unit for co-change (measured, left out)
+
+Spec section 7.4a proposed `cochange.unit: commit | merge`, where `merge` treats a merge commit and its first-parent diff as one change set. It was implemented with a default of `commit`, measured on both repositories, and **removed from PR 1A (K29)**. It is tracked in [#165](https://github.com/alperhankendi/Ctxo/issues/165).
+
+| Measure | Fixture, commit | Fixture, merge | Ctxo repo, commit | Ctxo repo, merge |
+|---|---|---|---|---|
+| Co-change pairs | 1431 | 1090 | 669 | 632 |
+| Change sets used | 976 | 517 | 273 | 233 |
+| Mass-skipped (more than 30 files) | 4 | 11 | 3 | 3 |
+| Candidates | 12 | 11 | 12 | 12 |
+| Files in their unit's majority candidate | 0.794 | 0.780 | 0.741 | 0.793 |
+| V-measure | 0.644 | 0.606 | 0.597 | 0.594 |
+| Hub case, area files in a candidate shared with another area | 27/83 | 64/83 | n/a | n/a |
+| Co-change pass (budget 3 s) | 0.42 s | 0.61 s | 0.30 s | 0.48 s |
+
+- On the fixture, `merge` moves the hub case the wrong way: the areas change together through cross-cutting technical PRs, and one PR becomes one shared change set for every pair of areas it touches, so the co-change grows instead of shrinking (three of four areas share a candidate).
+- On the Ctxo repo the effect is small, because most PRs land as squash or direct commits (32 of 479 first-parent records are merges). Agreement with a proxy unit rule improves (0.741 to 0.793) but V-measure is flat.
+- `merge` costs a second git pass (0.19 s on both repositories) and lost one file's pre-rename history on the fixture.
+- **Decision:** not shipped in PR 1A. If the goal is to weaken the cross-cutting co-change itself, filtering technical change sets is a different signal from the change-set unit and is on the roadmap.
+
+### Release size
+
+The measured CLI tarball is 1564.51 KB, and the e2e tarball limit was raised from 1450 KB to 1600 KB, per the established practice of raising it with the measured size when a PR crosses it.

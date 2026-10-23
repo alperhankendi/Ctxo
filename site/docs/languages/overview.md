@@ -8,9 +8,10 @@ description: "Language support tiers and plugin architecture."
 Ctxo ships language support as separate plugin packages. The CLI has no built-in
 parsers: it discovers plugins at runtime by scanning the consumer project's
 `package.json` for names matching `@ctxo/lang-*` (official) or `ctxo-lang-*`
-(community). Each plugin implements the Plugin API v1 contract exported by
+(community). Each plugin implements the Plugin API contract exported by
 [`@ctxo/plugin-api`](/languages/writing-a-plugin), a stable surface with zero
-runtime dependencies on `@ctxo/cli`.
+runtime dependencies on `@ctxo/cli`. The CLI accepts plugins on protocol v1 and
+v2; v2 adds data kinds, annotations, facts and host capabilities.
 
 ## Support matrix
 
@@ -20,6 +21,7 @@ runtime dependencies on `@ctxo/cli`.
 | Go                    | `@ctxo/lang-go`         | `ctxo-go-analyzer` (Go 1.22+) + tree-sitter-go   | `full`   | `.go`                      |
 | C#                    | `@ctxo/lang-csharp`     | `ctxo-roslyn` (.NET SDK 8+) + tree-sitter-c-sharp | `full`  | `.cs`                      |
 | Java                  | `@ctxo/lang-java` + `@ctxo/lang-java-analyzer` | Eclipse JDT Core (JRE 17+) + tree-sitter-java | `full` | `.java` |
+| SQL (T-SQL)           | `@ctxo/lang-sql`        | `@ctxo/sql-extract` (TypeScript tokenizer)       | `syntax` | `.sql`                   |
 
 Two tiers are defined by the plugin contract:
 
@@ -42,6 +44,12 @@ edges, and a per-symbol cyclomatic complexity count. See
 [Symbol IDs](/reference/symbol-ids) and [Edge kinds](/reference/edge-kinds) for
 the canonical enums and format.
 
+Protocol v2 adds data coupling: the SQL plugin emits `table`, `view` and
+`procedure` symbols with `reads`, `writes` and `executes` edges, and with it
+installed the C# plugin links constant SQL at known call sites to the same
+tables. The C# plugin also reports attribute annotations, which mark test files
+for the contexts view.
+
 ## Detection
 
 `ctxo init` and `ctxo doctor` use `detectLanguages()` to figure out which
@@ -54,9 +62,13 @@ plugins a project needs. Detection combines two signals:
    - `pom.xml` / `build.gradle` / `build.gradle.kts` → java
    - `pyproject.toml`, `Cargo.toml`, `Gemfile`, ... (reserved)
 2. **Extension counts** from `git ls-files`, mapped through a canonical
-   extension table (e.g. `.ts` and `.tsx` both map to `typescript`).
+   extension table (e.g. `.ts` and `.tsx` both map to `typescript`, and `.sql`
+   maps to `sql`).
 
-The result drives the auto-install flow.
+A manifest marker is enough on its own. A language found by extension only,
+such as SQL, needs at least 5 files that are also at least 2% of the files
+`git ls-files` lists (files without an extension are not counted). The result
+drives the auto-install flow.
 
 ## Auto-install
 
@@ -76,8 +88,9 @@ yarn add -D @ctxo/lang-typescript @ctxo/lang-go @ctxo/lang-csharp @ctxo/lang-jav
 ```
 :::
 
-You can also run `ctxo install <id>...` directly, or `ctxo install --dry-run`
-to preview the plan without touching `package.json`.
+You can also run `ctxo install <id>...` directly (for example
+`ctxo install sql`), or `ctxo install --dry-run` to preview the plan without
+touching `package.json`.
 
 ## Per-language pages
 
@@ -85,6 +98,7 @@ to preview the plan without touching `package.json`.
 - [Go](/languages/go)
 - [C#](/languages/csharp)
 - [Java](/languages/java)
+- [SQL](/languages/sql)
 - [Writing a plugin](/languages/writing-a-plugin)
 
 ## Related

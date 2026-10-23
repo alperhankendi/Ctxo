@@ -1,0 +1,5 @@
+{
+  "description": "INSERT INTO writes its target and the SELECT source is read.",
+  "mode": "statement",
+  "accesses": { "reads": ["dbo.loans"], "writes": ["dbo.loanarchive"], "executes": [] }
+}

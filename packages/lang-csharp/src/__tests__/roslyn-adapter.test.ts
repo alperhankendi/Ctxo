@@ -8,6 +8,96 @@ vi.mock('node:child_process', () => ({
 
 import { execFileSync } from 'node:child_process';
 import { detectDotnetSdk } from '../roslyn/solution-discovery.js';
+import { toGraphEdges, toSymbolNode } from '../roslyn/roslyn-adapter.js';
+
+describe('toGraphEdges', () => {
+  const CLOSE = 'Data/LoanRepository.cs::Lending.Data.LoanRepository.Close::method';
+  const ARCHIVE = 'Data/LoanRepository.cs::Lending.Data.LoanRepository.Archive::method';
+
+  it('toGraphEdges keeps 2-part table, view and procedure targets on data edges', () => {
+    const edges = toGraphEdges([
+      { from: ARCHIVE, to: 'dbo.loans::table', kind: 'reads' },
+      { from: ARCHIVE, to: 'dbo.active_loans::view', kind: 'reads' },
+      { from: ARCHIVE, to: 'dbo.loanarchive::table', kind: 'writes' },
+      { from: CLOSE, to: 'dbo.usp_closeloan::procedure', kind: 'executes' },
+      { from: CLOSE, to: 'Data/LoanRepository.cs::Lending.Data.Loan::class', kind: 'uses' },
+      { from: ARCHIVE, to: 'Sql/Loans.sql::dbo.loans::table', kind: 'reads' },
+    ]);
+    expect(edges).toEqual([
+      { from: ARCHIVE, to: 'dbo.loans::table', kind: 'reads' },
+      { from: ARCHIVE, to: 'dbo.active_loans::view', kind: 'reads' },
+      { from: ARCHIVE, to: 'dbo.loanarchive::table', kind: 'writes' },
+      { from: CLOSE, to: 'dbo.usp_closeloan::procedure', kind: 'executes' },
+      { from: CLOSE, to: 'Data/LoanRepository.cs::Lending.Data.Loan::class', kind: 'uses' },
+      { from: ARCHIVE, to: 'Sql/Loans.sql::dbo.loans::table', kind: 'reads' },
+    ]);
+  });
+
+  it('toGraphEdges drops a 2-part target on a calls edge and malformed ids', () => {
+    const edges = toGraphEdges([
+      { from: CLOSE, to: 'dbo.usp_closeloan::procedure', kind: 'calls' },
+      { from: CLOSE, to: 'dbo.loans::table', kind: 'uses' },
+      { from: CLOSE, to: 'dbo.loans::function', kind: 'reads' },
+      { from: CLOSE, to: '::table', kind: 'reads' },
+      { from: CLOSE, to: 'dbo.loans', kind: 'reads' },
+      { from: CLOSE, to: '', kind: 'writes' },
+      { from: 'dbo.loans::table', to: 'dbo.members::table', kind: 'reads' },
+      { from: 'Lending.Data.LoanRepository.Close::method', to: 'dbo.loans::table', kind: 'reads' },
+      { from: CLOSE, to: 'Data/LoanRepository.cs::Lending.Data.Loan::class', kind: 'uses' },
+    ]);
+    expect(edges).toEqual([
+      { from: CLOSE, to: 'Data/LoanRepository.cs::Lending.Data.Loan::class', kind: 'uses' },
+    ]);
+  });
+});
+
+describe('toSymbolNode', () => {
+  it('toSymbolNode copies annotations and omits an absent list', () => {
+    const withAnnotations = toSymbolNode({
+      symbolId: 'Tests/LoanTests.cs::Tests.LoanTests.Renews::method',
+      name: 'Tests.LoanTests.Renews',
+      kind: 'method',
+      startLine: 4,
+      endLine: 8,
+      startOffset: 40,
+      endOffset: 90,
+      annotations: [
+        { name: 'Fact', named: { type: 'Xunit.FactAttribute' } },
+        { name: 'Trait', args: ['Rule', 'LEND-03'] },
+      ],
+    });
+    expect(withAnnotations).toEqual({
+      symbolId: 'Tests/LoanTests.cs::Tests.LoanTests.Renews::method',
+      name: 'Tests.LoanTests.Renews',
+      kind: 'method',
+      startLine: 4,
+      endLine: 8,
+      startOffset: 40,
+      endOffset: 90,
+      annotations: [
+        { name: 'Fact', named: { type: 'Xunit.FactAttribute' } },
+        { name: 'Trait', args: ['Rule', 'LEND-03'] },
+      ],
+    });
+
+    const without = toSymbolNode({
+      symbolId: 'Loans/Loan.cs::Loans.Loan::class',
+      name: 'Loans.Loan',
+      kind: 'class',
+      startLine: 0,
+      endLine: 3,
+    });
+    expect(without).toEqual({
+      symbolId: 'Loans/Loan.cs::Loans.Loan::class',
+      name: 'Loans.Loan',
+      kind: 'class',
+      startLine: 0,
+      endLine: 3,
+    });
+    expect(without).not.toHaveProperty('annotations');
+    expect(without).not.toHaveProperty('startOffset');
+  });
+});
 
 describe('solution-discovery', () => {
   beforeEach(() => {

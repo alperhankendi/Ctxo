@@ -11,11 +11,10 @@ import { createLogger } from '../../core/logger.js';
 
 const log = createLogger('ctxo:search');
 
-const InputSchema = z.object({
+export const InputSchema = z.object({
   query: z.string().min(1),
   tokenBudget: z.number().min(100).optional().default(4000),
   strategy: z.enum(['combined', 'dependency', 'importance']).optional().default('combined'),
-  fuzzy: z.boolean().optional().default(true),
   searchMode: z.enum(['fts', 'legacy']).optional().default('fts'),
 });
 

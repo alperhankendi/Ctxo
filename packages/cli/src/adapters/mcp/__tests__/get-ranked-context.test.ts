@@ -190,4 +190,13 @@ describe('GetRankedContextHandler', () => {
     expect(payload.strategy).toBe('dependency');
     expect(payload.results.length).toBeGreaterThan(0);
   });
+
+  it('get_ranked_context still answers a client that sends the removed fuzzy argument', () => {
+    const handler = handleGetRankedContext(storage, new MaskingPipeline(), undefined, tempDir);
+    const result = handler({ query: 'greet', fuzzy: true });
+    const payload = JSON.parse(result.content[result.content.length - 1]!.text);
+
+    expect(payload.error).toBeUndefined();
+    expect(Array.isArray(payload.results)).toBe(true);
+  });
 });

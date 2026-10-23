@@ -114,6 +114,46 @@ describe('handleGetPrImpact', () => {
     expect(typeof sym.blast.riskScore).toBe('number');
   });
 
+  it('a new migration copy of a procedure reports the impact of the procedure', async () => {
+    const PROC_V1 = 'db/migrations/V1__init.sql::dbo.usp_close::procedure';
+    const PROC_V7 = 'db/migrations/V7__close_fix.sql::dbo.usp_close::procedure';
+    const procedureFile = (file: string, symbolId: string): FileIndex => ({
+      file,
+      lastModified: 1,
+      symbols: [{ symbolId, name: 'dbo.usp_close', kind: 'procedure', startLine: 1, endLine: 9 }],
+      edges: [],
+      intent: [],
+      antiPatterns: [],
+    });
+    const writer = new JsonIndexWriter(tempDir);
+    writer.write(procedureFile('db/migrations/V1__init.sql', PROC_V1));
+    writer.write(procedureFile('db/migrations/V7__close_fix.sql', PROC_V7));
+    // Two executors; every executes edge resolves to the winning copy, V1.
+    for (const name of ['Close', 'Renew']) {
+      const symbolId = `src/LoanService${name}.cs::Lending.LoanService.${name}::method`;
+      writer.write({
+        file: `src/LoanService${name}.cs`,
+        lastModified: 1,
+        symbols: [{ symbolId, name: `Lending.LoanService.${name}`, kind: 'method', startLine: 1, endLine: 9 }],
+        edges: [{ from: symbolId, to: 'dbo.usp_close::procedure', kind: 'executes' }],
+        intent: [],
+        antiPatterns: [],
+      });
+    }
+
+    const handler = handleGetPrImpact(storage, createMockGit(['db/migrations/V7__close_fix.sql']), new MaskingPipeline(), undefined, tempDir);
+    const payload = JSON.parse((await handler({ since: 'HEAD~1' })).content[0]!.text);
+
+    const [symbol] = payload.files.find((f: { file: string }) => f.file === 'db/migrations/V7__close_fix.sql').symbols;
+    expect(symbol.symbolId).toBe(PROC_V7);
+    expect(symbol.blast.confirmedCount).toBe(2);
+    expect(symbol.blast.topImpacted.map((s: { symbolId: string }) => s.symbolId).sort()).toEqual([
+      'src/LoanServiceClose.cs::Lending.LoanService.Close::method',
+      'src/LoanServiceRenew.cs::Lending.LoanService.Renew::method',
+    ]);
+    expect(payload.summary.confirmedTotal).toBe(2);
+  });
+
   it('returns summary with confirmed/likely/potential totals', async () => {
     const git = createMockGit(['src/c.ts']);
     const handler = handleGetPrImpact(storage, git, new MaskingPipeline(), undefined, tempDir);

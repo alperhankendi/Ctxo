@@ -758,7 +758,7 @@ describe('IndexCommand incremental runs', () => {
     /** Records the files in the order each run hands them to community detection. */
     function recordSnapshotInput(): () => string[] {
       const spy = vi.spyOn(
-        IndexCommand.prototype as unknown as { buildCommunitySnapshot: (indices: readonly FileIndex[]) => Promise<unknown> },
+        IndexCommand.prototype as unknown as { buildCommunitySnapshot: (indices: readonly FileIndex[], ...rest: unknown[]) => Promise<unknown> },
         'buildCommunitySnapshot',
       );
       return () => (spy.mock.calls.at(-1)![0] as readonly FileIndex[]).map((idx) => idx.file);

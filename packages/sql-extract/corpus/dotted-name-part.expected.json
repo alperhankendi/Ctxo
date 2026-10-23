@@ -1,0 +1,6 @@
+{
+  "description": "A name part that still contains a dot after delimiter removal is skipped, while a plain table in the same statement is read.",
+  "mode": "statement",
+  "sides": ["sql-extract", "scriptdom"],
+  "accesses": { "reads": ["dbo.loans"], "writes": [], "executes": [] }
+}

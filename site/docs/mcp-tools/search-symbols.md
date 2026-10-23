@@ -19,7 +19,7 @@ For free-text questions ("where does retry happen?") reach for
 | Name          | Type                                                                       | Required | Description                                                              |
 | ------------- | -------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------ |
 | `pattern`     | string                                                                     | yes      | Name, regex, or free-text (depends on `mode`)                            |
-| `kind`        | `"function" \| "class" \| "interface" \| "method" \| "variable" \| "type"` | no       | Restrict to one symbol kind                                              |
+| `kind`        | `"function" \| "class" \| "interface" \| "method" \| "variable" \| "type" \| "table" \| "view" \| "procedure"` | no       | Restrict to one symbol kind. `table`, `view` and `procedure` come from SQL plugins such as [`@ctxo/lang-sql`](/languages/sql) |
 | `filePattern` | string                                                                     | no       | Case-insensitive substring match on the file path                        |
 | `limit`       | number (1-100)                                                             | no       | Max results. Default `25`                                                |
 | `mode`        | `"regex" \| "fts"`                                                        | no       | `regex` (default): case-insensitive regex. `fts`: BM25 search            |
@@ -67,6 +67,7 @@ Regex mode returns rows in insertion order with no ranking.
 
 - **Resolving a symbol id** -- required input for [`get_blast_radius`](/mcp-tools/get-blast-radius), [`get_why_context`](/mcp-tools/get-why-context), [`get_logic_slice`](/mcp-tools/get-logic-slice), [`find_importers`](/mcp-tools/find-importers), [`get_context_for_task`](/mcp-tools/get-context-for-task).
 - **Narrowing by kind** -- find every interface with `IStorage` in its name: `{ "pattern": "IStorage", "kind": "interface" }`.
+- **Finding a table** -- SQL symbols are named by their canonical `schema.name` in the symbol ID: `{ "pattern": "loans", "kind": "table" }` finds `db/lending.sql::dbo.loans::table`, ready for `get_blast_radius`.
 - **Typo tolerance** -- `mode: "fts"` corrects small spelling mistakes and handles camelCase splitting.
 
 ## Pitfalls

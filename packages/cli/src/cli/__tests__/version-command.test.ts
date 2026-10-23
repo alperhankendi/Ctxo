@@ -35,10 +35,28 @@ describe('gatherVersionInfo', () => {
   it('returns empty plugin list when no plugins discovered', () => {
     const info = gatherVersionInfo([]);
     expect(info.plugins).toEqual([]);
-    expect(info.pluginApiVersion).toBe('1');
+    expect(info.pluginApiVersion).toBe('2');
     expect(info.runtime.node).toBe(process.version);
     expect(info.runtime.platform).toBe(process.platform);
     expect(info.runtime.arch).toBe(process.arch);
+  });
+
+  it('marks v1 and v2 plugins compatible', () => {
+    const info = gatherVersionInfo([
+      makeDiscovered(makePlugin({ id: 'a', apiVersion: '1' }), 'a'),
+      makeDiscovered(makePlugin({ id: 'b', apiVersion: '2' }), 'b'),
+    ]);
+    expect(info.plugins.map((p) => p.compatible)).toEqual([true, true]);
+  });
+
+  it('reports pluginApiVersion 2 and pluginApiVersions 1, 2 in JSON', () => {
+    const parsed = JSON.parse(formatJson(gatherVersionInfo([]))) as VersionInfo;
+    expect(parsed.pluginApiVersion).toBe('2');
+    expect(parsed.pluginApiVersions).toEqual(['1', '2']);
+  });
+
+  it('verbose output shows Plugin API: 1, 2', () => {
+    expect(formatVerbose(gatherVersionInfo([]))).toContain('Plugin API: 1, 2');
   });
 
   it('marks plugins with matching apiVersion as compatible', () => {
@@ -56,11 +74,11 @@ describe('gatherVersionInfo', () => {
   });
 
   it('marks plugins with mismatched apiVersion as incompatible', () => {
-    const future = { apiVersion: '2' } as unknown as Partial<CtxoLanguagePlugin>;
+    const future = { apiVersion: '3' } as unknown as Partial<CtxoLanguagePlugin>;
     const discovered = [makeDiscovered(makePlugin(future), '@ctxo/lang-future')];
     const info = gatherVersionInfo(discovered);
     expect(info.plugins[0]!.compatible).toBe(false);
-    expect(info.plugins[0]!.apiVersion).toBe('2');
+    expect(info.plugins[0]!.apiVersion).toBe('3');
   });
 
   it('carries runtime-declared plugin version and npm specifier distinctly', () => {
@@ -81,7 +99,8 @@ describe('formatShort', () => {
   it('prints "ctxo <version>" on a single line', () => {
     const info: VersionInfo = {
       ctxo: '0.7.0-alpha.0',
-      pluginApiVersion: '1',
+      pluginApiVersion: '2',
+      pluginApiVersions: ['1', '2'],
       plugins: [],
       runtime: { node: 'v20.0.0', platform: 'linux', arch: 'x64' },
     };
@@ -93,14 +112,15 @@ describe('formatVerbose', () => {
   it('emits stable header lines when no plugins installed', () => {
     const info: VersionInfo = {
       ctxo: '0.7.0-alpha.0',
-      pluginApiVersion: '1',
+      pluginApiVersion: '2',
+      pluginApiVersions: ['1', '2'],
       plugins: [],
       runtime: { node: 'v20.0.0', platform: 'linux', arch: 'x64' },
     };
     const out = formatVerbose(info);
     const lines = out.split('\n');
     expect(lines[0]).toBe('ctxo 0.7.0-alpha.0');
-    expect(lines[1]).toBe('Plugin API: 1');
+    expect(lines[1]).toBe('Plugin API: 1, 2');
     expect(lines[2]).toBe('Runtime:    Node v20.0.0 on linux/x64');
     expect(lines).toContain('Plugins:    (none installed)');
   });
@@ -108,7 +128,8 @@ describe('formatVerbose', () => {
   it('renders a plugin table when plugins are present', () => {
     const info: VersionInfo = {
       ctxo: '0.7.0-alpha.0',
-      pluginApiVersion: '1',
+      pluginApiVersion: '2',
+      pluginApiVersions: ['1', '2'],
       plugins: [
         {
           name: '@ctxo/lang-typescript',
@@ -130,7 +151,8 @@ describe('formatVerbose', () => {
   it('flags incompatible plugins in the status column', () => {
     const info: VersionInfo = {
       ctxo: '0.7.0-alpha.0',
-      pluginApiVersion: '1',
+      pluginApiVersion: '2',
+      pluginApiVersions: ['1', '2'],
       plugins: [
         {
           name: '@ctxo/lang-future',
@@ -143,7 +165,7 @@ describe('formatVerbose', () => {
       runtime: { node: 'v20.0.0', platform: 'linux', arch: 'x64' },
     };
     const out = formatVerbose(info);
-    expect(out).toMatch(/incompatible \(core wants 1\)/);
+    expect(out).toMatch(/incompatible \(core supports 1, 2\)/);
   });
 });
 
@@ -151,7 +173,8 @@ describe('formatJson', () => {
   it('emits the PRD schema shape', () => {
     const info: VersionInfo = {
       ctxo: '0.7.0-alpha.0',
-      pluginApiVersion: '1',
+      pluginApiVersion: '2',
+      pluginApiVersions: ['1', '2'],
       plugins: [
         {
           name: '@ctxo/lang-typescript',
@@ -166,7 +189,8 @@ describe('formatJson', () => {
     const parsed = JSON.parse(formatJson(info));
     expect(parsed).toMatchObject({
       ctxo: '0.7.0-alpha.0',
-      pluginApiVersion: '1',
+      pluginApiVersion: '2',
+      pluginApiVersions: ['1', '2'],
       runtime: { node: 'v20.0.0', platform: 'linux', arch: 'x64' },
       plugins: [
         {
@@ -183,7 +207,8 @@ describe('formatJson', () => {
   it('is pretty-printed (multi-line)', () => {
     const info: VersionInfo = {
       ctxo: '0.7.0-alpha.0',
-      pluginApiVersion: '1',
+      pluginApiVersion: '2',
+      pluginApiVersions: ['1', '2'],
       plugins: [],
       runtime: { node: 'v20.0.0', platform: 'linux', arch: 'x64' },
     };

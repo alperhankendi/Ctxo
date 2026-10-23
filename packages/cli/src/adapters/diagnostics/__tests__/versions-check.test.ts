@@ -42,4 +42,14 @@ describe('VersionsCheck', () => {
       rmSync(tmp, { recursive: true, force: true });
     }
   });
+
+  it('versions check summary names API 1, 2', async () => {
+    const tmp = mkdtempSync(join(tmpdir(), 'ctxo-versions-'));
+    try {
+      const result = await check.run(makeCtx(tmp));
+      expect(result.message).toContain('(API 1, 2)');
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
+  });
 });

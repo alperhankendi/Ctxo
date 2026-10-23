@@ -10,17 +10,19 @@ Maintained by the Ctxo core team. Guaranteed to track `@ctxo/plugin-api` ≥ 12 
 | `@ctxo/lang-go` | [![npm](https://img.shields.io/npm/v/@ctxo/lang-go)](https://www.npmjs.com/package/@ctxo/lang-go) | syntax | `.go` | tree-sitter; exported-symbol analysis |
 | `@ctxo/lang-csharp` | [![npm](https://img.shields.io/npm/v/@ctxo/lang-csharp)](https://www.npmjs.com/package/@ctxo/lang-csharp) | full | `.cs` | Roslyn full-tier; tree-sitter syntax fallback |
 | `@ctxo/lang-java` | [![npm](https://img.shields.io/npm/v/@ctxo/lang-java)](https://www.npmjs.com/package/@ctxo/lang-java) | syntax / full | `.java` | tree-sitter syntax tier built-in; full tier via `@ctxo/lang-java-analyzer` companion (JRE 11+ required, covers Java 8-21); detected by `pom.xml` / `build.gradle` / `build.gradle.kts` |
+| `@ctxo/lang-sql` | [![npm](https://img.shields.io/npm/v/@ctxo/lang-sql)](https://www.npmjs.com/package/@ctxo/lang-sql) | syntax | `.sql` | T-SQL definitions (`table`, `view`, `procedure`, `function`) with `reads` / `writes` / `executes` edges from their bodies; built on the zero-dependency `@ctxo/sql-extract` library; protocol v2 (`apiVersion: '2'`), so it needs a CLI that accepts v2. Installing it also turns on SQL edges at known C# call sites. See [domain knowledge](features/domain-knowledge.md) |
 
 Install:
 
 ```bash
-npm i -D @ctxo/lang-typescript @ctxo/lang-go @ctxo/lang-csharp @ctxo/lang-java
+npm i -D @ctxo/lang-typescript @ctxo/lang-go @ctxo/lang-csharp @ctxo/lang-java @ctxo/lang-sql
 ```
 
 Or via the cli shortcut:
 
 ```bash
 ctxo install typescript go csharp
+ctxo install sql               # alias: tsql
 ctxo install java              # syntax tier + full-tier analyzer when JRE 11+ detected
 ctxo install java --full-tier  # force full-tier analyzer install
 ctxo install java --syntax-only  # skip analyzer, syntax tier only
@@ -97,12 +99,25 @@ the full protocol rationale.
 
 ## Plugin API contract
 
-Plugins declare `apiVersion: '1'`. The contract in `@ctxo/plugin-api` covers:
+A plugin declares the lowest protocol version it works on: `apiVersion: '1'` or `'2'`. The CLI accepts both (`SUPPORTED_API_VERSIONS = ['1', '2']`) and handles their output identically; `'1'` stays accepted for at least 12 months after `'2'` ships. The official plugins stay on `'1'`; `@ctxo/lang-sql` declares `'2'`. The contract in `@ctxo/plugin-api` covers:
 
 - `CtxoLanguagePlugin` — manifest with id / name / version / extensions / tier / createAdapter
 - `ILanguageAdapter` — extractSymbols / extractEdges / extractComplexity / isSupported + optional lifecycle hooks (initialize, dispose, setSymbolRegistry)
 - `PluginContext` — logger + projectRoot + workspace + per-plugin config passed to createAdapter
 - `IWorkspace` — single-package in v0.7; monorepo-ready shape for a later PR
+
+### Protocol v2 additions
+
+All additive; a v1 plugin needs no change:
+
+- Symbol kinds `table`, `view`, `procedure` and edge kinds `reads`, `writes`, `executes` (`SYMBOL_KINDS`, `EDGE_KINDS`, `DATA_RESOURCE_KINDS`).
+- `SymbolNode.annotations`: host-language attributes, annotations and decorators (capped at 20 per symbol, 10 positional entries and 10 named entries plus the reserved `type`, 200 characters per value; a source argument named `type` is not kept).
+- `ILanguageAdapter.extractFacts` and `CodeFact` (`FACT_KINDS`): called only when the host asks for facts.
+- `PluginContext.capabilities` (`PluginCapabilities`): `facts` when `index.facts: true` is set, `sqlCallSites` when a plugin for `.sql` is installed.
+- Peer ranges: the official plugins accept `@ctxo/plugin-api` `^0.7.3 || ^0.8.0 || ^0.9.0`; `@ctxo/lang-sql` accepts `^0.8.0 || ^0.9.0`.
+- Dependency exception (ADR-017): a plugin may depend on a Ctxo-owned utility package with zero runtime dependencies. Today that is only `@ctxo/sql-extract`, which is a library, not a plugin, and is never discovered.
+
+See [domain knowledge](features/domain-knowledge.md) and [ADR-017](architecture/ADR/adr-017-plugin-protocol-v2-and-data-coupling.md).
 
 ## Getting listed
 

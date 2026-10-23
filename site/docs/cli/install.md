@@ -38,10 +38,14 @@ ctxo install [languages...] [options]
 Pass one or more of:
 
 `typescript`, `javascript`, `go`, `csharp`, `python`, `java`, `kotlin`, `ruby`,
-`rust`, `php`, `swift`.
+`rust`, `sql`.
 
 Common aliases are accepted and normalized: `ts`, `js`, `py`, `c#`, `cs`,
-`net`, `golang`, `kt`, `rb`, `rs`.
+`net`, `golang`, `kt`, `rb`, `rs`, `tsql` (for `sql`).
+
+`sql` installs [`@ctxo/lang-sql`](/languages/sql), the T-SQL plugin for `.sql`
+files. With it installed, the C# plugin also adds SQL edges at known call
+sites.
 
 ## Package manager detection
 
@@ -64,6 +68,11 @@ ctxo install
 ```shell [explicit]
 # Install TypeScript and Go plugins, no prompts.
 ctxo install typescript go --yes
+```
+
+```shell [sql]
+# Install the T-SQL plugin next to the C# plugin.
+ctxo install csharp sql --yes
 ```
 
 ```shell [dry run]

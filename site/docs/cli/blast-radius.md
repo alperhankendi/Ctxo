@@ -23,7 +23,7 @@ ctxo blast-radius <symbolId> [--json]
 
 | Argument | Description |
 | --- | --- |
-| `<symbolId>` | Fully-qualified symbol ID in the form `relative/path.ts::SymbolName::kind` |
+| `<symbolId>` | Fully-qualified symbol ID in the form `relative/path.ts::SymbolName::kind`, or the 2-part ID of a SQL table, view or procedure (`dbo.loans::table`), which gives the same answer as the defining file's ID ([data IDs](/reference/symbol-ids#data-ids-as-tool-input)) |
 
 ## Flags
 

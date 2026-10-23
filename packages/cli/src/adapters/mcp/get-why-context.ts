@@ -7,10 +7,18 @@ import { DriftDetector } from '../../core/overlay/drift-detector.js';
 import { buildSnapshotStaleness } from '../../core/overlay/snapshot-staleness.js';
 import type { ClusterLabelMasker } from '../../core/overlay/cluster-label-masker.js';
 import { JsonIndexReader } from '../storage/json-index-reader.js';
-import type { AntiPattern, CommitIntent } from '../../core/types.js';
+import type { AntiPattern, CommitIntent, FileIndex } from '../../core/types.js';
+import type { SymbolGraph } from '../../core/graph/symbol-graph.js';
 import type { StalenessCheck } from './get-logic-slice.js';
+import { buildGraphFromIndices, buildGraphFromStorage } from './get-logic-slice.js';
 
-const InputSchema = z.object({
+/** The graph of the committed index, or of the SQLite storage when that has no symbols (as `getGraphAndFiles`). */
+function graphOf(indices: readonly FileIndex[], storage: IStoragePort): SymbolGraph {
+  const graph = buildGraphFromIndices(indices);
+  return graph.nodeCount > 0 ? graph : buildGraphFromStorage(storage);
+}
+
+export const InputSchema = z.object({
   symbolId: z.string().min(1),
   maxCommits: z.number().int().min(1).optional(),
 });
@@ -36,19 +44,23 @@ export function handleGetWhyContext(
         };
       }
 
-      const { symbolId, maxCommits } = parsed.data;
+      const { symbolId: inputId, maxCommits } = parsed.data;
 
-      const symbol = storage.getSymbolById(symbolId);
-      if (!symbol) {
+      // Committed index first (FR16: anti-patterns persist in committed index)
+      const indices = indexReader.readAll();
+
+      // Resolve the id once. An exact id is looked up directly; anything else (a 2-part data id, a fuzzy id)
+      // through the graph, so a 2-part id reads the history of its winning definition's file.
+      const symbolId = storage.getSymbolById(inputId)
+        ? inputId
+        : graphOf(indices, storage).getNode(inputId)?.symbolId;
+      if (!symbolId) {
         return {
           content: [{ type: 'text' as const, text: JSON.stringify({ found: false, hint: 'Symbol not found. Run "ctxo index" to build the codebase index.' }) }],
         };
       }
 
       const filePath = symbolId.split('::')[0]!;
-
-      // Try committed index first (FR16: anti-patterns persist in committed index)
-      const indices = indexReader.readAll();
       const fileIndex = indices.find((i) => i.file === filePath);
 
       let commitHistory: CommitIntent[];

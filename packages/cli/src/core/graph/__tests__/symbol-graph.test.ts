@@ -195,4 +195,179 @@ describe('SymbolGraph', () => {
       expect(g2.getReverseEdges('y/Bar.java::Bar::class').length).toBe(0);
     });
   });
+
+  describe('data references', () => {
+    it('a 2-part table reference resolves to a view of that name', () => {
+      const graph = new SymbolGraph();
+      graph.addNode(makeNode('src/a.ts::run::function'));
+      graph.addNode(makeNode('db/v.sql::dbo.loans::view'));
+      graph.addEdge(makeEdge('src/a.ts::run::function', 'dbo.loans::table', 'reads'));
+      expect(graph.getForwardEdges('src/a.ts::run::function')[0]!.to).toBe('db/v.sql::dbo.loans::view');
+    });
+
+    it('a data reference defined in several files resolves to the first file in sorted path order whatever the insertion order', () => {
+      const graph = new SymbolGraph();
+      graph.addNode(makeNode('src/a.ts::run::function'));
+      graph.addNode(makeNode('db/b.sql::dbo.loans::table'));
+      graph.addNode(makeNode('db/a.sql::dbo.loans::table'));
+      graph.addEdge(makeEdge('src/a.ts::run::function', 'dbo.loans::table', 'reads'));
+      expect(graph.getForwardEdges('src/a.ts::run::function')[0]!.to).toBe('db/a.sql::dbo.loans::table');
+    });
+
+    it('a procedure reference defined in two files resolves to the first file', () => {
+      const graph = new SymbolGraph();
+      graph.addNode(makeNode('src/a.ts::run::function'));
+      graph.addNode(makeNode('db/z.sql::dbo.sp::procedure'));
+      graph.addNode(makeNode('db/m.sql::dbo.sp::procedure'));
+      graph.addEdge(makeEdge('src/a.ts::run::function', 'dbo.sp::procedure', 'executes'));
+      expect(graph.getForwardEdges('src/a.ts::run::function')[0]!.to).toBe('db/m.sql::dbo.sp::procedure');
+    });
+
+    it('an undefined data reference stays unresolved', () => {
+      const graph = new SymbolGraph();
+      graph.addNode(makeNode('src/a.ts::run::function'));
+      graph.addEdge(makeEdge('src/a.ts::run::function', 'dbo.audit::table', 'writes'));
+      expect(graph.getForwardEdges('src/a.ts::run::function')[0]!.to).toBe('dbo.audit::table');
+    });
+
+    it('getNode resolves a 2-part data reference', () => {
+      const graph = new SymbolGraph();
+      graph.addNode(makeNode('db/b.sql::dbo.loans::table'));
+      graph.addNode(makeNode('db/a.sql::dbo.loans::view'));
+      expect(graph.getNode('dbo.loans::table')?.symbolId).toBe('db/a.sql::dbo.loans::view');
+      expect(graph.hasNode('dbo.loans::table')).toBe(true);
+    });
+
+    it('an ambiguous class name reference stays unresolved as before', () => {
+      const graph = new SymbolGraph();
+      graph.addNode(makeNode('src/a.ts::run::function'));
+      graph.addNode(makeNode('src/x/Bar.java::Bar::class'));
+      graph.addNode(makeNode('src/y/Bar.java::Bar::class'));
+      graph.addEdge(makeEdge('src/a.ts::run::function', 'Bar::class', 'uses'));
+      expect(graph.getForwardEdges('src/a.ts::run::function')[0]!.to).toBe('Bar::class');
+    });
+
+    /** Resolves `reference` from a graph holding the nodes in the given order, through an edge and through getNode. */
+    function resolveData(nodeIds: readonly string[], reference: string, kind: GraphEdge['kind'] = 'reads') {
+      const graph = new SymbolGraph();
+      graph.addNode(makeNode('src/a.ts::run::function'));
+      for (const id of nodeIds) graph.addNode(makeNode(id));
+      graph.addEdge(makeEdge('src/a.ts::run::function', reference, kind));
+      return {
+        edge: graph.getForwardEdges('src/a.ts::run::function')[0]!.to,
+        node: graph.getNode(reference)?.symbolId,
+        has: graph.hasNode(reference),
+      };
+    }
+
+    it('a data reference prefers a production definition over a test-project copy', () => {
+      const ids = ['src/Lending.Tests/schema.sql::dbo.loans::table', 'src/Lending/db/schema.sql::dbo.loans::table'];
+      const expected = { edge: ids[1], node: ids[1], has: true };
+      expect(resolveData(ids, 'dbo.loans::table')).toEqual(expected);
+      expect(resolveData([...ids].reverse(), 'dbo.loans::table')).toEqual(expected);
+    });
+
+    it('a data reference prefers a production definition over a docs copy', () => {
+      const ids = ['docs/db/schema.sql::dbo.loans::table', 'src/db/schema.sql::dbo.loans::table'];
+      const expected = { edge: ids[1], node: ids[1], has: true };
+      expect(resolveData(ids, 'dbo.loans::table')).toEqual(expected);
+      expect(resolveData([...ids].reverse(), 'dbo.loans::table')).toEqual(expected);
+    });
+
+    it('a procedure defined only in a docs file still resolves', () => {
+      const id = 'docs/db/procs.sql::dbo.usp_renew::procedure';
+      expect(resolveData([id], 'dbo.usp_renew::procedure', 'executes')).toEqual({ edge: id, node: id, has: true });
+    });
+
+    it('the codepoint-smallest production path still wins among production copies', () => {
+      const ids = [
+        'Docs/a.sql::dbo.loans::table',
+        'src/db/b.sql::dbo.loans::table',
+        'src/Lending.Tests/a.sql::dbo.loans::table',
+        'src/db/a.sql::dbo.loans::view',
+        'documentation/a.sql::dbo.loans::table',
+      ];
+      const expected = { edge: 'src/db/a.sql::dbo.loans::view', node: 'src/db/a.sql::dbo.loans::view', has: true };
+      expect(resolveData(ids, 'dbo.loans::table')).toEqual(expected);
+      expect(resolveData([...ids].reverse(), 'dbo.loans::table')).toEqual(expected);
+    });
+
+    it('a docs copy wins over a test-project copy when no production copy exists', () => {
+      const ids = ['src/doc/procs.sql::dbo.sp::procedure', 'src/Lending.Tests/procs.sql::dbo.sp::procedure'];
+      const expected = { edge: ids[0], node: ids[0], has: true };
+      expect(resolveData(ids, 'dbo.sp::procedure', 'executes')).toEqual(expected);
+      expect(resolveData([...ids].reverse(), 'dbo.sp::procedure', 'executes')).toEqual(expected);
+    });
+  });
+
+  describe('data resource identity', () => {
+    const V1 = 'db/migrations/V1__init.sql::dbo.usp_close::procedure';
+    const V7 = 'db/migrations/V7__close_fix.sql::dbo.usp_close::procedure';
+    const DOCS = 'docs/db/procs.sql::dbo.usp_close::procedure';
+    const CLOSE = 'src/LoanService.cs::Lending.LoanService.Close::method';
+
+    function migrationGraph(order: readonly string[] = [DOCS, V7, V1]): SymbolGraph {
+      const graph = new SymbolGraph();
+      graph.addNode(makeNode(CLOSE));
+      for (const id of order) graph.addNode(makeNode(id));
+      graph.addEdge(makeEdge(CLOSE, 'dbo.usp_close::procedure', 'executes'));
+      return graph;
+    }
+
+    it('any id of a procedure gives its canonical id, the winner and every definition', () => {
+      const graph = migrationGraph();
+      for (const id of [V1, V7, DOCS, 'dbo.usp_close::procedure']) {
+        const identity = graph.dataResourceIdentity(id)!;
+        expect(identity.canonicalId).toBe('dbo.usp_close::procedure');
+        expect(identity.winner.symbolId).toBe(V1);
+        expect(identity.definitions.map((node) => node.symbolId)).toEqual([V1, V7, DOCS]);
+        expect(identity.production.map((node) => node.symbolId)).toEqual([V1, V7]);
+      }
+      expect(migrationGraph([V1, V7, DOCS]).dataResourceIdentity(V7)).toEqual(graph.dataResourceIdentity(V7));
+    });
+
+    it('a table identity spans the views of its name, and the canonical kind is the winner\'s', () => {
+      const graph = new SymbolGraph();
+      graph.addNode(makeNode('docs/db/schema.sql::dbo.loans::table'));
+      graph.addNode(makeNode('src/db/schema.sql::dbo.loans::view'));
+      graph.addNode(makeNode('src/db/schema.sql::dbo.usp_loans::procedure'));
+      const identity = graph.dataResourceIdentity('docs/db/schema.sql::dbo.loans::table')!;
+      expect(identity.canonicalId).toBe('dbo.loans::view');
+      expect(identity.definitions.map((node) => node.symbolId)).toEqual([
+        'src/db/schema.sql::dbo.loans::view',
+        'docs/db/schema.sql::dbo.loans::table',
+      ]);
+      expect(graph.dataResourceIdentity('dbo.loans::table')).toEqual(identity);
+    });
+
+    it('an identity with only docs and test copies has no production definition', () => {
+      const graph = new SymbolGraph();
+      graph.addNode(makeNode('src/Lending.Tests/procs.sql::dbo.usp_renew::procedure'));
+      graph.addNode(makeNode('docs/db/procs.sql::dbo.usp_renew::procedure'));
+      const identity = graph.dataResourceIdentity('dbo.usp_renew::procedure')!;
+      expect(identity.winner.symbolId).toBe('docs/db/procs.sql::dbo.usp_renew::procedure');
+      expect(identity.production).toEqual([]);
+    });
+
+    it('code symbols and unknown ids have no data resource identity', () => {
+      const graph = migrationGraph();
+      expect(graph.dataResourceIdentity(CLOSE)).toBeUndefined();
+      expect(graph.dataResourceIdentity('dbo.usp_missing::procedure')).toBeUndefined();
+      expect(graph.dataResourceIdentity('db/none.sql::dbo.loans::table')).toBeUndefined();
+    });
+
+    it('every copy has the incoming edges of every definition as its dependents, and forward edges stay per copy', () => {
+      const graph = migrationGraph();
+      graph.addEdge(makeEdge(V7, 'dbo.audit::table', 'writes'));
+      const executes = [{ from: CLOSE, to: V1, kind: 'executes' }];
+      expect(graph.getDependentEdges(V1)).toEqual(executes);
+      expect(graph.getDependentEdges(V7)).toEqual(executes);
+      expect(graph.getDependentEdges(DOCS)).toEqual(executes);
+      // Raw lookups are unchanged: the edge points at the winner only, and the body edge stays on its copy.
+      expect(graph.getReverseEdges(V7)).toEqual([]);
+      expect(graph.getForwardEdges(V7).map((edge) => edge.to)).toEqual(['dbo.audit::table']);
+      expect(graph.getForwardEdges(V1)).toEqual([]);
+      expect(graph.getDependentEdges(CLOSE)).toEqual([]);
+    });
+  });
 });

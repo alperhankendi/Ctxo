@@ -89,10 +89,52 @@ describe('ContextAssembler — assembleForTask', () => {
     expect(result!.totalTokens).toBeLessThanOrEqual(100);
   });
 
+  it('synthesizes an orphan table id with kind table, not variable', () => {
+    const graph = buildTestGraph();
+    // The edge source has no symbols[] entry: the assembler builds a node from the id alone.
+    graph.addEdge({ from: 'db/loans.sql::dbo.loans::table', to: 'src/a.ts::A::function', kind: 'uses' });
+    const result = assembler.assembleForTask(graph, 'src/a.ts::A::function', 'refactor', buildTestIndices());
+
+    expect(result).toBeDefined();
+    const entry = result!.context.find((c) => c.symbolId === 'db/loans.sql::dbo.loans::table');
+    expect(entry).toBeDefined();
+    expect(entry!.kind).toBe('table');
+  });
+
   it('returns undefined for non-existent symbol', () => {
     const graph = buildTestGraph();
     const result = assembler.assembleForTask(graph, 'src/missing.ts::X::function', 'understand', []);
     expect(result).toBeUndefined();
+  });
+
+  it('a 2-part procedure id gives the winning copy\'s dependencies, dependents and file warnings', () => {
+    const V1 = 'db/migrations/V1__init.sql::dbo.usp_close::procedure';
+    const V7 = 'db/migrations/V7__close_fix.sql::dbo.usp_close::procedure';
+    const CLOSE = 'src/LoanService.cs::Lending.LoanService.Close::method';
+    const graph = new SymbolGraph();
+    for (const id of [V7, V1, 'db/loans.sql::dbo.loans::table', CLOSE]) graph.addNode(makeNode(id));
+    graph.addEdge({ from: V1, to: 'dbo.loans::table', kind: 'writes' });
+    graph.addEdge({ from: CLOSE, to: 'dbo.usp_close::procedure', kind: 'executes' });
+    const indices: FileIndex[] = [
+      { file: 'db/migrations/V1__init.sql', lastModified: 1, symbols: [], edges: [], intent: [], antiPatterns: [{ hash: 'abc', message: 'Revert "close loans"', date: '2024-01-01' }] },
+    ];
+
+    const result = assembler.assembleForTask(graph, 'dbo.usp_close::procedure', 'refactor', indices)!;
+    expect(result.target.symbolId).toBe(V1);
+    expect(result.context.map((c) => c.symbolId).sort()).toEqual(['db/loans.sql::dbo.loans::table', CLOSE]);
+    expect(result.warnings).toHaveLength(1);
+  });
+
+  it('get_context_for_task omits annotations from the target', () => {
+    const CLOSE = 'src/LoanService.cs::Lending.LoanService.Close::method';
+    const graph = new SymbolGraph();
+    const annotated = { ...makeNode(CLOSE), annotations: [{ name: 'HttpPost', args: ['close'] }] };
+    graph.addNode(annotated);
+
+    const result = assembler.assembleForTask(graph, CLOSE, 'understand', [])!;
+    expect(result.target).toEqual(makeNode(CLOSE));
+    expect('annotations' in result.target).toBe(false);
+    expect(graph.getNode(CLOSE)?.annotations).toEqual([{ name: 'HttpPost', args: ['close'] }]);
   });
 
   it('includes warnings for anti-patterns in target file', () => {

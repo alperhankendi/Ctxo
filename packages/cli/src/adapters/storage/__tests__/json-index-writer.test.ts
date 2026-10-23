@@ -3,6 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, readFileSync, existsSync, readdirSync, 
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { JsonIndexWriter } from '../json-index-writer.js';
+import { INDEX_ARTIFACT_FILES } from '../json-index-reader.js';
 import { buildFileIndex } from './test-fixtures.js';
 import type { CoChangeMatrix } from '../../../core/types.js';
 
@@ -116,7 +117,7 @@ describe('JsonIndexWriter', () => {
       expect(writer.deleteEntryFile(join(tempDir, 'index', 'src', 'missing.ts.json'))).toBe(false);
     });
 
-    it.each(['co-changes.json', 'communities.json', 'drift-events.json', 'boundary-violations.json'])(
+    it.each([...INDEX_ARTIFACT_FILES])(
       'refuses the artifact %s that lives next to the entries',
       (artifact) => {
         const artifactPath = join(tempDir, 'index', artifact);

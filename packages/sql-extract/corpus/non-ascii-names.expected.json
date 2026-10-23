@@ -1,0 +1,5 @@
+{
+  "description": "Canonical names fold ASCII A-Z only and keep every other character, such as Ö, ı, Ü and İ.",
+  "mode": "statement",
+  "accesses": { "reads": ["dbo.kİtap", "dbo.Ödünç kaydı", "dbo.Üye"], "writes": [], "executes": [] }
+}

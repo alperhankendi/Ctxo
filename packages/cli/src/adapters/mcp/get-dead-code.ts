@@ -7,7 +7,7 @@ import { wrapResponse } from '../../core/response-envelope.js';
 import { filterByIntent } from '../../core/intent-filter.js';
 import type { StalenessCheck } from './get-logic-slice.js';
 
-const InputSchema = z.object({
+export const InputSchema = z.object({
   includeTests: z.boolean().optional().default(false),
   intent: z.string().optional().describe('Filter dead code results by intent keywords (e.g., "adapter", "core", "function")'),
 });

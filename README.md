@@ -118,11 +118,13 @@ The file you forget to touch is usually the one no import points at. Files that 
 | Go | `@ctxo/lang-go` | syntax | tree-sitter; exported-symbol analysis |
 | C# | `@ctxo/lang-csharp` | full | Roslyn; .NET SDK 8+ for full tier, tree-sitter fallback |
 | Java | `@ctxo/lang-java` | syntax / full | tree-sitter syntax tier built-in; full tier via `@ctxo/lang-java-analyzer` companion (JRE 11+ required, covers Java 8-21); detected by `pom.xml` / `build.gradle` |
+| SQL (T-SQL) | `@ctxo/lang-sql` | syntax | `.sql` tables, views, procedures and functions with `reads` / `writes` / `executes` edges; no database or .NET needed. With it installed, the C# plugin's Roslyn tier also links constant SQL at ADO.NET, Dapper, `SqlBulkCopy` and EF Core call sites to the same tables |
 
 Install via the CLI shortcut:
 
 ```bash
 ctxo install typescript go csharp   # syntax or full tier auto-detected
+ctxo install sql                    # T-SQL plugin (alias tsql)
 ctxo install java                   # installs syntax tier; adds full-tier analyzer when JRE 11+ detected
 ctxo install java --full-tier       # force full-tier analyzer install
 ctxo install java --syntax-only     # skip analyzer, syntax tier only

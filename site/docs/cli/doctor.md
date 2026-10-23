@@ -40,12 +40,36 @@ ctxo doctor [options]
 | SQLite cache | `.ctxo/.cache/symbols.db` present and usable |
 | Config file | `.ctxo/config.yaml` is valid YAML and conforms to the schema; invalid `index.*` and `cochange.include` / `cochange.exclude` globs are warned about |
 | ts-morph, tree-sitter | Runtime parsers load |
-| Language coverage | Every detected language has a registered plugin |
+| Language coverage | Every detected language has a registered plugin (at least 5 `.sql` files that are also at least 2% of all files suggest `@ctxo/lang-sql`) |
+| Java analysis tier (`java_tier`) | Which Java tier is active |
+| C# analysis tier (`csharp_tier`) | Which C# tier is active, and whether the Roslyn helper can restore its NuGet packages. See [below](#c-analysis-tier) |
 | Disk usage | Free space sufficient for the index |
 | Symbol / Edge count | Sanity bounds |
 | Orphaned files | No stale entries in `.ctxo/index/` |
 | Co-changes cache | Present and readable |
 | Schema version | Matches the current core |
+
+### C# analysis tier
+
+The `csharp_tier` check runs `dotnet restore` on the `ctxo-roslyn` helper of the
+`@ctxo/lang-csharp` your project resolves (120 s timeout), but only when the
+first three outcomes below do not apply. It has five outcomes:
+
+| Situation | Status | Message |
+| --- | --- | --- |
+| No C# sources (no `.sln` or `.csproj` in the root, no `.cs` file within four levels) | `pass` | `no C# sources detected` |
+| No .NET 8+ SDK | `pass` | `syntax tier (install the .NET 8+ SDK for the full tier)` |
+| `@ctxo/lang-csharp` not resolvable from the project | `pass` | `syntax tier (@ctxo/lang-csharp not installed)` |
+| The helper restores | `pass` | `full tier (.NET SDK <version>, Roslyn helper restores)` |
+| The restore fails or times out | `warn` | `syntax tier: the Roslyn helper could not restore (<first error line>)` |
+
+The warning's fix hint: make `Microsoft.SqlServer.TransactSql.ScriptDom` and the
+`Microsoft.CodeAnalysis` packages reachable from your NuGet sources (nuget.org
+or a mirror), then run `ctxo index`. Until then the C# plugin falls back to
+tree-sitter: symbols and attribute annotations (literal arguments only) are
+kept, the Roslyn-only annotation details and the SQL call-site edges are lost.
+The language coverage check already reports a missing plugin, so the third row
+passes.
 
 ## Remediation order (`--fix`)
 

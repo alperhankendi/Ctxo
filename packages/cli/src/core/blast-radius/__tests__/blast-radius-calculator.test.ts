@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { SymbolGraph } from '../../graph/symbol-graph.js';
-import { BlastRadiusCalculator } from '../blast-radius-calculator.js';
+import { BlastRadiusCalculator, EDGE_KIND_CONFIDENCE } from '../blast-radius-calculator.js';
+import { EDGE_KINDS } from '../../types.js';
 import type { CoChangeEntry, SymbolNode } from '../../types.js';
 
 function makeNode(id: string): SymbolNode {
@@ -401,5 +402,67 @@ describe('BlastRadiusCalculator', () => {
     expect(result.likelyCount).toBe(1);
     expect(result.confirmedCount).toBe(0);
     expect(result.potentialCount).toBe(0);
+  });
+
+  it('reads, writes and executes dependents are confirmed', () => {
+    const graph = new SymbolGraph();
+    for (const id of ['db/t.sql::dbo.t::table', 'src/r.ts::r::function', 'src/w.ts::w::function', 'src/e.ts::e::function']) {
+      graph.addNode(makeNode(id));
+    }
+    graph.addEdge({ from: 'src/r.ts::r::function', to: 'db/t.sql::dbo.t::table', kind: 'reads' });
+    graph.addEdge({ from: 'src/w.ts::w::function', to: 'db/t.sql::dbo.t::table', kind: 'writes' });
+    graph.addEdge({ from: 'src/e.ts::e::function', to: 'db/t.sql::dbo.t::table', kind: 'executes' });
+    const result = calc.calculate(graph, 'db/t.sql::dbo.t::table');
+    expect(result.confirmedCount).toBe(3);
+    expect(result.impactedSymbols.every((e) => e.confidence === 'confirmed')).toBe(true);
+  });
+
+  it('every edge kind has a confidence', () => {
+    expect(Object.keys(EDGE_KIND_CONFIDENCE).sort()).toEqual([...EDGE_KINDS].sort());
+  });
+
+  describe('data resource copies', () => {
+    const WINNER = 'db/migrations/V1__init.sql::dbo.loans::table';
+    const DOCS_COPY = 'docs/db/schema.sql::dbo.loans::table';
+    const PROC_V1 = 'db/migrations/V1__init.sql::dbo.usp_close::procedure';
+    const PROC_V7 = 'db/migrations/V7__close_fix.sql::dbo.usp_close::procedure';
+    const REPORT = 'src/LoanReport.cs::Lending.LoanReport.Run::method';
+    const CLOSE = 'src/LoanService.cs::Lending.LoanService.Close::method';
+    const DESK = 'src/Desk.cs::Lending.Desk.Checkout::method';
+
+    function copiesGraph(): SymbolGraph {
+      const graph = new SymbolGraph();
+      for (const id of [DOCS_COPY, PROC_V7, WINNER, PROC_V1, 'db/audit.sql::dbo.audit::table', REPORT, CLOSE, DESK]) {
+        graph.addNode(makeNode(id));
+      }
+      graph.addEdge({ from: REPORT, to: 'dbo.loans::table', kind: 'reads' });
+      graph.addEdge({ from: DESK, to: REPORT, kind: 'calls' });
+      graph.addEdge({ from: CLOSE, to: 'dbo.usp_close::procedure', kind: 'executes' });
+      graph.addEdge({ from: PROC_V1, to: 'dbo.loans::table', kind: 'writes' });
+      graph.addEdge({ from: PROC_V7, to: 'dbo.loans::table', kind: 'writes' });
+      graph.addEdge({ from: PROC_V7, to: 'dbo.audit::table', kind: 'writes' });
+      return graph;
+    }
+
+    it('a losing copy of a table reports the same dependents as the winning copy', () => {
+      const graph = copiesGraph();
+      const winner = calc.calculate(graph, WINNER);
+      expect(winner.impactedSymbols.map((e) => e.symbolId).sort()).toEqual([CLOSE, DESK, PROC_V1, PROC_V7, REPORT].sort());
+      expect(calc.calculate(graph, DOCS_COPY)).toEqual(winner);
+      expect(calc.calculate(graph, 'dbo.loans::table')).toEqual(winner);
+    });
+
+    it('a new migration copy of a procedure has the procedure\'s dependents', () => {
+      const graph = copiesGraph();
+      const copy = calc.calculate(graph, PROC_V7);
+      expect(copy.impactedSymbols.map((e) => e.symbolId)).toEqual([CLOSE]);
+      expect(copy.confirmedCount).toBe(1);
+      expect(copy).toEqual(calc.calculate(graph, PROC_V1));
+    });
+
+    it('a table only a later procedure copy writes reaches the procedure\'s executors', () => {
+      const result = calc.calculate(copiesGraph(), 'db/audit.sql::dbo.audit::table');
+      expect(result.impactedSymbols.map((e) => [e.symbolId, e.depth])).toEqual([[PROC_V7, 1], [CLOSE, 2]]);
+    });
   });
 });

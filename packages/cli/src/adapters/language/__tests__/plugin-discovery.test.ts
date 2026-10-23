@@ -72,14 +72,61 @@ describe('discoverPlugins', () => {
     expect(result.plugins[0]!.specifier).toBe('./my-plugin/index.mjs');
   });
 
-  it('rejects a plugin with an unsupported apiVersion', async () => {
-    const pluginDir = join(tmp, 'bad-api');
+  it('loads a v2 plugin', async () => {
+    const pluginDir = join(tmp, 'v2-api');
     await writePluginModule(
       pluginDir,
       `export default {
         apiVersion: '2',
+        id: 'v2plug',
+        name: 'v2plug',
+        version: '0.0.1',
+        extensions: ['.fx'],
+        tier: 'syntax',
+        createAdapter: () => ({}),
+      };`,
+    );
+    writeManifest(tmp, {});
+    const result = await discoverPlugins({
+      manifestPath: join(tmp, 'package.json'),
+      explicit: ['./v2-api/index.mjs'],
+    });
+    expect(result.failures).toEqual([]);
+    expect(result.plugins).toHaveLength(1);
+    expect(result.plugins[0]!.plugin.apiVersion).toBe('2');
+  });
+
+  it('still loads a v1 plugin', async () => {
+    const pluginDir = join(tmp, 'v1-api');
+    await writePluginModule(
+      pluginDir,
+      `export default {
+        apiVersion: '1',
+        id: 'v1plug',
+        name: 'v1plug',
+        version: '0.0.1',
+        extensions: ['.fx'],
+        tier: 'syntax',
+        createAdapter: () => ({}),
+      };`,
+    );
+    writeManifest(tmp, {});
+    const result = await discoverPlugins({
+      manifestPath: join(tmp, 'package.json'),
+      explicit: ['./v1-api/index.mjs'],
+    });
+    expect(result.failures).toEqual([]);
+    expect(result.plugins).toHaveLength(1);
+  });
+
+  it('rejects apiVersion 3 naming the supported versions', async () => {
+    const pluginDir = join(tmp, 'bad-api');
+    await writePluginModule(
+      pluginDir,
+      `export default {
+        apiVersion: '3',
         id: 'future',
-        name: 'Future',
+        name: 'future',
         version: '0.0.1',
         extensions: ['.fx'],
         tier: 'syntax',
@@ -93,7 +140,7 @@ describe('discoverPlugins', () => {
     });
     expect(result.plugins).toEqual([]);
     expect(result.failures).toHaveLength(1);
-    expect(result.failures[0]!.reason).toMatch(/unsupported apiVersion 2/);
+    expect(result.failures[0]!.reason).toMatch(/unsupported apiVersion 3 \(supported: 1, 2\)/);
   });
 
   it('rejects a plugin missing createAdapter', async () => {

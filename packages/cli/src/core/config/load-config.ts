@@ -4,12 +4,14 @@ import { parse as parseYaml } from 'yaml';
 import picomatch from 'picomatch';
 import { parseCoChangeSince } from '../co-change/co-change-window.js';
 import { createLogger } from '../logger.js';
+import type { CommunityDetectorOptions } from '../overlay/community-detector.js';
 import {
   CtxoConfigSchema,
   DEFAULT_COCHANGE_MAX_COMMITS,
   DEFAULT_COCHANGE_MAX_FILES_PER_COMMIT,
   DEFAULT_COCHANGE_MIN_SHARED,
   DEFAULT_CONFIG,
+  DEFAULT_TECHNICAL_TERMS,
   DEFAULT_WATCH_SNAPSHOT_MIN_FILE_CHANGES,
   type CtxoConfig,
 } from './config-schema.js';
@@ -81,8 +83,11 @@ export function loadConfig(ctxoRoot: string): LoadedConfig {
 
   validateGlobs(result.data.index?.ignore, 'index.ignore', invalidGlobs);
   validateGlobs(result.data.index?.ignoreProjects, 'index.ignoreProjects', invalidGlobs);
+  validateGlobs(result.data.index?.tests, 'index.tests', invalidGlobs);
   validateGlobs(result.data.cochange?.include, 'cochange.include', invalidGlobs);
   validateGlobs(result.data.cochange?.exclude, 'cochange.exclude', invalidGlobs);
+  validateGlobs(result.data.contextsView?.exclude, 'contextsView.exclude', invalidGlobs);
+  validateGlobs(result.data.contextsView?.hubs?.paths, 'contextsView.hubs.paths', invalidGlobs);
   for (const pattern of invalidGlobs) {
     log.warn(`Invalid glob pattern in config.yaml — ${pattern}`);
   }
@@ -100,6 +105,35 @@ export function indexIgnorePatterns(config: CtxoConfig): string[] {
 
 export function indexIgnoreProjectPatterns(config: CtxoConfig): string[] {
   return (config.index?.ignoreProjects ?? []).filter(isValidGlob);
+}
+
+/** True when facts extraction is requested (`index.facts: true`). */
+export function factsRequested(config: CtxoConfig): boolean {
+  return config.index?.facts === true;
+}
+
+export function indexTestPatterns(config: CtxoConfig): string[] {
+  return (config.index?.tests ?? []).filter(isValidGlob);
+}
+
+/**
+ * The `communities` section as detector options. Only usable values are passed on, so the detector
+ * keeps its own defaults (1.0, 3, 25) for anything absent or invalid.
+ */
+export function communityDetectorOptions(config: CtxoConfig): CommunityDetectorOptions {
+  const section = config.communities;
+  const resolution = section?.resolution;
+  const minBridged = section?.godNodeMinBridged;
+  const maxResults = section?.godNodeMaxResults;
+  return {
+    ...(typeof resolution === 'number' && Number.isFinite(resolution) && resolution > 0 ? { resolution } : {}),
+    ...(typeof minBridged === 'number' && Number.isInteger(minBridged) && minBridged >= 1
+      ? { godNodeMinBridged: minBridged }
+      : {}),
+    ...(typeof maxResults === 'number' && Number.isInteger(maxResults) && maxResults >= 0
+      ? { godNodeMaxResults: maxResults }
+      : {}),
+  };
 }
 
 export function maskingClusterLabelPatterns(config: CtxoConfig): string[] {
@@ -164,6 +198,56 @@ export function resolveCoChangeConfig(
     minShared: positiveIntegerOr(section?.minShared, DEFAULT_COCHANGE_MIN_SHARED),
     include: (section?.include ?? []).filter(isValidGlob),
     exclude: (section?.exclude ?? []).filter(isValidGlob),
+  };
+}
+
+/** The `contextsView` section with every default applied; what the file graph and clustering use. */
+export interface ResolvedContextsViewConfig {
+  readonly weights: { readonly dependency: number; readonly coChange: number; readonly data: number };
+  readonly exclude: readonly string[];
+  readonly hubs: {
+    readonly auto: boolean;
+    readonly topPercent: number;
+    readonly minDependents: number;
+    readonly paths: readonly string[];
+  };
+  readonly resolution: number;
+  readonly minCandidateFiles: number;
+  readonly technicalTerms: readonly string[];
+}
+
+function nonNegativeOr(value: unknown, fallback: number): number {
+  return typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : fallback;
+}
+
+function positiveOr(value: unknown, fallback: number): number {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : fallback;
+}
+
+/**
+ * Resolves the `contextsView` section (defaults: weights 1, 1 and data 0, hubs auto with top 1% and at least
+ * 10 dependents, resolution 1, minCandidateFiles 3). Unusable values and invalid globs are skipped.
+ */
+export function resolveContextsViewConfig(config: CtxoConfig): ResolvedContextsViewConfig {
+  const section = config.contextsView;
+  const hubs = section?.hubs;
+  const topPercent = hubs?.topPercent;
+  return {
+    weights: {
+      dependency: nonNegativeOr(section?.weights?.dependency, 1),
+      coChange: nonNegativeOr(section?.weights?.coChange, 1),
+      data: nonNegativeOr(section?.weights?.data, 0),
+    },
+    exclude: (section?.exclude ?? []).filter(isValidGlob),
+    hubs: {
+      auto: hubs?.auto !== false,
+      topPercent: typeof topPercent === 'number' && topPercent > 0 && topPercent <= 100 ? topPercent : 1,
+      minDependents: positiveIntegerOr(hubs?.minDependents, 10),
+      paths: (hubs?.paths ?? []).filter(isValidGlob),
+    },
+    resolution: positiveOr(section?.resolution, 1),
+    minCandidateFiles: positiveIntegerOr(section?.minCandidateFiles, 3),
+    technicalTerms: section?.technicalTerms ? [...section.technicalTerms] : [...DEFAULT_TECHNICAL_TERMS],
   };
 }
 

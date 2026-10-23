@@ -1,7 +1,8 @@
 import type { SymbolGraph } from '../graph/symbol-graph.js';
-import type { SymbolNode, SymbolKind, FileIndex, CoChangeEntry } from '../types.js';
+import { SYMBOL_KINDS, type SymbolNode, type SymbolKind, type FileIndex, type CoChangeEntry } from '../types.js';
 import { LogicSliceQuery } from '../logic-slice/logic-slice-query.js';
 import { BlastRadiusCalculator, type ImpactConfidence } from '../blast-radius/blast-radius-calculator.js';
+import { withoutAnnotations } from '../detail-levels/detail-formatter.js';
 import { type TaskType, type ScoringWeights, getWeightsForTask } from './task-context-strategy.js';
 
 export interface ContextEntry {
@@ -65,14 +66,16 @@ export class ContextAssembler {
     tokenBudget = DEFAULT_TOKEN_BUDGET,
     coChangeMap?: Map<string, CoChangeEntry[]>,
   ): TaskContextResult | undefined {
+    // Resolve the id once: a 2-part data id names its winning definition.
     const target = graph.getNode(symbolId);
     if (!target) return undefined;
+    const targetId = target.symbolId;
 
     const weights = getWeightsForTask(taskType);
 
     // Gather forward deps + reverse deps
-    const slice = this.logicSlice.getLogicSlice(graph, symbolId);
-    const blastResult = this.blastRadius.calculate(graph, symbolId, coChangeMap);
+    const slice = this.logicSlice.getLogicSlice(graph, targetId);
+    const blastResult = this.blastRadius.calculate(graph, targetId, coChangeMap);
 
     // Build candidate pool (deduplicated)
     const candidateMap = new Map<string, { node: SymbolNode; signals: Signals }>();
@@ -140,13 +143,14 @@ export class ContextAssembler {
 
     // Warnings
     const warnings: string[] = [];
-    const targetFile = symbolId.split('::')[0] ?? '';
+    const targetFile = targetId.split('::')[0] ?? '';
     const targetIndex = fileIndexMap.get(targetFile);
     if (targetIndex && targetIndex.antiPatterns.length > 0) {
       warnings.push(`⚠ Target symbol has ${targetIndex.antiPatterns.length} anti-pattern(s) in file history`);
     }
 
-    return { target, taskType, context, totalTokens, tokenBudget, warnings };
+    // The target leaves its annotations out, as logic slices below L4 do (see withoutAnnotations).
+    return { target: withoutAnnotations(target), taskType, context, totalTokens, tokenBudget, warnings };
   }
 
   assembleRanked(
@@ -280,9 +284,7 @@ interface Signals {
   hasAntiPattern: boolean;
 }
 
-const VALID_SYMBOL_KINDS = new Set<SymbolKind>([
-  'function', 'class', 'interface', 'method', 'variable', 'type',
-]);
+const VALID_SYMBOL_KINDS: ReadonlySet<string> = new Set<string>(SYMBOL_KINDS);
 
 /**
  * Build a minimal SymbolNode from a symbolId string. Used when a blast-radius
@@ -295,6 +297,6 @@ function synthesizeNodeFromId(symbolId: string): SymbolNode | undefined {
   if (parts.length !== 3) return undefined;
   const [file, name, kindRaw] = parts;
   if (!file || !name || !kindRaw) return undefined;
-  const kind = VALID_SYMBOL_KINDS.has(kindRaw as SymbolKind) ? (kindRaw as SymbolKind) : 'variable';
+  const kind = VALID_SYMBOL_KINDS.has(kindRaw) ? (kindRaw as SymbolKind) : 'variable';
   return { symbolId, name, kind, startLine: 0, endLine: 0 };
 }

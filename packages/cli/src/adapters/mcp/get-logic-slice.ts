@@ -5,11 +5,11 @@ import { SymbolGraph } from '../../core/graph/symbol-graph.js';
 import { JsonIndexReader } from '../storage/json-index-reader.js';
 import { LogicSliceQuery } from '../../core/logic-slice/logic-slice-query.js';
 import { DetailFormatter } from '../../core/detail-levels/detail-formatter.js';
-import { DetailLevelSchema } from '../../core/types.js';
+import { DetailLevelSchema, type FileIndex } from '../../core/types.js';
 import { wrapResponse } from '../../core/response-envelope.js';
 import { filterByIntent } from '../../core/intent-filter.js';
 
-const InputSchema = z.object({
+export const InputSchema = z.object({
   symbolId: z.string().min(1).optional(),
   symbolIds: z.array(z.string().min(1)).optional(),
   level: DetailLevelSchema.optional().default(3),
@@ -53,12 +53,13 @@ export function buildGraphAndFilesFromJsonIndex(
 ): { graph: SymbolGraph; indexedFiles: string[] } {
   const reader = new JsonIndexReader(ctxoRoot);
   const indices = reader.readAll();
+  return { graph: buildGraphFromIndices(indices), indexedFiles: indices.map((fileIndex) => fileIndex.file) };
+}
 
+/** Build a graph from file indices already read: every node first, then every edge. */
+export function buildGraphFromIndices(indices: readonly FileIndex[]): SymbolGraph {
   const graph = new SymbolGraph();
-  const indexedFiles: string[] = [];
-
   for (const fileIndex of indices) {
-    indexedFiles.push(fileIndex.file);
     for (const sym of fileIndex.symbols) {
       graph.addNode(sym);
     }
@@ -68,7 +69,7 @@ export function buildGraphAndFilesFromJsonIndex(
       graph.addEdge(edge);
     }
   }
-  return { graph, indexedFiles };
+  return graph;
 }
 
 /**

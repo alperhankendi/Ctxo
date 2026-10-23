@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { execFileSync } from 'node:child_process';
@@ -53,5 +53,23 @@ describe('LanguageCoverageCheck', () => {
     expect(result.status).toBe('warn');
     expect(result.message).toContain('python');
     expect(result.fix).toContain('ctxo install python');
+  });
+
+  it('language coverage counts sql and passes when @ctxo/lang-sql resolves', async () => {
+    mkdirSync(join(tmp, 'db', 'tables'), { recursive: true });
+    for (const name of ['Loans', 'Members', 'Fines', 'Holds', 'Branches']) {
+      writeFileSync(join(tmp, 'db', 'tables', `${name}.sql`), `create table dbo.${name} (id int);`);
+    }
+    execFileSync('git', ['add', '-A'], { cwd: tmp });
+    execFileSync(
+      'git',
+      ['-c', 'commit.gpgsign=false', 'commit', '-m', 'init', '--quiet'],
+      { cwd: tmp },
+    );
+    const result = await check.run(makeCtx(tmp));
+    // @ctxo/lang-sql is a workspace devDependency of the CLI, so it resolves from here
+    expect(result.status).toBe('pass');
+    expect(result.message).toContain('sql');
+    expect(result.message).not.toContain('missing');
   });
 });

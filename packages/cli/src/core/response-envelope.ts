@@ -66,10 +66,13 @@ const TRUNCATABLE_FIELDS: Record<string, string> = {
   deadFiles: 'Use find_dead_code with includeTests to adjust scope.',
   files: 'Use get_changed_symbols with a narrower since ref or smaller maxFiles.',
   clusters: 'Use get_architectural_overlay with mode=communities and layer filter for a focused view.',
+  candidates:
+    'Use get_architectural_overlay with mode=contexts and candidate: <id> for one candidate in full, or ctxo contexts --json for the full contexts view.',
   clustersAffected: 'Use get_blast_radius on individual changed symbols for per-cluster impact.',
 };
 
-function getThreshold(): number {
+/** The response limit in bytes: `CTXO_RESPONSE_LIMIT` when it is a positive integer, else 8192. */
+export function getThreshold(): number {
   const env = process.env['CTXO_RESPONSE_LIMIT'];
   if (env) {
     const n = parseInt(env, 10);

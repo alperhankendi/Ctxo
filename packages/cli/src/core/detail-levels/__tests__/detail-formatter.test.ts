@@ -111,4 +111,42 @@ describe('DetailFormatter', () => {
     expect(result.root.startLine).toBe(0);
     expect(result.root.endLine).toBe(0);
   });
+
+  describe('annotations', () => {
+    const HTTP_POST = [{ name: 'HttpPost', args: ['close'] }];
+    const COLUMNS = [{ name: 'columns', args: ['loan_id', 'due_date'] }];
+
+    function annotatedSlice(): LogicSliceResult {
+      const slice = buildSlice(2);
+      return {
+        root: { ...slice.root, annotations: HTTP_POST },
+        dependencies: slice.dependencies.map((dep) => ({ ...dep, annotations: COLUMNS })),
+        edges: slice.edges,
+      };
+    }
+
+    it('logic slice L2 omits annotations', () => {
+      const result = formatter.format(annotatedSlice(), 2);
+      expect(result.dependencies).toHaveLength(1);
+      expect('annotations' in result.root).toBe(false);
+      expect(result.dependencies.some((dep) => 'annotations' in dep)).toBe(false);
+    });
+
+    it('logic slice L1 and L3 omit annotations, and the input slice keeps them', () => {
+      const slice = annotatedSlice();
+      for (const level of [1, 3] as const) {
+        const result = formatter.format(slice, level);
+        expect('annotations' in result.root).toBe(false);
+        expect(result.dependencies.some((dep) => 'annotations' in dep)).toBe(false);
+      }
+      expect(slice.root.annotations).toEqual(HTTP_POST);
+      expect(slice.dependencies[0]!.annotations).toEqual(COLUMNS);
+    });
+
+    it('logic slice L4 keeps annotations', () => {
+      const result = formatter.format(annotatedSlice(), 4);
+      expect(result.root.annotations).toEqual(HTTP_POST);
+      expect(result.dependencies.map((dep) => dep.annotations)).toEqual([COLUMNS, COLUMNS]);
+    });
+  });
 });

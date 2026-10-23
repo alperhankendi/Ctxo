@@ -1,28 +1,16 @@
 import { z } from 'zod';
+import { SYMBOL_KINDS, EDGE_KINDS, FACT_KINDS } from '@ctxo/plugin-api';
 
 // ── Symbol Kinds ────────────────────────────────────────────────
 
-export const SYMBOL_KINDS = [
-  'function',
-  'class',
-  'interface',
-  'method',
-  'variable',
-  'type',
-] as const;
+export { SYMBOL_KINDS };
 
 export const SymbolKindSchema = z.enum(SYMBOL_KINDS);
 export type SymbolKind = z.infer<typeof SymbolKindSchema>;
 
 // ── Edge Kinds ──────────────────────────────────────────────────
 
-export const EDGE_KINDS = [
-  'imports',
-  'calls',
-  'extends',
-  'implements',
-  'uses',
-] as const;
+export { EDGE_KINDS };
 
 export const EdgeKindSchema = z.enum(EDGE_KINDS);
 export type EdgeKind = z.infer<typeof EdgeKindSchema>;
@@ -79,6 +67,16 @@ export const EdgeTargetSchema = z.string().refine(
 );
 export type EdgeTarget = z.infer<typeof EdgeTargetSchema>;
 
+// ── Symbol Annotation ───────────────────────────────────────────
+
+/** Host-language attribute or decorator on a symbol (protocol v2). Shape only; plugins enforce caps. */
+export const SymbolAnnotationSchema = z.object({
+  name: z.string().min(1),
+  args: z.array(z.string()).readonly().optional(),
+  named: z.record(z.string(), z.string()).readonly().optional(),
+});
+export type SymbolAnnotation = z.infer<typeof SymbolAnnotationSchema>;
+
 // ── Symbol Node ─────────────────────────────────────────────────
 
 export const SymbolNodeSchema = z
@@ -90,6 +88,7 @@ export const SymbolNodeSchema = z
     endLine: z.number().int().nonnegative(),
     startOffset: z.number().int().nonnegative().optional(),
     endOffset: z.number().int().nonnegative().optional(),
+    annotations: z.array(SymbolAnnotationSchema).readonly().optional(),
   })
   .refine((node) => node.endLine >= node.startLine, {
     message: 'endLine must be >= startLine',
@@ -125,6 +124,21 @@ export const AntiPatternSchema = z.object({
 });
 export type AntiPattern = z.infer<typeof AntiPatternSchema>;
 
+// ── Code Fact ───────────────────────────────────────────────────
+
+export const FactKindSchema = z.enum(FACT_KINDS);
+export type FactKind = z.infer<typeof FactKindSchema>;
+
+/** A fact extracted from a symbol body (protocol v2). The line is 0-based, like a symbol's start line. */
+export const CodeFactSchema = z.object({
+  kind: FactKindSchema,
+  symbolId: SymbolIdSchema,
+  line: z.number().int().nonnegative(),
+  text: z.string(),
+  detail: z.record(z.string(), z.string()).readonly().optional(),
+});
+export type CodeFact = z.infer<typeof CodeFactSchema>;
+
 // ── File Index ──────────────────────────────────────────────────
 
 export const ComplexityMetricsSchema = z.object({
@@ -141,6 +155,7 @@ export const FileIndexSchema = z.object({
   complexity: z.array(ComplexityMetricsSchema).optional(),
   intent: z.array(CommitIntentSchema),
   antiPatterns: z.array(AntiPatternSchema),
+  facts: z.array(CodeFactSchema).readonly().optional(),
 });
 export type FileIndex = z.infer<typeof FileIndexSchema>;
 

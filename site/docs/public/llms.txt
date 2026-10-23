@@ -2,7 +2,7 @@
 
 > AI agents don't fail because they can't code. They fail because they code blind. Ctxo gives them the full picture before they write a single line.
 
-Ctxo is a Model Context Protocol (MCP) server that delivers Logic-Slices to AI coding assistants: a symbol plus its transitive dependencies, git intent, anti-pattern warnings, and change health scores in under 500ms. It ships as an npm package (`@ctxo/cli`) plus language plugins (`@ctxo/lang-typescript`, `@ctxo/lang-go`, `@ctxo/lang-csharp`).
+Ctxo is a Model Context Protocol (MCP) server that delivers Logic-Slices to AI coding assistants: a symbol plus its transitive dependencies, git intent, anti-pattern warnings, and change health scores in under 500ms. It ships as an npm package (`@ctxo/cli`) plus language plugins (`@ctxo/lang-typescript`, `@ctxo/lang-go`, `@ctxo/lang-csharp`, `@ctxo/lang-java`, `@ctxo/lang-sql`). With `@ctxo/lang-sql`, data coupling (tables, views and procedures read, written and executed from SQL and C#) shows up in blast radius and the contexts view.
 
 ## Introduction
 
@@ -15,8 +15,8 @@ Ctxo is a Model Context Protocol (MCP) server that delivers Logic-Slices to AI c
 ## Core Concepts
 
 - [Logic-Slices](https://alperhankendi.github.io/Ctxo/docs/concepts/logic-slices): Symbol + transitive deps with L1-L4 progressive detail.
-- [Dependency Graph](https://alperhankendi.github.io/Ctxo/docs/concepts/dependency-graph): Symbol nodes, 5 edge kinds.
-- [Blast Radius](https://alperhankendi.github.io/Ctxo/docs/concepts/blast-radius): 3-tier impact scoring.
+- [Dependency Graph](https://alperhankendi.github.io/Ctxo/docs/concepts/dependency-graph): Symbol nodes (9 kinds, including table, view, procedure), 8 edge kinds (including the data edges reads, writes, executes).
+- [Blast Radius](https://alperhankendi.github.io/Ctxo/docs/concepts/blast-radius): 3-tier impact scoring; data edges are confirmed.
 - [Git Intent & Anti-Patterns](https://alperhankendi.github.io/Ctxo/docs/concepts/git-intent): Commit history, revert detection.
 - [Change Intelligence](https://alperhankendi.github.io/Ctxo/docs/concepts/change-intelligence): Complexity × churn composite.
 - [PageRank Importance](https://alperhankendi.github.io/Ctxo/docs/concepts/pagerank): Node centrality for ranked context.
@@ -25,13 +25,14 @@ Ctxo is a Model Context Protocol (MCP) server that delivers Logic-Slices to AI c
 ## CLI Reference
 
 - [Overview](https://alperhankendi.github.io/Ctxo/docs/cli/overview): All commands at a glance.
-- [ctxo install](https://alperhankendi.github.io/Ctxo/docs/cli/install): Install language plugins.
+- [ctxo install](https://alperhankendi.github.io/Ctxo/docs/cli/install): Install language plugins (`ctxo install sql`, alias `tsql`, for T-SQL).
 - [ctxo init](https://alperhankendi.github.io/Ctxo/docs/cli/init): Bootstrap a project (rules, plugins, versioned git hooks).
 - [ctxo index](https://alperhankendi.github.io/Ctxo/docs/cli/index): Build the codebase index; `--files` and `--commit` re-index part of it; co-change window flags.
 - [ctxo watch](https://alperhankendi.github.io/Ctxo/docs/cli/watch): Incremental re-index.
 - [ctxo sync](https://alperhankendi.github.io/Ctxo/docs/cli/sync): Rebuild SQLite from JSON.
 - [ctxo status](https://alperhankendi.github.io/Ctxo/docs/cli/status): Index manifest.
-- [ctxo doctor](https://alperhankendi.github.io/Ctxo/docs/cli/doctor): Health check + `--fix` (including the `git_hooks` check).
+- [ctxo doctor](https://alperhankendi.github.io/Ctxo/docs/cli/doctor): Health check + `--fix` (including the `git_hooks` check and the `csharp_tier` check, which warns when the Roslyn helper cannot restore its NuGet packages).
+- [ctxo contexts](https://alperhankendi.github.io/Ctxo/docs/cli/contexts): Candidate bounded contexts, with shared tables between them; `--json` for the full artifact.
 - [ctxo visualize](https://alperhankendi.github.io/Ctxo/docs/cli/visualize): Interactive graph HTML.
 - [config.yaml](https://alperhankendi.github.io/Ctxo/docs/cli/config-yaml): Project config file.
 - [Environment variables](https://alperhankendi.github.io/Ctxo/docs/cli/env-vars): DEBUG namespaces and friends.
@@ -41,17 +42,17 @@ Ctxo is a Model Context Protocol (MCP) server that delivers Logic-Slices to AI c
 - [Overview](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/overview): All tools grouped.
 - [Tool Selection Guide](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/tool-selection-guide): Which tool for which task.
 - [Response Format](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/response-format): `_meta` envelope summary.
-- [get_logic_slice](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-logic-slice): Symbol + deps (L1-L4).
+- [get_logic_slice](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-logic-slice): Symbol + deps (L1-L4); node annotations at L4 only.
 - [get_context_for_task](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-context-for-task): Task-aware context.
 - [get_ranked_context](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-ranked-context): BM25 + PageRank search.
 - [search_symbols](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/search-symbols): Name or regex search.
-- [get_blast_radius](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-blast-radius): Impact score + tiers.
+- [get_blast_radius](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-blast-radius): Impact score + tiers; accepts 2-part data IDs such as `dbo.loans::table`.
 - [get_pr_impact](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-pr-impact): Full PR risk assessment.
 - [get_change_intelligence](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-change-intelligence): Per-symbol complexity × churn.
 - [get_changed_symbols](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-changed-symbols): Symbols in recent diffs.
 - [find_importers](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/find-importers): Reverse dependency lookup.
 - [get_class_hierarchy](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-class-hierarchy): Ancestors + descendants.
-- [get_architectural_overlay](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-architectural-overlay): Domain / Infra / Adapters layers.
+- [get_architectural_overlay](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-architectural-overlay): Domain / Infra / Adapters layers, communities, and candidate contexts with shared tables (`mode: "contexts"`).
 - [get_symbol_importance](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-symbol-importance): PageRank centrality.
 - [get_why_context](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/get-why-context): Git commit intent + anti-patterns.
 - [find_dead_code](https://alperhankendi.github.io/Ctxo/docs/mcp-tools/find-dead-code): Unused symbols, unused exports, scaffolding.
@@ -72,8 +73,10 @@ Ctxo is a Model Context Protocol (MCP) server that delivers Logic-Slices to AI c
 - [Overview](https://alperhankendi.github.io/Ctxo/docs/languages/overview): Tier matrix and detection.
 - [TypeScript](https://alperhankendi.github.io/Ctxo/docs/languages/typescript): `@ctxo/lang-typescript` (ts-morph).
 - [Go](https://alperhankendi.github.io/Ctxo/docs/languages/go): `@ctxo/lang-go` (tree-sitter + analyzer).
-- [C#](https://alperhankendi.github.io/Ctxo/docs/languages/csharp): `@ctxo/lang-csharp` (Roslyn + tree-sitter).
-- [Writing a Plugin](https://alperhankendi.github.io/Ctxo/docs/languages/writing-a-plugin): Plugin API v1.
+- [C#](https://alperhankendi.github.io/Ctxo/docs/languages/csharp): `@ctxo/lang-csharp` (Roslyn + tree-sitter), attribute annotations, SQL edges at known call sites (ADO.NET, Dapper including `CommandDefinition`, `SqlBulkCopy`, EF Core).
+- [Java](https://alperhankendi.github.io/Ctxo/docs/languages/java): `@ctxo/lang-java` (tree-sitter + Eclipse JDT analyzer).
+- [SQL](https://alperhankendi.github.io/Ctxo/docs/languages/sql): `@ctxo/lang-sql` (T-SQL tables, views, procedures and their reads, writes and executes; several definitions of one object; 5 MiB file size limit).
+- [Writing a Plugin](https://alperhankendi.github.io/Ctxo/docs/languages/writing-a-plugin): Plugin API, protocol v1 and v2 (data kinds, annotations, facts, capabilities).
 
 ## Visualizer
 
@@ -87,9 +90,9 @@ Ctxo is a Model Context Protocol (MCP) server that delivers Logic-Slices to AI c
 
 ## Reference
 
-- [Config Schema](https://alperhankendi.github.io/Ctxo/docs/reference/config-schema): Full `.ctxo/config.yaml`, including the `cochange` window.
-- [Symbol IDs](https://alperhankendi.github.io/Ctxo/docs/reference/symbol-ids): `<file>::<name>::<kind>`.
-- [Edge Kinds](https://alperhankendi.github.io/Ctxo/docs/reference/edge-kinds): imports, calls, extends, implements, uses.
+- [Config Schema](https://alperhankendi.github.io/Ctxo/docs/reference/config-schema): Full `.ctxo/config.yaml`, including the `cochange` window, `contextsView.weights.data`, `index.facts` and annotation-based test detection.
+- [Symbol IDs](https://alperhankendi.github.io/Ctxo/docs/reference/symbol-ids): `<file>::<name>::<kind>`, and 2-part data references such as `dbo.loans::table`, which the impact tools accept as input.
+- [Edge Kinds](https://alperhankendi.github.io/Ctxo/docs/reference/edge-kinds): imports, calls, extends, implements, uses, reads, writes, executes.
 - [Response Envelope](https://alperhankendi.github.io/Ctxo/docs/reference/response-envelope): `_meta` fields.
 - [CI Integration](https://alperhankendi.github.io/Ctxo/docs/reference/ci-integration): `ctxo index --check`.
 - [Release Process](https://alperhankendi.github.io/Ctxo/docs/reference/release-process): Changesets flow.
