@@ -34,6 +34,12 @@ export const EDGE_KIND_CONFIDENCE: Readonly<Record<EdgeKind, ImpactConfidence>> 
   imports: 'potential',
 };
 
+// Depth-weighted risk mass at which overallRiskScore reaches 0.5.
+// With 5: 1 direct dependent → 0.167, 3 → 0.375, 12 → 0.706. The hyperbolic
+// curve keeps heavily-depended-on symbols distinguishable instead of pinning
+// them at 1.0, and 3 direct dependents (the balanced gate floor) land in medium.
+const RISK_HALF_POINT = 5;
+
 const CONFIDENCE_RANK: Record<ImpactConfidence, number> = {
   confirmed: 2,
   likely: 1,
@@ -145,9 +151,11 @@ export class BlastRadiusCalculator {
 
     const directDependentsCount = entries.filter((e) => e.depth === 1).length;
 
-    // GAP-29 FIX: depth-weighted risk — direct dependents dominate
+    // Depth-weighted risk mass, squashed into [0, 1). Dividing by
+    // directDependentsCount (the old GAP-29 formula) always yielded >= 1
+    // because every direct dependent contributes exactly 1.0.
     const totalRisk = entries.reduce((sum, e) => sum + e.riskScore, 0);
-    const overallRiskScore = Math.round(Math.min(totalRisk / Math.max(directDependentsCount, 1), 1) * 1000) / 1000;
+    const overallRiskScore = Math.round((totalRisk / (totalRisk + RISK_HALF_POINT)) * 1000) / 1000;
 
     const confirmedCount = entries.filter((e) => e.confidence === 'confirmed').length;
     const likelyCount = entries.filter((e) => e.confidence === 'likely').length;

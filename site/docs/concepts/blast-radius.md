@@ -97,13 +97,15 @@ the risk scores or the guard.
 Per-entry: `round(1 / depth^0.7, 3)`. Overall:
 
 ```
-overallRiskScore = min( sum(riskScore) / max(directDependents, 1) , 1 )
+overallRiskScore = round( sum(riskScore) / ( sum(riskScore) + 5 ) , 3 )
 ```
 
-The normalization by direct-dependent count means a symbol with one direct
-dependent but a long tail gets a lower overall score than a symbol with ten
-direct dependents. This matches intuition: wide blast is riskier than deep
-blast.
+The score grows with the depth-weighted size of the blast and approaches 1
+without saturating: one direct dependent scores `0.167`, three score `0.375`
+(medium), twelve score `0.706` (high), and even very central symbols stay
+distinguishable from each other. Because each entry is already decayed by depth, a symbol
+with three direct dependents scores higher than one with a three-deep chain.
+This matches intuition: wide blast is riskier than deep blast.
 
 ## Reading the response
 
@@ -123,7 +125,7 @@ blast.
   "confirmedCount": 1,
   "likelyCount": 0,
   "potentialCount": 0,
-  "overallRiskScore": 1.0
+  "overallRiskScore": 0.167
 }
 ```
 
