@@ -44,7 +44,7 @@
     "@modelcontextprotocol/sdk": "^1.31.0",
     "@types/node": "^26.6.1",
     "eslint": "^10.6.0",
-    "tsup": "^8.4.0",
+    "tsup": "^9.0.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.1",
     "vitest": "^5.0.1"
