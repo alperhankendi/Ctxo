@@ -158,7 +158,10 @@ Beyond folders, it proposes test-kind markers for `domain.tests.characterization
 - Test source files named `*ContractTests`, `*CharacterizationTests` (and `Test`), `*.contract.test.ts`,
   `*.contract.spec.ts` or `*_contract_test.go`, as `paths` globs such as `**/*ContractTests.cs`. A `names` marker
   matches test case names only, never file names. A file named after a non-test class of the index
-  (`LoanContractTests.cs` next to `LoanContract`) tests an entity, so its glob is not proposed.
+  (`LoanContractTests.cs` next to `LoanContract`) tests an entity, so it is left out: the glob is proposed on the
+  other files of its family, and not at all when every file is such a file. The printout and `--json`
+  (`fileNames[].entityFiles`) name the files left out; the printout shows the first 5 and "and N more", `--json`
+  lists them all.
 
 Values a configured matcher or glob already covers are not proposed.
 

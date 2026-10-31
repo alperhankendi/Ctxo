@@ -55,6 +55,8 @@ export interface ClassifyTestsInput {
   readonly characterization: TestConvention;
   readonly contract: TestConvention;
   readonly makeMatcher: GlobMatcherFactory;
+  /** Called once, with the files in input order, when some test files took the quadratic pairwise leaf check. */
+  readonly onPairwiseFallback?: (files: readonly string[]) => void;
 }
 
 type Annotation = NonNullable<SymbolNode['annotations']>[number];
@@ -120,11 +122,136 @@ function strictlyContains(outer: SymbolNode, inner: SymbolNode): boolean {
 }
 
 const isCallable = (symbol: SymbolNode): boolean => symbol.kind === 'function' || symbol.kind === 'method';
+const hasOffsets = (symbol: SymbolNode): boolean => symbol.startOffset !== undefined && symbol.endOffset !== undefined;
+
+type ArrayProbe = <T>(list: T[]) => T[];
+let arrayProbe: ArrayProbe | undefined;
+
+/**
+ * Test only: wraps every working array of `classifyTests` (span lists, sorted starts, suffix minima, prefix maxima,
+ * title lines, offset points, the callables of the pairwise check) so a cost test can count every element access.
+ * Pass undefined to remove it. Unset, `watched` returns its argument and costs one comparison per array.
+ */
+export function setClassifyTestsArrayProbe(probe: ArrayProbe | undefined): void {
+  arrayProbe = probe;
+}
+
+const watched = <T>(list: T[]): T[] => (arrayProbe === undefined ? list : arrayProbe(list));
+
+/** First index of a sorted list whose value is at least (`strict`: above) `x`. */
+function lowerBound(sorted: readonly number[], x: number, strict: boolean): number {
+  let lo = 0;
+  let hi = sorted.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >>> 1;
+    if (strict ? sorted[mid]! <= x : sorted[mid]! < x) lo = mid + 1;
+    else hi = mid;
+  }
+  return lo;
+}
+
+type Span = readonly [number, number];
+
+/**
+ * Answers "is some span inside `(a, b)` and not equal to it" (`a2 >= a`, `b2 <= b`, `(a2, b2) != (a, b)`) in
+ * O(log n): the spans sorted by start, with the suffix minimum of their ends.
+ */
+class InnerSpanIndex {
+  private readonly starts: number[];
+  private readonly minEnd: number[];
+
+  constructor(spans: readonly Span[]) {
+    const sorted = watched([...spans]).sort((x, y) => x[0] - y[0]);
+    this.starts = watched(sorted.map((s) => s[0]));
+    this.minEnd = watched(new Array<number>(sorted.length + 1).fill(Infinity));
+    for (let i = sorted.length - 1; i >= 0; i--) this.minEnd[i] = Math.min(sorted[i]![1], this.minEnd[i + 1]!);
+  }
+
+  /** A span with `a2 > a, b2 <= b`, or one with `a2 >= a, b2 < b`. */
+  hasInner(a: number, b: number): boolean {
+    return this.minEnd[lowerBound(this.starts, a, true)]! <= b || this.minEnd[lowerBound(this.starts, a, false)]! < b;
+  }
+}
+
+/**
+ * Answers "does a span include `(start, end)`" (`start2 <= start`, `end2 >= end`) in O(log n): the spans sorted by
+ * start, with the prefix maximum of their ends.
+ */
+class OuterSpanIndex {
+  private readonly starts: number[];
+  private readonly maxEnd: number[];
+
+  constructor(spans: readonly Span[]) {
+    const sorted = watched([...spans]).sort((x, y) => x[0] - y[0]);
+    this.starts = watched(sorted.map((s) => s[0]));
+    let max = -Infinity;
+    this.maxEnd = watched(
+      sorted.map((s) => {
+        max = Math.max(max, s[1]);
+        return max;
+      }),
+    );
+  }
+
+  includes(start: number, end: number): boolean {
+    const count = lowerBound(this.starts, start, true);
+    return count > 0 && this.maxEnd[count - 1]! >= end;
+  }
+}
+
+/**
+ * True when no smaller offset of these symbols sits on a later line (and equal offsets sit on one line): then offset
+ * containment implies line containment, and the offset rule of `strictlyContains` compares offsets alone.
+ */
+function offsetsFollowLines(symbols: readonly SymbolNode[]): boolean {
+  const points = watched<[number, number]>([]);
+  for (const s of symbols) points.push([s.startOffset!, s.startLine], [s.endOffset!, s.endLine]);
+  points.sort((x, y) => x[0] - y[0] || x[1] - y[1]);
+  for (let i = 1; i < points.length; i++) {
+    const [prevOffset, prevLine] = points[i - 1]!;
+    const [offset, line] = points[i]!;
+    if (line < prevLine || (offset === prevOffset && line !== prevLine)) return false;
+  }
+  return true;
+}
+
+/**
+ * The callables of one file that strictly contain no other callable (`strictlyContains`), in input order, in
+ * O(n log n). Line spans decide unless both symbols carry offsets. A file whose offsets contradict its lines (no
+ * plugin writes one; only a hand-edited or corrupted index JSON) falls back to the quadratic pairwise check
+ * (`pairwise: true`), so the result is the same on any input.
+ */
+function leafCallables(callables: readonly SymbolNode[]): { readonly leaves: SymbolNode[]; readonly pairwise: boolean } {
+  const withOffsets = callables.filter(hasOffsets);
+  if (!offsetsFollowLines(withOffsets)) {
+    const all = watched([...callables]);
+    return { leaves: all.filter((s) => !all.some((other) => strictlyContains(s, other))), pairwise: true };
+  }
+  const lineIndex = (list: readonly SymbolNode[]): InnerSpanIndex => new InnerSpanIndex(list.map((s): Span => [s.startLine, s.endLine]));
+  const anyLines = lineIndex(callables);
+  const plainLines = lineIndex(callables.filter((s) => !hasOffsets(s)));
+  const offsets = new InnerSpanIndex(withOffsets.map((s): Span => [s.startOffset!, s.endOffset!]));
+  const leaves = callables.filter((s) =>
+    hasOffsets(s)
+      ? !plainLines.hasInner(s.startLine, s.endLine) && !offsets.hasInner(s.startOffset!, s.endOffset!)
+      : !anyLines.hasInner(s.startLine, s.endLine),
+  );
+  return { leaves, pairwise: false };
+}
+
+/** The 1-based lines of the titles holding a marker, sorted, and whether one lies in a 0-based line span (W16). */
+function titleLinesIn(sortedLines: readonly number[], symbol: SymbolNode): boolean {
+  const first = sortedLines[lowerBound(sortedLines, symbol.startLine + 1, false)];
+  return first !== undefined && first <= symbol.endLine + 1;
+}
 
 /**
  * H7: the test cases of the test files and which of them are characterization and contract tests. A case is of a
  * kind when its file matches a `paths` glob, when it or a symbol of its file spanning it carries an annotation a
  * matcher accepts, or when a `names` marker occurs in its name or in a declared title on a line it spans.
+ * O(n log n) in the symbols and titles of a file (quadratic fallback when offsets contradict lines, reported through
+ * `onPairwiseFallback`): leaves by `leafCallables`, annotation holders by an `OuterSpanIndex` of the holders a
+ * matcher accepts, titles by a binary search over the lines of the marked titles.
  */
 export function classifyTests(input: ClassifyTestsInput): TestClassification {
   const characterization = compile(input.characterization, input.makeMatcher);
@@ -141,30 +268,36 @@ export function classifyTests(input: ClassifyTestsInput): TestClassification {
   const cases: string[] = [];
   const isCharacterization = new Set<string>();
   const isContract = new Set<string>();
+  const pairwiseFiles: string[] = [];
 
   for (const index of input.indices) {
     if (!input.isTestFile(index.file)) continue;
     const file = norm(index.file);
     const titles = titlesByFile.get(file) ?? [];
-    const callables = index.symbols.filter(isCallable);
-    for (const symbol of callables) {
-      if (callables.some((other) => strictlyContains(symbol, other))) continue;
+    const { leaves, pairwise } = leafCallables(index.symbols.filter(isCallable));
+    if (pairwise) pairwiseFiles.push(file);
+    if (leaves.length === 0) continue;
+    const prepare = (convention: CompiledConvention): ((symbol: SymbolNode) => boolean) => {
+      const byPath = convention.path(file);
+      const accepted = (h: SymbolNode): boolean => (h.annotations ?? []).some((a) => convention.matchers.some((m) => annotationMatches(m, a)));
+      const holders = new OuterSpanIndex(index.symbols.filter(accepted).map((h): Span => [h.startLine, h.endLine]));
+      const marked = (text: string): boolean => {
+        const lower = lowerAscii(text);
+        return convention.names.some((marker) => lower.includes(marker));
+      };
+      const lines = watched(titles.filter((t) => marked(t.title)).map((t) => t.line)).sort((a, b) => a - b);
+      return (symbol) => byPath || holders.includes(symbol.startLine, symbol.endLine) || marked(symbol.name) || titleLinesIn(lines, symbol);
+    };
+    const matchesCharacterization = prepare(characterization);
+    const matchesContract = prepare(contract);
+    for (const symbol of leaves) {
       cases.push(symbol.symbolId);
-      const annotations: Annotation[] = [];
-      for (const holder of index.symbols) if (spans(holder, symbol)) annotations.push(...(holder.annotations ?? []));
-      // W16: titles are 1-based, index lines 0-based.
-      const texts = [symbol.name, ...titles.filter((t) => t.line >= symbol.startLine + 1 && t.line <= symbol.endLine + 1).map((t) => t.title)].map(
-        lowerAscii,
-      );
-      const matches = (convention: CompiledConvention): boolean =>
-        convention.path(file) ||
-        annotations.some((a) => convention.matchers.some((m) => annotationMatches(m, a))) ||
-        convention.names.some((marker) => texts.some((text) => text.includes(marker)));
-      if (matches(characterization)) isCharacterization.add(symbol.symbolId);
-      if (matches(contract)) isContract.add(symbol.symbolId);
+      if (matchesCharacterization(symbol)) isCharacterization.add(symbol.symbolId);
+      if (matchesContract(symbol)) isContract.add(symbol.symbolId);
     }
   }
 
+  if (pairwiseFiles.length > 0) input.onPairwiseFallback?.(pairwiseFiles);
   const testCases = [...new Set(cases)].sort(compare);
   return {
     testCases,

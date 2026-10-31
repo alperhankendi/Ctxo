@@ -244,7 +244,7 @@ describe('test-kind markers beyond folders', () => {
       characterization: {
         annotationValues: [{ matcher: 'Category:FeeCharacterization', count: 1 }],
         attributes: [],
-        fileNames: [{ glob: '**/*CharacterizationTests.cs', files: 1, entityTests: 0 }],
+        fileNames: [{ glob: '**/*CharacterizationTests.cs', files: 1, entityTests: 0, entityFiles: [] }],
       },
       contract: {
         annotationValues: [{ matcher: 'Trait:Category=StorageContract', count: 1 }],
@@ -252,7 +252,7 @@ describe('test-kind markers beyond folders', () => {
           { name: 'StorageContractFact', count: 2 },
           { name: 'StorageContractTheory', count: 1 },
         ],
-        fileNames: [{ glob: '**/*ContractTests.cs', files: 1, entityTests: 0 }],
+        fileNames: [{ glob: '**/*ContractTests.cs', files: 1, entityTests: 0, entityFiles: [] }],
       },
     });
   });
@@ -342,11 +342,89 @@ describe('test-kind markers: what is not a marker', () => {
     const { evidence, proposal } = discoverConventions(
       input({ indices: [tests, entity('src/Lending/LoanContract.cs', 'LoanContract')], trackedFiles: [tests.file, 'src/Lending/LoanContract.cs'] }),
     );
-    expect(evidence.testKindMarkers.contract.fileNames).toEqual([{ glob: '**/*ContractTests.cs', files: 1, entityTests: 1 }]);
+    expect(evidence.testKindMarkers.contract.fileNames).toEqual([
+      { glob: '**/*ContractTests.cs', files: 1, entityTests: 1, entityFiles: ['tests/Lending.Tests/LoanContractTests.cs'] },
+    ]);
     expect(proposal.contractPaths).toEqual([]);
     expect(formatDiscovery(evidence, proposal, DEFAULT_DOMAIN_CONFIG)).toContain(
-      'file names **/*ContractTests.cs (1, 1 named after a non-test class, so not proposed)',
+      'file names **/*ContractTests.cs (1, 1 named after a non-test class, so not proposed: tests/Lending.Tests/LoanContractTests.cs)',
     );
+  });
+
+  it('a family made only of entity files is not proposed, whatever its size', () => {
+    const tests = [
+      index('tests/Lending.Tests/LoanContractTests.cs', [[{ name: 'Fact' }]]),
+      index('tests/Lending.Tests/RentalContractTests.cs', [[{ name: 'Fact' }]]),
+    ];
+    const entities = [entity('src/Lending/LoanContract.cs', 'LoanContract'), entity('src/Lending/RentalContract.cs', 'RentalContract')];
+    const { evidence, proposal } = discoverConventions(
+      input({ indices: [...tests, ...entities], trackedFiles: [...tests, ...entities].map((i) => i.file) }),
+    );
+    expect(evidence.testKindMarkers.contract.fileNames).toEqual([
+      {
+        glob: '**/*ContractTests.cs',
+        files: 2,
+        entityTests: 2,
+        entityFiles: ['tests/Lending.Tests/LoanContractTests.cs', 'tests/Lending.Tests/RentalContractTests.cs'],
+      },
+    ]);
+    expect(proposal.contractPaths).toEqual([]);
+  });
+
+  it('an entity file is left out of its family, which is proposed on its other files (#191 leftover)', () => {
+    const files = [
+      'tests/Storage.Tests/BlobStoreContractTests.cs',
+      'tests/Lending.Tests/LoanContractTests.cs',
+      'tests/Storage.Tests/QueueContractTests.cs',
+      'tests/Lending.Tests/FeeContractTests.cs',
+    ];
+    const tests = files.map((file) => index(file, [[{ name: 'Fact' }]]));
+    const entities = [entity('src/Lending/LoanContract.cs', 'LoanContract'), entity('src/Lending/FeeContract.cs', 'FeeContract')];
+    const run = (tracked: readonly string[]) =>
+      discoverConventions(input({ indices: [...tests, ...entities], trackedFiles: [...tracked, ...entities.map((i) => i.file)] }));
+    const { evidence, proposal } = run(files);
+    const expected = {
+      glob: '**/*ContractTests.cs',
+      files: 4,
+      entityTests: 2,
+      entityFiles: ['tests/Lending.Tests/FeeContractTests.cs', 'tests/Lending.Tests/LoanContractTests.cs'],
+    };
+    expect(evidence.testKindMarkers.contract.fileNames).toEqual([expected]);
+    expect(proposal.contractPaths).toEqual(['**/*ContractTests.cs']);
+    expect(formatDiscovery(evidence, proposal, DEFAULT_DOMAIN_CONFIG)).toContain(
+      'file names **/*ContractTests.cs (4, 2 named after a non-test class, left out: tests/Lending.Tests/FeeContractTests.cs, tests/Lending.Tests/LoanContractTests.cs)',
+    );
+    // Deterministic: the order of the tracked files changes nothing.
+    const reversed = run([...files].reverse());
+    expect(reversed.evidence.testKindMarkers.contract.fileNames).toEqual([expected]);
+    expect(formatDiscovery(reversed.evidence, reversed.proposal, DEFAULT_DOMAIN_CONFIG)).toBe(
+      formatDiscovery(evidence, proposal, DEFAULT_DOMAIN_CONFIG),
+    );
+  });
+
+  it('the printout names the first 5 entity files and the count of the rest; --json keeps them all', () => {
+    const names = Array.from({ length: 7 }, (_, i) => `Item${i}Contract`);
+    const tests = names.map((name) => index(`tests/Lending.Tests/${name}Tests.cs`, [[{ name: 'Fact' }]]));
+    const entities = names.map((name) => entity(`src/Lending/${name}.cs`, name));
+    const all = [...tests, ...entities];
+    const { evidence, proposal } = discoverConventions(input({ indices: all, trackedFiles: all.map((i) => i.file) }));
+    const files = tests.map((t) => t.file);
+    expect(evidence.testKindMarkers.contract.fileNames[0]!.entityFiles).toEqual(files);
+    expect(formatDiscovery(evidence, proposal, DEFAULT_DOMAIN_CONFIG)).toContain(
+      `**/*ContractTests.cs (7, 7 named after a non-test class, so not proposed: ${files.slice(0, 5).join(', ')}, and 2 more)`,
+    );
+  });
+
+  it('a family whose only non-entity files the configured paths already cover is not proposed', () => {
+    const files = ['tests/Lending.Tests/LoanContractTests.cs', 'tests/Storage.Tests/BlobStoreContractTests.cs'];
+    const tests = files.map((file) => index(file, [[{ name: 'Fact' }]]));
+    const loan = entity('src/Lending/LoanContract.cs', 'LoanContract');
+    const config: DomainConfig = {
+      ...DEFAULT_DOMAIN_CONFIG,
+      tests: { ...DEFAULT_DOMAIN_CONFIG.tests, contract: { annotations: [], paths: ['tests/Storage.Tests/**'], names: [] } },
+    };
+    const { proposal } = discoverConventions(input({ indices: [...tests, loan], trackedFiles: [...files, loan.file], config }));
+    expect(proposal.contractPaths).toEqual([]);
   });
 
   it('a value that only contains the kind (ContractRenewal) or holds = is no marker', () => {
@@ -398,10 +476,10 @@ describe('test-kind markers: what is not a marker', () => {
       }),
     );
     expect(evidence.testKindMarkers.contract.fileNames).toEqual([
-      { glob: '**/*.contract.test.ts', files: 1, entityTests: 0 },
-      { glob: '**/*_contract_test.go', files: 1, entityTests: 0 },
+      { glob: '**/*.contract.test.ts', files: 1, entityTests: 0, entityFiles: [] },
+      { glob: '**/*_contract_test.go', files: 1, entityTests: 0, entityFiles: [] },
     ]);
-    expect(evidence.testKindMarkers.characterization.fileNames).toEqual([{ glob: '**/*.characterization.spec.ts', files: 1, entityTests: 0 }]);
+    expect(evidence.testKindMarkers.characterization.fileNames).toEqual([{ glob: '**/*.characterization.spec.ts', files: 1, entityTests: 0, entityFiles: [] }]);
     expect(proposal.contractPaths).toEqual(['**/*.contract.test.ts', '**/*_contract_test.go']);
   });
 });

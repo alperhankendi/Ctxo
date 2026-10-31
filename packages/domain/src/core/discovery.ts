@@ -55,10 +55,11 @@ export interface TestKindMarkers {
    * Test file names ending in `<Kind>Tests` or `<Kind>Test` (`BlobStoreContractTests.cs`), or in the dotted and
    * snake-case forms (`loan.contract.test.ts`, `loan_contract_test.go`), as `**\/*<suffix>` globs, with the test files.
    * `entityTests` counts the files named after a non-test class, interface or type of the index
-   * (`LoanContractTests.cs` next to a `LoanContract` class: unit tests of an entity); a glob with any of them is
-   * evidence only.
+   * (`LoanContractTests.cs` next to a `LoanContract` class: unit tests of an entity) and `entityFiles` lists them in
+   * codepoint order. They are left out of the glob's evidence: the glob is proposed on its other files only, and a
+   * glob made only of entity files is evidence only.
    */
-  readonly fileNames: readonly { glob: string; files: number; entityTests: number }[];
+  readonly fileNames: readonly { glob: string; files: number; entityTests: number; entityFiles: readonly string[] }[];
 }
 
 export interface DiscoveryEvidence {
@@ -299,6 +300,8 @@ const SOURCE_EXTENSIONS: ReadonlySet<string> = new Set([
   '.cjs', '.cs', '.fs', '.go', '.groovy', '.java', '.js', '.jsx', '.kt', '.mjs', '.php', '.py', '.rb', '.scala', '.swift', '.ts', '.tsx', '.vb',
 ]);
 const ENTITY_KINDS: ReadonlySet<string> = new Set(['class', 'interface', 'type']);
+/** Entity files the printout names per file-name glob; `--json` lists every one. */
+export const ENTITY_FILES_SHOWN = 5;
 
 function lastSegment(name: string): string {
   const dot = name.lastIndexOf('.');
@@ -367,7 +370,7 @@ function bump(map: Map<string, number>, key: string): void {
 interface KindCounts {
   readonly values: Map<string, number>;
   readonly attributes: Map<string, number>;
-  readonly files: Map<string, { files: string[]; entityTests: number }>;
+  readonly files: Map<string, { files: string[]; entityFiles: string[] }>;
 }
 
 /** Test-kind markers beyond folders: annotation values and custom attributes in the index, file names of the test files. */
@@ -410,21 +413,33 @@ function testKindMarkers(
     if (!input.isPathTestFile(file) && !testIndexed.has(file)) continue;
     const family = fileFamily(base);
     if (family === undefined) continue;
-    const entry = counts[family.kind].files.get(family.glob) ?? { files: [], entityTests: 0 };
+    const entry = counts[family.kind].files.get(family.glob) ?? { files: [], entityFiles: [] };
     entry.files.push(file);
-    if (family.stem !== undefined && entities.has(family.stem)) entry.entityTests++;
+    if (family.stem !== undefined && entities.has(family.stem)) entry.entityFiles.push(file);
     counts[family.kind].files.set(family.glob, entry);
   }
   const view = (c: KindCounts): TestKindMarkers => ({
     annotationValues: [...c.values.entries()].map(([matcher, count]) => ({ matcher, count })).sort((a, b) => compare(a.matcher, b.matcher)),
     attributes: [...c.attributes.entries()].map(([name, count]) => ({ name, count })).sort((a, b) => compare(a.name, b.name)),
     fileNames: [...c.files.entries()]
-      .map(([glob, entry]) => ({ glob, files: entry.files.length, entityTests: entry.entityTests }))
+      .map(([glob, entry]) => ({
+        glob,
+        files: entry.files.length,
+        entityTests: entry.entityFiles.length,
+        entityFiles: [...entry.entityFiles].sort(compare),
+      }))
       .sort((a, b) => compare(a.glob, b.glob)),
   });
-  // Only families without entity tests are proposed.
-  const proposable = (c: KindCounts): Map<string, readonly string[]> =>
-    new Map([...c.files.entries()].filter(([, entry]) => entry.entityTests === 0).map(([glob, entry]) => [glob, entry.files]));
+  // Entity tests are no evidence of the kind: a family is proposed on its other files, and not at all without any.
+  const proposable = (c: KindCounts): Map<string, readonly string[]> => {
+    const families = new Map<string, readonly string[]>();
+    for (const [glob, entry] of c.files) {
+      const entityFiles = new Set(entry.entityFiles);
+      const rest = entry.files.filter((file) => !entityFiles.has(file));
+      if (rest.length > 0) families.set(glob, rest);
+    }
+    return families;
+  };
   return {
     markers: { characterization: view(counts.characterization), contract: view(counts.contract) },
     files: { characterization: proposable(counts.characterization), contract: proposable(counts.contract) },
@@ -662,9 +677,15 @@ export function formatDiscovery(evidence: DiscoveryEvidence, proposal: Discovery
     if (m.annotationValues.length > 0) parts.push(`values ${m.annotationValues.map((v) => `${v.matcher} (${v.count})`).join(', ')}`);
     if (m.attributes.length > 0) parts.push(`attributes ${m.attributes.map((a) => `${a.name} (${a.count})`).join(', ')}`);
     if (m.fileNames.length > 0) {
-      const files = m.fileNames.map(
-        (f) => `${f.glob} (${f.files}${f.entityTests > 0 ? `, ${f.entityTests} named after a non-test class, so not proposed` : ''})`,
-      );
+      const entityNote = (f: TestKindMarkers['fileNames'][number]): string => {
+        if (f.entityTests === 0) return '';
+        const verdict = f.entityTests === f.files ? 'so not proposed' : 'left out';
+        // The printout names the first few; --json keeps the full list.
+        const shown = f.entityFiles.slice(0, ENTITY_FILES_SHOWN).join(', ');
+        const more = f.entityFiles.length > ENTITY_FILES_SHOWN ? `, and ${f.entityFiles.length - ENTITY_FILES_SHOWN} more` : '';
+        return `, ${f.entityTests} named after a non-test class, ${verdict}: ${shown}${more}`;
+      };
+      const files = m.fileNames.map((f) => `${f.glob} (${f.files}${entityNote(f)})`);
       parts.push(`file names ${files.join(', ')}`);
     }
     return parts.length > 0 ? `${kind}: ${parts.join('; ')}` : undefined;
