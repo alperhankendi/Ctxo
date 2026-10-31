@@ -268,8 +268,8 @@ never written again, nested and inline groups, ASP.NET conventions that return t
 `RequireAuthorization`, `WithOpenApi`, `AddEndpointFilter`), and groups passed to a method (an extension method's
 `this` included) when all its call sites in the project pass the same prefix. Anything unresolved keeps the call's
 own route: a local written again in any form, a group returned by a method, a non-constant prefix, a type-parameter
-receiver (`TBuilder`), and a public method that code in a project referencing this one also references (a test
-project that only references the API project changes nothing). The tree-sitter tier gives the method or call route alone. These facts depend on other files
+receiver (`TBuilder`), and a method of any accessibility that code in a project referencing this one also
+references, through `InternalsVisibleTo` too (a test project that only references the API project changes nothing). The tree-sitter tier gives the method or call route alone. These facts depend on other files
 (the call sites, the base controller): `ctxo index --files`, the post-commit hook and `ctxo watch` re-index only the
 changed file, so run a full `ctxo index` after changing a group call site or a base controller's `[Route]`. Limits: only the first class `[Route]` is used; in the Roslyn tier a fact in the
 second or a later declarator of one field declaration (`const int MaxRetries = 3, TimeoutMs = 5000;`) is owned by an

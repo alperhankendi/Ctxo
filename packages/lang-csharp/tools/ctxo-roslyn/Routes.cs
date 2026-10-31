@@ -30,6 +30,8 @@ sealed class RouteGroups
     static readonly Dictionary<Compilation, RouteGroups> PerCompilation = [];
     /// <summary>Instances of dependent compilations, used only for their name index and models.</summary>
     static readonly Dictionary<Compilation, RouteGroups> IndexOnly = [];
+    /// <summary>Data-flow write sets per statement or expression, shared by the locals of a member body.</summary>
+    static readonly Dictionary<SyntaxNode, HashSet<ISymbol>?> WrittenByRegion = [];
 
     /// <summary>Group types by name; <c>WebApplication</c> is the app itself, never a group.</summary>
     static readonly HashSet<string> GroupTypeNames = new(StringComparer.Ordinal) { "RouteGroupBuilder", "IEndpointRouteBuilder" };
@@ -69,6 +71,7 @@ sealed class RouteGroups
     {
         PerCompilation.Clear();
         IndexOnly.Clear();
+        WrittenByRegion.Clear();
     }
 
     /// <summary>A prefix and a template joined with one <c>/</c>; the plugin normalizes the rest.</summary>
@@ -257,11 +260,24 @@ sealed class RouteGroups
 
         foreach (var region in later.Concat(siblings))
         {
-            var flow = region is ExpressionSyntax expression ? model.AnalyzeDataFlow(expression) : model.AnalyzeDataFlow((StatementSyntax)region);
-            if (flow == null || !flow.Succeeded) return true;
-            if (flow.WrittenInside.Contains(local, SymbolEqualityComparer.Default)) return true;
+            var written = WrittenIn(region, model);
+            if (written == null || written.Contains(local)) return true;
         }
         return false;
+    }
+
+    /// <summary>
+    /// The symbols a statement or expression writes, from one data-flow analysis per node: every
+    /// group local of a member body shares the analyses of its statements. Null when it does not
+    /// succeed. Cleared by <see cref="ReleaseAll"/>.
+    /// </summary>
+    static HashSet<ISymbol>? WrittenIn(SyntaxNode region, SemanticModel model)
+    {
+        if (WrittenByRegion.TryGetValue(region, out var cached)) return cached;
+        var flow = region is ExpressionSyntax expression ? model.AnalyzeDataFlow(expression) : model.AnalyzeDataFlow((StatementSyntax)region);
+        var written = flow is { Succeeded: true } ? new HashSet<ISymbol>(flow.WrittenInside, SymbolEqualityComparer.Default) : null;
+        WrittenByRegion[region] = written;
+        return written;
     }
 
     static bool WrittenBySyntax(ILocalSymbol local, VariableDeclaratorSyntax declarator, SemanticModel model)
@@ -315,8 +331,9 @@ sealed class RouteGroups
     /// A parameter that may be a group: the prefix every call site of its method passes, found in this
     /// compilation. Null when there is no call site, the call sites disagree, one does not resolve, the
     /// method is virtual, abstract, an override, an interface member or used as a method group, or the
-    /// method is externally visible and code in a project that references this one names it, or the
-    /// parameter's type is a type parameter.
+    /// method is referenced by code in a project that references this one (whatever its accessibility:
+    /// <c>InternalsVisibleTo</c> lets a test project call an internal method), or the parameter's type
+    /// is a type parameter.
     /// </summary>
     string? Parameter(IParameterSymbol parameter, int depth)
     {
@@ -331,7 +348,7 @@ sealed class RouteGroups
         if (parameterPrefixes.TryGetValue(key, out var cached)) return cached;
         if (method.IsVirtual || method.IsAbstract || method.IsOverride || method.ContainingType?.TypeKind == TypeKind.Interface
             || method.MethodKind is not (MethodKind.Ordinary or MethodKind.LocalFunction)
-            || (IsExternallyVisible(method) && IsReferencedByDependents(method)))
+            || IsReferencedByDependents(method))
         {
             return parameterPrefixes[key] = null;
         }
@@ -354,17 +371,6 @@ sealed class RouteGroups
         }
     }
 
-    /// <summary>Public or protected on the method and every containing type (<c>InternalsVisibleTo</c> is not read).</summary>
-    static bool IsExternallyVisible(IMethodSymbol method)
-    {
-        for (ISymbol? symbol = method; symbol != null && symbol is not INamespaceSymbol; symbol = symbol.ContainingSymbol)
-        {
-            if (symbol.DeclaredAccessibility is not (Accessibility.Public or Accessibility.Protected or Accessibility.ProtectedOrInternal))
-                return false;
-        }
-        return true;
-    }
-
     /// <summary>
     /// Whether code in a dependent compilation references the method: a tree that names it, then the
     /// name bound to the same method (by documentation ID and assembly, as the dependent sees its own
@@ -385,9 +391,14 @@ sealed class RouteGroups
                 foreach (var name in tree.GetRoot().DescendantNodes().OfType<SimpleNameSyntax>())
                 {
                     if (name.Identifier.ValueText != method.Name) continue;
-                    if (model.GetSymbolInfo(name).Symbol is not IMethodSymbol referenced) continue;
-                    var definition = (referenced.ReducedFrom ?? referenced).OriginalDefinition;
-                    if (definition.GetDocumentationCommentId() == id && definition.ContainingAssembly?.Name == assembly) return true;
+                    // Candidates count too: a call that does not bind (inaccessible, say) still names the method.
+                    var info = model.GetSymbolInfo(name);
+                    var symbols = info.Symbol != null ? [info.Symbol] : info.CandidateSymbols;
+                    foreach (var referenced in symbols.OfType<IMethodSymbol>())
+                    {
+                        var definition = (referenced.ReducedFrom ?? referenced).OriginalDefinition;
+                        if (definition.GetDocumentationCommentId() == id && definition.ContainingAssembly?.Name == assembly) return true;
+                    }
                 }
             }
         }

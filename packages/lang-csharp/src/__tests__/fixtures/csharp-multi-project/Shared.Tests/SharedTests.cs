@@ -1,5 +1,6 @@
-// A test project that references Shared without calling its group mappers. Its own MapQuiet is
-// another method of the same name.
+// A test project that references Shared. It calls only the internal MapFriend (through
+// InternalsVisibleTo); its own MapQuiet is another method of the same name.
+using Microsoft.AspNetCore.Builder;
 using Shared;
 
 namespace Shared.Tests
@@ -14,6 +15,11 @@ namespace Shared.Tests
 
         static void MapQuiet()
         {
+        }
+
+        public void MapsAFriend()
+        {
+            new WebApplication().MapGroup("/t").MapFriend();
         }
     }
 }

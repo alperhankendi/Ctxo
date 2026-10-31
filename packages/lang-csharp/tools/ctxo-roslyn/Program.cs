@@ -160,9 +160,18 @@ async Task RunBatchIndex(Solution sol, Dictionary<ProjectId, Compilation> comps)
             if (!IsUserCsFile(document.FilePath)) continue;
 
             var relativePath = Path.GetRelativePath(solutionDir, document.FilePath!).Replace('\\', '/');
-            var result = await AnalyzeDocument(document, compilation, sol, relativePath);
-            WriteLine(JsonSerializer.Serialize(result, jsonOptions));
-            totalFiles++;
+            try
+            {
+                var result = await AnalyzeDocument(document, compilation, sol, relativePath);
+                WriteLine(JsonSerializer.Serialize(result, jsonOptions));
+                totalFiles++;
+            }
+            catch
+            {
+                // The route-group indexes and semantic models are dead once the batch stops.
+                RouteGroups.ReleaseAll();
+                throw;
+            }
         }
 
         // The route-group indexes and semantic models are dead once the project's files are done.
@@ -239,12 +248,15 @@ async Task RunKeepAlive(Solution sol, Dictionary<ProjectId, Compilation> comps)
             var relativePath = Path.GetRelativePath(solutionDir, doc.FilePath!).Replace('\\', '/');
             var result = await AnalyzeDocument(doc, compilation, sol, relativePath);
             WriteLine(JsonSerializer.Serialize(result, jsonOptions));
-            // One file per request: keep no route-group index between requests.
-            RouteGroups.ReleaseAll();
         }
         catch (Exception ex)
         {
             WriteError($"Keep-alive error: {ex.Message}");
+        }
+        finally
+        {
+            // One file per request: keep no route-group index between requests, also after an error.
+            RouteGroups.ReleaseAll();
         }
     }
 }

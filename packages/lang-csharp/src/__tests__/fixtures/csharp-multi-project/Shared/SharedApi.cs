@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Shared.Tests")]
+
 namespace Shared
 {
     [Route("api/[controller]")]
@@ -21,6 +23,13 @@ namespace Shared
             app.MapGroup("/s").MapPublic();
             app.MapGroup("/s").MapInternal();
             app.MapGroup("/q").MapQuiet();
+            app.MapGroup("/f").MapFriend();
+        }
+
+        // Internal, but Shared.Tests calls it through InternalsVisibleTo: not followed.
+        internal static void MapFriend(this RouteGroupBuilder group)
+        {
+            group.MapGet("/friend", () => 0);
         }
 
         // Public, but no dependent project references it: followed.
@@ -35,7 +44,7 @@ namespace Shared
             group.MapGet("/pub", () => 0);
         }
 
-        // Internal: every call site is in this project.
+        // Internal, and no dependent project calls it: followed.
         internal static void MapInternal(this RouteGroupBuilder group)
         {
             group.MapGet("/int", () => 0);
