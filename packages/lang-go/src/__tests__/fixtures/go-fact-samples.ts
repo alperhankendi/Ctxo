@@ -404,6 +404,41 @@ func Clean(e Email, s string) string {
 	return strings.Title(s)
 }
 `,
+  // FC-4b: a chain is one fact; only the nearest call counts; log, error and display arguments and formats give none.
+  destinations: `package app
+
+import (
+	"errors"
+	"fmt"
+	"log"
+	"path/filepath"
+	"strings"
+)
+
+type Repo struct{}
+
+func (r *Repo) Upsert(s string) string { return s }
+
+type Auth struct{}
+
+func (a *Auth) LogIn(s string) {}
+
+func Save(email, name string, store map[string]string, repo *Repo, auth *Auth, sb *strings.Builder) error {
+	store[strings.ToLower(email)] = strings.TrimSpace(name)
+	log.Printf("unknown %s", strings.ToLower(email))
+	log.Println("saved", repo.Upsert(strings.ToUpper(name)))
+	auth.LogIn(strings.ToLower(email))
+	sb.WriteString("Dear " + strings.TrimSpace(name))
+	key := strings.TrimSpace(name) + " " + email
+	if strings.TrimSpace(email) == "" {
+		return errors.New(strings.ToUpper(email))
+	}
+	kind := strings.ToLower(filepath.Ext(name))
+	dir := strings.TrimSuffix(name, "/")
+	_ = key + kind + dir
+	return fmt.Errorf("bad %s", strings.ToLower(strings.TrimSpace(name)))
+}
+`,
   literals: `package app
 
 import "time"

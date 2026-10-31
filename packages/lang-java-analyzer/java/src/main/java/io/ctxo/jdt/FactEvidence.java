@@ -249,10 +249,88 @@ final class FactEvidence {
           ev.text = src(node);
           ev.method = method;
           ev.qualifier = qualifier;
+          destination(node, ev);
         }
       }
       if (isDuration(node) && !boundDuration(node)) duration(node, null);
       return true;
+    }
+
+    /**
+     * FC-4b: up to the statement and never out of a lambda, the nearest call ({@code new T} for a
+     * construction) that takes the value as an argument, with its receiver type and the type
+     * declaring its method when the bindings resolve, and whether on the way the value is an operand
+     * of a {@code +} chain with a string whose value holds ASCII whitespace. The syntax tier reads the
+     * same places.
+     */
+    private void destination(MethodInvocation call, Dtos.Evidence ev) {
+      boolean inProse = false;
+      ASTNode node = call;
+      for (ASTNode parent = node.getParent(); parent != null; node = parent, parent = parent.getParent()) {
+        if (parent instanceof Statement || parent instanceof BodyDeclaration || parent instanceof LambdaExpression
+            || parent instanceof AnonymousClassDeclaration || parent instanceof CompilationUnit) break;
+        if (parent instanceof MethodInvocation && node.getLocationInParent() == MethodInvocation.ARGUMENTS_PROPERTY) {
+          MethodInvocation outer = (MethodInvocation) parent;
+          String name = outer.getName().getIdentifier();
+          ev.consumer = collapse(outer.getExpression() == null ? name : src(outer.getExpression()) + "." + name);
+          ev.consumerTypes = consumerTypes(outer);
+          break;
+        } else if (parent instanceof ClassInstanceCreation && node.getLocationInParent() == ClassInstanceCreation.ARGUMENTS_PROPERTY) {
+          ev.consumer = "new " + collapse(src(((ClassInstanceCreation) parent).getType()));
+          break;
+        } else if (parent instanceof InfixExpression && ((InfixExpression) parent).getOperator() == InfixExpression.Operator.PLUS) {
+          List<Expression> operands = new ArrayList<>();
+          concatOperands((Expression) parent, operands);
+          for (Expression operand : operands) if (isProse(operand)) inProse = true;
+        }
+      }
+      if (inProse) ev.inProse = Boolean.TRUE;
+    }
+
+    /** The consumer's receiver type and the class declaring its method (erasures, qualified), or null. */
+    private static List<String> consumerTypes(MethodInvocation call) {
+      List<String> types = new ArrayList<>();
+      Expression receiver = call.getExpression();
+      if (receiver != null) addType(types, receiver.resolveTypeBinding());
+      IMethodBinding method = call.resolveMethodBinding();
+      if (method != null) addType(types, method.getDeclaringClass());
+      return types.isEmpty() ? null : types;
+    }
+
+    private static void addType(List<String> types, ITypeBinding type) {
+      if (type == null || type.isRecovered()) return;
+      String name = type.getErasure().getQualifiedName();
+      if (!name.isEmpty() && !types.contains(name)) types.add(name);
+    }
+
+    private static String collapse(String text) {
+      return text.replaceAll("\\s+", " ").trim();
+    }
+
+    /** The operands of a {@code +} chain, through nested {@code +} (not through parentheses). */
+    private static void concatOperands(Expression e, List<Expression> out) {
+      if (e instanceof InfixExpression && ((InfixExpression) e).getOperator() == InfixExpression.Operator.PLUS) {
+        InfixExpression infix = (InfixExpression) e;
+        concatOperands(infix.getLeftOperand(), out);
+        concatOperands(infix.getRightOperand(), out);
+        for (Object extended : infix.extendedOperands()) concatOperands((Expression) extended, out);
+      } else {
+        out.add(e);
+      }
+    }
+
+    /** A string literal or text block whose value holds ASCII whitespace (space, tab, LF, CR, FF, VT). */
+    private static boolean isProse(Expression e) {
+      String value = null;
+      try {
+        if (e instanceof StringLiteral) value = ((StringLiteral) e).getLiteralValue();
+        else if (e instanceof TextBlock) value = ((TextBlock) e).getLiteralValue();
+      } catch (IllegalArgumentException invalid) {
+        return false;
+      }
+      if (value == null) return false;
+      for (int i = 0; i < value.length(); i++) if (" \t\n\r\f\u000B".indexOf(value.charAt(i)) >= 0) return true;
+      return false;
     }
 
     /** {@code Duration.ofX(n)} or {@code Duration.of(n, ChronoUnit.X)} with a known unit, by name. */

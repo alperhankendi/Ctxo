@@ -8,9 +8,13 @@ import {
   canonicalNumber,
   capFactValue,
   hasRetryTimeoutFragment,
+  isDisplayCall,
+  isMessageSink,
+  isTechnicalNormalization,
   isTrivialLiteral,
   joinRoute,
   matchesNormalizationPattern,
+  normalizationInputs,
   normalizeFactText,
 } from './fact-rules.js';
 
@@ -27,6 +31,12 @@ interface DraftFact {
   readonly line: number;
   readonly text: string;
   readonly detail: Readonly<Record<string, string>>;
+  /**
+   * FC-4b: a normalization whose value goes into a message or display text. It is no fact, but it
+   * still folds the normalizations that feed it, so `fmt.Errorf("%s", strings.ToLower(strings.TrimSpace(s)))`
+   * gives no fact for the inner call either.
+   */
+  readonly silent?: boolean;
 }
 
 function compare(a: string, b: string): number {
@@ -40,6 +50,24 @@ function durationName(name: string | undefined, constructor: string): string {
   return name ?? segments.slice(-2).join('.');
 }
 
+/** The analyzer's `consumerTypes` when it is a list of strings; anything else counts as no types. */
+function consumerTypesOf(evidence: Extract<FactEvidence, { kind: 'call' }>): readonly string[] | undefined {
+  const types: unknown = evidence.consumerTypes;
+  return Array.isArray(types) && types.every(type => typeof type === 'string') ? types as string[] : undefined;
+}
+
+/**
+ * FC-4b: the nearest call that receives the value (`consumer`) is a message sink, or a display or
+ * formatting API that receives it inside prose (`inProse`). Evidence fields of the wrong type
+ * (a malformed analyzer record) count as absent.
+ */
+function isMessageOrDisplay(evidence: Extract<FactEvidence, { kind: 'call' }>): boolean {
+  const consumer: unknown = evidence.consumer;
+  if (typeof consumer !== 'string') return false;
+  const types = consumerTypesOf(evidence);
+  return isMessageSink(consumer, types) || (evidence.inProse === true && isDisplayCall(consumer, types));
+}
+
 function draft(evidence: FactEvidence, options: FactOptions, decodeStringLiteral: StringLiteralDecoder | undefined): DraftFact | undefined {
   const base = { ...(evidence.symbolId !== undefined ? { symbolId: evidence.symbolId } : {}), line: evidence.line };
   switch (evidence.kind) {
@@ -49,7 +77,15 @@ function draft(evidence: FactEvidence, options: FactOptions, decodeStringLiteral
       return { ...base, kind: 'literal-comparison', text: evidence.text, detail: { operator: evidence.operator, literal: capFactValue(evidence.literal.replace(/\r\n?/g, '\n')) } };
     case 'call':
       if (!matchesNormalizationPattern(evidence.method, evidence.qualifier, options.normalizationMethods)) return undefined;
-      return { ...base, kind: 'normalization', text: evidence.text, detail: { method: evidence.method } };
+      // FC-4b: a log or crash message, display text, or a format rather than a business value.
+      if (isTechnicalNormalization(evidence.method, evidence.qualifier, evidence.text)) return undefined;
+      return {
+        ...base,
+        kind: 'normalization',
+        text: evidence.text,
+        detail: { method: evidence.method },
+        ...(isMessageOrDisplay(evidence) ? { silent: true } : {}),
+      };
     case 'binding': {
       if (!hasRetryTimeoutFragment(evidence.name)) return undefined;
       const value = canonicalNumber(evidence.value);
@@ -71,6 +107,34 @@ function draft(evidence: FactEvidence, options: FactOptions, decodeStringLiteral
     default:
       return undefined;
   }
+}
+
+/**
+ * FC-4b: a normalization that feeds another normalization fact of the same symbol (the receiver or
+ * only argument of the outer call, starting on a line the outer call spans) is dropped, so a chain
+ * is one fact, the outermost; a chain split over lines (`strings.ToLower(\n strings.TrimSpace(s))`)
+ * folds too.
+ */
+function outermostNormalizations(drafts: readonly DraftFact[]): DraftFact[] {
+  // Keyed by symbol and input text, so a long chain costs one pass, not a pair test per two calls.
+  const key = (symbolId: string | undefined, input: string): string => `${symbolId ?? ''}\n${input}`;
+  const fed = new Map<string, Array<readonly [number, number]>>();
+  for (const fact of drafts) {
+    if (fact.kind !== 'normalization') continue;
+    const span = [fact.line, fact.line + (fact.text.match(/\r\n|\r|\n/g)?.length ?? 0)] as const;
+    for (const input of normalizationInputs(fact.text, fact.detail['method'] ?? '')) {
+      const k = key(fact.symbolId, input);
+      const spans = fed.get(k);
+      if (spans) spans.push(span);
+      else fed.set(k, [span]);
+    }
+  }
+  if (fed.size === 0) return [...drafts];
+  return drafts.filter(fact => {
+    if (fact.kind !== 'normalization') return true;
+    const spans = fed.get(key(fact.symbolId, fact.text.replace(/\s+/g, '')));
+    return !spans?.some(([from, to]) => fact.line >= from && fact.line <= to);
+  });
 }
 
 interface Candidate {
@@ -149,8 +213,9 @@ export function innermostSymbolCursor(symbols: readonly SymbolNode[]): (line: nu
 }
 
 /**
- * Turns collector evidence into the file's facts: the trivial-literal list, normalization patterns,
- * retry/timeout names and numbers, routes (FC-3 to FC-8), FC-2 text, FC-9 attribution, then FC-10
+ * Turns collector evidence into the file's facts: the trivial-literal list, normalization patterns
+ * and the calls that are not business normalization (FC-4b), retry/timeout names and numbers,
+ * routes (FC-3 to FC-8), FC-2 text, FC-9 attribution, then FC-10
  * order (line, kind, text, detail, symbol), duplicates dropped and at most 500 facts.
  * `decodeStringLiteral` is the language's string literal decoder for the trivial-literal check;
  * without it only a plain quoted literal can be trivial.
@@ -163,11 +228,12 @@ export function finishFacts(
   decodeStringLiteral?: StringLiteralDecoder,
 ): CodeFact[] {
   const moduleId = moduleSymbolId(file);
-  const drafts: DraftFact[] = [];
+  const found: DraftFact[] = [];
   for (const item of evidence) {
     const fact = draft(item, options, decodeStringLiteral);
-    if (fact) drafts.push(fact);
+    if (fact) found.push(fact);
   }
+  const drafts = outermostNormalizations(found).filter(fact => fact.silent !== true);
   const owners = innermostSymbolIds(drafts.filter(fact => fact.symbolId === undefined).map(fact => fact.line), symbols);
   const keyed: { readonly fact: CodeFact; readonly detailKey: string }[] = [];
   for (const fact of drafts) {

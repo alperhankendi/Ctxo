@@ -33,23 +33,27 @@ function frozenCopy(options: FactDetectorOptions): FactDetectorOptions {
   });
 }
 
+/** Fact kinds a test file never keeps: their precision there is too low (owner ruling, #156). */
+const TEST_FILE_DROPPED_KINDS: ReadonlySet<CodeFact['kind']> = new Set(['retry-timeout', 'normalization']);
+
 /**
- * The facts `ctxo index` and `ctxo watch` write for one file: in a test file, `retry-timeout` facts are dropped
- * (owner ruling, #156: their precision there is too low) and every other kind is kept. Test files are
+ * The facts `ctxo index` and `ctxo watch` write for one file: in a test file, `retry-timeout` facts (owner ruling,
+ * #156) and `normalization` facts (FC-4b: a test's trims and case changes prepare inputs and assertions, they state
+ * no rule) are dropped and every other kind is kept. Test files are
  * classified by the shared classifier that verify-domain and dead-code use: the default test globs, the
  * `index.tests` globs and a test-framework annotation on one of the file's own symbols. The decision reads
  * only this file and the config, so a full run, an incremental run and watch write the same facts. A path
  * matched only by a name-only glob (`*Tests.cs`) needs a test annotation, because a fact-capable C# plugin
  * always reports annotations.
  */
-export function dropTestFileRetryTimeouts(
+export function dropTestFileFacts(
   file: string,
   symbols: readonly SymbolNode[],
   facts: readonly CodeFact[],
   testGlobs: readonly string[],
 ): CodeFact[] {
   const isTestFile = globClassifier(testGlobs)(file) || filesWithTestAnnotations([{ file, symbols: [...symbols] }]).size > 0;
-  return isTestFile ? facts.filter((fact) => fact.kind !== 'retry-timeout') : [...facts];
+  return isTestFile ? facts.filter((fact) => !TEST_FILE_DROPPED_KINDS.has(fact.kind)) : [...facts];
 }
 
 /**

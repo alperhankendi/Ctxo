@@ -256,8 +256,8 @@ describe('CSharpCompositeAdapter facts', () => {
     await composite.initialize(ROOT);
 
     expect(composite.getTier()).toBe('syntax');
+    // FC-4b: the chain is one fact, the outermost call.
     expect((await composite.extractFacts(KEY_FILE, KEY_SOURCE)).map((f) => f.text)).toEqual([
-      'email.Trim()',
       'email.Trim().ToLower()',
     ]);
   });

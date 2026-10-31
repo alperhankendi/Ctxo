@@ -15,7 +15,7 @@ import { CommunityDetector, type CommunityDetectorOptions } from '../core/overla
 import { communityDetectorOptions, indexTestPatterns, loadConfig, watchSnapshotMinFileChanges } from '../core/config/load-config.js';
 import type { CtxoConfig } from '../core/config/config-schema.js';
 import type { LoadedModule } from '../ports/i-ctxo-module.js';
-import { dropTestFileRetryTimeouts, extractFileFacts, pluginFactRequest } from './index-facts.js';
+import { dropTestFileFacts, extractFileFacts, pluginFactRequest } from './index-facts.js';
 import { runModuleIndexPasses } from './module-index-passes.js';
 import { JsonIndexReader } from '../adapters/storage/json-index-reader.js';
 import { WatchModulePassScheduler, classifyWatchPath, watchPassModules, type WatchPassTrigger } from './watch-module-pass.js';
@@ -68,7 +68,7 @@ export class WatchCommand {
     const watchConfig = loadConfig(this.ctxoRoot).config;
     const pluginOptions = watchPluginOptions(watchConfig, options.modules ?? []);
     const watchFacts = pluginOptions.facts === true;
-    // index.tests globs, so watch drops test-file retry-timeout facts exactly as ctxo index does.
+    // index.tests globs, so watch drops test-file retry-timeout and normalization facts exactly as ctxo index does.
     const testGlobs = indexTestPatterns(watchConfig);
 
     // Plugins via discovery
@@ -386,14 +386,14 @@ export interface WatchFileIndexParts {
   readonly intent: readonly CommitIntent[];
   readonly antiPatterns: readonly AntiPattern[];
   readonly facts?: readonly CodeFact[];
-  /** The `index.tests` globs; with the default test globs they decide which files lose retry-timeout facts. */
+  /** The `index.tests` globs; with the default test globs they decide which files lose retry-timeout and normalization facts. */
   readonly testGlobs?: readonly string[];
 }
 
 /**
  * The `FileIndex` a watch re-index writes. Symbols are kept whole, so annotations and offsets survive;
  * edges to `ns:` namespace placeholders are dropped; `facts` is set only when given, without the
- * retry-timeout facts of a test file (`dropTestFileRetryTimeouts`, the rule `ctxo index` applies).
+ * retry-timeout and normalization facts of a test file (`dropTestFileFacts`, the rule `ctxo index` applies).
  */
 export function buildWatchFileIndex(file: string, parts: WatchFileIndexParts): FileIndex {
   const fileIndex: FileIndex = {
@@ -406,7 +406,7 @@ export function buildWatchFileIndex(file: string, parts: WatchFileIndexParts): F
     intent: [...parts.intent],
     antiPatterns: [...parts.antiPatterns],
   };
-  if (parts.facts) fileIndex.facts = dropTestFileRetryTimeouts(file, parts.symbols, parts.facts, parts.testGlobs ?? []);
+  if (parts.facts) fileIndex.facts = dropTestFileFacts(file, parts.symbols, parts.facts, parts.testGlobs ?? []);
   return fileIndex;
 }
 

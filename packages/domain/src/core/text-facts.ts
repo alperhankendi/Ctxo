@@ -342,8 +342,54 @@ function calls(line: Line, lineNo: number, options: FactOptions, out: FactEviden
     const from = line.runStart[i]!;
     const close = line.pairs[i + 1]!;
     const to = close >= 0 ? close : tokens.length - 1;
-    out.push({ kind: 'call', line: lineNo, text: joinFactText(line, from, to), method: word.text, ...(qualifier !== undefined ? { qualifier } : {}) });
+    const consumer = nearestConsumer(line, from, to);
+    out.push({
+      kind: 'call',
+      line: lineNo,
+      text: joinFactText(line, from, to),
+      method: word.text,
+      ...(qualifier !== undefined ? { qualifier } : {}),
+      ...(consumer !== undefined ? { consumer } : {}),
+    });
   }
+}
+
+/** Tokens read before a normalization call to find the call that takes its value (FC-4b). */
+const ENCLOSING_WINDOW = 64;
+
+/** A PascalCase name whose last token is `Exception` or `Error` (`IllegalStateException`, `ValueError`). */
+const ERROR_TYPE_NAME = /^[A-Z][A-Za-z0-9]*(?:Exception|Error)$/;
+
+/**
+ * FC-4b on one line: the callee whose parentheses hold the tokens `from` to `to` most closely
+ * (`log.warn`, `new Error`), so the shared finisher can tell a message sink's argument. A bracket
+ * group without a word right before it (a grouping or a lambda's parameters) is skipped, and the
+ * walk stops at a lambda arrow or an enclosing brace, as the plugins stop at a lambda. Languages
+ * that construct without `new` (Kotlin `IllegalStateException(...)`, Python `ValueError(...)`)
+ * give `new <Type>` for a PascalCase callee ending in `Exception` or `Error`. Only the
+ * `ENCLOSING_WINDOW` tokens before the call are read, so a line of thousands of calls stays linear.
+ */
+function nearestConsumer(line: Line, from: number, to: number): string | undefined {
+  const { tokens, pairs } = line;
+  for (let j = from - 1; j >= 0 && from - j <= ENCLOSING_WINDOW; j--) {
+    const token = tokens[j]!;
+    if (token.kind === 'op' && (token.text === '=>' || token.text === '->')) return undefined;
+    if (token.text === '{' && (pairs[j]! < 0 || pairs[j]! > to)) return undefined;
+    if (!isOp(token, '(')) continue;
+    const close = pairs[j]!;
+    if (close >= 0 && close < to) continue;
+    const name = tokens[j - 1];
+    if (name?.kind !== 'word' || !adjacent(name, token)) continue;
+    let callee = name.text;
+    let k = j - 2;
+    while (k >= 1 && MEMBER_OPS.has(tokens[k]!.text) && tokens[k - 1]!.kind === 'word') {
+      callee = `${tokens[k - 1]!.text}.${callee}`;
+      k -= 2;
+    }
+    if (tokens[k]?.kind === 'word' && (tokens[k]!.text === 'new' || tokens[k]!.text === 'raise')) return `new ${callee}`;
+    return ERROR_TYPE_NAME.test(name.text) ? `new ${callee}` : callee;
+  }
+  return undefined;
 }
 
 /** A duration expression found on the line, with its token range. */

@@ -23,7 +23,6 @@ const ROWS: readonly Row[] = [
   ['LoanPolicy.cs', `${POLICY}.HoldTimeout`, 'variable', 'retry-timeout', 'HoldTimeout = 90min', { name: 'HoldTimeout', value: '90min' }, 'FromMinutes(90)'],
   ['LoanPolicy.cs', `${POLICY}.CanBorrow(2)`, 'method', 'literal-comparison', 'openLoans >= 5', { operator: '>=', literal: '5' }, 'openLoans >= 5'],
   ['LoanPolicy.cs', `${POLICY}.Fee(1)`, 'method', 'literal-comparison', 'tier case "gold"', { operator: 'case', literal: '"gold"' }, 'case "gold"'],
-  ['LoanPolicy.cs', `${POLICY}.Key(1)`, 'method', 'normalization', 'email.Trim()', { method: 'Trim' }, 'email.Trim()'],
   ['LoanPolicy.cs', `${POLICY}.Key(1)`, 'method', 'normalization', 'email.Trim().ToLowerInvariant()', { method: 'ToLowerInvariant' }, 'ToLowerInvariant()'],
   ['LoanPolicy.cs', `${POLICY}.Label(1)`, 'method', 'literal-comparison', 'days is > 14', { operator: '>', literal: '14' }, 'days is > 14'],
   ['LoanPolicy.cs', `${POLICY}.Remind`, 'method', 'retry-timeout', 'TimeSpan.FromSeconds = 30s', { name: 'TimeSpan.FromSeconds', value: '30s' }, 'FromSeconds(30)'],
@@ -194,5 +193,54 @@ describe('C# tree-sitter facts', () => {
     const texts = (await syntaxFacts('RenewalRules.cs')).map(f => f.text);
     expect(texts).toContain('code case "REF"');
     expect(texts).toContain('TimeSpan.FromHours = 3h');
+  });
+
+  it('FC-4b: a chain is one fact, and message sinks, display text and formats give none (MemberDirectory.cs)', async () => {
+    const facts = (await syntaxFacts('MemberDirectory.cs')).filter(f => f.kind === 'normalization');
+    expect(facts.map(f => f.text)).toEqual([
+      'email.Trim().ToLowerInvariant()',
+      '.Trim().ToUpperInvariant()',
+      'a.Trim()',
+      'b.Trim()',
+      'name.Trim()',
+      'id.ToString("D").ToLowerInvariant()',
+      'guest.Trim()',
+      'email.ToUpperInvariant()',
+      'email.TrimStart()',
+      'first.TrimStart()',
+      'email.ToLowerInvariant()',
+      'first.Trim()',
+      'last.TrimEnd()',
+      'i.Trim()',
+      'first.ToLowerInvariant()',
+    ]);
+  });
+
+  it('FC-4b: only the nearest call that receives the value counts; logger receivers by name in the syntax tier', async () => {
+    const text = [
+      'class Members {',
+      '    void Save(string email, string name, Store store, Auth auth, Tracker tracker) {',
+      '        _logger.LogWarning("unknown {0}", email.ToLowerInvariant());',
+      '        _logger.LogInformation("saved {0}", store.Upsert(name.Trim()));',
+      '        auth.LogIn(email.Trim().ToLowerInvariant());',
+      '        tracker.TraceParcel(name.ToUpperInvariant());',
+      '        Log.Information($"Created {name.TrimEnd()}");',
+      '        store.Lookup($"{email.TrimStart()} {name.TrimStart()}");',
+      '        store.Query($"SELECT id FROM members WHERE email = \'{email.ToUpperInvariant()}\'");',
+      '        html.AppendLine($"<b>Dear</b> {name.ToLowerInvariant()}");',
+      '        if (email.Trim() == "") throw new InvalidOperationException($"bad {email.Trim()}");',
+      '    }',
+      '}',
+    ].join('\n');
+    const facts = (await syntaxFacts('Inline.cs', text)).filter(f => f.kind === 'normalization');
+    expect(facts.map(f => `${f.line} ${f.text}`)).toEqual([
+      '3 name.Trim()',
+      '4 email.Trim().ToLowerInvariant()',
+      '5 name.ToUpperInvariant()',
+      '7 email.TrimStart()',
+      '7 name.TrimStart()',
+      '8 email.ToUpperInvariant()',
+      '10 email.Trim()',
+    ]);
   });
 });

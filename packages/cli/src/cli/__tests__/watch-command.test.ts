@@ -123,13 +123,14 @@ describe('buildWatchFileIndex', () => {
     expect(index.edges).toEqual([edges[0]]);
   });
 
-  it('buildWatchFileIndex drops retry-timeout facts of test files, as ctxo index does', () => {
+  it('buildWatchFileIndex drops retry-timeout and normalization facts of test files, as ctxo index does', () => {
     const retry = { kind: 'retry-timeout' as const, symbolId: 'x::f::function', line: 2, text: 'maxRetries = 3', detail: { name: 'maxRetries', value: '3' } };
     const cmp = { kind: 'literal-comparison' as const, symbolId: 'x::f::function', line: 3, text: 'n >= 5', detail: { operator: '>=', literal: '5' } };
-    const parts = { ...base, symbols: [], edges: [], facts: [retry, cmp] };
+    const trim = { kind: 'normalization' as const, symbolId: 'x::f::function', line: 4, text: 'email.trim()', detail: { method: 'trim' } };
+    const parts = { ...base, symbols: [], edges: [], facts: [retry, cmp, trim] };
     expect(buildWatchFileIndex('src/__tests__/loan.test.ts', parts).facts).toEqual([cmp]);
     expect(buildWatchFileIndex('checks/loan.ts', { ...parts, testGlobs: ['checks/**'] }).facts).toEqual([cmp]);
-    expect(buildWatchFileIndex('src/loan.ts', parts).facts).toEqual([retry, cmp]);
+    expect(buildWatchFileIndex('src/loan.ts', parts).facts).toEqual([retry, cmp, trim]);
   });
 
   it('buildWatchFileIndex writes facts only when given', () => {

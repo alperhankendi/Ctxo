@@ -31,6 +31,25 @@ export type FactEvidence =
       readonly text: string;
       readonly method: string;
       readonly qualifier?: string;
+      /**
+       * Where the call's value goes (FC-4b): the callee of the nearest call that receives it as an
+       * argument (`Logger.Warn`, `errors.New`; a construction is `new <Type>`), through
+       * concatenation, interpolation, parentheses, conditionals and the call's own receiver chain, up
+       * to the enclosing statement and never out of a lambda or function. Absent when there is none.
+       */
+      readonly consumer?: string;
+      /**
+       * FC-4b, full tiers only: the consumer's receiver type and the type that declares its method
+       * (qualified, type arguments dropped; Go: the package path or `<path>.<type>`), when they
+       * resolve. Absent in the syntax tiers, so the rules fall back to names.
+       */
+      readonly consumerTypes?: readonly string[];
+      /**
+       * FC-4b: true when, on the way to the consumer, the value is a hole of an interpolated or
+       * template string, or an operand of a `+` chain with a string literal, whose literal text holds
+       * ASCII whitespace (text for people).
+       */
+      readonly inProse?: boolean;
     }
   | {
       readonly kind: 'binding';

@@ -99,7 +99,6 @@ const EXPECTED_FACTS = [
   { kind: 'literal-comparison', symbolId: factId('MayBorrow', 'function'), line: 22, text: 'openLoans >= 5', detail: { operator: '>=', literal: '5' } },
   { kind: 'literal-comparison', symbolId: factId('Fee', 'function'), line: 31, text: 'tier case "gold"', detail: { operator: 'case', literal: '"gold"' } },
   { kind: 'normalization', symbolId: factId('Key', 'function'), line: 41, text: 'strings.ToLower(strings.TrimSpace(email))', detail: { method: 'ToLower' } },
-  { kind: 'normalization', symbolId: factId('Key', 'function'), line: 41, text: 'strings.TrimSpace(email)', detail: { method: 'TrimSpace' } },
   { kind: 'endpoint', symbolId: factId('Routes', 'function'), line: 46, text: 'GET /holds/{id}', detail: { verb: 'GET', route: '/holds/{id}' } },
   { kind: 'endpoint', symbolId: factId('Routes', 'function'), line: 47, text: 'ANY /health', detail: { verb: 'ANY', route: '/health' } },
   { kind: 'endpoint', symbolId: factId('Routes', 'function'), line: 48, text: 'GET /loans/:id', detail: { verb: 'GET', route: '/loans/:id' } },

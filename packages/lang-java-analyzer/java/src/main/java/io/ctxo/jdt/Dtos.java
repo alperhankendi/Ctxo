@@ -81,6 +81,12 @@ public final class Dtos {
     public String symbolId;
     public int line;
     public String text, operator, literal, literalKind, method, qualifier, name, value, constructor, unit, amount, verb, route;
+    /** FC-4b, {@code call} only: the callee of the nearest call that takes the call's value as an argument; null when none. */
+    public String consumer;
+    /** FC-4b, {@code call} only: the consumer's receiver type and declaring class, qualified erasures; null when unresolved. */
+    public List<String> consumerTypes;
+    /** FC-4b, {@code call} only: true when the value is an operand of a {@code +} chain with prose; null otherwise. */
+    public Boolean inProse;
     public Evidence(String kind, String symbolId, int line) { this.kind = kind; this.symbolId = symbolId; this.line = line; }
   }
 

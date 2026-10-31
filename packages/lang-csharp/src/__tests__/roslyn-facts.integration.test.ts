@@ -18,7 +18,7 @@ const HAS_DOTNET = (() => {
 const FIXTURE_DIR = resolve(import.meta.dirname, 'fixtures/csharp-v2-sample');
 const FACTS_DIR = 'CsharpV2Sample/Facts';
 const HELPER_DIR = resolve(import.meta.dirname, '../../tools/ctxo-roslyn');
-const FILES = ['LoanPolicy.cs', 'LoansController.cs', 'Endpoints.cs'] as const;
+const FILES = ['LoanPolicy.cs', 'LoansController.cs', 'Endpoints.cs', 'MemberDirectory.cs'] as const;
 type FactFile = (typeof FILES)[number];
 
 /** [file, full-tier member name, symbol kind, fact kind, text, detail, a needle on the evidence's first line] */
@@ -27,13 +27,13 @@ type Row = readonly [FactFile, string, 'method' | 'variable', CodeFact['kind'], 
 const POLICY = 'Lending.Facts.LoanPolicy';
 const CONTROLLER = 'Lending.Facts.LoansController';
 const ENDPOINTS = 'Lending.Facts.Endpoints';
+const MEMBERS = 'Lending.Facts.MemberDirectory';
 
 const ROWS: readonly Row[] = [
   ['LoanPolicy.cs', `${POLICY}.MaxRetries`, 'variable', 'retry-timeout', 'MaxRetries = 3', { name: 'MaxRetries', value: '3' }, 'MaxRetries = 3'],
   ['LoanPolicy.cs', `${POLICY}.HoldTimeout`, 'variable', 'retry-timeout', 'HoldTimeout = 90min', { name: 'HoldTimeout', value: '90min' }, 'FromMinutes(90)'],
   ['LoanPolicy.cs', `${POLICY}.CanBorrow`, 'method', 'literal-comparison', 'openLoans >= 5', { operator: '>=', literal: '5' }, 'openLoans >= 5'],
   ['LoanPolicy.cs', `${POLICY}.Fee`, 'method', 'literal-comparison', 'tier case "gold"', { operator: 'case', literal: '"gold"' }, 'case "gold"'],
-  ['LoanPolicy.cs', `${POLICY}.Key`, 'method', 'normalization', 'email.Trim()', { method: 'Trim' }, 'email.Trim()'],
   ['LoanPolicy.cs', `${POLICY}.Key`, 'method', 'normalization', 'email.Trim().ToLowerInvariant()', { method: 'ToLowerInvariant' }, 'ToLowerInvariant()'],
   ['LoanPolicy.cs', `${POLICY}.Label`, 'method', 'literal-comparison', 'days is > 14', { operator: '>', literal: '14' }, 'days is > 14'],
   ['LoanPolicy.cs', `${POLICY}.Remind`, 'method', 'retry-timeout', 'TimeSpan.FromSeconds = 30s', { name: 'TimeSpan.FromSeconds', value: '30s' }, 'FromSeconds(30)'],
@@ -42,6 +42,24 @@ const ROWS: readonly Row[] = [
   ['LoansController.cs', `${CONTROLLER}.Health`, 'method', 'endpoint', 'GET /health', { verb: 'GET', route: '/health' }, '[HttpGet("/health")]'],
   ['Endpoints.cs', `${ENDPOINTS}.Map`, 'method', 'endpoint', 'GET /holds/{id}', { verb: 'GET', route: '/holds/{id}' }, 'MapGet('],
   ['Endpoints.cs', `${ENDPOINTS}.Map`, 'method', 'endpoint', 'POST /holds', { verb: 'POST', route: '/holds' }, 'MapPost('],
+  // FC-4b: a chain is one fact (the outermost call); text for people, message sinks and formats give none.
+  ['MemberDirectory.cs', `${MEMBERS}.Key`, 'method', 'normalization', 'email.Trim().ToLowerInvariant()', { method: 'ToLowerInvariant' }, 'Key(string email)'],
+  ['MemberDirectory.cs', `${MEMBERS}.Branch`, 'method', 'normalization', '.Trim().ToUpperInvariant()', { method: 'ToUpperInvariant' }, 'Branch(string code)'],
+  ['MemberDirectory.cs', `${MEMBERS}.SameMember`, 'method', 'normalization', 'a.Trim()', { method: 'Trim' }, 'SameMember('],
+  ['MemberDirectory.cs', `${MEMBERS}.SameMember`, 'method', 'normalization', 'b.Trim()', { method: 'Trim' }, 'SameMember('],
+  ['MemberDirectory.cs', `${MEMBERS}.Slug`, 'method', 'normalization', 'name.Trim()', { method: 'Trim' }, 'Slug(string name)'],
+  ['MemberDirectory.cs', `${MEMBERS}.MemberId`, 'method', 'normalization', 'id.ToString("D").ToLowerInvariant()', { method: 'ToLowerInvariant' }, 'MemberId(Guid id)'],
+  // Prose that goes to no sink or display API stays a fact (recall over precision).
+  ['MemberDirectory.cs', `${MEMBERS}.Greeting`, 'method', 'normalization', 'guest.Trim()', { method: 'Trim' }, 'Greeting(string guest)'],
+  // Only the nearest call counts: the value goes to Upsert, not to the logger around it.
+  ['MemberDirectory.cs', `${MEMBERS}.Save`, 'method', 'normalization', 'email.ToUpperInvariant()', { method: 'ToUpperInvariant' }, 'members.Upsert('],
+  ['MemberDirectory.cs', `${MEMBERS}.Save`, 'method', 'normalization', 'email.TrimStart()', { method: 'TrimStart' }, 'auth.LogIn('],
+  ['MemberDirectory.cs', `${MEMBERS}.Save`, 'method', 'normalization', 'first.TrimStart()', { method: 'TrimStart' }, 'writer.WriteLine('],
+  ['MemberDirectory.cs', `${MEMBERS}.Save`, 'method', 'normalization', 'email.ToLowerInvariant()', { method: 'ToLowerInvariant' }, 'members.Query('],
+  ['MemberDirectory.cs', `${MEMBERS}.Save`, 'method', 'normalization', 'first.Trim()', { method: 'Trim' }, 'members.Lookup('],
+  ['MemberDirectory.cs', `${MEMBERS}.Save`, 'method', 'normalization', 'last.TrimEnd()', { method: 'TrimEnd' }, 'members.Lookup('],
+  ['MemberDirectory.cs', `${MEMBERS}.Save`, 'method', 'normalization', 'i.Trim()', { method: 'Trim' }, 'i => i.Trim()'],
+  ['MemberDirectory.cs', `${MEMBERS}.Save`, 'method', 'normalization', 'first.ToLowerInvariant()', { method: 'ToLowerInvariant' }, 'members.Format('],
 ];
 
 function path(file: FactFile): string {
@@ -115,6 +133,7 @@ describe.skipIf(!HAS_DOTNET)('Roslyn facts', () => {
     const custom = await indexedAdapter({ ...DEFAULT_FACT_OPTIONS, normalizationMethods: ['Trim'] });
     try {
       const normalizations = (await custom.adapter.extractFacts(path('LoanPolicy.cs'), '')).filter(f => f.kind === 'normalization');
+      // The outer ToLowerInvariant is not on the list, so the Trim it receives is the outermost normalization.
       expect(normalizations.map(f => f.text)).toEqual(['email.Trim()']);
     } finally {
       await custom.adapter.dispose();

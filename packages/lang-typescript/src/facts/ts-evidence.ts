@@ -1,6 +1,6 @@
 // TypeScript fact evidence from ts-morph nodes (PR 4, issue #156, FC-3 to FC-5, FC-8 and G8). The collector
 // reports evidence; the shared `finishFacts` decides which evidence becomes a fact.
-import { Node, SyntaxKind, type CallExpression, type SourceFile } from 'ts-morph';
+import { Node, SyntaxKind, type CallExpression, type SourceFile, type StringLiteral, type Symbol as TsSymbol } from 'ts-morph';
 import type { FactEvidence, FactOptions, LiteralKind } from './fact-types.js';
 import { hasRetryTimeoutFragment, joinRoute, matchesNormalizationPattern } from './fact-rules.js';
 import { findTestBlocks } from '../test-blocks.js';
@@ -211,6 +211,103 @@ function nameOf(node: Node): string | undefined {
   return Node.isStringLiteral(node) ? node.getLiteralValue() : undefined;
 }
 
+// ── FC-4b: where a normalization call's value goes ──────────────
+
+/** Statements, declarations and function bodies end the walk, as in the other plugins. */
+function endsDestination(node: Node): boolean {
+  return Node.isStatement(node) || Node.isBlock(node) || Node.isSourceFile(node) || Node.isFunctionLikeDeclaration(node)
+    || Node.isArrowFunction(node) || Node.isFunctionExpression(node) || Node.isPropertyDeclaration(node)
+    || Node.isClassDeclaration(node) || Node.isClassExpression(node) || Node.isClassStaticBlockDeclaration(node);
+}
+
+/** ASCII whitespace, the one definition every tier uses (space, tab, LF, CR, FF, VT). */
+const ASCII_WHITESPACE = /[ \t\n\r\f\v]/;
+
+/** A string or template literal whose literal text holds ASCII whitespace; a tagged template (`sql\`...\``) is never prose. */
+function isProse(node: Node): boolean {
+  if (Node.isStringLiteral(node) || Node.isNoSubstitutionTemplateLiteral(node)) {
+    return !Node.isTaggedTemplateExpression(node.getParent()) && ASCII_WHITESPACE.test(node.getLiteralText());
+  }
+  if (Node.isTemplateExpression(node)) {
+    if (Node.isTaggedTemplateExpression(node.getParent())) return false;
+    return [node.getHead().getLiteralText(), ...node.getTemplateSpans().map(span => span.getLiteral().getLiteralText())]
+      .some(text => ASCII_WHITESPACE.test(text));
+  }
+  return false;
+}
+
+/** The operands of a `+` chain, through nested `+` (not through parentheses). */
+function concatOperands(node: Node, out: Node[] = []): Node[] {
+  if (Node.isBinaryExpression(node) && node.getOperatorToken().getKind() === SyntaxKind.PlusToken) {
+    concatOperands(node.getLeft(), out);
+    concatOperands(node.getRight(), out);
+  } else {
+    out.push(node);
+  }
+  return out;
+}
+
+/**
+ * The package that declares a type symbol: the package folder after `node_modules/` of its declaration
+ * file (`@nestjs/common`, `winston`; `@types/` dropped), else the name of the ambient
+ * `declare module 'pino'` around its declaration; undefined for a project type and for a type of
+ * TypeScript's own `lib.*.d.ts` files (`Console`, `Map`), which keeps its bare name.
+ */
+function packageOf(symbol: TsSymbol): string | undefined {
+  const declaration = symbol.getDeclarations()[0];
+  if (declaration === undefined) return undefined;
+  const file = declaration.getSourceFile().getFilePath().replace(/\\/g, '/');
+  if (/\/lib\.[^/]*\.d\.ts$/.test(file)) return undefined;
+  const inModules = /\/node_modules\/((?:@[^/]+\/)?[^/]+)/.exec(file);
+  if (inModules) return inModules[1]!.replace(/^@types\//, '');
+  for (const ancestor of declaration.getAncestors()) {
+    if (Node.isModuleDeclaration(ancestor) && ancestor.hasModuleKeyword() && Node.isStringLiteral(ancestor.getNameNode())) {
+      return (ancestor.getNameNode() as StringLiteral).getLiteralValue();
+    }
+  }
+  return undefined;
+}
+
+/**
+ * The type of a consumer's receiver, when the checker resolves one: `<package>.<name>` for a type a
+ * package or an ambient module declares (`pino.Logger`, `@nestjs/common.Logger`), else its name
+ * (`Console` for `console`).
+ */
+function receiverTypes(callee: Node): string[] | undefined {
+  if (!Node.isPropertyAccessExpression(callee)) return undefined;
+  const type = callee.getExpression().getType();
+  const symbol = type.getAliasSymbol() ?? type.getSymbol();
+  const name = symbol?.getName();
+  if (symbol === undefined || name === undefined || name.startsWith('__')) return undefined;
+  const pkg = packageOf(symbol);
+  return [pkg !== undefined ? `${pkg}.${name}` : name];
+}
+
+/**
+ * FC-4b: up to the statement and never out of a function, the nearest call (`new T` for a
+ * construction) that takes the value as an argument, with its receiver's type name, and whether on
+ * the way the value is a hole of a template literal, or an operand of a `+` chain with a string,
+ * whose literal text holds ASCII whitespace.
+ */
+function destination(call: Node): { consumer: string | undefined; consumerTypes: string[] | undefined; inProse: boolean } {
+  let inProse = false;
+  let node = call;
+  for (let parent = node.getParent(); parent; node = parent, parent = parent.getParent()) {
+    if (endsDestination(parent)) break;
+    if (Node.isCallExpression(parent) && parent.getArguments().includes(node)) {
+      const callee = parent.getExpression();
+      return { consumer: callee.getText().replace(/\s+/g, ' ').trim(), consumerTypes: receiverTypes(callee), inProse };
+    } else if (Node.isNewExpression(parent) && (parent.getArguments() as Node[]).includes(node)) {
+      return { consumer: `new ${parent.getExpression().getText().replace(/\s+/g, ' ').trim()}`, consumerTypes: undefined, inProse };
+    } else if (Node.isTemplateExpression(parent) && Node.isTemplateSpan(node)) {
+      if (isProse(parent)) inProse = true;
+    } else if (Node.isBinaryExpression(parent) && parent.getOperatorToken().getKind() === SyntaxKind.PlusToken) {
+      if (concatOperands(parent).some(isProse)) inProse = true;
+    }
+  }
+  return { consumer: undefined, consumerTypes: undefined, inProse };
+}
+
 /** Offsets of every `\n` in `text`, ascending. */
 function newlineOffsets(text: string): number[] {
   const offsets: number[] = [];
@@ -356,7 +453,17 @@ class Collector {
 
     // FC-4: x.m(...) whose simple name matches a normalization pattern.
     if (matchesNormalizationPattern(method, receiver.getText(), this.options.normalizationMethods)) {
-      this.push(call, { kind: 'call', line: this.lineOf(call), text: call.getText(), method, qualifier: receiver.getText() });
+      const { consumer, consumerTypes, inProse } = destination(call);
+      this.push(call, {
+        kind: 'call',
+        line: this.lineOf(call),
+        text: call.getText(),
+        method,
+        qualifier: receiver.getText(),
+        ...(consumer !== undefined ? { consumer } : {}),
+        ...(consumerTypes !== undefined ? { consumerTypes } : {}),
+        ...(inProse ? { inProse } : {}),
+      });
     }
 
     // G7: Express, Fastify, Koa and Hono routes: a literal path and a handler (Express `app.get('env')` reads a

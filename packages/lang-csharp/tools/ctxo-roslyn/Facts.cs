@@ -62,6 +62,9 @@ record CtxoFactEvidence
     [JsonPropertyName("literalKind")] public string? LiteralKind { get; init; }
     [JsonPropertyName("method")] public string? Method { get; init; }
     [JsonPropertyName("qualifier")] public string? Qualifier { get; init; }
+    [JsonPropertyName("consumer")] public string? Consumer { get; init; }
+    [JsonPropertyName("consumerTypes")] public IReadOnlyList<string>? ConsumerTypes { get; init; }
+    [JsonPropertyName("inProse")] public bool? InProse { get; init; }
     [JsonPropertyName("name")] public string? Name { get; init; }
     [JsonPropertyName("value")] public string? Value { get; init; }
     [JsonPropertyName("constructor")] public string? Constructor { get; init; }
@@ -409,7 +412,18 @@ static class Facts
 
             if (MatchesNormalization(method, receiver, options.NormalizationMethods))
             {
-                Add(new CtxoFactEvidence { Kind = "call", Line = line, Text = syntax.ToString(), Method = method, Qualifier = receiver });
+                var (consumer, consumerTypes, inProse) = Destination(syntax);
+                Add(new CtxoFactEvidence
+                {
+                    Kind = "call",
+                    Line = line,
+                    Text = syntax.ToString(),
+                    Method = method,
+                    Qualifier = receiver,
+                    Consumer = consumer,
+                    ConsumerTypes = consumerTypes,
+                    InProse = inProse ? true : null,
+                });
             }
 
             var arguments = syntax.ArgumentList.Arguments;
@@ -436,6 +450,87 @@ static class Facts
                 Add(new CtxoFactEvidence { Kind = "route", Line = line, Text = syntax.ToString(), Verb = verb, Route = path });
             }
         }
+
+        /// <summary>
+        /// FC-4b: where a call's value goes, up to its statement and never out of a lambda: the nearest
+        /// call (or <c>new T</c> construction) that takes it as an argument, with that call's receiver
+        /// type and the type declaring its method when they resolve, and whether on the way the value is
+        /// a hole of an interpolated string, or a <c>+</c> operand next to a string, whose literal text
+        /// holds ASCII whitespace.
+        /// </summary>
+        (string? Consumer, List<string>? Types, bool InProse) Destination(ExpressionSyntax call)
+        {
+            var inProse = false;
+            SyntaxNode node = call;
+            for (var parent = node.Parent; parent != null; node = parent, parent = parent.Parent)
+            {
+                switch (parent)
+                {
+                    case StatementSyntax:
+                    case MemberDeclarationSyntax:
+                    case AnonymousFunctionExpressionSyntax:
+                        return (null, null, inProse);
+                    case InvocationExpressionSyntax invocation when node == invocation.ArgumentList:
+                        return (Collapse(invocation.Expression.ToString()), ConsumerTypes(invocation), inProse);
+                    case BaseObjectCreationExpressionSyntax creation when node == creation.ArgumentList:
+                        return (creation is ObjectCreationExpressionSyntax typed ? $"new {Collapse(typed.Type.ToString())}" : "new", null, inProse);
+                    case InterpolatedStringExpressionSyntax interpolated when node is InterpolationSyntax:
+                        if (HasProse(interpolated)) inProse = true;
+                        break;
+                    case BinaryExpressionSyntax binary when binary.IsKind(SyntaxKind.AddExpression):
+                        if (ConcatOperands(binary).Any(IsProse)) inProse = true;
+                        break;
+                }
+            }
+            return (null, null, inProse);
+        }
+
+        /// <summary>Qualified, without type arguments or keywords (<c>System.String</c>, <c>Microsoft.Extensions.Logging.ILogger</c>).</summary>
+        static readonly SymbolDisplayFormat TypeName = new(
+            typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
+            genericsOptions: SymbolDisplayGenericsOptions.None);
+
+        /// <summary>The consumer's receiver type and the type declaring its method, when they resolve.</summary>
+        List<string>? ConsumerTypes(InvocationExpressionSyntax invocation)
+        {
+            var types = new List<string>();
+            void AddType(ITypeSymbol? type)
+            {
+                if (type == null || type.TypeKind == TypeKind.Error) return;
+                var name = type.OriginalDefinition.ToDisplayString(TypeName);
+                if (!types.Contains(name)) types.Add(name);
+            }
+            if (invocation.Expression is MemberAccessExpressionSyntax access) AddType(model.GetTypeInfo(access.Expression).Type);
+            if (model.GetSymbolInfo(invocation).Symbol is IMethodSymbol method)
+                AddType((method.ReducedFrom ?? method).ContainingType);
+            return types.Count > 0 ? types : null;
+        }
+
+        static readonly Regex Whitespace = new(@"\s+", RegexOptions.CultureInvariant);
+
+        static string Collapse(string text) => Whitespace.Replace(text, " ").Trim();
+
+        /// <summary>The operands of a <c>+</c> chain, through nested <c>+</c> (not through parentheses).</summary>
+        static IEnumerable<ExpressionSyntax> ConcatOperands(ExpressionSyntax expression)
+        {
+            if (expression is BinaryExpressionSyntax binary && binary.IsKind(SyntaxKind.AddExpression))
+                return ConcatOperands(binary.Left).Concat(ConcatOperands(binary.Right));
+            return [expression];
+        }
+
+        /// <summary>ASCII whitespace, the one definition every tier uses (space, tab, LF, CR, FF, VT).</summary>
+        static bool HasAsciiWhitespace(string text) => text.Any(c => c is ' ' or '\t' or '\n' or '\r' or '\f' or '\v');
+
+        /// <summary>A string literal or an interpolated string whose literal text holds ASCII whitespace.</summary>
+        static bool IsProse(SyntaxNode expression) => expression switch
+        {
+            LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.StringLiteralExpression) => HasAsciiWhitespace(literal.Token.ValueText),
+            InterpolatedStringExpressionSyntax interpolated => HasProse(interpolated),
+            _ => false,
+        };
+
+        static bool HasProse(InterpolatedStringExpressionSyntax interpolated) =>
+            interpolated.Contents.OfType<InterpolatedStringTextSyntax>().Any(text => HasAsciiWhitespace(text.TextToken.ValueText));
 
         /// <summary><c>System.TimeSpan</c> when resolved; else the call is written <c>TimeSpan.X</c> or <c>System.TimeSpan.X</c>.</summary>
         static bool IsTimeSpan(string? containingType, string? receiver) =>

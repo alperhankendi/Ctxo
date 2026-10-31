@@ -41,7 +41,7 @@ describe.skipIf(!HAS_DOTNET)('C# fact tier agreement', () => {
   });
 
   it('the samples hold every Facts file', () => {
-    expect(FILES).toEqual(['Endpoints.cs', 'LoanPolicy.cs', 'LoansController.cs', 'Program.cs', 'RenewalRules.cs', 'RetryNames.cs', 'ShelfController.cs']);
+    expect(FILES).toEqual(['Endpoints.cs', 'LoanPolicy.cs', 'LoansController.cs', 'MemberDirectory.cs', 'Program.cs', 'RenewalRules.cs', 'RetryNames.cs', 'ShelfController.cs']);
   });
 
   it('accepted difference: an explicit implementation of an interface from another namespace, written by its simple name', async () => {

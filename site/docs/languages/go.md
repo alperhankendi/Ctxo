@@ -156,7 +156,7 @@ points, and no `retry-timeout` facts in test files.
 | Kind | Go |
 | --- | --- |
 | `literal-comparison` | `if` and `for` conditions, expression `switch` case values and tagless `switch` cases |
-| `normalization` | `strings.ToLower`, `strings.TrimSpace` and the other configured methods (`q.Name` patterns match `q.Name(...)` calls only) |
+| `normalization` | `strings.ToLower`, `strings.TrimSpace` and the other configured methods (`q.Name` patterns match `q.Name(...)` calls only); one fact per chain (the outermost call), none when the nearest consumer is a log or error sink, for display text sent to a sink or formatter, for path, character, hex or file-extension work, or in test files ([FC-4b](https://github.com/alperhankendi/Ctxo/blob/master/docs/features/domain-knowledge.md#the-fact-contract)) |
 | `retry-timeout` | Numeric constants bound to retry or timeout names (`const`/`var`, `=`, `:=`, composite-literal keys) and durations (`n * time.Second`, `time.Duration(n) * time.Minute`, a bare `time.Hour`), whatever their name |
 | `endpoint` | `net/http` `HandleFunc` and `Handle` (a pattern `"GET /loans"` gives the verb, else `ANY`); gin `GET`, `POST`, ..., `Any` and `Handle` on `*gin.Engine`, `*gin.RouterGroup`, `gin.IRouter`, `gin.IRoutes`; echo (`github.com/labstack/echo`, v4, v5) `GET`, `POST`, ..., `Any` and `Add` on `*echo.Echo` and `*echo.Group`; chi (`github.com/go-chi/chi`, v5) `Get`, `Post`, ..., `Handle`, `HandleFunc`, `Method` and `MethodFunc` on `*chi.Mux` and `chi.Router`. Group and mount prefixes are joined: gin and echo `g := r.Group("/api")` (nested groups compose), chi `r.Route("/api", func(r chi.Router) {...})`, `Group(func)`, `With(...)` and `r.Mount("/admin", sub)` |
 

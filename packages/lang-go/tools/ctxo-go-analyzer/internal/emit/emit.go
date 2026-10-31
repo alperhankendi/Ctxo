@@ -89,6 +89,16 @@ type FactEvidence struct {
 	Amount      string `json:"amount,omitempty"`
 	Verb        string `json:"verb,omitempty"`
 	Route       string `json:"route,omitempty"`
+
+	// Consumer (call only, FC-4b): the callee of the nearest call that takes
+	// the call's value as an argument, up to the statement.
+	Consumer string `json:"consumer,omitempty"`
+	// ConsumerTypes (call only, FC-4b): the consumer's package path, or its
+	// receiver and method types as "<package path>.<name>", when they resolve.
+	ConsumerTypes []string `json:"consumerTypes,omitempty"`
+	// InProse (call only, FC-4b): on the way to the consumer the value is an
+	// operand of a + chain with a string literal holding ASCII whitespace.
+	InProse bool `json:"inProse,omitempty"`
 }
 
 // FileRecord is emitted once per source file analyzed. SqlCallSites is

@@ -198,3 +198,56 @@ describe('finishFacts', () => {
     }
   });
 });
+
+describe('finishFacts FC-4b', () => {
+  const FC4B_FILE = 'src/members.x';
+  const OWNER = `${FC4B_FILE}::save::function`;
+  const OPTIONS = { trivialLiterals: [0, 1, -1, null, true, false, ''], normalizationMethods: ['ToLower*', 'Trim*', 'strings.ToLower', 'strings.TrimSpace'] };
+  const call = (line: number, text: string, method: string, extra: Record<string, unknown> = {}): FactEvidence =>
+    ({ kind: 'call', symbolId: OWNER, line, text, method, ...extra }) as FactEvidence;
+  const texts = (evidence: readonly FactEvidence[]) => finishFacts(FC4B_FILE, evidence, [], OPTIONS).map(f => `${f.line} ${f.text}`);
+
+  it('the nearest consumer decides: a sink drops the fact, a business call around a sink keeps it', () => {
+    expect(texts([
+      call(1, 'email.Trim()', 'Trim', { consumer: '_logger.LogWarning', consumerTypes: ['Microsoft.Extensions.Logging.ILogger'] }),
+      call(2, 'email.Trim()', 'Trim', { consumer: 'repo.Upsert' }),
+      call(3, 'email.Trim()', 'Trim', { consumer: 'telemetry.Info', consumerTypes: ['MyApp.Telemetry'] }),
+      call(4, 'email.Trim()', 'Trim', { consumer: 'auth.LogIn' }),
+      call(5, 'email.Trim()', 'Trim', { consumer: 'new ArgumentException' }),
+      // A type that resolves but is no known logger still counts by the receiver's name, as in the syntax tiers.
+      call(6, 'email.Trim()', 'Trim', { consumer: 'this.logger.Info', consumerTypes: ['MyApp.Telemetry'] }),
+    ])).toEqual(['2 email.Trim()', '3 email.Trim()', '4 email.Trim()']);
+  });
+
+  it('prose drops a fact only when it goes to a sink or a display API', () => {
+    expect(texts([
+      call(1, 'name.Trim()', 'Trim', { inProse: true }),
+      call(2, 'name.Trim()', 'Trim', { inProse: true, consumer: 'sb.AppendLine' }),
+      call(3, 'name.Trim()', 'Trim', { inProse: true, consumer: 'db.Query' }),
+      call(4, 'name.Trim()', 'Trim', { inProse: true, consumer: 'console.log', consumerTypes: ['Console'] }),
+      call(5, 'name.Trim()', 'Trim', { consumer: 'sb.AppendLine' }),
+    ])).toEqual(['1 name.Trim()', '3 name.Trim()', '5 name.Trim()']);
+  });
+
+  it('a normalization inside a dropped message folds its inner calls too', () => {
+    expect(texts([
+      call(1, 'strings.ToLower(strings.TrimSpace(s))', 'ToLower', { consumer: 'fmt.Errorf' }),
+      call(1, 'strings.TrimSpace(s)', 'TrimSpace', { consumer: 'strings.ToLower' }),
+    ])).toEqual([]);
+  });
+
+  it('a function-form chain split over lines is one fact; the same call elsewhere stays', () => {
+    expect(texts([
+      call(1, 'strings.ToLower(\n  strings.TrimSpace(s))', 'ToLower'),
+      call(2, 'strings.TrimSpace(s)', 'TrimSpace', { consumer: 'strings.ToLower' }),
+      call(4, 'strings.TrimSpace(s)', 'TrimSpace'),
+    ])).toEqual(['1 strings.ToLower( strings.TrimSpace(s))', '4 strings.TrimSpace(s)']);
+  });
+
+  it('malformed consumer fields count as absent', () => {
+    expect(texts([
+      call(1, 'email.Trim()', 'Trim', { consumer: 42 }),
+      call(2, 'email.Trim()', 'Trim', { consumer: 'logger.Info', consumerTypes: [7] }),
+    ])).toEqual(['1 email.Trim()']);
+  });
+});

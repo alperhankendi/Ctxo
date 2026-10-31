@@ -94,12 +94,12 @@ resolves two candidates (shown with single-quoted fingerprints, the form to writ
       "source": "native"
     },
     {
-      "fingerprint": "normalization | member-directory.memberKey | email.trim().toLowerCase()",
+      "fingerprint": "normalization | member-directory.memberKey | trimmed.toLowerCase()",
       "kind": "normalization",
       "file": "src/lending/member-directory.ts",
-      "line": 2,
+      "line": 3,
       "symbolId": "src/lending/member-directory.ts::memberKey::function",
-      "text": "email.trim().toLowerCase()",
+      "text": "trimmed.toLowerCase()",
       "detail": { "method": "toLowerCase" },
       "source": "native"
     }

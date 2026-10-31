@@ -6,6 +6,38 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo (ten packages today). Per-pack
 
 ## [Unreleased]
 
+**Normalization facts that are business normalization.**
+
+### Changed (normalization facts)
+
+- Many `normalization` facts were not business normalization. The four plugins, in every tier, and the
+  `@ctxo/domain` text scan now look at the nearest call that receives the normalized value (its consumer) and drop
+  the fact (FC-4b, [facts](docs/features/domain-knowledge.md#the-fact-contract)) when:
+  - the consumer is a message sink: a logging method on a known logger type (Microsoft.Extensions.Logging, Serilog,
+    NLog, log4net, `System.Diagnostics.Debug`/`Trace`, java.util.logging, SLF4J, log4j, commons-logging, Go `log`,
+    `log/slog`, logrus, zap, zerolog, and in TypeScript `Console`, pino, winston, NestJS `Logger`/`LoggerService`,
+    bunyan, log4js, tslog), the same methods on a receiver named like a logger in every tier (whenever no known logger
+    type resolves), or an exception or error construction (`new ...Exception`, `new Error`, `errors.New`, `fmt.Errorf`). `auth.LogIn`, `tracker.TraceParcel`,
+    `PrintLabel` or `writer.WriteLine` are no sinks, and `log.info("saved", repo.upsert(email.toLowerCase()))` keeps
+    its fact;
+  - the value is display text: inside an interpolated string or a `+` chain whose literal text holds whitespace,
+    going to a sink or a display or formatting API (`StringBuilder.Append*`, `string.Format`, `fmt.Sprintf`,
+    `Console.Write*`). SQL templates and space-joined keys keep their facts;
+  - it works on a format: `Path` and character calls, the case of hex or base64 output and file extensions, trims
+    of path separators only;
+  - it feeds another normalization call as its receiver or only argument (comparison methods aside), also across
+    lines: `email.Trim().ToLowerInvariant()` and `strings.ToLower(strings.TrimSpace(s))` are one fact, the outermost;
+  - it is in a test file (as `retry-timeout` facts already were).
+- False-positive categories no longer reported: test-file normalization, inner calls of a chain, log and exception
+  messages, display formatting, path and file-extension handling, hex or base64 output.
+- The `call` evidence gains `consumer`, `consumerTypes` (full tiers) and `inProse`; Roslyn, JDT, ctxo-go-analyzer,
+  ts-morph and the tree-sitter tiers report them, and the shared finisher decides. New conformance vectors:
+  `isMessageSink`, `isDisplayCall`, `isTechnicalNormalization`, `feedsNormalization`. The Java full tier needs
+  `@ctxo/lang-java-analyzer` at this release (`ctxo update`); an older JAR reports no consumers.
+- Fingerprints of the dropped facts disappear: a `shadow-specs.yaml` resolution recorded for an inner chain call
+  (`email.Trim()` of `email.Trim().ToLowerInvariant()`) or for a dropped call turns stale (check 12 warns) and can be
+  removed.
+
 **Cursor gets a fold reminder.**
 
 ### Added (Cursor fold reminder)

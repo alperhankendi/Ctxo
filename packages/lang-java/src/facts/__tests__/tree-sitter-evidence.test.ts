@@ -73,7 +73,6 @@ describe('collectTreeSitterEvidence (Java syntax tier)', () => {
       `HOLD_TIMEOUT::variable ${lineOf(rules, 'HOLD_TIMEOUT')} retry-timeout HOLD_TIMEOUT = 90min {"name":"HOLD_TIMEOUT","value":"90min"}`,
       `canBorrow::method ${lineOf(rules, 'openLoans >= 5')} literal-comparison openLoans >= 5 {"operator":">=","literal":"5"}`,
       `fee::method ${lineOf(rules, 'case "gold"')} literal-comparison tier case "gold" {"operator":"case","literal":"\\"gold\\""}`,
-      `key::method ${lineOf(rules, 'email.trim()')} normalization email.trim() {"method":"trim"}`,
       `key::method ${lineOf(rules, 'email.trim()')} normalization email.trim().toLowerCase() {"method":"toLowerCase"}`,
       `same::method ${lineOf(rules, 'equalsIgnoreCase')} normalization a.equalsIgnoreCase(b) {"method":"equalsIgnoreCase"}`,
       `label::method ${lineOf(rules, 'days > 14')} literal-comparison days > 14 {"operator":">","literal":"14"}`,
@@ -185,9 +184,49 @@ describe('collectTreeSitterEvidence (Java syntax tier)', () => {
       '}',
     ].join('\n');
     expect(await rows(source)).toEqual([
-      'm::method 3 normalization s.toUpperCase()',
       'm::method 3 normalization this.<String>trim()',
       'm::method 3 normalization trim(s.toUpperCase())',
+    ]);
+  });
+
+  it('FC-4b: a chain is one fact; message sinks, display text and formats give none', async () => {
+    const source = [
+      'package gen;',
+      'import java.util.*;',
+      'class Members {',
+      '  interface Repo { String upsert(String v); void lookup(String k); void query(String q); }',
+      '  interface Auth { void logIn(String v); }',
+      '  static final org.slf4j.Logger log = null;',
+      '  String save(String email, String name, char c, Map<String, String> store, List<String> items, Repo repo, Auth auth, StringBuilder sb) {',
+      '    log.warn("unknown {}", email.toLowerCase());',
+      '    store.put(email.toUpperCase(), name.trim());',
+      '    log.info("saved " + repo.upsert(name.toLowerCase()));',
+      '    auth.logIn(email.trim().toLowerCase());',
+      '    log.info("Member: " + name.toUpperCase() + "!");',
+      '    sb.append("Dear " + email.trim());',
+      '    String caption = "Member: " + name.trim() + "!";',
+      '    repo.query("SELECT id FROM members WHERE email = \'" + email.toUpperCase() + "\'");',
+      '    repo.lookup(name.trim() + " " + email.toLowerCase());',
+      '    if (email.trim().isEmpty()) throw new IllegalArgumentException(email.toUpperCase());',
+      '    log.info(String.join(",", items.stream().map(i -> i.trim()).toList()));',
+      '    String initial = String.valueOf(Character.toUpperCase(c));',
+      '    String hex = HexFormat.of().formatHex(email.getBytes()).toUpperCase();',
+      '    return caption + initial + hex + email.trim().toLowerCase();',
+      '  }',
+      '}',
+    ].join('\n');
+    expect((await rows(source)).filter((row) => row.includes(' normalization ')).map((row) => row.slice(row.indexOf(' ') + 1))).toEqual([
+      '8 normalization email.toUpperCase()',
+      '8 normalization name.trim()',
+      '9 normalization name.toLowerCase()',
+      '10 normalization email.trim().toLowerCase()',
+      '13 normalization name.trim()',
+      '14 normalization email.toUpperCase()',
+      '15 normalization email.toLowerCase()',
+      '15 normalization name.trim()',
+      '16 normalization email.trim()',
+      '17 normalization i.trim()',
+      '20 normalization email.trim().toLowerCase()',
     ]);
   });
 

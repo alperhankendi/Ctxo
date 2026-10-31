@@ -753,7 +753,16 @@ class Collector {
       : this.source.slice(start.startIndex - this.root.startIndex, node.endIndex - this.root.startIndex);
 
     if (matchesNormalizationPattern(method, receiver, this.options.normalizationMethods)) {
-      this.add({ kind: 'call', line, text, method, ...(receiver !== undefined ? { qualifier: receiver } : {}) });
+      const { consumer, inProse } = destination(node);
+      this.add({
+        kind: 'call',
+        line,
+        text,
+        method,
+        ...(receiver !== undefined ? { qualifier: receiver } : {}),
+        ...(consumer !== undefined ? { consumer } : {}),
+        ...(inProse ? { inProse } : {}),
+      });
     }
 
     const args = argumentsOf(node);
@@ -785,6 +794,90 @@ class Collector {
     if (!hasRetryTimeoutFragment(name)) return;
     this.add({ kind: 'binding', line, name, value: bound.text });
   }
+}
+
+// ── FC-4b: where a normalization call's value goes ──────────────
+
+/** Nodes that end the walk: statements, declarations and function bodies (Roslyn stops at the same places). */
+function endsDestination(node: SyntaxNode): boolean {
+  return node.type.endsWith('_statement') || node.type.endsWith('_declaration') || node.type === 'block'
+    || node.type === 'lambda_expression' || node.type === 'anonymous_method_expression' || node.type === 'declaration_list';
+}
+
+/** ASCII whitespace, the one definition every tier uses (space, tab, LF, CR, FF, VT). */
+const ASCII_WHITESPACE = /[ \t\n\r\f\v]/;
+
+/** The value of a C# escape sequence, as Roslyn decodes it (simple, `\x`, `\u` and `\U` escapes). */
+function escapeValue(sequence: string): string {
+  const simple = SIMPLE_ESCAPES[sequence.slice(1)];
+  if (simple !== undefined) return simple;
+  const hex = /^\\[xuU]([0-9a-fA-F]+)$/.exec(sequence);
+  const code = hex ? parseInt(hex[1]!, 16) : NaN;
+  return Number.isFinite(code) && code <= 0x10ffff ? String.fromCodePoint(code) : '';
+}
+
+/** ASCII whitespace in a literal part of a string, with escape sequences decoded as Roslyn decodes them. */
+function hasWhitespace(part: SyntaxNode): boolean {
+  return ASCII_WHITESPACE.test(part.type === 'escape_sequence' ? escapeValue(part.text) : part.text);
+}
+
+/** A string literal or interpolated string whose literal text holds ASCII whitespace. */
+function isProse(node: SyntaxNode): boolean {
+  switch (node.type) {
+    case 'string_literal':
+      return node.namedChildren.some(hasWhitespace);
+    case 'verbatim_string_literal':
+      return ASCII_WHITESPACE.test(node.text.slice(2, -1));
+    case 'raw_string_literal': {
+      const content = decodeCsharpRawString(node.text);
+      return content !== undefined && ASCII_WHITESPACE.test(content);
+    }
+    case 'interpolated_string_expression':
+      return node.namedChildren.some(c => c.type !== 'interpolation' && hasWhitespace(c));
+    default:
+      return false;
+  }
+}
+
+/** The operands of a `+` chain, through nested `+` (not through parentheses). */
+function concatOperands(node: SyntaxNode, out: SyntaxNode[] = []): SyntaxNode[] {
+  if (node.type === 'binary_expression' && node.childForFieldName('operator')?.text === '+') {
+    for (const side of [node.childForFieldName('left'), node.childForFieldName('right')]) if (side) concatOperands(side, out);
+  } else {
+    out.push(node);
+  }
+  return out;
+}
+
+/**
+ * FC-4b, as Facts.cs reads it: up to the statement and never out of a lambda, the nearest call (`new T`
+ * for a construction) that takes the value as an argument, and whether on the way the value is a hole
+ * of an interpolated string, or an operand of a `+` chain with a string, whose literal text holds ASCII
+ * whitespace. The syntax tier has no types, so it reports no `consumerTypes`.
+ */
+function destination(call: SyntaxNode): { consumer: string | undefined; inProse: boolean } {
+  let inProse = false;
+  let node = call;
+  for (let parent = node.parent; parent; node = parent, parent = parent.parent) {
+    if (endsDestination(parent)) break;
+    const args = parent.childForFieldName('arguments');
+    if (parent.type === 'invocation_expression' && same(args, node)) {
+      return { consumer: collapse(parent.childForFieldName('function')?.text ?? ''), inProse };
+    } else if (parent.type === 'object_creation_expression' && same(args, node)) {
+      return { consumer: `new ${collapse(parent.childForFieldName('type')?.text ?? '')}`, inProse };
+    } else if (parent.type === 'implicit_object_creation_expression' && node.type === 'argument_list') {
+      return { consumer: 'new', inProse };
+    } else if (parent.type === 'interpolated_string_expression' && node.type === 'interpolation') {
+      if (isProse(parent)) inProse = true;
+    } else if (parent.type === 'binary_expression' && parent.childForFieldName('operator')?.text === '+') {
+      if (concatOperands(parent).some(isProse)) inProse = true;
+    }
+  }
+  return { consumer: undefined, inProse };
+}
+
+function collapse(text: string): string {
+  return text.replace(/\s+/g, ' ').trim();
 }
 
 /** The name a call's value is bound to: a declarator, property initializer, assignment, named argument or initializer member. */

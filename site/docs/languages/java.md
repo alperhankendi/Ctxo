@@ -175,7 +175,7 @@ points, and no `retry-timeout` facts in test files.
 | Kind | Java |
 | --- | --- |
 | `literal-comparison` | `if`, `while`, `do`, `for`, ternaries and `switch` labels (statements and expressions) |
-| `normalization` | `trim`, `toLowerCase`, `equalsIgnoreCase` and the other configured methods |
+| `normalization` | `trim`, `toLowerCase`, `equalsIgnoreCase` and the other configured methods; one fact per chain (the outermost call), none when the nearest consumer is a log or error sink, for display text sent to a sink or formatter, for path, character, hex or file-extension work, or in test files ([FC-4b](https://github.com/alperhankendi/Ctxo/blob/master/docs/features/domain-knowledge.md#the-fact-contract)) |
 | `retry-timeout` | Numeric constants bound to retry or timeout names (fields, locals, assignments, annotation members) and `Duration.of*(n)`, `Duration.of(n, ChronoUnit.X)` |
 | `endpoint` | Spring `@GetMapping`, `@PostMapping`, `@PutMapping`, `@DeleteMapping`, `@PatchMapping`, `@RequestMapping` (verbs from `method = RequestMethod.X`, the class mapping as prefix); JAX-RS `@GET` and friends with `@Path` on the class and the method |
 

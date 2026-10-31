@@ -7,6 +7,7 @@ import type { SymbolNode } from '@ctxo/plugin-api';
 import type { DurationUnit, FactEvidence, FactOptions, LiteralKind } from './fact-types.js';
 import { hasRetryTimeoutFragment, matchesNormalizationPattern } from './fact-rules.js';
 import { annotationRouteEvidence } from './annotation-endpoints.js';
+import { decodeJavaStringLiteral } from './java-string-literal.js';
 
 /** At most this many CST evidence records per file, as in the JDT collector (routes come on top). */
 export const MAX_EVIDENCE_PER_FILE = 2000;
@@ -109,6 +110,78 @@ function dottedName(node: SyntaxNode): string | undefined {
   if (!object || !field || field.type !== 'identifier') return undefined;
   const qualifier = dottedName(object);
   return qualifier === undefined ? undefined : `${qualifier}.${field.text}`;
+}
+
+// ── FC-4b: where a normalization call's value goes ──
+
+/** Statements, declarations, bodies and lambdas end the walk, as in the JDT collector. */
+function endsDestination(node: SyntaxNode): boolean {
+  return node.type.endsWith('_statement') || node.type.endsWith('_declaration') || node.type === 'block'
+    || node.type === 'constructor_body' || node.type === 'class_body' || node.type === 'lambda_expression'
+    || node.type === 'program';
+}
+
+/** ASCII whitespace, the one definition every tier uses (space, tab, LF, CR, FF, VT). */
+const ASCII_WHITESPACE = /[ \t\n\r\f\v]/;
+
+const JAVA_SIMPLE_ESCAPES: Readonly<Record<string, string>> = { b: '\b', t: '\t', n: '\n', f: '\f', r: '\r', s: ' ', '"': '"', "'": "'", '\\': '\\' };
+
+/** A plain string literal's body with Unicode, octal and simple escapes decoded, as JDT's literal value has them. */
+function decodeJavaEscapes(body: string): string {
+  return body.replace(/\\(u+[0-9a-fA-F]{4}|[0-7]{1,3}|[\s\S])/g, (_, escape: string) => {
+    if (escape.startsWith('u')) return String.fromCharCode(parseInt(escape.replace(/^u+/, ''), 16));
+    if (/^[0-7]/.test(escape)) return String.fromCharCode(parseInt(escape, 8));
+    return JAVA_SIMPLE_ESCAPES[escape] ?? escape;
+  });
+}
+
+/** A string literal or text block whose value holds ASCII whitespace. */
+function isProse(node: SyntaxNode): boolean {
+  if (node.type !== 'string_literal') return false;
+  if (node.text.startsWith('"""')) {
+    const content = decodeJavaStringLiteral(node.text);
+    return ASCII_WHITESPACE.test(content ?? node.text.slice(3, -3));
+  }
+  return ASCII_WHITESPACE.test(decodeJavaEscapes(node.text.slice(1, -1)));
+}
+
+/** The operands of a `+` chain, through nested `+` (not through parentheses). */
+function concatOperands(node: SyntaxNode, out: SyntaxNode[] = []): SyntaxNode[] {
+  if (node.type === 'binary_expression' && operatorOf(node) === '+') {
+    for (const side of [node.childForFieldName('left'), node.childForFieldName('right')]) if (side) concatOperands(side, out);
+  } else {
+    out.push(node);
+  }
+  return out;
+}
+
+/** The callee as the JDT collector writes it: `receiver.name`, or `name` alone. */
+function calleeText(call: SyntaxNode): string {
+  const object = call.childForFieldName('object');
+  const name = call.childForFieldName('name')?.text ?? '';
+  return (object ? `${object.text}.${name}` : name).replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * FC-4b: up to the statement and never out of a lambda, the nearest call (`new T` for a construction)
+ * that takes the value as an argument, and whether on the way the value is an operand of a `+` chain
+ * with a string whose value holds ASCII whitespace. The syntax tier has no types (no `consumerTypes`).
+ */
+function destination(call: SyntaxNode): { consumer: string | undefined; inProse: boolean } {
+  let inProse = false;
+  let node = call;
+  for (let parent = node.parent; parent; node = parent, parent = parent.parent) {
+    if (endsDestination(parent)) break;
+    const args = parent.childForFieldName('arguments');
+    if (parent.type === 'method_invocation' && args && same(args, node)) {
+      return { consumer: calleeText(parent), inProse };
+    } else if (parent.type === 'object_creation_expression' && args && same(args, node)) {
+      return { consumer: `new ${(parent.childForFieldName('type')?.text ?? '').replace(/\s+/g, ' ').trim()}`, inProse };
+    } else if (parent.type === 'binary_expression' && operatorOf(parent) === '+') {
+      if (concatOperands(parent).some(isProse)) inProse = true;
+    }
+  }
+  return { consumer: undefined, inProse };
 }
 
 function callArguments(call: SyntaxNode): SyntaxNode[] {
@@ -429,7 +502,16 @@ class Collector {
     if (method === undefined) return;
     const qualifier = node.childForFieldName('object')?.text;
     if (matchesNormalizationPattern(method, qualifier, this.patterns) && !this.full()) {
-      this.push({ kind: 'call', ...this.base(node), text: node.text, method, ...(qualifier !== undefined ? { qualifier } : {}) });
+      const { consumer, inProse } = destination(node);
+      this.push({
+        kind: 'call',
+        ...this.base(node),
+        text: node.text,
+        method,
+        ...(qualifier !== undefined ? { qualifier } : {}),
+        ...(consumer !== undefined ? { consumer } : {}),
+        ...(inProse ? { inProse } : {}),
+      });
     }
     if (durationUnit(node) !== undefined && !boundDuration(node)) this.duration(node, undefined);
   }

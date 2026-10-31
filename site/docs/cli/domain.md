@@ -237,8 +237,8 @@ ctxo domain shadow-specs <context> [--kinds <k,...>] [--all] [--json]
       'endpoint | LoansController.borrow | POST /loans'
   resolved  normalization  src/lending/member-directory.ts:2  email.trim()  [not a rule: input cleanup, not a business rule]
       'normalization | member-directory.memberKey | email.trim()'
-  open  normalization  src/lending/member-directory.ts:2  email.trim().toLowerCase()
-      'normalization | member-directory.memberKey | email.trim().toLowerCase()'
+  open  normalization  src/lending/member-directory.ts:3  trimmed.toLowerCase()
+      'normalization | member-directory.memberKey | trimmed.toLowerCase()'
 ```
 
 Both examples are `ctxo domain map` and `ctxo domain shadow-specs lending --kinds endpoint,normalization --all` on

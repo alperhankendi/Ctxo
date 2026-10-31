@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -162,7 +163,7 @@ func TestCollectReportsTheFixtureEvidence(t *testing.T) {
 		{Kind: "comparison", SymbolID: id("Fee", "function"), Line: 31, Text: `tier case "gold"`, Operator: "case", Literal: `"gold"`, LiteralKind: "string"},
 		{Kind: "comparison", SymbolID: id("Fee", "function"), Line: 33, Text: `tier case ""`, Operator: "case", Literal: `""`, LiteralKind: "string"},
 		{Kind: "call", SymbolID: id("Key", "function"), Line: 41, Text: "strings.ToLower(strings.TrimSpace(email))", Method: "ToLower", Qualifier: "strings"},
-		{Kind: "call", SymbolID: id("Key", "function"), Line: 41, Text: "strings.TrimSpace(email)", Method: "TrimSpace", Qualifier: "strings"},
+		{Kind: "call", SymbolID: id("Key", "function"), Line: 41, Text: "strings.TrimSpace(email)", Method: "TrimSpace", Qualifier: "strings", Consumer: "strings.ToLower", ConsumerTypes: []string{"strings"}},
 		{Kind: "route", SymbolID: id("Routes", "function"), Line: 46, Text: `mux.HandleFunc("GET /holds/{id}", nil)`, Verb: "GET", Route: "/holds/{id}"},
 		{Kind: "route", SymbolID: id("Routes", "function"), Line: 47, Text: `http.HandleFunc("/health", nil)`, Verb: "ANY", Route: "/health"},
 		{Kind: "route", SymbolID: id("Routes", "function"), Line: 48, Text: `r.GET("/loans/:id", nil)`, Verb: "GET", Route: "/loans/:id"},
@@ -417,6 +418,64 @@ func Clean(e Email, s string) string {
 	}
 	if got := methods(Options{}); got != nil {
 		t.Errorf("no patterns: %v", got)
+	}
+}
+
+func TestNormalizationCallsReportWhereTheirValueGoes(t *testing.T) {
+	body := `package app
+
+import (
+	"errors"
+	"fmt"
+	"log"
+	"strings"
+)
+
+type Repo struct{}
+
+func (r *Repo) Upsert(s string) string { return s }
+
+type Auth struct{}
+
+func (a *Auth) LogIn(s string) {}
+
+func Save(email, name string, store map[string]string, repo *Repo, auth *Auth, sb *strings.Builder) error {
+	store[strings.ToLower(email)] = strings.TrimSpace(name)
+	log.Printf("unknown %s", strings.ToLower(email))
+	log.Println("saved", repo.Upsert(strings.ToUpper(name)))
+	auth.LogIn(strings.ToLower(email))
+	sb.WriteString("Dear " + strings.TrimSpace(name))
+	key := strings.TrimSpace(name) + " " + email
+	if strings.TrimSpace(email) == "" {
+		return errors.New(strings.ToUpper(email))
+	}
+	_ = key
+	return fmt.Errorf("bad %s", strings.ToLower(strings.TrimSpace(name)))
+}
+`
+	dir := writeFiles(t, map[string]string{"go.mod": appGoMod, "app.go": body})
+	var got []string
+	for _, e := range collectFile(t, dir, "app.go", defaultOptions) {
+		if e.Kind != "call" {
+			continue
+		}
+		got = append(got, fmt.Sprintf("%d %s | %s %v %v", e.Line, e.Text, e.Consumer, e.ConsumerTypes, e.InProse))
+	}
+	want := []string{
+		"18 strings.ToLower(email) |  [] false",
+		"18 strings.TrimSpace(name) |  [] false",
+		"19 strings.ToLower(email) | log.Printf [log] false",
+		"20 strings.ToUpper(name) | repo.Upsert [app.Repo] false",
+		"21 strings.ToLower(email) | auth.LogIn [app.Auth] false",
+		"22 strings.TrimSpace(name) | sb.WriteString [strings.Builder] true",
+		"23 strings.TrimSpace(name) |  [] true",
+		"24 strings.TrimSpace(email) |  [] false",
+		"25 strings.ToUpper(email) | errors.New [errors] false",
+		"28 strings.ToLower(strings.TrimSpace(name)) | fmt.Errorf [fmt] false",
+		"28 strings.TrimSpace(name) | strings.ToLower [strings] false",
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("evidence:\n got %q\nwant %q", got, want)
 	}
 }
 

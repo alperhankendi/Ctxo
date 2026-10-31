@@ -10,7 +10,7 @@ import { InstallCommand } from './install-command.js';
 import { readSourceText } from './read-source.js';
 import { changeLogSize, writeCoChangeMatrix } from './index-cochange.js';
 import { computeAndWriteContextsView } from './index-contexts-view.js';
-import { dropTestFileRetryTimeouts, extractFileFacts, pluginFactRequest, type PluginFactRequest } from './index-facts.js';
+import { dropTestFileFacts, extractFileFacts, pluginFactRequest, type PluginFactRequest } from './index-facts.js';
 import {
   communityDetectorOptions,
   loadConfig,
@@ -377,7 +377,7 @@ export class IndexCommand {
         if (!adapter) continue;
         // An adapter with extractFacts always writes the key, `[]` included; one without writes none.
         const facts = await extractFileFacts(adapter, entry.relativePath, entry.source);
-        if (facts) entry.fileIndex.facts = dropTestFileRetryTimeouts(entry.relativePath, entry.fileIndex.symbols, facts, testGlobs);
+        if (facts) entry.fileIndex.facts = dropTestFileFacts(entry.relativePath, entry.fileIndex.symbols, facts, testGlobs);
       }
     }
 

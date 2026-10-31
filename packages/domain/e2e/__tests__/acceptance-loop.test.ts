@@ -294,6 +294,30 @@ describe.each(VARIANTS)('PR 4 acceptance, %s sample', (variant) => {
     expect(check12.findings).toEqual([expect.objectContaining({ severity: 'warning', message: `stale resolution "${stale}" matches no candidate of lending` })]);
   });
 
+  it('a resolution recorded for the inner call of a one-line chain turns stale (FC-4b)', () => {
+    // Before FC-4b, `email.trim().toLowerCase()` gave two candidates and the sample resolved the inner `email.trim()`.
+    const ws = SampleWorkspace.create(variant);
+    const chain: Record<Variant, string> = {
+      csharp: 'namespace LibraryLending.Lending;\n\npublic static class MemberDirectory\n{\n    public static string Key(string email) => email.Trim().ToLowerInvariant();\n}\n',
+      typescript: 'export function memberKey(email: string): string {\n  return email.trim().toLowerCase();\n}\n',
+    };
+    const inner: Record<Variant, string> = {
+      csharp: 'normalization | MemberDirectory.Key | email.Trim()',
+      typescript: 'normalization | member-directory.memberKey | email.trim()',
+    };
+    ws.write(MEMBER_DIRECTORY[variant], chain[variant]);
+    ws.commitLoaderRules();
+    ws.index();
+    const result = ws.cli(['verify-domain', '--json']);
+    expect(result.status, result.stdout).toBe(0);
+    const report = JSON.parse(result.stdout) as { checks: { id: string; status: string; findings: { severity: string; message: string }[] }[] };
+    const check12 = report.checks.find((c) => c.id === '12')!;
+    expect(check12.status).toBe('warn');
+    expect(check12.findings).toEqual([
+      expect.objectContaining({ severity: 'warning', message: `stale resolution "${inner[variant]}" matches no candidate of lending` }),
+    ]);
+  });
+
   it('a resolution written after the index takes effect on the next call', async () => {
     const ws = prepared(variant);
     const session = await ws.connect();
