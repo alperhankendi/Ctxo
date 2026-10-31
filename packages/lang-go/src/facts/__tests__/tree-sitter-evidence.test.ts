@@ -215,6 +215,23 @@ describe('Go syntax-tier facts', () => {
     ]);
   });
 
+  it('block-scoped := groups keep their own prefix', async () => {
+    expect(rows(await syntaxFacts('app.go', AGREEING_SAMPLES['blockScoped']!)).map(([line, , text]) => [line, text])).toEqual([
+      [7, 'GET /loans/:id'],
+      [11, 'GET /members/:id'],
+      [14, 'POST /holds'],
+    ]);
+  });
+
+  it('with the framework imported, methods on receivers that are not its routers give nothing', async () => {
+    expect(rows(await syntaxFacts('app.go', AGREEING_SAMPLES['echoNoise']!)).map(([line, , text]) => [line, text])).toEqual([[19, 'GET /ok']]);
+    // A chi pattern without a leading "/" is no route, and a re-assigned mount target loses the mount prefix.
+    expect(rows(await syntaxFacts('app.go', AGREEING_SAMPLES['chiNoise']!)).map(([line, , text]) => [line, text])).toEqual([
+      [12, 'GET /ok'],
+      [16, 'GET /x'],
+    ]);
+  });
+
   it('chi and echo method names give nothing without their import', async () => {
     const source = `package app
 

@@ -721,7 +721,11 @@ func (c *collector) route(call *ast.CallExpr, sel *ast.SelectorExpr) (verb, rout
 			return methodPath()
 		}
 	case "chi":
+		// chi panics on a pattern without a leading "/", so requiring one loses no route.
 		if v, known := chiVerbs[name]; known {
+			if path, isStr := c.constString(call, 0); !isStr || !strings.HasPrefix(path, "/") {
+				return "", "", false
+			}
 			return verbPath(v, 0)
 		}
 		switch name {
@@ -736,6 +740,9 @@ func (c *collector) route(call *ast.CallExpr, sel *ast.SelectorExpr) (verb, rout
 			}
 			return v, c.prefixed(sel.X, path), true
 		case "Method", "MethodFunc":
+			if path, isStr := c.constString(call, 1); !isStr || !strings.HasPrefix(path, "/") {
+				return "", "", false
+			}
 			return methodPath()
 		}
 	}

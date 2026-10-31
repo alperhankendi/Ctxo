@@ -290,6 +290,65 @@ func Register(dynamic string) {
 	r.Mount(dynamic, other)
 }
 `,
+  blockScoped: `package app
+
+import "github.com/gin-gonic/gin"
+
+func Register(r *gin.Engine) {
+	{
+		g := r.Group("/loans")
+		g.GET("/:id", nil)
+	}
+	{
+		g := r.Group("/members")
+		g.GET("/:id", nil)
+	}
+	if g := r.Group("/holds"); g != nil {
+		g.POST("/", nil)
+	}
+}
+`,
+  echoNoise: `package app
+
+import (
+	"net/url"
+
+	"github.com/labstack/echo/v4"
+)
+
+type header struct{}
+
+func (header) Add(k, v string) {}
+
+type response struct{}
+
+func (response) Header() header { return header{} }
+
+func Handle(e *echo.Echo, res response, q url.Values) {
+	res.Header().Add("Content-Type", "application/json")
+	q.Add("page", "1")
+	e.GET("/ok", nil)
+}
+`,
+  chiNoise: `package app
+
+import "github.com/go-chi/chi/v5"
+
+type cache struct{}
+
+func (cache) Get(k string, out interface{}) {}
+
+func Load(c cache, r chi.Router) {
+	var out int
+	c.Get("loans", &out)
+	r.Get("loans", nil)
+	r.Get("/ok", nil)
+	sub := chi.NewRouter()
+	r.Mount("/a", sub)
+	sub = chi.NewRouter()
+	sub.Get("/x", nil)
+}
+`,
   ginInterfaces: `package app
 
 import "github.com/gin-gonic/gin"

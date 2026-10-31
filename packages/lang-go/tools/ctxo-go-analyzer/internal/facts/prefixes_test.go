@@ -224,3 +224,46 @@ func Register(c cache) {
 `)
 	expectRoutes(t, got, nil)
 }
+
+func TestChiPatternsNeedASlashAndReassignedMountsAreUnknown(t *testing.T) {
+	got := collectRouters(t, `package app
+
+import "github.com/go-chi/chi/v5"
+
+type cache struct{}
+
+func (cache) Get(k string, out interface{}) {}
+
+func Load(c cache, r chi.Router) {
+	var out int
+	c.Get("loans", &out)
+	r.Get("loans", nil)
+	r.Get("/ok", nil)
+	sub := chi.NewRouter()
+	r.Mount("/a", sub)
+	sub = chi.NewRouter()
+	sub.Get("/x", nil)
+	r.Method("PATCH", "nope", nil)
+}
+`)
+	expectRoutes(t, got, []string{"12 GET /ok", "16 GET /x"})
+}
+
+func TestBlockScopedGroupsKeepTheirPrefix(t *testing.T) {
+	got := collectRouters(t, `package app
+
+import "github.com/gin-gonic/gin"
+
+func Register(r *gin.Engine) {
+	{
+		g := r.Group("/loans")
+		g.GET("/:id", nil)
+	}
+	{
+		g := r.Group("/members")
+		g.GET("/:id", nil)
+	}
+}
+`)
+	expectRoutes(t, got, []string{"07 GET /loans/:id", "11 GET /members/:id"})
+}

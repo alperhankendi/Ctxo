@@ -5,10 +5,10 @@
 // - nil, true and false are literals unless the file declares an identifier of that name;
 // - time.<Unit> and time.Duration are found through the local name of the "time" import;
 // - routes are net/http.HandleFunc and Handle through the "net/http" import name, <x>.HandleFunc and <x>.Handle in
-//   a file that imports net/http, the gin route methods in a file that imports github.com/gin-gonic/gin, the echo
-//   ones in a file that imports github.com/labstack/echo (v4, v5) and the chi ones in a file that imports
-//   github.com/go-chi/chi (v5); a route path is a string literal, a + of them, or a string constant declared in the
-//   same file, joined to its group or mount prefix (tree-sitter-prefixes.ts);
+//   a file that imports net/http, and the gin, echo and chi routing methods on a receiver the file shows to be a
+//   router of that framework (a constructor, a group, a chi closure parameter or mount target, or a declared
+//   framework type; tree-sitter-prefixes.ts); a route path is a string literal, a + of them, or a string constant
+//   declared in the same file, joined to its group or mount prefix;
 // - a keyed element is a struct field unless its composite literal is a map, slice or array literal.
 import type { SyntaxNode } from 'tree-sitter';
 import type { SymbolNode } from '@ctxo/plugin-api';
@@ -35,9 +35,6 @@ const CHI_VERBS: Readonly<Record<string, string>> = {
   Get: 'GET', Post: 'POST', Put: 'PUT', Delete: 'DELETE', Patch: 'PATCH', Head: 'HEAD', Options: 'OPTIONS', Connect: 'CONNECT', Trace: 'TRACE',
 };
 
-const GIN_PATH = 'github.com/gin-gonic/gin';
-const ECHO_PATH = /^github\.com\/labstack\/echo(\/v[0-9]+)?$/;
-const CHI_PATH = /^github\.com\/go-chi\/chi(\/v[0-9]+)?$/;
 const COMPARISONS = new Set(['==', '!=', '<', '<=', '>', '>=']);
 const UNIVERSE_LITERALS = new Set(['nil', 'true', 'false']);
 const NON_STRUCT_LITERAL_TYPES = new Set(['map_type', 'slice_type', 'array_type', 'implicit_length_array_type']);
@@ -244,24 +241,12 @@ class Collector {
   private readonly durationMatches = new Map<string, DurationMatch | null>();
   private readonly timeName: string | undefined;
   private readonly httpName: string | undefined;
-  private readonly ginImported: boolean;
-  private readonly echoImported: boolean;
-  private readonly chiImported: boolean;
   private readonly prefixes: TreeSitterPrefixes;
 
   constructor(root: SyntaxNode, private readonly scope: FileScope, private readonly options: FactOptions) {
     this.timeName = scope.imports.get('time');
     this.httpName = scope.imports.get('net/http');
-    this.ginImported = scope.imports.has(GIN_PATH);
-    const paths = [...scope.imports.keys()];
-    this.echoImported = paths.some((p) => ECHO_PATH.test(p));
-    this.chiImported = paths.some((p) => CHI_PATH.test(p));
-    this.prefixes = new TreeSitterPrefixes(root, {
-      groups: this.ginImported || this.echoImported,
-      chi: this.chiImported,
-      importNames: scope.importNames,
-      constant: (node) => constantString(node, scope),
-    });
+    this.prefixes = new TreeSitterPrefixes(root, { imports: scope.imports, constant: (node) => constantString(node, scope) });
   }
 
   private add(evidence: FactEvidence): void {
@@ -599,24 +584,29 @@ class Collector {
       if (verbArg === undefined || path === undefined) return null;
       return verbArg !== '' ? prefixed(verbArg, path) : undefined;
     };
-    if (this.ginImported || this.echoImported) {
-      const verb = GIN_VERBS[method] ?? (this.echoImported ? ECHO_ONLY_VERBS[method] : undefined);
+    // Framework routes only on a receiver this file shows to be a router of that framework, and only its own
+    // routing methods (so `Header().Add(...)` or `cache.Get(...)` in a file that imports echo or chi give nothing).
+    const kind = this.prefixes.kindOf(operand);
+    if (kind === 'gin' || kind === 'echo') {
+      const verb = GIN_VERBS[method] ?? (kind === 'echo' ? ECHO_ONLY_VERBS[method] : undefined);
       if (verb) {
         const path = arg(0);
         return path !== undefined ? prefixed(verb, path) : undefined;
       }
-      if ((method === 'Handle' && this.ginImported) || (method === 'Add' && this.echoImported)) {
+      if (((method === 'Handle' && kind === 'gin') || (method === 'Add' && kind === 'echo')) && args.length >= 3) {
         const found = methodPath();
         if (found !== null) return found;
       }
     }
-    if (this.chiImported) {
+    if (kind === 'chi') {
+      // chi panics on a pattern without a leading "/", so requiring one loses no route.
       const verb = CHI_VERBS[method];
       if (verb && args.length >= 2) {
         const path = arg(0);
-        return path !== undefined ? prefixed(verb, path) : undefined;
+        return path?.startsWith('/') ? prefixed(verb, path) : undefined;
       }
       if ((method === 'Method' || method === 'MethodFunc') && args.length >= 3) {
+        if (!arg(1)?.startsWith('/')) return undefined;
         const found = methodPath();
         if (found !== null) return found;
       }

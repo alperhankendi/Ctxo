@@ -93,6 +93,7 @@ type prefixes struct {
 	defs   map[types.Object][]ast.Expr
 	mounts map[types.Object][]mount
 	cache  map[types.Object]*prefixResult
+	capped bool // a lookup reached maxPrefixDepth: its results are not cached
 }
 
 type prefixResult struct {
@@ -196,7 +197,11 @@ func firstParam(e ast.Expr) *ast.Ident {
 // prefixOf is the prefix of a route call's receiver; ok is false when any
 // part of it is unknown.
 func (c *collector) prefixOf(e ast.Expr, depth int) (string, bool) {
-	if depth > maxPrefixDepth || c.prefixes == nil {
+	if c.prefixes == nil {
+		return "", false
+	}
+	if depth > maxPrefixDepth {
+		c.prefixes.capped = true
 		return "", false
 	}
 	switch x := unparen(e).(type) {
@@ -243,10 +248,19 @@ func (c *collector) objectPrefix(obj types.Object, depth int) (string, bool) {
 	}
 	r := &prefixResult{}
 	p.cache[obj] = r
+	outerCapped := p.capped
+	p.capped = false
 	var values []string
 	known := true
 	if mounts := p.mounts[obj]; len(mounts) > 0 {
+		// A mounted object assigned more than once: the mount may be of an earlier value.
+		if len(p.defs[obj]) > 1 {
+			known = false
+		}
 		for _, m := range mounts {
+			if !known {
+				break
+			}
 			if m.dynamic {
 				known = false
 				break
@@ -282,6 +296,11 @@ func (c *collector) objectPrefix(obj types.Object, depth int) (string, bool) {
 		prefix = ""
 	}
 	r.prefix, r.ok, r.done = prefix, known, true
+	// A result cut by the depth cap is not cached: a shallower lookup may resolve it.
+	if p.capped {
+		delete(p.cache, obj)
+	}
+	p.capped = p.capped || outerCapped
 	return prefix, known
 }
 
