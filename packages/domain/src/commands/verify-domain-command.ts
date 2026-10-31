@@ -132,15 +132,14 @@ function violationJson(v: BoundaryViolationRecord): Record<string, unknown> {
 const MARKDOWN = /\.(?:md|markdown)$/i;
 
 /**
- * The first commits after `base` on the `--since` ref, oldest first (`LATER_INDEX_COMMITS` of them), where the
- * post-commit hook may have committed the base's index; empty when git cannot say.
+ * The base's first-parent successors on the `--since` ref, nearest first (`LATER_INDEX_COMMITS` of them), where the
+ * post-commit hook commits the base's index; empty when git cannot say.
  */
 async function commitsAfterBase(git: IGitPort | undefined, since: string, base: string): Promise<string[]> {
   try {
     const head = await git?.resolveCommit?.(since);
     if (head === undefined || head === base) return [];
-    const log = await git?.getRangeLog?.({ head, exclude: [base] });
-    return (log ?? []).map((commit) => commit.hash).reverse().slice(0, LATER_INDEX_COMMITS);
+    return (await git?.firstParentSuccessors?.(base, head, LATER_INDEX_COMMITS)) ?? [];
   } catch {
     return [];
   }

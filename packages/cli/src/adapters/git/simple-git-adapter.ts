@@ -357,6 +357,17 @@ export class SimpleGitAdapter implements IGitPort {
     }
   }
 
+  async firstParentSuccessors(base: string, head: string, limit: number): Promise<string[] | undefined> {
+    if (this.refuseOptionLike('rev-list', [base, head])) return undefined;
+    try {
+      const out = await this.git.raw([...STABLE_OUTPUT_CONFIG, 'rev-list', '--reverse', '--first-parent', '--ancestry-path', `${base}..${head}`]);
+      return out.split('\n').map((line) => line.trim()).filter((line) => line.length > 0).slice(0, Math.max(0, limit));
+    } catch (err) {
+      log.debug(`No first-parent successors of ${base} on ${head}: ${(err as Error).message}`);
+      return undefined;
+    }
+  }
+
   async isAncestor(ancestor: string, descendant: string): Promise<boolean | undefined> {
     if (this.refuseOptionLike('is-ancestor', [ancestor, descendant])) return undefined;
     // Exit code 0: an ancestor; 1: not; anything else is a failure.

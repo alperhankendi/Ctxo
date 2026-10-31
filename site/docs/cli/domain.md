@@ -83,7 +83,7 @@ ctxo verify-domain --since origin/main --boundaries new-only
 - The base is the merge base of `<ref>` and `HEAD`. Its violations come from its committed `.ctxo/index`, read from
   git without a checkout, when that index is current for the commit (its entries are the files `ctxo index` selects
   there and every content hash matches, also through CRLF and git's checkout filters). Because the post-commit hook
-  commits an index with the next commit, the index of the first two commits after the base on the `--since` branch
+  commits an index with the next commit, the index of the first two first-parent successors of the base on the `--since` branch
   is accepted too when it passes the same check against the base. Otherwise ctxo indexes the base in a temporary git
   worktree under `.ctxo/.cache/base-worktrees/` and removes it, also on Ctrl+C; the next run removes what a killed run
   left. C# projects restored at HEAD are restored there too, and a lower edge quality than HEAD's is warned about.

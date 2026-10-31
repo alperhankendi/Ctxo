@@ -1,10 +1,11 @@
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, utimesSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { indexCommitInWorktree, readIndexAtCommit, sweepLeftoverWorktrees } from '../base-index.js';
+import { indexCommitInWorktree, lockIsLive, readIndexAtCommit, restoreCSharp, sweepLeftoverWorktrees } from '../base-index.js';
+import { SimpleGitAdapter } from '../../adapters/git/simple-git-adapter.js';
 import { IndexCommand } from '../index-command.js';
 import { isolateGitEnv, type IsolatedGitEnv } from './git-test-env.js';
 
@@ -39,6 +40,11 @@ function commit(dir: string, message: string): string {
   git(dir, 'add', '-A');
   git(dir, ...IDENTITY, 'commit', '-q', '-m', message);
   return git(dir, 'rev-parse', 'HEAD');
+}
+
+/** A run lock as `indexCommitInWorktree` writes it. */
+function writeLock(path: string, pid: number): void {
+  writeFileSync(path, JSON.stringify({ pid, runId: 'test', startedAt: Date.now() }), 'utf-8');
 }
 
 const sha256 = (text: string): string => createHash('sha256').update(text, 'utf-8').digest('hex');
@@ -276,9 +282,9 @@ describe('indexCommitInWorktree', () => {
     const live = join(parent, 'live');
     const old = join(parent, 'old');
     git(dir, 'worktree', 'add', '--detach', '--quiet', dead, base);
-    writeFileSync(`${dead}.lock`, '2147483646', 'utf-8');
+    writeLock(`${dead}.lock`, 2147483646);
     mkdirSync(live);
-    writeFileSync(`${live}.lock`, String(process.pid), 'utf-8');
+    writeLock(`${live}.lock`, process.pid);
     mkdirSync(old);
     const longAgo = new Date(Date.now() - 60 * 60 * 1000);
     utimesSync(old, longAgo, longAgo);
@@ -286,5 +292,96 @@ describe('indexCommitInWorktree', () => {
     expect(sweepLeftoverWorktrees(dir, parent).sort()).toEqual(['dead', 'old']);
     expect(readdirSync(parent).sort()).toEqual(['live', 'live.lock']);
     expect(worktreesOf(dir)).toHaveLength(1);
+  });
+
+  it('keeps the lock of a live run that has not added its worktree yet, and drops a dead or stale one (N1)', () => {
+    const dir = repo();
+    const parent = parentOf(dir);
+    mkdirSync(parent, { recursive: true });
+    writeLock(join(parent, 'starting.lock'), process.pid);
+    writeLock(join(parent, 'crashed.lock'), 2147483646);
+    writeLock(join(parent, 'stale.lock'), process.pid);
+    const longAgo = new Date(Date.now() - 60 * 60 * 1000);
+    utimesSync(join(parent, 'stale.lock'), longAgo, longAgo);
+
+    sweepLeftoverWorktrees(dir, parent);
+    expect(readdirSync(parent)).toEqual(['starting.lock']);
+  });
+
+  it('sweeps a folder whose lock names a live pid but has no heartbeat any more (a reused pid, N4)', () => {
+    const dir = repo();
+    const parent = parentOf(dir);
+    const reused = join(parent, 'reused');
+    mkdirSync(reused, { recursive: true });
+    // process.pid stands for an unrelated process that got the dead run's pid.
+    writeLock(`${reused}.lock`, process.pid);
+    const longAgo = new Date(Date.now() - 60 * 60 * 1000);
+    utimesSync(`${reused}.lock`, longAgo, longAgo);
+    expect(lockIsLive(`${reused}.lock`)).toBe(false);
+
+    expect(sweepLeftoverWorktrees(dir, parent)).toEqual(['reused']);
+    expect(readdirSync(parent)).toEqual([]);
+  });
+
+  it('takes its lock atomically and never over another run\'s lock', async () => {
+    const dir = repo();
+    put(dir, 'src/a.ts', 'export const a = 1;\n');
+    const base = commit(dir, 'init');
+    let lockDuringRun: Record<string, unknown> | undefined;
+    vi.spyOn(IndexCommand.prototype, 'run').mockImplementation(async function (this: IndexCommand) {
+      const parent = parentOf(dir);
+      const lock = readdirSync(parent).find((name) => name.endsWith('.lock'))!;
+      lockDuringRun = JSON.parse(readFileSync(join(parent, lock), 'utf-8')) as Record<string, unknown>;
+      put(this.ctxoRoot, 'index/src/a.ts.json', JSON.stringify({ file: 'src/a.ts', lastModified: 1, symbols: [], edges: [], intent: [], antiPatterns: [] }));
+    });
+    await indexCommitInWorktree(dir, base);
+    expect(lockDuringRun).toMatchObject({ pid: process.pid });
+    expect(typeof lockDuringRun!['runId']).toBe('string');
+    expect(typeof lockDuringRun!['startedAt']).toBe('number');
+    expect(leftovers(dir)).toEqual([]);
+  });
+});
+
+describe('restoreCSharp', () => {
+  it('does nothing without C# projects restored at HEAD', async () => {
+    const dir = repo();
+    expect(await restoreCSharp(dir, dir, ['src/App/App.csproj'])).toEqual([]);
+  });
+
+  it('runs dotnet asynchronously, so timers (and signal handlers) run meanwhile (N2)', async (context) => {
+    if (spawnSync('dotnet', ['--version'], { stdio: 'ignore' }).status !== 0) context.skip();
+    const dir = repo();
+    put(dir, 'src/App/obj/project.assets.json', '{}');
+    let ticks = 0;
+    const timer = setInterval(() => ticks++, 5);
+    try {
+      const warnings = await restoreCSharp(dir, join(dir, 'missing-worktree'), ['src/App/App.csproj']);
+      expect(warnings[0]).toContain('dotnet restore src/App/App.csproj failed in the base worktree');
+    } finally {
+      clearInterval(timer);
+    }
+    expect(ticks).toBeGreaterThan(0);
+  }, 120_000);
+});
+
+describe('SimpleGitAdapter.firstParentSuccessors (N3)', () => {
+  it('lists the commits after the base on the first-parent line, nearest first, not a merged branch\'s commits', async () => {
+    const dir = repo();
+    put(dir, 'a.txt', 'a\n');
+    const base = commit(dir, 'base');
+    git(dir, 'checkout', '-q', '-b', 'side');
+    put(dir, 'side.txt', 'side\n');
+    const side = commit(dir, 'side, the oldest after the base');
+    git(dir, 'checkout', '-q', 'main');
+    put(dir, 'b.txt', 'b\n');
+    const first = commit(dir, 'first on main');
+    git(dir, ...IDENTITY, 'merge', '-q', '--no-ff', '-m', 'merge side', 'side');
+    const merge = git(dir, 'rev-parse', 'HEAD');
+    put(dir, 'c.txt', 'c\n');
+    commit(dir, 'third on main');
+
+    const successors = await new SimpleGitAdapter(dir).firstParentSuccessors(base, 'main', 2);
+    expect(successors).toEqual([first, merge]);
+    expect(successors).not.toContain(side);
   });
 });

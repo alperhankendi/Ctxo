@@ -47,6 +47,11 @@ export interface IGitPort {
   resolveCommit?(ref: string): Promise<string | undefined>;
   /** Full SHA of the merge base of two refs. */
   mergeBase?(a: string, b: string): Promise<string | undefined>;
+  /**
+   * The commits after `base` on the first-parent line of `head` that descend from `base`, nearest first
+   * (`rev-list --reverse --first-parent --ancestry-path base..head`), at most `limit`.
+   */
+  firstParentSuccessors?(base: string, head: string, limit: number): Promise<string[] | undefined>;
   /** Whether `ancestor` is reachable from `descendant`. */
   isAncestor?(ancestor: string, descendant: string): Promise<boolean | undefined>;
   /**

@@ -1,6 +1,6 @@
-import { spawn, spawnSync } from 'node:child_process';
+import { spawn, spawnSync, type ChildProcess } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, utimesSync, writeFileSync } from 'node:fs';
 import { join, posix } from 'node:path';
 import { indexIgnorePatterns, indexIgnoreProjectPatterns, makeGlobMatcher, parseConfigText } from '../core/config/load-config.js';
 import { DEFAULT_CONFIG } from '../core/config/config-schema.js';
@@ -27,6 +27,8 @@ const STALE_REASON_LIMIT = 5;
 const LEFTOVER_AGE_MS = 10 * 60 * 1000;
 /** Files compared through git's own filters, one process each, after the raw and CRLF forms did not match. */
 const FILTER_LIMIT = 20;
+/** How often a run refreshes its lock, so a sweep can tell it from a dead run whose pid was reused. */
+const HEARTBEAT_MS = 60 * 1000;
 const RESTORE_TIMEOUT_MS = 5 * 60 * 1000;
 const RESTORE_PROJECT_LIMIT = 20;
 
@@ -340,6 +342,41 @@ function pidAlive(pid: number): boolean {
   }
 }
 
+/** What a run's `<dir>.lock` holds: its pid, a random run ID and when it started. */
+interface RunLock {
+  readonly pid: number;
+  readonly runId: string;
+  readonly startedAt: number;
+}
+
+function readLock(path: string): RunLock | undefined {
+  try {
+    const data = JSON.parse(readFileSync(path, 'utf-8')) as Partial<RunLock>;
+    if (typeof data.pid !== 'number' || typeof data.runId !== 'string' || typeof data.startedAt !== 'number') return undefined;
+    return data as RunLock;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Whether the run that owns a lock is still running. The owner refreshes the lock's modification time every
+ * `HEARTBEAT_MS`; a lock is live while its pid runs and the heartbeat is younger than `LEFTOVER_AGE_MS`, so a pid the
+ * system reused for an unrelated process does not keep a dead run's leftover forever. An unreadable lock counts as
+ * live until it is older than `LEFTOVER_AGE_MS` (a run that is still writing it).
+ */
+export function lockIsLive(path: string, now = Date.now()): boolean {
+  let mtime: number;
+  try {
+    mtime = statSync(path).mtimeMs;
+  } catch {
+    return false;
+  }
+  if (now - mtime > LEFTOVER_AGE_MS) return false;
+  const lock = readLock(path);
+  return lock === undefined ? true : pidAlive(lock.pid);
+}
+
 /** Removes a base worktree folder and its registration synchronously (signal handlers, the sweep). */
 function removeWorktreeSync(projectRoot: string, dir: string): void {
   spawnSync('git', ['worktree', 'remove', '--force', '--force', dir], { cwd: projectRoot, windowsHide: true, stdio: 'ignore' });
@@ -348,12 +385,18 @@ function removeWorktreeSync(projectRoot: string, dir: string): void {
   } catch (err) {
     log.warn(`Cannot delete ${dir}: ${(err as Error).message}`);
   }
-  rmSync(`${dir}.lock`, { force: true });
+}
+
+/** Deletes a run's own lock, never one another run took over (the run ID decides). */
+function releaseLock(path: string, runId: string): void {
+  if (readLock(path)?.runId === runId) rmSync(path, { force: true });
 }
 
 /**
- * Removes the base worktrees a killed run left: a folder whose lock names a process that is gone, or with no lock and
- * older than `LEFTOVER_AGE_MS`. A live run's folder (its process still runs) is never touched. Then `git worktree prune`.
+ * Removes the base worktrees a killed run left. A folder is a leftover when its lock is not live (`lockIsLive`: the
+ * pid is gone or the heartbeat stopped), or when it has no lock and is older than `LEFTOVER_AGE_MS` (a run always takes
+ * its lock before it makes its folder). A lock without a folder is deleted only when it is not live either, so a run
+ * between taking its lock and adding its worktree keeps both. Then `git worktree prune`.
  */
 export function sweepLeftoverWorktrees(projectRoot: string, parent: string, now = Date.now()): string[] {
   if (!existsSync(parent)) return [];
@@ -362,22 +405,16 @@ export function sweepLeftoverWorktrees(projectRoot: string, parent: string, now 
     if (!entry.isDirectory()) continue;
     const dir = join(parent, entry.name);
     const lock = `${dir}.lock`;
-    let leftover: boolean;
-    if (existsSync(lock)) {
-      const pid = Number.parseInt(readFileSync(lock, 'utf-8'), 10);
-      leftover = !Number.isFinite(pid) || !pidAlive(pid);
-    } else {
-      leftover = now - statSync(dir).mtimeMs > LEFTOVER_AGE_MS;
-    }
+    const leftover = existsSync(lock) ? !lockIsLive(lock, now) : now - statSync(dir).mtimeMs > LEFTOVER_AGE_MS;
     if (!leftover) continue;
     removeWorktreeSync(projectRoot, dir);
+    if (existsSync(lock) && !lockIsLive(lock, now)) rmSync(lock, { force: true });
     removed.push(entry.name);
   }
   for (const entry of readdirSync(parent, { withFileTypes: true })) {
-    // A lock whose folder is gone.
-    if (entry.isFile() && entry.name.endsWith('.lock') && !existsSync(join(parent, entry.name.slice(0, -'.lock'.length)))) {
-      rmSync(join(parent, entry.name), { force: true });
-    }
+    if (!entry.isFile() || !entry.name.endsWith('.lock')) continue;
+    const lock = join(parent, entry.name);
+    if (!existsSync(lock.slice(0, -'.lock'.length)) && !lockIsLive(lock, now)) rmSync(lock, { force: true });
   }
   if (removed.length > 0) {
     spawnSync('git', ['worktree', 'prune'], { cwd: projectRoot, windowsHide: true, stdio: 'ignore' });
@@ -386,30 +423,59 @@ export function sweepLeftoverWorktrees(projectRoot: string, parent: string, now 
   return removed;
 }
 
+/** The child processes of the current base runs, killed by the signal handlers. */
+const runningChildren = new Set<ChildProcess>();
+
+/** One `dotnet` run, asynchronous so a signal handler can run (and kill it) meanwhile. */
+function runDotnet(args: readonly string[], cwd: string): Promise<{ readonly code: number | null; readonly output: string }> {
+  return new Promise((resolve) => {
+    let child: ChildProcess;
+    try {
+      child = spawn('dotnet', args, { cwd, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
+    } catch (err) {
+      resolve({ code: null, output: (err as Error).message });
+      return;
+    }
+    runningChildren.add(child);
+    const out: Buffer[] = [];
+    child.stdout?.on('data', (chunk: Buffer) => out.push(chunk));
+    child.stderr?.on('data', (chunk: Buffer) => out.push(chunk));
+    const timer = setTimeout(() => child.kill(), RESTORE_TIMEOUT_MS);
+    timer.unref();
+    const done = (code: number | null, extra = ''): void => {
+      clearTimeout(timer);
+      runningChildren.delete(child);
+      resolve({ code, output: `${Buffer.concat(out).toString('utf-8')}${extra}` });
+    };
+    child.on('error', (err) => done(null, err.message));
+    child.on('close', (code) => done(code));
+  });
+}
+
 /**
  * `dotnet restore` in the base worktree for the C# projects that are restored at HEAD (an `obj/project.assets.json`
- * next to the `.csproj` in the project), so the base is analysed at the tier HEAD was. Cheap with a warm NuGet cache;
- * skipped without restored projects or without `dotnet`. Returns warnings.
+ * next to the `.csproj` in the project), so the base is analysed at the tier HEAD was: the one `.sln` at the project
+ * root when there is exactly one, else each restored project (at most `RESTORE_PROJECT_LIMIT`). Asynchronous, one at a
+ * time. Cheap with a warm NuGet cache; skipped without restored projects or without `dotnet`. Returns warnings.
  */
-function restoreCSharp(projectRoot: string, project: string, files: readonly string[]): string[] {
+export async function restoreCSharp(projectRoot: string, project: string, files: readonly string[]): Promise<string[]> {
   const restored = files.filter(
     (file) => file.toLowerCase().endsWith('.csproj') && existsSync(join(projectRoot, posix.dirname(file), 'obj', 'project.assets.json')),
   );
   if (restored.length === 0) return [];
-  if (spawnSync('dotnet', ['--version'], { windowsHide: true, stdio: 'ignore' }).status !== 0) {
+  if ((await runDotnet(['--version'], projectRoot)).code !== 0) {
     return ['HEAD\'s C# projects are restored, but "dotnet" is not on PATH here, so the base worktree is not restored'];
   }
+  const solutions = files.filter((file) => !file.includes('/') && file.toLowerCase().endsWith('.sln'));
+  const targets = solutions.length === 1 ? solutions : restored.slice(0, RESTORE_PROJECT_LIMIT);
   const warnings: string[] = [];
-  for (const file of restored.slice(0, RESTORE_PROJECT_LIMIT)) {
-    const result = spawnSync('dotnet', ['restore', join(project, file)], {
-      cwd: project,
-      windowsHide: true,
-      encoding: 'utf-8',
-      timeout: RESTORE_TIMEOUT_MS,
-    });
-    if (result.status !== 0) warnings.push(`dotnet restore ${file} failed in the base worktree: ${(result.stderr || result.stdout || String(result.error ?? '')).trim().split('\n')[0]}`);
+  for (const target of targets) {
+    const result = await runDotnet(['restore', join(project, target)], project);
+    if (result.code !== 0) warnings.push(`dotnet restore ${target} failed in the base worktree: ${result.output.trim().split('\n')[0] ?? ''}`);
   }
-  if (restored.length > RESTORE_PROJECT_LIMIT) warnings.push(`only the first ${RESTORE_PROJECT_LIMIT} of ${restored.length} restored C# projects were restored in the base worktree`);
+  if (solutions.length !== 1 && restored.length > RESTORE_PROJECT_LIMIT) {
+    warnings.push(`only the first ${RESTORE_PROJECT_LIMIT} of ${restored.length} restored C# projects were restored in the base worktree`);
+  }
   return warnings;
 }
 
@@ -418,9 +484,11 @@ function restoreCSharp(projectRoot: string, project: string, files: readonly str
  * no module pass), the tiers it ran at and warnings. The worktree lives under
  * `<projectRoot>/.ctxo/.cache/base-worktrees/`, so the language plugins resolve from the project's own `node_modules`;
  * it is detached (no branch), checked out with no hooks, no LFS smudge and long paths on, and removed whether the run
- * succeeds, fails or is interrupted (SIGINT, SIGTERM). A run that was killed harder leaves a lock naming its process;
- * the next run sweeps such leftovers. C# projects restored at HEAD are restored in the worktree too. A warning says
- * when the base index has a lower edge quality than HEAD's `communities.json`. Throws when git or the index fails.
+ * succeeds, fails or is interrupted (SIGINT, SIGTERM; a running `dotnet restore` is killed first). The run takes its
+ * lock atomically before it adds the worktree and keeps a heartbeat on it, so a concurrent sweep never removes it, and
+ * the next run sweeps what a run killed harder left. C# projects restored at HEAD are restored in the worktree too. A
+ * warning says when the base index has a lower edge quality than HEAD's `communities.json`. Throws when git or the
+ * index fails.
  */
 export async function indexCommitInWorktree(projectRoot: string, commit: string): Promise<IndexedCommit> {
   assertRevision(commit);
@@ -428,11 +496,27 @@ export async function indexCommitInWorktree(projectRoot: string, commit: string)
   const parent = join(projectRoot, '.ctxo', '.cache', 'base-worktrees');
   mkdirSync(parent, { recursive: true });
   sweepLeftoverWorktrees(projectRoot, parent);
-  const dir = join(parent, `${commit.slice(0, 8)}-${randomBytes(3).toString('hex')}`);
-  writeFileSync(`${dir}.lock`, String(process.pid), 'utf-8');
+  const runId = randomBytes(8).toString('hex');
+  const dir = join(parent, `${commit.slice(0, 8)}-${runId.slice(0, 6)}`);
+  const lockPath = `${dir}.lock`;
+  const lock: RunLock = { pid: process.pid, runId, startedAt: Date.now() };
+  // 'wx': the lock is created, never taken over; a name clash fails here, before anything is made.
+  writeFileSync(lockPath, JSON.stringify(lock), { encoding: 'utf-8', flag: 'wx' });
+  const heartbeat = setInterval(() => {
+    try {
+      const at = new Date();
+      utimesSync(lockPath, at, at);
+    } catch {
+      // The lock is gone (a signal handler's cleanup): nothing to refresh.
+    }
+  }, HEARTBEAT_MS);
+  heartbeat.unref();
 
   const onSignal = (signal: NodeJS.Signals): void => {
+    clearInterval(heartbeat);
+    for (const child of runningChildren) child.kill();
     removeWorktreeSync(projectRoot, dir);
+    releaseLock(lockPath, runId);
     spawnSync('git', ['worktree', 'prune'], { cwd: projectRoot, windowsHide: true, stdio: 'ignore' });
     process.off('SIGINT', onSignal);
     process.off('SIGTERM', onSignal);
@@ -449,7 +533,7 @@ export async function indexCommitInWorktree(projectRoot: string, commit: string)
     );
     const project = prefix === '' ? dir : join(dir, ...prefix.split('/').filter((part) => part !== ''));
     const files = [...(await listTree(projectRoot, commit)).keys()].filter((path) => path.startsWith(prefix)).map((path) => path.slice(prefix.length));
-    const warnings = restoreCSharp(projectRoot, project, files);
+    const warnings = await restoreCSharp(projectRoot, project, files);
 
     const { IndexCommand } = await import('./index-command.js');
     const command = new IndexCommand(project);
@@ -471,10 +555,11 @@ export async function indexCommitInWorktree(projectRoot: string, commit: string)
     }
     return { indices, tiers, ...(edgeQuality !== undefined ? { edgeQuality } : {}), warnings };
   } finally {
+    clearInterval(heartbeat);
     process.off('SIGINT', onSignal);
     process.off('SIGTERM', onSignal);
     await removeWorktree(projectRoot, dir);
-    rmSync(`${dir}.lock`, { force: true });
+    releaseLock(lockPath, runId);
   }
 }
 

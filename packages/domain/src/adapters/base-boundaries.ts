@@ -21,7 +21,7 @@ export interface BaseBoundariesInput {
   /** Full SHA of the base commit. */
   readonly base: string;
   /**
-   * Full SHAs of the first commits after the base on the `--since` branch, oldest first. The post-commit hook commits
+   * Full SHAs of the base's first-parent successors on the `--since` ref, nearest first. The post-commit hook commits
    * a commit's index with the next commit, so the index that describes the base can sit in one of them; it is used
    * when it is current for the base's tree.
    */
@@ -45,7 +45,7 @@ export const LATER_INDEX_COMMITS = 2;
  * current ones (`computeBoundaries` over the graph of the index) with the current registry, config and ownership.
  *
  * The base's index is a committed `.ctxo/index` that is current for the base's tree: the base's own, else the one in
- * one of the first `LATER_INDEX_COMMITS` commits after it on the `--since` branch (the post-commit hook's lag).
+ * one of the first `LATER_INDEX_COMMITS` first-parent successors on the `--since` ref (the post-commit hook's lag).
  * Otherwise ctxo indexes the base in a temporary git worktree. Never throws: a failure is an `error`.
  */
 export async function baseBoundaries(host: CtxoHost, input: BaseBoundariesInput): Promise<BaseBoundaries> {
