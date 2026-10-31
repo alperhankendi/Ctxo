@@ -61,8 +61,9 @@ describe.skipIf(!HAS_DOTNET)('Roslyn route prefixes', () => {
       // A project's own call, also of the same generic shape, is not followed.
       'GET /d Lending.Routes.GroupEndpoints.Map',
       'GET /s Lending.Routes.GroupEndpoints.Map',
-      // Written again: deconstruction, ??=, out.
+      // Written again: deconstruction, ??=, out, foreach deconstruction.
       'GET /decon Lending.Routes.GroupEndpoints.Map',
+      'GET /foreachdecon Lending.Routes.GroupEndpoints.Map',
       'GET /coalesce Lending.Routes.GroupEndpoints.Map',
       'GET /out Lending.Routes.GroupEndpoints.Map',
       // A generic builder receiver, with a group on top: the group's own segment is not presented as the full prefix.

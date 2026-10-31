@@ -38,9 +38,14 @@ describe.skipIf(!HAS_DOTNET)('Roslyn route prefixes and test attributes across p
     expect(endpoints(await roslyn.extractFacts(APP, ''))).toEqual(['GET /api/Orders/{id}']);
   });
 
-  it('a public method of a referenced project is not followed; an internal one is', async () => {
+  it('a public method a dependent project calls is not followed; one no dependent references is, as is an internal one', async () => {
     // App calls MapPublic with "/other", outside Shared's compilation: "/s" would be a guess.
-    expect(endpoints(await roslyn.extractFacts(SHARED, ''))).toEqual(['GET /pub', 'GET /s/int']);
+    // Shared.Tests references Shared and has its own MapQuiet, which is another method.
+    expect(endpoints(await roslyn.extractFacts(SHARED, ''))).toEqual(['GET /pub', 'GET /q/quiet', 'GET /s/int']);
+    // Shared.Tests was compiled with its reference: its derived test attribute resolves.
+    const tests = await roslyn.extractSymbols('Shared.Tests/SharedTests.cs', '');
+    expect(tests.find(s => s.name === 'Shared.Tests.SharedEndpointTests.MapsQuietly')?.annotations?.map(a => a.name))
+      .toEqual(['RetryFact', 'Fact']);
   });
 
   it('a test attribute derived from one in a referenced project gets the known base', async () => {

@@ -42,8 +42,9 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo (ten packages today). Per-pack
   `AddEndpointFilter`) keep it. A route is never guessed: a local written again in any form (assignment, `??=`,
   deconstruction, `ref` or `out`), a group returned by another method, a project's own fluent call, a non-constant
   prefix, a type-parameter receiver (`TBuilder`), call sites that disagree or none at all, a virtual or interface
-  method, a method used as a method group, and a public method of a project other projects reference keep the
-  call's own route, as before.
+  method, a method used as a method group, and a public method that code in a project referencing this one also
+  references (its call sites there are outside this project) keep the call's own route, as before. A test project
+  that references the API project without calling its mappers changes nothing.
 - A controller without its own `[Route]` inherits the class route of its nearest base class with one (one or more
   levels up, generic bases included, in another file or a referenced project), as ASP.NET Core does; abstract and
   `[NonController]` classes inherit nothing; `[controller]` and `[action]` come

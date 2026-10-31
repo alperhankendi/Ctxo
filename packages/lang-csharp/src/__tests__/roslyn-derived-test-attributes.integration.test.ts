@@ -101,6 +101,11 @@ describe.skipIf(!HAS_DOTNET)('Roslyn test attributes by base type', () => {
     expect(names).toEqual(['RetryFact', 'Fact', ...Array.from({ length: 19 }, (_, i) => `B${i + 1}`)]);
   });
 
+  it('a known name cut by the cap does not suppress the added base', () => {
+    const names = annotationsOf('KnownNameCutByTheCap')!.map(a => a.name);
+    expect(names).toEqual(['RetryFact', 'Fact', ...Array.from({ length: 19 }, (_, i) => `C${i + 1}`)]);
+  });
+
   it('the host classifier sees every derived test method as a test, without knowing the derived names', () => {
     for (const name of ['Direct', 'TwoLevels', 'FromTheory', 'FromNUnitTest', 'FromMSTestTestMethod']) {
       expect(isMarkedAsTest(name), name).toBe(true);

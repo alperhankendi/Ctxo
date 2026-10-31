@@ -39,12 +39,19 @@ namespace Lending.Routes
             var viaOut = app.MapGroup("/o1");
             Replace(out viaOut, app);
             viaOut.MapGet("/out", () => 0);
+            var fe = app.MapGroup("/f1");
+            foreach ((fe, _) in Pairs(app))
+            {
+            }
+            fe.MapGet("/foreachdecon", () => 0);
 
             // A generic builder receiver is never followed.
             app.MapGroup("/gen").MapGeneric();
         }
 
         static void Replace(out RouteGroupBuilder group, WebApplication app) => group = app.MapGroup("/o2");
+
+        static (RouteGroupBuilder, int)[] Pairs(WebApplication app) => [(app.MapGroup("/f2"), 1)];
 
         static RouteGroupBuilder Detached(this RouteGroupBuilder group) => group;
 

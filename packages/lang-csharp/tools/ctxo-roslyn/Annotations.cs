@@ -31,10 +31,12 @@ static class AttributeAnnotations
         var annotations = new List<CtxoAnnotation>();
         // Written attributes count toward the cap; an added test base never pushes one out.
         var written = 0;
-        // Every name written on the declaration, so an added test base never repeats one, before or after it.
+        // Every name reported on the declaration (the first 20 written), so an added test base never
+        // repeats one before or after it, and a known name cut by the cap does not suppress it.
         var writtenNames = member.AttributeLists
             .Where(l => AppliesToDeclaration(l, declaration))
             .SelectMany(l => l.Attributes)
+            .Take(MaxAttributes)
             .Select(NameOf)
             .ToHashSet(StringComparer.Ordinal);
         var addedBases = new HashSet<string>(StringComparer.Ordinal);

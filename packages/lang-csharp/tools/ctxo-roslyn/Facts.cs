@@ -159,9 +159,9 @@ static class Facts
     /// belong to their property, event or method; every field declarator uses its own name; a
     /// top-level statement has no symbol id, so the finisher gives it the file's module id.
     /// </summary>
-    public static List<CtxoFactEvidence> Collect(SyntaxNode root, SemanticModel model, string filePath, FactOptions options, bool referencedByOtherProjects = false)
+    public static List<CtxoFactEvidence> Collect(SyntaxNode root, SemanticModel model, string filePath, FactOptions options, IReadOnlyList<Compilation>? dependentCompilations = null)
     {
-        var collector = new Collector(filePath, options, model, RouteGroups.For(model.Compilation, referencedByOtherProjects));
+        var collector = new Collector(filePath, options, model, RouteGroups.For(model.Compilation, dependentCompilations ?? []));
         foreach (var node in root.DescendantNodes())
         {
             if (collector.Full) break;

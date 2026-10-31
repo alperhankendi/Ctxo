@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -17,7 +16,10 @@ using Microsoft.CodeAnalysis.Operations;
 /// One instance per compilation, shared by every file of the project (the batch walks files one
 /// at a time). Cost: the first group parameter builds a name index with one pass over the tokens
 /// of the compilation; each method is then searched once, in the trees that name it, and its
-/// result is cached for the rest of the compilation's files.
+/// result is cached for the rest of the compilation's files. Memory: the index (one entry per
+/// distinct identifier per file) and the semantic models of the trees searched live until
+/// <see cref="ReleaseAll"/>, which the batch calls after each project and keep-alive after each
+/// request.
 /// </para>
 /// </summary>
 sealed class RouteGroups
@@ -25,7 +27,9 @@ sealed class RouteGroups
     const string MapGroupName = "MapGroup";
     const int MaxDepth = 8;
 
-    static readonly ConditionalWeakTable<Compilation, RouteGroups> PerCompilation = new();
+    static readonly Dictionary<Compilation, RouteGroups> PerCompilation = [];
+    /// <summary>Instances of dependent compilations, used only for their name index and models.</summary>
+    static readonly Dictionary<Compilation, RouteGroups> IndexOnly = [];
 
     /// <summary>Group types by name; <c>WebApplication</c> is the app itself, never a group.</summary>
     static readonly HashSet<string> GroupTypeNames = new(StringComparer.Ordinal) { "RouteGroupBuilder", "IEndpointRouteBuilder" };
@@ -33,7 +37,7 @@ sealed class RouteGroups
     const string AppTypeName = "WebApplication";
 
     readonly Compilation compilation;
-    readonly bool referencedByOtherProjects;
+    readonly IReadOnlyList<Compilation> dependentCompilations;
     readonly Dictionary<IParameterSymbol, string?> parameterPrefixes = new(SymbolEqualityComparer.Default);
     readonly HashSet<ISymbol> inProgress = new(SymbolEqualityComparer.Default);
     readonly Dictionary<SyntaxTree, SemanticModel> models = [];
@@ -42,19 +46,30 @@ sealed class RouteGroups
     /// <summary>Times a depth or cycle guard gave null; a result reached through one is not cached.</summary>
     int guardHits;
 
-    RouteGroups(Compilation compilation, bool referencedByOtherProjects)
+    RouteGroups(Compilation compilation, IReadOnlyList<Compilation> dependentCompilations)
     {
         this.compilation = compilation;
-        this.referencedByOtherProjects = referencedByOtherProjects;
+        this.dependentCompilations = dependentCompilations;
     }
 
     /// <summary>
-    /// The shared instance of a compilation. <paramref name="referencedByOtherProjects"/>: another
-    /// project of the solution references this one, so call sites of its externally visible methods
-    /// may lie outside this compilation and such methods are not followed.
+    /// The shared instance of a compilation. <paramref name="dependentCompilations"/>: the compiled
+    /// projects that reference this one, directly or not. An externally visible method that code in
+    /// one of them references has call sites outside this compilation, so it is not followed.
     /// </summary>
-    public static RouteGroups For(Compilation compilation, bool referencedByOtherProjects) =>
-        PerCompilation.GetValue(compilation, c => new RouteGroups(c, referencedByOtherProjects));
+    public static RouteGroups For(Compilation compilation, IReadOnlyList<Compilation> dependentCompilations)
+    {
+        if (!PerCompilation.TryGetValue(compilation, out var groups))
+            PerCompilation[compilation] = groups = new RouteGroups(compilation, dependentCompilations);
+        return groups;
+    }
+
+    /// <summary>Drops every instance with its name index, semantic models and cached results.</summary>
+    public static void ReleaseAll()
+    {
+        PerCompilation.Clear();
+        IndexOnly.Clear();
+    }
 
     /// <summary>A prefix and a template joined with one <c>/</c>; the plugin normalizes the rest.</summary>
     public static string Join(string prefix, string template) => $"{prefix.TrimEnd('/')}/{template.TrimStart('/')}";
@@ -217,11 +232,39 @@ sealed class RouteGroups
     }
 
     /// <summary>
-    /// Any write to the local in its scope after the declaration: an assignment (compound and
-    /// <c>??=</c> included), a deconstruction into it, a <c>ref</c> or <c>out</c> argument, a
-    /// <c>ref</c> alias, or an increment.
+    /// Any write to the local after its declaration: Roslyn's data flow over every later statement of
+    /// its block (or the later top-level statements), plus a syntax check for the forms data flow may
+    /// leave out (writes in local functions, <c>ref</c> aliases). A declaration outside a block or the
+    /// top level, or a data flow that does not succeed, counts as written.
     /// </summary>
-    static bool IsWrittenAgain(ILocalSymbol local, VariableDeclaratorSyntax declarator, SemanticModel model)
+    static bool IsWrittenAgain(ILocalSymbol local, VariableDeclaratorSyntax declarator, SemanticModel model) =>
+        WrittenByDataFlow(local, declarator, model) || WrittenBySyntax(local, declarator, model);
+
+    static bool WrittenByDataFlow(ILocalSymbol local, VariableDeclaratorSyntax declarator, SemanticModel model)
+    {
+        if (declarator.FirstAncestorOrSelf<LocalDeclarationStatementSyntax>() is not { } declaration) return true;
+        IEnumerable<SyntaxNode> later;
+        if (declaration.Parent is BlockSyntax block)
+            later = block.Statements.SkipWhile(s => s != declaration).Skip(1);
+        else if (declaration.Parent is GlobalStatementSyntax global && global.Parent is CompilationUnitSyntax unit)
+            later = unit.Members.OfType<GlobalStatementSyntax>().SkipWhile(g => g != global).Skip(1).Select(g => (SyntaxNode)g.Statement);
+        else
+            return true;
+
+        // Later declarators of the same declaration (`var g = ..., h = (g = ...);`).
+        var siblings = declaration.Declaration.Variables.SkipWhile(v => v != declarator).Skip(1)
+            .Select(v => v.Initializer?.Value).OfType<ExpressionSyntax>();
+
+        foreach (var region in later.Concat(siblings))
+        {
+            var flow = region is ExpressionSyntax expression ? model.AnalyzeDataFlow(expression) : model.AnalyzeDataFlow((StatementSyntax)region);
+            if (flow == null || !flow.Succeeded) return true;
+            if (flow.WrittenInside.Contains(local, SymbolEqualityComparer.Default)) return true;
+        }
+        return false;
+    }
+
+    static bool WrittenBySyntax(ILocalSymbol local, VariableDeclaratorSyntax declarator, SemanticModel model)
     {
         SyntaxNode scope = declarator.FirstAncestorOrSelf<MemberDeclarationSyntax>() is { } member and not GlobalStatementSyntax
             ? member
@@ -233,6 +276,7 @@ sealed class RouteGroups
                 AssignmentExpressionSyntax assignment => assignment.Left,
                 ArgumentSyntax { RefKindKeyword.RawKind: not 0 } argument => argument.Expression,
                 RefExpressionSyntax alias => alias.Expression,
+                ForEachVariableStatementSyntax deconstruction => deconstruction.Variable,
                 PrefixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.PreIncrementExpression or (int)SyntaxKind.PreDecrementExpression } unary => unary.Operand,
                 PostfixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.PostIncrementExpression or (int)SyntaxKind.PostDecrementExpression } unary => unary.Operand,
                 _ => null,
@@ -271,8 +315,8 @@ sealed class RouteGroups
     /// A parameter that may be a group: the prefix every call site of its method passes, found in this
     /// compilation. Null when there is no call site, the call sites disagree, one does not resolve, the
     /// method is virtual, abstract, an override, an interface member or used as a method group, or the
-    /// method is visible outside a project that other projects reference, or the parameter's type is a
-    /// type parameter.
+    /// method is externally visible and code in a project that references this one names it, or the
+    /// parameter's type is a type parameter.
     /// </summary>
     string? Parameter(IParameterSymbol parameter, int depth)
     {
@@ -287,7 +331,7 @@ sealed class RouteGroups
         if (parameterPrefixes.TryGetValue(key, out var cached)) return cached;
         if (method.IsVirtual || method.IsAbstract || method.IsOverride || method.ContainingType?.TypeKind == TypeKind.Interface
             || method.MethodKind is not (MethodKind.Ordinary or MethodKind.LocalFunction)
-            || (referencedByOtherProjects && IsExternallyVisible(method)))
+            || (IsExternallyVisible(method) && IsReferencedByDependents(method)))
         {
             return parameterPrefixes[key] = null;
         }
@@ -319,6 +363,35 @@ sealed class RouteGroups
                 return false;
         }
         return true;
+    }
+
+    /// <summary>
+    /// Whether code in a dependent compilation references the method: a tree that names it, then the
+    /// name bound to the same method (by documentation ID and assembly, as the dependent sees its own
+    /// symbol for it).
+    /// </summary>
+    bool IsReferencedByDependents(IMethodSymbol method)
+    {
+        if (dependentCompilations.Count == 0) return false;
+        var id = method.GetDocumentationCommentId();
+        var assembly = method.ContainingAssembly?.Name;
+        foreach (var dependent in dependentCompilations)
+        {
+            if (!PerCompilation.TryGetValue(dependent, out var other) && !IndexOnly.TryGetValue(dependent, out other))
+                IndexOnly[dependent] = other = new RouteGroups(dependent, []);
+            foreach (var tree in other.TreesNaming(method.Name))
+            {
+                var model = other.ModelOf(tree);
+                foreach (var name in tree.GetRoot().DescendantNodes().OfType<SimpleNameSyntax>())
+                {
+                    if (name.Identifier.ValueText != method.Name) continue;
+                    if (model.GetSymbolInfo(name).Symbol is not IMethodSymbol referenced) continue;
+                    var definition = (referenced.ReducedFrom ?? referenced).OriginalDefinition;
+                    if (definition.GetDocumentationCommentId() == id && definition.ContainingAssembly?.Name == assembly) return true;
+                }
+            }
+        }
+        return false;
     }
 
     string? CallSitePrefix(IMethodSymbol method, int ordinal, int depth)

@@ -20,9 +20,16 @@ namespace Shared
         {
             app.MapGroup("/s").MapPublic();
             app.MapGroup("/s").MapInternal();
+            app.MapGroup("/q").MapQuiet();
         }
 
-        // Public in a referenced project: App may call it with another prefix, so it is not followed.
+        // Public, but no dependent project references it: followed.
+        public static void MapQuiet(this RouteGroupBuilder group)
+        {
+            group.MapGet("/quiet", () => 0);
+        }
+
+        // Public, and App calls it with another prefix: not followed.
         public static void MapPublic(this RouteGroupBuilder group)
         {
             group.MapGet("/pub", () => 0);

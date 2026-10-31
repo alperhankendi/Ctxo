@@ -164,6 +164,9 @@ async Task RunBatchIndex(Solution sol, Dictionary<ProjectId, Compilation> comps)
             WriteLine(JsonSerializer.Serialize(result, jsonOptions));
             totalFiles++;
         }
+
+        // The route-group indexes and semantic models are dead once the project's files are done.
+        RouteGroups.ReleaseAll();
     }
 
     // Project dependency graph
@@ -236,6 +239,8 @@ async Task RunKeepAlive(Solution sol, Dictionary<ProjectId, Compilation> comps)
             var relativePath = Path.GetRelativePath(solutionDir, doc.FilePath!).Replace('\\', '/');
             var result = await AnalyzeDocument(doc, compilation, sol, relativePath);
             WriteLine(JsonSerializer.Serialize(result, jsonOptions));
+            // One file per request: keep no route-group index between requests.
+            RouteGroups.ReleaseAll();
         }
         catch (Exception ex)
         {
@@ -257,10 +262,15 @@ async Task<FileResult> AnalyzeDocument(Document document, Compilation compilatio
     var symbols = ExtractSymbols(syntaxRoot, semanticModel, relativePath);
     var edges = ExtractEdges(syntaxRoot, semanticModel, compilation, relativePath);
     var complexity = ExtractComplexity(syntaxRoot, semanticModel, relativePath);
-    // A project other projects reference may have call sites of its public methods outside its compilation.
-    var referencedByOtherProjects = factOptions != null
-        && sol.GetProjectDependencyGraph().GetProjectsThatDirectlyDependOnThisProject(document.Project.Id).Count > 0;
-    var factEvidence = CollectFactEvidence(syntaxRoot, semanticModel, relativePath, referencedByOtherProjects);
+    // Projects that reference this one, directly or through others, and compiled: call sites of its
+    // public methods may be there. A dependent that failed to compile is not loaded and not searched.
+    List<Compilation> dependentCompilations = factOptions == null
+        ? []
+        : sol.GetProjectDependencyGraph().GetProjectsThatTransitivelyDependOnThisProject(document.Project.Id)
+            .Select(id => compilations.TryGetValue(id, out var dependent) ? dependent : null)
+            .OfType<Compilation>()
+            .ToList();
+    var factEvidence = CollectFactEvidence(syntaxRoot, semanticModel, relativePath, dependentCompilations);
 
     return new FileResult
     {
@@ -275,12 +285,12 @@ async Task<FileResult> AnalyzeDocument(Document document, Compilation compilatio
 
 // Fact evidence only with --facts=; null (no key) when there is none. Optional, so a failure
 // costs the file its evidence, never its symbols or edges.
-List<CtxoFactEvidence>? CollectFactEvidence(SyntaxNode root, SemanticModel model, string relativePath, bool referencedByOtherProjects)
+List<CtxoFactEvidence>? CollectFactEvidence(SyntaxNode root, SemanticModel model, string relativePath, IReadOnlyList<Compilation> dependentCompilations)
 {
     if (factOptions == null) return null;
     try
     {
-        var evidence = Facts.Collect(root, model, relativePath, factOptions, referencedByOtherProjects);
+        var evidence = Facts.Collect(root, model, relativePath, factOptions, dependentCompilations);
         return evidence.Count > 0 ? evidence : null;
     }
     catch (Exception ex)
