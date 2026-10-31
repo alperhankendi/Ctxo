@@ -150,10 +150,14 @@ Test-framework attributes (`Fact`, `Theory`, `Test`, `TestCase`, `TestMethod`,
 matched only by the name globs `**/*Test.cs` or `**/*Tests.cs` needs one of them
 to count as a test. See the [config reference](/reference/config-schema#test-files).
 
-- **Exact names only.** Custom attributes derived from `Fact` or `Theory` (a
-  project's own `[LoanFact]`, say) are not recognised, because attribute base
-  types are not resolved. A `*Tests.cs` file outside the test folders that uses
-  only such attributes becomes a production file; add an `index.tests` glob.
+- **Derived attributes (Roslyn tier).** A project's own attribute derived from a
+  known one (`[LoanFact]` from `Xunit.FactAttribute`, `[SmokeTest]` from NUnit's
+  `TestAttribute`, at any depth) is followed by an annotation of the nearest known
+  base, such as `{ name: "Fact", named: { type: "Xunit.FactAttribute", via: "..." } }`,
+  so it marks a test. Look-alike names that derive from no test attribute
+  (`[Factory]`) do not. The tree-sitter tier matches names only: there, a
+  `*Tests.cs` file outside the test folders that uses only derived attributes
+  becomes a production file; add an `index.tests` glob.
 - **Capital `Tests/` folders.** A bare `Tests/` or `Test/` folder is not a
   default test glob (`**/tests/**` is case-sensitive). Add it to `index.tests`.
 
@@ -252,12 +256,15 @@ points, and no `retry-timeout` facts in test files.
 | `literal-comparison` | `if`, `while`, `do`, `for`, ternaries, `when` guards (case labels, switch arms, catch filters), `switch` labels and arms, relational, constant and `not` patterns (`days is > 14`) |
 | `normalization` | `Trim*`, `ToLower*`, `ToUpper*`, `Normalize` and the other configured methods |
 | `retry-timeout` | Numeric constants bound to retry or timeout names (fields, properties, locals, assignments, initializers, named arguments) and `TimeSpan.From*(n)` (`HoldTimeout = 90min`) |
-| `endpoint` | `[HttpGet]`, `[HttpPost]`, ... with the class `[Route]` (`[controller]`, `[action]`; a `/` or `~/` template ignores the class route; `[Route]` alone gives `ANY`), and minimal APIs `MapGet`, `MapPost`, `MapPut`, `MapDelete`, `MapPatch`; top-level statements belong to the module symbol |
+| `endpoint` | `[HttpGet]`, `[HttpPost]`, ... with the class `[Route]` (`[controller]`, `[action]`; a `/` or `~/` template ignores the class route; `[Route]` alone gives `ANY`; Roslyn: inherited from the nearest base class with one), and minimal APIs `MapGet`, `MapPost`, `MapPut`, `MapDelete`, `MapPatch` (Roslyn: with their `MapGroup` prefixes); top-level statements belong to the module symbol |
 
 The Roslyn tier reads `IOperation`s behind `--facts=`; the tree-sitter tier finds the same evidence and gives the
 same facts. Syntax-tier method IDs keep their `(n)` parameter suffix, which fingerprints ignore. Verbatim,
-interpolated, raw and `u8` strings are decoded by a C# decoder. Limits: only the first class `[Route]` is used, and
-a `Route` inherited from a base class is missed; `MapGroup` prefixes are not joined; in the Roslyn tier a fact in the
+interpolated, raw and `u8` strings are decoded by a C# decoder. Route prefixes (Roslyn tier only): a
+controller without its own `[Route]` inherits the one of its nearest base class, and `MapGroup` prefixes are joined
+for groups in locals that are not reassigned, nested and inline groups, and groups passed to a method (an extension
+method's `this` included) when all its call sites pass the same prefix; anything unresolved keeps the call's own
+route, and the tree-sitter tier gives the method or call route alone. Limits: only the first class `[Route]` is used; in the Roslyn tier a fact in the
 second or a later declarator of one field declaration (`const int MaxRetries = 3, TimeoutMs = 5000;`) is owned by an
 ID that is not a symbol. The syntax tier now applies a
 file-scoped namespace to every type after it, a one-time ID change for syntax-tier users.

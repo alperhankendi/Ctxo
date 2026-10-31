@@ -212,7 +212,8 @@ export class RoslynAdapter implements ILanguageAdapter {
   }
 
   /**
-   * The file's facts: the helper's evidence plus the attribute routes of its symbols, finished with
+   * The file's facts: the helper's evidence plus the attribute routes of its symbols (a controller's
+   * `Route` inherited from a base class included), finished with
    * the C# string literal decoder. `[]` without the facts option or for a file the helper did not
    * report. The cache holds the batch result, replaced by each keep-alive reindex of the file.
    */
@@ -222,7 +223,9 @@ export class RoslynAdapter implements ILanguageAdapter {
     if (!cached) return [];
 
     const symbols = cached.symbols.map(toSymbolNode);
-    const evidence = [...(cached.factEvidence ?? []), ...annotationRouteEvidence(symbols)];
+    const inheritedRoutes = new Map<string, string>();
+    for (const s of cached.symbols) if (s.inheritedRoute !== undefined) inheritedRoutes.set(s.symbolId, s.inheritedRoute);
+    const evidence = [...(cached.factEvidence ?? []), ...annotationRouteEvidence(symbols, inheritedRoutes)];
     return finishFacts(filePath, evidence, symbols, this.facts, decodeCsharpStringLiteral);
   }
 

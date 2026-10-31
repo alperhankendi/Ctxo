@@ -25,6 +25,11 @@ export interface RoslynSymbol {
   endOffset?: number;
   /** Attribute annotations; absent when the declaration has none. */
   annotations?: RoslynAnnotation[];
+  /**
+   * A class's `[Route]` template inherited from its nearest base class with one (`--facts=` only; absent
+   * when the class has its own `Route` or no base has one). Feeds attribute routes; not an annotation.
+   */
+  inheritedRoute?: string;
 }
 
 /** One attribute as the helper reports it (shape of the protocol v2 SymbolAnnotation). */

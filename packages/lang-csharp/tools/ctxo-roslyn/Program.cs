@@ -334,6 +334,8 @@ List<CtxoSymbol> ExtractSymbols(SyntaxNode root, SemanticModel model, string fil
             StartOffset = node.Span.Start,
             EndOffset = node.Span.End,
             Annotations = AttributeAnnotations.For(node, symbol, model),
+            // Facts only: the plugin builds attribute routes, and a controller's base class may be in another file.
+            InheritedRoute = factOptions != null && symbol is INamedTypeSymbol type ? InheritedRoutes.For(type) : null,
         });
     }
 
@@ -795,6 +797,8 @@ record CtxoSymbol
     [JsonPropertyName("startOffset")] public int StartOffset { get; init; }
     [JsonPropertyName("endOffset")] public int EndOffset { get; init; }
     [JsonPropertyName("annotations")] public List<CtxoAnnotation>? Annotations { get; init; }
+    /// <summary>The class <c>[Route]</c> template inherited from a base class (facts only); not an annotation.</summary>
+    [JsonPropertyName("inheritedRoute")] public string? InheritedRoute { get; init; }
 }
 
 record CtxoEdge

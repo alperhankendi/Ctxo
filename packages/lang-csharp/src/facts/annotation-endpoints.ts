@@ -54,10 +54,14 @@ function replaceTokens(route: string, controller: string, action: string): strin
  * `route` evidence for C# attribute routes: one per `Http*` annotation of a method (its template, else
  * the method's `Route` template), or `ANY` for each `Route` of a method without `Http*`. The class
  * prefix is the `Route` of the innermost enclosing class, ignored when the method template starts
- * with `/` or `~/`. `[controller]` is the class name without a `Controller` suffix, `[action]` the
- * method name. The line is the method's `startLine`.
+ * with `/` or `~/`; a class without its own `Route` takes its entry in `inheritedRoutes` (class symbol
+ * ID to template, which only the Roslyn tier resolves). `[controller]` is the class name without a
+ * `Controller` suffix, `[action]` the method name. The line is the method's `startLine`.
  */
-export function annotationRouteEvidence(symbols: readonly SymbolNode[]): FactEvidence[] {
+export function annotationRouteEvidence(
+  symbols: readonly SymbolNode[],
+  inheritedRoutes: ReadonlyMap<string, string> = new Map(),
+): FactEvidence[] {
   const evidence: FactEvidence[] = [];
   for (const method of symbols) {
     if (method.kind !== 'method' || !method.annotations) continue;
@@ -72,7 +76,9 @@ export function annotationRouteEvidence(symbols: readonly SymbolNode[]): FactEvi
       : className;
     const action = simpleName(method.name);
     const classRouteAnnotation = owner?.annotations?.find(a => a.name === 'Route');
-    const classRoute = classRouteAnnotation ? template(classRouteAnnotation) : undefined;
+    const classRoute = classRouteAnnotation
+      ? template(classRouteAnnotation)
+      : owner ? inheritedRoutes.get(owner.symbolId) : undefined;
     const methodRoute = routeAnnotations.length > 0 ? template(routeAnnotations[0]!) : undefined;
 
     const routes: { readonly verb: string; readonly template: string | undefined }[] = httpAnnotations.length > 0

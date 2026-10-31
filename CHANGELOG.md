@@ -30,6 +30,30 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo (ten packages today). Per-pack
   TypeScript plugin skips one too, and `ctxo doctor` (`config_file`) warns and names it, with the fix hint to use
   `index.ignore` to leave files out.
 
+**C# route prefixes and test attributes by base type (`@ctxo/lang-csharp`).**
+
+### Added (C# facts and annotations)
+
+- Minimal API endpoint facts join their `MapGroup` prefixes in the Roslyn tier: `var g = app.MapGroup("/api");
+  g.MapGet("/x", ...)` gives `GET /api/x`, nested groups compose, a group created inline
+  (`app.MapGroup("/v1").MapGet(...)`) counts, and a group passed to a method, an extension method's `this` parameter
+  included (`app.MapGroup("/users").MapUsers()`, in any file of the project), takes the prefix its call sites agree
+  on. A route is never guessed: a reassigned local, a group returned by another method, a non-constant prefix, call
+  sites that disagree or none at all, a virtual or interface method and a method used as a method group keep the
+  call's own route, as before.
+- A controller without its own `[Route]` inherits the class route of its nearest base class with one (one or more
+  levels up, in another file or a referenced assembly), as ASP.NET Core does; `[controller]` and `[action]` come
+  from the derived class and method. Roslyn tier only: the helper reports the template as a facts-only
+  `inheritedRoute` on the class (never an annotation), so the output without `--facts=` is unchanged.
+- A project's own test attribute derived from one of the 11 known ones (`[RetryFact]` from `Xunit.FactAttribute`,
+  `[SmokeTest]` from `NUnit.Framework.TestAttribute`, `[IntegrationTestMethod]` from MSTest's `TestMethodAttribute`,
+  at any depth) is followed by an annotation of the nearest known base, for example
+  `{ name: "Fact", named: { type: "Xunit.FactAttribute", via: "MyTests.RetryFactAttribute" } }`, so the host's
+  name-based test detection (test files, `*Tests.cs` name-only matches, the domain test conventions) recognises it
+  with no change outside the plugin. Look-alike names that derive from no test attribute (`[Factory]`, `[Facts]`)
+  get nothing, and a known name already on the declaration is not repeated. Roslyn tier only; the tree-sitter tier
+  stays name-based. Run a full `ctxo index` after upgrading `@ctxo/lang-csharp`.
+
 **`ctxo doctor` names unknown keys under `domain:`.**
 
 ### Added (doctor)

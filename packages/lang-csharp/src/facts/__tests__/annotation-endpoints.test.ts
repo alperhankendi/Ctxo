@@ -104,6 +104,28 @@ describe('annotationRouteEvidence', () => {
     ]);
   });
 
+  it('an inherited route is the prefix of a class without its own Route; an own Route wins', () => {
+    const symbols = [
+      cls('Lending.Api.MembersController', 0, 10),
+      method('Lending.Api.MembersController.Get', 3, [{ name: 'HttpGet', args: ['{id}'] }]),
+      cls('Lending.Api.OwnController', 12, 20, [{ name: 'Route', args: ['own'] }]),
+      method('Lending.Api.OwnController.List', 14, [{ name: 'HttpGet', args: ['[action]'] }]),
+    ];
+    const inherited = new Map([
+      [symbols[0]!.symbolId, 'api/[controller]'],
+      [symbols[2]!.symbolId, 'ignored'],
+    ]);
+    expect(annotationRouteEvidence(symbols, inherited).map(e => (e.kind === 'route' ? `${e.verb} ${e.route}` : ''))).toEqual([
+      'GET /api/Members/{id}',
+      'GET /own/List',
+    ]);
+    // Without the map (the tree-sitter tier) the method template stands alone, as before.
+    expect(annotationRouteEvidence(symbols).map(e => (e.kind === 'route' ? `${e.verb} ${e.route}` : ''))).toEqual([
+      'GET /{id}',
+      'GET /own/List',
+    ]);
+  });
+
   it('methods without route annotations and non-route annotations give nothing', () => {
     const symbols = [
       cls('Lending.Api.LoansController', 0, 30, [{ name: 'Route', args: ['api/[controller]'] }]),
