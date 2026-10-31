@@ -593,7 +593,8 @@ class Collector {
         const path = arg(0);
         return path !== undefined ? prefixed(verb, path) : undefined;
       }
-      if (((method === 'Handle' && kind === 'gin') || (method === 'Add' && kind === 'echo')) && args.length >= 3) {
+      // gin Handle takes variadic handlers (2 or more args); echo Add takes one handler (3 args).
+      if ((method === 'Handle' && kind === 'gin' && args.length >= 2) || (method === 'Add' && kind === 'echo' && args.length >= 3)) {
         const found = methodPath();
         if (found !== null) return found;
       }

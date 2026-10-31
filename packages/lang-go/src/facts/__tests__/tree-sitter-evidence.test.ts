@@ -215,6 +215,17 @@ describe('Go syntax-tier facts', () => {
     ]);
   });
 
+  it('routers in typed struct fields and from typed functions and methods of the file', async () => {
+    expect(rows(await syntaxFacts('app.go', AGREEING_SAMPLES['ginStructs']!)).map(([line, , text]) => [line, text])).toEqual([
+      [9, 'GET /a'],
+      [11, 'GET /b'],
+      [12, 'GET /api/c'],
+      [13, 'GET /d'],
+      [14, 'PATCH /e'],
+      [15, 'POST /f'],
+    ]);
+  });
+
   it('block-scoped := groups keep their own prefix', async () => {
     expect(rows(await syntaxFacts('app.go', AGREEING_SAMPLES['blockScoped']!)).map(([line, , text]) => [line, text])).toEqual([
       [7, 'GET /loans/:id'],

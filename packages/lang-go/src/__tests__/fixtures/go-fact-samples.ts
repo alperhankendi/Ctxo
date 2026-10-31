@@ -308,6 +308,26 @@ func Register(r *gin.Engine) {
 	}
 }
 `,
+  ginStructs: `package app
+
+import "github.com/gin-gonic/gin"
+
+type Server struct{ router *gin.Engine }
+
+func setup() *gin.Engine { return nil }
+
+func (s *Server) Register() {
+	s.router.GET("/a", nil)
+	r := s.router
+	r.GET("/b", nil)
+	s.router.Group("/api").GET("/c", nil)
+	setup().GET("/d", nil)
+	s.router.Handle("PATCH", "/e")
+	s.engine().POST("/f", nil)
+}
+
+func (s *Server) engine() *gin.Engine { return s.router }
+`,
   echoNoise: `package app
 
 import (

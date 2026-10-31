@@ -4,7 +4,9 @@
 // the package level of the file. A name is a router only when the file shows where it comes from: a framework
 // constructor (`gin.New`, `gin.Default`, `echo.New`, `chi.NewRouter`, `chi.NewMux`), a group of a router
 // (gin and echo `Group`, chi `Route`, `Group`, `With`), a chi `Route`/`Group` closure parameter or `Mount` target,
-// or a declared framework type (`*gin.Engine`, `gin.IRouter`, `*echo.Group`, `chi.Router`, ...). Groups and mounts
+// a declared framework type (`*gin.Engine`, `gin.IRouter`, `*echo.Group`, `chi.Router`, ...), a field `x.f` of a
+// struct of the file that declares `f` with such a type, or a call to a function or method of the file whose result
+// is such a type. Groups and mounts
 // give prefixes; a dynamic, conflicting or cyclic prefix gives none, so the route keeps the path written at the call.
 import type { SyntaxNode } from 'tree-sitter';
 
@@ -112,6 +114,24 @@ export class TreeSitterPrefixes {
   private readonly importNames: ReadonlySet<string>;
   /** Set when a lookup reached the depth cap: such results are not cached. */
   private capped = false;
+  /** Kinds of the struct fields, functions and methods declared in the file, by name (undefined: not a router type). */
+  private readonly fieldKinds = new Map<string, Set<RouterKind | undefined>>();
+  private readonly functionKinds = new Map<string, Set<RouterKind | undefined>>();
+  private readonly methodKinds = new Map<string, Set<RouterKind | undefined>>();
+
+  private addKind(map: Map<string, Set<RouterKind | undefined>>, name: string, kind: RouterKind | undefined): void {
+    let kinds = map.get(name);
+    if (!kinds) {
+      kinds = new Set();
+      map.set(name, kinds);
+    }
+    kinds.add(kind);
+  }
+
+  /** The one router kind every declaration of `name` has, else undefined. */
+  private static single(kinds: ReadonlySet<RouterKind | undefined> | undefined): RouterKind | undefined {
+    return kinds && kinds.size === 1 ? [...kinds][0] : undefined;
+  }
 
   constructor(root: SyntaxNode, private readonly context: PrefixContext) {
     for (const [path, name] of context.imports) {
@@ -126,9 +146,26 @@ export class TreeSitterPrefixes {
     while (stack.length > 0) {
       const node = stack.pop()!;
       switch (node.type) {
+        case 'field_declaration': {
+          // A struct field of a framework router type: `x.field` is a router.
+          const type = node.childForFieldName('type');
+          const kind = type ? this.typeKind(type) : undefined;
+          for (const id of node.childrenForFieldName('name').filter((n) => n.type === 'field_identifier')) {
+            this.addKind(this.fieldKinds, id.text, kind);
+          }
+          break;
+        }
         case 'function_declaration':
         case 'method_declaration':
         case 'func_literal': {
+          if (node.type !== 'func_literal') {
+            // A function or method of the file whose single result is a framework router type.
+            const name = node.childForFieldName('name')?.text;
+            const result = node.childForFieldName('result');
+            if (name !== undefined) {
+              this.addKind(node.type === 'function_declaration' ? this.functionKinds : this.methodKinds, name, result ? this.typeKind(result) : undefined);
+            }
+          }
           const names = this.namesOf(scopeId(node));
           for (const list of [node.childForFieldName('parameters'), node.childForFieldName('receiver')]) {
             for (const param of parameters(list)) {
@@ -268,6 +305,19 @@ export class TreeSitterPrefixes {
       const key = this.keyOf(expr);
       return key === undefined ? undefined : this.objectKind(key, depth);
     }
+    if (expr.type === 'selector_expression') {
+      // `x.field` where a struct of this file declares `field` with a router type.
+      const operand = expr.childForFieldName('operand');
+      if (operand?.type === 'identifier' && this.importNames.has(operand.text)) return undefined;
+      const field = expr.childForFieldName('field')?.text;
+      return field !== undefined ? TreeSitterPrefixes.single(this.fieldKinds.get(field)) : undefined;
+    }
+    if (expr.type === 'call_expression') {
+      // `setup()`: a function of this file whose result is a router type.
+      const fun = expr.childForFieldName('function');
+      const callee = fun ? unparen(fun) : undefined;
+      if (callee?.type === 'identifier') return TreeSitterPrefixes.single(this.functionKinds.get(callee.text));
+    }
     const sel = this.selector(expr);
     if (!sel) return undefined;
     const { recv, method } = sel;
@@ -278,6 +328,8 @@ export class TreeSitterPrefixes {
     const kind = this.kindOf(recv, depth + 1);
     if ((kind === 'gin' || kind === 'echo') && method === 'Group') return kind;
     if (kind === 'chi' && (method === 'Route' || method === 'Group' || method === 'With')) return kind;
+    // `s.routes()`: a method of this file whose result is a router type.
+    if (kind === undefined) return TreeSitterPrefixes.single(this.methodKinds.get(method));
     return undefined;
   }
 
