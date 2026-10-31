@@ -6,6 +6,18 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo (ten packages today). Per-pack
 
 ## [Unreleased]
 
+**`overallRiskScore` no longer saturates at 1.0 (#161, #198).**
+
+### Fixed (blast radius)
+
+- `overallRiskScore` (`get_blast_radius`, `ctxo blast-radius`, the per-symbol `riskScore` in `get_pr_impact`) divided
+  the depth-weighted risk sum by the number of direct dependents. Every direct dependent adds exactly 1.0, so the
+  score was 0 or 1 and `get_pr_impact` reported `high` for any changed symbol with a dependent; `medium` was
+  unreachable. The score is now `sum(riskScore) / (sum(riskScore) + 5)`: 1 direct dependent scores 0.167, 3 score
+  0.375 (medium, the balanced gate floor), 12 score 0.706 (high), and it approaches 1 without reaching it. The bands
+  are unchanged; `high` fires much less often, and CI scripts that threshold the score pass where they used to fail.
+  The safe-edit guard is not affected (it uses dependent counts and PageRank).
+
 **`ctxo domain discover` that agents find, with tracker kinds and test-kind markers beyond folders (#191).**
 
 ### Added (discovery)

@@ -79,6 +79,7 @@ Parameters:
 
 Returns: impactedSymbols array with symbolId, depth, riskScore, confidence, edgeKinds, coChangeFrequency (when the dependent's file co-changes with the target's file).
 3-tier model by the strongest edge that reaches each dependent: confirmed (calls/extends/implements and the data edges reads/writes/executes), likely (uses/co-changed), potential (imports-only). A potential dependent whose file co-changes with the target's file at frequency above 0.5 is promoted to likely. The traversal is transitive across all tiers; riskScore falls with depth.
+overallRiskScore = sum(riskScore) / (sum(riskScore) + 5) over all impacted symbols (riskScore = 1 / depth^0.7): it approaches 1 but never reaches it. low < 0.3, medium 0.3-0.7, high > 0.7; 1 direct dependent scores about 0.17, 3 about 0.38 (medium), 12 about 0.71 (high).
 Also returns coChangedFiles (when co-change data exists): up to 10 files that co-change with the target's file at frequency >= 0.5 but have no graph path to it, each with file, frequency, sharedCommits. Informational: not counted in tiers, risk scores or the safe-edit gate.
 Every copy of a table, view or procedure that several files define, and its 2-part ID, reports the same dependents (those of the winning definition).
 
@@ -239,6 +240,7 @@ Parameters:
 - confidence (enum: confirmed|likely|potential, optional): Filter tier
 
 Returns: changedFiles, changedSymbols, totalImpact, riskLevel (low|medium|high), per-file blast radius, co-change data (coChangedWith per file), boundaryViolations (confidence from distinctCommits) and clustersAffected.
+riskLevel comes from the highest per-symbol overallRiskScore = sum(riskScore) / (sum(riskScore) + 5) (see get_blast_radius): high > 0.7 (about 12 or more direct dependents), medium > 0.3 (about 3), else low. A symbol with one or two dependents is low.
 
 With @ctxo/domain and a domain graph: `contextsTouched` (`{ id, status, card?, cardChanged, acknowledged?, fileCount, files }` with up to 10 files; over the merge base of since and HEAD plus the working tree, while `files` stays `git diff <since>`), `cardsChanged` (registry cards changed in the range or the working tree) and `rulesWithoutTests` (rules of touched contexts without a test link, with `untested` reasons). Capped at 50 with `<name>Total`; left out when git cannot resolve since. An empty diff also carries `_meta`.
 

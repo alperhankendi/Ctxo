@@ -146,8 +146,8 @@ describe('BlastRadiusCalculator', () => {
     expect(aEntry!.dependentCount).toBe(0);
   });
 
-  it('overallRiskScore uses direct-dependent-weighted formula (GAP-29)', () => {
-    // 1 direct dependent → totalRisk = 1.0, directDependentsCount = 1, score = 1.0
+  it('overallRiskScore does not saturate on a single direct dependent', () => {
+    // 1 direct dependent → totalRisk = 1.0 → 1 / (1 + 5) ≈ 0.167
     const graph = new SymbolGraph();
     for (const id of ['a::A::function', 'b::B::function']) {
       graph.addNode(makeNode(id));
@@ -155,13 +155,80 @@ describe('BlastRadiusCalculator', () => {
     graph.addEdge({ from: 'a::A::function', to: 'b::B::function', kind: 'imports' });
 
     const result = calc.calculate(graph, 'b::B::function');
-    expect(result.overallRiskScore).toBe(1);
+    expect(result.overallRiskScore).toBe(0.167);
   });
 
-  it('overallRiskScore > 1 is capped at 1.0 for many direct dependents', () => {
+  it('overallRiskScore keeps heavily-depended-on symbols distinguishable', () => {
+    const scoreFor = (n: number) => {
+      const graph = new SymbolGraph();
+      graph.addNode(makeNode('target::T::function'));
+      for (let i = 0; i < n; i++) {
+        const id = `dep${i}::D${i}::function`;
+        graph.addNode(makeNode(id));
+        graph.addEdge({ from: id, to: 'target::T::function', kind: 'calls' });
+      }
+      return calc.calculate(graph, 'target::T::function').overallRiskScore;
+    };
+
+    // 3 direct dependents (balanced gate floor) → medium band
+    expect(scoreFor(3)).toBeGreaterThan(0.3);
+    expect(scoreFor(3)).toBeLessThanOrEqual(0.7);
+    // 50 vs 100 direct dependents must not collapse to the same score
+    expect(scoreFor(50)).toBeLessThan(scoreFor(100));
+    expect(scoreFor(100)).toBeLessThan(1);
+  });
+
+  it('overallRiskScore grows with the number of direct dependents', () => {
+    const scoreFor = (n: number) => {
+      const graph = new SymbolGraph();
+      graph.addNode(makeNode('target::T::function'));
+      for (let i = 0; i < n; i++) {
+        const id = `dep${i}::D${i}::function`;
+        graph.addNode(makeNode(id));
+        graph.addEdge({ from: id, to: 'target::T::function', kind: 'imports' });
+      }
+      return calc.calculate(graph, 'target::T::function').overallRiskScore;
+    };
+
+    expect(scoreFor(1)).toBeLessThan(scoreFor(3));
+    expect(scoreFor(3)).toBeLessThan(scoreFor(10));
+  });
+
+  it('overallRiskScore counts transitive dependents, but less than direct ones', () => {
+    // wide: 3 direct dependents of T
+    const wide = new SymbolGraph();
+    wide.addNode(makeNode('t::T::function'));
+    for (const id of ['a::A::function', 'b::B::function', 'c::C::function']) {
+      wide.addNode(makeNode(id));
+      wide.addEdge({ from: id, to: 't::T::function', kind: 'calls' });
+    }
+
+    // deep: chain C -> B -> A -> T (same 3 impacted symbols)
+    const deep = new SymbolGraph();
+    for (const id of ['t::T::function', 'a::A::function', 'b::B::function', 'c::C::function']) {
+      deep.addNode(makeNode(id));
+    }
+    deep.addEdge({ from: 'a::A::function', to: 't::T::function', kind: 'calls' });
+    deep.addEdge({ from: 'b::B::function', to: 'a::A::function', kind: 'calls' });
+    deep.addEdge({ from: 'c::C::function', to: 'b::B::function', kind: 'calls' });
+
+    // single: only A -> T
+    const single = new SymbolGraph();
+    for (const id of ['t::T::function', 'a::A::function']) single.addNode(makeNode(id));
+    single.addEdge({ from: 'a::A::function', to: 't::T::function', kind: 'calls' });
+
+    const wideScore = calc.calculate(wide, 't::T::function').overallRiskScore;
+    const deepScore = calc.calculate(deep, 't::T::function').overallRiskScore;
+    const singleScore = calc.calculate(single, 't::T::function').overallRiskScore;
+
+    expect(wideScore).toBeGreaterThan(deepScore);
+    expect(deepScore).toBeGreaterThan(singleScore);
+  });
+
+  it('overallRiskScore stays within (0, 1] for many direct dependents', () => {
     const graph = new SymbolGraph();
     graph.addNode(makeNode('target::T::function'));
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 50; i++) {
       const id = `dep${i}::D${i}::function`;
       graph.addNode(makeNode(id));
       graph.addEdge({ from: id, to: 'target::T::function', kind: 'imports' });

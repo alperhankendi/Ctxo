@@ -31,7 +31,10 @@ The algorithm lives in
 5. Apply the **co-change boost** (see below).
 6. After BFS, recompute `dependentCount` as in-degree *within the blast set*
    (not the whole graph) so you see how interconnected the blast itself is.
-7. Aggregate into `overallRiskScore`, capped at 1.
+7. Sum the `riskScore` of every impacted symbol and squash the total into
+   `overallRiskScore` with a saturating curve, `sum / (sum + 5)`. The score
+   approaches 1 as the blast grows but never reaches it (see
+   [Risk score](#risk-score)).
 
 ## Confidence tiers
 
@@ -97,13 +100,30 @@ the risk scores or the guard.
 Per-entry: `round(1 / depth^0.7, 3)`. Overall:
 
 ```
-overallRiskScore = min( sum(riskScore) / max(directDependents, 1) , 1 )
+overallRiskScore = round( sum(riskScore) / ( sum(riskScore) + 5 ) , 3 )
 ```
 
-The normalization by direct-dependent count means a symbol with one direct
-dependent but a long tail gets a lower overall score than a symbol with ten
-direct dependents. This matches intuition: wide blast is riskier than deep
-blast.
+The score grows with the depth-weighted size of the blast and approaches 1
+without saturating: one direct dependent scores `0.167`, three score `0.375`
+(medium), twelve score `0.706` (high), and even very central symbols stay
+distinguishable from each other. Because each entry is already decayed by depth, a symbol
+with three direct dependents scores higher than one with a three-deep chain.
+This matches intuition: wide blast is riskier than deep blast.
+
+The sum runs over every impacted symbol, not only the direct dependents, so
+transitive dependents add to the score at a reduced weight (`0.616` at depth 2,
+`0.463` at depth 3). The score is `0.5` when the depth-weighted sum is `5`.
+
+| Depth-weighted sum | `overallRiskScore` | Typical shape                  | Band   |
+| ------------------ | ------------------ | ------------------------------ | ------ |
+| 1                  | `0.167`            | 1 direct dependent             | low    |
+| 3                  | `0.375`            | 3 direct dependents            | medium |
+| 12                 | `0.706`            | 12 direct dependents           | high   |
+| 15                 | `0.750`            | 15 direct dependents           | high   |
+
+The bands are the ones the tools use: `low` below `0.3`, `medium` from `0.3` to
+`0.7`, `high` above `0.7`. See
+[Interpreting `overallRiskScore`](/mcp-tools/get-blast-radius#interpreting-overallriskscore).
 
 ## Reading the response
 
@@ -113,7 +133,7 @@ blast.
     {
       "symbolId": "src/api/handler.ts::handleRequest::function",
       "depth": 1,
-      "dependentCount": 3,
+      "dependentCount": 0,
       "riskScore": 1.0,
       "confidence": "confirmed",
       "edgeKinds": ["calls"]
@@ -123,7 +143,7 @@ blast.
   "confirmedCount": 1,
   "likelyCount": 0,
   "potentialCount": 0,
-  "overallRiskScore": 1.0
+  "overallRiskScore": 0.167
 }
 ```
 

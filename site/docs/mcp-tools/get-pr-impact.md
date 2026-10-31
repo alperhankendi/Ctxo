@@ -70,7 +70,7 @@ Review a specific commit range, confirmed impacts only:
             "confirmedCount": 8,
             "likelyCount": 15,
             "potentialCount": 8,
-            "riskScore": 0.88,
+            "riskScore": 0.78,
             "topImpacted": [ /* up to 10 highest-risk dependents */ ]
           }
         }
@@ -156,7 +156,15 @@ The three lists are present, possibly empty, whenever a valid graph exists and g
 
 - **`riskLevel`** — `high` if any changed symbol has `riskScore > 0.7`,
   `medium` above `0.3`, else `low`. Use it as the top-line gate for review
-  depth.
+  depth. A symbol's `riskScore` is its
+  [`overallRiskScore`](/mcp-tools/get-blast-radius#interpreting-overallriskscore),
+  `sum / (sum + 5)` over the depth-weighted blast, which approaches 1 without
+  reaching it. `high` therefore needs about 12 direct dependents (or the
+  equivalent weighted mass), `medium` about 3, and a symbol with one or two
+  dependents is `low`. Earlier versions scored `1.0` for any symbol with a
+  dependent, so `high` fired far more often and `medium` was unreachable; expect
+  `high` much less often now, and CI checks on `riskLevel === "high"` to pass
+  where they used to fail.
 - **`summary.highRiskSymbols`** — the symbols most likely to break something.
   Review these first.
 - **`files[].coChangedWith`** - files that historically change together with

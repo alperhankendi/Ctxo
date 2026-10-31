@@ -74,21 +74,23 @@ Filter to high-confidence only:
   "confirmedCount": 6,
   "likelyCount": 14,
   "potentialCount": 7,
-  "overallRiskScore": 0.82,
+  "overallRiskScore": 0.78,
   "impactedSymbols": [
     {
       "symbolId": "packages/cli/src/index.ts::main::function",
       "name": "main",
       "kind": "function",
+      "depth": 1,
       "confidence": "confirmed",
-      "riskScore": 0.91
+      "riskScore": 1.0
     },
     {
       "symbolId": "packages/cli/src/cli/sync-command.ts::SyncCommand::class",
       "name": "SyncCommand",
       "kind": "class",
+      "depth": 2,
       "confidence": "likely",
-      "riskScore": 0.62,
+      "riskScore": 0.616,
       "coChangeFrequency": 0.78
     }
   ],
@@ -186,6 +188,22 @@ The raw numbers are identical. The cluster breakdown is the difference between "
 | `> 0.7`      | high       | Plan carefully, write tests first, review with a teammate          |
 | `0.3 - 0.7`  | medium     | Read `get_why_context` before editing                              |
 | `< 0.3`      | low        | Safe to edit, still verify imports via `find_importers` if unsure  |
+
+The score is `sum(riskScore) / (sum(riskScore) + 5)`, where `sum` runs over
+every impacted symbol and each entry's `riskScore` is `1 / depth^0.7`. It
+approaches 1 but never reaches it, so very central symbols stay distinguishable.
+Rough anchors, counting direct dependents only:
+
+| Direct dependents | `overallRiskScore` | Band   |
+| ----------------- | ------------------ | ------ |
+| 1                 | about `0.17`       | low    |
+| 3                 | about `0.38`       | medium (the balanced gate floor) |
+| 12                | about `0.71`       | high   |
+
+Transitive dependents add to the sum at a lower weight (`0.616` at depth 2,
+`0.463` at depth 3), so a mix of direct and indirect dependents scores a little
+higher than the same number of direct ones alone. The example response above
+has 6 direct and 21 transitive dependents, which gives about `0.78`.
 
 ## See it in action
 
