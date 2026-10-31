@@ -59,7 +59,7 @@ the lists.
 | `--no-guard` | | `false` | Does not install the safe-edit guard and never asks about it. Combines with `--only` and `--skip`. Without a guard on disk, Claude Code gets the full rules block |
 | `--rules` | | `false` | Deprecated: the same as `--skip git-hooks,guard`, and it still skips the plugin step. Prints a deprecation notice; use `--only` or `--skip` instead |
 | `--domain` | | `false` | Also run the opt-in `domain` part. Same as naming `domain` in `--only`; `--skip domain` still removes it |
-| `--boundaries <mode>` | | asked | `by-rung` or `report`: the boundary mode the `domain` part writes, without the prompt |
+| `--boundaries <mode>` | | asked | `by-rung`, `new-only` or `report`: the boundary mode the `domain` part writes, without the prompt. `new-only` is `by-rung` that fails `verify-domain --since` only on violations the branch adds |
 | `--no-install` | | `false` | Skip the language-plugin detection prompt (and the implicit install under `--yes`) |
 | `--dry-run` | | `false` | Lists every file init would create or change, and writes nothing. See [Dry run](#dry-run) |
 

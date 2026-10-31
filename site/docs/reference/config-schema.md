@@ -71,7 +71,7 @@ domain:                   # read only when @ctxo/domain is installed
   coverage:
     unowned: warn         # warn | error
   boundaries:
-    enforce: by-rung      # by-rung | report
+    enforce: by-rung      # by-rung | new-only | report
     blockingRungs: [bounded, boring]
   rules:
     idPattern: "^[A-Z][A-Z0-9]*-\\d+$"
@@ -136,8 +136,8 @@ domain:                   # read only when @ctxo/domain is installed
 | `contextsView.technicalTerms` | string[] | built-in list | Words dropped from candidate terms (`Service`, `Repository`, `Controller`, `Handler`, `Manager`, `Dto`, `Impl`, `Async`). Replaces the default list. |
 | `domain.registry` | string | `docs/domain/contexts.yaml` | Path of the context registry, relative to the repository root. |
 | `domain.coverage.unowned` | `warn` \| `error` | `warn` | Severity of `verify-domain` check 4b: indexed files that belong to no context and are not in `unowned.allow`. |
-| `domain.boundaries.enforce` | `by-rung` \| `report` | `by-rung` | `by-rung`: an edge outside the contracts is an error when either context's rung is in `blockingRungs`, else a warning. `report`: always a warning. |
-| `domain.boundaries.blockingRungs` | string[] of rungs | `[bounded, boring]` | Rungs (`fear`, `pinned`, `named`, `bounded`, `boring`) that make a boundary violation an error in `by-rung` mode. |
+| `domain.boundaries.enforce` | `by-rung` \| `new-only` \| `report` | `by-rung` | `by-rung`: an edge outside the contracts is an error when either context's rung is in `blockingRungs`, else a warning. `new-only`: the same rung rules, but `verify-domain --since <ref>` fails only on violations the base lacks; the base's are reported as existing warnings ([new violations only](../cli/domain.md#new-violations-only)); without `--since` it is `by-rung`. `report`: always a warning. |
+| `domain.boundaries.blockingRungs` | string[] of rungs | `[bounded, boring]` | Rungs (`fear`, `pinned`, `named`, `bounded`, `boring`) that make a boundary violation an error in `by-rung` and `new-only` modes. |
 | `domain.rules.idPattern` | regular expression | `^[A-Z][A-Z0-9]*-\d+$` | Shape of a rule ID in a card. |
 | `domain.rules.trackerPrefixes` | string[] (`^[A-Z][A-Z0-9]*$`) | `[]` | Issue-tracker prefixes. A plain mention of an ID with such a prefix never links to a rule or raises an unknown-ID error; only structured references count. |
 | `domain.tests.ruleTraitKeys` | string[] | `[Rule]` | `Trait` annotation keys whose value is a rule ID, for example `[Trait("Rule", "LEND-03")]`. |

@@ -58,7 +58,16 @@ export function loadConfig(ctxoRoot: string): LoadedConfig {
     errors.push(`Cannot read ${path}: ${(err as Error).message}`);
     return { config: DEFAULT_CONFIG, errors, invalidGlobs, path, exists: true };
   }
+  return parseConfigText(raw, path);
+}
 
+/**
+ * `loadConfig` for a text read elsewhere (a `config.yaml` blob at a commit): the same parse, schema check, glob
+ * validation and fall-back to defaults. `path` names the file in messages.
+ */
+export function parseConfigText(raw: string, path: string): LoadedConfig {
+  const errors: string[] = [];
+  const invalidGlobs: string[] = [];
   let parsed: unknown;
   try {
     parsed = parseYaml(raw);

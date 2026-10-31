@@ -3,7 +3,7 @@ import { IndexCommand } from './index-command.js';
 import { SyncCommand } from './sync-command.js';
 import { StatusCommand } from './status-command.js';
 import { VerifyCommand } from './verify-command.js';
-import { InitCommand } from './init-command.js';
+import { InitCommand, type BoundaryMode } from './init-command.js';
 import { INIT_PARTS, parseInitParts, type InitPart } from './init-parts.js';
 import { WatchCommand } from './watch-command.js';
 import { StatsCommand } from './stats-command.js';
@@ -78,14 +78,14 @@ function readInitPartsFlag(args: readonly string[], flag: '--only' | '--skip'): 
   return { present, parts };
 }
 
-const BOUNDARIES_ERROR = '[ctxo] --boundaries requires by-rung or report';
+const BOUNDARIES_ERROR = '[ctxo] --boundaries requires by-rung, new-only or report';
 
 /**
- * Read `--boundaries <by-rung|report>` (or `--boundaries=<mode>`) from `ctxo init` arguments. Absent gives
+ * Read `--boundaries <by-rung|new-only|report>` (or `--boundaries=<mode>`) from `ctxo init` arguments. Absent gives
  * `{}`; a missing value, a flag token or any other value gives the error to print before exiting 1.
  */
-function readBoundariesFlag(args: readonly string[]): { readonly mode?: 'by-rung' | 'report'; readonly error?: string } {
-  let mode: 'by-rung' | 'report' | undefined;
+function readBoundariesFlag(args: readonly string[]): { readonly mode?: BoundaryMode; readonly error?: string } {
+  let mode: BoundaryMode | undefined;
   for (let i = 1; i < args.length; i++) {
     const arg = args[i]!;
     let value: string | undefined;
@@ -97,7 +97,7 @@ function readBoundariesFlag(args: readonly string[]): { readonly mode?: 'by-rung
     } else {
       continue;
     }
-    if (value !== 'by-rung' && value !== 'report') return { error: BOUNDARIES_ERROR };
+    if (value !== 'by-rung' && value !== 'new-only' && value !== 'report') return { error: BOUNDARIES_ERROR };
     mode = value;
   }
   return mode !== undefined ? { mode } : {};
@@ -523,7 +523,7 @@ Usage:
   ctxo init --rules         Deprecated: same as --skip git-hooks,guard
   ctxo init --dry-run       List every file init would create or change
   ctxo init --domain        Also set up the domain layer: registry, fold guard (Claude Code), fold reminder (Cursor), skill (@ctxo/domain)
-  ctxo init --boundaries <by-rung|report>   Boundary mode for --domain, without the prompt
+  ctxo init --boundaries <by-rung|new-only|report>   Boundary mode for --domain, without the prompt
   ctxo stats                Show usage statistics (--json, --days N, --clear)
   ctxo doctor               Health check all subsystems (--json, --quiet)
   ctxo doctor --fix         Apply fixes in dependency order: config, git hooks, skills, the safe-edit guard, rules blocks, the domain agent setup, plugins, index (--dry-run, --yes)

@@ -15,6 +15,11 @@ export interface BoundaryViolationRecord {
   readonly to: ContextEnd;
   readonly edgeKind: string;
   readonly severity: 'error' | 'warning';
+  /**
+   * Set by `verify-domain` in `new-only` mode with a base: `new` when the base has no violation with the same
+   * key (`violationKey`), `existing` when it has one (then the severity is a warning).
+   */
+  readonly baseline?: 'new' | 'existing';
 }
 
 /** Every edge from one context into another, by kind, split into allowed (through a contract) and violations. */
@@ -67,8 +72,8 @@ function compareViolations(a: BoundaryViolationRecord, b: BoundaryViolationRecor
  *   reference) is skipped, and so is every edge from a test file.
  * - An edge with an unowned (or multiply owned) end is skipped; both ends in one context count as internal.
  * - A cross edge is allowed when its target file is a contract of the source context into the target's context.
- *   Otherwise it is a violation: `report` gives a warning; `by-rung` gives an error when either context's rung
- *   is blocking, else a warning.
+ *   Otherwise it is a violation: `report` gives a warning; `by-rung` and `new-only` give an error when either
+ *   context's rung is blocking, else a warning (`new-only` keeps only the new errors later, in `verify-domain`).
  */
 export function computeBoundaries(edges: readonly GraphEdge[], input: BoundaryInput): BoundaryResult {
   const { registry, ownership, isTestFile, mode, blockingRungs } = input;
@@ -132,7 +137,7 @@ export function computeBoundaries(edges: readonly GraphEdge[], input: BoundaryIn
     }
     summary.violations++;
     const severity: BoundaryViolationRecord['severity'] =
-      mode === 'by-rung' && (blocking.has(rungOf.get(fromContext)!) || blocking.has(rungOf.get(toContext)!)) ? 'error' : 'warning';
+      mode !== 'report' && (blocking.has(rungOf.get(fromContext)!) || blocking.has(rungOf.get(toContext)!)) ? 'error' : 'warning';
     violations.push({
       from: { symbolId: edge.from, file: fromFile, context: fromContext },
       to: { symbolId: edge.to, file: toFile, context: toContext },

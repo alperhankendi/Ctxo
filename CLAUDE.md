@@ -71,9 +71,9 @@ ctxo contexts [--json]              # candidate contexts: table to stderr, full 
 # Domain knowledge layer (opt-in, needs @ctxo/domain; ADR-018)
 ctxo install domain                 # install @ctxo/domain at this CLI's version (globally without package.json)
 ctxo init --domain                  # also set up the domain part: config defaults, registry skeleton, fold guard hooks, Cursor fold reminder (.cursor/hooks.json), skill
-ctxo init --domain --boundaries by-rung|report   # boundary mode without the prompt
+ctxo init --domain --boundaries by-rung|new-only|report   # boundary mode without the prompt
 ctxo contexts-touched --since origin/main [--committed | --staged] [--json] [--check]   # named contexts a change touched
-ctxo verify-domain --since origin/main [--boundaries by-rung|report] [--json]            # CI gate, 12 checks, exit 0/1/2
+ctxo verify-domain --since origin/main [--boundaries by-rung|new-only|report] [--json]   # CI gate, 12 checks, exit 0/1/2; new-only fails only on violations the base lacks
 ctxo domain rules --write|--check   # generated path-scoped loader rules (.claude/rules, .cursor/rules)
 ctxo domain discover [--json] [--write]   # run first when adopting: tracker prefixes, rule trait keys, test folders and test-kind markers (external IDs, GitHub #N, lowercase ids: evidence only)
 ctxo domain map [--json]            # context map: metrics, rung, suggested rung and criteria per context
@@ -204,7 +204,7 @@ contextsView:                  # candidate contexts (file level), see ADR-016 ad
 domain:                        # read only when @ctxo/domain is installed (ADR-018)
   registry: docs/domain/contexts.yaml
   coverage: { unowned: warn }  # warn | error
-  boundaries: { enforce: by-rung, blockingRungs: [bounded, boring] }   # by-rung | report
+  boundaries: { enforce: by-rung, blockingRungs: [bounded, boring] }   # by-rung | new-only | report
   rules: { idPattern: "^[A-Z][A-Z0-9]*-\\d+$", trackerPrefixes: [] }
   tests: { ruleTraitKeys: [Rule] }   # also characterization / contract: { annotations, paths, names } (K13a)
   rungs: { pinnedCoverage: 0.8 }

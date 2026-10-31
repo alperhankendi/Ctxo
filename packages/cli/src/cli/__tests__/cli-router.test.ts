@@ -847,13 +847,15 @@ describe('cli-router init parts flags', () => {
     await route('--domain', '--boundaries', 'report', '-y');
     await route('--only', 'domain', '--boundaries=by-rung');
     await route('--tools', 'cursor');
+    await route('--domain', '--boundaries', 'new-only', '-y');
 
     expect(exitSpy).not.toHaveBeenCalled();
-    expect(initRuns).toHaveLength(3);
+    expect(initRuns).toHaveLength(4);
     expect(initRuns[0]).toMatchObject({ domain: true, boundaries: 'report', yes: true });
     expect(initRuns[1]).toMatchObject({ domain: false, boundaries: 'by-rung', only: ['domain'] });
     expect(initRuns[2]).toMatchObject({ domain: false });
     expect(initRuns[2]!['boundaries']).toBeUndefined();
+    expect(initRuns[3]).toMatchObject({ domain: true, boundaries: 'new-only' });
   });
 
   it.each([[['--boundaries']], [['--boundaries', 'strict']], [['--boundaries=']], [['--boundaries', '-y']], [['--boundaries=Report']]])(
@@ -861,7 +863,7 @@ describe('cli-router init parts flags', () => {
     async (args) => {
       await route('--domain', ...args);
 
-      expect(errorSpy).toHaveBeenCalledWith('[ctxo] --boundaries requires by-rung or report');
+      expect(errorSpy).toHaveBeenCalledWith('[ctxo] --boundaries requires by-rung, new-only or report');
       expect(exitSpy).toHaveBeenCalledWith(1);
       expect(initConstructed).toBe(0);
     },
@@ -995,7 +997,7 @@ describe('cli-router init parts flags', () => {
     const help = printed();
     expect(help).toContain('ctxo init --only <parts>  Install only these parts: rules,skills,guard,mcp,git-hooks,config,domain');
     expect(help).toContain('  ctxo init --domain        Also set up the domain layer: registry, fold guard (Claude Code), fold reminder (Cursor), skill (@ctxo/domain)');
-    expect(help).toContain('  ctxo init --boundaries <by-rung|report>   Boundary mode for --domain, without the prompt');
+    expect(help).toContain('  ctxo init --boundaries <by-rung|new-only|report>   Boundary mode for --domain, without the prompt');
     expect(help).toContain('ctxo init --skip <parts>  Install everything except these parts');
     expect(help).toContain('ctxo init --no-guard      Does not install the Claude Code safe-edit guard');
     expect(help).not.toContain('rules use the full block');

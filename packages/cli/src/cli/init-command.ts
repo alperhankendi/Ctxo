@@ -123,7 +123,7 @@ export interface InitOptions {
 }
 
 /** The boundary modes of `domain.boundaries.enforce`. */
-export type BoundaryMode = 'by-rung' | 'report';
+export type BoundaryMode = 'by-rung' | 'new-only' | 'report';
 
 /** Construction options of InitCommand. */
 export interface InitCommandOptions {
@@ -222,6 +222,7 @@ const DOMAIN_MISSING_WARNING = '@ctxo/domain is not installed; run "ctxo install
 const BOUNDARY_QUESTION = 'Boundary violations between named contexts';
 const BOUNDARY_CHOICES: readonly { readonly value: BoundaryMode; readonly label: string }[] = [
   { value: 'by-rung', label: 'by-rung: fail verify-domain for bounded and boring contexts, warn for the others' },
+  { value: 'new-only', label: 'new-only: as by-rung, but fail only on violations the branch adds (verify-domain --since)' },
   { value: 'report', label: 'report: warnings only' },
 ];
 
@@ -297,7 +298,7 @@ function configuredBoundaryMode(projectRoot: string): BoundaryMode | undefined {
   const boundaries = (domain as Record<string, unknown>)['boundaries'];
   if (typeof boundaries !== 'object' || boundaries === null) return undefined;
   const enforce = (boundaries as Record<string, unknown>)['enforce'];
-  return enforce === 'by-rung' || enforce === 'report' ? enforce : undefined;
+  return enforce === 'by-rung' || enforce === 'new-only' || enforce === 'report' ? enforce : undefined;
 }
 
 /** The parts the AI Tools step serves: without any of them, no tool list is asked for. */

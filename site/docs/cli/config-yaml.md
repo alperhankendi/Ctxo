@@ -48,7 +48,7 @@ contextsView:             # candidate contexts, see `ctxo contexts`
 domain:                   # read only when @ctxo/domain is installed
   registry: docs/domain/contexts.yaml
   coverage: { unowned: warn }
-  boundaries: { enforce: by-rung, blockingRungs: [bounded, boring] }
+  boundaries: { enforce: by-rung, blockingRungs: [bounded, boring] }   # by-rung | new-only | report
   rules: { idPattern: "^[A-Z][A-Z0-9]*-\\d+$", trackerPrefixes: [] }
   tests: { ruleTraitKeys: [Rule] }
   guard: { enabled: true, subagents: false }

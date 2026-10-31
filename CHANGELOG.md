@@ -6,6 +6,44 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo (ten packages today). Per-pack
 
 ## [Unreleased]
 
+**Gate only the boundary violations a branch adds (`@ctxo/domain`, `@ctxo/cli`).**
+
+### Added (domain)
+
+- `domain.boundaries.enforce: new-only` and `ctxo verify-domain --boundaries new-only` (roadmap row "New violations
+  only boundary mode", #156). The rung rules of `by-rung` still decide which violations are errors, but with
+  `--since <ref>` a violation the merge base already has is reported as existing (a warning ending in
+  `(existing at the base)`) and only new ones (ending in `(new)`) fail check 10. Teams can now raise a context to a
+  blocking rung without fixing every old crossing first.
+- The base's violations are computed as the current ones are, with the current registry, contracts and
+  `blockingRungs`. They come from the base's committed `.ctxo/index`, read from git at that commit without a checkout,
+  when it is current for the commit (every content hash matches its file and no file of an indexed extension lacks an
+  entry); otherwise ctxo indexes the base in a temporary git worktree under `.ctxo/.cache/base-worktrees/` (detached,
+  no hooks, no history, no communities, no module pass) and removes it, also on failure. The working tree is never
+  touched. When the base cannot be indexed, verify-domain says why and falls back to `by-rung`; without `--since`,
+  `new-only` is `by-rung` with a warning.
+- A violation's key is its source context, target context, source symbol ID, edge kind and target symbol ID, so a
+  line shift or an unrelated change keeps it existing. The renames of the non-merge commits in `base..HEAD` are applied
+  to the base, so a renamed file keeps its violations existing; a renamed symbol, or a file moved into another
+  context, makes its violations new.
+- Output: check 10 lists new violations first, the text report adds
+  `Boundaries new-only against <sha> (<source>): N new, M existing`, and `--json` adds
+  `boundaries: { mode, compared, base, source, fallback, new, existing }` with a `key` per violation. Exit codes keep
+  their meaning (0 pass, 1 errors, 2 missing index, git failure or internal error).
+- `ctxo init --domain --boundaries new-only`, and the init prompt offers `new-only`.
+- The committed-index check uses the file selection of `ctxo index` itself (workspaces, `index.ignoreProjects`,
+  `index.ignore` at the base, the plugins' extensions), compares CRLF checkouts and git's checkout filters, streams
+  the blobs, and also accepts the index the post-commit hook committed with one of the next two commits on the
+  `--since` branch when it is current for the base. The temporary worktree is removed on Ctrl+C and SIGTERM, leftovers
+  of killed runs are swept, LFS smudge is skipped, C# projects restored at HEAD are restored there, and a lower base
+  edge quality than HEAD's is warned about. In the rename chain a new file never continues a base file's chain.
+
+### Added (cli)
+
+- Module host services `readIndexAtCommit` (the committed index of a commit, with whether it is current) and
+  `indexCommitInWorktree` (index a commit in a temporary git worktree), and the `IndexAtCommit` type in
+  `@ctxo/cli/internal`. `ctxo init --boundaries` accepts `new-only`.
+
 **Normalization facts that are business normalization.**
 
 ### Changed (normalization facts)

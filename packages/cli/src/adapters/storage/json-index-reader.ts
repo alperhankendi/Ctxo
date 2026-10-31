@@ -66,7 +66,7 @@ export class JsonIndexReader {
       return [];
     }
 
-    const jsonFiles = this.collectJsonFiles(this.indexDir);
+    const jsonFiles = collectIndexJsonFiles(this.indexDir);
     const results: IndexEntry[] = [];
 
     for (const filePath of jsonFiles) {
@@ -80,123 +80,136 @@ export class JsonIndexReader {
   }
 
   readSingle(absolutePath: string): FileIndex | undefined {
+    let raw: string;
     try {
-      const raw = readFileSync(absolutePath, 'utf-8');
-      const data: unknown = JSON.parse(raw);
-      // A module artifact is not an entry and not a broken one: skip it without a word.
-      if (isMarkedArtifact(data)) return undefined;
-      const result = FileIndexSchema.safeParse(data);
-
-      if (result.success) {
-        return result.data;
-      }
-
-      // Strict parse failed — attempt resilient recovery: keep valid items, drop invalid ones.
-      const rel = relative(this.indexDir, absolutePath);
-      const raw_data = data as Record<string, unknown>;
-
-      // Must have at least a valid file name and lastModified to be recoverable.
-      if (typeof raw_data['file'] !== 'string' || !raw_data['file'] ||
-          typeof raw_data['lastModified'] !== 'number') {
-        console.error(
-          `[ctxo:json-reader] Invalid schema in ${rel}: ${result.error.message}`,
-        );
-        return undefined;
-      }
-
-      const rawSymbols = Array.isArray(raw_data['symbols']) ? raw_data['symbols'] : [];
-      const rawEdges = Array.isArray(raw_data['edges']) ? raw_data['edges'] : [];
-      const rawIntent = Array.isArray(raw_data['intent']) ? raw_data['intent'] : [];
-      const rawAntiPatterns = Array.isArray(raw_data['antiPatterns']) ? raw_data['antiPatterns'] : [];
-
-      // A symbol that fails only because of its annotations is kept without them: annotations are
-      // optional metadata and must not cost the symbol.
-      let droppedAnnotations = 0;
-      const validSymbols: unknown[] = [];
-      for (const sym of rawSymbols) {
-        if (SymbolNodeSchema.safeParse(sym).success) {
-          validSymbols.push(sym);
-          continue;
-        }
-        if (sym !== null && typeof sym === 'object' && 'annotations' in sym) {
-          const { annotations: _dropped, ...withoutAnnotations } = sym as Record<string, unknown>;
-          if (SymbolNodeSchema.safeParse(withoutAnnotations).success) {
-            validSymbols.push(withoutAnnotations);
-            droppedAnnotations++;
-          }
-        }
-      }
-      // A facts value that is present but not an array is treated as absent: facts are optional metadata
-      // and must not cost the file. It counts as one dropped fact list in the warning.
-      const factsPresent = raw_data['facts'] !== undefined;
-      const rawFacts = Array.isArray(raw_data['facts']) ? raw_data['facts'] : undefined;
-      const validFacts = rawFacts?.filter((f) => CodeFactSchema.safeParse(f).success);
-      const validEdges = rawEdges.filter((e) => GraphEdgeSchema.safeParse(e).success);
-      const validIntent = rawIntent.filter((i) => CommitIntentSchema.safeParse(i).success);
-      const validAntiPatterns = rawAntiPatterns.filter((a) => AntiPatternSchema.safeParse(a).success);
-
-      const droppedSymbols = rawSymbols.length - validSymbols.length;
-      const droppedFacts = rawFacts && validFacts
-        ? rawFacts.length - validFacts.length
-        : factsPresent ? 1 : 0;
-      const droppedEdges = rawEdges.length - validEdges.length;
-      const droppedIntent = rawIntent.length - validIntent.length;
-      const droppedAntiPatterns = rawAntiPatterns.length - validAntiPatterns.length;
-
-      if (droppedSymbols > 0 || droppedEdges > 0 || droppedIntent > 0 || droppedAntiPatterns > 0 ||
-          droppedAnnotations > 0 || droppedFacts > 0) {
-        log.warn(
-          `${rel}: dropped ${droppedSymbols} invalid symbol(s), ${droppedEdges} invalid edge(s), ${droppedIntent} invalid intent(s), ${droppedAntiPatterns} invalid antiPattern(s), ${droppedAnnotations} invalid annotation list(s), ${droppedFacts} invalid fact(s); kept ${validSymbols.length} symbol(s), ${validEdges.length} edge(s), ${validIntent.length} intent(s), ${validAntiPatterns.length} antiPattern(s)`,
-        );
-      }
-
-      // Re-parse with the filtered arrays to get a fully-typed FileIndex.
-      const recovered = FileIndexSchema.safeParse({
-        ...raw_data,
-        symbols: validSymbols,
-        edges: validEdges,
-        intent: validIntent,
-        antiPatterns: validAntiPatterns,
-        facts: validFacts,
-      });
-
-      if (!recovered.success) {
-        console.error(
-          `[ctxo:json-reader] Invalid schema in ${rel}: ${result.error.message}`,
-        );
-        return undefined;
-      }
-
-      return recovered.data;
+      raw = readFileSync(absolutePath, 'utf-8');
     } catch (err) {
-      const rel = relative(this.indexDir, absolutePath);
+      console.error(`[ctxo:json-reader] Failed to read ${relative(this.indexDir, absolutePath)}: ${(err as Error).message}`);
+      return undefined;
+    }
+    return parseIndexEntry(raw, relative(this.indexDir, absolutePath));
+  }
+}
+
+/**
+ * Parses the text of one index JSON file the way `JsonIndexReader` reads one from disk: a marked module artifact
+ * gives undefined without a word, an invalid entry is recovered item by item when it can be. `rel` names the file
+ * in messages. Also used for index files read from git at a commit.
+ */
+export function parseIndexEntry(raw: string, rel: string): FileIndex | undefined {
+  try {
+    const data: unknown = JSON.parse(raw);
+    // A module artifact is not an entry and not a broken one: skip it without a word.
+    if (isMarkedArtifact(data)) return undefined;
+    const result = FileIndexSchema.safeParse(data);
+
+    if (result.success) {
+      return result.data;
+    }
+
+    // Strict parse failed: attempt resilient recovery, keep valid items, drop invalid ones.
+    const raw_data = data as Record<string, unknown>;
+
+    // Must have at least a valid file name and lastModified to be recoverable.
+    if (typeof raw_data['file'] !== 'string' || !raw_data['file'] ||
+        typeof raw_data['lastModified'] !== 'number') {
       console.error(
-        `[ctxo:json-reader] Failed to read ${rel}: ${(err as Error).message}`,
+        `[ctxo:json-reader] Invalid schema in ${rel}: ${result.error.message}`,
       );
       return undefined;
     }
-  }
 
-  private collectJsonFiles(dir: string, visited: Set<string> = new Set()): string[] {
-    const realDir = realpathSync(dir);
-    if (visited.has(realDir)) return []; // Guard against symlink loops
-    visited.add(realDir);
+    const rawSymbols = Array.isArray(raw_data['symbols']) ? raw_data['symbols'] : [];
+    const rawEdges = Array.isArray(raw_data['edges']) ? raw_data['edges'] : [];
+    const rawIntent = Array.isArray(raw_data['intent']) ? raw_data['intent'] : [];
+    const rawAntiPatterns = Array.isArray(raw_data['antiPatterns']) ? raw_data['antiPatterns'] : [];
 
-    const files: string[] = [];
-
-    for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (entry.isSymbolicLink()) continue; // Skip symlinks entirely
-
-      const fullPath = join(dir, entry.name);
-      if (entry.isDirectory()) {
-        // Skip non-FileIndex directories under .ctxo/index/
-        if (entry.name === COMMUNITY_HISTORY_DIR) continue;
-        files.push(...this.collectJsonFiles(fullPath, visited));
-      } else if (entry.name.endsWith('.json') && !INDEX_ARTIFACT_FILES.includes(entry.name)) {
-        files.push(fullPath);
+    // A symbol that fails only because of its annotations is kept without them: annotations are
+    // optional metadata and must not cost the symbol.
+    let droppedAnnotations = 0;
+    const validSymbols: unknown[] = [];
+    for (const sym of rawSymbols) {
+      if (SymbolNodeSchema.safeParse(sym).success) {
+        validSymbols.push(sym);
+        continue;
+      }
+      if (sym !== null && typeof sym === 'object' && 'annotations' in sym) {
+        const { annotations: _dropped, ...withoutAnnotations } = sym as Record<string, unknown>;
+        if (SymbolNodeSchema.safeParse(withoutAnnotations).success) {
+          validSymbols.push(withoutAnnotations);
+          droppedAnnotations++;
+        }
       }
     }
+    // A facts value that is present but not an array is treated as absent: facts are optional metadata
+    // and must not cost the file. It counts as one dropped fact list in the warning.
+    const factsPresent = raw_data['facts'] !== undefined;
+    const rawFacts = Array.isArray(raw_data['facts']) ? raw_data['facts'] : undefined;
+    const validFacts = rawFacts?.filter((f) => CodeFactSchema.safeParse(f).success);
+    const validEdges = rawEdges.filter((e) => GraphEdgeSchema.safeParse(e).success);
+    const validIntent = rawIntent.filter((i) => CommitIntentSchema.safeParse(i).success);
+    const validAntiPatterns = rawAntiPatterns.filter((a) => AntiPatternSchema.safeParse(a).success);
 
-    return files;
+    const droppedSymbols = rawSymbols.length - validSymbols.length;
+    const droppedFacts = rawFacts && validFacts
+      ? rawFacts.length - validFacts.length
+      : factsPresent ? 1 : 0;
+    const droppedEdges = rawEdges.length - validEdges.length;
+    const droppedIntent = rawIntent.length - validIntent.length;
+    const droppedAntiPatterns = rawAntiPatterns.length - validAntiPatterns.length;
+
+    if (droppedSymbols > 0 || droppedEdges > 0 || droppedIntent > 0 || droppedAntiPatterns > 0 ||
+        droppedAnnotations > 0 || droppedFacts > 0) {
+      log.warn(
+        `${rel}: dropped ${droppedSymbols} invalid symbol(s), ${droppedEdges} invalid edge(s), ${droppedIntent} invalid intent(s), ${droppedAntiPatterns} invalid antiPattern(s), ${droppedAnnotations} invalid annotation list(s), ${droppedFacts} invalid fact(s); kept ${validSymbols.length} symbol(s), ${validEdges.length} edge(s), ${validIntent.length} intent(s), ${validAntiPatterns.length} antiPattern(s)`,
+      );
+    }
+
+    // Re-parse with the filtered arrays to get a fully-typed FileIndex.
+    const recovered = FileIndexSchema.safeParse({
+      ...raw_data,
+      symbols: validSymbols,
+      edges: validEdges,
+      intent: validIntent,
+      antiPatterns: validAntiPatterns,
+      facts: validFacts,
+    });
+
+    if (!recovered.success) {
+      console.error(
+        `[ctxo:json-reader] Invalid schema in ${rel}: ${result.error.message}`,
+      );
+      return undefined;
+    }
+
+    return recovered.data;
+  } catch (err) {
+    console.error(
+      `[ctxo:json-reader] Failed to read ${rel}: ${(err as Error).message}`,
+    );
+    return undefined;
   }
+}
+
+function collectIndexJsonFiles(dir: string, visited: Set<string> = new Set()): string[] {
+  const realDir = realpathSync(dir);
+  if (visited.has(realDir)) return []; // Guard against symlink loops
+  visited.add(realDir);
+
+  const files: string[] = [];
+
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (entry.isSymbolicLink()) continue; // Skip symlinks entirely
+
+    const fullPath = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      // Skip non-FileIndex directories under .ctxo/index/
+      if (entry.name === COMMUNITY_HISTORY_DIR) continue;
+      files.push(...collectIndexJsonFiles(fullPath, visited));
+    } else if (entry.name.endsWith('.json') && !INDEX_ARTIFACT_FILES.includes(entry.name)) {
+      files.push(fullPath);
+    }
+  }
+
+  return files;
 }

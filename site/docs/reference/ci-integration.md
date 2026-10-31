@@ -82,6 +82,8 @@ jobs:
 
 `verify-domain` reads the committed index (`.ctxo/index/`), so keep it fresh with `ctxo index --check` in the job above. Exit 0 passes (warnings allowed), 1 fails on errors, 2 means an internal failure, a missing index or a base that cannot be found, so CI never passes silently. With `--json`, stdout is empty on exit 2 and when there is no registry; read the exit code. On day one the gate is green with the init skeleton: unowned files and a missing context map are warnings until `domain.coverage.unowned` is `error`. See [Domain commands](/cli/domain).
 
+To raise a context to a blocking rung before its old crossings are fixed, run the gate with `--boundaries new-only` (or set `domain.boundaries.enforce: new-only`): only the boundary violations the branch adds over the merge base fail, the others are reported as existing. With the committed index of the base current, ctxo reads it from git (also the index the post-commit hook committed with the next commit); otherwise it indexes the base in a temporary git worktree, so that job needs the language plugins installed, and for C# the .NET SDK with access to the NuGet packages (ctxo runs `dotnet restore` there when the main checkout is restored). Submodules are not checked out in that worktree. See [New violations only](/cli/domain#new-violations-only).
+
 ## Pre-push git hook
 
 Wire the same check into a local pre-push hook so regressions are caught before they hit CI.

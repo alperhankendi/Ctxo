@@ -154,6 +154,13 @@ describe('domain_registry', () => {
     expect(result.message).toMatch(/registry or config problems$/);
   });
 
+  it('accepts enforce: new-only', async () => {
+    const root = setup();
+    put(root, '.ctxo/config.yaml', 'version: "1.0"\ndomain:\n  boundaries:\n    enforce: new-only\n');
+    const result = await run(root, 'domain_registry');
+    expect(result.message).not.toMatch(/config problems/);
+  });
+
   it('warns on unknown keys under domain:, with a suggestion for a near miss, even without a registry', async () => {
     const root = setup({ registry: null });
     put(root, '.ctxo/config.yaml', 'version: "1.0"\ndomain:\n  boundaires:\n    enforce: report\n  rules:\n    trackerPrefix: [JIRA]\n  colour: red\n');

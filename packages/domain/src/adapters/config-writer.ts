@@ -9,7 +9,7 @@ const DOMAIN_BLOCK = String.raw`domain:
   coverage:
     unowned: warn            # warn | error
   boundaries:
-    enforce: <mode>          # by-rung | report
+    enforce: <mode>          # by-rung | new-only | report
     blockingRungs: [bounded, boring]
   rules:
     idPattern: "^[A-Z][A-Z0-9]*-\\d+$"
