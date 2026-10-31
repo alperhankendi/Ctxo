@@ -69,6 +69,38 @@ function generatedSources(): Record<string, string> {
       '}',
       '',
     ].join('\n'),
+    // FC-4b: message sinks, display text, formats and chains; the slf4j stub gives JDT a known logger type.
+    'src/org/slf4j/Logger.java': [
+      'package org.slf4j;',
+      'public interface Logger { void info(String m); void warn(String m, Object a); }',
+      '',
+    ].join('\n'),
+    'src/gen/Members.java': [
+      'package gen;',
+      'import java.util.*;',
+      'class Members {',
+      '  interface Repo { String upsert(String v); void lookup(String k); void query(String q); }',
+      '  interface Auth { void logIn(String v); }',
+      '  static final org.slf4j.Logger log = null;',
+      '  String save(String email, String name, char c, Map<String, String> store, List<String> items, Repo repo, Auth auth, StringBuilder sb) {',
+      '    log.warn("unknown {}", email.toLowerCase());',
+      '    store.put(email.toUpperCase(), name.trim());',
+      '    log.info("saved " + repo.upsert(name.toLowerCase()));',
+      '    auth.logIn(email.trim().toLowerCase());',
+      '    log.info("Member: " + name.toUpperCase() + "!");',
+      '    sb.append("Dear " + email.trim());',
+      '    String caption = "Member: " + name.trim() + "!";',
+      '    repo.query("SELECT id FROM members WHERE email = \'" + email.toUpperCase() + "\'");',
+      '    repo.lookup(name.trim() + " " + email.toLowerCase());',
+      '    if (email.trim().isEmpty()) throw new IllegalArgumentException(email.toUpperCase());',
+      '    log.info(String.join(",", items.stream().map(i -> i.trim()).toList()));',
+      '    String initial = String.valueOf(Character.toUpperCase(c));',
+      '    String hex = HexFormat.of().formatHex(email.getBytes()).toUpperCase();',
+      '    return caption + initial + hex + email.trim().toLowerCase();',
+      '  }',
+      '}',
+      '',
+    ].join('\n'),
   };
 }
 

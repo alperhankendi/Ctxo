@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import type { CodeFact, ILanguageAdapter, SymbolNode } from '@ctxo/plugin-api';
-import { dropTestFileRetryTimeouts, extractFileFacts, pluginFactRequest } from '../index-facts.js';
+import { dropTestFileFacts, extractFileFacts, pluginFactRequest } from '../index-facts.js';
 import type { CtxoConfig } from '../../core/config/config-schema.js';
 import type { CtxoModuleRegistration, FactDetectorOptions, LoadedModule } from '../../ports/i-ctxo-module.js';
 
@@ -47,10 +47,11 @@ describe('extractFileFacts', () => {
   });
 });
 
-describe('dropTestFileRetryTimeouts', () => {
+describe('dropTestFileFacts', () => {
   const facts = (file: string): CodeFact[] => [
     { kind: 'literal-comparison', symbolId: `${file}::check::function`, line: 2, text: 'n >= 5', detail: { operator: '>=', literal: '5' } },
     { kind: 'retry-timeout', symbolId: `${file}::check::function`, line: 3, text: 'maxRetries = 3', detail: { name: 'maxRetries', value: '3' } },
+    { kind: 'normalization', symbolId: `${file}::check::function`, line: 3, text: 'email.trim()', detail: { method: 'trim' } },
     { kind: 'endpoint', symbolId: `${file}::check::function`, line: 4, text: 'GET /loans', detail: { verb: 'GET', route: '/loans' } },
   ];
   const symbol = (file: string, annotations?: SymbolNode['annotations']): SymbolNode => ({
@@ -64,45 +65,45 @@ describe('dropTestFileRetryTimeouts', () => {
     ['loans/policy_test.go'],
     ['src/test/java/parity/LoanPolicyTest.java'],
     ['Lending.Tests/LoanPolicyChecks.cs'],
-  ])('a test file by path keeps every kind except retry-timeout: %s', (file) => {
-    expect(dropTestFileRetryTimeouts(file, [symbol(file)], facts(file), []).map((f) => f.kind)).toEqual(['literal-comparison', 'endpoint']);
+  ])('a test file by path keeps every kind except retry-timeout and normalization: %s', (file) => {
+    expect(dropTestFileFacts(file, [symbol(file)], facts(file), []).map((f) => f.kind)).toEqual(['literal-comparison', 'endpoint']);
   });
 
-  it('a production file keeps its retry-timeout facts', () => {
+  it('a production file keeps its retry-timeout and normalization facts', () => {
     const file = 'src/loans/policy.ts';
-    expect(dropTestFileRetryTimeouts(file, [symbol(file)], facts(file), [])).toEqual(facts(file));
+    expect(dropTestFileFacts(file, [symbol(file)], facts(file), [])).toEqual(facts(file));
   });
 
   it('an index.tests glob marks a test file too', () => {
     const file = 'checks/loan-checks.ts';
-    expect(dropTestFileRetryTimeouts(file, [symbol(file)], facts(file), ['checks/**']).map((f) => f.kind)).toEqual(['literal-comparison', 'endpoint']);
+    expect(dropTestFileFacts(file, [symbol(file)], facts(file), ['checks/**']).map((f) => f.kind)).toEqual(['literal-comparison', 'endpoint']);
   });
 
   it('a test-framework annotation marks a test file; a name-only glob alone does not', () => {
     const annotated = 'src/Lending/LoanRules.cs';
-    expect(dropTestFileRetryTimeouts(annotated, [symbol(annotated, [{ name: 'Fact' }])], facts(annotated), []).map((f) => f.kind))
+    expect(dropTestFileFacts(annotated, [symbol(annotated, [{ name: 'Fact' }])], facts(annotated), []).map((f) => f.kind))
       .toEqual(['literal-comparison', 'endpoint']);
     // *Tests.cs decides only with a test annotation: the fact-capable C# plugin always reports annotations.
     const named = 'src/Lending/LoanTests.cs';
-    expect(dropTestFileRetryTimeouts(named, [symbol(named)], facts(named), [])).toEqual(facts(named));
+    expect(dropTestFileFacts(named, [symbol(named)], facts(named), [])).toEqual(facts(named));
   });
 
   it('compiles the test globs once per glob list, not once per file (C-M)', () => {
     const before = makeGlobMatcherSpy.mock.calls.length;
     for (let i = 0; i < 200; i++) {
       const file = `src/loans/policy-${i}.ts`;
-      dropTestFileRetryTimeouts(file, [symbol(file)], facts(file), ['qa/**', 'checks/**']);
+      dropTestFileFacts(file, [symbol(file)], facts(file), ['qa/**', 'checks/**']);
     }
     expect(makeGlobMatcherSpy.mock.calls.length - before).toBeLessThanOrEqual(1);
     // Another glob list compiles once more, and its own globs decide.
     const file = 'qa2/loan.ts';
-    expect(dropTestFileRetryTimeouts(file, [symbol(file)], facts(file), ['qa2/**']).map((f) => f.kind)).toEqual(['literal-comparison', 'endpoint']);
-    expect(dropTestFileRetryTimeouts(file, [symbol(file)], facts(file), ['qa/**'])).toEqual(facts(file));
+    expect(dropTestFileFacts(file, [symbol(file)], facts(file), ['qa2/**']).map((f) => f.kind)).toEqual(['literal-comparison', 'endpoint']);
+    expect(dropTestFileFacts(file, [symbol(file)], facts(file), ['qa/**'])).toEqual(facts(file));
   });
 
   it('backslash paths are classified like forward-slash ones', () => {
     const file = 'src\\__tests__\\loan.test.ts';
-    expect(dropTestFileRetryTimeouts(file, [], facts(file), []).map((f) => f.kind)).toEqual(['literal-comparison', 'endpoint']);
+    expect(dropTestFileFacts(file, [], facts(file), []).map((f) => f.kind)).toEqual(['literal-comparison', 'endpoint']);
   });
 });
 

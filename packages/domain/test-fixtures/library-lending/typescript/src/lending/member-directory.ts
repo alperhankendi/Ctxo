@@ -1,3 +1,4 @@
 export function memberKey(email: string): string {
-  return email.trim().toLowerCase();
+  const trimmed = email.trim();
+  return trimmed.toLowerCase();
 }

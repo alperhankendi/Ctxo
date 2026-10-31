@@ -8,7 +8,11 @@ import { decodeJavaStringLiteral } from '../java-string-literal.js';
 import {
   canonicalNumber,
   capFactValue,
+  feedsNormalization,
   hasRetryTimeoutFragment,
+  isDisplayCall,
+  isMessageSink,
+  isTechnicalNormalization,
   isTrivialLiteral,
   joinRoute,
   matchesNormalizationPattern,
@@ -31,6 +35,10 @@ interface Vectors {
   readonly hasRetryTimeoutFragment: Vector<string, boolean>[];
   readonly matchesNormalizationPattern: Vector<{ method: string; qualifier?: string }, boolean>[];
   readonly matchesNormalizationPatternCustom: Vector<{ method: string; qualifier?: string; patterns: string[] }, boolean>[];
+  readonly isMessageSink: Vector<{ callee: string; consumerTypes?: string[] }, boolean>[];
+  readonly isDisplayCall: Vector<{ callee: string; consumerTypes?: string[] }, boolean>[];
+  readonly isTechnicalNormalization: Vector<{ method: string; qualifier?: string; text: string }, boolean>[];
+  readonly feedsNormalization: Vector<{ inner: string; outer: string; outerMethod: string }, boolean>[];
   readonly normalizeFactText: Vector<Segments, Segments>[];
   readonly capFactValue: Vector<Segments, Segments>[];
   readonly joinRoute: Vector<string[], string>[];
@@ -53,7 +61,11 @@ describe('fact conformance vectors', () => {
       'capFactValue',
       'defaults',
       'detailLiteral',
+      'feedsNormalization',
       'hasRetryTimeoutFragment',
+      'isDisplayCall',
+      'isMessageSink',
+      'isTechnicalNormalization',
       'isTrivialLiteral',
       'isTrivialLiteralCustom',
       'joinRoute',
@@ -121,6 +133,22 @@ describe('fact conformance vectors', () => {
 
   it.each(vectors.matchesNormalizationPatternCustom)('matchesNormalizationPattern($input.method, $input.qualifier) with a custom list is $expected', ({ input, expected }) => {
     expect(matchesNormalizationPattern(input.method, input.qualifier, input.patterns)).toBe(expected);
+  });
+
+  it.each(vectors.isMessageSink)('isMessageSink($input.callee, $input.consumerTypes) is $expected', ({ input, expected }) => {
+    expect(isMessageSink(input.callee, input.consumerTypes)).toBe(expected);
+  });
+
+  it.each(vectors.isDisplayCall)('isDisplayCall($input.callee, $input.consumerTypes) is $expected', ({ input, expected }) => {
+    expect(isDisplayCall(input.callee, input.consumerTypes)).toBe(expected);
+  });
+
+  it.each(vectors.isTechnicalNormalization)('isTechnicalNormalization($input.text) is $expected', ({ input, expected }) => {
+    expect(isTechnicalNormalization(input.method, input.qualifier, input.text)).toBe(expected);
+  });
+
+  it.each(vectors.feedsNormalization)('feedsNormalization($input.inner, $input.outer) is $expected', ({ input, expected }) => {
+    expect(feedsNormalization(input.inner, input.outer, input.outerMethod)).toBe(expected);
   });
 
   it.each(vectors.normalizeFactText.map((v, i) => ({ ...v, i })))('normalizeFactText vector $i', ({ input, expected }) => {

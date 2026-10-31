@@ -32,6 +32,39 @@ describe('scanTextFacts', () => {
     expect(facts[0]!.detail).toEqual({ operator: '>', literal: '14' });
   });
 
+  it('FC-4b: a chain is one fact; only the nearest call counts; log and error arguments and formats give none', () => {
+    const KT = 'src/Members/members.kt';
+    const source = [
+      'val key = email.trim().toLowerCase()',
+      'logger.warn(email.toLowerCase())',
+      'throw IllegalStateException(name.trim())',
+      'store.put(email.toUpperCase(), (name.trim()))',
+      'items.map { it.trim() }',
+      'val kind = File(file).extension.toLowerCase()',
+      'val folder = path.trim()',
+      'log.info(items.map { x -> x.trim() })',
+      'val initial = Character.toUpperCase(c)',
+      'val hex = HexFormat.of().formatHex(bytes).toUpperCase()',
+      'logger.info(repo.upsert(email.toLowerCase()))',
+      'auth.logIn(email.trim())',
+      'tracker.traceParcel(name.toUpperCase())',
+    ].join('\n');
+    expect(scanTextFacts(KT, source, [], OPTIONS).map((f) => `${f.line} ${f.text}`)).toEqual([
+      '0 email.trim().toLowerCase()',
+      '3 email.toUpperCase()',
+      '3 name.trim()',
+      '4 it.trim()',
+      '5 File(file).extension.toLowerCase()',
+      '6 path.trim()',
+      '7 x.trim()',
+      '10 email.toLowerCase()',
+      '11 email.trim()',
+      '12 name.toUpperCase()',
+    ]);
+    expect(scanTextFacts('src/Members/members.py', 'raise ValueError(name.strip().lower())', [], { ...OPTIONS, normalizationMethods: ['lower', 'strip'] }))
+      .toEqual([]);
+  });
+
   it('a C-style file of an unknown language gives its facts', () => {
     expect(scan(LEND, 'if days > 14 then charge 2.5')).toEqual(['literal-comparison|days > 14']);
     expect(scan(LEND, 'retries = 3')).toEqual(['retry-timeout|retries = 3']);

@@ -326,7 +326,16 @@ function toFactEvidence(e: AnalyzerFactEvidence): FactEvidence | undefined {
       return { kind: 'comparison', ...base, text: e.text, operator: e.operator, literal: e.literal, literalKind: e.literalKind as LiteralKind };
     case 'call':
       if (e.method === undefined) return undefined;
-      return { kind: 'call', ...base, text: e.text, method: e.method, ...(e.qualifier !== undefined ? { qualifier: e.qualifier } : {}) };
+      return {
+        kind: 'call',
+        ...base,
+        text: e.text,
+        method: e.method,
+        ...(e.qualifier !== undefined ? { qualifier: e.qualifier } : {}),
+        ...(typeof e.consumer === 'string' ? { consumer: e.consumer } : {}),
+        ...(Array.isArray(e.consumerTypes) && e.consumerTypes.length > 0 && e.consumerTypes.every(t => typeof t === 'string') ? { consumerTypes: e.consumerTypes } : {}),
+        ...(e.inProse === true ? { inProse: true } : {}),
+      };
     case 'binding':
       if (e.name === undefined || e.value === undefined) return undefined;
       return { kind: 'binding', ...base, name: e.name, value: e.value };

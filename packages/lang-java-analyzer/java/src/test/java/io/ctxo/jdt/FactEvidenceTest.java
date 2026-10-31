@@ -171,6 +171,42 @@ class FactEvidenceTest {
   }
 
   @Test
+  void normalizationCallsReportWhereTheirValueGoes(@TempDir Path tmp) throws IOException {
+    write(tmp, "src/main/java/org/slf4j/Logger.java",
+        "package org.slf4j;\npublic interface Logger { void info(String m); void warn(String m, Object a); }\n");
+    write(tmp, "src/main/java/lending/Members.java", String.join("\n",
+        "package lending;",
+        "import java.util.*;",
+        "class Members {",
+        "  String save(String email, String name, Repo repo, List<String> items) {",
+        "    log.warn(\"unknown {}\", email.toLowerCase());",
+        "    repo.put(email.toUpperCase(), name.trim());",
+        "    log.info(\"saved \" + repo.upsert(name.toLowerCase()));",
+        "    String caption = \"Member: \" + name.trim() + \"!\";",
+        "    if (email.trim().isEmpty()) throw new IllegalArgumentException(email.toUpperCase());",
+        "    log.info(String.join(\",\", items.stream().map(i -> i.trim()).toList()));",
+        "    return caption;",
+        "  }",
+        "  static final org.slf4j.Logger log = null;",
+        "  interface Repo { void put(String k, String v); String upsert(String v); }",
+        "}",
+        ""));
+    List<String> calls = file(analyzeWithFacts(tmp), "src/main/java/lending/Members.java").factEvidence.stream()
+        .filter(e -> e.kind.equals("call"))
+        .map(e -> e.line + " " + e.text + " | " + e.consumer + " " + e.consumerTypes + " " + e.inProse)
+        .collect(Collectors.toList());
+    assertEquals(List.of(
+        "4 email.toLowerCase() | log.warn [org.slf4j.Logger] null",
+        "5 email.toUpperCase() | repo.put [lending.Members.Repo] null",
+        "5 name.trim() | repo.put [lending.Members.Repo] null",
+        "6 name.toLowerCase() | repo.upsert [lending.Members.Repo] null",
+        "7 name.trim() | null null true",
+        "8 email.trim() | null null null",
+        "8 email.toUpperCase() | new IllegalArgumentException null null",
+        "9 i.trim() | null null null"), calls);
+  }
+
+  @Test
   void bindingsOnlyForFragmentNames(@TempDir Path tmp) throws IOException {
     for (JsonElement e : vectors.getAsJsonArray("hasRetryTimeoutFragment")) {
       JsonObject vector = e.getAsJsonObject();

@@ -41,7 +41,7 @@ export interface AnalyzerFileResult {
 
 /**
  * One evidence record as the analyzer writes it: `kind`, `line` and `text` always, the other fields by kind
- * (comparison: operator, literal, literalKind; call: method, qualifier; binding: name, value; duration:
+ * (comparison: operator, literal, literalKind; call: method, qualifier, consumer, consumerTypes, inProse; binding: name, value; duration:
  * name?, constructor, unit, amount; route: verb, route).
  */
 export interface AnalyzerFactEvidence {
@@ -54,6 +54,9 @@ export interface AnalyzerFactEvidence {
   literalKind?: string;
   method?: string;
   qualifier?: string;
+  consumer?: string;
+  consumerTypes?: string[];
+  inProse?: boolean;
   name?: string;
   value?: string;
   constructor?: string;

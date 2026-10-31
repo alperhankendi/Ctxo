@@ -26,7 +26,6 @@ const ROWS: readonly Row[] = [
   { file: RULES, symbol: 'MAX_RETRIES::variable', kind: 'retry-timeout', text: 'MAX_RETRIES = 3', detail: { name: 'MAX_RETRIES', value: '3' }, needle: 'MAX_RETRIES = 3' },
   { file: RULES, symbol: 'canBorrow::function', kind: 'literal-comparison', text: 'openLoans >= 5', detail: { operator: '>=', literal: '5' }, needle: 'openLoans >= 5' },
   { file: RULES, symbol: 'fee::function', kind: 'literal-comparison', text: "tier case 'gold'", detail: { operator: 'case', literal: "'gold'" }, needle: "case 'gold'" },
-  { file: RULES, symbol: 'key::function', kind: 'normalization', text: 'email.trim()', detail: { method: 'trim' }, needle: 'email.trim()' },
   { file: RULES, symbol: 'key::function', kind: 'normalization', text: 'email.trim().toLowerCase()', detail: { method: 'toLowerCase' }, needle: 'email.trim().toLowerCase()' },
   { file: RULES, symbol: 'remind::function', kind: 'retry-timeout', text: 'setTimeout = 30000ms', detail: { name: 'setTimeout', value: '30000ms' }, needle: 'setTimeout(send' },
   { file: RULES, symbol: 'client::variable', kind: 'retry-timeout', text: 'timeout = 5000', detail: { name: 'timeout', value: '5000' }, needle: 'timeout: 5000' },
@@ -215,6 +214,117 @@ describe('TypeScript fact evidence', () => {
       'setTimeout = 2000ms',
       'setTimeout = 10ms',
     ]);
+  });
+
+  it('FC-4b: a chain is one fact; message sinks, display text and formats give none', async () => {
+    const source = [
+      "import { createHash } from 'node:crypto';",
+      "import * as path from 'node:path';",
+      'export async function members(email: string, name: string, file: string, store: Map<string, string>, items: string[], db: Db, auth: Auth) {',
+      '  store.set(email.trim().toLowerCase(), name.trim());',
+      '  const id = `${email.toUpperCase()}:${name.length}`;',
+      '  console.warn(email.toLowerCase());',
+      '  console.log(`member ${name.trim()} saved`);',
+      "  const caption = 'Member: ' + name.trim();",
+      '  if (!email.trim()) throw new Error(email.toUpperCase());',
+      "  const hash = createHash('sha256').update(email).digest('hex').toUpperCase();",
+      '  const kind = path.extname(file).toLowerCase();',
+      "  const folder = file.trim().replace(/\\/+$/, '');",
+      '  console.info(items.map((i) => i.trim()).join());',
+      '  const query = sql`SELECT * FROM members WHERE email = ${email.toLowerCase()}`;',
+      '  console.log("saved", await db.upsert(email.toLowerCase()));',
+      '  await auth.logIn(email.trim().toLowerCase());',
+      '  await db.query(`SELECT id FROM members WHERE email = ${email.toUpperCase()}`);',
+      '  db.lookup(`${name.toLowerCase()} ${file.toLowerCase()}`);',
+      '  return { id, caption, hash, kind, folder, query };',
+      '}',
+      'declare function sql(parts: TemplateStringsArray, ...values: unknown[]): string;',
+      'interface Db { upsert(v: string): Promise<string>; query(q: string): Promise<void>; lookup(k: string): void }',
+      'interface Auth { logIn(email: string): Promise<void> }',
+    ].join('\n');
+    const facts = (await factsOf('src/members.ts', source)).filter((f) => f.kind === 'normalization');
+    expect(facts.map((f) => `${f.line} ${f.text}`)).toEqual([
+      '3 email.trim().toLowerCase()',
+      '3 name.trim()',
+      '4 email.toUpperCase()',
+      '7 name.trim()',
+      '8 email.trim()',
+      '11 file.trim()',
+      '12 i.trim()',
+      '13 email.toLowerCase()',
+      '14 email.toLowerCase()',
+      '15 email.trim().toLowerCase()',
+      '16 email.toUpperCase()',
+      '17 file.toLowerCase()',
+      '17 name.toLowerCase()',
+    ]);
+  });
+
+  it('FC-4b: a logger is known by its type; without one, by a logger-like receiver name', async () => {
+    const source = [
+      'export function f(email: string, log: any, tracker: { traceParcel(v: string): void }) {',
+      '  log.warn(email.toLowerCase());',
+      '  tracker.traceParcel(email.toUpperCase());',
+      '}',
+    ].join('\n');
+    const facts = (await factsOf('src/f.ts', source)).filter((f) => f.kind === 'normalization');
+    expect(facts.map((f) => `${f.line} ${f.text}`)).toEqual(['2 email.toUpperCase()']);
+  });
+
+  it('FC-4b: typed loggers of the common TypeScript libraries are sinks; an unknown type with a logger name too', async () => {
+    const stubs = [
+      "declare module 'pino' { export interface Logger { warn(m: string): void } }",
+      "declare module 'winston' { export interface Logger { warn(m: string): void } }",
+      "declare module '@nestjs/common' { export class Logger { warn(m: string): void } export interface LoggerService { warn(m: string): void } }",
+      "declare module 'bunyan' { class Logger { warn(m: string): void } export = Logger; }",
+      "declare module 'log4js' { export interface Logger { warn(m: string): void } }",
+      "declare module 'tslog' { export class Logger<T> { warn(m: string): void } }",
+    ].join('\n');
+    const source = [
+      "import type { Logger as Pino } from 'pino';",
+      "import type { Logger as Winston } from 'winston';",
+      "import { Logger as Nest, type LoggerService } from '@nestjs/common';",
+      "import type Bunyan from 'bunyan';",
+      "import type { Logger as Log4js } from 'log4js';",
+      "import type { Logger as TsLog } from 'tslog';",
+      'interface Notifier { warn(m: string): void }',
+      'export class Members {',
+      '  constructor(private readonly logger: Pino, private readonly a: Winston, private readonly b: Nest, private readonly c: LoggerService,',
+      '    private readonly d: Bunyan, private readonly e: Log4js, private readonly f: TsLog<unknown>, private readonly notifier: Notifier,',
+      '    private readonly log: Notifier) {}',
+      '  save(email: string): void {',
+      '    this.logger.warn(email.trim());',
+      '    this.a.warn(email.trim());',
+      '    this.b.warn(email.trim());',
+      '    this.c.warn(email.trim());',
+      '    this.d.warn(email.trim());',
+      '    this.e.warn(email.trim());',
+      '    this.f.warn(email.trim());',
+      '    this.notifier.warn(email.toLowerCase());',
+      '    this.log.warn(email.toUpperCase());',
+      '  }',
+      '}',
+    ].join('\n');
+    const adapter = new TsMorphAdapter({ facts: DEFAULT_FACT_OPTIONS });
+    adapter.loadProjectSources(new Map([['src/types/loggers.d.ts', stubs], ['src/members.ts', source]]));
+    const facts = (await adapter.extractFacts('src/members.ts', source)).filter((f) => f.kind === 'normalization');
+    adapter.clearProjectSources();
+    expect(facts.map((f) => `${f.line} ${f.text}`)).toEqual(['19 email.toLowerCase()']);
+  });
+
+  it('FC-4b: a Console-typed field under another name is a sink by its lib type', async () => {
+    const source = [
+      'export class Members {',
+      '  private readonly out: Console = console;',
+      '  private readonly seen = new Map<string, string>();',
+      '  save(email: string): void {',
+      '    this.out.warn(email.trim());',
+      '    this.seen.set(email.toLowerCase(), email);',
+      '  }',
+      '}',
+    ].join('\n');
+    const facts = (await factsOf('src/members.ts', source)).filter((f) => f.kind === 'normalization');
+    expect(facts.map((f) => `${f.line} ${f.text}`)).toEqual(['5 email.toLowerCase()']);
   });
 
   it('a custom normalization list replaces the defaults', async () => {

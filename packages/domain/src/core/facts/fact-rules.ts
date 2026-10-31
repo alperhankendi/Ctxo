@@ -274,9 +274,287 @@ export function matchesNormalizationPattern(method: string, qualifier: string | 
   });
 }
 
-// ── FC-5 retry and timeout names ────────────────────────────────
+// ── FC-4b normalization that is not a business rule ─────────────
 
 const NAME_TOKEN = /[A-Z]+(?![a-z])|[A-Z][a-z]*|[a-z]+|\d+/g;
+
+/** Lower-cased ASCII name tokens (camelCase, PascalCase, digit runs), as FC-5 splits names. */
+function nameTokens(name: string): string[] {
+  return (name.match(NAME_TOKEN) ?? []).map(t => t.toLowerCase());
+}
+
+/**
+ * Logger types, as the full tiers report them in `consumerTypes` (qualified, type arguments dropped;
+ * Go: the package path, or `<package path>.<type>`; TypeScript: `<package>.<type>` for a type
+ * declared in a package or an ambient `declare module`, else the type's name).
+ */
+const LOGGER_TYPES: ReadonlySet<string> = new Set([
+  'Microsoft.Extensions.Logging.ILogger', 'Microsoft.Extensions.Logging.Logger', 'Microsoft.Extensions.Logging.LoggerExtensions',
+  'Serilog.ILogger', 'Serilog.Log', 'NLog.Logger', 'NLog.ILogger', 'log4net.ILog',
+  'System.Diagnostics.Debug', 'System.Diagnostics.Trace',
+  'java.util.logging.Logger', 'org.slf4j.Logger', 'org.apache.logging.log4j.Logger', 'org.apache.log4j.Logger',
+  'org.apache.commons.logging.Log',
+  'log', 'log.Logger', 'log/slog', 'log/slog.Logger', 'github.com/sirupsen/logrus', 'github.com/sirupsen/logrus.Logger',
+  'github.com/sirupsen/logrus.Entry', 'go.uber.org/zap.Logger', 'go.uber.org/zap.SugaredLogger',
+  'github.com/rs/zerolog.Logger', 'github.com/rs/zerolog.Event',
+  'Console', 'pino.Logger', 'pino.BaseLogger', 'winston.Logger', '@nestjs/common.Logger', '@nestjs/common.LoggerService',
+  '@nestjs/common.ConsoleLogger', 'bunyan.Logger', 'log4js.Logger', 'tslog.Logger',
+]);
+
+/** Logging methods of those types (and of a receiver named like a logger). */
+const LOG_METHODS: ReadonlySet<string> = new Set([
+  'Log', 'LogInformation', 'LogWarning', 'LogError', 'LogDebug', 'LogTrace', 'LogCritical',
+  'Information', 'Warning', 'Error', 'Debug', 'Verbose', 'Fatal', 'Info', 'Warn', 'Trace', 'Write',
+  'InfoFormat', 'WarnFormat', 'ErrorFormat', 'DebugFormat', 'FatalFormat',
+  'log', 'info', 'warn', 'warning', 'error', 'debug', 'trace', 'fatal', 'severe', 'fine', 'finer', 'finest',
+  'Print', 'Printf', 'Println', 'Fatalf', 'Fatalln', 'Panic', 'Panicf', 'Panicln',
+  'Infof', 'Warnf', 'Errorf', 'Debugf', 'Tracef', 'Infow', 'Warnw', 'Errorw', 'Debugw', 'Fatalw',
+  'InfoContext', 'WarnContext', 'ErrorContext', 'DebugContext',
+  'WriteLine', 'TraceInformation', 'TraceWarning', 'TraceError', 'Msg', 'Msgf', 'verbose', 'silly',
+]);
+
+/** Methods a bare `Log` receiver name does not make a sink: a class named `Log` may be a business ledger. */
+const BARE_LOG_EXCLUDED: ReadonlySet<string> = new Set(['Write', 'WriteLine', 'Print', 'Printf', 'Println', 'Msg', 'Msgf']);
+
+/** Receivers named like a logger: the syntax tiers (and unresolved receivers) know a logger only by its name. */
+const LOGGER_NAMES: ReadonlySet<string> = new Set(['log', 'Log', 'logger', '_logger', 'Logger', 'LOG', 'LOGGER', 'slog', 'console']);
+
+/** Display and formatting APIs by type: text built for people goes through them. */
+const DISPLAY_TYPES: ReadonlyMap<string, ReadonlySet<string>> = new Map<string, ReadonlySet<string>>([
+  ['System.Text.StringBuilder', new Set(['Append', 'AppendLine', 'AppendFormat', 'Insert'])],
+  ['java.lang.StringBuilder', new Set(['append', 'insert'])],
+  ['java.lang.StringBuffer', new Set(['append', 'insert'])],
+  ['strings.Builder', new Set(['WriteString'])],
+  ['System.String', new Set(['Format'])],
+  ['java.lang.String', new Set(['format'])],
+  ['fmt', new Set(['Sprintf', 'Sprint', 'Sprintln', 'Printf', 'Print', 'Println', 'Fprintf', 'Fprint', 'Fprintln'])],
+  ['System.Console', new Set(['Write', 'WriteLine'])],
+]);
+
+/** The same APIs by name, for the syntax tiers: a static receiver as written. */
+const DISPLAY_RECEIVERS: ReadonlyMap<string, ReadonlySet<string>> = new Map<string, ReadonlySet<string>>([
+  ['string', new Set(['Format'])],
+  ['String', new Set(['Format', 'format'])],
+  ['fmt', DISPLAY_TYPES.get('fmt')!],
+  ['Console', new Set(['Write', 'WriteLine'])],
+]);
+
+/** Builder variables by name, for the syntax tiers: `sb.Append(...)`, `html.AppendLine(...)`. */
+const BUILDER_NAMES: ReadonlySet<string> = new Set(['sb', 'builder', 'html', 'buffer', 'buf']);
+const BUILDER_METHODS: ReadonlySet<string> = new Set(['Append', 'AppendLine', 'AppendFormat', 'append', 'WriteString']);
+
+/** Repeatedly drops innermost `<...>` groups (type arguments). */
+function withoutTypeArguments(text: string): string {
+  let out = text;
+  for (let previous = ''; previous !== out;) {
+    previous = out;
+    out = out.replace(/<[^<>]*>/g, '');
+  }
+  return out;
+}
+
+/** A callee as its method, the name before it, or the constructed type of `new T`; type arguments and whitespace dropped. */
+function calleeParts(callee: string): { readonly method: string; readonly receiver: string | undefined; readonly construction: string | undefined } {
+  const compact = withoutTypeArguments(callee.trim());
+  if (/^new\s/.test(compact)) return { method: '', receiver: undefined, construction: compact.slice(4).replace(/\s+/g, '') };
+  const segments = compact.replace(/\s+/g, '').split(/[?!]?\./).filter(s => s.length > 0);
+  return { method: segments[segments.length - 1] ?? '', receiver: segments[segments.length - 2], construction: undefined };
+}
+
+/** A type name as the rules compare it: no `global::`, no type arguments, no Go pointer star. */
+function typeKey(type: string): string {
+  return withoutTypeArguments(type.trim().replace(/^global::/, '').replace(/^\*+/, ''));
+}
+
+/** The simple name of T ends with an `Exception` or `Error` token (`ArgumentException`, `Error`, `TypeError`). */
+function isErrorType(type: string): boolean {
+  const tokens = nameTokens(type.split('.').pop() ?? '');
+  const last = tokens[tokens.length - 1];
+  return last === 'exception' || last === 'error';
+}
+
+/**
+ * FC-4b: true when `callee`, the nearest call that receives a normalization's value, writes text
+ * for a log or a crash rather than using a value:
+ * - (a) a logging method (`LogInformation`, `Warning`, `info`, `Printf` and the rest of
+ *   `LOG_METHODS`) on a known logger type, when the full tier reports the types
+ *   (`consumerTypes`: Microsoft.Extensions.Logging, Serilog, NLog, log4net,
+ *   `System.Diagnostics.Debug`/`Trace`, java.util.logging, SLF4J, log4j, commons-logging, Go `log`,
+ *   `log/slog`, logrus, zap, zerolog, and in TypeScript `Console`, pino, winston, NestJS
+ *   `Logger`/`LoggerService`, bunyan, log4js, tslog);
+ * - (b) otherwise, with no types or with types that are no known logger, in every tier, the same
+ *   method on a receiver named like a logger (`log`, `Log`, `logger`, `_logger`, `Logger`, `LOG`,
+ *   `LOGGER`, `slog`, `console`; a bare `Log` not for `Write` or `Print`), so the tiers agree;
+ * - (c) an exception or error construction (`new ...Exception`, `new Error`), `errors.New` or
+ *   `fmt.Errorf`, by name in every tier.
+ * `auth.LogIn`, `tracker.TraceParcel`, `PrintLabel` or `writer.WriteLine` are no sinks.
+ */
+export function isMessageSink(callee: string, consumerTypes?: readonly string[]): boolean {
+  const { method, receiver, construction } = calleeParts(callee);
+  if (construction !== undefined) return isErrorType(construction);
+  if ((receiver === 'errors' && method === 'New') || (receiver === 'fmt' && method === 'Errorf')) return true;
+  if (!LOG_METHODS.has(method)) return false;
+  if (consumerTypes !== undefined && consumerTypes.some(type => LOGGER_TYPES.has(typeKey(type)))) return true;
+  if (receiver === undefined || !LOGGER_NAMES.has(receiver)) return false;
+  return !(receiver === 'Log' && BARE_LOG_EXCLUDED.has(method));
+}
+
+/**
+ * FC-4b: true when `callee` is a display or formatting API (`StringBuilder.Append*`,
+ * `string.Format`, `String.format`, `fmt.Sprintf` and friends, `strings.Builder.WriteString`,
+ * `Console.Write*`): by type when the full tier reports `consumerTypes`, else by the static
+ * receiver as written, or a builder method on a receiver named `sb`, `builder`, `html`, `buffer`
+ * or `buf`. A normalization in prose (`inProse`) that goes to one of them is display text.
+ */
+export function isDisplayCall(callee: string, consumerTypes?: readonly string[]): boolean {
+  const { method, receiver, construction } = calleeParts(callee);
+  if (construction !== undefined || receiver === undefined) return false;
+  if (consumerTypes !== undefined && consumerTypes.length > 0) {
+    return consumerTypes.some(type => DISPLAY_TYPES.get(typeKey(type))?.has(method) === true);
+  }
+  return DISPLAY_RECEIVERS.get(receiver)?.has(method) === true || (BUILDER_NAMES.has(receiver) && BUILDER_METHODS.has(method));
+}
+
+/** Receivers whose calls work on a path or a single character, not on a business value. */
+const TECHNICAL_QUALIFIERS: ReadonlySet<string> = new Set([
+  'Path', 'System.IO.Path', 'Paths', 'FilenameUtils', 'filepath', 'char', 'Char', 'System.Char', 'Character', 'unicode',
+]);
+
+/** Hex and base64 encoders and file-extension readers: their output is a format, not a business value. */
+const ENCODED_OR_EXTENSION =
+  /(?:\b(?:ToHexString|ToHexStringLower|ToBase64String|EncodeToString|encodeToString|encodeHexString|formatHex|printHexBinary|GetExtension|getExtension|extname)|\b(?:filepath|path)\.Ext|\bBitConverter\.ToString)\s*\(|\.(?:digest|toString)\(\s*['"`](?:hex|base64|base64url)['"`]\s*\)/;
+
+/** Path separator constants a trim may name. */
+const SEPARATOR_NAMES: ReadonlySet<string> = new Set([
+  'Path.DirectorySeparatorChar', 'Path.AltDirectorySeparatorChar', 'System.IO.Path.DirectorySeparatorChar',
+  'System.IO.Path.AltDirectorySeparatorChar', 'File.separator', 'File.separatorChar', 'os.PathSeparator',
+  'filepath.Separator', 'string(os.PathSeparator)', 'string(filepath.Separator)', 'path.sep',
+]);
+
+const QUOTED = /^(['"`])((?:[^\\]|\\[\s\S])*)\1$/;
+
+/** A path separator argument: a quoted literal of only `/` and `\`, or a separator constant. */
+function isSeparatorArgument(argument: string): boolean {
+  const text = argument.replace(/\s+/g, '');
+  if (SEPARATOR_NAMES.has(text)) return true;
+  const quoted = QUOTED.exec(text);
+  if (!quoted) return false;
+  const body = quoted[2]!.replace(/\\\\/g, '\\');
+  return body.length > 0 && /^[/\\]+$/.test(body);
+}
+
+/** The top-level arguments of the call that ends the text, or undefined when the text does not end with one. */
+function lastCallArguments(text: string): string[] | undefined {
+  return lastCall(text)?.args;
+}
+
+/** The call that ends the text: the source before its argument list and its top-level arguments. */
+function lastCall(text: string): { readonly callee: string; readonly args: string[] } | undefined {
+  const source = text.trimEnd();
+  if (!source.endsWith(')')) return undefined;
+  const opens: number[] = [];
+  let open: number | undefined;
+  let quote: string | undefined;
+  for (let i = 0; i < source.length; i++) {
+    const ch = source[i]!;
+    if (quote !== undefined) {
+      if (ch === '\\') i++;
+      else if (ch === quote) quote = undefined;
+    } else if (ch === '"' || ch === "'" || ch === '`') {
+      quote = ch;
+    } else if (ch === '(') {
+      opens.push(i);
+    } else if (ch === ')') {
+      const start = opens.pop();
+      if (i === source.length - 1) open = start;
+    }
+  }
+  if (open === undefined) return undefined;
+  const body = source.slice(open + 1, -1);
+  const args: string[] = [];
+  let depth = 0;
+  let from = 0;
+  quote = undefined;
+  for (let i = 0; i < body.length; i++) {
+    const ch = body[i]!;
+    if (quote !== undefined) {
+      if (ch === '\\') i++;
+      else if (ch === quote) quote = undefined;
+    } else if (ch === '"' || ch === "'" || ch === '`') {
+      quote = ch;
+    } else if ('([{'.includes(ch)) {
+      depth++;
+    } else if (')]}'.includes(ch)) {
+      depth--;
+    } else if (ch === ',' && depth === 0) {
+      args.push(body.slice(from, i).trim());
+      from = i + 1;
+    }
+  }
+  const last = body.slice(from).trim();
+  if (last.length > 0 || args.length > 0) args.push(last);
+  return { callee: source.slice(0, open), args };
+}
+
+/**
+ * FC-4b: true when a normalization call works on a format rather than a business value: a call
+ * on a path or character type (`Path.TrimEndingDirectorySeparator`, `char.ToUpperInvariant`,
+ * `Character.toUpperCase`, `unicode.ToLower`), the case of hex or base64 output or of a file
+ * extension (`Convert.ToHexString(h).ToLowerInvariant()`, `hex.EncodeToString`, `digest('hex')`,
+ * `Path.GetExtension(f).ToLower()`, `filepath.Ext`), or a trim of path separators only
+ * (`p.TrimEnd('/')`, `strings.TrimSuffix(p, "/")`, `TrimStart(Path.DirectorySeparatorChar)`).
+ */
+export function isTechnicalNormalization(method: string, qualifier: string | undefined, text: string): boolean {
+  if (qualifier !== undefined && TECHNICAL_QUALIFIERS.has(qualifier.replace(/\s+/g, ''))) return true;
+  if (ENCODED_OR_EXTENSION.test(text)) return true;
+  if (!/^trim/i.test(method)) return false;
+  const args = lastCallArguments(text);
+  if (!args || args.length === 0) return false;
+  if (args.every(isSeparatorArgument)) return true;
+  // A package-level trim (`strings.TrimRight(p, "/")`): the subject first, then only separators.
+  return args.length > 1 && !QUOTED.test(args[0]!.replace(/\s+/g, '')) && args.slice(1).every(isSeparatorArgument);
+}
+
+/**
+ * FC-4b: true when the normalization `inner` feeds the normalization call `outer` (named
+ * `outerMethod`) directly, as its receiver (`x.Trim()` in `x.Trim().ToLower()`, also `?.`) or as
+ * its only argument (`strings.TrimSpace(s)` in `strings.ToLower(strings.TrimSpace(s))`). Both
+ * texts are compared without whitespace. A chain is one normalization: only the outermost call is
+ * a fact.
+ */
+export function feedsNormalization(inner: string, outer: string, outerMethod: string): boolean {
+  const a = inner.replace(/\s+/g, '');
+  return a.length > 0 && normalizationInputs(outer, outerMethod).includes(a);
+}
+
+/** Normalization methods that compare their receiver with their argument: the argument is not their input. */
+const COMPARISON_METHODS: ReadonlySet<string> = new Set([
+  'equalsIgnoreCase', 'EqualFold', 'Equals', 'equals', 'Compare', 'CompareTo', 'compareTo', 'compareToIgnoreCase',
+]);
+
+/**
+ * FC-4b: the inputs of the normalization call `text` (named `method`), without whitespace: its
+ * receiver (`x.Trim()` of `x.Trim().ToLower()`, also after `?.`) and its only argument
+ * (`strings.TrimSpace(s)` of `strings.ToLower(strings.TrimSpace(s))`). The argument of a
+ * comparison method (`a.equalsIgnoreCase(b.trim())`, `strings.EqualFold`) is another value, not an
+ * input. Empty when the text does not end with a call to `method` (a text cut at 200 code points,
+ * for example).
+ */
+export function normalizationInputs(text: string, method: string): string[] {
+  const call = lastCall(text.replace(/\s+/g, ''));
+  if (!call) return [];
+  const inputs: string[] = [];
+  for (const access of [`?.${method}`, `.${method}`]) {
+    if (call.callee.endsWith(access)) {
+      inputs.push(call.callee.slice(0, -access.length));
+      break;
+    }
+  }
+  if (call.args.length === 1 && !COMPARISON_METHODS.has(method) && (call.callee === method || call.callee.endsWith(`.${method}`))) inputs.push(call.args[0]!);
+  return inputs.filter(input => input.length > 0);
+}
+
+// ── FC-5 retry and timeout names ────────────────────────────────
 
 /**
  * FC-5: the name is split into lower-cased ASCII tokens (camelCase, PascalCase, digit runs): only

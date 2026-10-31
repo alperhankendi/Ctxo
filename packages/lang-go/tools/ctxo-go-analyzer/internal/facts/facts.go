@@ -23,6 +23,7 @@ import (
 	"go/types"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 
 	"golang.org/x/tools/go/packages"
@@ -229,6 +230,7 @@ type collector struct {
 
 	durations map[*ast.BinaryExpr]*durationMatch // durationMatch results, nil for no match
 	prefixes  *prefixes                          // router groups and mounts of the file (prefixes.go)
+	path      []ast.Node                         // the nodes from the inspect root to the current node (FC-4b)
 }
 
 // Collect walks every function declaration body of file (closures belong to
@@ -329,7 +331,13 @@ func (c *collector) text(n ast.Node) string {
 }
 
 func (c *collector) inspect(root ast.Node, sid string) {
+	c.path = c.path[:0]
 	ast.Inspect(root, func(n ast.Node) bool {
+		if n == nil {
+			c.path = c.path[:len(c.path)-1]
+			return true
+		}
+		c.path = append(c.path, n)
 		switch x := n.(type) {
 		case *ast.IfStmt:
 			c.condition(x.Cond, sid)
@@ -665,11 +673,120 @@ func (c *collector) call(call *ast.CallExpr, sid string) {
 	}
 	method, qualifier := sel.Sel.Name, c.text(sel.X)
 	if MatchesPattern(method, qualifier, c.opts.NormalizationMethods) {
-		c.add(sid, call.Pos(), emit.FactEvidence{Kind: "call", Text: c.text(call), Method: method, Qualifier: qualifier})
+		consumer, consumerTypes, inProse := c.destination()
+		c.add(sid, call.Pos(), emit.FactEvidence{
+			Kind: "call", Text: c.text(call), Method: method, Qualifier: qualifier,
+			Consumer: consumer, ConsumerTypes: consumerTypes, InProse: inProse,
+		})
 	}
 	if verb, route, ok := c.route(call, sel); ok {
 		c.add(sid, call.Pos(), emit.FactEvidence{Kind: "route", Text: c.text(call), Verb: verb, Route: route})
 	}
+}
+
+// destination (FC-4b) reads where the current call's value goes, from the
+// inspect path: up to the statement or spec and never out of a function
+// literal, the nearest call that takes it as an argument (its callee, and the
+// types consumerTypes names), and whether on the way the value is an operand of
+// a + chain with a string literal whose value holds ASCII whitespace. The
+// syntax tier reads the same places.
+func (c *collector) destination() (string, []string, bool) {
+	inProse := false
+	for i := len(c.path) - 2; i >= 0; i-- {
+		node, parent := c.path[i+1], c.path[i]
+		switch p := parent.(type) {
+		case ast.Stmt, ast.Spec, ast.Decl, *ast.FuncLit:
+			return "", nil, inProse
+		case *ast.CallExpr:
+			for _, arg := range p.Args {
+				if arg == node {
+					return strings.Join(strings.Fields(c.text(p.Fun)), " "), c.consumerTypes(p), inProse
+				}
+			}
+		case *ast.BinaryExpr:
+			if p.Op == token.ADD {
+				for _, operand := range concatOperands(p, nil) {
+					if isProse(operand) {
+						inProse = true
+					}
+				}
+			}
+		}
+	}
+	return "", nil, inProse
+}
+
+// consumerTypes names what the consumer's receiver resolves to: the package
+// path of a package function ("log", "fmt", "log/slog"), else the receiver's
+// named type and the type declaring the method, as "<package path>.<name>"
+// (pointers dropped). Nil when nothing resolves.
+func (c *collector) consumerTypes(call *ast.CallExpr) []string {
+	sel, ok := unparen(call.Fun).(*ast.SelectorExpr)
+	if !ok || c.info == nil {
+		return nil
+	}
+	var out []string
+	add := func(name string) {
+		for _, seen := range out {
+			if seen == name {
+				return
+			}
+		}
+		out = append(out, name)
+	}
+	if id, ok := unparen(sel.X).(*ast.Ident); ok {
+		if pkg, ok := c.info.Uses[id].(*types.PkgName); ok {
+			return []string{pkg.Imported().Path()}
+		}
+	}
+	if name := namedTypeName(c.info.TypeOf(sel.X)); name != "" {
+		add(name)
+	}
+	if fn, ok := c.info.Uses[sel.Sel].(*types.Func); ok {
+		if sig, ok := fn.Type().(*types.Signature); ok && sig.Recv() != nil {
+			if name := namedTypeName(sig.Recv().Type()); name != "" {
+				add(name)
+			}
+		}
+	}
+	return out
+}
+
+// namedTypeName is "<package path>.<name>" of a (pointer to a) named type, or "".
+func namedTypeName(t types.Type) string {
+	if t == nil {
+		return ""
+	}
+	if ptr, ok := t.(*types.Pointer); ok {
+		t = ptr.Elem()
+	}
+	named, ok := t.(*types.Named)
+	if !ok || named.Obj() == nil || named.Obj().Pkg() == nil {
+		return ""
+	}
+	return named.Obj().Pkg().Path() + "." + named.Obj().Name()
+}
+
+// concatOperands flattens a + chain through nested + (not through parentheses).
+func concatOperands(e ast.Expr, out []ast.Expr) []ast.Expr {
+	if bin, ok := e.(*ast.BinaryExpr); ok && bin.Op == token.ADD {
+		return concatOperands(bin.Y, concatOperands(bin.X, out))
+	}
+	return append(out, e)
+}
+
+// isProse reports a string literal whose value holds ASCII whitespace (space,
+// tab, LF, CR, FF, VT), the one definition every tier uses.
+func isProse(e ast.Expr) bool {
+	lit, ok := e.(*ast.BasicLit)
+	if !ok || lit.Kind != token.STRING {
+		return false
+	}
+	value, err := strconv.Unquote(lit.Value)
+	if err != nil {
+		return false
+	}
+	return strings.ContainsAny(value, " \t\n\r\f\v")
 }
 
 // route resolves net/http.HandleFunc and Handle, (*net/http.ServeMux).HandleFunc

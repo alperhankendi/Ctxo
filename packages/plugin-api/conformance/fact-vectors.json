@@ -1,5 +1,5 @@
 {
-  "$comment": "Shared fact conformance vectors (PR 4, #156). Every category is an array of { input, expected }, except languageSpecific, which is keyed by language (each language block holds arrays of the same shape, run with that language's string literal decoder). canonicalNumber: expected null means not a constant (canonicalNumber returns undefined). Not constants: names, strings, division by zero, a decimal integer literal with a leading zero other than 0 itself (017), a division of two integer operands with a non-zero remainder (7 / 2; an operand is integer when it is an integer literal or an expression of integer operands; 7.0 / 2 is a float division), results with |v| >= 2^53, and a non-zero result that rounds to 0 at 6 decimals. An integer result prints as plain digits; any other result is the exact binary double rounded to 6 decimals, as JS toFixed(6) does: 0.0000005 is the double 4.99999999999999977e-7, so it rounds to 0 and is not a constant, and 0.0000015 gives 0.000002; an exact tie (0.0078125) rounds half away from zero (0.007813, -0.007813). Trailing zeros are removed and -0 prints 0. Java copies must round with new BigDecimal(double).setScale(6, RoundingMode.HALF_UP), never String.format(\"%.6f\") or BigDecimal.valueOf; Go copies must not rely on strconv.FormatFloat for exact ties, which it rounds to even (0.007812). isTrivialLiteral: a number literal is evaluated as in canonicalNumber and the double is compared exactly with the list's numbers (0.9999999 is not 1). The shared rules decode only a plain double-quoted string literal (and a plain single-quoted char literal) with the common escapes (a backslash before a double quote, a single quote, a backslash, n, t or r); any other escape makes it not a constant. Every other string form (prefixes, suffixes, verbatim, interpolated, raw, single-quoted or template strings) goes to the language's string literal decoder; without one it is not a string constant, so it is never trivial (see isTrivialLiteralCustom). languageSpecific.<language> vectors run with that language's decoder (C#: decodeCsharpStringLiteral). hasRetryTimeoutFragment: tokens are ASCII only (A-Z, a-z, 0-9); every other character separates tokens; no Unicode case tests and no locale-dependent lowercasing. matchesNormalizationPattern: an absent qualifier means the call has no receiver (written Name(...)). Categories without a list in their input use the defaults block. normalizeFactText and capFactValue: input and expected are segment arrays, concatenated; a segment is a string or { repeat, count }. detailLiteral: the finisher's detail.literal for a comparison literal (same segment arrays); CRLF and CR become LF before capFactValue, so the committed index does not depend on a checkout's line endings.",
+  "$comment": "Shared fact conformance vectors (PR 4, #156). Every category is an array of { input, expected }, except languageSpecific, which is keyed by language (each language block holds arrays of the same shape, run with that language's string literal decoder). canonicalNumber: expected null means not a constant (canonicalNumber returns undefined). Not constants: names, strings, division by zero, a decimal integer literal with a leading zero other than 0 itself (017), a division of two integer operands with a non-zero remainder (7 / 2; an operand is integer when it is an integer literal or an expression of integer operands; 7.0 / 2 is a float division), results with |v| >= 2^53, and a non-zero result that rounds to 0 at 6 decimals. An integer result prints as plain digits; any other result is the exact binary double rounded to 6 decimals, as JS toFixed(6) does: 0.0000005 is the double 4.99999999999999977e-7, so it rounds to 0 and is not a constant, and 0.0000015 gives 0.000002; an exact tie (0.0078125) rounds half away from zero (0.007813, -0.007813). Trailing zeros are removed and -0 prints 0. Java copies must round with new BigDecimal(double).setScale(6, RoundingMode.HALF_UP), never String.format(\"%.6f\") or BigDecimal.valueOf; Go copies must not rely on strconv.FormatFloat for exact ties, which it rounds to even (0.007812). isTrivialLiteral: a number literal is evaluated as in canonicalNumber and the double is compared exactly with the list's numbers (0.9999999 is not 1). The shared rules decode only a plain double-quoted string literal (and a plain single-quoted char literal) with the common escapes (a backslash before a double quote, a single quote, a backslash, n, t or r); any other escape makes it not a constant. Every other string form (prefixes, suffixes, verbatim, interpolated, raw, single-quoted or template strings) goes to the language's string literal decoder; without one it is not a string constant, so it is never trivial (see isTrivialLiteralCustom). languageSpecific.<language> vectors run with that language's decoder (C#: decodeCsharpStringLiteral). hasRetryTimeoutFragment: tokens are ASCII only (A-Z, a-z, 0-9); every other character separates tokens; no Unicode case tests and no locale-dependent lowercasing. matchesNormalizationPattern: an absent qualifier means the call has no receiver (written Name(...)). Categories without a list in their input use the defaults block. normalizeFactText and capFactValue: input and expected are segment arrays, concatenated; a segment is a string or { repeat, count }. detailLiteral: the finisher's detail.literal for a comparison literal (same segment arrays); CRLF and CR become LF before capFactValue, so the committed index does not depend on a checkout's line endings. FC-4b (normalization that is not a business rule): isMessageSink and isDisplayCall take { callee, consumerTypes? }: the callee of the nearest call that receives the value as source text (a construction is \"new <Type>\"), and the types a full tier resolved for it (qualified, type arguments dropped; Go: the package path or <path>.<type>); without types the rules go by names. isTechnicalNormalization takes { method, qualifier, text } of a normalization call; feedsNormalization takes { inner, outer, outerMethod }: the inner normalization is the receiver or, except for comparison methods, the only argument of the outer one (whitespace ignored).",
   "defaults": {
     "trivialLiterals": [
       0,
@@ -665,6 +665,917 @@
         ]
       },
       "expected": false
+    }
+  ],
+  "isMessageSink": [
+    {
+      "input": {
+        "callee": "_logger.LogInformation",
+        "consumerTypes": [
+          "Microsoft.Extensions.Logging.ILogger",
+          "Microsoft.Extensions.Logging.LoggerExtensions"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "_log.LogWarning",
+        "consumerTypes": [
+          "Microsoft.Extensions.Logging.ILogger",
+          "Microsoft.Extensions.Logging.LoggerExtensions"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "Log.Information",
+        "consumerTypes": [
+          "Serilog.Log"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "logger.Warn",
+        "consumerTypes": [
+          "NLog.Logger"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "log.Info",
+        "consumerTypes": [
+          "log4net.ILog"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "LOG.info",
+        "consumerTypes": [
+          "org.slf4j.Logger"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "logger.warning",
+        "consumerTypes": [
+          "java.util.logging.Logger"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "log.Printf",
+        "consumerTypes": [
+          "log"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "slog.Info",
+        "consumerTypes": [
+          "log/slog"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "l.Infow",
+        "consumerTypes": [
+          "*go.uber.org/zap.SugaredLogger"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "console.error",
+        "consumerTypes": [
+          "Console"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "audit.Warn",
+        "consumerTypes": [
+          "MyApp.AuditTrail"
+        ]
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "_logger.BeginScope",
+        "consumerTypes": [
+          "Microsoft.Extensions.Logging.ILogger",
+          "Microsoft.Extensions.Logging.LoggerExtensions"
+        ]
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "logger.info"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "_logger?.LogWarning"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "this.logger.warn"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "Logger.Error"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "console.log"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "log.Printf"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "auth.LogIn"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "session.LogOn"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "tracker.TraceParcel"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "PrintLabel"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "codes.ErrorCodeFor"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "help.InfoFor"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "writer.WriteLine"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "Console.WriteLine"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "history.Log"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "repo.upsert"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "new ArgumentException"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "new System.InvalidOperationException"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "new Error"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "new TypeError"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "new IllegalStateException"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "errors.New"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "fmt.Errorf"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "new List<string>"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "new CultureInfo"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "new ErrorCode"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "new"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "telemetry.Info",
+        "consumerTypes": [
+          "MyApp.Telemetry"
+        ]
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "logger.Info",
+        "consumerTypes": [
+          "MyApp.Telemetry"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "this.logger.warn",
+        "consumerTypes": [
+          "pino.Logger"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "this.log.warn",
+        "consumerTypes": [
+          "pino.Logger"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "this.out.warn",
+        "consumerTypes": [
+          "winston.Logger"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "this.out.verbose",
+        "consumerTypes": [
+          "@nestjs/common.Logger"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "this.out.error",
+        "consumerTypes": [
+          "@nestjs/common.LoggerService"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "this.out.info",
+        "consumerTypes": [
+          "bunyan.Logger"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "this.out.info",
+        "consumerTypes": [
+          "log4js.Logger"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "this.out.silly",
+        "consumerTypes": [
+          "tslog.Logger"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "this.out.warn",
+        "consumerTypes": [
+          "MyLib.Notifier"
+        ]
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "LOG.info",
+        "consumerTypes": [
+          "org.apache.commons.logging.Log"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "log.Info().Msg",
+        "consumerTypes": [
+          "*github.com/rs/zerolog.Event"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "Debug.WriteLine",
+        "consumerTypes": [
+          "System.Diagnostics.Debug"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "Trace.TraceWarning",
+        "consumerTypes": [
+          "System.Diagnostics.Trace"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "Log.Write"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "Log.Print"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "Log.Information"
+      },
+      "expected": true
+    }
+  ],
+  "isDisplayCall": [
+    {
+      "input": {
+        "callee": "sb.AppendLine",
+        "consumerTypes": [
+          "System.Text.StringBuilder"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "html.Append",
+        "consumerTypes": [
+          "System.Text.StringBuilder"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "string.Format",
+        "consumerTypes": [
+          "System.String"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "String.format",
+        "consumerTypes": [
+          "java.lang.String"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "out.append",
+        "consumerTypes": [
+          "java.lang.StringBuilder"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "fmt.Sprintf",
+        "consumerTypes": [
+          "fmt"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "b.WriteString",
+        "consumerTypes": [
+          "*strings.Builder"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "Console.WriteLine",
+        "consumerTypes": [
+          "System.Console"
+        ]
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "items.Add",
+        "consumerTypes": [
+          "System.Collections.Generic.List"
+        ]
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "db.Query",
+        "consumerTypes": [
+          "MyApp.Db"
+        ]
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "sb.Append"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "builder.append"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "string.Format"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "String.format"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "fmt.Sprintf"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "Console.Write"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "callee": "cache.lookup"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "db.query"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "connection.QueryAsync"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "list.Append"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "callee": "new StringBuilder"
+      },
+      "expected": false
+    }
+  ],
+  "isTechnicalNormalization": [
+    {
+      "input": {
+        "method": "ToLowerInvariant",
+        "qualifier": "Convert.ToHexString(hash)",
+        "text": "Convert.ToHexString(hash).ToLowerInvariant()"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "method": "ToLower",
+        "qualifier": "BitConverter.ToString(digest).Replace(\"-\", \"\")",
+        "text": "BitConverter.ToString(digest).Replace(\"-\", \"\").ToLower()"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "method": "ToLower",
+        "qualifier": "strings",
+        "text": "strings.ToLower(hex.EncodeToString(sum))"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "method": "toLowerCase",
+        "qualifier": "hash.digest('hex')",
+        "text": "hash.digest('hex').toLowerCase()"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "method": "toUpperCase",
+        "qualifier": "Base64.getEncoder().encodeToString(bytes)",
+        "text": "Base64.getEncoder().encodeToString(bytes).toUpperCase()"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "method": "TrimEnd",
+        "qualifier": "Convert.ToBase64String(bytes)",
+        "text": "Convert.ToBase64String(bytes).TrimEnd('=')"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "method": "ToLowerInvariant",
+        "qualifier": "Path.GetExtension(file)",
+        "text": "Path.GetExtension(file).ToLowerInvariant()"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "method": "toLowerCase",
+        "qualifier": "path.extname(file)",
+        "text": "path.extname(file).toLowerCase()"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "method": "ToLower",
+        "qualifier": "strings",
+        "text": "strings.ToLower(filepath.Ext(name))"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "method": "TrimEndingDirectorySeparator",
+        "qualifier": "Path",
+        "text": "Path.TrimEndingDirectorySeparator(root)"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "method": "ToUpperInvariant",
+        "qualifier": "char",
+        "text": "char.ToUpperInvariant(name[0])"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "method": "toUpperCase",
+        "qualifier": "Character",
+        "text": "Character.toUpperCase(c)"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "method": "ToUpper",
+        "qualifier": "unicode",
+        "text": "unicode.ToUpper(r)"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "method": "TrimEnd",
+        "qualifier": "root",
+        "text": "root.TrimEnd('/', '\\\\')"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "method": "TrimStart",
+        "qualifier": "relative",
+        "text": "relative.TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "method": "TrimSuffix",
+        "qualifier": "strings",
+        "text": "strings.TrimSuffix(prefix, \"/\")"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "method": "TrimRight",
+        "qualifier": "strings",
+        "text": "strings.TrimRight(dir, string(os.PathSeparator))"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "method": "Trim",
+        "qualifier": "email",
+        "text": "email.Trim()"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "method": "ToLowerInvariant",
+        "qualifier": "id.ToString(\"D\")",
+        "text": "id.ToString(\"D\").ToLowerInvariant()"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "method": "Trim",
+        "qualifier": "code",
+        "text": "code.Trim(' ', '/')"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "method": "TrimEnd",
+        "qualifier": "name",
+        "text": "name.TrimEnd('.')"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "method": "trim",
+        "qualifier": "path",
+        "text": "path.trim()"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "method": "TrimSpace",
+        "qualifier": "strings",
+        "text": "strings.TrimSpace(input)"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "method": "toLowerCase",
+        "qualifier": "value.toString()",
+        "text": "value.toString().toLowerCase()"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "method": "ToLower",
+        "qualifier": "x.Ext(code)",
+        "text": "x.Ext(code).ToLower()"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "method": "TrimEnd",
+        "qualifier": "redirectUri",
+        "text": "redirectUri.TrimEnd('/')"
+      },
+      "expected": true
+    }
+  ],
+  "feedsNormalization": [
+    {
+      "input": {
+        "inner": "email.Trim()",
+        "outer": "email.Trim().ToLowerInvariant()",
+        "outerMethod": "ToLowerInvariant"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "inner": ".Trim()",
+        "outer": ".Trim().ToUpperInvariant()",
+        "outerMethod": "ToUpperInvariant"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "inner": "name?.trim()",
+        "outer": "name?.trim()?.toLowerCase()",
+        "outerMethod": "toLowerCase"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "inner": "value.trim()",
+        "outer": "value.trim()\n  .toLowerCase()",
+        "outerMethod": "toLowerCase"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "inner": "strings.TrimSpace(s)",
+        "outer": "strings.ToLower(strings.TrimSpace(s))",
+        "outerMethod": "ToLower"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "inner": "email.Trim()",
+        "outer": "email.Trim()",
+        "outerMethod": "Trim"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "inner": "a.Trim()",
+        "outer": "string.Equals(a.Trim(), b.Trim())",
+        "outerMethod": "Equals"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "inner": "name.trim()",
+        "outer": "name.trim().length",
+        "outerMethod": "length"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "inner": "x.Trim()",
+        "outer": "x.Trim().Replace(\" \", \"\").ToLower()",
+        "outerMethod": "ToLower"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "inner": "strings.TrimSpace(s)",
+        "outer": "strings.ToLower(prefix, strings.TrimSpace(s))",
+        "outerMethod": "ToLower"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "inner": "b.trim()",
+        "outer": "a.equalsIgnoreCase(b.trim())",
+        "outerMethod": "equalsIgnoreCase"
+      },
+      "expected": false
+    },
+    {
+      "input": {
+        "inner": "a.trim()",
+        "outer": "a.trim().equalsIgnoreCase(b.trim())",
+        "outerMethod": "equalsIgnoreCase"
+      },
+      "expected": true
+    },
+    {
+      "input": {
+        "inner": "strings.TrimSpace(s)",
+        "outer": "strings.ToLower(\n\tstrings.TrimSpace(s))",
+        "outerMethod": "ToLower"
+      },
+      "expected": true
     }
   ],
   "normalizeFactText": [

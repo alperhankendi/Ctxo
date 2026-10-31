@@ -69,6 +69,65 @@ function declaredNames(spec: SyntaxNode): SyntaxNode[] {
   return spec.childrenForFieldName('name').filter((n) => n.isNamed);
 }
 
+// ── FC-4b: where a normalization call's value goes ──
+
+/** Statements, declarations, specs, blocks and function literals end the walk, as in ctxo-go-analyzer. */
+function endsDestination(node: SyntaxNode): boolean {
+  return node.type.endsWith('_statement') || node.type.endsWith('_declaration') || node.type.endsWith('_spec')
+    || node.type === 'block' || node.type === 'func_literal' || node.type === 'source_file';
+}
+
+/** ASCII whitespace, the one definition every tier uses (space, tab, LF, CR, FF, VT). */
+const ASCII_WHITESPACE = /[ \t\n\r\f\v]/;
+
+const GO_SIMPLE_ESCAPES: Readonly<Record<string, string>> = { a: '\x07', b: '\b', f: '\f', n: '\n', r: '\r', t: '\t', v: '\v', '\\': '\\', "'": "'", '"': '"' };
+
+/** The value of a Go escape sequence, as `strconv.Unquote` decodes it (simple, octal, `\x`, `\u`, `\U`). */
+function goEscapeValue(sequence: string): string {
+  const body = sequence.slice(1);
+  const simple = GO_SIMPLE_ESCAPES[body];
+  if (simple !== undefined) return simple;
+  const code = /^[0-7]{3}$/.test(body) ? parseInt(body, 8) : /^[xuU][0-9a-fA-F]+$/.test(body) ? parseInt(body.slice(1), 16) : NaN;
+  return Number.isFinite(code) && code <= 0x10ffff ? String.fromCodePoint(code) : '';
+}
+
+/** A string literal whose value holds ASCII whitespace (escapes decoded as `strconv.Unquote` does). */
+function isProse(node: SyntaxNode): boolean {
+  if (node.type === 'raw_string_literal') return ASCII_WHITESPACE.test(node.text.slice(1, -1).replace(/\r/g, ''));
+  if (node.type !== 'interpreted_string_literal') return false;
+  return node.namedChildren.some(part => ASCII_WHITESPACE.test(part.type === 'escape_sequence' ? goEscapeValue(part.text) : part.text));
+}
+
+/** The operands of a `+` chain, through nested `+` (not through parentheses). */
+function concatOperands(node: SyntaxNode, out: SyntaxNode[] = []): SyntaxNode[] {
+  if (node.type === 'binary_expression' && node.childForFieldName('operator')?.text === '+') {
+    for (const side of [node.childForFieldName('left'), node.childForFieldName('right')]) if (side) concatOperands(side, out);
+  } else {
+    out.push(node);
+  }
+  return out;
+}
+
+/**
+ * FC-4b, as ctxo-go-analyzer reads it: up to the statement or spec and never out of a function literal,
+ * the nearest call that takes the value as an argument, and whether on the way the value is an operand of
+ * a `+` chain with a string literal whose value holds ASCII whitespace. No types in the syntax tier.
+ */
+function destination(call: SyntaxNode): { consumer: string | undefined; inProse: boolean } {
+  let inProse = false;
+  let node = call;
+  for (let parent = node.parent; parent; node = parent, parent = parent.parent) {
+    if (endsDestination(parent)) break;
+    const args = parent.childForFieldName('arguments');
+    if (parent.type === 'call_expression' && args && args.startIndex === node.startIndex && args.endIndex === node.endIndex) {
+      return { consumer: (parent.childForFieldName('function')?.text ?? '').replace(/\s+/g, ' ').trim(), inProse };
+    } else if (parent.type === 'binary_expression' && parent.childForFieldName('operator')?.text === '+') {
+      if (concatOperands(parent).some(isProse)) inProse = true;
+    }
+  }
+  return { consumer: undefined, inProse };
+}
+
 function unparen(node: SyntaxNode): SyntaxNode {
   let current = node;
   while (current.type === 'parenthesized_expression') {
@@ -559,7 +618,17 @@ class Collector {
     if (!operand || !method) return;
     const qualifier = operand.text;
     if (matchesNormalizationPattern(method, qualifier, this.options.normalizationMethods)) {
-      this.add({ kind: 'call', ...Collector.owner(sid), line: node.startPosition.row, text: node.text, method, qualifier });
+      const { consumer, inProse } = destination(node);
+      this.add({
+        kind: 'call',
+        ...Collector.owner(sid),
+        line: node.startPosition.row,
+        text: node.text,
+        method,
+        qualifier,
+        ...(consumer !== undefined ? { consumer } : {}),
+        ...(inProse ? { inProse } : {}),
+      });
     }
     const route = this.route(node, operand, method);
     if (route) this.add({ kind: 'route', ...Collector.owner(sid), line: node.startPosition.row, ...route });
