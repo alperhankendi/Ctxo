@@ -544,6 +544,17 @@ function httpPattern(pattern: string): { verb: string; route: string } | undefin
 interface FlaskState {
   imported: boolean;
   readonly prefixes: Map<string, string | undefined>;
+  /** Blueprints registered with their own `url_prefix` somewhere in the file: Flask uses that one instead. */
+  readonly overridden: ReadonlySet<string>;
+}
+
+/** `register_blueprint(<name>, ... url_prefix=` anywhere in the file (a raw-text check; a false hit only drops a prefix). */
+const REGISTER_WITH_PREFIX = /register_blueprint\(\s*([A-Za-z_][A-Za-z0-9_]*)\b[^)]{0,2000}?\burl_prefix\s*=/g;
+
+function flaskState(text: string): FlaskState {
+  const overridden = new Set<string>();
+  for (const match of text.matchAll(REGISTER_WITH_PREFIX)) overridden.add(match[1]!);
+  return { imported: false, prefixes: new Map(), overridden };
 }
 
 /** Python `from flask ...` / `import flask` lines, and `<name> = [flask.]Blueprint(..., url_prefix="/x", ...)` once flask is imported. */
@@ -573,6 +584,8 @@ function flaskLine(line: Line, state: FlaskState): void {
   // An unclosed call may set url_prefix on a later line: unknown.
   if (close < 0 && prefix === '') prefix = undefined;
   const name = first.text;
+  // `app.register_blueprint(bp, url_prefix="/v2")` replaces the Blueprint's own prefix: unknown here.
+  if (state.overridden.has(name)) prefix = undefined;
   state.prefixes.set(name, state.prefixes.has(name) && state.prefixes.get(name) !== prefix ? undefined : prefix);
 }
 
@@ -657,8 +670,9 @@ export function scanTextFacts(
     // first and drops only duplicates on the same line, so the file's facts are the per-line facts in line order, cut
     // at 500. Once 500 are kept no later line can change them, so lexing and collection stop there (Note A).
     const facts: CodeFact[] = [];
-    // Flask Blueprint prefixes, for the hash comment style (Python) only.
-    const flask: FlaskState | undefined = style === 'hash' ? { imported: false, prefixes: new Map() } : undefined;
+    // Flask Blueprint prefixes, for files in the hash comment style (Python, Ruby, Elixir and the rest) that import
+    // flask; the import check keeps the other hash-style languages out.
+    const flask: FlaskState | undefined = style === 'hash' ? flaskState(text) : undefined;
     const finishLine = (lineNo: number, tokens: readonly TextToken[]): void => {
       const evidence: FactEvidence[] = [];
       try {

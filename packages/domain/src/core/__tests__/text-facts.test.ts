@@ -153,6 +153,13 @@ describe('scanTextFacts', () => {
     expect(scan(PY, lines('bp = Blueprint("x", __name__, url_prefix="/api")', 'from flask import Blueprint', '@bp.get("/a")'))).toEqual(['endpoint|GET /a']);
     // A url_prefix inside a nested call is not the Blueprint's.
     expect(scan(PY, lines('from flask import Blueprint', 'bp = Blueprint("x", __name__, opts(url_prefix="/no"))', '@bp.get("/a")'))).toEqual(['endpoint|GET /a']);
+    // register_blueprint with its own url_prefix replaces the Blueprint's (also when it comes after the routes).
+    expect(
+      scan(PY, lines('from flask import Blueprint', 'bp = Blueprint("x", __name__, url_prefix="/api")', '@bp.get("/a")', 'app.register_blueprint(bp, url_prefix="/v2")')),
+    ).toEqual(['endpoint|GET /a']);
+    expect(
+      scan(PY, lines('from flask import Blueprint', 'bp = Blueprint("x", __name__, url_prefix="/api")', '@bp.get("/a")', 'app.register_blueprint(bp)')),
+    ).toEqual(['endpoint|GET /api/a']);
     // Not Python: no Blueprint prefixes.
     expect(scan(LEND, lines('from flask import Blueprint', 'bp = Blueprint("x", __name__, url_prefix="/api")', '@bp.get("/a")'))).toEqual(['endpoint|GET /a']);
   });
