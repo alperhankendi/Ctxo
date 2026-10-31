@@ -235,7 +235,9 @@ jobs:
       - name: Run the lang-typescript, lang-java and lang-go tests
         env:
           CTXO_JDT_ANALYZER_JAR: ${{ github.workspace }}/packages/lang-java-analyzer/jar/ctxo-jdt-analyzer-17.jar
-        run: pnpm --filter @ctxo/lang-typescript --filter @ctxo/lang-java --filter @ctxo/lang-go test
+        # One package at a time: run together, the JVM and Go analyzers starve the ts-morph tests of CPU,
+        # and their timing bounds (the fact-owner scale test) fail.
+        run: pnpm --workspace-concurrency=1 --filter @ctxo/lang-typescript --filter @ctxo/lang-java --filter @ctxo/lang-go test
 
       - name: Run the JDT analyzer JUnit tests (Java 11 and Java 17 profiles)
         run: pnpm --filter @ctxo/lang-java-analyzer test && mvn -q -f packages/lang-java-analyzer/java/pom.xml -Pjava17 test
