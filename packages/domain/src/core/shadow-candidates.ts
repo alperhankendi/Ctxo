@@ -72,6 +72,16 @@ const TYPE_KINDS = new Set<string>(['class', 'interface', 'type']);
 const NO_TYPES: ReadonlySet<string> = new Set();
 const FACT_CANDIDATE_KINDS = new Set<string>(['literal-comparison', 'normalization', 'retry-timeout', 'endpoint']);
 
+/**
+ * The detail with its keys in codepoint order. Facts reach the pass in plugin order from a fresh `ctxo index` and in
+ * sorted order from the JSON index (an incremental run, `ctxo watch`); the artifact must not depend on which.
+ */
+function canonicalDetail(detail: Readonly<Record<string, string>>): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const key of Object.keys(detail).sort(compare)) out[key] = detail[key]!;
+  return out;
+}
+
 function detailKey(detail: Readonly<Record<string, string>> | undefined): string {
   if (detail === undefined) return '';
   return JSON.stringify(Object.keys(detail).sort(compare).map((key) => [key, detail[key]]));
@@ -165,7 +175,7 @@ export function buildShadowCandidates(input: CandidateInput): ShadowCandidate[] 
           line: fact.line + 1,
           symbolId: fact.symbolId,
           text: fact.text,
-          ...(fact.detail === undefined ? {} : { detail: fact.detail }),
+          ...(fact.detail === undefined ? {} : { detail: canonicalDetail(fact.detail) }),
           source,
         }),
       );
