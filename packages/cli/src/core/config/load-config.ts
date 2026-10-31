@@ -112,9 +112,13 @@ export function factsRequested(config: CtxoConfig): boolean {
   return config.index?.facts === true;
 }
 
-/** True for a negated glob (`!` prefix). `index.tests` does not support negation. */
+/**
+ * True for a negated glob: a `!` prefix that is not the start of a `!(...)` extglob (`!(fixtures)/**` is a valid
+ * pattern and is kept). `index.tests` does not support negation. The one predicate for the list builders and the
+ * doctor check; `@ctxo/lang-typescript` has the same rule (a shared-examples test keeps them in agreement).
+ */
 export function isNegatedGlob(pattern: string): boolean {
-  return pattern.startsWith('!');
+  return pattern.startsWith('!') && !pattern.startsWith('!(');
 }
 
 /**

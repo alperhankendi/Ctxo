@@ -226,7 +226,7 @@ Unknown fields at the root are ignored for forward compatibility. Unknown fields
 - Patterns are matched against **repo-relative, forward-slash paths**. Backslashes are normalised before matching.
 - `index.ignore` runs per file, after the git-tracked file list is produced.
 - `index.ignoreProjects` runs against workspace roots during discovery. A matched workspace is never visited, and its plugin dependencies are never imported.
-- Each pattern is matched on its own and a path matches when any pattern does. Do not use `!` negation in `index.ignore`, `index.ignoreProjects`, `contextsView.exclude` or `contextsView.hubs.paths`: a negated pattern matches every other path, and `ctxo doctor` does not warn about it yet. `index.tests` does not support negation: a glob that starts with `!` is skipped (it never reaches the contexts view or the plugins), and `ctxo doctor` (`config_file`) warns, naming it. To leave files out of the index, use `index.ignore`.
+- Each pattern is matched on its own and a path matches when any pattern does. Do not use `!` negation in `index.ignore`, `index.ignoreProjects`, `contextsView.exclude` or `contextsView.hubs.paths`: a negated pattern matches every other path, and `ctxo doctor` does not warn about it yet. `index.tests` does not support negation: a glob that starts with `!` (but not a `!(...)` extglob such as `!(fixtures)/**/*.check.ts`, which is kept) is skipped (it never reaches the contexts view or the plugins), and `ctxo doctor` (`config_file`) warns, naming it. To leave files out of the index, use `index.ignore`.
 
 ```yaml
 index:

@@ -142,6 +142,22 @@ index:
     expect(isTest('spec/loans/policy.check.ts')).toBe(true);
   });
 
+  it('index.tests keeps a !(...) extglob: it is not a negation', () => {
+    writeConfig(`version: "1.0"
+index:
+  tests:
+    - "!(fixtures)/**/*.check.ts"
+    - "!**/fixtures/**"
+`);
+    const loaded = loadConfig(ctxoRoot);
+    expect(indexTestPatterns(loaded.config)).toEqual(['!(fixtures)/**/*.check.ts']);
+    expect(negatedIndexTestPatterns(loaded.config)).toEqual(['!**/fixtures/**']);
+    const isTest = createTestFileClassifier(indexTestPatterns(loaded.config));
+    expect(isTest('spec/a.check.ts')).toBe(true);
+    expect(isTest('fixtures/a.check.ts')).toBe(false);
+    expect(isTest('src/loans/policy.ts')).toBe(false);
+  });
+
   it('index still rejects an unknown key', () => {
     writeConfig(`version: "1.0"
 index:

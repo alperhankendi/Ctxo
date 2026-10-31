@@ -1,4 +1,4 @@
-import { makeGlobMatcher } from '../config/load-config.js';
+import { isNegatedGlob, makeGlobMatcher } from '../config/load-config.js';
 import type { FileIndex } from '../types.js';
 
 /** Globs that mark a repo-relative path as a test file, in spec 7.1 order. */
@@ -48,7 +48,7 @@ export const TEST_FRAMEWORK_ANNOTATIONS: readonly string[] = [
  * does not support negation. Frozen, so one array serves every plugin of a run.
  */
 export function effectiveTestGlobs(extraGlobs: readonly string[] = []): readonly string[] {
-  const extras = extraGlobs.filter((glob) => !glob.startsWith('!'));
+  const extras = extraGlobs.filter((glob) => !isNegatedGlob(glob));
   return Object.freeze([...new Set([...DEFAULT_TEST_GLOBS, ...extras])]);
 }
 

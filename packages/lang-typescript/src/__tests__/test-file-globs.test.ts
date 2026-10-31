@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createTestFileMatcher } from '../test-file-globs.js';
+import { createTestFileMatcher, isNegatedGlob } from '../test-file-globs.js';
 import { isTestFilePath } from '../test-blocks.js';
 import { TsMorphAdapter } from '../ts-morph-adapter.js';
 
@@ -13,7 +13,11 @@ import { TsMorphAdapter } from '../ts-morph-adapter.js';
  */
 const HOST_GLOBS = JSON.parse(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'fixtures', 'host-test-globs.json'), 'utf-8'),
-) as { hostDefaults: string[]; typescriptFallback: string[] };
+) as {
+  hostDefaults: string[];
+  typescriptFallback: string[];
+  negationExamples: Array<{ glob: string; negated: boolean }>;
+};
 const HOST_DEFAULTS = HOST_GLOBS.hostDefaults;
 
 const CUSTOM = [...HOST_DEFAULTS, 'spec/**/*.check.ts'];
@@ -69,6 +73,18 @@ describe('createTestFileMatcher', () => {
     expect(matches('src/loans/policy.ts')).toBe(false);
     expect(matches('src/__tests__/a.ts')).toBe(true);
     expect(createTestFileMatcher(['!**/fixtures/**'])).toBe(isTestFilePath);
+  });
+
+  it('keeps a !(...) extglob, which is not a negation', () => {
+    const matches = createTestFileMatcher(['!(fixtures)/**/*.check.ts']);
+    expect(matches('spec/a.check.ts')).toBe(true);
+    expect(matches('fixtures/a.check.ts')).toBe(false);
+    expect(matches('src/loans/policy.ts')).toBe(false);
+  });
+
+  it('isNegatedGlob agrees with the shared negation examples (the CLI test checks the core predicate on them)', () => {
+    expect(HOST_GLOBS.negationExamples.length).toBeGreaterThan(0);
+    for (const { glob, negated } of HOST_GLOBS.negationExamples) expect(isNegatedGlob(glob), glob).toBe(negated);
   });
 
   it('the built-in rule is the TypeScript part of the host defaults', () => {

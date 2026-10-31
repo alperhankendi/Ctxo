@@ -20,5 +20,27 @@
     "**/*.spec.*",
     "**/test/**",
     "**/tests/**"
+  ],
+  "negationExamples": [
+    {
+      "glob": "!**/x/**",
+      "negated": true
+    },
+    {
+      "glob": "!(x)/**/*.ts",
+      "negated": false
+    },
+    {
+      "glob": "a/**",
+      "negated": false
+    },
+    {
+      "glob": "!**/fixtures/**",
+      "negated": true
+    },
+    {
+      "glob": "!(fixtures)/**/*.check.ts",
+      "negated": false
+    }
   ]
 }
