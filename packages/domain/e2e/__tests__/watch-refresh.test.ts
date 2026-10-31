@@ -1,5 +1,5 @@
 import { spawn, type ChildProcess } from 'node:child_process';
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { assertBuilt, childEnv, CLI_BIN, cleanupWorkspaces, SampleWorkspace } from './sample-workspace.js';
@@ -17,12 +17,13 @@ const DOMAIN_DIR = '.ctxo/index/domain';
 function domainArtifacts(ws: SampleWorkspace): Record<string, string> {
   const dir = ws.path(DOMAIN_DIR);
   const out: Record<string, string> = {};
-  // A plain walk: Dirent.parentPath needs Node 20.12, the packages support 20.0.
+  // A plain walk: Dirent.parentPath needs Node 20.12, the packages support 20.0. The entry type comes from the
+  // directory read itself, so no separate stat call can race with the read.
   const walk = (folder: string): void => {
-    for (const name of readdirSync(folder)) {
-      const full = join(folder, name);
-      if (statSync(full).isDirectory()) walk(full);
-      else out[relative(dir, full).split(sep).join('/')] = readFileSync(full).toString('base64');
+    for (const entry of readdirSync(folder, { withFileTypes: true })) {
+      const full = join(folder, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.isFile()) out[relative(dir, full).split(sep).join('/')] = readFileSync(full).toString('base64');
     }
   };
   walk(dir);
