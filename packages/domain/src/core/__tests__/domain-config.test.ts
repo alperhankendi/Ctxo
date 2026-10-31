@@ -83,6 +83,15 @@ describe('resolveDomainConfig', () => {
     });
   });
 
+  it('accepts each boundary mode, new-only included', () => {
+    for (const enforce of ['by-rung', 'new-only', 'report']) {
+      const { config, problems } = resolveDomainConfig({ boundaries: { enforce } });
+      expect(problems).toEqual([]);
+      expect(config.boundaries.enforce).toBe(enforce);
+    }
+    expect(resolveDomainConfig({ boundaries: { enforce: 'New-Only' } }).problems[0]?.message).toBe('must be "by-rung", "new-only" or "report"');
+  });
+
   it('falls back per key and reports each invalid value', () => {
     const { config, problems } = resolveDomainConfig({
       registry: 'domain/ctx.yaml',

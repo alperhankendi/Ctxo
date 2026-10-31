@@ -2,7 +2,19 @@ import type { FactDetectorOptions, TrivialLiteral } from '@ctxo/cli/internal';
 import { RULE_PREFIX_PATTERN, RUNGS, type Rung } from './registry.js';
 import { parseAnnotationMatcher } from './test-conventions.js';
 
-export type BoundaryMode = 'by-rung' | 'report';
+/**
+ * `domain.boundaries.enforce`. `by-rung`: a violation touching a blocking rung is an error. `new-only`: the same
+ * rung rules, but `verify-domain --since` fails only on the violations the branch adds (the base's are reported as
+ * existing). `report`: warnings only.
+ */
+export type BoundaryMode = 'by-rung' | 'new-only' | 'report';
+
+/** The modes in documentation order. */
+export const BOUNDARY_MODES: readonly BoundaryMode[] = ['by-rung', 'new-only', 'report'];
+
+export function isBoundaryMode(value: unknown): value is BoundaryMode {
+  return value === 'by-rung' || value === 'new-only' || value === 'report';
+}
 
 /** A K13a convention (spec 12.3): a test is of the kind when an annotation, a path glob or a name marker matches. */
 export interface TestConvention {
@@ -200,8 +212,8 @@ export function resolveDomainConfig(raw: unknown): { readonly config: DomainConf
   const boundaries = section('boundaries');
   let enforce = d.boundaries.enforce;
   if (boundaries['enforce'] !== undefined) {
-    if (boundaries['enforce'] === 'by-rung' || boundaries['enforce'] === 'report') enforce = boundaries['enforce'];
-    else bad('domain.boundaries.enforce', 'must be "by-rung" or "report"');
+    if (isBoundaryMode(boundaries['enforce'])) enforce = boundaries['enforce'];
+    else bad('domain.boundaries.enforce', 'must be "by-rung", "new-only" or "report"');
   }
   let blockingRungs: readonly Rung[] = d.boundaries.blockingRungs;
   if (boundaries['blockingRungs'] !== undefined) {

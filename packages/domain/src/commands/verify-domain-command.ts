@@ -1,13 +1,16 @@
-import type { CtxoHost, FileIndex, IGitPort, ModuleCommand, ModuleCommandContext } from '@ctxo/cli/internal';
+import { relative } from 'node:path';
+import type { CtxoHost, FileIndex, IGitPort, ModuleCommand, ModuleCommandContext, RangeCommit } from '@ctxo/cli/internal';
+import { baseBoundaries, type BaseIndexSource } from '../adapters/base-boundaries.js';
 import { GitChangeReader } from '../adapters/git-changes.js';
 import { loaderPlatforms, readExistingLoaderRules } from '../adapters/loader-rules-files.js';
 import { composeLoopInputs } from '../adapters/loop-inputs.js';
 import { readRegistry } from '../adapters/registry-reader.js';
 import { readCardText, readRepoText, repoFileExists, repoIsFile } from '../adapters/repo-files.js';
 import { findOrphanShadowSpecs, readShadowSpecs } from '../adapters/shadow-specs-files.js';
-import { computeBoundaries } from '../core/boundaries.js';
+import { baselineKeys, branchRenames, classifyViolations, violationKey } from '../core/boundary-baseline.js';
+import { computeBoundaries, type BoundaryResult, type BoundaryViolationRecord } from '../core/boundaries.js';
 import { githubSlugs, parseMarkdownHeadings, type ParsedCard } from '../core/card-parser.js';
-import { resolveDomainConfig, type BoundaryMode } from '../core/domain-config.js';
+import { isBoundaryMode, resolveDomainConfig, type BoundaryMode } from '../core/domain-config.js';
 import type { UnresolvedRef } from '../core/domain-graph.js';
 import { canonicalRuleId, indexGraph } from '../core/domain-graph-query.js';
 import { diffLoaderRules, renderLoaderRules, type LoaderRulesDiff } from '../core/loader-rules.js';
@@ -22,10 +25,12 @@ import { runVerifyChecks, type CheckOutcome, type Finding, type ShadowSpecsCheck
 const NAME = 'verify-domain';
 
 const USAGE = [
-  'Usage: ctxo verify-domain [--since <ref>] [--boundaries by-rung|report] [--json]',
+  'Usage: ctxo verify-domain [--since <ref>] [--boundaries by-rung|new-only|report] [--json]',
   '',
   '  --since <ref>        Also check that every context changed since the merge base of <ref> and HEAD has a card change or a trailer (check 11)',
-  '  --boundaries <mode>  by-rung or report; overrides domain.boundaries.enforce for this run',
+  '  --boundaries <mode>  by-rung, new-only or report; overrides domain.boundaries.enforce for this run.',
+  '                       new-only fails only on the boundary violations the merge base of --since lacks (from its committed',
+  '                       index when current, else from an index built in a temporary git worktree); without --since, by-rung',
   '  --json               Print the checks and the summary as JSON on stdout',
   '',
   'Exit codes: 0 no errors, 1 errors, 2 missing index, git failure or an internal error.',
@@ -58,7 +63,7 @@ function parseArgs(args: readonly string[]): Options | { readonly error: string 
       i++;
     } else if (arg === '--boundaries') {
       const value = args[i + 1];
-      if (value !== 'by-rung' && value !== 'report') return { error: '[ctxo] --boundaries must be "by-rung" or "report"' };
+      if (!isBoundaryMode(value)) return { error: '[ctxo] --boundaries must be "by-rung", "new-only" or "report"' };
       options.boundaries = value;
       i++;
     } else return { error: `[ctxo] Unknown verify-domain flag: ${arg}` };
@@ -75,7 +80,36 @@ function location(finding: Finding): string {
   return finding.line === undefined ? finding.file : `${finding.file}:${finding.line}`;
 }
 
-function printHuman(outcomes: readonly CheckOutcome[], errors: number, warnings: number): void {
+/** The `new-only` comparison of one run: absent in the other modes. */
+interface BaselineReport {
+  readonly mode: 'new-only';
+  /** Whether the violations were compared with the base; false means the run fell back to by-rung. */
+  readonly compared: boolean;
+  /** Short SHA of the base (the merge base of --since and HEAD); absent without --since. */
+  readonly base?: string;
+  readonly source?: BaseIndexSource;
+  /** Why the run fell back to by-rung. */
+  readonly fallback?: string;
+  readonly new: readonly BoundaryViolationRecord[];
+  readonly existing: readonly BoundaryViolationRecord[];
+}
+
+const SOURCE_TEXT: Record<BaseIndexSource, string> = {
+  'committed-index': 'its committed index',
+  worktree: 'an index built in a temporary worktree',
+};
+
+function printBaseline(baseline: BaselineReport): void {
+  if (!baseline.compared) {
+    console.error(`[ctxo] Boundaries new-only fell back to by-rung (${baseline.fallback}): every violation counts`);
+    return;
+  }
+  console.error(
+    `[ctxo] Boundaries new-only against ${baseline.base} (${SOURCE_TEXT[baseline.source!]}): ${baseline.new.length} new, ${baseline.existing.length} existing`,
+  );
+}
+
+function printHuman(outcomes: readonly CheckOutcome[], errors: number, warnings: number, baseline: BaselineReport | undefined): void {
   for (const outcome of outcomes) {
     console.error(`[ctxo] ${GLYPH[outcome.status]} ${outcome.id} ${outcome.title}`);
     for (const finding of outcome.findings) {
@@ -83,7 +117,13 @@ function printHuman(outcomes: readonly CheckOutcome[], errors: number, warnings:
       console.error(`    ${finding.severity} ${where === '' ? '' : `${where} `}${finding.message}`);
     }
   }
+  if (baseline !== undefined) printBaseline(baseline);
   console.error(`[ctxo] verify-domain: ${errors} errors, ${warnings} warnings`);
+}
+
+/** A violation as the JSON report lists it, with its key. */
+function violationJson(v: BoundaryViolationRecord): Record<string, unknown> {
+  return { key: violationKey(v).split('\u0000').join(' | '), from: v.from, to: v.to, edgeKind: v.edgeKind, severity: v.severity };
 }
 
 const MARKDOWN = /\.(?:md|markdown)$/i;
@@ -208,19 +248,9 @@ async function verify(host: CtxoHost, ctx: ModuleCommandContext, options: Option
     : EMPTY_DIFF;
   const contextMapText = registry !== undefined ? readRepoText(projectRoot, registry.contextMap) : undefined;
 
-  // Boundaries from the current registry and the current graph; the stored artifacts are never read.
+  // The range of --since, read first: check 11 and the new-only baseline both need it.
   const makeMatcher = services.makeGlobMatcher;
-  const boundaries = registry
-    ? computeBoundaries(services.buildGraph(indices).allEdges(), {
-        registry,
-        ownership: createOwnership(registry, makeMatcher),
-        isTestFile,
-        mode: options.boundaries ?? config.boundaries.enforce,
-        blockingRungs: config.boundaries.blockingRungs,
-      })
-    : { crossEdges: [], violations: [], perContext: new Map() };
-
-  let touched: TouchedReport | undefined;
+  let range: { readonly base: string; readonly head: string; readonly commits: readonly RangeCommit[] } | undefined;
   if (options.since !== undefined && registry !== undefined) {
     const hint = `[ctxo] Cannot find the merge base of ${options.since} and HEAD. In CI, fetch the base branch with full history (actions/checkout fetch-depth: 0).`;
     if (git === undefined) {
@@ -238,6 +268,64 @@ async function verify(host: CtxoHost, ctx: ModuleCommandContext, options: Option
       console.error('[ctxo] Cannot read the commits of the range from git.');
       return 2;
     }
+    range = { base: resolved.base, head: resolved.head, commits };
+  }
+
+  // Boundaries from the current registry and the current graph; the stored artifacts are never read.
+  const mode = options.boundaries ?? config.boundaries.enforce;
+  let boundaries: BoundaryResult = registry
+    ? computeBoundaries(services.buildGraph(indices).allEdges(), {
+        registry,
+        ownership: createOwnership(registry, makeMatcher),
+        isTestFile,
+        mode,
+        blockingRungs: config.boundaries.blockingRungs,
+      })
+    : { crossEdges: [], violations: [], perContext: new Map() };
+
+  // new-only (#156): the violations the base already has are reported as existing and never fail.
+  let baseline: BaselineReport | undefined;
+  if (registry !== undefined && mode === 'new-only') {
+    const all = boundaries.violations;
+    const fallBack = (reason: string, base?: string): BaselineReport => {
+      console.error(`[ctxo] --boundaries new-only: ${reason}; failing on every boundary violation, as by-rung does.`);
+      return { mode: 'new-only', compared: false, ...(base !== undefined ? { base } : {}), fallback: reason, new: all, existing: [] };
+    };
+    if (range === undefined) baseline = fallBack('no base without --since <ref>');
+    else {
+      const result = await baseBoundaries(host, {
+        projectRoot,
+        base: range.base,
+        ctxoConfig: loaded.config,
+        config,
+        registry,
+        ownership: createOwnership(registry, makeMatcher),
+        warn: (message) => console.error(`[ctxo] ${message}`),
+        note: (message) => console.error(message),
+      });
+      if ('error' in result) baseline = fallBack(result.error, sha7(range.base));
+      else {
+        const gitRoot = services.findGitRoot(projectRoot);
+        const prefix = gitRoot === undefined ? '' : relative(gitRoot, projectRoot).replace(/\\/g, '/');
+        const renames = branchRenames(range.commits, prefix === '' ? '' : `${prefix}/`);
+        const classified = classifyViolations(all, baselineKeys(result.violations, renames));
+        boundaries = { ...boundaries, violations: classified };
+        baseline = {
+          mode: 'new-only',
+          compared: true,
+          base: sha7(range.base),
+          source: result.source,
+          new: classified.filter((v) => v.baseline === 'new'),
+          existing: classified.filter((v) => v.baseline === 'existing'),
+        };
+      }
+    }
+  }
+
+  let touched: TouchedReport | undefined;
+  if (range !== undefined && registry !== undefined) {
+    const { commits, base, head } = range;
+    const resolved = { base, head };
     touched = computeTouched({
       registry,
       ownership: createOwnership(registry, makeMatcher),
@@ -285,9 +373,25 @@ async function verify(host: CtxoHost, ctx: ModuleCommandContext, options: Option
   const exitCode = errors > 0 ? 1 : 0;
 
   if (options.json) {
-    process.stdout.write(`${JSON.stringify({ registry: registryFile.path, checks: outcomes, summary: { errors, warnings }, exitCode }, null, 2)}\n`);
+    const boundariesJson =
+      baseline === undefined
+        ? {}
+        : {
+            boundaries: {
+              mode: baseline.mode,
+              compared: baseline.compared,
+              ...(baseline.base !== undefined ? { base: baseline.base } : {}),
+              ...(baseline.source !== undefined ? { source: baseline.source } : {}),
+              ...(baseline.fallback !== undefined ? { fallback: baseline.fallback } : {}),
+              new: baseline.new.map(violationJson),
+              existing: baseline.existing.map(violationJson),
+            },
+          };
+    process.stdout.write(
+      `${JSON.stringify({ registry: registryFile.path, checks: outcomes, ...boundariesJson, summary: { errors, warnings }, exitCode }, null, 2)}\n`,
+    );
   } else {
-    printHuman(outcomes, errors, warnings);
+    printHuman(outcomes, errors, warnings, baseline);
   }
   return exitCode;
 }

@@ -10,7 +10,7 @@ import { leavesProject } from '../adapters/repo-files.js';
 import { readRegistry } from '../adapters/registry-reader.js';
 import { discoverConventions, formatDiscovery, proposalAddsSomething } from '../core/discovery.js';
 import { diffLoaderRules, renderLoaderRules } from '../core/loader-rules.js';
-import { resolveDomainConfig, type BoundaryMode, type DomainConfig } from '../core/domain-config.js';
+import { isBoundaryMode, resolveDomainConfig, type BoundaryMode, type DomainConfig } from '../core/domain-config.js';
 import type { HookEvent } from '../core/guard.js';
 
 /** The command `ctxo init --domain` registers for every fold-guard event (D16). */
@@ -35,6 +35,7 @@ const BOM = String.fromCharCode(0xfeff);
 const BOUNDARY_QUESTION = 'Boundary violations between named contexts';
 const BOUNDARY_CHOICES: readonly { readonly value: BoundaryMode; readonly label: string }[] = [
   { value: 'by-rung', label: 'by-rung: fail verify-domain for bounded and boring contexts, warn for the others' },
+  { value: 'new-only', label: 'new-only: as by-rung, but fail only on violations the branch adds (verify-domain --since)' },
   { value: 'report', label: 'report: warnings only' },
 ];
 
@@ -57,7 +58,7 @@ function configuredMode(text: string): BoundaryMode | undefined {
   const domain = domainSection(text);
   const boundaries = isRecord(domain) ? domain['boundaries'] : undefined;
   const enforce = isRecord(boundaries) ? boundaries['enforce'] : undefined;
-  return enforce === 'by-rung' || enforce === 'report' ? enforce : undefined;
+  return isBoundaryMode(enforce) ? enforce : undefined;
 }
 
 /** The config text, read once: '' when the file is missing (a dry run before the config exists). */

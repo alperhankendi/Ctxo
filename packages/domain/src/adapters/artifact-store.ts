@@ -3,7 +3,7 @@ import { mkdirSync, readFileSync, readdirSync, renameSync, rmSync, rmdirSync, wr
 import { join } from 'node:path';
 import type { BoundaryViolationRecord, CrossContextSummary } from '../core/boundaries.js';
 import type { ContextHistoryEntry, MovedFile } from '../core/context-metrics.js';
-import type { BoundaryMode } from '../core/domain-config.js';
+import { isBoundaryMode, type BoundaryMode } from '../core/domain-config.js';
 import type { DomainGraph } from '../core/domain-graph.js';
 import type { MaturityArtifact } from '../core/maturity.js';
 import { RUNGS, type Rung } from '../core/registry.js';
@@ -104,7 +104,7 @@ function isEnd(v: unknown): boolean {
 function isBoundaries(v: unknown): v is BoundariesArtifact {
   if (!isRecord(v) || v['ctxoArtifact'] !== 'domain-boundaries' || v['version'] !== 1 || !isString(v['registryHash'])) return false;
   return (
-    (v['mode'] === 'by-rung' || v['mode'] === 'report') &&
+    isBoundaryMode(v['mode']) &&
     Array.isArray(v['blockingRungs']) &&
     v['blockingRungs'].every(isRung) &&
     Array.isArray(v['crossEdges']) &&

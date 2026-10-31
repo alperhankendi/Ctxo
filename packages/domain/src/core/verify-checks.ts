@@ -440,7 +440,9 @@ function check9(registry: DomainRegistry, input: VerifyInput): CheckOutcome {
 
 function check10(boundaries: BoundaryResult): CheckOutcome {
   const findings: Finding[] = boundaries.violations.map((v) => {
-    const message = `${v.from.context} -> ${v.to.context}: ${v.from.symbolId} ${v.edgeKind} ${v.to.symbolId} is outside the contracts`;
+    // new-only with a base: new violations first, each finding says which group it is in.
+    const group = v.baseline === 'new' ? ' (new)' : v.baseline === 'existing' ? ' (existing at the base)' : '';
+    const message = `${v.from.context} -> ${v.to.context}: ${v.from.symbolId} ${v.edgeKind} ${v.to.symbolId} is outside the contracts${group}`;
     const extra = { file: v.from.file, context: v.from.context };
     return v.severity === 'error' ? error('10', message, extra) : warning('10', message, extra);
   });

@@ -98,7 +98,7 @@ describe('Release Packaging', () => {
     expect(files).toContain('dist/internal.js');
   });
 
-  it('tarball size is reasonable (< 850KB)', { timeout: 30_000 }, () => {
+  it('tarball size is reasonable (< 900KB)', { timeout: 30_000 }, () => {
     const output = execSync('npm pack --dry-run --json', { cwd: ROOT, encoding: 'utf-8' });
 
     const info = JSON.parse(output);
@@ -142,7 +142,9 @@ describe('Release Packaging', () => {
     // 2150KB, the next 50KB step. Source maps were a large part of the tarball; slimming them was the owner's
     // call (spec 4).
     // PR 3 (#156) stops publishing source maps (the owner's call): 2128.79KB to 766.07KB, so the limit is 850KB.
-    expect(sizeKB).toBeLessThan(850);
+    // The new-only boundary mode (#156: base-index.ts, the two host services, the longer llms*.txt) crossed it
+    // at 854.35KB, so it is 900KB, the next 50KB step.
+    expect(sizeKB).toBeLessThan(900);
     expect(sizeKB).toBeGreaterThan(1); // Sanity: not empty (dist/ may not exist in CI pre-build)
   });
 });

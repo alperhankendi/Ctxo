@@ -158,7 +158,7 @@ export interface InitPartContext {
   readonly toolIds: readonly string[];
   readonly dryRun: boolean;
   readonly yes: boolean;
-  readonly boundaries?: 'by-rung' | 'report';
+  readonly boundaries?: 'by-rung' | 'new-only' | 'report';
   /** Returns `initial` when not interactive or with --yes. */
   readonly prompt: InitPrompter;
   ensureConfigFile(): InitFileResult;
@@ -259,6 +259,18 @@ export interface DocumentSearch {
   search(query: string, limit?: number): SearchResponse;
 }
 
+/** The committed `.ctxo/index` of a commit, read from git without a checkout (`readIndexAtCommit`). */
+export interface IndexAtCommit {
+  readonly indices: readonly FileIndex[];
+  /**
+   * Whether the index describes the commit: every entry's content hash equals its file's at the commit, and no
+   * file of an indexed extension (not matched by `index.ignore`) lacks an entry.
+   */
+  readonly current: boolean;
+  /** Why it is not current: the first few reasons, then a count; empty when current. */
+  readonly staleReasons: readonly string[];
+}
+
 /** The runtime services a module gets from the CLI instead of importing them. */
 export interface CtxoHostServices {
   createLogger(namespace: string): Logger;
@@ -269,6 +281,17 @@ export interface CtxoHostServices {
   createTestFileCheck(config: CtxoConfig, indices: readonly FileIndex[]): TestFileCheck;
   createGit(projectRoot: string): IGitPort;
   readIndex(ctxoRoot: string): FileIndex[];
+  /**
+   * The committed `.ctxo/index` of `commit` (a full SHA), read from git without a checkout; undefined when the
+   * commit has no index entry. Rejects when git fails.
+   */
+  readIndexAtCommit(projectRoot: string, commit: string): Promise<IndexAtCommit | undefined>;
+  /**
+   * Indexes `commit` in a temporary git worktree (under `.ctxo/.cache/`, detached, no hooks) that it creates and
+   * removes, and returns that index: no history, no communities, no module pass. Never touches the working tree.
+   * Rejects when git or the index fails, or the index is empty.
+   */
+  indexCommitInWorktree(projectRoot: string, commit: string): Promise<FileIndex[]>;
   buildGraph(indices: readonly FileIndex[]): SymbolGraph;
   /** The configured co-change window (`cochange.maxCommits`, `cochange.since`); undefined without git history. */
   readCoChangeWindow(projectRoot: string, config: CtxoConfig): Promise<CoChangeWindowCommits | undefined>;

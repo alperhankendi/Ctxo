@@ -12,7 +12,11 @@ import { readFileSync } from 'node:fs';
  * UTF-16 without a BOM is not detected: guessing would misread UTF-8 files.
  */
 export function readSourceText(absolutePath: string): string {
-  const bytes = readFileSync(absolutePath);
+  return decodeSourceText(readFileSync(absolutePath));
+}
+
+/** The decoding of `readSourceText` for bytes from elsewhere (a blob read from git), so their hash agrees. */
+export function decodeSourceText(bytes: Buffer): string {
   if (bytes.length >= 2) {
     const first = bytes[0];
     const second = bytes[1];

@@ -383,7 +383,7 @@ contextsView:
 domain:                    # only read when @ctxo/domain is installed
   registry: docs/domain/contexts.yaml
   coverage: { unowned: warn }
-  boundaries: { enforce: by-rung, blockingRungs: [bounded, boring] }
+  boundaries: { enforce: by-rung, blockingRungs: [bounded, boring] }   # by-rung | new-only | report
   rules: { idPattern: "^[A-Z][A-Z0-9]*-\\d+$", trackerPrefixes: [] }
   tests:
     ruleTraitKeys: [Rule]
@@ -410,8 +410,8 @@ domain:                    # only read when @ctxo/domain is installed
 | `index.tests` | `[]` | Extra test-file globs; the fix for the annotation limitations above. Plugins receive them with the defaults as `PluginContext.testGlobs` (TypeScript test blocks) |
 | `domain.registry` | `docs/domain/contexts.yaml` | Path of the context registry, relative to the repository root |
 | `domain.coverage.unowned` | `warn` | `warn` or `error`: severity of check 4b (unowned files) |
-| `domain.boundaries.enforce` | `by-rung` | `by-rung` or `report`: severity of boundary violations |
-| `domain.boundaries.blockingRungs` | `[bounded, boring]` | Rungs whose contexts make a violation an error in `by-rung` mode |
+| `domain.boundaries.enforce` | `by-rung` | `by-rung`, `new-only` or `report`: severity of boundary violations (`new-only`: as `by-rung`, but `verify-domain --since` fails only on new ones) |
+| `domain.boundaries.blockingRungs` | `[bounded, boring]` | Rungs whose contexts make a violation an error in `by-rung` and `new-only` modes |
 | `domain.rules.idPattern` | `^[A-Z][A-Z0-9]*-\d+$` | Shape of a rule ID |
 | `domain.rules.trackerPrefixes` | `[]` | Issue-tracker prefixes; for these, plain text never links to a rule |
 | `domain.tests.ruleTraitKeys` | `[Rule]` | `Trait` keys whose value is a rule ID |
@@ -606,7 +606,7 @@ Claude Code is the only client with the guard. Cursor gets a reminder instead, p
 ### `ctxo verify-domain`
 
 ```bash
-ctxo verify-domain [--since <ref>] [--boundaries by-rung|report] [--json]
+ctxo verify-domain [--since <ref>] [--boundaries by-rung|new-only|report] [--json]
 ```
 
 The CI gate. It checks structure, never meaning.
@@ -623,12 +623,12 @@ The CI gate. It checks structure, never meaning.
 | 7 | Relative links and heading anchors in cards resolve (external URLs are not fetched) | error |
 | 8 | Generated loader files match what `ctxo domain rules` would write, and no hand-written file blocks an expected path | error |
 | 9 | `context-map.md` has a table with `Context` and `Rung` columns that agrees with the registry (a missing file while contexts exist is a warning) | error |
-| 10 | Boundaries: edges outside `contracts` | error for `blockingRungs` in `by-rung` mode, else warning |
+| 10 | Boundaries: edges outside `contracts` | error for `blockingRungs` in `by-rung` mode, and in `new-only` mode only for violations the `--since` base lacks ([new violations only](#new-violations-only)); else warning |
 | 11 | With `--since`: no unresolved touched contexts | error |
 | 12 | Shadow-spec resolutions: a `shadow-specs.yaml` that does not parse is an error; an entry whose fingerprint matches no current candidate (stale), an entry naming an unknown rule, and a `shadow-specs.yaml` in a folder that belongs to no context are warnings (see [check 12](#verify-domain-check-12)) | error or warning |
 
 - **Exit codes.** 0 when there are no errors (warnings allowed), 1 on errors, 2 on a missing index, a git failure (a base that cannot be found, with the `fetch-depth: 0` hint) or an internal error. With no registry it prints a hint and exits 0. CI never passes silently on an internal failure.
-- **`--json` and stdout.** The JSON report (`registry`, `checks`, `summary`, `exitCode`) is printed on stdout only when the checks run. On exit 2 and on the no-registry path stdout is empty and the message goes to stderr, so a pipeline must read the exit code, not only stdout. The human report always goes to stderr.
+- **`--json` and stdout.** The JSON report (`registry`, `checks`, `summary`, `exitCode`, and `boundaries` in `new-only` mode) is printed on stdout only when the checks run. On exit 2 and on the no-registry path stdout is empty and the message goes to stderr, so a pipeline must read the exit code, not only stdout. The human report always goes to stderr.
 - **Day one.** With the init skeleton (no contexts) or a partial registry, unowned files and a missing context map are warnings, so CI stays green until the team sets `domain.coverage.unowned: error`. Boundaries are computed from the current graph on every run; the stored artifacts are never read.
 - **In CI.** `ctxo verify-domain --since origin/main` needs the base branch's history: use `actions/checkout` with `fetch-depth: 0`. See [CI integration](../../site/docs/reference/ci-integration.md).
 
@@ -670,9 +670,20 @@ When a registry exists, `ctxo index` runs a domain pass (Phase 2e, on every run 
 
 Each artifact carries a `ctxoArtifact` marker (`domain-contexts`, `domain-boundaries`, `domain-history`). The core index reader skips any JSON that carries one, and the writer refuses to delete one as a stale index entry. Artifacts are written only when their content changed.
 
-- **Boundary modes.** `domain.boundaries.enforce: by-rung` (default) makes an edge outside the contracts an error when either context's rung is in `domain.boundaries.blockingRungs` (default `[bounded, boring]`) and a warning otherwise; `report` makes every violation a warning. The computation is the same in both modes and linear in edges. `verify-domain --boundaries` overrides the mode once; `ctxo init --domain --boundaries <mode>` sets it without the prompt.
+- **Boundary modes.** `domain.boundaries.enforce: by-rung` (default) makes an edge outside the contracts an error when either context's rung is in `domain.boundaries.blockingRungs` (default `[bounded, boring]`) and a warning otherwise; `report` makes every violation a warning; `new-only` uses the rung rules of `by-rung`, but `verify-domain --since <ref>` fails only on the violations the branch adds (see [new violations only](#new-violations-only)). The computation is the same in every mode and linear in edges; `boundaries.json` records `new-only` violations with their `by-rung` severities, since the index pass has no base. `verify-domain --boundaries` overrides the mode once; `ctxo init --domain --boundaries <mode>` sets it without the prompt.
 - **What counts.** Edges whose source file is a test are skipped, and so are edges with an unowned or multiply owned end and unresolved name references (a data resource without an indexed definition). Both ends in one context count as internal.
 - **Drift by named context.** The per-context share of cross-context edges (`crossShare`) is tracked over the per-commit history, with `distinctCommits` and a confidence (fewer than 3 low, 3 to 6 medium, 7 or more high). Files that moved between contexts through renames are listed with the commit and date.
+
+#### New violations only
+
+`domain.boundaries.enforce: new-only` (or `ctxo verify-domain --boundaries new-only`) lets a team gate a blocking rung without fixing every old violation first. The rung rules of `by-rung` still decide which violations are errors, but with `--since <ref>` a violation that the base already has is reported as **existing** (a warning) and only **new** ones can fail the gate.
+
+- **Base.** The merge base of `<ref>` and HEAD, as for check 11. Its violations are computed as the current ones are (`computeBoundaries` over the graph of the index), with the **current** registry, contracts, `blockingRungs` and test-file rules, so a change to the registry never makes old code look new.
+- **Base index.** The committed `.ctxo/index` of the base, read from git at that commit without a checkout, when it is current for that commit: every entry has a content hash equal to its file's at the commit, and no file of an indexed extension (outside `index.ignore`) lacks an entry. Otherwise ctxo indexes the base in a temporary git worktree under `.ctxo/.cache/base-worktrees/` (detached, no hooks, no history or communities, no module pass) and removes it afterwards, also on failure. The working tree, the git index and the branch are never touched.
+- **Fallback.** When the base cannot be indexed (git or the indexer fails, or the index is empty), verify-domain says why on stderr and falls back to `by-rung`: every violation counts. Without `--since` there is no base, and `new-only` behaves as `by-rung` with a warning.
+- **Identity.** A violation's key is its source context, target context, source symbol ID, edge kind and target symbol ID (shown as `lending | billing | <from> | imports | <to>` in the JSON). Symbol IDs hold no line number, so a violation that moves within its file, or a change in an unrelated file, keeps its key.
+- **Renames.** The renames of the non-merge commits in `base..HEAD` (composed, `a -> b -> c` maps `a` to `c`) rewrite the base's symbol IDs before the comparison, so a file renamed or moved on the branch keeps its existing violations. A violation is new when its symbol was renamed, when its file moved into another context (the context pair changed), or when its file was renamed only in the working tree. A different C# tier between the two indexes changes symbol IDs and makes violations new: the gate errs on the side of failing.
+- **Output.** Check 10 lists the new violations first, each message ending in `(new)`, then the existing ones, ending in `(existing at the base)`. The text report adds `Boundaries new-only against <sha> (<source>): N new, M existing`. `--json` adds a `boundaries` object: `mode`, `compared`, `base`, `source` (`committed-index` or `worktree`), `fallback` (why it fell back) and the `new` and `existing` lists, each violation with its `key`. Exit codes keep their meaning: 0 no errors, 1 errors (new blocking violations), 2 missing index, git failure or an internal error.
 
 ### The `context` field and other additive fields
 

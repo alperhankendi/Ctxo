@@ -270,7 +270,7 @@ describe('ctxo verify-domain', () => {
   it('--help prints the usage and exits 0', async () => {
     const dir = await project();
     expect(await runCommand(dir, '--help')).toBe(0);
-    expect(stderr.join('\n')).toContain('Usage: ctxo verify-domain [--since <ref>] [--boundaries by-rung|report] [--json]');
+    expect(stderr.join('\n')).toContain('Usage: ctxo verify-domain [--since <ref>] [--boundaries by-rung|new-only|report] [--json]');
   });
 
   it('verify-domain reports card reference problems from the current index', async () => {

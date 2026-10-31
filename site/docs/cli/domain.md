@@ -18,13 +18,13 @@ a hint and exit 0.
 The CI gate.
 
 ```shell
-ctxo verify-domain [--since <ref>] [--boundaries by-rung|report] [--json]
+ctxo verify-domain [--since <ref>] [--boundaries by-rung|new-only|report] [--json]
 ```
 
 | Flag | Description |
 | --- | --- |
 | `--since <ref>` | Also check that every context changed since the merge base of `<ref>` and `HEAD` has a card change or a `Domain-Unchanged` trailer (check 11) |
-| `--boundaries <mode>` | `by-rung` or `report`; overrides `domain.boundaries.enforce` for this run |
+| `--boundaries <mode>` | `by-rung`, `new-only` or `report`; overrides `domain.boundaries.enforce` for this run. `new-only` fails only on violations the `--since` base lacks ([new violations only](#new-violations-only)) |
 | `--json` | Print the checks and the summary as JSON on stdout |
 
 ### The checks
@@ -41,7 +41,7 @@ ctxo verify-domain [--since <ref>] [--boundaries by-rung|report] [--json]
 | 7 | Relative links and heading anchors in cards resolve (external URLs are not fetched) | error |
 | 8 | Generated loader files match what `ctxo domain rules` would write, and no hand-written file blocks an expected path | error |
 | 9 | `context-map.md` has a `Context` / `Rung` table that agrees with the registry (a missing file is a warning) | error |
-| 10 | Boundaries: edges outside `contracts` | error for `blockingRungs` in `by-rung` mode, else warning |
+| 10 | Boundaries: edges outside `contracts` | error for `blockingRungs` in `by-rung` mode, and in `new-only` mode only when the `--since` base lacks the violation; else warning |
 | 11 | With `--since`: no unresolved touched contexts | error |
 | 12 | Shadow-spec resolutions: a `shadow-specs.yaml` that does not parse; stale entries, unknown rules, files in folders of no context | error for a broken file, else warning |
 
@@ -71,6 +71,30 @@ artifacts) and reads each context's `<registry folder>/<context>/shadow-specs.ya
 A registry that does not parse or validate skips checks 2 to 12. Day one is green: with the init skeleton (no contexts) or a partial registry,
 unowned files and a missing context map are warnings until you set `domain.coverage.unowned: error`.
 
+### New violations only
+
+`--boundaries new-only` (or `domain.boundaries.enforce: new-only`) keeps the rung rules of `by-rung`, but with
+`--since <ref>` check 10 fails only on the boundary violations the branch adds:
+
+```shell
+ctxo verify-domain --since origin/main --boundaries new-only
+```
+
+- The base is the merge base of `<ref>` and `HEAD`. Its violations come from its committed `.ctxo/index`, read from
+  git without a checkout, when that index is current for the commit (every content hash matches, no indexable file is
+  missing); otherwise ctxo indexes the base in a temporary git worktree under `.ctxo/.cache/base-worktrees/` and
+  removes it. Your working tree is never touched. The current registry and contracts judge both sides.
+- A violation the base has is **existing**: a warning ending in `(existing at the base)`. Any other is **new**
+  (ending in `(new)`) and keeps the `by-rung` severity. New ones are listed first, and a summary line reads
+  `Boundaries new-only against <sha> (<source>): N new, M existing`.
+- A violation is identified by its source and target contexts, source and target symbol IDs and edge kind, never by a
+  line number. A file renamed on the branch keeps its violations existing; a renamed symbol, or a file moved into
+  another context, makes its violations new.
+- If the base cannot be indexed, verify-domain says why and fails on every violation, as `by-rung` does. Without
+  `--since` there is no base: `new-only` is `by-rung`, with a warning.
+- With `--json`, the report adds `boundaries`: `{ mode, compared, base, source, fallback, new, existing }`, where
+  `source` is `committed-index` or `worktree` and each violation carries its `key`.
+
 ### Exit codes and `--json`
 
 | Code | Meaning |
@@ -80,7 +104,7 @@ unowned files and a missing context map are warnings until you set `domain.cover
 | `2` | No index (run `ctxo index`), a base ref that cannot be found, a git failure, or an internal error (also a failure to build the domain graph that check 12 needs: checks 1 to 11 then do not report) |
 
 The human report goes to stderr. With `--json`, stdout holds
-`{ "registry", "checks", "summary", "exitCode" }` when the checks ran. **On exit 2 and on the no-registry path
+`{ "registry", "checks", "summary", "exitCode" }` (plus `boundaries` in `new-only` mode) when the checks ran. **On exit 2 and on the no-registry path
 stdout is empty** and the message is on stderr, so a script must read the exit code and not only parse stdout.
 
 ```shell

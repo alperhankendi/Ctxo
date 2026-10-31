@@ -81,6 +81,40 @@ export function lateFeeFor(payerId: number): number {
   }
 }
 
+const FIRST_EDGE_FILE: Record<Variant, string> = { csharp: 'src/Lending/LateFee.cs', typescript: 'src/lending/late-fee.ts' };
+const SECOND_EDGE_FILE: Record<Variant, string> = { csharp: 'src/Lending/Fine.cs', typescript: 'src/lending/fine.ts' };
+
+/** A second Lending class that reaches into the Billing internal: the violation a branch adds. */
+function addSecondBillingInternalEdge(ws: SampleWorkspace, variant: Variant): void {
+  if (variant === 'csharp') {
+    ws.write(
+      SECOND_EDGE_FILE.csharp,
+      `using LibraryLending.Billing;
+
+namespace LibraryLending.Lending;
+
+public static class Fine
+{
+    public static int Owed(int payerId)
+    {
+        return new InvoiceLedger().BalanceOf(payerId) * 2;
+    }
+}
+`,
+    );
+  } else {
+    ws.write(
+      SECOND_EDGE_FILE.typescript,
+      `import { InvoiceLedger } from '../billing/invoice-ledger.js';
+
+export function fineOwed(payerId: number): number {
+  return new InvoiceLedger().balanceOf(payerId) * 2;
+}
+`,
+    );
+  }
+}
+
 function domainArtifacts(ws: SampleWorkspace): Map<string, string> {
   const root = ws.path('.ctxo/index/domain');
   const files = new Map<string, string>();
@@ -193,6 +227,63 @@ describe.each(VARIANTS)('PR 2B acceptance, %s sample', (variant) => {
     expect(report.status).toBe(0);
     expect(report.messages.some((m) => m.startsWith('10 warning lending -> billing:'))).toBe(true);
     expect(report.messages.some((m) => m.startsWith('10 error'))).toBe(false);
+  });
+
+  it('boundaries new-only: the branch fails on the violation it adds, not on the one main has', (context) => {
+    const ws = prepared(variant);
+    ws.requireEdges();
+    if (!ws.resolvesEdges) context.skip('C# needs the Roslyn tier (.NET SDK 8+) to resolve edges between files');
+    // main already has a Lending edge into a Billing internal; its index is not committed (.gitignore).
+    addBillingInternalEdge(ws, variant);
+    ws.commit('feat: lending reads the billing ledger directly');
+    ws.git('checkout', '-q', '-b', 'feat/fine');
+    addSecondBillingInternalEdge(ws, variant);
+    ws.commit('feat: fines read the ledger too', '-m', 'Domain-Unchanged: lending (boundary e2e)');
+    ws.index();
+
+    const result = ws.cli(['verify-domain', '--json', '--since', 'main', '--boundaries', 'new-only']);
+    expect(result.status, result.stderr).toBe(1);
+    const report = JSON.parse(result.stdout) as VerifyReport & {
+      boundaries: { compared: boolean; source: string; new: { from: { file: string }; severity: string }[]; existing: { from: { file: string }; severity: string }[] };
+    };
+    expect(report.boundaries).toMatchObject({ compared: true, source: 'worktree' });
+    expect(new Set(report.boundaries.new.map((v) => v.from.file))).toEqual(new Set([SECOND_EDGE_FILE[variant]]));
+    expect(report.boundaries.new.every((v) => v.severity === 'error')).toBe(true);
+    expect(report.boundaries.existing.map((v) => v.from.file)).toContain(FIRST_EDGE_FILE[variant]);
+    expect(report.boundaries.existing.every((v) => v.severity === 'warning')).toBe(true);
+    // Only the new edges are errors (one file can give more than one edge: an import and a call).
+    expect(report.summary.errors).toBe(report.boundaries.new.length);
+    // ctxo removed its temporary worktree.
+    expect(ws.git('worktree', 'list', '--porcelain').split('\n').filter((line) => line.startsWith('worktree '))).toHaveLength(1);
+
+    // by-rung fails on the existing edges too; without the new edge, new-only passes.
+    const byRung = verifyJson(ws, '--since', 'main');
+    expect(byRung.report.summary.errors).toBe(report.boundaries.new.length + report.boundaries.existing.filter((v) => v.from.file === FIRST_EDGE_FILE[variant]).length);
+    ws.git('checkout', '-q', 'main');
+    ws.git('checkout', '-q', '-b', 'feat/quiet');
+    ws.commit('chore: nothing', '--allow-empty');
+    ws.index();
+    const quiet = ws.cli(['verify-domain', '--json', '--since', 'main', '--boundaries', 'new-only']);
+    expect(quiet.status, quiet.stderr).toBe(0);
+  });
+
+  it('boundaries new-only reads the base from its committed index when it is current', (context) => {
+    if (variant !== 'typescript') context.skip('one variant is enough for the committed-index path');
+    const ws = prepared(variant);
+    ws.write('.gitignore', 'node_modules/\nbin/\nobj/\n.ctxo/.cache/\n');
+    addBillingInternalEdge(ws, variant);
+    ws.index();
+    ws.commit('feat: lending reads the billing ledger directly, index committed');
+    ws.git('checkout', '-q', '-b', 'feat/fine');
+    addSecondBillingInternalEdge(ws, variant);
+    ws.index();
+    ws.commit('feat: fines read the ledger too', '-m', 'Domain-Unchanged: lending (boundary e2e)');
+
+    const result = ws.cli(['verify-domain', '--json', '--since', 'main', '--boundaries', 'new-only']);
+    expect(result.status, result.stderr).toBe(1);
+    const report = JSON.parse(result.stdout) as { boundaries: { source: string; new: { from: { file: string } }[] } };
+    expect(report.boundaries.source, result.stderr).toBe('committed-index');
+    expect(new Set(report.boundaries.new.map((v) => v.from.file))).toEqual(new Set([SECOND_EDGE_FILE[variant]]));
   });
 
   it('the same input twice gives byte-identical domain artifacts', () => {

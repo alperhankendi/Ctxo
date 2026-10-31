@@ -90,6 +90,9 @@ describe('computeBoundaries', () => {
     const report = run(edges, 'report');
     expect(severities(report)).toEqual(['billing>lending:warning', 'lending>reporting:warning', 'reporting>billing:warning']);
 
+    // new-only judges severities as by-rung does; verify-domain keeps only the new errors later.
+    expect(severities(run(edges, 'new-only'))).toEqual(severities(byRung));
+
     const custom = run(edges, 'by-rung', ['named']);
     expect(severities(custom)).toEqual(['billing>lending:error', 'lending>reporting:warning', 'reporting>billing:error']);
   });

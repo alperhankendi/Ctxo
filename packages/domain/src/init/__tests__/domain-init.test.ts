@@ -132,6 +132,10 @@ describe('domainInit', () => {
     const fresh = project();
     await domainInit(host).apply(recording(fresh, { boundaries: 'report' }).ctx);
     expect(config(fresh).domain.boundaries.enforce).toBe('report');
+
+    const newOnly = project();
+    await domainInit(host).apply(recording(newOnly, { boundaries: 'new-only' }).ctx);
+    expect(config(newOnly).domain.boundaries.enforce).toBe('new-only');
   });
 
   it('creates the registry skeleton only when missing', async () => {
