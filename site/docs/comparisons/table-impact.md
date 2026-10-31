@@ -225,7 +225,7 @@ title: Splitting a Core Table - ctxo vs Coding Blind
 <section class="hero">
   <div class="hero-badge">Real Impact Analysis / Opus 5.5</div>
   <h1>Splitting a core table<br>ctxo vs <em>coding blind</em></h1>
-  <p>Find every part of a running production backend that reaches one database table, directly or through layers of services and stored procedures. Both sessions get it right. At the highest effort, the one with ctxo gets there sooner and for less.</p>
+  <p>Find every part of a running production backend that reaches one database table, directly or through layers of services and stored procedures. Both sessions get it right. Over three runs per setting, the one with ctxo writes fewer output tokens; time and cost stay within run-to-run noise.</p>
 </section>
 
 <div class="container">
@@ -249,7 +249,7 @@ title: Splitting a Core Table - ctxo vs Coding Blind
   <section class="section">
     <div class="section-eyebrow">Live Comparison</div>
     <div class="section-title">Side by side, at xhigh effort</div>
-    <div class="section-desc">Two isolated Claude Code sessions: an empty config directory, no memory, no session history. Both load the repository's own CLAUDE.md and skills, as a real user's session would.</div>
+    <div class="section-desc">Two isolated Claude Code sessions: an empty config directory, no memory, no session history. Both load the repository's own CLAUDE.md and skills, as a real user's session would. This is the first of three runs per side at xhigh; the table below has all of them.</div>
     <div class="terminal-grid">
       <div class="terminal">
         <div class="term-bar">
@@ -296,28 +296,28 @@ title: Splitting a Core Table - ctxo vs Coding Blind
   </section>
   <section class="section">
     <div class="section-eyebrow">Head to Head</div>
-    <div class="section-title">Same answer, measured at two effort levels</div>
-    <div class="section-desc">All four sessions found every entry point in the ground truth. The difference is in time, cost and tokens, and it grows with effort.</div>
+    <div class="section-title">Same answer, three runs per setting</div>
+    <div class="section-desc">Every cell was run three times. Accuracy is the same on both sides. The one difference that holds across runs is output tokens; time and cost move more between runs of the same setting than between the two settings.</div>
     <div class="comp-table-wrap">
       <table class="comp-table">
         <thead>
-          <tr><th>Metric</th><th class="col-ctxo">With ctxo</th><th class="col-manual">Without ctxo</th><th>Difference</th></tr>
+          <tr><th>Metric (mean ± standard error, 3 runs)</th><th class="col-ctxo">With ctxo</th><th class="col-manual">Without ctxo</th><th>Difference</th></tr>
         </thead>
         <tbody>
-          <tr><td>Entry points found (xhigh)</td><td>36 / 36</td><td>36 / 36</td><td>same</td></tr>
-          <tr><td>Wall-clock (xhigh)</td><td class="win">518 s</td><td>650 s</td><td class="win">20% faster</td></tr>
-          <tr><td>Cost (xhigh)</td><td class="win">$5.64</td><td>$6.38</td><td class="win">12% cheaper</td></tr>
-          <tr><td>Output tokens (xhigh)</td><td class="win">53,108</td><td>61,579</td><td class="win">14% fewer</td></tr>
-          <tr><td>Tool calls (xhigh)</td><td>105</td><td>84</td><td>more calls, each cheaper</td></tr>
-          <tr><td>Entry points found (medium)</td><td>36 / 36</td><td>36 / 36</td><td>same</td></tr>
-          <tr><td>Wall-clock (medium)</td><td>304 s</td><td>290 s</td><td>5% slower</td></tr>
-          <tr><td>Cost (medium)</td><td>$3.16</td><td>$3.23</td><td>2% cheaper</td></tr>
-          <tr><td>Output tokens (medium)</td><td class="win">23,760</td><td>28,577</td><td class="win">17% fewer</td></tr>
-          <tr><td>Tool calls (medium)</td><td class="win">60</td><td>72</td><td class="win">17% fewer</td></tr>
+          <tr><td>Entry points found per run (xhigh)</td><td>36, 36, 36</td><td>36, 36, 36</td><td>same</td></tr>
+          <tr><td>Wall-clock (xhigh)</td><td>584 ± 50 s</td><td>632 ± 18 s</td><td>8% faster, within noise</td></tr>
+          <tr><td>Cost (xhigh)</td><td>$5.75 ± 0.37</td><td>$5.46 ± 0.46</td><td>5% more, within noise</td></tr>
+          <tr><td>Output tokens (xhigh)</td><td class="win">51,765 ± 1,791</td><td>55,554 ± 3,057</td><td class="win">7% fewer</td></tr>
+          <tr><td>Tool calls (xhigh)</td><td>101 ± 6</td><td>77 ± 4</td><td>more calls</td></tr>
+          <tr><td>Entry points found per run (medium)</td><td>36, 36, 35</td><td>36, 36, 35</td><td>same</td></tr>
+          <tr><td>Wall-clock (medium)</td><td>294 ± 42 s</td><td>337 ± 27 s</td><td>13% faster, within noise</td></tr>
+          <tr><td>Cost (medium)</td><td>$2.44 ± 0.38</td><td>$2.91 ± 0.22</td><td>16% less, within noise</td></tr>
+          <tr><td>Output tokens (medium)</td><td class="win">22,328 ± 2,373</td><td>27,090 ± 896</td><td class="win">18% fewer</td></tr>
+          <tr><td>Tool calls (medium)</td><td>51 ± 5</td><td>59 ± 6</td><td>14% fewer</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="note">Ground truth was built separately by an agent that did not use ctxo and had to cite a file and line for every hop of every chain: 36 entry points (25 HTTP endpoints, 10 background jobs and hosted services, 1 CLI command, nothing per request). Six borderline items (routes that only queue a job, a migration command that changes the schema, the host command that starts everything) were left out of the score, and every session explained how it treated them. One run per cell; a second run of the same cell will differ somewhat.</p>
+    <p class="note">Ground truth was built separately by an agent that did not use ctxo and had to cite a file and line for every hop of every chain: 36 entry points (25 HTTP endpoints, 10 background jobs and hosted services, 1 CLI command, nothing per request). Six borderline items (routes that only queue a job, a migration command that changes the schema, the host command that starts everything) were left out of the score, and every session explained how it treated them. At medium, each side missed one different endpoint in one of its three runs. The ctxo session made 5, 3 and 0 ctxo calls in its three medium runs and 5, 5 and 6 at xhigh. An earlier version of this page reported one run per cell (ctxo 20% faster and 12% cheaper at xhigh); the second and third runs did not reproduce that.</p>
   </section>
   <section class="section">
     <div class="section-eyebrow">What Actually Differed</div>
@@ -330,7 +330,7 @@ title: Splitting a Core Table - ctxo vs Coding Blind
           <li>One blast-radius call counted 160 confirmed dependents (51 direct) across C#, procedures and tests</li>
           <li>Data edges link C# methods to the procedures they execute and the tables those procedures read</li>
           <li>The session followed the rules block and skills that ctxo init writes; nobody told it which tool to use</li>
-          <li>At xhigh: 20% less wall-clock, 12% less cost, 14% fewer output tokens</li>
+          <li>Fewer output tokens in both settings: 18% at medium, 7% at xhigh (mean of three runs)</li>
           <li>Honest gap: the 8 KB response limit showed 21 of the 160 dependents, so the session traced the rest itself</li>
           <li>Honest gap: two queries assembled from strings are not in the index; the session found them with grep</li>
         </ul>
@@ -341,22 +341,22 @@ title: Splitting a Core Table - ctxo vs Coding Blind
           <li>Reached the same 36 entry points, with correct read and write labels</li>
           <li>Walked interfaces, dependency injection and schedulers by hand: 73 shell commands at xhigh</li>
           <li>Followed procedure-to-procedure calls by reading the migration scripts</li>
-          <li>At medium, on par with ctxo for time and cost; at xhigh, the slowest and most expensive run</li>
+          <li>Time and cost within run-to-run noise of the ctxo side at both effort levels</li>
           <li>No dependency count, no depth, no confidence tiers; a flat list built from text</li>
         </ul>
       </div>
     </div>
     <div class="verdict-card">
-      <h4>Verdict: same answer, and the harder the model works, the more ctxo saves</h4>
-      <p>All four sessions were correct, and that is the honest result: a frontier model can trace this codebase without help. At medium effort the two setups are on par (ctxo 2% cheaper, 5% slower, 17% fewer output tokens). At xhigh, where the model spends the most time and tokens, the ctxo session finished 20% sooner and 12% cheaper, because the graph had already walked the chains the other session had to walk with shell scripts. The index is not complete: queries built from strings still need a text search, and the session with ctxo did that check itself.</p>
+      <h4>Verdict: same answer, fewer tokens; time and cost too close to call</h4>
+      <p>Every run on both sides was correct, and that is the honest result: a frontier model can trace this codebase without help. Over three runs per setting, the ctxo sessions wrote fewer output tokens (18% at medium, 7% at xhigh), because the graph had already walked chains the other side walked with shell scripts. Time and cost varied more between runs of the same setting than between the two settings, so this page makes no claim about them. The index is not complete: queries built from strings still need a text search, and the session with ctxo did that check itself.</p>
       <div class="pillars">
         <div class="pillar">
           <h5>Same accuracy</h5>
-          <p>36 of 36 entry points in every session, scored against a ground truth built without ctxo.</p>
+          <p>35 or 36 of 36 entry points in every run on both sides, scored against a ground truth built without ctxo.</p>
         </div>
         <div class="pillar">
-          <h5>Cheaper at the top</h5>
-          <p>At xhigh: 20% less time, 12% less cost, 14% fewer output tokens.</p>
+          <h5>Fewer tokens</h5>
+          <p>18% fewer output tokens at medium and 7% at xhigh, mean of three runs per setting.</p>
         </div>
         <div class="pillar">
           <h5>Honest gaps</h5>
@@ -368,7 +368,7 @@ title: Splitting a Core Table - ctxo vs Coding Blind
   <section class="section">
     <div class="section-eyebrow">Method</div>
     <div class="section-title">How it was run</div>
-    <div class="section-desc">Two fresh clones of the repository. In one, <code>ctxo init</code> and <code>ctxo index</code> ran (with <code>dotnet restore</code> first, so the C# analyzer could resolve the SQL call sites); from the other, every ctxo artifact was removed. Each session ran headless with <code>claude -p</code>, Opus 5.5, an empty config directory holding only the login credentials, no session persistence, the repository's own settings and skills, a strict MCP config (ctxo only on the with side), and read-only tools. Class, route and table names on this page are generic; the counts are exact.</div>
+    <div class="section-desc">Two fresh clones of the repository. In one, <code>ctxo init</code> and <code>ctxo index</code> ran (with <code>dotnet restore</code> first, so the C# analyzer could resolve the SQL call sites); from the other, every ctxo artifact was removed. Each session ran headless with <code>claude -p</code>, Opus 5.5, an empty config directory holding only the login credentials, no session persistence, the repository's own settings and skills, a strict MCP config (ctxo only on the with side), and read-only tools. Each setting ran three times, four sessions at a time. Class, route and table names on this page are generic; the counts are exact. The full method is in the <a href="https://github.com/alperhankendi/Ctxo/blob/master/docs/runbook/comparisons/playbook.md">comparison playbook</a>.</div>
   </section>
 </div>
 
