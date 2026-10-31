@@ -311,7 +311,7 @@ src/loans/loan-policy.test.ts::LoanPolicy > renewal > extends by seven days::fun
 src/loans/loan-policy.test.ts::LoanPolicy > renewal > extends by seven days #2::function
 ```
 
-`index.tests` extras do not reach plugins, so TypeScript test blocks come only from the default globs above.
+The CLI hands every plugin the default test globs plus `index.tests` (`PluginContext.testGlobs`), so an `index.tests` glob such as `spec/**/*.check.ts` also makes TypeScript test blocks. With an older CLI, which does not set the field, only the default globs above count.
 
 ### What changes elsewhere
 
@@ -406,7 +406,7 @@ domain:                    # only read when @ctxo/domain is installed
 |---|---|---|
 | `index.facts` | `false` | Sets `capabilities.facts`; plugins that implement `extractFacts` write `facts` into the index JSON. An installed `@ctxo/domain` requests facts whatever this says, once the `domain.registry` file exists |
 | `contextsView.weights.data` | `0` | Weight of data edges in the contexts-view file graph |
-| `index.tests` | `[]` | Extra test-file globs; the fix for the annotation limitations above |
+| `index.tests` | `[]` | Extra test-file globs; the fix for the annotation limitations above. Plugins receive them with the defaults as `PluginContext.testGlobs` (TypeScript test blocks) |
 | `domain.registry` | `docs/domain/contexts.yaml` | Path of the context registry, relative to the repository root |
 | `domain.coverage.unowned` | `warn` | `warn` or `error`: severity of check 4b (unowned files) |
 | `domain.boundaries.enforce` | `by-rung` | `by-rung` or `report`: severity of boundary violations |

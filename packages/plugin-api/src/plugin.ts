@@ -40,6 +40,14 @@ export interface PluginContext {
   readonly config: Record<string, unknown>;
   /** Protocol v2 host capabilities. Absent on v1 cores. */
   readonly capabilities?: PluginCapabilities;
+  /**
+   * The globs that mark a file as a test file: the host's default test globs followed by the project's
+   * `.ctxo/config.yaml#index.tests` globs, in that order, without duplicates. Matched against the
+   * project-relative, forward-slash paths the adapter receives, as picomatch globs with `dot: true`, without
+   * negation. Absent on older cores (`@ctxo/cli` 0.17 and earlier): a plugin then uses its own default test-file
+   * rule. Optional and additive, so a plugin that ignores it keeps working.
+   */
+  readonly testGlobs?: readonly string[];
 }
 
 /**

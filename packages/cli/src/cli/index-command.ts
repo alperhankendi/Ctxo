@@ -186,7 +186,12 @@ export class IndexCommand {
 
     // Set up adapters via plugin discovery (TS, Go, C# all plugin-backed)
     const registry = new LanguageAdapterRegistry();
-    const plugins = await this.registerDiscoveredPlugins(registry, ignore.ignoreProjectPatterns, factRequest);
+    const plugins = await this.registerDiscoveredPlugins(
+      registry,
+      ignore.ignoreProjectPatterns,
+      factRequest,
+      indexTestPatterns(ignore.config),
+    );
     const { tsMorphLike, roslynAdapter, csharpComposite, goTier, javaTier } = plugins;
     // The C# tier as loaded; re-read after the Roslyn batch, which can switch it to the syntax tier.
     const csharpTierAtLoad = plugins.csharpTier;
@@ -744,6 +749,7 @@ export class IndexCommand {
     registry: LanguageAdapterRegistry,
     ignoreProjectPatterns: string[] = [],
     factRequest: PluginFactRequest = { facts: false },
+    testGlobs: readonly string[] = [],
   ): Promise<{
     tsMorphLike: TsMorphLike | undefined;
     roslynAdapter: RoslynLike | null;
@@ -752,7 +758,7 @@ export class IndexCommand {
     goTier: string;
     javaTier: string;
   }> {
-    const loaded = await loadPlugins(this.projectRoot, { ignoreProjects: ignoreProjectPatterns, ...factRequest });
+    const loaded = await loadPlugins(this.projectRoot, { ignoreProjects: ignoreProjectPatterns, ...factRequest, testGlobs });
     let tsMorphLike: TsMorphLike | undefined;
     let roslynAdapter: RoslynLike | null = null;
     let csharpComposite: CSharpCompositeLike | null = null;

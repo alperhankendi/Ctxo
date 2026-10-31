@@ -50,6 +50,23 @@ describe('typescript plugin', () => {
     expect((plugin.createAdapter(context({ facts: true, sqlCallSites: true })) as TsMorphAdapter).sqlCallSites).toBe(true);
   });
 
+  it('createAdapter honours ctx.testGlobs and falls back to the default test-file rule without them', async () => {
+    const source = "describe('LoanPolicy', () => { it('LEND-03 at most five loans', () => {}); });\n";
+    const file = 'spec/loans/policy.check.ts';
+    const testNames = async (ctx: PluginContext): Promise<string[]> =>
+      (await plugin.createAdapter(ctx).extractSymbols(file, source))
+        .filter((symbol) => symbol.annotations?.some((annotation) => annotation.name === 'test') === true)
+        .map((symbol) => symbol.name);
+
+    // An older core sends no testGlobs: the defaults decide, and spec/**/*.check.ts is not a test file.
+    expect(await testNames(context())).toEqual([]);
+    // A current core sends its defaults plus index.tests.
+    expect(await testNames({ ...context(), testGlobs: ['**/__tests__/**', 'spec/**/*.check.ts'] })).toEqual([
+      'LoanPolicy',
+      'LoanPolicy > LEND-03 at most five loans',
+    ]);
+  });
+
   it('the plugin keeps apiVersion 1', () => {
     expect(plugin.apiVersion).toBe('1');
     expect(plugin.id).toBe('typescript');

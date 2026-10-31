@@ -5,6 +5,7 @@ import { discoverPlugins, type DiscoveredPlugin } from '../adapters/language/plu
 import { detectWorkspace } from '../adapters/workspace/single-package-workspace.js';
 import { createLogger } from '../core/logger.js';
 import { makeGlobMatcher } from '../core/config/load-config.js';
+import { effectiveTestGlobs } from '../core/test-files/test-file-classifier.js';
 import type { FactDetectorOptions } from '../ports/i-ctxo-module.js';
 
 const log = createLogger('ctxo:plugin-loader');
@@ -64,6 +65,7 @@ function buildContext(
   pluginId: string,
   capabilities: PluginCapabilities,
   factOptions: FactDetectorOptions | undefined,
+  testGlobs: readonly string[],
 ): PluginContext {
   const pluginLog = createLogger(`ctxo:plugin:${pluginId}`);
   return {
@@ -79,6 +81,8 @@ function buildContext(
     // every plugin of the run (`pluginFactRequest`).
     config: factOptions ? { facts: factOptions } : {},
     capabilities,
+    // The default test globs plus index.tests, one frozen array shared by every plugin of the run.
+    testGlobs,
   };
 }
 
@@ -96,6 +100,11 @@ export interface LoadPluginsOptions {
    * `facts: true`.
    */
   readonly factOptions?: FactDetectorOptions;
+  /**
+   * The `index.tests` globs (valid ones only). Every plugin receives the default test globs followed by these
+   * as `PluginContext.testGlobs`, so a plugin's test-file decisions (TypeScript test blocks) honour them.
+   */
+  readonly testGlobs?: readonly string[];
 }
 
 /**
@@ -135,11 +144,12 @@ export async function loadPlugins(
     { facts: options.facts ?? false },
   );
   const factOptions = options.facts === true ? options.factOptions : undefined;
+  const testGlobs = effectiveTestGlobs(options.testGlobs ?? []);
 
   const loaded: LoadedPlugin[] = [];
   for (const { plugin, specifier } of result.plugins as readonly DiscoveredPlugin[]) {
     try {
-      const ctx = buildContext(projectRoot, workspace, plugin.id, capabilities, factOptions);
+      const ctx = buildContext(projectRoot, workspace, plugin.id, capabilities, factOptions, testGlobs);
       const adapter = plugin.createAdapter(ctx);
       loaded.push({ plugin, adapter, specifier });
     } catch (err) {

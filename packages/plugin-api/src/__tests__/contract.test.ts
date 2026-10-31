@@ -131,6 +131,19 @@ describe('@ctxo/plugin-api exports', () => {
     expect(typeof built.extractSymbols).toBe('function');
   });
 
+  it('admits a context with and without testGlobs (optional, additive)', () => {
+    const base = {
+      logger: { debug: () => undefined, info: () => undefined, warn: () => undefined, error: () => undefined },
+      projectRoot: '/tmp',
+      workspace: { root: '/tmp', packages: [] } satisfies IWorkspace,
+      config: {},
+    };
+    const withGlobs: PluginContext = { ...base, testGlobs: ['**/__tests__/**', 'spec/**/*.check.ts'] };
+    const without: PluginContext = base;
+    expect(withGlobs.testGlobs).toEqual(['**/__tests__/**', 'spec/**/*.check.ts']);
+    expect(without.testGlobs).toBeUndefined();
+  });
+
   it('type-checks SymbolKind and EdgeKind as string literal unions', () => {
     const k: SymbolKind = 'function';
     const e: EdgeKind = 'imports';

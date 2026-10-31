@@ -464,6 +464,7 @@ Two services can look independent in the graph while both write the same table. 
 - Annotations: `SymbolNode.annotations?: { name, args?, named? }[]`. Always on. Host-language attributes are capped at 20 per symbol, 10 positional entries and 10 named entries plus the reserved `type`, 200 characters per value; `named.type` is reserved for the fully qualified type name, and a source argument named `type` is not kept. lang-sql's `columns` annotation lists every column of a table. Core checks shape only; JSON index only.
 - Facts: `FACT_KINDS = ['literal-comparison', 'normalization', 'retry-timeout', 'endpoint']`, `CodeFact { kind, symbolId, line (0-based), text (single line, trimmed, max 200 chars), detail? }`, optional `ILanguageAdapter.extractFacts`. Called only on a fact request (`index.facts: true`, or an installed `@ctxo/domain` whose registry file exists); results go to the file's index JSON under `facts` (`[]` when a fact-capable plugin finds nothing). The TypeScript, C#, Java and Go plugins implement it since PR 4 (see Fact Detectors below).
 - Capabilities: `PluginContext.capabilities?: { facts?, sqlCallSites? }`, computed before any `createAdapter` call and offered to every plugin. `sqlCallSites` is set only when a plugin for `.sql` is installed.
+- Test globs: `PluginContext.testGlobs?: readonly string[]`, the default test globs followed by the valid `index.tests` globs (each once, one frozen array per run), set by `ctxo index` and `ctxo watch`. Match with picomatch `{ dot: true }` against project-relative forward-slash paths. Optional on any protocol version; absent on older CLIs, where a plugin uses its own default rule. `@ctxo/lang-typescript` decides test blocks (and their edges and fact owners) with it.
 - Versioning: `SUPPORTED_API_VERSIONS = ['1', '2']`; plugins declare the lowest version they work on. Older CLIs skip `@ctxo/lang-sql` with a warning and drop the new kinds from a newer index with a warning.
 
 ### `@ctxo/lang-sql`
@@ -548,6 +549,8 @@ When the helper cannot restore or build during `ctxo index`, the C# plugin falls
 - Every language drops a key named `type` (`named.type` stays reserved).
 
 ### Test-block naming (TypeScript)
+
+Test files: the host's `PluginContext.testGlobs` (defaults plus `index.tests`, so `index.tests: ["spec/**/*.check.ts"]` adds test blocks there), else the TypeScript defaults (`**/__tests__/**`, `**/*.test.*`, `**/*.spec.*`, `**/test/**`, `**/tests/**`).
 
 Title path joined with ` > `; whitespace collapsed; runs of `:` collapsed and a trailing `:` dropped; empty title `(untitled)`; cut at 200 characters; a repeated path (or one equal to an exported function name) gets ` #2`, ` #3`; children use their parent's final name. Example ID: `src/loans/loan-policy.test.ts::LoanPolicy > renewal > extends by seven days::function`. `index.tests` extras do not reach plugins.
 

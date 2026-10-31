@@ -106,7 +106,7 @@ domain:                   # read only when @ctxo/domain is installed
 | `stats.enabled` | boolean | `true` | Session recording opt-out. Set `false` to disable local stats capture. |
 | `index.ignore` | string[] | `[]` | Picomatch globs applied to file paths **after** `git ls-files`. |
 | `index.ignoreProjects` | string[] | `[]` | Picomatch globs applied to workspace roots. Skipped workspaces are never enumerated. |
-| `index.tests` | string[] | `[]` | Extra test-file globs added to the shared default list. Test files are never nodes of the contexts view. Test-framework annotations also mark test files; see [Test files](#test-files). |
+| `index.tests` | string[] | `[]` | Extra test-file globs added to the shared default list. Test files are never nodes of the contexts view. Test-framework annotations also mark test files; see [Test files](#test-files). Plugins receive the defaults plus these globs as `PluginContext.testGlobs`, so TypeScript test blocks follow them too. |
 | `index.facts` | boolean | `false` | Ask plugins for code facts (protocol v2). Sets `capabilities.facts`, so `ctxo index` and `ctxo watch` call `extractFacts` on plugins that implement it and write the results into the file's index JSON under `facts`. JSON only; SQLite is unchanged. A fact-capable plugin that finds nothing writes `facts: []`. The TypeScript, C#, Java and Go plugins implement `extractFacts`; an installed `@ctxo/domain` requests facts whatever this says, once its registry file (`domain.registry`) exists; without a registry it requests none. |
 | `masking.clusterLabels` | string[] | `[]` | Picomatch globs matched against community and candidate-context labels. A matching label is replaced with `[masked-cluster-N]` in the responses of `get_architectural_overlay`, `get_blast_radius`, `get_pr_impact` and `get_why_context`, so sensitive folder names never reach the agent. |
 | `watch.snapshotMinFileChanges` | integer >= 1 | `5` | `ctxo watch` recomputes the community snapshot only after this many distinct files were re-indexed since the last one. Raise it on large repositories, where a recompute blocks for about a second. |
@@ -198,7 +198,7 @@ Three cases need an `index.tests` glob: test classes that use only other attribu
 
 After upgrading `@ctxo/lang-csharp`, run a full `ctxo index` once. An incremental run (`--files`, `--commit`, the post-commit hook) annotates only the files it re-indexes, while the contexts view already counts the index as annotated, so name-only `*Test.cs` / `*Tests.cs` matches that were not re-indexed show up as production files until the full run.
 
-`index.tests` serves the contexts view. The [data-resource tie-break](/reference/symbol-ids#several-definitions-of-one-object) uses the default test globs only; to keep a test copy of a schema out of it, use `index.ignore`.
+`index.tests` serves the contexts view and the plugins: `ctxo index` and `ctxo watch` hand every plugin the default test globs followed by the valid `index.tests` globs as `PluginContext.testGlobs`, so `@ctxo/lang-typescript` indexes the `describe`, `it` and `test` blocks of a file only an `index.tests` glob names (re-index after a change). The [data-resource tie-break](/reference/symbol-ids#several-definitions-of-one-object) uses the default test globs only; to keep a test copy of a schema out of it, use `index.ignore`.
 
 ```yaml
 index:

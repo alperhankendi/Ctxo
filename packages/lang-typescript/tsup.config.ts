@@ -7,5 +7,5 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   target: 'node20',
-  external: ['@ctxo/plugin-api', '@ctxo/sql-extract', 'ts-morph'],
+  external: ['@ctxo/plugin-api', '@ctxo/sql-extract', 'picomatch', 'ts-morph'],
 });

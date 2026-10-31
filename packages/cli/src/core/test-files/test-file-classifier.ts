@@ -42,6 +42,14 @@ export const TEST_FRAMEWORK_ANNOTATIONS: readonly string[] = [
   'TestClass',
 ];
 
+/**
+ * The test-file globs handed to every plugin as `PluginContext.testGlobs`: the defaults, then the extra
+ * (`index.tests`) globs in config order, each glob once. Frozen, so one array serves every plugin of a run.
+ */
+export function effectiveTestGlobs(extraGlobs: readonly string[] = []): readonly string[] {
+  return Object.freeze([...new Set([...DEFAULT_TEST_GLOBS, ...extraGlobs])]);
+}
+
 /** Takes a repo-relative path with either separator. */
 export type TestFileClassifier = (path: string) => boolean;
 

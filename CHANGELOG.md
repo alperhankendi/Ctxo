@@ -6,6 +6,22 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo (ten packages today). Per-pack
 
 ## [Unreleased]
 
+**`index.tests` globs reach the plugins (#156, PR 1C follow-up).**
+
+### Added (plugin protocol)
+
+- A test file that only an `index.tests` glob names (for example `spec/**/*.check.ts`) was a test file for the
+  contexts view, but `@ctxo/lang-typescript` never saw the glob, so its `describe`, `it` and
+  `test` blocks were not indexed as test symbols. `@ctxo/plugin-api` adds an optional `PluginContext.testGlobs`:
+  the CLI hands every plugin the default test globs followed by the valid `index.tests` globs (each once, one
+  frozen array per run) in `ctxo index` and `ctxo watch`. The TypeScript plugin decides test blocks, their edges
+  and the test-block owners of facts with them (picomatch, `dot: true`, as in the core).
+- Compatibility: the field is optional and additive, so the plugin-api peer ranges stay as they are. A plugin
+  that ignores it keeps working with a new CLI; with an older CLI (no `testGlobs`) the TypeScript plugin falls
+  back to its built-in default rule, and it does the same when no given value is a usable glob. The Go, Java and
+  C# plugins are unchanged: Go test files are `_test.go` by the Go toolchain's own rule, and Java and C# tests are
+  found by annotations, not paths.
+
 **`ctxo doctor` names unknown keys under `domain:`.**
 
 ### Added (doctor)

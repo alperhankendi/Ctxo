@@ -101,7 +101,7 @@ export class Loan {
 ## Test symbols
 
 In a test file (`**/__tests__/**`, `**/*.test.*`, `**/*.spec.*`, `**/test/**`,
-`**/tests/**`), every `describe`, `it` or `test` block becomes a `function`
+`**/tests/**`, or an [`index.tests`](/reference/config-schema#fields) glob), every `describe`, `it` or `test` block becomes a `function`
 symbol named by its title path and annotated `{ name: 'test' }`. `suite`,
 `context`, `specify`, the `f` and `x` variants and modifiers such as `.only`,
 `.skip`, `.each` and `.skipIf` count too; a block without a callback
@@ -118,7 +118,12 @@ src/loans/loan-policy.test.ts::LoanPolicy > renewal > extends by seven days::fun
   space, runs of `:` become one and a trailing `:` is dropped; an empty title
   becomes `(untitled)`; titles are cut at 200 characters. A repeated path gets
   ` #2`, ` #3` in source order.
-- `index.tests` globs do not reach the plugin; only the defaults above count.
+- Test files are decided by the globs the CLI hands the plugin
+  (`PluginContext.testGlobs`: the default test globs plus `index.tests`), so
+  `index.tests: ["spec/**/*.check.ts"]` makes the blocks of
+  `spec/loans/policy.check.ts` test symbols. With a CLI older than that field
+  only the defaults above count. Re-index (`ctxo index`) after changing
+  `index.tests`.
 
 ## SQL at call sites
 

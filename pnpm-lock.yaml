@@ -256,6 +256,9 @@ importers:
       '@ctxo/sql-extract':
         specifier: workspace:^
         version: link:../sql-extract
+      picomatch:
+        specifier: ^4.0.5
+        version: 4.0.7
       ts-morph:
         specifier: ^28.0.0
         version: 28.0.0
@@ -266,6 +269,9 @@ importers:
       '@types/node':
         specifier: ^26.6.1
         version: 26.6.5
+      '@types/picomatch':
+        specifier: ^4.0.3
+        version: 4.0.3
       tsup:
         specifier: ^8.4.0
         version: 8.5.1(postcss@8.5.31)(tsx@4.23.15)(typescript@6.0.3)(yaml@2.9.1)
