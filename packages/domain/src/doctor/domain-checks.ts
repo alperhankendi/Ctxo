@@ -19,7 +19,7 @@ import { DOMAIN_HOOK_COMMAND, readBundledSkill } from '../init/domain-init.js';
 
 const SKILL_NAME = 'ctxo-domain-fold';
 const REGISTRY_FIX = 'Run "ctxo verify-domain" for details';
-const UNKNOWN_KEYS_FIX = 'Correct or remove the unknown keys in .ctxo/config.yaml; each falls back to its default';
+const UNKNOWN_KEYS_FIX = 'Correct or remove the unknown keys in .ctxo/config.yaml; until then the keys you meant to set keep their defaults';
 const AGENT_FIX = 'Run "ctxo init --only domain" and "ctxo domain rules --write"';
 const CONVENTIONS_FIX = 'Review with "ctxo domain discover", then confirm with "--write"';
 const SKILL_MARKER = /^<!-- ctxo-skill v(\d+)\.(\d+) -->[ \t]*$/m;

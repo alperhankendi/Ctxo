@@ -293,19 +293,39 @@ describe('findUnknownDomainKeys', () => {
   });
 
   it('suggests the closest sibling for a near miss, case-insensitively', () => {
-    expect(findUnknownDomainKeys({ boundaires: {} })).toEqual([{ path: 'domain.boundaires', suggestion: 'domain.boundaries' }]);
+    expect(findUnknownDomainKeys({ boundaires: {} })).toEqual([{ path: 'domain.boundaires', suggestions: ['domain.boundaries'] }]);
     expect(findUnknownDomainKeys({ rules: { trackerPrefix: [] } })).toEqual([
-      { path: 'domain.rules.trackerPrefix', suggestion: 'domain.rules.trackerPrefixes' },
+      { path: 'domain.rules.trackerPrefix', suggestions: ['domain.rules.trackerPrefixes'] },
     ]);
     expect(findUnknownDomainKeys({ tests: { contract: { pathz: [] } } })).toEqual([
-      { path: 'domain.tests.contract.pathz', suggestion: 'domain.tests.contract.paths' },
+      { path: 'domain.tests.contract.pathz', suggestions: ['domain.tests.contract.paths'] },
     ]);
-    expect(findUnknownDomainKeys({ guard: { Enabled: true } })).toEqual([{ path: 'domain.guard.Enabled', suggestion: 'domain.guard.enabled' }]);
+    expect(findUnknownDomainKeys({ guard: { Enabled: true } })).toEqual([{ path: 'domain.guard.Enabled', suggestions: ['domain.guard.enabled'] }]);
   });
 
   it('suggests a key of the same name in another section when no sibling is close', () => {
     expect(findUnknownDomainKeys({ trackerPrefixes: ['JIRA'] })).toEqual([
-      { path: 'domain.trackerPrefixes', suggestion: 'domain.rules.trackerPrefixes' },
+      { path: 'domain.trackerPrefixes', suggestions: ['domain.rules.trackerPrefixes'] },
+    ]);
+  });
+
+  it('lists every known key of the same name when several sections have it, in schema order', () => {
+    expect(findUnknownDomainKeys({ paths: ['x/**'] })).toEqual([
+      { path: 'domain.paths', suggestions: ['domain.tests.characterization.paths', 'domain.tests.contract.paths'] },
+    ]);
+    expect(describeUnknownDomainKey(findUnknownDomainKeys({ paths: [] })[0]!)).toBe(
+      'domain.paths (did you mean domain.tests.characterization.paths or domain.tests.contract.paths?)',
+    );
+    expect(describeUnknownDomainKey({ path: 'domain.x', suggestions: ['domain.a', 'domain.b', 'domain.c'] })).toBe(
+      'domain.x (did you mean domain.a, domain.b or domain.c?)',
+    );
+  });
+
+  it('quotes an empty key and a key holding a dot or whitespace', () => {
+    expect(findUnknownDomainKeys({ '': 1, 'a.b': 2, rules: { ' ': 3 } }).map((k) => k.path)).toEqual([
+      'domain.""',
+      'domain."a.b"',
+      'domain.rules." "',
     ]);
   });
 
@@ -332,7 +352,7 @@ describe('findUnknownDomainKeys', () => {
   });
 
   it('describes a key with and without a suggestion', () => {
-    expect(describeUnknownDomainKey({ path: 'domain.boundaires', suggestion: 'domain.boundaries' })).toBe(
+    expect(describeUnknownDomainKey({ path: 'domain.boundaires', suggestions: ['domain.boundaries'] })).toBe(
       'domain.boundaires (did you mean domain.boundaries?)',
     );
     expect(describeUnknownDomainKey({ path: 'domain.colour' })).toBe('domain.colour');

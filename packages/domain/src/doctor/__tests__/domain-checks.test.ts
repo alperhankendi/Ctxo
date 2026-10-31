@@ -162,7 +162,7 @@ describe('domain_registry', () => {
       'unknown keys under domain: domain.boundaires (did you mean domain.boundaries?), ' +
         'domain.rules.trackerPrefix (did you mean domain.rules.trackerPrefixes?), domain.colour',
     );
-    expect(result.fix).toBe('Correct or remove the unknown keys in .ctxo/config.yaml; each falls back to its default');
+    expect(result.fix).toBe('Correct or remove the unknown keys in .ctxo/config.yaml; until then the keys you meant to set keep their defaults');
   });
 
   it('reports registry problems and an unknown key together', async () => {
@@ -174,7 +174,7 @@ describe('domain_registry', () => {
       /^\d+ registry or config problems; unknown key under domain: domain\.tests\.contract\.pathz \(did you mean domain\.tests\.contract\.paths\?\)$/,
     );
     expect(result.fix).toBe(
-      'Run "ctxo verify-domain" for details; Correct or remove the unknown keys in .ctxo/config.yaml; each falls back to its default',
+      'Run "ctxo verify-domain" for details; Correct or remove the unknown keys in .ctxo/config.yaml; until then the keys you meant to set keep their defaults',
     );
   });
 

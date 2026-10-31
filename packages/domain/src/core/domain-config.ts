@@ -328,10 +328,31 @@ export function resolveDomainConfig(raw: unknown): { readonly config: DomainConf
 }
 
 /**
- * Keys the resolver reads that have no default, so `DEFAULT_DOMAIN_CONFIG` does not carry them.
- * Typed against `DomainConfig`, so a renamed or removed optional key fails the build.
+ * The dotted paths (without `domain.`) of the optional properties of `T`, at any depth. Lists and scalars are leaves.
+ * An optional key is the one kind `DEFAULT_DOMAIN_CONFIG` cannot carry, so the known-key set lists them by hand.
  */
-const OPTIONAL_DOMAIN_KEYS = ['guard.base'] as const satisfies readonly `guard.${keyof DomainConfig['guard'] & string}`[];
+type OptionalKeyPaths<T, P extends string = ''> = {
+  [K in keyof T & string]-?:
+    | (Record<never, never> extends Pick<T, K> ? `${P}${K}` : never)
+    | (NonNullable<T[K]> extends readonly unknown[]
+        ? never
+        : NonNullable<T[K]> extends object
+          ? OptionalKeyPaths<NonNullable<T[K]>, `${P}${K}.`>
+          : never);
+}[keyof T & string];
+
+/**
+ * Accepts only a list that names every optional key of `DomainConfig`: adding an optional key to the interface
+ * without listing it here fails the build (the argument then needs a `missing` property it does not have).
+ */
+function everyOptionalKey<const T extends readonly OptionalKeyPaths<DomainConfig>[]>(
+  keys: T & ([Exclude<OptionalKeyPaths<DomainConfig>, T[number]>] extends [never] ? unknown : { missing: Exclude<OptionalKeyPaths<DomainConfig>, T[number]> }),
+): T {
+  return keys;
+}
+
+/** Keys the resolver reads that have no default, so `DEFAULT_DOMAIN_CONFIG` does not carry them. */
+const OPTIONAL_DOMAIN_KEYS = everyOptionalKey(['guard.base']);
 
 /** The key tree of the `domain:` section: a mapping for each nested section, `true` for a leaf (a scalar or a list). */
 export type DomainKeyTree = { readonly [key: string]: DomainKeyTree | true };
@@ -396,26 +417,32 @@ function nearMissLimit(key: string): number {
 export interface UnknownDomainKey {
   /** The dotted path of the unknown key, for example `domain.boundaires`. */
   readonly path: string;
-  /** The dotted path of a close known key, when there is one. */
-  readonly suggestion?: string;
+  /** The dotted paths of the close known keys, in schema order; absent when there is none. */
+  readonly suggestions?: readonly string[];
 }
 
-function suggest(key: string, siblings: DomainKeyTree, prefix: string, known: readonly string[]): { suggestion?: string } {
+/** One path segment: a key that is empty or holds a dot or whitespace is quoted, so `""` reads as `domain.""`. */
+function segment(key: string): string {
+  return key === '' || /[.\s"]/.test(key) ? JSON.stringify(key) : key;
+}
+
+function suggest(key: string, siblings: DomainKeyTree, prefix: string, known: readonly string[]): { suggestions?: readonly string[] } {
   let best: { readonly name: string; readonly distance: number } | undefined;
   for (const name of Object.keys(siblings)) {
     const distance = keyDistance(key, name);
     if (distance <= nearMissLimit(name) && (best === undefined || distance < best.distance)) best = { name, distance };
   }
-  if (best !== undefined) return { suggestion: `${prefix}.${best.name}` };
-  const elsewhere = known.find((path) => path.slice(path.lastIndexOf('.') + 1).toLowerCase() === key.toLowerCase());
-  return elsewhere !== undefined ? { suggestion: elsewhere } : {};
+  if (best !== undefined) return { suggestions: [`${prefix}.${best.name}`] };
+  const elsewhere = known.filter((path) => path.slice(path.lastIndexOf('.') + 1).toLowerCase() === key.toLowerCase());
+  return elsewhere.length > 0 ? { suggestions: elsewhere } : {};
 }
 
 /**
- * The keys under `domain:` the resolver does not read, each with a "did you mean" suggestion when there is one:
- * the closest sibling within a small edit distance (ties go to the first in schema order), else a known key of the
- * same name in another section (`domain.trackerPrefixes` suggests `domain.rules.trackerPrefixes`). A value of the
- * wrong type is not descended (the resolver reports it); lists and scalars are leaves.
+ * The keys under `domain:` the resolver does not read, each with "did you mean" suggestions when there are any:
+ * the closest sibling within a small edit distance (ties go to the first in schema order), else every known key of
+ * the same name in another section (`domain.trackerPrefixes` suggests `domain.rules.trackerPrefixes`; `domain.paths`
+ * suggests both `paths` of `domain.tests`). A value of the wrong type is not descended (the resolver reports it);
+ * lists and scalars are leaves.
  */
 export function findUnknownDomainKeys(raw: unknown): UnknownDomainKey[] {
   const out: UnknownDomainKey[] = [];
@@ -423,7 +450,7 @@ export function findUnknownDomainKeys(raw: unknown): UnknownDomainKey[] {
   const known = knownDomainKeyPaths();
   const walk = (value: Record<string, unknown>, tree: DomainKeyTree, prefix: string): void => {
     for (const [key, child] of Object.entries(value)) {
-      const path = `${prefix}.${key}`;
+      const path = `${prefix}.${segment(key)}`;
       const node = Object.prototype.hasOwnProperty.call(tree, key) ? tree[key] : undefined;
       if (node === undefined) out.push({ path, ...suggest(key, tree, prefix, known) });
       else if (node !== true && isRecord(child)) walk(child, node, path);
@@ -433,7 +460,12 @@ export function findUnknownDomainKeys(raw: unknown): UnknownDomainKey[] {
   return out;
 }
 
+/** `a`, `a or b`, `a, b or c`. */
+function orList(items: readonly string[]): string {
+  return items.length <= 1 ? (items[0] ?? '') : `${items.slice(0, -1).join(', ')} or ${items[items.length - 1]}`;
+}
+
 /** One unknown key as the doctor names it: `domain.boundaires (did you mean domain.boundaries?)`. */
 export function describeUnknownDomainKey(key: UnknownDomainKey): string {
-  return key.suggestion !== undefined ? `${key.path} (did you mean ${key.suggestion}?)` : key.path;
+  return key.suggestions !== undefined && key.suggestions.length > 0 ? `${key.path} (did you mean ${orList(key.suggestions)}?)` : key.path;
 }
