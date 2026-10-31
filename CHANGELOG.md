@@ -6,6 +6,20 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo (ten packages today). Per-pack
 
 ## [Unreleased]
 
+**`ctxo doctor` names unknown keys under `domain:`.**
+
+### Added (doctor)
+
+- A typo in a `domain:` key of `.ctxo/config.yaml` (`domain.boundaires`, `domain.rules.trackerPrefix`) fell back to
+  the default with no sign. With `@ctxo/domain` installed, the `domain_registry` check now warns, never fails, and
+  names every unknown key by dotted path, nested sections included (`domain.tests.contract.pathz`), with a "did you
+  mean" suggestion when a known key is close: the nearest sibling within a small edit distance (case-insensitive,
+  a swap of two letters counts as one edit), else every key of the same name in another section (`domain.trackerPrefixes`
+  suggests `domain.rules.trackerPrefixes`; `domain.paths` lists both `paths` keys of `domain.tests`). An empty key
+  reads `domain.""`. The known keys come from the defaults of the domain config, so they cannot
+  drift from the loader. The loader is unchanged: it ignores the unknown key, so the key you meant keeps its default, and `ctxo verify-domain`
+  does not report unknown keys. Keys outside `domain:` stay the core `config` check's job.
+
 **`overallRiskScore` no longer saturates at 1.0 (#161, #198).**
 
 ### Fixed (blast radius)

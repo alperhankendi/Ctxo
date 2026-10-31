@@ -152,6 +152,55 @@ describe('domain_registry', () => {
     expect(result.status).toBe('warn');
     expect(result.message).toMatch(/registry or config problems$/);
   });
+
+  it('warns on unknown keys under domain:, with a suggestion for a near miss, even without a registry', async () => {
+    const root = setup({ registry: null });
+    put(root, '.ctxo/config.yaml', 'version: "1.0"\ndomain:\n  boundaires:\n    enforce: report\n  rules:\n    trackerPrefix: [JIRA]\n  colour: red\n');
+    const result = await run(root, 'domain_registry');
+    expect(result.status).toBe('warn');
+    expect(result.message).toBe(
+      'unknown keys under domain: domain.boundaires (did you mean domain.boundaries?), ' +
+        'domain.rules.trackerPrefix (did you mean domain.rules.trackerPrefixes?), domain.colour',
+    );
+    expect(result.fix).toBe('Correct or remove the unknown keys in .ctxo/config.yaml; until then the keys you meant to set keep their defaults');
+  });
+
+  it('reports registry problems and an unknown key together', async () => {
+    const root = setup({ registry: 'version: 1\ncontexts:\n  - id: Bad Id\n' });
+    put(root, '.ctxo/config.yaml', 'version: "1.0"\ndomain:\n  tests:\n    contract:\n      pathz: ["x/**"]\n');
+    const result = await run(root, 'domain_registry');
+    expect(result.status).toBe('warn');
+    expect(result.message).toMatch(
+      /^\d+ registry or config problems; unknown key under domain: domain\.tests\.contract\.pathz \(did you mean domain\.tests\.contract\.paths\?\)$/,
+    );
+    expect(result.fix).toBe(
+      'Run "ctxo verify-domain" for details; Correct or remove the unknown keys in .ctxo/config.yaml; until then the keys you meant to set keep their defaults',
+    );
+  });
+
+  it('passes with a valid full domain section and with an empty one', async () => {
+    const root = setup();
+    const full = [
+      'version: "1.0"',
+      'domain:',
+      '  registry: docs/domain/contexts.yaml',
+      '  coverage: { unowned: warn }',
+      '  boundaries: { enforce: by-rung, blockingRungs: [bounded, boring] }',
+      "  rules: { idPattern: '^[A-Z][A-Z0-9]*-\\d+$', trackerPrefixes: [] }",
+      '  tests:',
+      '    ruleTraitKeys: [Rule]',
+      '    characterization: { annotations: ["Tag:characterization"], paths: ["**/Characterization/**"], names: ["[characterization]"] }',
+      '    contract: { annotations: ["Tag:contract"], paths: ["**/Contract/**"], names: ["[contract]"] }',
+      '  rungs: { pinnedCoverage: 0.8 }',
+      '  facts: { trivialLiterals: [0, 1], normalizationMethods: [trim], textScanExtensions: [.py] }',
+      '  guard: { enabled: true, base: origin/main, subagents: false }',
+      '',
+    ].join('\n');
+    put(root, '.ctxo/config.yaml', full);
+    expect(await run(root, 'domain_registry')).toMatchObject({ status: 'pass', message: '1 contexts' });
+    put(root, '.ctxo/config.yaml', 'version: "1.0"\ndomain: {}\n');
+    expect(await run(root, 'domain_registry')).toMatchObject({ status: 'pass', message: '1 contexts' });
+  });
 });
 
 describe('domain_agent_setup', () => {

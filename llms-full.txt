@@ -600,6 +600,7 @@ An opt-in package that lets a team name its bounded contexts and keep markdown c
 ### Doctor and global installs
 
 - `domain_registry`, `domain_agent_setup` and `domain_conventions` (all pass or warn; a repo with neither `.claude/` nor `.cursor/` is checked as Claude Code and carries a standing agent-setup warning until `ctxo init --only domain`).
+- `domain_registry` also names every unknown key under `domain:` by dotted path, nested sections included, with a "did you mean" suggestion for a near miss (`domain.boundaires (did you mean domain.boundaries?)`); the config still ignores the unknown key, so the key you meant to set keeps its default value.
 - `install_copies` (every project): warns, never fails, when hooks call `ctxo` and none is on PATH, or an npx-pinned MCP entry differs from the global CLI the hooks run. `ctxo init` from a global install writes MCP entries that call the global `ctxo`.
 
 ### Config
