@@ -201,7 +201,8 @@ function agentSetupCheck(host: CtxoHost): IHealthCheck {
           }
         }
 
-        if (cursorExpected) problems.push(...cursorReminderProblems(ctx.projectRoot));
+        // A disabled guard opts out of the reminder, which runs on every prompt.
+        if (cursorExpected && state.config.guard.enabled) problems.push(...cursorReminderProblems(ctx.projectRoot));
 
         problems.push(...skillProblems(ctx.projectRoot, claudeExpected, cursorExpected));
 
@@ -271,10 +272,17 @@ export function domainDoctorFixes(host: CtxoHost): ModuleDoctorFix[] {
         if (contextsOf(state) === undefined) return [];
         const { claudeExpected, cursorExpected } = expectedAgents(ctx.projectRoot);
         const toolIds = [...(claudeExpected ? ['claude-code'] : []), ...(cursorExpected ? ['cursor'] : [])];
+        // Only a skill the check reports (missing or outdated) is installed: a current copy, edited or from a
+        // newer ctxo, is left alone.
+        const skillPlatforms = [
+          ...(skillProblems(ctx.projectRoot, claudeExpected, false).length > 0 ? ['claude-code'] : []),
+          ...(skillProblems(ctx.projectRoot, false, cursorExpected).length > 0 ? ['cursor'] : []),
+        ];
         return applyAgentSetup(
           {
             projectRoot: ctx.projectRoot,
             toolIds,
+            skillPlatforms,
             dryRun: false,
             ensureClaudeHookEntry: (entry) => ctx.ensureClaudeHookEntry(entry),
             installSkill: (platformId, name, content) => ctx.installSkill(platformId, name, content),

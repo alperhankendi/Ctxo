@@ -109,8 +109,10 @@ export interface CursorPayload {
   readonly generationId?: string;
   /** Follow-up messages a stop hook already sent in this turn; above 0 the reminder stays quiet (Claude's `stop_hook_active`). */
   readonly loopCount: number;
-  /** The first workspace root: the project the hook looks at. */
+  /** The first workspace root: the project the hook looks at (a `/c:/...` root on Windows is normalised to `c:/...`). */
   readonly workspaceRoot?: string;
+  /** How the turn ended (`stop` only): Cursor sends `completed`, `aborted` or `error`. Only `completed` reminds. */
+  readonly status?: string;
 }
 
 const CURSOR_EVENTS: ReadonlySet<string> = new Set<CursorHookEvent>(['beforeSubmitPrompt', 'stop']);
@@ -119,8 +121,26 @@ function nonEmpty(value: unknown): string | undefined {
   return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
-/** The Cursor hook payload. Undefined when it is not a JSON object or names another event. */
-export function parseCursorPayload(raw: string): CursorPayload | undefined {
+/**
+ * The event of a Cursor hook payload object: `hook_event_name`, else its shape (a `prompt` field means
+ * `beforeSubmitPrompt`; `status` or `loop_count` means `stop`). `other` for any other named event, undefined
+ * when neither name nor shape tells.
+ */
+export function cursorEventOf(record: Readonly<Record<string, unknown>>): CursorHookEvent | 'other' | undefined {
+  const named = record['hook_event_name'];
+  if (typeof named === 'string' && named.length > 0) return CURSOR_EVENTS.has(named) ? (named as CursorHookEvent) : 'other';
+  if ('prompt' in record) return 'beforeSubmitPrompt';
+  if ('status' in record || 'loop_count' in record) return 'stop';
+  return undefined;
+}
+
+/** A workspace root as Cursor may send it on Windows (`/c:/repo`) in a form node resolves (`c:/repo`). */
+export function normaliseWorkspaceRoot(root: string, platform: NodeJS.Platform = process.platform): string {
+  return platform === 'win32' && /^\/[a-zA-Z]:[\\/]/.test(root) ? root.slice(1) : root;
+}
+
+/** The Cursor hook payload. Undefined when it is not a JSON object or is not one of the two events (by name or shape). */
+export function parseCursorPayload(raw: string, platform: NodeJS.Platform = process.platform): CursorPayload | undefined {
   let value: unknown;
   try {
     value = JSON.parse(raw);
@@ -129,19 +149,22 @@ export function parseCursorPayload(raw: string): CursorPayload | undefined {
   }
   if (typeof value !== 'object' || value === null || Array.isArray(value)) return undefined;
   const record = value as Record<string, unknown>;
-  const event = record['hook_event_name'];
-  if (typeof event !== 'string' || !CURSOR_EVENTS.has(event)) return undefined;
+  const event = cursorEventOf(record);
+  if (event === undefined || event === 'other') return undefined;
   const conversationId = nonEmpty(record['conversation_id']);
   const generationId = nonEmpty(record['generation_id']);
   const roots = record['workspace_roots'];
-  const workspaceRoot = Array.isArray(roots) ? nonEmpty(roots[0]) : undefined;
+  const root = Array.isArray(roots) ? nonEmpty(roots[0]) : undefined;
+  const workspaceRoot = root !== undefined ? normaliseWorkspaceRoot(root, platform) : undefined;
   const loopCount = record['loop_count'];
+  const status = nonEmpty(record['status']);
   return {
-    event: event as CursorHookEvent,
+    event,
     ...(conversationId !== undefined ? { conversationId } : {}),
     ...(generationId !== undefined ? { generationId } : {}),
     loopCount: typeof loopCount === 'number' && Number.isFinite(loopCount) && loopCount > 0 ? loopCount : 0,
     ...(workspaceRoot !== undefined ? { workspaceRoot } : {}),
+    ...(status !== undefined ? { status } : {}),
   };
 }
 

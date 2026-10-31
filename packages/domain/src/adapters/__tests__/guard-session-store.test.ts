@@ -1,8 +1,8 @@
-import { mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readdirSync, rmSync, utimesSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { GuardSessionStore } from '../guard-session-store.js';
+import { GuardSessionStore, RECORD_MAX_AGE_MS } from '../guard-session-store.js';
 
 const dirs: string[] = [];
 
@@ -64,5 +64,36 @@ describe('GuardSessionStore', () => {
     const store = new GuardSessionStore(dir);
     expect(() => store.write('s', { version: 1, startHead: null, blocked: [] })).not.toThrow();
     expect(store.create('s', { version: 1, startHead: null, blocked: [] })).toBe(false);
+  });
+
+  it('a created record prunes records untouched for 30 days, and keeps the rest', () => {
+    const dir = cacheDir();
+    const store = new GuardSessionStore(dir);
+    store.write('old', { version: 1, startHead: null, blocked: [] });
+    store.write('recent', { version: 1, startHead: null, blocked: [] });
+    const records = join(dir, 'domain-guard');
+    const longAgo = (Date.now() - RECORD_MAX_AGE_MS - 60_000) / 1000;
+    utimesSync(join(records, 'old.json'), longAgo, longAgo);
+    writeFileSync(join(records, 'stale.json.1.abc.tmp'), '');
+    utimesSync(join(records, 'stale.json.1.abc.tmp'), longAgo, longAgo);
+    writeFileSync(join(records, 'notes.txt'), 'keep');
+    utimesSync(join(records, 'notes.txt'), longAgo, longAgo);
+
+    // A failed create (the record exists) prunes nothing.
+    expect(store.create('recent', { version: 1, startHead: null, blocked: [] })).toBe(false);
+    expect(readdirSync(records)).toContain('old.json');
+
+    expect(store.create('new', { version: 1, startHead: null, blocked: [] })).toBe(true);
+    expect(readdirSync(records).sort()).toEqual(['new.json', 'notes.txt', 'recent.json']);
+  });
+
+  it('keeps remindedAt and drops a non-numeric one as unreadable', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const dir = cacheDir();
+    const store = new GuardSessionStore(dir);
+    store.write('c', { version: 1, startHead: 'h', blocked: [], remindedAt: 5 });
+    expect(store.read('c')).toEqual({ version: 1, startHead: 'h', blocked: [], remindedAt: 5 });
+    writeFileSync(join(dir, 'domain-guard', 'bad.json'), JSON.stringify({ version: 1, startHead: null, blocked: [], remindedAt: 'x' }));
+    expect(store.read('bad')).toBeUndefined();
   });
 });

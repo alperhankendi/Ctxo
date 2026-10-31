@@ -221,6 +221,14 @@ describe('domainInit', () => {
     const again = await domainInit(host).apply(recording(root, { toolIds: ['cursor'] }).ctx);
     expect(again).toContainEqual({ file: '.cursor/hooks.json', action: 'skipped' });
 
+    // domain.guard.enabled: false opts out of the reminder.
+    const off = project();
+    mkdirSync(join(off, '.ctxo'));
+    writeFileSync(join(off, '.ctxo', 'config.yaml'), 'domain:\n  guard:\n    enabled: false\n');
+    const offRows = await domainInit(host).apply(recording(off, { toolIds: ['cursor'] }).ctx);
+    expect(offRows.map((row) => row.file)).not.toContain('.cursor/hooks.json');
+    expect(existsSync(join(off, '.cursor', 'hooks.json'))).toBe(false);
+
     // A dry run plans the file and writes nothing.
     const dry = project();
     const planned = await domainInit(host).apply(recording(dry, { toolIds: ['cursor'], dryRun: true }).ctx);

@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createModuleHost } from '@ctxo/cli/internal';
-import { CURSOR_REMINDER_WINDOW_MS, parseCursorPayload, type CursorPayload } from '../../core/guard.js';
+import { CURSOR_REMINDER_WINDOW_MS, normaliseWorkspaceRoot, parseCursorPayload, type CursorPayload } from '../../core/guard.js';
 import { GuardSessionStore } from '../../adapters/guard-session-store.js';
 import { CURSOR_CONTINUE, domainCursorHookCommand, evaluateCursorHook, type CursorHookResult } from '../domain-cursor-hook-command.js';
 import { evaluateGuard } from '../domain-guard-hook-command.js';
@@ -119,8 +119,14 @@ function changeLending(repo: Repo): void {
   repo.commit(`change lending ${edits}`);
 }
 
-function cursorPayload(event: CursorPayload['event'], ids: { conversationId?: string; generationId?: string } = { conversationId: 'conv-1' }, loopCount = 0): CursorPayload {
-  return { event, loopCount, ...ids };
+/** A payload; a `stop` carries `status: "completed"` unless `status` says otherwise (null: no status). */
+function cursorPayload(
+  event: CursorPayload['event'],
+  ids: { conversationId?: string; generationId?: string } = { conversationId: 'conv-1' },
+  loopCount = 0,
+  status: string | null = 'completed',
+): CursorPayload {
+  return { event, loopCount, ...ids, ...(event === 'stop' && status !== null ? { status } : {}) };
 }
 
 function cursor(repo: Repo | string, p: CursorPayload, now?: number): Promise<CursorHookResult> {
@@ -150,8 +156,23 @@ describe('parseCursorPayload', () => {
       parseCursorPayload(
         JSON.stringify({ hook_event_name: 'stop', conversation_id: 'c', generation_id: 'g', loop_count: 1, status: 'completed', workspace_roots: ['/repo', '/other'] }),
       ),
-    ).toEqual({ event: 'stop', conversationId: 'c', generationId: 'g', loopCount: 1, workspaceRoot: '/repo' });
+    ).toEqual({ event: 'stop', conversationId: 'c', generationId: 'g', loopCount: 1, workspaceRoot: '/repo', status: 'completed' });
     expect(parseCursorPayload(JSON.stringify({ hook_event_name: 'beforeSubmitPrompt', prompt: 'hi' }))).toEqual({ event: 'beforeSubmitPrompt', loopCount: 0 });
+  });
+
+  it('tells the event from the shape when hook_event_name is missing', () => {
+    expect(parseCursorPayload(JSON.stringify({ conversation_id: 'c', prompt: 'hi' }))?.event).toBe('beforeSubmitPrompt');
+    expect(parseCursorPayload(JSON.stringify({ conversation_id: 'c', status: 'completed' }))).toMatchObject({ event: 'stop', status: 'completed' });
+    expect(parseCursorPayload(JSON.stringify({ conversation_id: 'c', loop_count: 0 }))?.event).toBe('stop');
+    expect(parseCursorPayload(JSON.stringify({ conversation_id: 'c' }))).toBeUndefined();
+  });
+
+  it('normalises a Windows /c:/ workspace root on win32 only', () => {
+    const raw = JSON.stringify({ hook_event_name: 'stop', workspace_roots: ['/c:/Users/me/repo'] });
+    expect(parseCursorPayload(raw, 'win32')?.workspaceRoot).toBe('c:/Users/me/repo');
+    expect(parseCursorPayload(raw, 'linux')?.workspaceRoot).toBe('/c:/Users/me/repo');
+    expect(normaliseWorkspaceRoot('/D:\\repo', 'win32')).toBe('D:\\repo');
+    expect(normaliseWorkspaceRoot('/home/me/repo', 'win32')).toBe('/home/me/repo');
   });
 
   it('rejects other events and anything that is not a JSON object', () => {
@@ -192,6 +213,56 @@ describe('evaluateCursorHook', () => {
     // Another conversation started after these commits has nothing to fold.
     await cursor(repo, cursorPayload('beforeSubmitPrompt', { conversationId: 'conv-2' }));
     expect(await cursor(repo, cursorPayload('stop', { conversationId: 'conv-2' }))).toEqual(QUIET);
+  });
+
+  it.each([
+    ['aborted', 'aborted'],
+    ['error', 'error'],
+    ['a missing status', null],
+    ['an unknown status', 'paused'],
+  ])('a stop with %s prints nothing and records nothing, so a later completed stop still reminds', async (_name, status) => {
+    const repo = createRepo();
+    await cursor(repo, cursorPayload('beforeSubmitPrompt'));
+    changeLending(repo);
+    expect(await cursor(repo, cursorPayload('stop', { conversationId: 'conv-1' }, 0, status))).toEqual(QUIET);
+    const record = new GuardSessionStore(join(repo.dir, '.ctxo', '.cache')).read('cursor-conv-1');
+    expect(record?.remindedAt).toBeUndefined();
+    expect(record?.blocked).toEqual([]);
+    followup(await cursor(repo, cursorPayload('stop')));
+  });
+
+  it('a repeat prompt reads the record and never touches git', async () => {
+    const repo = createRepo();
+    await cursor(repo, cursorPayload('beforeSubmitPrompt'));
+    const store = new GuardSessionStore(join(repo.dir, '.ctxo', '.cache'));
+    const first = store.read('cursor-conv-1');
+    expect(first?.startHead).toMatch(/^[0-9a-f]{40}$/);
+    // Count every git call through a proxy over the real port.
+    const base = createModuleHost({ projectRoot: repo.dir, mode: 'hook' });
+    let gitCalls = 0;
+    const host = {
+      ...base,
+      services: {
+        ...base.services,
+        createGit: (root: string) =>
+          new Proxy(base.services.createGit(root), {
+            get(target, prop, receiver) {
+              const value = Reflect.get(target, prop, receiver) as unknown;
+              if (typeof value !== 'function') return value;
+              return (...args: unknown[]) => {
+                gitCalls += 1;
+                return (value as (...a: unknown[]) => unknown).apply(target, args);
+              };
+            },
+          }),
+      },
+    };
+    expect(await evaluateCursorHook(cursorPayload('beforeSubmitPrompt'), { host, projectRoot: repo.dir })).toEqual({ stdout: CURSOR_CONTINUE });
+    expect(gitCalls).toBe(0);
+    expect(store.read('cursor-conv-1')).toEqual(first);
+    // A new conversation does call git once, to record its start.
+    await evaluateCursorHook(cursorPayload('beforeSubmitPrompt', { conversationId: 'conv-new' }), { host, projectRoot: repo.dir });
+    expect(gitCalls).toBe(1);
   });
 
   it('stays quiet while a follow-up is already running (loop_count above 0)', async () => {
@@ -339,11 +410,41 @@ describe('domainCursorHookCommand', () => {
     expect(out.followup_message).toContain('Domain-Unchanged: lending (reason)');
   });
 
-  it('exits 0 with no output on a payload it does not understand', async () => {
+  it('answers exactly {"continue":true} to unreadable input and to a payload whose event it cannot tell', async () => {
     const repo = createRepo();
-    expect(await runCommand('{oops', repo.dir)).toBe(0);
-    expect(await runCommand('', repo.dir)).toBe(0);
+    for (const stdin of ['{oops', '', '[]', JSON.stringify({ conversation_id: 'x' })]) {
+      stdout.length = 0;
+      expect(await runCommand(stdin, repo.dir)).toBe(0);
+      expect(stdout.join(''), stdin).toBe(CURSOR_CONTINUE);
+    }
+  });
+
+  it('prints nothing for another named event or a stop it cannot use', async () => {
+    const repo = createRepo();
     expect(await runCommand(JSON.stringify({ hook_event_name: 'afterFileEdit' }), repo.dir)).toBe(0);
+    expect(await runCommand(JSON.stringify({ hook_event_name: 'stop', status: 'aborted', conversation_id: 'z' }), repo.dir)).toBe(0);
     expect(stdout).toEqual([]);
+  });
+
+  it('a prompt answers {"continue":true} with the guard disabled and when the project is gone', async () => {
+    const repo = createRepo();
+    repo.write('.ctxo/config.yaml', 'version: "1.0"\ndomain:\n  guard:\n    enabled: false\n');
+    expect(await runCommand(JSON.stringify({ hook_event_name: 'beforeSubmitPrompt', conversation_id: 'off' }), repo.dir)).toBe(0);
+    const missing = join(tempDir('ctxo-domain-cursor-gone-'), 'nope');
+    expect(await runCommand(JSON.stringify({ hook_event_name: 'beforeSubmitPrompt', conversation_id: 'gone' }), missing)).toBe(0);
+    expect(stdout.join('')).toBe(CURSOR_CONTINUE + CURSOR_CONTINUE);
+  });
+
+  it('a prompt answers {"continue":true} when reading stdin throws', async () => {
+    const host = createModuleHost({ projectRoot: process.cwd(), mode: 'hook' });
+    const code = await domainCursorHookCommand(host).run([], {
+      projectRoot: process.cwd(),
+      ctxoRoot: join(process.cwd(), '.ctxo'),
+      readStdin: async () => {
+        throw new Error('EPIPE');
+      },
+    });
+    expect(code).toBe(0);
+    expect(stdout.join('')).toBe(CURSOR_CONTINUE);
   });
 });

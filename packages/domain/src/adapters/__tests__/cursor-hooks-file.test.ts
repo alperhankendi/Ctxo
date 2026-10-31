@@ -95,6 +95,17 @@ describe('ensureCursorHooks', () => {
   });
 
   it.each([
+    ['tabs', '\t'],
+    ['four spaces', '    '],
+  ])('keeps the file indentation (%s)', (_name, indent) => {
+    const dir = project(JSON.stringify({ version: 1, hooks: { afterFileEdit: [{ command: './fmt.sh' }] } }, null, indent));
+    ensureCursorHooks(dir);
+    const text = read(dir);
+    expect(text).toBe(`${JSON.stringify(JSON.parse(text), null, indent)}\n`);
+    expect(text).toContain(`\n${indent}"hooks": {`);
+  });
+
+  it.each([
     ['not JSON', '{ nope', 'is not valid JSON'],
     ['an array', '[]', 'is not a JSON object'],
     ['hooks not an object', '{"hooks": []}', '"hooks" is not an object'],

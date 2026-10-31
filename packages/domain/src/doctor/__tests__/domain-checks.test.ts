@@ -441,6 +441,51 @@ describe('domainDoctorFixes', () => {
     expect(readFileSync(join(root, CURSOR_HOOKS_FILE), 'utf-8')).toBe('{ nope');
   });
 
+  it('with domain.guard.enabled: false the reminder is neither expected nor written (an opt-out)', async () => {
+    const root = setup();
+    put(root, '.ctxo/config.yaml', 'version: "1.0"\ndomain:\n  guard:\n    enabled: false\n');
+    put(root, '.cursor/rules/ctxo-domain-fold.mdc', readBundledSkill());
+    writeAgentSetup(root);
+    expect((await run(root, 'domain_agent_setup')).status).toBe('pass');
+    const rows = await fixOf(root).apply(fixContext(root));
+    expect(rows.map((row) => row.file)).not.toContain(CURSOR_HOOKS_FILE);
+    expect(existsSync(join(root, CURSOR_HOOKS_FILE))).toBe(false);
+  });
+
+  it('installs only a skill the check reports: an edited current copy and a newer one are left alone', async () => {
+    const root = setup();
+    put(root, '.cursor/.keep', '');
+    writeAgentSetup(root);
+    const edited = `${readBundledSkill()}\nMy team note.\n`;
+    put(root, '.claude/skills/ctxo-domain-fold/SKILL.md', edited);
+    const newer = readBundledSkill().replace(/<!-- ctxo-skill v\d+\.\d+ -->/, '<!-- ctxo-skill v99.0 -->');
+    put(root, '.cursor/rules/ctxo-domain-fold.mdc', newer);
+    const calls: string[] = [];
+    const context = fixContext(root);
+    const rows = await fixOf(root).apply({
+      ...context,
+      installSkill: (platformId, name, content) => {
+        calls.push(platformId);
+        return context.installSkill(platformId, name, content);
+      },
+    });
+    expect(calls).toEqual([]);
+    expect(rows.every((row) => row.warning === undefined)).toBe(true);
+    expect(readFileSync(join(root, '.claude/skills/ctxo-domain-fold/SKILL.md'), 'utf-8')).toBe(edited);
+    expect(readFileSync(join(root, '.cursor/rules/ctxo-domain-fold.mdc'), 'utf-8')).toBe(newer);
+
+    // A missing skill is installed.
+    rmSync(join(root, '.cursor/rules/ctxo-domain-fold.mdc'));
+    await fixOf(root).apply({
+      ...context,
+      installSkill: (platformId, name, content) => {
+        calls.push(platformId);
+        return context.installSkill(platformId, name, content);
+      },
+    });
+    expect(calls).toEqual(['cursor']);
+  });
+
   it('changes nothing without contexts', async () => {
     const root = setup({ registry: null });
     put(root, '.cursor/.keep', '');

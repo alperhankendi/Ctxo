@@ -14,17 +14,24 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo (ten packages today). Per-pack
   `@ctxo/domain`, `ctxo init --domain` with Cursor selected now registers `ctxo domain-cursor-hook` (hidden) in
   `.cursor/hooks.json` for `beforeSubmitPrompt` and `stop`, merged into the hooks already there
   (`{ "version": 1, "hooks": { "stop": [{ "command": "ctxo domain-cursor-hook" }], ... } }`).
-- `beforeSubmitPrompt` records where the conversation starts (the guard's `SessionStart`) and always answers
-  `{"continue":true}`. On `stop` the reminder runs the Claude Code guard's own decision (the same code: session
-  scope, branch range, `domain.guard` config, registry, fingerprint) and, when the guard would block, prints
-  `{"followup_message":"ctxo domain reminder: ..."}` with the guard's reason, which Cursor sends to the agent.
+- `beforeSubmitPrompt` records where the conversation starts (the guard's `SessionStart`) and prints exactly
+  `{"continue":true}` on every path: without `@ctxo/domain`, on unreadable input, on any error and with the guard
+  disabled. A repeat prompt only checks that the conversation's record exists, without loading `@ctxo/domain` or
+  running git (about 40 ms instead of about 300 ms).
+- On a `stop` with `status: "completed"` the reminder runs the Claude Code guard's own decision (the same code:
+  session scope, branch range, `domain.guard` config, registry, fingerprint) and, when the guard would block, prints
+  `{"followup_message":"ctxo domain reminder: ..."}` with the guard's reason, which Cursor sends to the agent. An
+  aborted or errored stop, or one without a known status, prints nothing and records nothing.
 - Not intrusive: at most once per conversation (`conversation_id`; else once per `generation_id`; else once per 10
   minutes), quiet while a follow-up runs (`loop_count` above 0), with `domain.guard.enabled: false`, on malformed
-  input and on any error. It never blocks and always exits 0; without `@ctxo/domain` it prints nothing.
-- `ctxo doctor`: with a `.cursor/` folder, `domain_agent_setup` reports the reminder missing, registered twice or in
-  an unreadable `.cursor/hooks.json`. `ctxo doctor --fix` now repairs the domain agent setup (it used to print
-  "run ctxo init --only domain"): loader rules, the Claude Code guard hooks, the Cursor reminder (other hooks kept, a
-  second copy dropped, an unreadable file never written) and the `ctxo-domain-fold` skill.
+  input and on any error. It never blocks and always exits 0. A payload without `hook_event_name` is told by its
+  shape; a Windows `/c:/...` workspace root is read as `c:/...`. Session records untouched for 30 days are pruned.
+- `ctxo doctor`: with a `.cursor/` folder and the guard enabled, `domain_agent_setup` reports the reminder missing,
+  registered twice or in an unreadable `.cursor/hooks.json`. `ctxo doctor --fix` now repairs the domain agent setup
+  (it used to print "run ctxo init --only domain"): loader rules, the Claude Code guard hooks, the Cursor reminder
+  (other hooks, indentation, BOM and line endings kept, a second copy dropped, an unreadable file never written) and
+  the `ctxo-domain-fold` skill where the check reports it missing or outdated (an edited current copy or a newer one
+  is left alone). `domain.guard.enabled: false` opts out of the reminder entries in init and doctor.
 - Module API: `CtxoModuleRegistration.doctorFixes` (`ModuleDoctorFix`: `checkId`, `name`, `action`,
   `apply(DoctorFixContext)`) adds a step to `ctxo doctor --fix` after the AI rules step; `DoctorFixContext` carries
   the `ensureClaudeHookEntry` and `installSkill` writers `ctxo init` hands its domain part.

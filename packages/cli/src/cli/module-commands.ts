@@ -89,7 +89,7 @@ export function collectModuleCommands(
 }
 
 /** All of stdin as UTF-8 text; empty on a terminal, where nothing is piped in. */
-async function readAllStdin(): Promise<string> {
+export async function readAllStdin(): Promise<string> {
   if (process.stdin.isTTY) return '';
   const chunks: Buffer[] = [];
   for await (const chunk of process.stdin) {
@@ -106,7 +106,12 @@ async function readAllStdin(): Promise<string> {
 export async function runModuleCommand(
   command: string,
   args: readonly string[],
-  options: { readonly projectRoot: string; readonly modules: readonly LoadedModule[] },
+  options: {
+    readonly projectRoot: string;
+    readonly modules: readonly LoadedModule[];
+    /** Stands in for reading stdin (a route that already read it). */
+    readonly readStdin?: () => Promise<string>;
+  },
 ): Promise<number | undefined> {
   const found = collectModuleCommands(options.modules, CORE_COMMANDS).get(command);
   if (found === undefined) return undefined;
@@ -117,7 +122,7 @@ export async function runModuleCommand(
   const ctx: ModuleCommandContext = {
     projectRoot: options.projectRoot,
     ctxoRoot: join(options.projectRoot, '.ctxo'),
-    readStdin: readAllStdin,
+    readStdin: options.readStdin ?? readAllStdin,
   };
   return found.run(args, ctx);
 }
@@ -173,6 +178,15 @@ export interface FastRouteOptions {
  */
 export async function runFastRoute(args: readonly string[], cwd: string, options: FastRouteOptions = {}): Promise<number> {
   const command = args[0] ?? '';
+  if (command === 'domain-cursor-hook') {
+    try {
+      const { runCursorHookRoute } = await import('./cursor-hook-route.js');
+      return await runCursorHookRoute(args, cwd, options);
+    } catch (err) {
+      console.error(`[ctxo] ${command} failed, allowing: ${(err as Error).message}`);
+      return 0;
+    }
+  }
   try {
     const projectRoot = locateGitRoot(cwd) ?? cwd;
     const modules = await loadModulesFor(projectRoot, 'hook', { cliAnchor: options.cliAnchor });

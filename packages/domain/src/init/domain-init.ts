@@ -228,11 +228,14 @@ export interface AgentSetupContext {
   readonly dryRun: boolean;
   ensureClaudeHookEntry(entry: ClaudeHookEntry): InitFileResult;
   installSkill(platformId: string, name: string, content: string): InitFileResult | undefined;
+  /** The platforms whose skill is (re)installed; all selected ones when absent. `ctxo doctor --fix` passes the ones it reported. */
+  readonly skillPlatforms?: readonly string[];
 }
 
 /**
  * Steps 6 to 9, the agent setup: the loader rules, the fold guard hooks for Claude Code, the fold reminder
- * in `.cursor/hooks.json` for Cursor and the `ctxo-domain-fold` skill. Every step honours `ctx.dryRun`.
+ * in `.cursor/hooks.json` for Cursor (not with `domain.guard.enabled: false`: it runs on every prompt, so a
+ * disabled guard opts out of it) and the `ctxo-domain-fold` skill. Every step honours `ctx.dryRun`.
  */
 export function applyAgentSetup(ctx: AgentSetupContext, config: DomainConfig): InitFileResult[] {
   const rows: InitFileResult[] = [];
@@ -247,7 +250,7 @@ export function applyAgentSetup(ctx: AgentSetupContext, config: DomainConfig): I
     }
   }
 
-  if (ctx.toolIds.includes('cursor')) {
+  if (ctx.toolIds.includes('cursor') && config.guard.enabled) {
     try {
       rows.push(ensureCursorHooks(ctx.projectRoot, { dryRun: ctx.dryRun }));
     } catch (err) {
@@ -255,7 +258,7 @@ export function applyAgentSetup(ctx: AgentSetupContext, config: DomainConfig): I
     }
   }
 
-  const platforms = SKILL_PLATFORMS.filter((id) => ctx.toolIds.includes(id));
+  const platforms = SKILL_PLATFORMS.filter((id) => ctx.toolIds.includes(id) && (ctx.skillPlatforms === undefined || ctx.skillPlatforms.includes(id)));
   if (platforms.length > 0) {
     let content: string | undefined;
     try {

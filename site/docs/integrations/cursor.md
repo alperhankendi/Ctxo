@@ -93,14 +93,18 @@ next to any hooks you already have:
 }
 ```
 
-- The first prompt of a conversation records where it starts; the prompt always goes through.
-- When the agent stops, the reminder makes the same decision as the Claude Code guard. If the guard would
-  block, Cursor sends the guard's reason (headed `ctxo domain reminder:`) to the agent as a follow-up
-  message, naming the contexts, their changed files, the card and the `Domain-Unchanged` trailer line.
+- The first prompt of a conversation records where it starts. Every prompt goes through: the hook answers
+  exactly `{"continue":true}`, also without `@ctxo/domain` and on any error, and a repeat prompt only checks
+  a small file (no module load, no git).
+- When the agent finishes a turn normally (`status: "completed"`), the reminder makes the same decision as
+  the Claude Code guard. If the guard would block, Cursor sends the guard's reason (headed
+  `ctxo domain reminder:`) to the agent as a follow-up message, naming the contexts, their changed files,
+  the card and the `Domain-Unchanged` trailer line. An aborted or errored turn gets nothing.
 - At most once per conversation, never while a follow-up is already running, never when
   `domain.guard.enabled` is `false`, and silent on any error. It never blocks.
+- `ctxo` must be on the PATH of the shell Cursor runs hooks in.
 - `ctxo doctor` reports a missing, duplicated or unreadable entry; `ctxo doctor --fix` repairs it and keeps
-  your other hooks.
+  your other hooks. `domain.guard.enabled: false` opts out: init and doctor then leave the entries out.
 
 ## Next steps
 

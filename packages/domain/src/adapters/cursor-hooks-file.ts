@@ -17,7 +17,21 @@ const BOM = String.fromCharCode(0xfeff);
 export type CursorHooksState =
   | { readonly kind: 'missing' }
   | { readonly kind: 'unreadable'; readonly problem: string }
-  | { readonly kind: 'ok'; readonly json: Record<string, unknown>; readonly bom: boolean; readonly crlf: boolean };
+  | {
+      readonly kind: 'ok';
+      readonly json: Record<string, unknown>;
+      readonly bom: boolean;
+      readonly crlf: boolean;
+      /** The file's indentation, written back on a merge. */
+      readonly indent: string | number;
+    };
+
+/** The indentation of the first indented line: a tab, or its number of spaces; 2 for a file without one. */
+function detectIndent(text: string): string | number {
+  const match = /^([ \t]+)\S/m.exec(text);
+  if (match === null) return 2;
+  return match[1]!.startsWith('\t') ? '\t' : match[1]!.length;
+}
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -50,7 +64,7 @@ export function readCursorHooks(projectRoot: string): CursorHooksState {
     const list = isPlainObject(hooks) ? hooks[event] : undefined;
     if (list !== undefined && !Array.isArray(list)) return { kind: 'unreadable', problem: `${CURSOR_HOOKS_FILE}: "hooks.${event}" is not a list` };
   }
-  return { kind: 'ok', json, bom, crlf: text.includes('\r\n') };
+  return { kind: 'ok', json, bom, crlf: text.includes('\r\n'), indent: detectIndent(text) };
 }
 
 /** True when the entry runs the reminder command (`npx ctxo domain-cursor-hook` counts too). */
@@ -81,7 +95,7 @@ export function cursorHookProblems(state: CursorHooksState): { readonly missing:
 /**
  * Registers the reminder in `.cursor/hooks.json` for `beforeSubmitPrompt` and `stop`, as
  * `{ "command": "ctxo domain-cursor-hook" }`, last in each list. Every other key, event and entry is kept,
- * a second copy of the reminder in one list is dropped, and the file's UTF-8 BOM and line endings are written
+ * a second copy of the reminder in one list is dropped, and the file's UTF-8 BOM, line endings and indentation are written
  * back. A file that already holds one entry per event is `skipped`; an unreadable one is `skipped` with a
  * warning and never overwritten. `dryRun` computes the same action and writes nothing.
  */
@@ -118,7 +132,7 @@ export function ensureCursorHooks(projectRoot: string, options: { readonly dryRu
   }
   const updated = { ...('version' in state.json ? {} : { version: 1 }), ...state.json, hooks };
   if (!options.dryRun) {
-    let body = `${JSON.stringify(updated, null, 2)}\n`;
+    let body = `${JSON.stringify(updated, null, state.indent)}\n`;
     if (state.crlf) body = body.replace(/\n/g, '\r\n');
     writeFileSync(path, state.bom ? `${BOM}${body}` : body, 'utf-8');
   }
