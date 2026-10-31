@@ -126,7 +126,8 @@ static class SymbolNames
 /// <summary>
 /// Collects fact evidence from one file through <see cref="IOperation"/>: comparisons with a
 /// literal in conditions and case labels, normalization calls, retry/timeout bindings, TimeSpan
-/// durations and minimal API routes. Attribute routes are built by the plugin from annotations.
+/// durations and minimal API routes (with their <c>MapGroup</c> prefixes). Attribute routes are built by
+/// the plugin from annotations.
 /// </summary>
 static class Facts
 {
@@ -158,9 +159,9 @@ static class Facts
     /// belong to their property, event or method; every field declarator uses its own name; a
     /// top-level statement has no symbol id, so the finisher gives it the file's module id.
     /// </summary>
-    public static List<CtxoFactEvidence> Collect(SyntaxNode root, SemanticModel model, string filePath, FactOptions options)
+    public static List<CtxoFactEvidence> Collect(SyntaxNode root, SemanticModel model, string filePath, FactOptions options, IReadOnlyList<Compilation>? dependentCompilations = null)
     {
-        var collector = new Collector(filePath, options);
+        var collector = new Collector(filePath, options, model, RouteGroups.For(model.Compilation, dependentCompilations ?? []));
         foreach (var node in root.DescendantNodes())
         {
             if (collector.Full) break;
@@ -202,7 +203,7 @@ static class Facts
         return collector.Evidence;
     }
 
-    sealed class Collector(string filePath, FactOptions options)
+    sealed class Collector(string filePath, FactOptions options, SemanticModel model, RouteGroups groups)
     {
         public readonly List<CtxoFactEvidence> Evidence = [];
         string? symbolId;
@@ -429,7 +430,10 @@ static class Facts
             if (RouteVerbs.TryGetValue(method, out var verb) && arguments.Count > 0
                 && arguments[0].Expression is LiteralExpressionSyntax route && route.IsKind(SyntaxKind.StringLiteralExpression))
             {
-                Add(new CtxoFactEvidence { Kind = "route", Line = line, Text = syntax.ToString(), Verb = verb, Route = route.Token.ValueText });
+                // The MapGroup prefixes of the receiver, when every one resolves; else the call's own route.
+                var prefix = RouteGroups.Receiver(syntax, model) is { } routeReceiver ? groups.Prefix(routeReceiver, model) : null;
+                var path = string.IsNullOrEmpty(prefix) ? route.Token.ValueText : RouteGroups.Join(prefix, route.Token.ValueText);
+                Add(new CtxoFactEvidence { Kind = "route", Line = line, Text = syntax.ToString(), Verb = verb, Route = path });
             }
         }
 

@@ -160,10 +160,22 @@ async Task RunBatchIndex(Solution sol, Dictionary<ProjectId, Compilation> comps)
             if (!IsUserCsFile(document.FilePath)) continue;
 
             var relativePath = Path.GetRelativePath(solutionDir, document.FilePath!).Replace('\\', '/');
-            var result = await AnalyzeDocument(document, compilation, sol, relativePath);
-            WriteLine(JsonSerializer.Serialize(result, jsonOptions));
-            totalFiles++;
+            try
+            {
+                var result = await AnalyzeDocument(document, compilation, sol, relativePath);
+                WriteLine(JsonSerializer.Serialize(result, jsonOptions));
+                totalFiles++;
+            }
+            catch
+            {
+                // The route-group indexes and semantic models are dead once the batch stops.
+                RouteGroups.ReleaseAll();
+                throw;
+            }
         }
+
+        // The route-group indexes and semantic models are dead once the project's files are done.
+        RouteGroups.ReleaseAll();
     }
 
     // Project dependency graph
@@ -241,6 +253,11 @@ async Task RunKeepAlive(Solution sol, Dictionary<ProjectId, Compilation> comps)
         {
             WriteError($"Keep-alive error: {ex.Message}");
         }
+        finally
+        {
+            // One file per request: keep no route-group index between requests, also after an error.
+            RouteGroups.ReleaseAll();
+        }
     }
 }
 
@@ -257,7 +274,15 @@ async Task<FileResult> AnalyzeDocument(Document document, Compilation compilatio
     var symbols = ExtractSymbols(syntaxRoot, semanticModel, relativePath);
     var edges = ExtractEdges(syntaxRoot, semanticModel, compilation, relativePath);
     var complexity = ExtractComplexity(syntaxRoot, semanticModel, relativePath);
-    var factEvidence = CollectFactEvidence(syntaxRoot, semanticModel, relativePath);
+    // Projects that reference this one, directly or through others, and compiled: call sites of its
+    // public methods may be there. A dependent that failed to compile is not loaded and not searched.
+    List<Compilation> dependentCompilations = factOptions == null
+        ? []
+        : sol.GetProjectDependencyGraph().GetProjectsThatTransitivelyDependOnThisProject(document.Project.Id)
+            .Select(id => compilations.TryGetValue(id, out var dependent) ? dependent : null)
+            .OfType<Compilation>()
+            .ToList();
+    var factEvidence = CollectFactEvidence(syntaxRoot, semanticModel, relativePath, dependentCompilations);
 
     return new FileResult
     {
@@ -272,12 +297,12 @@ async Task<FileResult> AnalyzeDocument(Document document, Compilation compilatio
 
 // Fact evidence only with --facts=; null (no key) when there is none. Optional, so a failure
 // costs the file its evidence, never its symbols or edges.
-List<CtxoFactEvidence>? CollectFactEvidence(SyntaxNode root, SemanticModel model, string relativePath)
+List<CtxoFactEvidence>? CollectFactEvidence(SyntaxNode root, SemanticModel model, string relativePath, IReadOnlyList<Compilation> dependentCompilations)
 {
     if (factOptions == null) return null;
     try
     {
-        var evidence = Facts.Collect(root, model, relativePath, factOptions);
+        var evidence = Facts.Collect(root, model, relativePath, factOptions, dependentCompilations);
         return evidence.Count > 0 ? evidence : null;
     }
     catch (Exception ex)
@@ -334,6 +359,8 @@ List<CtxoSymbol> ExtractSymbols(SyntaxNode root, SemanticModel model, string fil
             StartOffset = node.Span.Start,
             EndOffset = node.Span.End,
             Annotations = AttributeAnnotations.For(node, symbol, model),
+            // Facts only: the plugin builds attribute routes, and a controller's base class may be in another file.
+            InheritedRoute = factOptions != null && symbol is INamedTypeSymbol type ? InheritedRoutes.For(type) : null,
         });
     }
 
@@ -795,6 +822,8 @@ record CtxoSymbol
     [JsonPropertyName("startOffset")] public int StartOffset { get; init; }
     [JsonPropertyName("endOffset")] public int EndOffset { get; init; }
     [JsonPropertyName("annotations")] public List<CtxoAnnotation>? Annotations { get; init; }
+    /// <summary>The class <c>[Route]</c> template inherited from a base class (facts only); not an annotation.</summary>
+    [JsonPropertyName("inheritedRoute")] public string? InheritedRoute { get; init; }
 }
 
 record CtxoEdge

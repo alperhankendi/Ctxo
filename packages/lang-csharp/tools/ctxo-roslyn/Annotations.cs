@@ -8,7 +8,8 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 /// <summary>
 /// Turns the attributes written on one declaration into annotations. Each
 /// attribute uses its semantic data when its class resolves, otherwise the
-/// syntax. Caps: 20 attributes per symbol, 10 positional and 10 named entries
+/// syntax. Caps: 20 written attributes per symbol (an added test base, see
+/// <see cref="TestAttributeBase"/>, comes on top), 10 positional and 10 named entries
 /// per attribute, 200 characters per value. <c>named.type</c> is reserved for
 /// the resolved attribute class and comes on top of the 10 named entries; a
 /// source argument named <c>type</c> is dropped, as in the tree-sitter tier.
@@ -28,6 +29,17 @@ static class AttributeAnnotations
 
         var applied = symbol.GetAttributes();
         var annotations = new List<CtxoAnnotation>();
+        // Written attributes count toward the cap; an added test base never pushes one out.
+        var written = 0;
+        // Every name reported on the declaration (the first 20 written), so an added test base never
+        // repeats one before or after it, and a known name cut by the cap does not suppress it.
+        var writtenNames = member.AttributeLists
+            .Where(l => AppliesToDeclaration(l, declaration))
+            .SelectMany(l => l.Attributes)
+            .Take(MaxAttributes)
+            .Select(NameOf)
+            .ToHashSet(StringComparer.Ordinal);
+        var addedBases = new HashSet<string>(StringComparer.Ordinal);
 
         // Source order of this declaration's own lists, so each partial part
         // keeps its own attributes.
@@ -37,7 +49,8 @@ static class AttributeAnnotations
 
             foreach (var attribute in list.Attributes)
             {
-                if (annotations.Count == MaxAttributes) return annotations;
+                if (written == MaxAttributes) return annotations;
+                written++;
 
                 var data = applied.FirstOrDefault(a =>
                     a.ApplicationSyntaxReference is { } r &&
@@ -52,11 +65,72 @@ static class AttributeAnnotations
                 else
                     FromSyntax(attribute, model, args, named);
 
-                annotations.Add(Build(NameOf(attribute), args, named, resolvedClass?.ToDisplayString()));
+                var name = NameOf(attribute);
+                annotations.Add(Build(name, args, named, resolvedClass?.ToDisplayString()));
+
+                // A project's own test attribute (`[RetryFact]` deriving from `Xunit.FactAttribute`):
+                // the known base follows it, so name-based test detection sees it.
+                if (resolvedClass != null && TestAttributeBase(name, resolvedClass) is { } baseClass
+                    && !writtenNames.Contains(baseClass.ShortName)
+                    && addedBases.Add(baseClass.ShortName))
+                {
+                    annotations.Add(new CtxoAnnotation
+                    {
+                        Name = baseClass.ShortName,
+                        Named = new Dictionary<string, string>(StringComparer.Ordinal)
+                        {
+                            [TypeKey] = baseClass.FullName,
+                            [ViaKey] = Truncate(resolvedClass.ToDisplayString()),
+                        },
+                    });
+                }
             }
         }
 
         return annotations.Count > 0 ? annotations : null;
+    }
+
+    // ── Test attributes by base type ──
+
+    const string ViaKey = "via";
+
+    /// <summary>
+    /// The 11 test-framework attributes the host recognises by short name (the CLI's
+    /// <c>TEST_FRAMEWORK_ANNOTATIONS</c>), keyed by their full metadata name.
+    /// </summary>
+    static readonly Dictionary<string, string> KnownTestAttributes = new(StringComparer.Ordinal)
+    {
+        ["Xunit.FactAttribute"] = "Fact",
+        ["Xunit.TheoryAttribute"] = "Theory",
+        ["Xunit.SkippableFactAttribute"] = "SkippableFact",
+        ["Xunit.SkippableTheoryAttribute"] = "SkippableTheory",
+        ["NUnit.Framework.TestAttribute"] = "Test",
+        ["NUnit.Framework.TestCaseAttribute"] = "TestCase",
+        ["NUnit.Framework.TestCaseSourceAttribute"] = "TestCaseSource",
+        ["NUnit.Framework.TestFixtureAttribute"] = "TestFixture",
+        ["Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute"] = "TestMethod",
+        ["Microsoft.VisualStudio.TestTools.UnitTesting.DataTestMethodAttribute"] = "DataTestMethod",
+        ["Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute"] = "TestClass",
+    };
+
+    static readonly HashSet<string> KnownTestShortNames = new(KnownTestAttributes.Values, StringComparer.Ordinal);
+
+    /// <summary>
+    /// The nearest known test attribute among an attribute class and its base types, when the
+    /// written name is not itself a known one (an alias such as <c>[F]</c> for
+    /// <c>Xunit.FactAttribute</c> counts too); null when there is none.
+    /// </summary>
+    static (string ShortName, string FullName)? TestAttributeBase(string writtenName, INamedTypeSymbol attributeClass)
+    {
+        if (KnownTestShortNames.Contains(writtenName)) return null;
+        var depth = 0;
+        for (INamedTypeSymbol? current = attributeClass; current != null && depth < 32; current = current.BaseType, depth++)
+        {
+            if (current.TypeKind == TypeKind.Error) return null;
+            var fullName = current.OriginalDefinition.ToDisplayString();
+            if (KnownTestAttributes.TryGetValue(fullName, out var shortName)) return (shortName, fullName);
+        }
+        return null;
     }
 
     static CtxoAnnotation Build(

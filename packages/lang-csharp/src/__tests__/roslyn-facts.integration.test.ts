@@ -140,8 +140,12 @@ describe.skipIf(!HAS_DOTNET)('Roslyn facts', () => {
       for (const file of FILES) expect(await plain.adapter.extractFacts(path(file), '')).toEqual([]);
 
       // Facts off is the output before facts existed: the same files, symbols, edges and complexity
-      // as the facts run, without the evidence key.
-      const withoutEvidence = batch!.files.map(({ factEvidence: _evidence, ...rest }) => rest);
+      // as the facts run, without the evidence key and the symbols' facts-only inheritedRoute.
+      const withoutEvidence = batch!.files.map(({ factEvidence: _evidence, ...rest }) => ({
+        ...rest,
+        symbols: rest.symbols.map(({ inheritedRoute: _route, ...symbol }) => symbol),
+      }));
+      expect(batch!.files.some(f => f.symbols.some(s => s.inheritedRoute !== undefined))).toBe(true);
       expect(JSON.stringify(plain.batch!.files)).toBe(JSON.stringify(withoutEvidence));
     } finally {
       await plain.adapter.dispose();

@@ -194,7 +194,7 @@ The contexts view leaves test files out. A file is a test file when one of the s
 - Once any `.cs` file in the index carries annotations, a file matched only by the name globs `**/*Test.cs` or `**/*Tests.cs` is a test file only if it has a test annotation. Without that, it becomes a production node. Folder globs such as `**/tests/**` and `**/*.Tests/**` still decide on their own.
 - A repository whose C# files have no annotations in the index keeps the plain glob behaviour.
 
-Three cases need an `index.tests` glob: test classes that use only other attributes (for example FsCheck `[Property]`), test classes whose attributes derive from `Fact` or `Theory` (names match exactly; attribute base types are not resolved), and an unannotated `*Tests.cs` file in a bare capital `Tests/` or `Test/` folder (`**/tests/**` is case-sensitive, so that folder is not a default test glob).
+Three cases need an `index.tests` glob: test classes that use only other attributes (for example FsCheck `[Property]`), test classes whose attributes derive from a known one when the C# file is indexed by the tree-sitter tier (the Roslyn tier resolves attribute base types), and an unannotated `*Tests.cs` file in a bare capital `Tests/` or `Test/` folder (`**/tests/**` is case-sensitive, so that folder is not a default test glob).
 
 After upgrading `@ctxo/lang-csharp`, run a full `ctxo index` once. An incremental run (`--files`, `--commit`, the post-commit hook) annotates only the files it re-indexes, while the contexts view already counts the index as annotated, so name-only `*Test.cs` / `*Tests.cs` matches that were not re-indexed show up as production files until the full run.
 
