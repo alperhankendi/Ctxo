@@ -6,11 +6,16 @@ import { hasRetryTimeoutFragment, matchesNormalizationPattern } from './fact-rul
 import { findTestBlocks } from '../test-blocks.js';
 import type { ModuleResolver } from '../sql/module-resolver.js';
 import { receiverModule } from '../sql/provenance.js';
+import { joinRoute } from './fact-rules.js';
+import type { RoutePrefixes } from './route-prefixes.js';
 
-/** The packages a route call's receiver must trace to (G7). */
-export const ROUTE_MODULES: ReadonlySet<string> = new Set(['express', 'fastify']);
+/** The packages a route call's receiver must trace to (G7): Express, Fastify, Koa routers and Hono. */
+export const ROUTE_MODULES: ReadonlySet<string> = new Set(['express', 'fastify', '@koa/router', 'koa-router', 'hono']);
 
-/** Express and Fastify route members and their verbs; `all` is `ANY`. */
+/** Koa router modules: `del` is DELETE, and a route may be named (`router.get('name', '/path', handler)`). */
+const KOA_ROUTER_MODULES: ReadonlySet<string> = new Set(['@koa/router', 'koa-router']);
+
+/** Express, Fastify, Koa and Hono route members and their verbs; `all` is `ANY`. */
 const ROUTE_VERBS: Readonly<Record<string, string>> = {
   get: 'GET',
   post: 'POST',
@@ -225,6 +230,7 @@ class Collector {
     private readonly resolver: ModuleResolver,
     private readonly options: FactOptions,
     isTestFile?: (path: string) => boolean,
+    private readonly prefixes?: RoutePrefixes,
   ) {
     this.owners = new Owners(scopesOf(sourceFile, filePath, isTestFile));
     this.newlines = newlineOffsets(sourceFile.getFullText());
@@ -354,15 +360,20 @@ class Collector {
       this.push(call, { kind: 'call', line: this.lineOf(call), text: call.getText(), method, qualifier: receiver.getText() });
     }
 
-    // G7: Express and Fastify routes: a literal path and a handler (Express `app.get('env')` reads a setting);
-    // the receiver must trace to a route module.
-    const verb = ROUTE_VERBS[method];
-    const path = stringValueOf(args[0]);
-    if (verb !== undefined && path !== undefined) {
+    // G7: Express, Fastify, Koa and Hono routes: a literal path and a handler (Express `app.get('env')` reads a
+    // setting); the receiver must trace to a route module. A Koa route may be named: `get('name', '/path', h)`.
+    const verb = ROUTE_VERBS[method] ?? (method === 'del' ? 'DELETE' : undefined);
+    const first = stringValueOf(args[0]);
+    if (verb !== undefined && first !== undefined) {
       if (args.length < 2) return;
-      if (receiverModule(receiver, this.resolver, ROUTE_MODULES) !== undefined) {
-        this.push(call, { kind: 'route', line: this.lineOf(call), verb, route: path });
-      }
+      const module = receiverModule(receiver, this.resolver, ROUTE_MODULES);
+      if (module === undefined) return;
+      const koa = KOA_ROUTER_MODULES.has(module);
+      if (method === 'del' && !koa) return;
+      const named = koa ? stringValueOf(args[1]) : undefined;
+      if (named !== undefined && args.length < 3) return;
+      const path = named ?? first;
+      this.push(call, { kind: 'route', line: this.lineOf(call), verb, route: this.prefixed(receiver, path) });
     } else if (method === 'route' && args[0] && Node.isObjectLiteralExpression(args[0])) {
       this.fastifyRoute(call, receiver, args[0]);
     }
@@ -395,17 +406,31 @@ class Collector {
     if (receiverModule(receiver, this.resolver, ROUTE_MODULES) !== 'fastify') return;
     for (const method of methods) this.push(call, { kind: 'route', line: this.lineOf(call), verb: method, route: url });
   }
+
+  /** `path` joined to the receiver's mount prefix (route prefixes); the path as written when there is none. */
+  private prefixed(receiver: Node, path: string): string {
+    const prefix = this.prefixes?.prefixOf(receiver) ?? '';
+    return prefix === '' ? path : joinRoute(prefix, path);
+  }
 }
 
 /**
  * Fact evidence of one TypeScript or JavaScript file: comparisons in conditions and `case` labels, `x.m(...)`
  * calls matching a normalization pattern, retry and timeout bindings (variables, class properties,
- * object-literal properties, assignments), `setTimeout` durations and Express or Fastify routes. Each record's
+ * object-literal properties, assignments), `setTimeout` durations and Express, Fastify, Koa or Hono routes, joined
+ * to their router's mount prefix when `prefixes` resolves one. Each record's
  * `symbolId` is its G8 owner, or unset for code outside every owner (the finisher uses the module symbol).
  * Route receivers are traced through `resolver`, which may add files to the project until its `release()`.
  */
-export function collectTsEvidence(sourceFile: SourceFile, filePath: string, resolver: ModuleResolver, options: FactOptions, isTestFile?: (path: string) => boolean): FactEvidence[] {
-  const collector = new Collector(sourceFile, filePath, resolver, options, isTestFile);
+export function collectTsEvidence(
+  sourceFile: SourceFile,
+  filePath: string,
+  resolver: ModuleResolver,
+  options: FactOptions,
+  isTestFile?: (path: string) => boolean,
+  prefixes?: RoutePrefixes,
+): FactEvidence[] {
+  const collector = new Collector(sourceFile, filePath, resolver, options, isTestFile, prefixes);
   sourceFile.forEachDescendant((node) => collector.visit(node));
   return collector.evidence;
 }
