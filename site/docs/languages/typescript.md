@@ -121,9 +121,11 @@ src/loans/loan-policy.test.ts::LoanPolicy > renewal > extends by seven days::fun
 - Test files are decided by the globs the CLI hands the plugin
   (`PluginContext.testGlobs`: the default test globs plus `index.tests`), so
   `index.tests: ["spec/**/*.check.ts"]` makes the blocks of
-  `spec/loans/policy.check.ts` test symbols. With a CLI older than that field
-  only the defaults above count. Re-index (`ctxo index`) after changing
-  `index.tests`.
+  `spec/loans/policy.check.ts` test symbols. The CLI's defaults also hold
+  `**/*.Tests/**` and `**/*.Test/**`, so TypeScript files in such folders get
+  test blocks too. With a CLI that predates the field only the defaults above
+  count. A negated (`!`) glob is skipped. Re-index (`ctxo index`) after
+  changing `index.tests`.
 
 ## SQL at call sites
 

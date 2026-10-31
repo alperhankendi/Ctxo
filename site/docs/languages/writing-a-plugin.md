@@ -191,8 +191,9 @@ Java and Go plugins at the same node.
 globs that mark a test file: the CLI's default test globs followed by the
 project's `index.tests` globs, each once. Match them as picomatch globs with
 `{ dot: true }` against the project-relative, forward-slash paths your adapter
-receives. Older CLIs do not set it, so keep a default rule of your own for
-that case:
+receives. Negation is not supported: the CLI never sends a glob that starts
+with `!`, and you should skip one. CLIs that predate the field do not set it,
+so keep a default rule of your own for that case:
 
 ```ts
 createAdapter(ctx: PluginContext): ILanguageAdapter {

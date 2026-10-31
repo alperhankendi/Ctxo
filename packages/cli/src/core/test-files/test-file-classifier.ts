@@ -44,10 +44,12 @@ export const TEST_FRAMEWORK_ANNOTATIONS: readonly string[] = [
 
 /**
  * The test-file globs handed to every plugin as `PluginContext.testGlobs`: the defaults, then the extra
- * (`index.tests`) globs in config order, each glob once. Frozen, so one array serves every plugin of a run.
+ * (`index.tests`) globs in config order, each glob once. A negated (`!`) extra glob is skipped: `index.tests`
+ * does not support negation. Frozen, so one array serves every plugin of a run.
  */
 export function effectiveTestGlobs(extraGlobs: readonly string[] = []): readonly string[] {
-  return Object.freeze([...new Set([...DEFAULT_TEST_GLOBS, ...extraGlobs])]);
+  const extras = extraGlobs.filter((glob) => !glob.startsWith('!'));
+  return Object.freeze([...new Set([...DEFAULT_TEST_GLOBS, ...extras])]);
 }
 
 /** Takes a repo-relative path with either separator. */

@@ -1,0 +1,24 @@
+{
+  "hostDefaults": [
+    "**/__tests__/**",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "**/test/**",
+    "**/tests/**",
+    "**/*_test.go",
+    "**/src/test/**",
+    "**/*.Tests/**",
+    "**/*.Test/**",
+    "**/*Tests.cs",
+    "**/*Test.cs",
+    "**/test_*.py",
+    "**/*_test.py"
+  ],
+  "typescriptFallback": [
+    "**/__tests__/**",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "**/test/**",
+    "**/tests/**"
+  ]
+}

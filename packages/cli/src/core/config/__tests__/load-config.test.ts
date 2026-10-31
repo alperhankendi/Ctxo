@@ -8,11 +8,13 @@ import {
   indexIgnorePatterns,
   indexIgnoreProjectPatterns,
   indexTestPatterns,
+  negatedIndexTestPatterns,
   factsRequested,
   makeGlobMatcher,
   maskingClusterLabelPatterns,
   watchSnapshotMinFileChanges,
 } from '../load-config.js';
+import { createTestFileClassifier } from '../../test-files/test-file-classifier.js';
 
 describe('loadConfig', () => {
   let ctxoRoot: string;
@@ -122,6 +124,22 @@ index:
     expect(loaded.errors).toEqual([]);
     expect(indexTestPatterns(loaded.config)).toEqual(['**/it/**']);
     expect(loaded.invalidGlobs).toContain(`index.tests: ${tooLong}`);
+  });
+
+  it('index.tests skips negated globs, so a !**/fixtures/** entry no longer turns every file into a test file', () => {
+    writeConfig(`version: "1.0"
+index:
+  tests:
+    - "!**/fixtures/**"
+    - "spec/**/*.check.ts"
+`);
+    const loaded = loadConfig(ctxoRoot);
+    expect(loaded.errors).toEqual([]);
+    expect(indexTestPatterns(loaded.config)).toEqual(['spec/**/*.check.ts']);
+    expect(negatedIndexTestPatterns(loaded.config)).toEqual(['!**/fixtures/**']);
+    const isTest = createTestFileClassifier(indexTestPatterns(loaded.config));
+    expect(isTest('src/loans/policy.ts')).toBe(false);
+    expect(isTest('spec/loans/policy.check.ts')).toBe(true);
   });
 
   it('index still rejects an unknown key', () => {

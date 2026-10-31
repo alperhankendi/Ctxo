@@ -76,8 +76,8 @@ describe('loadPlugins capabilities', () => {
     expect(Object.isFrozen(seen[0]!.testGlobs)).toBe(true);
   });
 
-  it('loadPlugins hands the default test globs alone when index.tests is empty or unset', async () => {
-    for (const options of [{}, { testGlobs: [] }]) {
+  it('loadPlugins hands the default test globs alone when index.tests is empty, unset or only negated', async () => {
+    for (const options of [{}, { testGlobs: [] }, { testGlobs: ['!**/fixtures/**'] }]) {
       seen.length = 0;
       await loadPlugins(process.cwd(), options);
       for (const s of seen) expect(s.testGlobs).toEqual([...DEFAULT_TEST_GLOBS]);

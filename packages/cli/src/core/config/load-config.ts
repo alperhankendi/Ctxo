@@ -112,8 +112,23 @@ export function factsRequested(config: CtxoConfig): boolean {
   return config.index?.facts === true;
 }
 
+/** True for a negated glob (`!` prefix). `index.tests` does not support negation. */
+export function isNegatedGlob(pattern: string): boolean {
+  return pattern.startsWith('!');
+}
+
+/**
+ * The usable `index.tests` globs: valid and not negated. A negated glob would match every path outside its
+ * pattern (picomatch negation), turning every file into a test file, so it is skipped here, before it reaches
+ * the contexts view, the fact filter or the plugins; `ctxo doctor` (`config_file`) names it.
+ */
 export function indexTestPatterns(config: CtxoConfig): string[] {
-  return (config.index?.tests ?? []).filter(isValidGlob);
+  return (config.index?.tests ?? []).filter((pattern) => isValidGlob(pattern) && !isNegatedGlob(pattern));
+}
+
+/** The `index.tests` entries skipped because they are negated, in config order. */
+export function negatedIndexTestPatterns(config: CtxoConfig): string[] {
+  return (config.index?.tests ?? []).filter(isNegatedGlob);
 }
 
 /**

@@ -93,6 +93,26 @@ describe('ConfigFileCheck', () => {
     }
   });
 
+  it('warns about a negated index.tests entry, names it and points at index.ignore', async () => {
+    writeFileSync(join(ctxoRoot, 'config.yaml'), 'index:\n  tests:\n    - "!**/fixtures/**"\n    - "spec/**"\n');
+    const result = await check.run(ctx);
+    expect(result.status).toBe('warn');
+    expect(result.message).toContain('does not support negation');
+    expect(result.message).toContain('!**/fixtures/**');
+    expect(result.message).not.toContain('spec/**');
+    expect(result.fix).toContain('index.ignore');
+  });
+
+  it('reports a negated index.tests entry next to invalid globs', async () => {
+    const tooLong = 'a'.repeat(65_537);
+    writeFileSync(join(ctxoRoot, 'config.yaml'), `index:\n  tests:\n    - "!**/fixtures/**"\n    - "${tooLong}"\n`);
+    const result = await check.run(ctx);
+    expect(result.status).toBe('warn');
+    expect(result.message).toContain('1 invalid glob pattern(s)');
+    expect(result.message).toContain('!**/fixtures/**');
+    expect(result.fix).toContain('index.ignore');
+  });
+
   it('fails and names the key for a typo under contextsView.hubs', async () => {
     writeFileSync(join(ctxoRoot, 'config.yaml'), 'contextsView:\n  hubs:\n    minDependent: 5\n');
     const result = await check.run(ctx);

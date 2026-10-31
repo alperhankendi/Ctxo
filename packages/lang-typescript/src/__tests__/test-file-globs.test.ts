@@ -1,24 +1,20 @@
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createTestFileMatcher } from '../test-file-globs.js';
 import { isTestFilePath } from '../test-blocks.js';
 import { TsMorphAdapter } from '../ts-morph-adapter.js';
 
-/** The core's DEFAULT_TEST_GLOBS, as a current host sends them before any `index.tests` glob. */
-const HOST_DEFAULTS = [
-  '**/__tests__/**',
-  '**/*.test.*',
-  '**/*.spec.*',
-  '**/test/**',
-  '**/tests/**',
-  '**/*_test.go',
-  '**/src/test/**',
-  '**/*.Tests/**',
-  '**/*.Test/**',
-  '**/*Tests.cs',
-  '**/*Test.cs',
-  '**/test_*.py',
-  '**/*_test.py',
-];
+/**
+ * The core's DEFAULT_TEST_GLOBS (`hostDefaults`, what a current host sends before any `index.tests` glob) and
+ * their TypeScript and JavaScript part (`typescriptFallback`, what `isTestFilePath` implements). The plugin cannot
+ * import the CLI; a CLI test pins this fixture to the core list, so a change there fails until it is updated here.
+ */
+const HOST_GLOBS = JSON.parse(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'fixtures', 'host-test-globs.json'), 'utf-8'),
+) as { hostDefaults: string[]; typescriptFallback: string[] };
+const HOST_DEFAULTS = HOST_GLOBS.hostDefaults;
 
 const CUSTOM = [...HOST_DEFAULTS, 'spec/**/*.check.ts'];
 const FILE = 'spec/loans/policy.check.ts';
@@ -61,6 +57,42 @@ describe('createTestFileMatcher', () => {
     expect(matches('src/__tests__/a.ts')).toBe(false);
   });
 
+  it('skips a string glob that does not compile and keeps the rest', () => {
+    const matches = createTestFileMatcher(['a'.repeat(70_000), 'spec/**/*.check.ts']);
+    expect(matches('spec/a.check.ts')).toBe(true);
+    expect(matches('src/__tests__/a.ts')).toBe(false);
+    expect(createTestFileMatcher(['a'.repeat(70_000)])).toBe(isTestFilePath);
+  });
+
+  it('skips negated globs, so a !**/fixtures/** entry does not turn every file into a test file', () => {
+    const matches = createTestFileMatcher([...HOST_DEFAULTS, '!**/fixtures/**']);
+    expect(matches('src/loans/policy.ts')).toBe(false);
+    expect(matches('src/__tests__/a.ts')).toBe(true);
+    expect(createTestFileMatcher(['!**/fixtures/**'])).toBe(isTestFilePath);
+  });
+
+  it('the built-in rule is the TypeScript part of the host defaults', () => {
+    const fallback = createTestFileMatcher(HOST_GLOBS.typescriptFallback);
+    const hostDefaults = createTestFileMatcher(HOST_DEFAULTS);
+    const paths = [
+      'src/__tests__/a.ts',
+      'src/a.test.ts',
+      'web/a.spec.js',
+      'test/a.ts',
+      'tests/e2e/a.ts',
+      'src/latest.ts',
+      'src/contest/a.ts',
+      'src/a.tests.ts',
+    ];
+    for (const path of paths) {
+      expect(fallback(path), path).toBe(isTestFilePath(path));
+      expect(hostDefaults(path), path).toBe(isTestFilePath(path));
+    }
+    // The host defaults add .NET test folders, so a TypeScript file under one is a test file with a current CLI.
+    expect(hostDefaults('src/App.Tests/a.ts')).toBe(true);
+    expect(isTestFilePath('src/App.Tests/a.ts')).toBe(false);
+  });
+
   it('the host defaults agree with the built-in rule on TypeScript paths', () => {
     const matches = createTestFileMatcher(HOST_DEFAULTS);
     const paths = [
@@ -89,6 +121,12 @@ describe('test blocks follow the host test globs', () => {
     ]);
   });
 
+  it('a negated index.tests glob gives no test blocks in a production file', async () => {
+    const source = "describe('not a test', () => { it('runs at import', () => {}); });\n";
+    const adapter = new TsMorphAdapter({ testGlobs: [...HOST_DEFAULTS, '!**/fixtures/**'] });
+    expect(await testBlockNames(adapter, 'src/loans/policy.ts', source)).toEqual([]);
+  });
+
   it('host globs replace the built-in rule: a default-only path is no test file when the host leaves it out', async () => {
     expect(await testBlockNames(new TsMorphAdapter({ testGlobs: ['spec/**/*.check.ts'] }), 'src/a.test.ts')).toEqual([]);
   });
@@ -113,9 +151,12 @@ describe('test blocks follow the host test globs', () => {
     expect(facts.every((f) => f.symbolId === blockId)).toBe(true);
   });
 
-  it('the output is the same on every run', async () => {
+  it('the glob order and duplicates do not change the output', async () => {
     const first = await new TsMorphAdapter({ testGlobs: CUSTOM }).extractSymbols(FILE, SOURCE);
-    const second = await new TsMorphAdapter({ testGlobs: CUSTOM }).extractSymbols(FILE, SOURCE);
-    expect(second).toEqual(first);
+    const reordered = await new TsMorphAdapter({ testGlobs: [...CUSTOM].reverse() }).extractSymbols(FILE, SOURCE);
+    const duplicated = await new TsMorphAdapter({ testGlobs: [...CUSTOM, ...CUSTOM] }).extractSymbols(FILE, SOURCE);
+    expect(first.some((symbol) => symbol.name === 'LoanPolicy')).toBe(true);
+    expect(reordered).toEqual(first);
+    expect(duplicated).toEqual(first);
   });
 });

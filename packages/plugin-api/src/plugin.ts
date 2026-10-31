@@ -43,9 +43,10 @@ export interface PluginContext {
   /**
    * The globs that mark a file as a test file: the host's default test globs followed by the project's
    * `.ctxo/config.yaml#index.tests` globs, in that order, without duplicates. Matched against the
-   * project-relative, forward-slash paths the adapter receives, as picomatch globs with `dot: true`, without
-   * negation. Absent on older cores (`@ctxo/cli` 0.17 and earlier): a plugin then uses its own default test-file
-   * rule. Optional and additive, so a plugin that ignores it keeps working.
+   * project-relative, forward-slash paths the adapter receives, as picomatch globs with `dot: true`. Negation is
+   * not supported: the host never sends a `!` glob, and a plugin should skip one. Absent on CLIs that predate
+   * this field: a plugin then uses its own default test-file rule. Optional and additive, so a plugin that
+   * ignores it keeps working.
    */
   readonly testGlobs?: readonly string[];
 }
