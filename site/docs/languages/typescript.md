@@ -174,7 +174,7 @@ points, and no `retry-timeout` facts in test files.
 | Kind | TypeScript and JavaScript |
 | --- | --- |
 | `literal-comparison` | `if`, `while`, `do`, `for` conditions, ternaries and `switch` case clauses with a non-trivial literal (`loans.length >= 5`, `tier === 'gold'`) |
-| `normalization` | `trim`, `toLowerCase`, `toUpperCase` and the other `domain.facts.normalizationMethods` |
+| `normalization` | `trim`, `toLowerCase`, `toUpperCase` and the other `domain.facts.normalizationMethods`; one fact per chain (the outermost call), none when the nearest consumer is a log or error sink, for display text sent to a sink or formatter, for path, character, hex or file-extension work, or in test files ([FC-4b](https://github.com/alperhankendi/Ctxo/blob/master/docs/features/domain-knowledge.md#the-fact-contract)) |
 | `retry-timeout` | A numeric constant bound to a retry or timeout name (`const HOLD_TIMEOUT_MS = 7 * 24 * 60 * 60 * 1000` gives `HOLD_TIMEOUT_MS = 604800000`), and `setTimeout(fn, n)` |
 | `endpoint` | Nest `@Get`, `@Post`, ..., `@All` in an exported class decorated `@Controller` (prefix from its path); Express, Fastify, Koa and Hono `get`, `post`, ..., `all` with a string path and a handler, on a receiver traced to `express`, `fastify`, `@koa/router`, `koa-router` or `hono` (Koa also `del` and named routes `router.get('name', '/path', h)`); Fastify `route({ method, url })`. Mount prefixes are joined: Express and Koa `use('/api', router)`, Koa `new Router({ prefix })`, Hono `route('/api', app)` and `basePath('/api')` |
 

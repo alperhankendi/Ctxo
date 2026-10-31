@@ -255,7 +255,7 @@ points, and no `retry-timeout` facts in test files.
 | Kind | C# |
 | --- | --- |
 | `literal-comparison` | `if`, `while`, `do`, `for`, ternaries, `when` guards (case labels, switch arms, catch filters), `switch` labels and arms, relational, constant and `not` patterns (`days is > 14`) |
-| `normalization` | `Trim*`, `ToLower*`, `ToUpper*`, `Normalize` and the other configured methods |
+| `normalization` | `Trim*`, `ToLower*`, `ToUpper*`, `Normalize` and the other configured methods; one fact per chain (the outermost call), none when the nearest consumer is a log or error sink, for display text sent to a sink or formatter, for path, character, hex or file-extension work, or in test files ([FC-4b](https://github.com/alperhankendi/Ctxo/blob/master/docs/features/domain-knowledge.md#the-fact-contract)) |
 | `retry-timeout` | Numeric constants bound to retry or timeout names (fields, properties, locals, assignments, initializers, named arguments) and `TimeSpan.From*(n)` (`HoldTimeout = 90min`) |
 | `endpoint` | `[HttpGet]`, `[HttpPost]`, ... with the class `[Route]` (`[controller]`, `[action]`; a `/` or `~/` template ignores the class route; `[Route]` alone gives `ANY`; Roslyn: inherited from the nearest base class with one), and minimal APIs `MapGet`, `MapPost`, `MapPut`, `MapDelete`, `MapPatch` (Roslyn: with their `MapGroup` prefixes); top-level statements belong to the module symbol |
 
