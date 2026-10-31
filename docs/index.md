@@ -46,6 +46,7 @@
 - **[runbook/mcp-validation/validation-result-v14.md](./runbook/mcp-validation/validation-result-v14.md)** — latest MCP validation result
 - **[runbook/mcp-validation/test-sessions/](./runbook/mcp-validation/test-sessions/)** — append-only MCP session logs
 - **[runbook/real-world-validation/real-world-validation.md](./runbook/real-world-validation/real-world-validation.md)** — open-source project validation procedure
+- **[runbook/comparisons/playbook.md](./runbook/comparisons/playbook.md)** - how the ctxo vs without-ctxo comparison pages are run and scored
 
 ## Research (active)
 
