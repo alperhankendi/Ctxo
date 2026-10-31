@@ -22,6 +22,38 @@ namespace Lending.Routes
             Opaque(app).MapGet("/opaque", () => 0);
             app.MapGroup(Prefix()).MapGet("/dynamic", () => 0);
             app.MapGet("/root", () => 0);
+
+            // Fluent ASP.NET conventions return their receiver; a project's own call does not count.
+            var tagged = app.MapGroup("/tagged").WithTags("x").RequireAuthorization();
+            tagged.MapGet("/t", () => 0);
+            app.MapGroup("/detached").Detached().MapGet("/d", () => 0);
+            app.MapGroup("/same").SameShape().MapGet("/s", () => 0);
+
+            // Written again in other forms: deconstruction, ??=, out.
+            var dec = app.MapGroup("/d1");
+            (dec, _) = (app.MapGroup("/d2"), 1);
+            dec.MapGet("/decon", () => 0);
+            RouteGroupBuilder? maybe = app.MapGroup("/m1");
+            maybe ??= app.MapGroup("/m2");
+            maybe.MapGet("/coalesce", () => 0);
+            var viaOut = app.MapGroup("/o1");
+            Replace(out viaOut, app);
+            viaOut.MapGet("/out", () => 0);
+
+            // A generic builder receiver is never followed.
+            app.MapGroup("/gen").MapGeneric();
+        }
+
+        static void Replace(out RouteGroupBuilder group, WebApplication app) => group = app.MapGroup("/o2");
+
+        static RouteGroupBuilder Detached(this RouteGroupBuilder group) => group;
+
+        static TBuilder SameShape<TBuilder>(this TBuilder builder) where TBuilder : IEndpointRouteBuilder => builder;
+
+        static TBuilder MapGeneric<TBuilder>(this TBuilder builder) where TBuilder : IEndpointRouteBuilder
+        {
+            builder.MapGroup("/admin").MapPost("/generic", () => 0);
+            return builder;
         }
 
         static RouteGroupBuilder Opaque(WebApplication app) => app.MapGroup("/hidden");

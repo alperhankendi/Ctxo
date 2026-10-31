@@ -28,6 +28,18 @@ namespace Lending.Routes
         public int List() => 0;
     }
 
+    public class LoansV2Controller : GenericControllerBase<int>
+    {
+        [HttpGet("{id}")]
+        public int Get(int id) => id;
+    }
+
+    public class InternalController : NonControllerBase
+    {
+        [HttpGet("hidden")]
+        public int Hidden() => 0;
+    }
+
     public class PlainController : ControllerBase
     {
         [HttpGet("plain")]

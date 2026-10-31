@@ -88,6 +88,19 @@ describe.skipIf(!HAS_DOTNET)('Roslyn test attributes by base type', () => {
     expect(annotationsOf('KnownNameAlreadyThere')!.map(a => a.name)).toEqual(['Fact', 'RetryFact']);
   });
 
+  it('a known name written after the derived attribute is not repeated either', () => {
+    expect(annotationsOf('KnownNameAfterward')!.map(a => a.name)).toEqual(['RetryFact', 'Fact']);
+  });
+
+  it('two derived attributes with the same base add it once', () => {
+    expect(annotationsOf('TwoDerivedFromOneBase')!.map(a => a.name)).toEqual(['RetryFact', 'Fact', 'SlowRetryFact']);
+  });
+
+  it('the added base does not count toward the 20 written attributes', () => {
+    const names = annotationsOf('TwentyWrittenAttributes')!.map(a => a.name);
+    expect(names).toEqual(['RetryFact', 'Fact', ...Array.from({ length: 19 }, (_, i) => `B${i + 1}`)]);
+  });
+
   it('the host classifier sees every derived test method as a test, without knowing the derived names', () => {
     for (const name of ['Direct', 'TwoLevels', 'FromTheory', 'FromNUnitTest', 'FromMSTestTestMethod']) {
       expect(isMarkedAsTest(name), name).toBe(true);

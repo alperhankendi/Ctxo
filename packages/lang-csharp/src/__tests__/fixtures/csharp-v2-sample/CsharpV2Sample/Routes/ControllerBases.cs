@@ -13,6 +13,17 @@ namespace Lending.Routes
     {
     }
 
+    [Route("api/v2/[controller]")]
+    public abstract class GenericControllerBase<T> : ControllerBase
+    {
+    }
+
+    [NonController]
+    [Route("internal")]
+    public abstract class NonControllerBase : ControllerBase
+    {
+    }
+
     [Route("api/[controller]/[action]")]
     public abstract class ActionControllerBase : ControllerBase
     {

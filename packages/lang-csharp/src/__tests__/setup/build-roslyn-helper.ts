@@ -10,6 +10,7 @@ const FIXTURE_PROJECTS = [
   'csharp-sample/CsharpSample.sln',
   'csharp-v2-sample/CsharpV2Sample.sln',
   'csharp-csproj-only/CsprojOnly.csproj',
+  'csharp-multi-project/MultiProject.sln',
 ].map(p => resolve(FIXTURES_DIR, p));
 
 function dotnet(args: string[], what: string): void {

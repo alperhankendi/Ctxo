@@ -159,9 +159,9 @@ static class Facts
     /// belong to their property, event or method; every field declarator uses its own name; a
     /// top-level statement has no symbol id, so the finisher gives it the file's module id.
     /// </summary>
-    public static List<CtxoFactEvidence> Collect(SyntaxNode root, SemanticModel model, string filePath, FactOptions options)
+    public static List<CtxoFactEvidence> Collect(SyntaxNode root, SemanticModel model, string filePath, FactOptions options, bool referencedByOtherProjects = false)
     {
-        var collector = new Collector(filePath, options, model);
+        var collector = new Collector(filePath, options, model, RouteGroups.For(model.Compilation, referencedByOtherProjects));
         foreach (var node in root.DescendantNodes())
         {
             if (collector.Full) break;
@@ -203,10 +203,9 @@ static class Facts
         return collector.Evidence;
     }
 
-    sealed class Collector(string filePath, FactOptions options, SemanticModel model)
+    sealed class Collector(string filePath, FactOptions options, SemanticModel model, RouteGroups groups)
     {
         public readonly List<CtxoFactEvidence> Evidence = [];
-        readonly RouteGroups groups = new(model.Compilation);
         string? symbolId;
 
         public bool Full => Evidence.Count >= MaxEvidencePerFile;
@@ -432,7 +431,7 @@ static class Facts
                 && arguments[0].Expression is LiteralExpressionSyntax route && route.IsKind(SyntaxKind.StringLiteralExpression))
             {
                 // The MapGroup prefixes of the receiver, when every one resolves; else the call's own route.
-                var prefix = RouteGroups.Receiver(syntax, model) is { } routeReceiver ? groups.Prefix(routeReceiver, model, 0) : null;
+                var prefix = RouteGroups.Receiver(syntax, model) is { } routeReceiver ? groups.Prefix(routeReceiver, model) : null;
                 var path = string.IsNullOrEmpty(prefix) ? route.Token.ValueText : RouteGroups.Join(prefix, route.Token.ValueText);
                 Add(new CtxoFactEvidence { Kind = "route", Line = line, Text = syntax.ToString(), Verb = verb, Route = path });
             }
@@ -613,279 +612,5 @@ static class Facts
         for (var i = 0; i < chars.Length; i++)
             if (chars[i] is >= 'A' and <= 'Z') chars[i] = (char)(chars[i] + 32);
         return new string(chars);
-    }
-}
-
-// ── Route prefixes (MapGroup and inherited controller routes) ───────
-
-/// <summary>
-/// The <c>MapGroup</c> prefixes of a minimal API route call, resolved through the semantic model:
-/// <c>var g = app.MapGroup("/api"); g.MapGet("/x", ...)</c> gives <c>/api/x</c>, nested groups
-/// compose, and a group passed to a method (an extension method's <c>this</c> parameter included)
-/// takes the prefix its call sites agree on. A prefix that does not resolve is null, and the route
-/// keeps the call's own template: a route is never guessed.
-/// </summary>
-sealed class RouteGroups(Compilation compilation)
-{
-    const string MapGroup = "MapGroup";
-    const int MaxDepth = 8;
-
-    /// <summary>Types a receiver of which may be a route group; any other type is the app itself.</summary>
-    static readonly HashSet<string> GroupTypeNames = new(StringComparer.Ordinal) { "RouteGroupBuilder", "IEndpointRouteBuilder" };
-
-    readonly Dictionary<IParameterSymbol, string?> parameterPrefixes = new(SymbolEqualityComparer.Default);
-    readonly HashSet<ISymbol> inProgress = new(SymbolEqualityComparer.Default);
-    readonly Dictionary<SyntaxTree, SemanticModel> models = [];
-
-    /// <summary>A prefix and a template joined with one <c>/</c>; the plugin normalizes the rest.</summary>
-    public static string Join(string prefix, string template) => $"{prefix.TrimEnd('/')}/{template.TrimStart('/')}";
-
-    /// <summary>
-    /// The receiver of a call: the <c>this</c> argument of an extension method (also in the static
-    /// form), else the instance; for a call that does not resolve, the expression before the dot.
-    /// </summary>
-    public static ExpressionSyntax? Receiver(InvocationExpressionSyntax invocation, SemanticModel model)
-    {
-        if (model.GetOperation(invocation) is IInvocationOperation operation)
-        {
-            if (operation.TargetMethod.IsExtensionMethod)
-            {
-                var self = operation.Arguments.FirstOrDefault(a => a.Parameter?.Ordinal == 0);
-                return self != null ? Unwrap(self.Value).Syntax as ExpressionSyntax : null;
-            }
-            if (operation.TargetMethod.IsStatic) return null;
-            return operation.Instance is { IsImplicit: false } instance ? instance.Syntax as ExpressionSyntax : null;
-        }
-        return invocation.Expression is MemberAccessExpressionSyntax access ? access.Expression : null;
-    }
-
-    /// <summary>The group prefix of a receiver: <c>""</c> for the app itself, null when it does not resolve.</summary>
-    public string? Prefix(ExpressionSyntax expression, SemanticModel model, int depth)
-    {
-        if (depth > MaxDepth) return null;
-        while (expression is ParenthesizedExpressionSyntax parenthesized) expression = parenthesized.Expression;
-
-        if (expression is InvocationExpressionSyntax invocation && MethodName(invocation) == MapGroup)
-        {
-            var segment = GroupSegment(invocation, model);
-            var receiver = segment != null ? Receiver(invocation, model) : null;
-            var outer = receiver != null ? Prefix(receiver, model, depth + 1) : null;
-            return outer == null ? null : outer.Length == 0 ? segment : Join(outer, segment!);
-        }
-
-        switch (model.GetSymbolInfo(expression).Symbol)
-        {
-            case ILocalSymbol local:
-                return Local(local, model, depth);
-            case IParameterSymbol parameter:
-                return Parameter(parameter, depth);
-        }
-        return MayBeGroup(model.GetTypeInfo(expression).Type) ? null : "";
-    }
-
-    static string? MethodName(InvocationExpressionSyntax invocation) => invocation.Expression switch
-    {
-        MemberAccessExpressionSyntax access => access.Name.Identifier.ValueText,
-        SimpleNameSyntax name => name.Identifier.ValueText,
-        _ => null,
-    };
-
-    /// <summary>The constant string prefix of a <c>MapGroup</c> call; null for any other argument.</summary>
-    static string? GroupSegment(InvocationExpressionSyntax invocation, SemanticModel model)
-    {
-        ExpressionSyntax? argument;
-        if (model.GetOperation(invocation) is IInvocationOperation operation)
-        {
-            var ordinal = operation.TargetMethod.IsExtensionMethod ? 1 : 0;
-            argument = operation.Arguments.FirstOrDefault(a => a.Parameter?.Ordinal == ordinal) is { ArgumentKind: ArgumentKind.Explicit } a
-                ? Unwrap(a.Value).Syntax as ExpressionSyntax
-                : null;
-        }
-        else
-        {
-            var arguments = invocation.ArgumentList.Arguments;
-            argument = arguments.Count == 1 ? arguments[0].Expression : null;
-        }
-        if (argument == null) return null;
-        var constant = model.GetConstantValue(argument);
-        return constant.HasValue && constant.Value is string segment ? segment : null;
-    }
-
-    /// <summary>Null, an unresolved type, or a type named <c>RouteGroupBuilder</c> or <c>IEndpointRouteBuilder</c>.</summary>
-    static bool MayBeGroup(ITypeSymbol? type) =>
-        type == null || type.TypeKind == TypeKind.Error || GroupTypeNames.Contains(type.Name);
-
-    /// <summary>A local with one initializer that is never assigned again: the initializer's prefix.</summary>
-    string? Local(ILocalSymbol local, SemanticModel model, int depth)
-    {
-        if (local.DeclaringSyntaxReferences is not [var reference]
-            || reference.GetSyntax() is not VariableDeclaratorSyntax { Initializer.Value: var value } declarator
-            || declarator.SyntaxTree != model.SyntaxTree
-            || IsAssignedAgain(local, declarator, model))
-        {
-            return MayBeGroup(local.Type) ? null : "";
-        }
-        if (!inProgress.Add(local)) return null;
-        try
-        {
-            return Prefix(value, model, depth + 1);
-        }
-        finally
-        {
-            inProgress.Remove(local);
-        }
-    }
-
-    /// <summary>An assignment, or a <c>ref</c> or <c>out</c> argument, of the local in its scope.</summary>
-    static bool IsAssignedAgain(ILocalSymbol local, VariableDeclaratorSyntax declarator, SemanticModel model)
-    {
-        SyntaxNode scope = declarator.FirstAncestorOrSelf<MemberDeclarationSyntax>() is { } member and not GlobalStatementSyntax
-            ? member
-            : declarator.SyntaxTree.GetRoot();
-        foreach (var node in scope.DescendantNodes())
-        {
-            ExpressionSyntax? target = node switch
-            {
-                AssignmentExpressionSyntax assignment => assignment.Left,
-                ArgumentSyntax { RefKindKeyword.RawKind: not 0 } argument => argument.Expression,
-                _ => null,
-            };
-            if (target is IdentifierNameSyntax name && name.Identifier.ValueText == local.Name
-                && SymbolEqualityComparer.Default.Equals(model.GetSymbolInfo(name).Symbol, local))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// A parameter that may be a group: the prefix every call site of its method passes, found in this
-    /// compilation. Null when there is no call site, the call sites disagree, one does not resolve, or
-    /// the method is virtual, abstract, an override, an interface member or used as a method group.
-    /// </summary>
-    string? Parameter(IParameterSymbol parameter, int depth)
-    {
-        if (!MayBeGroup(parameter.Type)) return "";
-        if (parameter.ContainingSymbol is not IMethodSymbol { } method) return null;
-        method = (method.ReducedFrom ?? method).OriginalDefinition;
-        var ordinal = parameter.Ordinal;
-        if (method.Parameters.Length <= ordinal) return null;
-        var key = method.Parameters[ordinal];
-        if (parameterPrefixes.TryGetValue(key, out var cached)) return cached;
-        if (method.IsVirtual || method.IsAbstract || method.IsOverride || method.ContainingType?.TypeKind == TypeKind.Interface
-            || method.MethodKind is not (MethodKind.Ordinary or MethodKind.LocalFunction))
-        {
-            return parameterPrefixes[key] = null;
-        }
-        if (!inProgress.Add(key)) return null;
-        try
-        {
-            return parameterPrefixes[key] = CallSitePrefix(method, ordinal, depth);
-        }
-        finally
-        {
-            inProgress.Remove(key);
-        }
-    }
-
-    string? CallSitePrefix(IMethodSymbol method, int ordinal, int depth)
-    {
-        string? agreed = null;
-        foreach (var tree in compilation.SyntaxTrees)
-        {
-            if (!tree.GetText().ToString().Contains(method.Name, StringComparison.Ordinal)) continue;
-            var model = ModelOf(tree);
-            foreach (var name in tree.GetRoot().DescendantNodes().OfType<SimpleNameSyntax>())
-            {
-                if (name.Identifier.ValueText != method.Name) continue;
-                if (name.Parent is MethodDeclarationSyntax or LocalFunctionStatementSyntax) continue;
-                var referenced = model.GetSymbolInfo(name).Symbol as IMethodSymbol;
-                if (referenced == null || !SymbolEqualityComparer.Default.Equals((referenced.ReducedFrom ?? referenced).OriginalDefinition, method))
-                    continue;
-
-                // A reference that is not the target of a call (a method group) hides its call sites.
-                var call = CallOf(name);
-                if (call == null || model.GetOperation(call) is not IInvocationOperation operation) return null;
-                var argument = operation.Arguments.FirstOrDefault(a => a.Parameter?.Ordinal == ordinal);
-                if (argument is not { ArgumentKind: ArgumentKind.Explicit } || Unwrap(argument.Value).Syntax is not ExpressionSyntax value)
-                    return null;
-                var prefix = Prefix(value, model, depth + 1);
-                if (prefix == null || (agreed != null && agreed != prefix)) return null;
-                agreed = prefix;
-            }
-        }
-        return agreed;
-    }
-
-    /// <summary>The invocation a name is the target of: <c>M(...)</c>, <c>x.M(...)</c> or <c>M&lt;T&gt;(...)</c>.</summary>
-    static InvocationExpressionSyntax? CallOf(SimpleNameSyntax name)
-    {
-        SyntaxNode target = name.Parent is MemberAccessExpressionSyntax access && access.Name == name ? access : name;
-        return target.Parent is InvocationExpressionSyntax invocation && invocation.Expression == target ? invocation : null;
-    }
-
-    SemanticModel ModelOf(SyntaxTree tree)
-    {
-        if (!models.TryGetValue(tree, out var model)) models[tree] = model = compilation.GetSemanticModel(tree);
-        return model;
-    }
-
-    static IOperation Unwrap(IOperation operation)
-    {
-        while (operation is IConversionOperation { IsImplicit: true } conversion) operation = conversion.Operand;
-        return operation;
-    }
-}
-
-/// <summary>
-/// The class <c>[Route]</c> a controller inherits: the first <c>Route</c> template of the nearest base
-/// class that declares one, as ASP.NET Core takes route attributes from the most derived type that
-/// has any. Null when the class declares its own <c>Route</c> or no base class has one.
-/// </summary>
-static class InheritedRoutes
-{
-    public static string? For(INamedTypeSymbol type)
-    {
-        if (type.TypeKind != TypeKind.Class || RouteOf(type, out _)) return null;
-        var depth = 0;
-        for (var current = type.BaseType; current != null && current.SpecialType != SpecialType.System_Object && depth < 32; current = current.BaseType, depth++)
-        {
-            if (current.TypeKind == TypeKind.Error) return null;
-            if (RouteOf(current, out var template)) return template;
-        }
-        return null;
-    }
-
-    /// <summary>Whether the type declares a <c>Route</c> attribute, with the template of the first one (null when it has none).</summary>
-    static bool RouteOf(INamedTypeSymbol type, out string? template)
-    {
-        template = null;
-        foreach (var attribute in type.OriginalDefinition.GetAttributes())
-        {
-            var name = attribute.AttributeClass?.Name;
-            if (name is not ("RouteAttribute" or "Route")) continue;
-            template = TemplateOf(attribute);
-            return true;
-        }
-        return false;
-    }
-
-    /// <summary>The first constructor argument, else a named <c>Template</c>; from the syntax when the class does not resolve.</summary>
-    static string? TemplateOf(AttributeData attribute)
-    {
-        if (attribute.AttributeConstructor != null)
-        {
-            if (attribute.ConstructorArguments is [{ Value: string positional }, ..]) return positional;
-            foreach (var (key, value) in attribute.NamedArguments)
-                if (key is "Template" or "template" && value.Value is string named) return named;
-            return null;
-        }
-        if (attribute.ApplicationSyntaxReference?.GetSyntax() is AttributeSyntax { ArgumentList.Arguments: [var first, ..] }
-            && first.Expression is LiteralExpressionSyntax literal && literal.IsKind(SyntaxKind.StringLiteralExpression))
-        {
-            return literal.Token.ValueText;
-        }
-        return null;
     }
 }

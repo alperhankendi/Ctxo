@@ -38,11 +38,15 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo (ten packages today). Per-pack
   g.MapGet("/x", ...)` gives `GET /api/x`, nested groups compose, a group created inline
   (`app.MapGroup("/v1").MapGet(...)`) counts, and a group passed to a method, an extension method's `this` parameter
   included (`app.MapGroup("/users").MapUsers()`, in any file of the project), takes the prefix its call sites agree
-  on. A route is never guessed: a reassigned local, a group returned by another method, a non-constant prefix, call
-  sites that disagree or none at all, a virtual or interface method and a method used as a method group keep the
+  on; ASP.NET conventions that return their receiver (`WithTags`, `RequireAuthorization`, `WithOpenApi`,
+  `AddEndpointFilter`) keep it. A route is never guessed: a local written again in any form (assignment, `??=`,
+  deconstruction, `ref` or `out`), a group returned by another method, a project's own fluent call, a non-constant
+  prefix, a type-parameter receiver (`TBuilder`), call sites that disagree or none at all, a virtual or interface
+  method, a method used as a method group, and a public method of a project other projects reference keep the
   call's own route, as before.
 - A controller without its own `[Route]` inherits the class route of its nearest base class with one (one or more
-  levels up, in another file or a referenced assembly), as ASP.NET Core does; `[controller]` and `[action]` come
+  levels up, generic bases included, in another file or a referenced project), as ASP.NET Core does; abstract and
+  `[NonController]` classes inherit nothing; `[controller]` and `[action]` come
   from the derived class and method. Roslyn tier only: the helper reports the template as a facts-only
   `inheritedRoute` on the class (never an annotation), so the output without `--facts=` is unchanged.
 - A project's own test attribute derived from one of the 11 known ones (`[RetryFact]` from `Xunit.FactAttribute`,
@@ -52,7 +56,11 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo (ten packages today). Per-pack
   name-based test detection (test files, `*Tests.cs` name-only matches, the domain test conventions) recognises it
   with no change outside the plugin. Look-alike names that derive from no test attribute (`[Factory]`, `[Facts]`)
   get nothing, and a known name already on the declaration is not repeated. Roslyn tier only; the tree-sitter tier
-  stays name-based. Run a full `ctxo index` after upgrading `@ctxo/lang-csharp`.
+  stays name-based. The added annotation does not count toward the 20-attribute cap.
+- These endpoint facts depend on other files (group call sites, base controllers): `ctxo index --files`, the
+  post-commit hook and `ctxo watch` re-index only the changed file, so run a full `ctxo index` after changing a group
+  call site or a base controller's `[Route]`. Run a full `ctxo index` after upgrading `@ctxo/lang-csharp` too: the
+  endpoint facts (and so shadow-spec fingerprints) of C# projects with route groups or base controllers change.
 
 **`ctxo doctor` names unknown keys under `domain:`.**
 

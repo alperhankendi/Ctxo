@@ -8,7 +8,8 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 /// <summary>
 /// Turns the attributes written on one declaration into annotations. Each
 /// attribute uses its semantic data when its class resolves, otherwise the
-/// syntax. Caps: 20 attributes per symbol, 10 positional and 10 named entries
+/// syntax. Caps: 20 written attributes per symbol (an added test base, see
+/// <see cref="TestAttributeBase"/>, comes on top), 10 positional and 10 named entries
 /// per attribute, 200 characters per value. <c>named.type</c> is reserved for
 /// the resolved attribute class and comes on top of the 10 named entries; a
 /// source argument named <c>type</c> is dropped, as in the tree-sitter tier.
@@ -28,6 +29,15 @@ static class AttributeAnnotations
 
         var applied = symbol.GetAttributes();
         var annotations = new List<CtxoAnnotation>();
+        // Written attributes count toward the cap; an added test base never pushes one out.
+        var written = 0;
+        // Every name written on the declaration, so an added test base never repeats one, before or after it.
+        var writtenNames = member.AttributeLists
+            .Where(l => AppliesToDeclaration(l, declaration))
+            .SelectMany(l => l.Attributes)
+            .Select(NameOf)
+            .ToHashSet(StringComparer.Ordinal);
+        var addedBases = new HashSet<string>(StringComparer.Ordinal);
 
         // Source order of this declaration's own lists, so each partial part
         // keeps its own attributes.
@@ -37,7 +47,8 @@ static class AttributeAnnotations
 
             foreach (var attribute in list.Attributes)
             {
-                if (annotations.Count == MaxAttributes) return annotations;
+                if (written == MaxAttributes) return annotations;
+                written++;
 
                 var data = applied.FirstOrDefault(a =>
                     a.ApplicationSyntaxReference is { } r &&
@@ -58,8 +69,8 @@ static class AttributeAnnotations
                 // A project's own test attribute (`[RetryFact]` deriving from `Xunit.FactAttribute`):
                 // the known base follows it, so name-based test detection sees it.
                 if (resolvedClass != null && TestAttributeBase(name, resolvedClass) is { } baseClass
-                    && annotations.Count < MaxAttributes
-                    && !annotations.Any(a => a.Name == baseClass.ShortName))
+                    && !writtenNames.Contains(baseClass.ShortName)
+                    && addedBases.Add(baseClass.ShortName))
                 {
                     annotations.Add(new CtxoAnnotation
                     {

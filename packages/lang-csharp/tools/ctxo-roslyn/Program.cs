@@ -257,7 +257,10 @@ async Task<FileResult> AnalyzeDocument(Document document, Compilation compilatio
     var symbols = ExtractSymbols(syntaxRoot, semanticModel, relativePath);
     var edges = ExtractEdges(syntaxRoot, semanticModel, compilation, relativePath);
     var complexity = ExtractComplexity(syntaxRoot, semanticModel, relativePath);
-    var factEvidence = CollectFactEvidence(syntaxRoot, semanticModel, relativePath);
+    // A project other projects reference may have call sites of its public methods outside its compilation.
+    var referencedByOtherProjects = factOptions != null
+        && sol.GetProjectDependencyGraph().GetProjectsThatDirectlyDependOnThisProject(document.Project.Id).Count > 0;
+    var factEvidence = CollectFactEvidence(syntaxRoot, semanticModel, relativePath, referencedByOtherProjects);
 
     return new FileResult
     {
@@ -272,12 +275,12 @@ async Task<FileResult> AnalyzeDocument(Document document, Compilation compilatio
 
 // Fact evidence only with --facts=; null (no key) when there is none. Optional, so a failure
 // costs the file its evidence, never its symbols or edges.
-List<CtxoFactEvidence>? CollectFactEvidence(SyntaxNode root, SemanticModel model, string relativePath)
+List<CtxoFactEvidence>? CollectFactEvidence(SyntaxNode root, SemanticModel model, string relativePath, bool referencedByOtherProjects)
 {
     if (factOptions == null) return null;
     try
     {
-        var evidence = Facts.Collect(root, model, relativePath, factOptions);
+        var evidence = Facts.Collect(root, model, relativePath, factOptions, referencedByOtherProjects);
         return evidence.Count > 0 ? evidence : null;
     }
     catch (Exception ex)

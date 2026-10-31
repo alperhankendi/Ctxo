@@ -154,7 +154,8 @@ to count as a test. See the [config reference](/reference/config-schema#test-fil
   known one (`[LoanFact]` from `Xunit.FactAttribute`, `[SmokeTest]` from NUnit's
   `TestAttribute`, at any depth) is followed by an annotation of the nearest known
   base, such as `{ name: "Fact", named: { type: "Xunit.FactAttribute", via: "..." } }`,
-  so it marks a test. Look-alike names that derive from no test attribute
+  so it marks a test (also when the attribute comes from a referenced project; the
+  added annotation does not count toward the 20-attribute cap). Look-alike names that derive from no test attribute
   (`[Factory]`) do not. The tree-sitter tier matches names only: there, a
   `*Tests.cs` file outside the test folders that uses only derived attributes
   becomes a production file; add an `index.tests` glob.
@@ -261,10 +262,16 @@ points, and no `retry-timeout` facts in test files.
 The Roslyn tier reads `IOperation`s behind `--facts=`; the tree-sitter tier finds the same evidence and gives the
 same facts. Syntax-tier method IDs keep their `(n)` parameter suffix, which fingerprints ignore. Verbatim,
 interpolated, raw and `u8` strings are decoded by a C# decoder. Route prefixes (Roslyn tier only): a
-controller without its own `[Route]` inherits the one of its nearest base class, and `MapGroup` prefixes are joined
-for groups in locals that are not reassigned, nested and inline groups, and groups passed to a method (an extension
-method's `this` included) when all its call sites pass the same prefix; anything unresolved keeps the call's own
-route, and the tree-sitter tier gives the method or call route alone. Limits: only the first class `[Route]` is used; in the Roslyn tier a fact in the
+controller without its own `[Route]` inherits the one of its nearest base class (not for abstract classes or
+`[NonController]` ones; `[NonAction]` is not read), and `MapGroup` prefixes are joined for groups in locals that are
+never written again, nested and inline groups, ASP.NET conventions that return their receiver (`WithTags`,
+`RequireAuthorization`, `WithOpenApi`, `AddEndpointFilter`), and groups passed to a method (an extension method's
+`this` included) when all its call sites in the project pass the same prefix. Anything unresolved keeps the call's
+own route: a local written again in any form, a group returned by a method, a non-constant prefix, a type-parameter
+receiver (`TBuilder`), and a public method of a project that other projects reference (call sites in other projects
+are not searched). The tree-sitter tier gives the method or call route alone. These facts depend on other files
+(the call sites, the base controller): `ctxo index --files`, the post-commit hook and `ctxo watch` re-index only the
+changed file, so run a full `ctxo index` after changing a group call site or a base controller's `[Route]`. Limits: only the first class `[Route]` is used; in the Roslyn tier a fact in the
 second or a later declarator of one field declaration (`const int MaxRetries = 3, TimeoutMs = 5000;`) is owned by an
 ID that is not a symbol. The syntax tier now applies a
 file-scoped namespace to every type after it, a one-time ID change for syntax-tier users.

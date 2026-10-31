@@ -5,6 +5,10 @@ namespace Microsoft.AspNetCore.Mvc
     {
     }
 
+    public sealed class NonControllerAttribute : System.Attribute
+    {
+    }
+
     public sealed class RouteAttribute : System.Attribute
     {
         public RouteAttribute(string template)
@@ -47,7 +51,7 @@ namespace Microsoft.AspNetCore.Routing
     {
     }
 
-    public sealed class RouteGroupBuilder : IEndpointRouteBuilder
+    public sealed class RouteGroupBuilder : IEndpointRouteBuilder, Microsoft.AspNetCore.Builder.IEndpointConventionBuilder
     {
     }
 }
@@ -55,6 +59,18 @@ namespace Microsoft.AspNetCore.Routing
 namespace Microsoft.AspNetCore.Builder
 {
     using Microsoft.AspNetCore.Routing;
+
+    public interface IEndpointConventionBuilder
+    {
+    }
+
+    // Conventions as in ASP.NET Core: generic extensions that return their receiver.
+    public static class RoutingEndpointConventionBuilderExtensions
+    {
+        public static TBuilder WithTags<TBuilder>(this TBuilder builder, params string[] tags) where TBuilder : IEndpointConventionBuilder => builder;
+
+        public static TBuilder RequireAuthorization<TBuilder>(this TBuilder builder) where TBuilder : IEndpointConventionBuilder => builder;
+    }
 
     // Route groups as in ASP.NET Core: extension methods on IEndpointRouteBuilder.
     public static class EndpointRouteBuilderExtensions

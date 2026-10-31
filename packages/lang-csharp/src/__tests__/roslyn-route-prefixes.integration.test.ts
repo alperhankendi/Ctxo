@@ -56,6 +56,17 @@ describe.skipIf(!HAS_DOTNET)('Roslyn route prefixes', () => {
       'GET /dynamic Lending.Routes.GroupEndpoints.Map',
       // The app itself.
       'GET /root Lending.Routes.GroupEndpoints.Map',
+      // ASP.NET conventions that return their receiver keep the prefix.
+      'GET /tagged/t Lending.Routes.GroupEndpoints.Map',
+      // A project's own call, also of the same generic shape, is not followed.
+      'GET /d Lending.Routes.GroupEndpoints.Map',
+      'GET /s Lending.Routes.GroupEndpoints.Map',
+      // Written again: deconstruction, ??=, out.
+      'GET /decon Lending.Routes.GroupEndpoints.Map',
+      'GET /coalesce Lending.Routes.GroupEndpoints.Map',
+      'GET /out Lending.Routes.GroupEndpoints.Map',
+      // A generic builder receiver, with a group on top: the group's own segment is not presented as the full prefix.
+      'POST /generic Lending.Routes.GroupEndpoints.MapGeneric',
       // Unresolved: two call sites with different prefixes, and no call site.
       'GET /shared Lending.Routes.GroupEndpoints.MapShared',
       'GET /nowhere Lending.Routes.GroupEndpoints.MapNowhere',
@@ -79,6 +90,10 @@ describe.skipIf(!HAS_DOTNET)('Roslyn route prefixes', () => {
       'GET /own/x Lending.Routes.OwnRouteController.X',
       // [action] from the derived method.
       'GET /api/Reports/List Lending.Routes.ReportsController.List',
+      // A generic base class.
+      'GET /api/v2/LoansV2/{id} Lending.Routes.LoansV2Controller.Get',
+      // A base marked [NonController]: no inherited prefix.
+      'GET /hidden Lending.Routes.InternalController.Hidden',
       // No Route anywhere.
       'GET /plain Lending.Routes.PlainController.Plain',
     ].sort());
