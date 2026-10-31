@@ -29,6 +29,8 @@ export type {
   InitPrompter,
   InitPartContext,
   InitContribution,
+  DoctorFixContext,
+  ModuleDoctorFix,
   CtxoModuleRegistration,
   DocumentSearch,
   CtxoHostServices,

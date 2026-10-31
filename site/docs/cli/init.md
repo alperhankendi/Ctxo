@@ -42,7 +42,7 @@ ctxo init [options]
 | `rules` | One rules file per selected tool: `CLAUDE.md`, `.cursor/rules/ctxo.mdc`, `AGENTS.md` and the rest (see [What it writes](#what-it-writes)) |
 | `mcp` | One MCP config per selected tool: `.mcp.json`, `.vscode/mcp.json`, `.amazonq/mcp.json`, `.gemini/settings.json`, `.continue/mcpServers/ctxo.json` |
 | `git-hooks` | `post-commit` and `post-merge` in the hooks directory git resolves |
-| `domain` | Opt-in, needs `@ctxo/domain`: `.ctxo/config.yaml` (`domain:` defaults), the registry skeleton, loader rules, `.claude/settings.json` (fold guard hooks), `.claude/skills/ctxo-domain-fold/SKILL.md`, `.cursor/rules/ctxo-domain-fold.mdc` |
+| `domain` | Opt-in, needs `@ctxo/domain`: `.ctxo/config.yaml` (`domain:` defaults), the registry skeleton, loader rules, `.claude/settings.json` (fold guard hooks), `.cursor/hooks.json` (fold reminder, Cursor only), `.claude/skills/ctxo-domain-fold/SKILL.md`, `.cursor/rules/ctxo-domain-fold.mdc` |
 
 `--only` and `--skip` take a comma-separated list of these names
 (`--only rules,skills,guard` or `--only=rules,skills,guard`); repeating the flag merges
@@ -142,8 +142,10 @@ name it: `--only domain`, `--only rules,domain`. `--skip domain` removes it agai
    accepts. External IDs, GitHub issues and lowercase identifiers are shown as evidence and never written.
 5. The generated loader rules, when a context has a card.
 6. For Claude Code, the fold guard hooks `SessionStart`, `Stop` and `TaskCompleted`
-   (`ctxo domain-guard-hook`) in `.claude/settings.json`, and the `ctxo-domain-fold` skill for Claude Code
-   and Cursor.
+   (`ctxo domain-guard-hook`) in `.claude/settings.json`. For Cursor, the fold reminder
+   (`ctxo domain-cursor-hook`) for `beforeSubmitPrompt` and `stop` in `.cursor/hooks.json`, merged into the
+   hooks already there (see [Cursor](../integrations/cursor.md#domain-fold-reminder)). The `ctxo-domain-fold`
+   skill for Claude Code and Cursor.
 
 ```shell
 ctxo init --domain                          # everything above, with prompts

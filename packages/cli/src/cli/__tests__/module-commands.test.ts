@@ -63,14 +63,15 @@ afterEach(() => {
 });
 
 describe('module command names', () => {
-  it('maps the four domain commands to @ctxo/domain and routes only the hook fast', () => {
+  it('maps the five domain commands to @ctxo/domain and routes only the two hooks fast', () => {
     expect(MODULE_COMMAND_PACKAGES).toEqual({
       'verify-domain': '@ctxo/domain',
       'contexts-touched': '@ctxo/domain',
       domain: '@ctxo/domain',
       'domain-guard-hook': '@ctxo/domain',
+      'domain-cursor-hook': '@ctxo/domain',
     });
-    expect([...FAST_ROUTE_COMMANDS]).toEqual(['domain-guard-hook']);
+    expect([...FAST_ROUTE_COMMANDS]).toEqual(['domain-guard-hook', 'domain-cursor-hook']);
   });
 
   it('no module command name is a core command name', () => {
@@ -250,6 +251,75 @@ describe('runFastRoute', () => {
       args: ['--x'],
       projectRoot: root,
       ctxoRoot: join(root, '.ctxo'),
+    });
+  });
+
+  describe('domain-cursor-hook', () => {
+    let out: string[];
+    beforeEach(() => {
+      out = [];
+      vi.spyOn(process.stdout, 'write').mockImplementation(((chunk: string | Uint8Array) => {
+        out.push(String(chunk));
+        return true;
+      }) as typeof process.stdout.write);
+    });
+
+    const brokenImport = async (): Promise<never> => {
+      throw new Error('Cannot find module cursor-hook-route');
+    };
+
+    it.each([
+      ['a prompt', JSON.stringify({ hook_event_name: 'beforeSubmitPrompt', conversation_id: 'c', prompt: 'go' })],
+      ['a prompt told by its shape', JSON.stringify({ conversation_id: 'c', prompt: 'go' })],
+      ['non-JSON stdin', '{oops'],
+      ['empty stdin', ''],
+    ])('prints exactly {"continue":true} for %s when the route cannot be imported', async (_name, stdin) => {
+      const code = await runFastRoute(['domain-cursor-hook'], tempDir(), { importCursorRoute: brokenImport, readStdin: async () => stdin });
+      expect(code).toBe(0);
+      expect(out).toEqual(['{"continue":true}\n']);
+      expect(stderr()).toContain('could not load its route');
+    });
+
+    it('prints nothing for a stop or another named event when the route cannot be imported', async () => {
+      for (const stdin of [
+        JSON.stringify({ hook_event_name: 'stop', status: 'completed' }),
+        JSON.stringify({ status: 'completed' }),
+        JSON.stringify({ hook_event_name: 'afterFileEdit' }),
+      ]) {
+        expect(await runFastRoute(['domain-cursor-hook'], tempDir(), { importCursorRoute: brokenImport, readStdin: async () => stdin })).toBe(0);
+      }
+      expect(out).toEqual([]);
+    });
+
+    it('prints {"continue":true} when reading stdin fails as well', async () => {
+      const readStdin = async (): Promise<string> => {
+        throw new Error('EPIPE');
+      };
+      expect(await runFastRoute(['domain-cursor-hook'], tempDir(), { importCursorRoute: brokenImport, readStdin })).toBe(0);
+      expect(out).toEqual(['{"continue":true}\n']);
+    });
+
+    it('--help skips the hook route and prints the command usage, reading no stdin', async () => {
+      const root = tempDir();
+      mkdirSync(join(root, '.git'));
+      writeStubDomainPackage(root, FAST_ROUTE_STUB('return 0;').replace("name: 'domain-guard-hook'", "name: 'domain-cursor-hook'").replace("help: ['ctxo domain-guard-hook']", "help: ['Usage: ctxo domain-cursor-hook']"));
+      let routeImported = false;
+      let stdinRead = false;
+      const code = await runFastRoute(['domain-cursor-hook', '--help'], root, {
+        importCursorRoute: async () => {
+          routeImported = true;
+          throw new Error('not expected');
+        },
+        readStdin: async () => {
+          stdinRead = true;
+          return '';
+        },
+      });
+      expect(code).toBe(0);
+      expect(routeImported).toBe(false);
+      expect(stdinRead).toBe(false);
+      expect(out).toEqual([]);
+      expect(stderr()).toContain('Usage: ctxo domain-cursor-hook');
     });
   });
 

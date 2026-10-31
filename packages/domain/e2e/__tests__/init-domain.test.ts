@@ -103,5 +103,28 @@ describe('ctxo init --only domain (built CLI)', () => {
     const rows = second.stderr.split('\n').filter((line) => line.startsWith('[ctxo] '));
     expect(rows.length).toBeGreaterThanOrEqual(6);
     for (const row of rows) expect(row).toMatch(/\(unchanged\)$/);
+    expect(existsSync(join(dir, '.cursor', 'hooks.json'))).toBe(false);
+  });
+
+  it('with Cursor, merges the fold reminder into .cursor/hooks.json and keeps its other hooks', () => {
+    const dir = createProject();
+    mkdirSync(join(dir, '.cursor'));
+    writeFileSync(join(dir, '.cursor', 'hooks.json'), JSON.stringify({ version: 1, hooks: { afterFileEdit: [{ command: './format.sh' }] } }, null, 2));
+
+    const first = init(dir, '--only', 'domain', '--tools', 'cursor', '-y', '--boundaries', 'report');
+    expect(first.status, first.stderr).toBe(0);
+    expect(first.stderr).toContain('[ctxo] ✓ .cursor/hooks.json (updated)');
+    expect(JSON.parse(readFileSync(join(dir, '.cursor', 'hooks.json'), 'utf-8'))).toEqual({
+      version: 1,
+      hooks: {
+        afterFileEdit: [{ command: './format.sh' }],
+        beforeSubmitPrompt: [{ command: 'ctxo domain-cursor-hook' }],
+        stop: [{ command: 'ctxo domain-cursor-hook' }],
+      },
+    });
+    expect(existsSync(join(dir, '.claude', 'settings.json'))).toBe(false);
+
+    const second = init(dir, '--only', 'domain', '--tools', 'cursor', '-y', '--boundaries', 'report');
+    expect(second.stderr).toContain('[ctxo] ✓ .cursor/hooks.json (unchanged)');
   });
 });

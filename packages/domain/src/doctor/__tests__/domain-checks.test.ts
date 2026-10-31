@@ -11,7 +11,8 @@ import { diffLoaderRules, renderLoaderRules } from '../../core/loader-rules.js';
 import { DOMAIN_HOOK_COMMAND, readBundledSkill } from '../../init/domain-init.js';
 import { register } from '../../index.js';
 import { domainVersion } from '../../version.js';
-import { domainDoctorChecks } from '../domain-checks.js';
+import { domainDoctorChecks, domainDoctorFixes } from '../domain-checks.js';
+import { CURSOR_HOOKS_FILE, ensureCursorHooks } from '../../adapters/cursor-hooks-file.js';
 
 const REGISTRY = `version: 1
 contexts:
@@ -222,7 +223,7 @@ describe('domain_agent_setup', () => {
     const result = await run(root, 'domain_agent_setup');
     expect(result.status).toBe('warn');
     expect(result.message).toContain('TaskCompleted');
-    expect(result.fix).toBe('Run "ctxo init --only domain" and "ctxo domain rules --write"');
+    expect(result.fix).toBe('Run "ctxo doctor --fix" (or "ctxo init --only domain" and "ctxo domain rules --write")');
   });
 
   it('warns for a missing skill', async () => {
@@ -287,6 +288,7 @@ describe('domain_agent_setup', () => {
     expect(outdated.message).toContain('ctxo-domain-fold skill outdated (.cursor/rules/ctxo-domain-fold.mdc)');
 
     put(root, '.cursor/rules/ctxo-domain-fold.mdc', readBundledSkill());
+    ensureCursorHooks(root);
     expect((await run(root, 'domain_agent_setup')).status).toBe('pass');
   });
 
@@ -307,6 +309,189 @@ describe('domain_agent_setup', () => {
     expect(result.status).toBe('warn');
     expect(result.message).toContain('.claude/settings.json is not valid JSON');
     expect(result.message).not.toContain('check failed');
+  });
+
+  it('reports the Cursor fold reminder when .cursor/ exists: missing, partial, duplicated, unreadable', async () => {
+    const root = setup();
+    put(root, '.cursor/rules/ctxo-domain-fold.mdc', readBundledSkill());
+    writeAgentSetup(root);
+
+    const missing = await run(root, 'domain_agent_setup');
+    expect(missing.status).toBe('warn');
+    expect(missing.message).toContain(`ctxo domain-cursor-hook not registered in ${CURSOR_HOOKS_FILE} for beforeSubmitPrompt, stop`);
+
+    put(root, CURSOR_HOOKS_FILE, JSON.stringify({ version: 1, hooks: { stop: [{ command: 'ctxo domain-cursor-hook' }] } }));
+    expect((await run(root, 'domain_agent_setup')).message).toContain('for beforeSubmitPrompt');
+
+    put(
+      root,
+      CURSOR_HOOKS_FILE,
+      JSON.stringify({
+        version: 1,
+        hooks: {
+          beforeSubmitPrompt: [{ command: 'ctxo domain-cursor-hook' }],
+          stop: [{ command: 'ctxo domain-cursor-hook' }, { command: 'npx ctxo domain-cursor-hook' }],
+        },
+      }),
+    );
+    expect((await run(root, 'domain_agent_setup')).message).toContain('registered more than once in .cursor/hooks.json for stop');
+
+    put(root, CURSOR_HOOKS_FILE, '{ nope');
+    const unreadable = await run(root, 'domain_agent_setup');
+    expect(unreadable.message).toContain('.cursor/hooks.json is not valid JSON');
+    expect(unreadable.message).not.toContain('check failed');
+
+    rmSync(join(root, CURSOR_HOOKS_FILE));
+    ensureCursorHooks(root);
+    expect((await run(root, 'domain_agent_setup')).status).toBe('pass');
+  });
+
+  it('does not expect the Cursor fold reminder without .cursor/', async () => {
+    const root = setup();
+    writeAgentSetup(root);
+    const result = await run(root, 'domain_agent_setup');
+    expect(result.status).toBe('pass');
+    expect(existsSync(join(root, CURSOR_HOOKS_FILE))).toBe(false);
+  });
+});
+
+describe('domainDoctorFixes', () => {
+  function fixOf(root: string) {
+    const host: CtxoHost = createModuleHost({ projectRoot: root, mode: 'cli', cliVersion: domainVersion() });
+    const [fix] = domainDoctorFixes(host);
+    return fix!;
+  }
+
+  /** The two writers the CLI hands the fix, kept minimal: the Claude hook entry and the skill file. */
+  function fixContext(root: string) {
+    return {
+      projectRoot: root,
+      ctxoRoot: join(root, '.ctxo'),
+      ensureClaudeHookEntry: (entry: { event: string; command: string }) => {
+        const path = join(root, '.claude', 'settings.json');
+        const json = existsSync(path) ? (JSON.parse(readFileSync(path, 'utf-8')) as { hooks?: Record<string, unknown[]> }) : {};
+        const hooks = json.hooks ?? {};
+        const list = hooks[entry.event] ?? [];
+        if (JSON.stringify(list).includes(entry.command)) return { file: '.claude/settings.json', action: 'skipped' as const };
+        put(root, '.claude/settings.json', JSON.stringify({ ...json, hooks: { ...hooks, [entry.event]: [...list, { hooks: [{ type: 'command', command: entry.command }] }] } }));
+        return { file: '.claude/settings.json', action: 'updated' as const };
+      },
+      installSkill: (platformId: string, name: string, content: string) => {
+        const file = platformId === 'cursor' ? `.cursor/rules/${name}.mdc` : `.claude/skills/${name}/SKILL.md`;
+        if (existsSync(join(root, file)) && readFileSync(join(root, file), 'utf-8') === content) return { file, action: 'skipped' as const };
+        put(root, file, content);
+        return { file, action: 'created' as const };
+      },
+    };
+  }
+
+  it('answers domain_agent_setup and is wired by register', async () => {
+    const root = setup();
+    const fix = fixOf(root);
+    expect(fix.checkId).toBe('domain_agent_setup');
+    expect(fix.name).toBe('Domain agent setup');
+    const host = createModuleHost({ projectRoot: root, mode: 'cli', cliVersion: domainVersion() });
+    expect((await register(host))?.doctorFixes?.map((f) => f.checkId)).toEqual(['domain_agent_setup']);
+  });
+
+  it('repairs a Cursor project: the reminder entries are merged in, other hooks kept, and the check passes', async () => {
+    const root = setup();
+    put(root, '.cursor/.keep', '');
+    writeAgentSetup(root);
+    put(root, CURSOR_HOOKS_FILE, JSON.stringify({ version: 1, hooks: { afterFileEdit: [{ command: './format.sh' }], stop: [{ command: './audit.sh' }] } }));
+    expect((await run(root, 'domain_agent_setup')).status).toBe('warn');
+
+    const rows = await fixOf(root).apply(fixContext(root));
+    expect(rows).toContainEqual({ file: CURSOR_HOOKS_FILE, action: 'updated' });
+    const hooks = JSON.parse(readFileSync(join(root, CURSOR_HOOKS_FILE), 'utf-8')) as { hooks: Record<string, { command: string }[]> };
+    expect(hooks.hooks['afterFileEdit']).toEqual([{ command: './format.sh' }]);
+    expect(hooks.hooks['stop']).toEqual([{ command: './audit.sh' }, { command: 'ctxo domain-cursor-hook' }]);
+    expect(hooks.hooks['beforeSubmitPrompt']).toEqual([{ command: 'ctxo domain-cursor-hook' }]);
+    expect((await run(root, 'domain_agent_setup')).status).toBe('pass');
+
+    // A second run changes nothing.
+    const again = await fixOf(root).apply(fixContext(root));
+    expect(again.every((row) => row.action === 'skipped')).toBe(true);
+  });
+
+  it('drops a duplicated reminder entry', async () => {
+    const root = setup();
+    put(root, '.cursor/rules/ctxo-domain-fold.mdc', readBundledSkill());
+    writeAgentSetup(root);
+    put(
+      root,
+      CURSOR_HOOKS_FILE,
+      JSON.stringify({ version: 1, hooks: { beforeSubmitPrompt: [{ command: 'ctxo domain-cursor-hook' }], stop: [{ command: 'ctxo domain-cursor-hook' }, { command: 'ctxo domain-cursor-hook' }] } }),
+    );
+    await fixOf(root).apply(fixContext(root));
+    const hooks = JSON.parse(readFileSync(join(root, CURSOR_HOOKS_FILE), 'utf-8')) as { hooks: Record<string, unknown[]> };
+    expect(hooks.hooks['stop']).toEqual([{ command: 'ctxo domain-cursor-hook' }]);
+    expect((await run(root, 'domain_agent_setup')).status).toBe('pass');
+  });
+
+  it('leaves an unreadable hooks.json alone and reports it as a warning row', async () => {
+    const root = setup();
+    put(root, '.cursor/.keep', '');
+    writeAgentSetup(root);
+    put(root, CURSOR_HOOKS_FILE, '{ nope');
+    const rows = await fixOf(root).apply(fixContext(root));
+    const row = rows.find((r) => r.file === CURSOR_HOOKS_FILE);
+    expect(row?.action).toBe('skipped');
+    expect(row?.warning).toContain('is not valid JSON');
+    expect(readFileSync(join(root, CURSOR_HOOKS_FILE), 'utf-8')).toBe('{ nope');
+  });
+
+  it('with domain.guard.enabled: false the reminder is neither expected nor written (an opt-out)', async () => {
+    const root = setup();
+    put(root, '.ctxo/config.yaml', 'version: "1.0"\ndomain:\n  guard:\n    enabled: false\n');
+    put(root, '.cursor/rules/ctxo-domain-fold.mdc', readBundledSkill());
+    writeAgentSetup(root);
+    expect((await run(root, 'domain_agent_setup')).status).toBe('pass');
+    const rows = await fixOf(root).apply(fixContext(root));
+    expect(rows.map((row) => row.file)).not.toContain(CURSOR_HOOKS_FILE);
+    expect(existsSync(join(root, CURSOR_HOOKS_FILE))).toBe(false);
+  });
+
+  it('installs only a skill the check reports: an edited current copy and a newer one are left alone', async () => {
+    const root = setup();
+    put(root, '.cursor/.keep', '');
+    writeAgentSetup(root);
+    const edited = `${readBundledSkill()}\nMy team note.\n`;
+    put(root, '.claude/skills/ctxo-domain-fold/SKILL.md', edited);
+    const newer = readBundledSkill().replace(/<!-- ctxo-skill v\d+\.\d+ -->/, '<!-- ctxo-skill v99.0 -->');
+    put(root, '.cursor/rules/ctxo-domain-fold.mdc', newer);
+    const calls: string[] = [];
+    const context = fixContext(root);
+    const rows = await fixOf(root).apply({
+      ...context,
+      installSkill: (platformId, name, content) => {
+        calls.push(platformId);
+        return context.installSkill(platformId, name, content);
+      },
+    });
+    expect(calls).toEqual([]);
+    expect(rows.every((row) => row.warning === undefined)).toBe(true);
+    expect(readFileSync(join(root, '.claude/skills/ctxo-domain-fold/SKILL.md'), 'utf-8')).toBe(edited);
+    expect(readFileSync(join(root, '.cursor/rules/ctxo-domain-fold.mdc'), 'utf-8')).toBe(newer);
+
+    // A missing skill is installed.
+    rmSync(join(root, '.cursor/rules/ctxo-domain-fold.mdc'));
+    await fixOf(root).apply({
+      ...context,
+      installSkill: (platformId, name, content) => {
+        calls.push(platformId);
+        return context.installSkill(platformId, name, content);
+      },
+    });
+    expect(calls).toEqual(['cursor']);
+  });
+
+  it('changes nothing without contexts', async () => {
+    const root = setup({ registry: null });
+    put(root, '.cursor/.keep', '');
+    const before = snapshot(root);
+    expect(await fixOf(root).apply(fixContext(root))).toEqual([]);
+    expect(snapshot(root)).toEqual(before);
   });
 });
 

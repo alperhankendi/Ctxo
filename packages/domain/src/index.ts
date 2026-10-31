@@ -2,9 +2,10 @@ import type { CtxoHost, CtxoModuleRegister, FactDetectorOptions } from '@ctxo/cl
 import { contextsTouchedCommand } from './commands/contexts-touched-command.js';
 import { domainCommand } from './commands/domain-command.js';
 import { DEFAULT_DOMAIN_CONFIG, resolveDomainConfig, toFactDetectorOptions, type DomainConfig } from './core/domain-config.js';
+import { domainCursorHookCommand } from './commands/domain-cursor-hook-command.js';
 import { domainGuardHookCommand } from './commands/domain-guard-hook-command.js';
 import { verifyDomainCommand } from './commands/verify-domain-command.js';
-import { domainDoctorChecks } from './doctor/domain-checks.js';
+import { domainDoctorChecks, domainDoctorFixes } from './doctor/domain-checks.js';
 import { domainIndexPass } from './index-pass/domain-index-pass.js';
 import { domainInit } from './init/domain-init.js';
 import { domainRankedScope } from './mcp/domain-scope.js';
@@ -84,6 +85,7 @@ export const register: CtxoModuleRegister = async (host) => {
     registerCommands(registrar) {
       registrar.registerCommand(contextsTouchedCommand(host));
       registrar.registerCommand(domainGuardHookCommand(host));
+      registrar.registerCommand(domainCursorHookCommand(host));
       registrar.registerCommand(domainCommand(host));
       registrar.registerCommand(verifyDomainCommand(host));
     },
@@ -96,5 +98,6 @@ export const register: CtxoModuleRegister = async (host) => {
     rankedContextScopes: [domainRankedScope(host, state)],
     init: domainInit(host),
     doctorChecks: domainDoctorChecks(host),
+    doctorFixes: domainDoctorFixes(host),
   };
 };

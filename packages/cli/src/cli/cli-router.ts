@@ -522,11 +522,11 @@ Usage:
   ctxo init --no-guard      Does not install the Claude Code safe-edit guard
   ctxo init --rules         Deprecated: same as --skip git-hooks,guard
   ctxo init --dry-run       List every file init would create or change
-  ctxo init --domain        Also set up the domain layer: registry, fold guard, skill (@ctxo/domain)
+  ctxo init --domain        Also set up the domain layer: registry, fold guard (Claude Code), fold reminder (Cursor), skill (@ctxo/domain)
   ctxo init --boundaries <by-rung|report>   Boundary mode for --domain, without the prompt
   ctxo stats                Show usage statistics (--json, --days N, --clear)
   ctxo doctor               Health check all subsystems (--json, --quiet)
-  ctxo doctor --fix         Apply fixes in dependency order: config, git hooks, skills, the safe-edit guard, rules blocks, plugins, index (--dry-run, --yes)
+  ctxo doctor --fix         Apply fixes in dependency order: config, git hooks, skills, the safe-edit guard, rules blocks, the domain agent setup, plugins, index (--dry-run, --yes)
   ctxo visualize            Generate interactive dependency graph HTML
   ctxo visualize --max-nodes N   Limit to top N symbols by PageRank
   ctxo visualize --output PATH   Write HTML to custom path

@@ -6,7 +6,7 @@ import { createLogger } from './core/logger.js';
  * The `ctxo` entry: a thin argv router (ADR-018). No static import of the MCP SDK, the tool handlers or
  * the CLI router, so each route loads only what it runs:
  * - no arguments, `--http` or `CTXO_HTTP_PORT`: the MCP server (`mcp-server.ts`);
- * - a fast-route command (`domain-guard-hook`): the module command, without the router or the MCP stack;
+ * - a fast-route command (`domain-guard-hook`, `domain-cursor-hook`): the module command, without the router or the MCP stack;
  * - anything else: the CLI router.
  */
 

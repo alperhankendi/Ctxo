@@ -11,7 +11,7 @@ ctxo init --domain       # config defaults, registry skeleton, fold guard, skill
 
 - A registry, `docs/domain/contexts.yaml`: context IDs, paths, cards, rungs and contracts.
 - `ctxo contexts-touched`: which named contexts a set of changes touched, and whether each has a card change or a `Domain-Unchanged` trailer.
-- A fold guard for Claude Code (`ctxo domain-guard-hook`): it blocks a session once when its commits changed a context without a card update or a trailer. Fail-open.
+- A fold guard for Claude Code (`ctxo domain-guard-hook`): it blocks a session once when its commits changed a context without a card update or a trailer. Fail-open. Cursor gets the same decision as a reminder (`ctxo domain-cursor-hook` in `.cursor/hooks.json`): a follow-up message at most once per conversation, never a block.
 - `ctxo verify-domain`: the CI gate (twelve checks; exit 0, 1 or 2). Use `--since origin/main` with `fetch-depth: 0`.
 - `ctxo domain rules --write | --check`: generated path-scoped loader rules, so the agent reads the card before it edits the context's code.
 - `ctxo domain discover`: run it first when adopting or tuning the domain config. Proposes tracker prefixes, rule trait keys, test folders and characterization and contract markers (folders, file names, Trait or Category values, custom test attributes) from the repository; reports external IDs, GitHub issues and lowercase identifiers as evidence only.
