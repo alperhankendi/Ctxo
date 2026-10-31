@@ -12,14 +12,17 @@ importers:
         specifier: ^2.31.0
         version: 2.31.1(@types/node@26.6.5)
       '@ctxo/cli':
-        specifier: 0.11.4
-        version: 0.11.4(graphology-types@0.24.8)
+        specifier: 0.17.1
+        version: 0.17.1(graphology-types@0.24.8)
       '@ctxo/lang-csharp':
         specifier: workspace:*
         version: link:packages/lang-csharp
       '@ctxo/lang-go':
         specifier: workspace:*
         version: link:packages/lang-go
+      '@ctxo/lang-sql':
+        specifier: workspace:*
+        version: link:packages/lang-sql
       '@ctxo/lang-typescript':
         specifier: workspace:*
         version: link:packages/lang-typescript
@@ -492,13 +495,13 @@ packages:
     resolution: {integrity: sha512-dlT1m5e/0yUL0kRNcQn7yGLVThkgbB0Ga/1AmfDDC/8ik6AIiSf2QLQO2zPYvefsHP0aFgxO93cVLCCfDp7kzQ==}
     engines: {node: '>= 20.12.0'}
 
-  '@ctxo/cli@0.11.4':
-    resolution: {integrity: sha512-yjtimFyvYLMWHv+n/ZHwXvD3GT9SDLLIMBLI9WxjKkA5Ih7P8NYSPLRgKaDh6ImfP3S7Ehc8+e3ijb1gCD1cEw==}
+  '@ctxo/cli@0.17.1':
+    resolution: {integrity: sha512-8lVLJ6hbA6jyrw+gGlxKgZumiGThOljjI7Yr/jnYh8/hFe5MfO9gJ2bycPi+GEHXzYIaVWJkB3bt0bMxUXhkYg==}
     engines: {node: '>=20'}
     hasBin: true
 
-  '@ctxo/plugin-api@0.7.2':
-    resolution: {integrity: sha512-ntF1pACL+x6BSIgC3NBJREaejPju4aIbFtGNyaGZWXrq3OikL74Ap+0gm+tokVLuBDRfJbJbcyeCiSneTa/MzQ==}
+  '@ctxo/plugin-api@0.9.1':
+    resolution: {integrity: sha512-MCWbTPlK1ztfFa6vazx+3WFD0mUBrmuQmyVRZAV0ipa+USLHFdQxudBQTH0vZnbWgCDW5jwQO/yNPK4T+Sy4ag==}
     engines: {node: '>=20'}
 
   '@docsearch/css@3.8.2':
@@ -3436,10 +3439,10 @@ snapshots:
       fast-wrap-ansi: 0.2.2
       sisteransi: 1.0.5
 
-  '@ctxo/cli@0.11.4(graphology-types@0.24.8)':
+  '@ctxo/cli@0.17.1(graphology-types@0.24.8)':
     dependencies:
       '@clack/prompts': 1.8.1
-      '@ctxo/plugin-api': 0.7.2
+      '@ctxo/plugin-api': 0.9.1
       '@modelcontextprotocol/sdk': 1.32.1(zod@4.6.7)
       chokidar: 5.0.0
       graphology: 0.26.0(graphology-types@0.24.8)
@@ -3455,7 +3458,7 @@ snapshots:
       - graphology-types
       - supports-color
 
-  '@ctxo/plugin-api@0.7.2': {}
+  '@ctxo/plugin-api@0.9.1': {}
 
   '@docsearch/css@3.8.2': {}
 
