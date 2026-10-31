@@ -55,6 +55,8 @@ export interface ClassifyTestsInput {
   readonly characterization: TestConvention;
   readonly contract: TestConvention;
   readonly makeMatcher: GlobMatcherFactory;
+  /** Called once, with the files in input order, when some test files took the quadratic pairwise leaf check. */
+  readonly onPairwiseFallback?: (files: readonly string[]) => void;
 }
 
 type Annotation = NonNullable<SymbolNode['annotations']>[number];
@@ -122,6 +124,20 @@ function strictlyContains(outer: SymbolNode, inner: SymbolNode): boolean {
 const isCallable = (symbol: SymbolNode): boolean => symbol.kind === 'function' || symbol.kind === 'method';
 const hasOffsets = (symbol: SymbolNode): boolean => symbol.startOffset !== undefined && symbol.endOffset !== undefined;
 
+type ArrayProbe = <T>(list: T[]) => T[];
+let arrayProbe: ArrayProbe | undefined;
+
+/**
+ * Test only: wraps every working array of `classifyTests` (span lists, sorted starts, suffix minima, prefix maxima,
+ * title lines, offset points, the callables of the pairwise check) so a cost test can count every element access.
+ * Pass undefined to remove it. Unset, `watched` returns its argument and costs one comparison per array.
+ */
+export function setClassifyTestsArrayProbe(probe: ArrayProbe | undefined): void {
+  arrayProbe = probe;
+}
+
+const watched = <T>(list: T[]): T[] => (arrayProbe === undefined ? list : arrayProbe(list));
+
 /** First index of a sorted list whose value is at least (`strict`: above) `x`. */
 function lowerBound(sorted: readonly number[], x: number, strict: boolean): number {
   let lo = 0;
@@ -145,9 +161,9 @@ class InnerSpanIndex {
   private readonly minEnd: number[];
 
   constructor(spans: readonly Span[]) {
-    const sorted = [...spans].sort((x, y) => x[0] - y[0]);
-    this.starts = sorted.map((s) => s[0]);
-    this.minEnd = new Array<number>(sorted.length + 1).fill(Infinity);
+    const sorted = watched([...spans]).sort((x, y) => x[0] - y[0]);
+    this.starts = watched(sorted.map((s) => s[0]));
+    this.minEnd = watched(new Array<number>(sorted.length + 1).fill(Infinity));
     for (let i = sorted.length - 1; i >= 0; i--) this.minEnd[i] = Math.min(sorted[i]![1], this.minEnd[i + 1]!);
   }
 
@@ -163,16 +179,18 @@ class InnerSpanIndex {
  */
 class OuterSpanIndex {
   private readonly starts: number[];
-  private readonly maxEnd: number[] = [];
+  private readonly maxEnd: number[];
 
   constructor(spans: readonly Span[]) {
-    const sorted = [...spans].sort((x, y) => x[0] - y[0]);
-    this.starts = sorted.map((s) => s[0]);
+    const sorted = watched([...spans]).sort((x, y) => x[0] - y[0]);
+    this.starts = watched(sorted.map((s) => s[0]));
     let max = -Infinity;
-    for (const s of sorted) {
-      max = Math.max(max, s[1]);
-      this.maxEnd.push(max);
-    }
+    this.maxEnd = watched(
+      sorted.map((s) => {
+        max = Math.max(max, s[1]);
+        return max;
+      }),
+    );
   }
 
   includes(start: number, end: number): boolean {
@@ -186,7 +204,7 @@ class OuterSpanIndex {
  * containment implies line containment, and the offset rule of `strictlyContains` compares offsets alone.
  */
 function offsetsFollowLines(symbols: readonly SymbolNode[]): boolean {
-  const points: [number, number][] = [];
+  const points = watched<[number, number]>([]);
   for (const s of symbols) points.push([s.startOffset!, s.startLine], [s.endOffset!, s.endLine]);
   points.sort((x, y) => x[0] - y[0] || x[1] - y[1]);
   for (let i = 1; i < points.length; i++) {
@@ -200,20 +218,25 @@ function offsetsFollowLines(symbols: readonly SymbolNode[]): boolean {
 /**
  * The callables of one file that strictly contain no other callable (`strictlyContains`), in input order, in
  * O(n log n). Line spans decide unless both symbols carry offsets. A file whose offsets contradict its lines (no
- * plugin writes one) takes the pairwise check, so the result is the same on any input.
+ * plugin writes one; only a hand-edited or corrupted index JSON) falls back to the quadratic pairwise check
+ * (`pairwise: true`), so the result is the same on any input.
  */
-function leafCallables(callables: readonly SymbolNode[]): SymbolNode[] {
+function leafCallables(callables: readonly SymbolNode[]): { readonly leaves: SymbolNode[]; readonly pairwise: boolean } {
   const withOffsets = callables.filter(hasOffsets);
-  if (!offsetsFollowLines(withOffsets)) return callables.filter((s) => !callables.some((other) => strictlyContains(s, other)));
+  if (!offsetsFollowLines(withOffsets)) {
+    const all = watched([...callables]);
+    return { leaves: all.filter((s) => !all.some((other) => strictlyContains(s, other))), pairwise: true };
+  }
   const lineIndex = (list: readonly SymbolNode[]): InnerSpanIndex => new InnerSpanIndex(list.map((s): Span => [s.startLine, s.endLine]));
   const anyLines = lineIndex(callables);
   const plainLines = lineIndex(callables.filter((s) => !hasOffsets(s)));
   const offsets = new InnerSpanIndex(withOffsets.map((s): Span => [s.startOffset!, s.endOffset!]));
-  return callables.filter((s) =>
+  const leaves = callables.filter((s) =>
     hasOffsets(s)
       ? !plainLines.hasInner(s.startLine, s.endLine) && !offsets.hasInner(s.startOffset!, s.endOffset!)
       : !anyLines.hasInner(s.startLine, s.endLine),
   );
+  return { leaves, pairwise: false };
 }
 
 /** The 1-based lines of the titles holding a marker, sorted, and whether one lies in a 0-based line span (W16). */
@@ -226,8 +249,9 @@ function titleLinesIn(sortedLines: readonly number[], symbol: SymbolNode): boole
  * H7: the test cases of the test files and which of them are characterization and contract tests. A case is of a
  * kind when its file matches a `paths` glob, when it or a symbol of its file spanning it carries an annotation a
  * matcher accepts, or when a `names` marker occurs in its name or in a declared title on a line it spans.
- * O(n log n) in the symbols and titles of a file: leaves by `leafCallables`, annotation holders by an
- * `OuterSpanIndex` of the holders a matcher accepts, titles by a binary search over the lines of the marked titles.
+ * O(n log n) in the symbols and titles of a file (quadratic fallback when offsets contradict lines, reported through
+ * `onPairwiseFallback`): leaves by `leafCallables`, annotation holders by an `OuterSpanIndex` of the holders a
+ * matcher accepts, titles by a binary search over the lines of the marked titles.
  */
 export function classifyTests(input: ClassifyTestsInput): TestClassification {
   const characterization = compile(input.characterization, input.makeMatcher);
@@ -244,12 +268,14 @@ export function classifyTests(input: ClassifyTestsInput): TestClassification {
   const cases: string[] = [];
   const isCharacterization = new Set<string>();
   const isContract = new Set<string>();
+  const pairwiseFiles: string[] = [];
 
   for (const index of input.indices) {
     if (!input.isTestFile(index.file)) continue;
     const file = norm(index.file);
     const titles = titlesByFile.get(file) ?? [];
-    const leaves = leafCallables(index.symbols.filter(isCallable));
+    const { leaves, pairwise } = leafCallables(index.symbols.filter(isCallable));
+    if (pairwise) pairwiseFiles.push(file);
     if (leaves.length === 0) continue;
     const prepare = (convention: CompiledConvention): ((symbol: SymbolNode) => boolean) => {
       const byPath = convention.path(file);
@@ -259,7 +285,7 @@ export function classifyTests(input: ClassifyTestsInput): TestClassification {
         const lower = lowerAscii(text);
         return convention.names.some((marker) => lower.includes(marker));
       };
-      const lines = titles.filter((t) => marked(t.title)).map((t) => t.line).sort((a, b) => a - b);
+      const lines = watched(titles.filter((t) => marked(t.title)).map((t) => t.line)).sort((a, b) => a - b);
       return (symbol) => byPath || holders.includes(symbol.startLine, symbol.endLine) || marked(symbol.name) || titleLinesIn(lines, symbol);
     };
     const matchesCharacterization = prepare(characterization);
@@ -271,6 +297,7 @@ export function classifyTests(input: ClassifyTestsInput): TestClassification {
     }
   }
 
+  if (pairwiseFiles.length > 0) input.onPairwiseFallback?.(pairwiseFiles);
   const testCases = [...new Set(cases)].sort(compare);
   return {
     testCases,

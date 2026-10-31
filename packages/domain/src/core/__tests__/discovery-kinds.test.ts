@@ -402,6 +402,19 @@ describe('test-kind markers: what is not a marker', () => {
     );
   });
 
+  it('the printout names the first 5 entity files and the count of the rest; --json keeps them all', () => {
+    const names = Array.from({ length: 7 }, (_, i) => `Item${i}Contract`);
+    const tests = names.map((name) => index(`tests/Lending.Tests/${name}Tests.cs`, [[{ name: 'Fact' }]]));
+    const entities = names.map((name) => entity(`src/Lending/${name}.cs`, name));
+    const all = [...tests, ...entities];
+    const { evidence, proposal } = discoverConventions(input({ indices: all, trackedFiles: all.map((i) => i.file) }));
+    const files = tests.map((t) => t.file);
+    expect(evidence.testKindMarkers.contract.fileNames[0]!.entityFiles).toEqual(files);
+    expect(formatDiscovery(evidence, proposal, DEFAULT_DOMAIN_CONFIG)).toContain(
+      `**/*ContractTests.cs (7, 7 named after a non-test class, so not proposed: ${files.slice(0, 5).join(', ')}, and 2 more)`,
+    );
+  });
+
   it('a family whose only non-entity files the configured paths already cover is not proposed', () => {
     const files = ['tests/Lending.Tests/LoanContractTests.cs', 'tests/Storage.Tests/BlobStoreContractTests.cs'];
     const tests = files.map((file) => index(file, [[{ name: 'Fact' }]]));

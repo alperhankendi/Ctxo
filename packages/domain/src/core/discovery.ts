@@ -300,6 +300,8 @@ const SOURCE_EXTENSIONS: ReadonlySet<string> = new Set([
   '.cjs', '.cs', '.fs', '.go', '.groovy', '.java', '.js', '.jsx', '.kt', '.mjs', '.php', '.py', '.rb', '.scala', '.swift', '.ts', '.tsx', '.vb',
 ]);
 const ENTITY_KINDS: ReadonlySet<string> = new Set(['class', 'interface', 'type']);
+/** Entity files the printout names per file-name glob; `--json` lists every one. */
+export const ENTITY_FILES_SHOWN = 5;
 
 function lastSegment(name: string): string {
   const dot = name.lastIndexOf('.');
@@ -678,7 +680,10 @@ export function formatDiscovery(evidence: DiscoveryEvidence, proposal: Discovery
       const entityNote = (f: TestKindMarkers['fileNames'][number]): string => {
         if (f.entityTests === 0) return '';
         const verdict = f.entityTests === f.files ? 'so not proposed' : 'left out';
-        return `, ${f.entityTests} named after a non-test class, ${verdict}: ${f.entityFiles.join(', ')}`;
+        // The printout names the first few; --json keeps the full list.
+        const shown = f.entityFiles.slice(0, ENTITY_FILES_SHOWN).join(', ');
+        const more = f.entityFiles.length > ENTITY_FILES_SHOWN ? `, and ${f.entityFiles.length - ENTITY_FILES_SHOWN} more` : '';
+        return `, ${f.entityTests} named after a non-test class, ${verdict}: ${shown}${more}`;
       };
       const files = m.fileNames.map((f) => `${f.glob} (${f.files}${entityNote(f)})`);
       parts.push(`file names ${files.join(', ')}`);

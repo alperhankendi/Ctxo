@@ -16,8 +16,9 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo (ten packages today). Per-pack
   annotation of a symbol spanning it or a marker in its name or a title on its lines says so; leaves come from two
   span lookups, annotation holders from an interval index and titles from a binary search over their lines. The output
   is the same: a property test compares it with the old implementation on 6,000 randomized inputs, and a cost test
-  counts the reads on a generated file of 5,000 cases. A file whose offsets contradict its lines (no plugin writes
-  one) takes the old pairwise check.
+  counts the operations on a generated file of 5,000 cases. A file whose offsets contradict its lines (no plugin
+  writes one; only a hand-edited or corrupted index JSON) falls back to the old quadratic pairwise check, logged under
+  `DEBUG=ctxo:domain` with the files concerned.
 
 ### Fixed (domain)
 
@@ -25,7 +26,7 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo (ten packages today). Per-pack
   `LoanContract` class) no longer keeps its whole file-name family (`**/*ContractTests.cs`) out of the proposal (#191
   leftover). The entity file is left out of the family's evidence, and the glob is proposed when its other files
   still call for it; a family made only of entity files stays evidence only. The printout lists the files left out
-  (`(4, 2 named after a non-test class, left out: ...)`), and `--json` adds `entityFiles` (codepoint order) next to
+  (`(4, 2 named after a non-test class, left out: ...)`, the first 5 paths and "and N more"), and `--json` adds `entityFiles` (codepoint order) next to
   `entityTests` in `testKindMarkers.<kind>.fileNames`.
 
 **`ctxo watch` refreshes the domain artifacts.**

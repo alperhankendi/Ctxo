@@ -266,6 +266,10 @@ function loopArtifacts(
       characterization: config.tests.characterization,
       contract: config.tests.contract,
       makeMatcher: host.services.makeGlobMatcher,
+      onPairwiseFallback: (files) =>
+        host.services
+          .createLogger('ctxo:domain')
+          .debug(`test cases classified pairwise (offsets contradict lines) in ${files.length} file(s): ${files.join(', ')}`),
     });
     const coChange = host.services.readCoChangeEntries(ctx.ctxoRoot);
     const contexts = buildMaturityFacts({

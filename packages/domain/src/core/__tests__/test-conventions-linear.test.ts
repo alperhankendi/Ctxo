@@ -7,6 +7,7 @@ import {
   annotationMatches,
   classifyTests,
   parseAnnotationMatcher,
+  setClassifyTestsArrayProbe,
   type AnnotationMatcher,
   type ClassifyTestsInput,
   type TestClassification,
@@ -143,8 +144,14 @@ const FILES = [
   'src/Lending/Loan.cs',
 ];
 
-/** `offsets`: consistent (offsets follow lines, as every plugin writes them), random (contradicting lines) or mixed. */
-function randomInput(seed: number, offsets: 'consistent' | 'random'): ClassifyTestsInput {
+type OffsetMode = 'consistent' | 'near' | 'random';
+
+/**
+ * `offsets`: consistent (offsets follow lines, as every plugin writes them), random (mostly contradicting lines), or
+ * near: consistent, then one offset of a file perturbed (an offset equal to another one on another line, a start moved
+ * across a line, an end before its own start line), which may or may not break consistency.
+ */
+function randomInput(seed: number, offsets: OffsetMode): ClassifyTestsInput {
   const r = rng(seed);
   const pick = <T,>(list: readonly T[]): T => list[Math.floor(r() * list.length)]!;
   const int = (n: number): number => Math.floor(r() * n);
@@ -153,8 +160,9 @@ function randomInput(seed: number, offsets: 'consistent' | 'random'): ClassifyTe
   const titles: TestTitle[] = [];
   const fileCount = 1 + int(3);
   for (let f = 0; f < fileCount; f++) {
-    const file = pick(FILES);
-    const symbols: SymbolNode[] = [];
+    // Unique per input, so a file reported by onPairwiseFallback names one index.
+    const file = pick(FILES).replace(/\.cs$/, `${f}.cs`);
+    const symbols: { -readonly [K in keyof SymbolNode]: SymbolNode[K] }[] = [];
     const count = int(14);
     for (let i = 0; i < count; i++) {
       const kind = pick(KINDS);
@@ -172,7 +180,7 @@ function randomInput(seed: number, offsets: 'consistent' | 'random'): ClassifyTe
       };
       const mode = r();
       if (mode < 0.6) {
-        if (offsets === 'consistent') {
+        if (offsets !== 'random') {
           node.startOffset = startLine * 10 + int(r() < 0.3 ? 2 : 10);
           node.endOffset = endLine * 10 + int(r() < 0.3 ? 2 : 10);
         } else {
@@ -189,6 +197,16 @@ function randomInput(seed: number, offsets: 'consistent' | 'random'): ClassifyTe
       // An identical copy: equal spans never contain each other.
       if (r() < 0.05) symbols.push({ ...node });
     }
+    const withOffsets = symbols.filter((s) => s.startOffset !== undefined && s.endOffset !== undefined);
+    if (offsets === 'near' && withOffsets.length >= 2) {
+      const target = pick(withOffsets);
+      const other = pick(withOffsets.filter((s) => s !== target));
+      const kind = int(4);
+      if (kind === 0) target.startOffset = other.endOffset;
+      else if (kind === 1) target.endOffset = other.startOffset;
+      else if (kind === 2) target.startOffset = target.startOffset! + (r() < 0.5 ? 10 : -10);
+      else target.endOffset = target.startLine * 10 - 5;
+    }
     indices.push({ file, lastModified: 1, symbols, edges: [], intent: [], antiPatterns: [] });
     const titleCount = int(8);
     for (let t = 0; t < titleCount; t++) titles.push({ file: r() < 0.5 ? file : norm(file), line: int(maxLine + 3), title: pick(TITLES) });
@@ -199,24 +217,48 @@ function randomInput(seed: number, offsets: 'consistent' | 'random'): ClassifyTe
 const view = (c: TestClassification) => ({ testCases: c.testCases, characterization: [...c.characterization], contract: [...c.contract] });
 
 describe('classifyTests: the O(n log n) version against the quadratic reference', () => {
-  it.each(['consistent', 'random'] as const)('gives the same output on 3,000 randomized inputs (offsets %s)', (offsets) => {
+  const SALT: Record<OffsetMode, number> = { consistent: 0, random: 1, near: 2 };
+  // Least test files with two or more offset callables per path: the fast path (offsets alone decide) and the
+  // pairwise fallback, so the near mode checks the detector both ways.
+  const MIN_PATH_FILES: Record<OffsetMode, { fast: number; pairwise: number }> = {
+    consistent: { fast: 1000, pairwise: 0 },
+    near: { fast: 500, pairwise: 500 },
+    random: { fast: 0, pairwise: 1000 },
+  };
+
+  it.each(['consistent', 'near', 'random'] as const)('gives the same output on 3,000 randomized inputs (offsets %s)', (offsets) => {
     let cases = 0;
     let marked = 0;
+    let fast = 0;
+    let pairwise = 0;
     for (let seed = 1; seed <= 3000; seed++) {
-      const input = randomInput(seed * 7919 + (offsets === 'random' ? 1 : 0), offsets);
+      const input = randomInput(seed * 7919 + SALT[offsets], offsets);
       const expected = view(classifyTestsReference(input));
-      expect(view(classifyTests(input)), `seed ${seed}`).toEqual(expected);
+      const fallback = new Set<string>();
+      const actual = classifyTests({ ...input, onPairwiseFallback: (files) => files.forEach((f) => fallback.add(f)) });
+      expect(view(actual), `seed ${seed}`).toEqual(expected);
       cases += expected.testCases.length;
       marked += expected.characterization.length + expected.contract.length;
+      for (const index of input.indices) {
+        if (!input.isTestFile(index.file)) continue;
+        const offsetCallables = index.symbols.filter((s) => isCallable(s) && s.startOffset !== undefined && s.endOffset !== undefined);
+        if (offsetCallables.length < 2) continue;
+        if (fallback.has(norm(index.file))) pairwise++;
+        else fast++;
+      }
     }
     // The generator exercises the interesting paths: many cases and many of them of a kind.
     expect(cases).toBeGreaterThan(5000);
     expect(marked).toBeGreaterThan(1000);
+    expect(fast).toBeGreaterThanOrEqual(MIN_PATH_FILES[offsets].fast);
+    expect(pairwise).toBeGreaterThanOrEqual(MIN_PATH_FILES[offsets].pairwise);
+    if (offsets === 'consistent') expect(pairwise).toBe(0);
   });
 });
 
 // ---------------------------------------------------------------------------------------------------------------
-// Cost: property reads of the symbols and titles, counted through proxies (robust under CI load, unlike a clock).
+// Cost: reads of the symbols, the titles and every working array of classifyTests, counted through proxies and the
+// test-only array probe (robust under CI load, unlike a clock).
 
 /**
  * A generated test file with `n` cases: a class spanning the file, `n` methods (with offsets or not), every third
@@ -271,11 +313,33 @@ function syntheticFile(n: number, withOffsets: boolean, nested: boolean, counter
   };
 }
 
+/**
+ * Element and property reads during one classification: the proxied symbols and titles, plus every working array of
+ * `classifyTests` (span lists, sorted starts, suffix minima, prefix maxima, title lines) through the test-only array
+ * probe, so work inside the span indexes counts too.
+ */
 function reads(classify: (input: ClassifyTestsInput) => TestClassification, n: number, withOffsets: boolean, nested: boolean): number {
   const counter = { reads: 0 };
   const input = syntheticFile(n, withOffsets, nested, counter);
   counter.reads = 0;
-  classify(input);
+  setClassifyTestsArrayProbe(
+    <T,>(list: T[]): T[] =>
+      new Proxy(list, {
+        get(obj, key, receiver) {
+          counter.reads++;
+          return Reflect.get(obj, key, receiver) as unknown;
+        },
+        set(obj, key, value, receiver) {
+          counter.reads++;
+          return Reflect.set(obj, key, value, receiver);
+        },
+      }),
+  );
+  try {
+    classify(input);
+  } finally {
+    setClassifyTestsArrayProbe(undefined);
+  }
   return counter.reads;
 }
 
@@ -285,18 +349,42 @@ describe('classifyTests: cost on a generated test file', () => {
     { withOffsets: false, nested: false },
     { withOffsets: true, nested: true },
     { withOffsets: false, nested: true },
-  ])('grows about linearly from 1,250 to 5,000 cases (offsets $withOffsets, nested $nested)', ({ withOffsets, nested }) => {
+  ])('grows as n log n from 1,250 to 5,000 cases (offsets $withOffsets, nested $nested)', ({ withOffsets, nested }) => {
     const small = reads(classifyTests, 1250, withOffsets, nested);
     const large = reads(classifyTests, 5000, withOffsets, nested);
-    // Four times the cases: linear work reads about four times as much; the quadratic version read about sixteen times.
-    expect(large / small).toBeLessThan(5);
-    // And per case only a handful of reads, where the quadratic version made thousands.
-    expect(large / 5000).toBeLessThan(50);
+    // Four times the cases: n log n work reads about 4.3 times as much (measured); quadratic work sixteen times.
+    expect(large / small).toBeLessThan(6);
+    // And per case about a hundred reads (sorting and binary searches included), where the quadratic version made thousands.
+    expect(large / 5000).toBeLessThan(300);
 
     const result = classifyTests(syntheticFile(5000, withOffsets, nested, { reads: 0 }));
     expect(result.testCases).toHaveLength(5000);
     expect(result.contract.size).toBe(1667);
     expect(result.characterization.size).toBe(1000);
+  });
+
+  it('reports the files that took the pairwise fallback once, and none for plugin-shaped offsets', () => {
+    const good = syntheticFile(10, true, false, { reads: 0 });
+    const calls: string[][] = [];
+    classifyTests({ ...good, onPairwiseFallback: (files) => calls.push([...files]) });
+    expect(calls).toEqual([]);
+    const file = 'tests/Bad.Tests/BadTests.cs';
+    const bad: FileIndex = {
+      file,
+      lastModified: 1,
+      // An end offset before the start offset's line: offsets contradict lines.
+      symbols: [
+        { symbolId: `${file}::A::method`, name: 'A', kind: 'method', startLine: 5, endLine: 6, startOffset: 500, endOffset: 100 },
+        { symbolId: `${file}::B::method`, name: 'B', kind: 'method', startLine: 1, endLine: 2, startOffset: 100, endOffset: 250 },
+      ],
+      edges: [],
+      intent: [],
+      antiPatterns: [],
+    };
+    const input = { ...good, indices: [...good.indices, bad] };
+    const result = classifyTests({ ...input, onPairwiseFallback: (files) => calls.push([...files]) });
+    expect(calls).toEqual([[file]]);
+    expect(view(result)).toEqual(view(classifyTestsReference(input)));
   });
 
   it('the counter tells the two apart: the reference grows quadratically on the same file', () => {
