@@ -169,6 +169,39 @@ export async function loadModulesFor(
 export interface FastRouteOptions {
   /** A directory standing in for the CLI's location when modules are looked up (tests); defaults to the running CLI. */
   readonly cliAnchor?: string;
+  /** Stands in for importing the Cursor hook route chunk (tests). */
+  readonly importCursorRoute?: () => Promise<typeof import('./cursor-hook-route.js')>;
+  /** Stands in for reading stdin when the Cursor hook route cannot be loaded (tests). */
+  readonly readStdin?: () => Promise<string>;
+}
+
+/**
+ * The last-resort answer of `domain-cursor-hook` when its route cannot even be loaded: exactly
+ * `{"continue":true}` unless the input is a `stop` or another named event (the route's own rule, kept here
+ * so a broken install never stalls a Cursor prompt).
+ */
+async function cursorRouteFallback(options: FastRouteOptions): Promise<void> {
+  let raw = '';
+  try {
+    raw = await (options.readStdin ?? readAllStdin)();
+  } catch {
+    // Unreadable input is not a stop.
+  }
+  let quiet = false;
+  try {
+    const value: unknown = JSON.parse(raw);
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      const record = value as Record<string, unknown>;
+      const named = record['hook_event_name'];
+      quiet =
+        typeof named === 'string' && named.length > 0
+          ? named !== 'beforeSubmitPrompt'
+          : !('prompt' in record) && ('status' in record || 'loop_count' in record);
+    }
+  } catch {
+    // Not JSON: answered like a prompt.
+  }
+  if (!quiet) process.stdout.write(`${JSON.stringify({ continue: true })}\n`);
 }
 
 /**
@@ -178,10 +211,19 @@ export interface FastRouteOptions {
  */
 export async function runFastRoute(args: readonly string[], cwd: string, options: FastRouteOptions = {}): Promise<number> {
   const command = args[0] ?? '';
-  if (command === 'domain-cursor-hook') {
+  // `--help` goes to the module command's usage below; the hook route would read stdin and answer Cursor.
+  const help = args.slice(1).some((arg) => arg === '--help' || arg === '-h');
+  if (command === 'domain-cursor-hook' && !help) {
+    let route: typeof import('./cursor-hook-route.js');
     try {
-      const { runCursorHookRoute } = await import('./cursor-hook-route.js');
-      return await runCursorHookRoute(args, cwd, options);
+      route = await (options.importCursorRoute ?? (() => import('./cursor-hook-route.js')))();
+    } catch (err) {
+      console.error(`[ctxo] ${command} could not load its route, allowing: ${(err as Error).message}`);
+      await cursorRouteFallback(options);
+      return 0;
+    }
+    try {
+      return await route.runCursorHookRoute(args, cwd, options);
     } catch (err) {
       console.error(`[ctxo] ${command} failed, allowing: ${(err as Error).message}`);
       return 0;

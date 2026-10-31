@@ -275,6 +275,14 @@ describe('ctxo domain-cursor-hook (built CLI)', () => {
     expect(cursorHook(dir, { conversation_id: 'c', hook_event_name: 'stop', status: 'completed', loop_count: 0 })).toMatchObject({ status: 0, stdout: '', stderr: '' });
   });
 
+  it('--help prints the usage on stderr and nothing on stdout', () => {
+    const dir = createProject(true);
+    const result = spawnSync(process.execPath, [CLI_BIN, 'domain-cursor-hook', '--help'], { cwd: dir, input: '', encoding: 'utf-8', env: childEnv() });
+    expect(result.status).toBe(0);
+    expect(result.stdout).toBe('');
+    expect(result.stderr).toContain('Usage: ctxo domain-cursor-hook');
+  });
+
   it('unreadable stdin gets {"continue":true}', () => {
     const dir = createProject(true);
     const result = spawnSync(process.execPath, [CLI_BIN, 'domain-cursor-hook'], { cwd: dir, input: '{oops', encoding: 'utf-8', env: childEnv() });
