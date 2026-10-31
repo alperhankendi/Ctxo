@@ -108,7 +108,7 @@ describe('createLoopState', () => {
       expect(snapshot.staleHint).toBe(STALE_LOOP_HINT);
       expect(snapshot.candidates).toHaveLength(2);
       expect(STALE_LOOP_HINT).toBe(
-        'The shadow-spec, maturity or boundary data was built from another domain registry; run "ctxo index" to refresh it.',
+        'The shadow-spec, maturity or boundary data was built from another domain registry; run "ctxo index" to refresh it (a running "ctxo watch" does this shortly after the edit).',
       );
     },
   );

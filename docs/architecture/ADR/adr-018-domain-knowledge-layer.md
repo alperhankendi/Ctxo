@@ -58,6 +58,8 @@ The CLI resolves `@ctxo/domain`, imports it and calls its `register(host)` funct
 | Member | Purpose |
 |---|---|
 | `indexPass` | Runs after the core phases of `ctxo index`, on the merged index. A failing pass is reported and the run continues. |
+| `classifyWatchPath` | Tells `ctxo watch` which changed paths `indexPass` depends on (`input`: refresh after an adaptive quiet period, at least 1 s and twice the last pass, never postponed more than 30 s; `source`: counted towards `watch.snapshotMinFileChanges`). With it, watch runs `indexPass` on the merged JSON index without a change log, with `factsRequested` set; without it, watch runs no pass. |
+| `watchArtifactsStale` | A cheap check whether the artifacts of `indexPass` are stale against the module's inputs; `ctxo watch` asks once at start and runs one pass when true. |
 | `registerTools` | New MCP tools. The core wraps masking, the `_meta` envelope, stats recording and the staleness warning. A tool named like a core tool is skipped with a warning. |
 | `enrich` | Additive fields on core tools, applied before the envelope so that truncation and masking see them. A throwing enricher drops its fields, never the response. |
 | `registerCommands` | CLI commands (`contexts-touched` and `domain-guard-hook`; `verify-domain` and `domain` in Part 2). A name that shadows a core command is dropped with a warning. |

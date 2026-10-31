@@ -33,10 +33,39 @@ cleanly.
 | --- | --- |
 | Add or change | Debounced (300 ms) re-index via the registered language adapter |
 | Delete | Remove the file's entry from both the JSON index and the SQLite cache |
-| Unsupported extension | Ignored |
+| Unsupported extension | Ignored, unless `@ctxo/domain` reads it (see below) |
 
 Each re-index also refreshes that file's commit history and anti-pattern list
 so newly committed changes are reflected immediately.
+
+## Domain artifacts (`@ctxo/domain`)
+
+With `@ctxo/domain` installed, `ctxo watch` also runs the domain index pass, the
+one `ctxo index` runs, so `.ctxo/index/domain/graph.json`, `maturity.json`,
+`shadow-candidates.json`, `contexts.json` and `boundaries.json` follow your edits
+and the domain tools stop answering `stale: true`. The pass never runs once per
+file event:
+
+| Change | When the pass runs |
+| --- | --- |
+| The registry (`domain.registry`), a card or the glossary | 1 s after the last such event, or twice the duration of the last pass when that is longer |
+| Source files (indexed files, `domain.facts.textScanExtensions` files) | Once `watch.snapshotMinFileChanges` (default 5) distinct files changed, 5 s after the last event |
+| Watch starts while the domain graph is stale against the registry, cards or glossary | Once, shortly after start (no pass when the artifacts are current) |
+
+A due pass waits for pending re-indexes of source files but is never postponed
+more than 30 s, and passes never overlap. `DEBUG=ctxo:watch` logs how long each
+pass took. A `shadow-specs.yaml` edit needs no pass: resolutions apply when the
+tools read them.
+
+For the same index at the same commit, the watch pass writes the bytes `ctxo
+index` writes. Watch has no change log, so moved files, the discovery result in
+`maturity.json` and the per-commit history keep the values of the last `ctxo
+index` until the next one or the next commit. The config is read once when
+watch starts. A registry created while watch runs gets no pass (the plugins were
+loaded without facts): this watch warns on each skipped pass until it is
+restarted (run `ctxo index` too). A failing pass is
+logged and the watcher keeps running. Without `@ctxo/domain` nothing changes.
+See the [domain knowledge layer](/concepts/domain-knowledge).
 
 ## Examples
 

@@ -254,7 +254,7 @@ written `''`): paste it as it is after `fingerprint: ` in the context's `shadow-
 
 The quotes matter: fact text can hold double quotes, backslashes, `: ` or ` #`, which break a double-quoted or plain
 scalar. `--json` prints the plain strings. The file is read on every run, so an
-edit shows at once; the candidates themselves refresh on `ctxo index` (not under `ctxo watch`). Output is not
+edit shows at once; the candidates themselves refresh on `ctxo index`, and under `ctxo watch` shortly after the edit. Output is not
 masked, as for `ctxo contexts --json`.
 
 **Exit codes (map and shadow-specs):**
@@ -263,7 +263,7 @@ masked, as for `ctxo contexts --json`.
 | --- | --- |
 | 0 | Done (stale data, such as cards edited since the last index, prints a hint and still exits 0), or no registry (a hint is printed) |
 | 1 | Bad arguments, an unknown kind or an unknown context |
-| 2 | Registry problems; no index data (`[ctxo] No context map yet; run "ctxo index".`, `[ctxo] No shadow-spec data yet; run "ctxo index".`, also after an index run that could not build the loop data and removed it); index data built from another registry (`[ctxo] The domain registry changed since the last "ctxo index"; run it to rebuild the domain graph.`); an internal error (`[ctxo] domain <name> failed: <message>`) |
+| 2 | Registry problems; no index data (`[ctxo] No context map yet; run "ctxo index".`, `[ctxo] No shadow-spec data yet; run "ctxo index".`, also after an index run that could not build the loop data and removed it); index data built from another registry (`[ctxo] The domain registry changed since the domain graph was built; run "ctxo index" to rebuild it (a running "ctxo watch" does this shortly after the edit).`); an internal error (`[ctxo] domain <name> failed: <message>`) |
 
 ## See also
 

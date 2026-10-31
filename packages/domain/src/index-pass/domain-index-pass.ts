@@ -18,6 +18,15 @@ import { classifyTests } from '../core/test-conventions.js';
 const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
 
 /**
+ * Logged on every skipped pass while the registry exists but this watch's plugins were loaded without a fact request
+ * (`factsRequested: false`). A `ctxo index` run meanwhile does not help this watch: its own re-indexes still write no
+ * facts, so it keeps skipping until it is restarted.
+ */
+export const FACTS_MISSING_WARNING =
+  'The domain registry appeared after this ctxo watch started, so its plugins report no facts; domain artifacts not updated. ' +
+  'This watch skips the domain pass until it is restarted: restart ctxo watch (and run "ctxo index" if you have not).';
+
+/**
  * Phase 2e of `ctxo index` for `@ctxo/domain` (spec 10.7): the file-to-context map, the cross-context edges and
  * boundary violations, the domain graph (`graph.json`, spec 11.2), the shadow-spec candidates
  * (`shadow-candidates.json`, spec 12.2), the per-context maturity facts (`maturity.json`, spec 12.3), and with the
@@ -50,6 +59,13 @@ export function domainIndexPass(host: CtxoHost): (ctx: IndexPassContext) => Prom
       log.warn(
         `The domain registry at ${loaded.path} has ${loaded.problems.length} problem(s); domain artifacts not updated. Run "ctxo verify-domain".`,
       );
+      return;
+    }
+    // A registry that appeared after `ctxo watch` started: its plugins were loaded without a fact request, so
+    // its re-indexes write no facts. Artifacts built from them would answer as fresh with the native candidates
+    // missing; nothing is written, and every skipped (batched) pass says so, also after a `ctxo index` run.
+    if (ctx.factsRequested === false) {
+      log.warn(FACTS_MISSING_WARNING);
       return;
     }
     const registry = loaded.registry;

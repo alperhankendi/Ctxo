@@ -160,14 +160,14 @@ Every miss is `{ "found": false, "hint": "..." }`. An unexpected failure (an unr
 | No registry | `No domain registry at docs/domain/contexts.yaml. Create one with "ctxo init --domain". To propose the domain config from this repository, run "ctxo domain discover".` |
 | The registry has problems | `The domain registry at <path> has problems; run "ctxo verify-domain".` |
 | No graph yet | `No domain graph yet; run "ctxo index". To propose the domain config from this repository, run "ctxo domain discover".` |
-| The registry changed since the last index | `The domain registry changed since the last "ctxo index"; run it to rebuild the domain graph.` |
+| The registry changed since the last index | `The domain registry changed since the domain graph was built; run "ctxo index" to rebuild it (a running "ctxo watch" does this shortly after the edit).` |
 | No context owns the file | `No named context owns src/main.ts.` |
 | Two contexts own the file | `<path> belongs to 2 contexts (a, b); fix the registry, see "ctxo verify-domain".` |
 | A path outside the project | `<path> is outside the project.` |
 | A symbol ID without a file part | `<id> names no file; pass a symbol ID of the form file::name::kind, or a path.` |
 
 When a card or the glossary changed after the last `ctxo index`, the answer still comes from the graph and adds
-`stale: true` with the hint `Cards or the glossary changed since the last "ctxo index"; run it to refresh rule links.`
+`stale: true` with the hint `Cards or the glossary changed since the domain graph was built; run "ctxo index" to refresh rule links (a running "ctxo watch" does this shortly after the edit).`
 
 ## Shared cards
 

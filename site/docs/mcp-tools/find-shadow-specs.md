@@ -201,7 +201,7 @@ for the fingerprint rules and the file format.
 | No registry | `{ "found": false, "hint": "No domain registry at docs/domain/contexts.yaml. Create one with \"ctxo init --domain\". To propose the domain config from this repository, run \"ctxo domain discover\"." }` |
 | A registry with problems | `{ "found": false, "hint": "The domain registry at <path> has problems; run \"ctxo verify-domain\"." }` |
 | No domain graph | `{ "found": false, "hint": "No domain graph yet; run \"ctxo index\". To propose the domain config from this repository, run \"ctxo domain discover\"." }` |
-| The registry changed since the last index (the graph was built from another registry) | `{ "found": false, "hint": "The domain registry changed since the last \"ctxo index\"; run it to rebuild the domain graph." }` |
+| The registry changed since the last index (the graph was built from another registry) | `{ "found": false, "hint": "The domain registry changed since the domain graph was built; run \"ctxo index\" to rebuild it (a running \"ctxo watch\" does this shortly after the edit)." }` |
 | No loop artifacts (not indexed with this release, or removed because the last `ctxo index` built the graph but not the candidates or the maturity facts) | `{ "found": false, "hint": "No shadow-spec data yet; run \"ctxo index\"." }` |
 | A context the registry does not name | `{ "found": false, "hint": "No context <id> in the registry; get_context_map lists the contexts." }` |
 | A blank `context` (empty or whitespace) | Rejected by the input schema (an MCP input validation error) |
@@ -217,8 +217,9 @@ the query (`kinds`). `staleResolutions`, `unknownRules` and `resolutionProblems`
 ## CLI
 
 `ctxo domain shadow-specs <context> [--kinds <k,...>] [--all] [--json]` prints the same body without `_meta`
-(see [domain commands](/cli/domain#ctxo-domain-shadow-specs)). Under `ctxo watch`, candidates refresh only on the
-next `ctxo index`.
+(see [domain commands](/cli/domain#ctxo-domain-shadow-specs)). Under `ctxo watch`, candidates refresh shortly after a
+card, glossary or registry edit, and after `watch.snapshotMinFileChanges` re-indexed source files. A
+`shadow-specs.yaml` edit shows at once, without a pass.
 
 ## When to use
 

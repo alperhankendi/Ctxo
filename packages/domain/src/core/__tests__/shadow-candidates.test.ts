@@ -247,6 +247,27 @@ describe('buildShadowCandidates', () => {
     ]);
   });
 
+  it('writes detail keys in codepoint order, whatever order the fact gave them in', () => {
+    const base = input();
+    const reordered = {
+      ...base,
+      indices: base.indices.map((index) => ({
+        ...index,
+        ...(index.facts === undefined
+          ? {}
+          : {
+              facts: index.facts.map((f) =>
+                f.detail === undefined ? f : { ...f, detail: Object.fromEntries(Object.entries(f.detail).reverse()) },
+              ),
+            }),
+      })),
+    };
+    const bytes = (candidates: readonly ShadowCandidate[]) => JSON.stringify(candidates);
+    expect(bytes(buildShadowCandidates(reordered))).toBe(bytes(buildShadowCandidates(base)));
+    const endpoint = buildShadowCandidates(reordered).find((c) => c.kind === 'endpoint' && c.detail !== undefined)!;
+    expect(Object.keys(endpoint.detail!)).toEqual([...Object.keys(endpoint.detail!)].sort());
+  });
+
   it('facts of test files and of unowned or multiply owned files are left out', () => {
     const all = buildShadowCandidates(input());
     const files = new Set(all.map((c) => c.file));

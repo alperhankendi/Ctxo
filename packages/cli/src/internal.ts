@@ -23,6 +23,7 @@ export type {
   TestFileCheck,
   CoChangeWindowCommits,
   IndexPassContext,
+  WatchPathKind,
   InitFileResult,
   ClaudeHookEntry,
   InitPrompter,

@@ -13,7 +13,7 @@ export const NO_LOOP_DATA_HINT = 'No shadow-spec data yet; run "ctxo index".';
 
 /** A loop artifact was built from another registry than the current graph's. */
 export const STALE_LOOP_HINT =
-  'The shadow-spec, maturity or boundary data was built from another domain registry; run "ctxo index" to refresh it.';
+  'The shadow-spec, maturity or boundary data was built from another domain registry; run "ctxo index" to refresh it (a running "ctxo watch" does this shortly after the edit).';
 
 /** `boundaries.json` is missing: the map still answers, with `boundariesKnown: false`. */
 export const NO_BOUNDARIES_HINT =

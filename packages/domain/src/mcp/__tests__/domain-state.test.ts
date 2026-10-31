@@ -140,7 +140,7 @@ describe('createDomainState', () => {
     touch(join(root, 'docs/domain/contexts.yaml'));
     expect(failure(state.load())).toEqual({
       reason: 'stale-registry',
-      hint: 'The domain registry changed since the last "ctxo index"; run it to rebuild the domain graph.',
+      hint: 'The domain registry changed since the domain graph was built; run "ctxo index" to rebuild it (a running "ctxo watch" does this shortly after the edit).',
     });
   });
 
@@ -160,7 +160,7 @@ describe('createDomainState', () => {
       // The answers still come from the graph.
       expect(stale.snapshot.index.rules.has('LEND-03')).toBe(true);
     }
-    expect(STALE_CARDS_HINT).toBe('Cards or the glossary changed since the last "ctxo index"; run it to refresh rule links.');
+    expect(STALE_CARDS_HINT).toBe('Cards or the glossary changed since the domain graph was built; run "ctxo index" to refresh rule links (a running "ctxo watch" does this shortly after the edit).');
 
     // A glossary that appears is a card change too.
     await runPass();

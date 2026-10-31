@@ -119,7 +119,7 @@ create no graph edges, so a context tested only that way can stay below `pinned`
 | Situation | Response |
 | --- | --- |
 | No registry, a registry with problems, or no domain graph | `{ "found": false, "hint": "..." }` (the same hints as [`find_shadow_specs`](/mcp-tools/find-shadow-specs#graceful-misses)) |
-| The registry changed since the last index (the graph was built from another registry) | `{ "found": false, "hint": "The domain registry changed since the last \"ctxo index\"; run it to rebuild the domain graph." }` |
+| The registry changed since the last index (the graph was built from another registry) | `{ "found": false, "hint": "The domain registry changed since the domain graph was built; run \"ctxo index\" to rebuild it (a running \"ctxo watch\" does this shortly after the edit)." }` |
 | No loop artifacts (not indexed with this release, or removed because the last `ctxo index` built the graph but not the candidates or the maturity facts) | `{ "found": false, "hint": "No shadow-spec data yet; run \"ctxo index\"." }` |
 | No `boundaries.json` | The map, with `boundariesKnown: false` and a hint |
 | `domain.rules.trackerPrefixes`, `domain.tests.ruleTraitKeys`, `domain.tests.characterization` and `domain.tests.contract` all at their defaults, and the last `ctxo index` found that `ctxo domain discover` would add something (`maturity.json` `discovery.addsSomething`) | The map, plus the hint `The domain conventions are still at their defaults; run "ctxo domain discover" to propose them from this repository.` (after the boundaries hint when both apply) |
@@ -134,7 +134,8 @@ create no graph edges, so a context tested only that way can stay below `pinned`
 ## CLI
 
 `ctxo domain map [--json]` prints the whole map with no truncation (see [domain commands](/cli/domain#ctxo-domain-map)).
-Under `ctxo watch`, the map refreshes only on the next `ctxo index`.
+Under `ctxo watch`, the map refreshes shortly after a card, glossary or registry edit, and after
+`watch.snapshotMinFileChanges` re-indexed source files.
 
 ## When to use
 

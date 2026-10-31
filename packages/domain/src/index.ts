@@ -15,11 +15,13 @@ import { loopTools } from './mcp/loop-tools.js';
 import { taskContextReservation } from './mcp/graph-enrichers.js';
 import { DOMAIN_PACKAGE, domainVersion, sameMinor } from './version.js';
 import { repoIsFile } from './adapters/repo-files.js';
+import { createWatchPathClassifier } from './adapters/watch-paths.js';
 
 /**
- * The domain config for the fact request. Read only when the CLI asks for `indexCapabilities` (`ctxo index`,
- * `ctxo watch`), never at register time, so commands and the hook route do not read the config a second
- * time (the CLI's `loadConfig` logs its own warnings). Silent otherwise (W7): config problems are reported
+ * The domain config for the fact request and the watch classifier. Read only when the CLI asks for
+ * `indexCapabilities` (`ctxo index`, `ctxo watch`) or classifies a watched path, never at register time,
+ * so commands and the hook route do not read the config a second time (the CLI's `loadConfig` logs its own
+ * warnings). Silent otherwise (W7): config problems are reported
  * by the index pass and doctor. Any failure gives the defaults.
  */
 function factRequestConfig(host: CtxoHost): DomainConfig {
@@ -29,6 +31,15 @@ function factRequestConfig(host: CtxoHost): DomainConfig {
   } catch {
     return DEFAULT_DOMAIN_CONFIG;
   }
+}
+
+/**
+ * Whether the domain graph is stale against the current registry, cards or glossary (the state's hash checks).
+ * No registry, an invalid one or no graph yet is not stale: a watch pass cannot fix those (`ctxo index` can).
+ */
+function artifactsStale(state: ReturnType<typeof createDomainState>): boolean {
+  const result = state.load();
+  return result.ok ? result.snapshot.staleCards : result.reason === 'stale-registry';
 }
 
 /**
@@ -49,20 +60,27 @@ export const register: CtxoModuleRegister = async (host) => {
   // One state for the enrichers, the reservation, the tools and the scope; it does no I/O until a first load (P19).
   const state = createDomainState(host);
   let capabilities: { readonly value: { readonly facts: true; readonly factOptions: FactDetectorOptions } | undefined } | undefined;
+  // One config read per process, shared by the fact request and the watch seams: under ctxo watch it happens
+  // when the plugins load, so the classifier and the fact request agree with the config watch started with.
+  let config: DomainConfig | undefined;
+  const domainConfig = (): DomainConfig => (config ??= factRequestConfig(host));
   return {
     id: 'domain',
     // Lazy and read once: the config is loaded on the first fact request only. Facts are requested only when the
     // registry file exists, so a repository without one keeps the index JSON it has without the module (PR 3).
     get indexCapabilities() {
       if (capabilities === undefined) {
-        const config = factRequestConfig(host);
+        const cfg = domainConfig();
         capabilities = {
-          value: repoIsFile(host.projectRoot, config.registry) ? { facts: true, factOptions: toFactDetectorOptions(config) } : undefined,
+          value: repoIsFile(host.projectRoot, cfg.registry) ? { facts: true, factOptions: toFactDetectorOptions(cfg) } : undefined,
         };
       }
       return capabilities.value;
     },
     indexPass: domainIndexPass(host),
+    // ctxo watch: which changed paths the index pass reads, and whether the artifacts are stale at start.
+    classifyWatchPath: createWatchPathClassifier(host.projectRoot, domainConfig),
+    watchArtifactsStale: () => artifactsStale(state),
     registerCommands(registrar) {
       registrar.registerCommand(contextsTouchedCommand(host));
       registrar.registerCommand(domainGuardHookCommand(host));
