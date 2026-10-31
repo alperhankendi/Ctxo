@@ -23,6 +23,7 @@ import { annotationRouteEvidence } from './facts/annotation-endpoints.js';
 import type { FactOptions } from './facts/fact-types.js';
 import { finishFacts } from './facts/finish-facts.js';
 import { collectTsEvidence } from './facts/ts-evidence.js';
+import { RoutePrefixes } from './facts/route-prefixes.js';
 import { decodeTypescriptStringLiteral } from './facts/typescript-string-literal.js';
 import { createLogger } from './logger.js';
 import { findTestBlocks, testBlockSymbol } from './test-blocks.js';
@@ -196,7 +197,7 @@ export class TsMorphAdapter implements ILanguageAdapter {
 
   /**
    * Code facts (protocol v2, only with the `facts` option): ts-morph evidence plus Nest decorator routes,
-   * finished by the shared rules. Route receivers resolve like SQL call sites (preloaded files, else disk
+   * finished by the shared rules, with same-file mount prefixes (`RoutePrefixes`). Route receivers resolve like SQL call sites (preloaded files, else disk
    * reads under `projectRoot`, released before returning). A failure is logged as a warning and gives `[]`
    * (warn-and-continue, as in the other plugins).
    */
@@ -209,7 +210,9 @@ export class TsMorphAdapter implements ILanguageAdapter {
 
     try {
       const symbols = this.collectSymbols(sourceFile, filePath);
-      const evidence = [...collectTsEvidence(sourceFile, filePath, resolver, options, this.isTestFile), ...annotationRouteEvidence(symbols)];
+      // Route prefixes come from this file alone, so a full run and a single-file run agree.
+      const prefixes = new RoutePrefixes(sourceFile);
+      const evidence = [...collectTsEvidence(sourceFile, filePath, resolver, options, this.isTestFile, prefixes), ...annotationRouteEvidence(symbols)];
       // Every record carries its G8 owner or none (the module symbol), so no attribution by line is needed.
       return finishFacts(filePath, evidence, [], options, decodeTypescriptStringLiteral);
     } catch (err) {

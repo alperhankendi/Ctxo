@@ -109,6 +109,61 @@ describe('scanTextFacts', () => {
     expect(scan(LEND, 'TimeSpan.FromSeconds(seconds)')).toEqual([]);
   });
 
+  it('Flask: route, get and post decorators on apps and Blueprints, with a same-file url_prefix', () => {
+    const text = [
+      'from flask import Blueprint, Flask',
+      'app = Flask(__name__)',
+      'bp = Blueprint("loans", __name__, url_prefix="/api/loans")',
+      "admin = flask.Blueprint('admin', __name__, url_prefix='/admin/')",
+      'plain = Blueprint("plain", __name__)',
+      '@bp.route("/<int:id>", methods=["GET", "DELETE"])',
+      'def loan(id): pass',
+      '@bp.post("/")',
+      'def create(): pass',
+      "@admin.get('users')",
+      'def users(): pass',
+      '@plain.route("/p")',
+      'def p(): pass',
+      '@app.get("/health")',
+      'def health(): pass',
+    ].join('\n');
+    expect(scan(PY, text)).toEqual([
+      'endpoint|DELETE /api/loans/<int:id>',
+      'endpoint|GET /api/loans/<int:id>',
+      'endpoint|POST /api/loans',
+      'endpoint|GET /admin/users',
+      'endpoint|ANY /p',
+      'endpoint|GET /health',
+    ]);
+    expect(scan(PY, 'import flask\nbp = flask.Blueprint("x", __name__, url_prefix="/v1")\n@bp.get("/a")')).toEqual(['endpoint|GET /v1/a']);
+  });
+
+  it('Flask: a dynamic, multi-line, conflicting or unimported url_prefix keeps the route as written', () => {
+    const lines = (...rows: string[]) => rows.join('\n');
+    // A url_prefix that is not a constant.
+    expect(scan(PY, lines('from flask import Blueprint', 'bp = Blueprint("x", __name__, url_prefix=PREFIX)', '@bp.get("/a")'))).toEqual(['endpoint|GET /a']);
+    expect(scan(PY, lines('from flask import Blueprint', 'bp = Blueprint("x", __name__, url_prefix=f"/{v}")', '@bp.get("/a")'))).toEqual(['endpoint|GET /a']);
+    expect(scan(PY, lines('from flask import Blueprint', 'bp = Blueprint("x", __name__, url_prefix="/a" + v)', '@bp.get("/a")'))).toEqual(['endpoint|GET /a']);
+    // The call continues on the next line.
+    expect(scan(PY, lines('from flask import Blueprint', 'bp = Blueprint("x", __name__,', '    url_prefix="/api")', '@bp.get("/a")'))).toEqual(['endpoint|GET /a']);
+    // Bound twice to different prefixes.
+    expect(scan(PY, lines('from flask import Blueprint', 'bp = Blueprint("x", __name__, url_prefix="/one")', 'bp = Blueprint("x", __name__, url_prefix="/two")', '@bp.get("/a")'))).toEqual(['endpoint|GET /a']);
+    // No flask import, or the import after the Blueprint.
+    expect(scan(PY, lines('bp = Blueprint("x", __name__, url_prefix="/api")', '@bp.get("/a")'))).toEqual(['endpoint|GET /a']);
+    expect(scan(PY, lines('bp = Blueprint("x", __name__, url_prefix="/api")', 'from flask import Blueprint', '@bp.get("/a")'))).toEqual(['endpoint|GET /a']);
+    // A url_prefix inside a nested call is not the Blueprint's.
+    expect(scan(PY, lines('from flask import Blueprint', 'bp = Blueprint("x", __name__, opts(url_prefix="/no"))', '@bp.get("/a")'))).toEqual(['endpoint|GET /a']);
+    // register_blueprint with its own url_prefix replaces the Blueprint's (also when it comes after the routes).
+    expect(
+      scan(PY, lines('from flask import Blueprint', 'bp = Blueprint("x", __name__, url_prefix="/api")', '@bp.get("/a")', 'app.register_blueprint(bp, url_prefix="/v2")')),
+    ).toEqual(['endpoint|GET /a']);
+    expect(
+      scan(PY, lines('from flask import Blueprint', 'bp = Blueprint("x", __name__, url_prefix="/api")', '@bp.get("/a")', 'app.register_blueprint(bp)')),
+    ).toEqual(['endpoint|GET /api/a']);
+    // Not Python: no Blueprint prefixes.
+    expect(scan(LEND, lines('from flask import Blueprint', 'bp = Blueprint("x", __name__, url_prefix="/api")', '@bp.get("/a")'))).toEqual(['endpoint|GET /a']);
+  });
+
   it('routes from attributes, annotations, decorators and router calls', () => {
     expect(scan(LEND, '[HttpGet("loans/{id}")]')).toEqual(['endpoint|GET /loans/{id}']);
     expect(scan(LEND, '@PostMapping("/loans")')).toEqual(['endpoint|POST /loans']);

@@ -30,6 +30,45 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo (ten packages today). Per-pack
   TypeScript plugin skips one too, and `ctxo doctor` (`config_file`) warns and names it, with the fix hint to use
   `index.ignore` to leave files out.
 
+**Endpoint facts with route prefixes, and Koa, Hono, echo, chi and Flask Blueprints.**
+
+### Added (facts)
+
+- `@ctxo/lang-typescript`: Koa (`@koa/router`, `koa-router`) and Hono routes give `endpoint` facts, found as Express
+  and Fastify routes are (the receiver must trace to the module). Koa also reads `del` and named routes
+  (`router.get('loan', '/loans/:id', h)`).
+- Route prefixes are joined. TypeScript: Express and Koa `use('/api', router)` (also after middleware, and nested:
+  `api.use('/v1', v1)`), Koa `new Router({ prefix: '/api' })`, Hono `route('/api', app)` and `basePath('/api')`. Go
+  (ctxo-go-analyzer and tree-sitter alike): gin and echo `Group("/api")` (nested groups compose), chi
+  `Route("/api", func(r chi.Router) {...})`, `Group(func)`, `With(...)` and `Mount("/admin", sub)`. The mount and the
+  routes must be in the file being indexed, so a full run and a `--files`, `--commit` or `ctxo watch` run write the
+  same facts; a router imported from another file keeps its routes as written.
+- `@ctxo/lang-go`: echo (`github.com/labstack/echo`, v4, v5: `GET`, ..., `Any`, `Add`) and chi
+  (`github.com/go-chi/chi`, v5: `Get`, ..., `Handle`, `HandleFunc`, `Method`, `MethodFunc`) routes give `endpoint`
+  facts in both tiers.
+- `@ctxo/domain` text scan: in a Python file that imports `flask`, a Blueprint declared on one line with a constant
+  `url_prefix` (`bp = Blueprint("loans", __name__, url_prefix="/api")`) prefixes that Blueprint's `@bp.route`,
+  `@bp.get` and `@bp.post` routes, unless the file registers that Blueprint with its own `url_prefix`
+  (`app.register_blueprint(bp, url_prefix="/v2")`), which Flask uses instead.
+
+### Changed (facts)
+
+- If any segment of a mount or group chain is not a compile-time constant string (a variable, a call, a conditional,
+  an array, a regex, a template with expressions), or the router is mounted or bound at two different paths,
+  reassigned, imported from another file or cannot be resolved (a parameter, `require(...)`, a call result), the whole
+  prefix is unresolved and the route keeps the path written at the call, as before; a route is never guessed or
+  partly joined.
+- The Go syntax tier (used by `ctxo watch` and on machines without Go) takes gin, echo and chi routes only on a
+  receiver the file shows to be a router, and a chi pattern must start with `/`, so header and query `Add` calls or
+  `cache.Get(...)` in a file that imports echo or chi no longer read as endpoints. Routers in struct fields of the file typed as
+  routers, and calls to functions or methods of the file returning a router type, count; a router whose type is
+  declared in another file now gives a gin route in the full tier only. Existing facts change only where a prefix now
+  resolves: gin `r.Group("/v2").PUT("/members/:id")` gives `PUT /v2/members/:id` (was `PUT /members/:id`). Run a
+  full `ctxo index` once after upgrading. The fingerprint of a prefixed endpoint changes with its text, so a
+  `shadow-specs.yaml` resolution recorded for such an endpoint (a gin group, an Express, Koa or Hono mount, a Flask
+  Blueprint) turns stale (a `verify-domain` check 12 warning) and must be recorded again under the new fingerprint
+  (`ctxo domain shadow-specs <context> --all` prints it).
+
 **C# route prefixes and test attributes by base type (`@ctxo/lang-csharp`).**
 
 ### Added (C# facts and annotations)

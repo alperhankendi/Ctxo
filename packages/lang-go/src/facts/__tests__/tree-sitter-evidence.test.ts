@@ -162,23 +162,102 @@ describe('Go syntax-tier facts', () => {
     expect(Date.now() - started).toBeLessThan(2_000);
   });
 
-  it('net/http, ServeMux and gin routes; a Group prefix is not joined', async () => {
+  it('net/http, ServeMux and gin routes; a Group prefix is joined', async () => {
     expect(rows(await syntaxFacts('app.go', AGREEING_SAMPLES['routes']!)).map(([line, , text]) => [line, text])).toEqual([
       [11, 'POST /renew/{id}'],
       [12, 'ANY /holds'],
       [13, 'POST /loans'],
       [14, 'ANY /ping'],
       [15, 'DELETE /loans/:id'],
-      [16, 'PUT /members/:id'],
+      [16, 'PUT /v2/members/:id'],
       [19, 'DELETE /holds/{id}'],
       [20, 'POST /café/menu'],
     ]);
     expect(rows(await syntaxFacts('app.go', AGREEING_SAMPLES['ginInterfaces']!)).map(([line, , text]) => [line, text])).toEqual([
       [5, 'GET /loans/:id'],
-      [6, 'POST /holds'],
+      [6, 'POST /v2/holds'],
       [7, 'ANY /ping'],
       [8, 'PATCH /members/:id'],
     ]);
+  });
+
+  it('gin groups compose; dynamic, reassigned and parameter groups keep the route as written', async () => {
+    expect(rows(await syntaxFacts('app.go', AGREEING_SAMPLES['ginGroups']!)).map(([line, , text]) => [line, text])).toEqual([
+      [7, 'GET /api/v1/loans/:id'],
+      [8, 'POST /api/holds'],
+      [9, 'GET /param'],
+      [11, 'GET /dyn'],
+      [13, 'GET /deep'],
+      [16, 'GET /t'],
+      [17, 'PATCH /x/y/z'],
+    ]);
+  });
+
+  it('echo routes and groups', async () => {
+    expect(rows(await syntaxFacts('app.go', AGREEING_SAMPLES['echoRoutes']!)).map(([line, , text]) => [line, text])).toEqual([
+      [6, 'GET /health'],
+      [7, 'ANY /ping'],
+      [8, 'PUT /members/:id'],
+      [10, 'GET /api/loans/:id'],
+      [11, 'DELETE /api/admin/users/:id'],
+    ]);
+  });
+
+  it('chi routes, Route and Group closures, With and Mount; a dynamic mount keeps the route as written', async () => {
+    expect(rows(await syntaxFacts('app.go', AGREEING_SAMPLES['chiRoutes']!)).map(([line, , text]) => [line, text])).toEqual([
+      [8, 'GET /health'],
+      [10, 'GET /api/loans/{id}'],
+      [12, 'POST /api/v1/holds'],
+      [15, 'PATCH /api/members/{id}'],
+      [17, 'ANY /api/any'],
+      [19, 'DELETE /admin/users/{id}'],
+      [22, 'GET /x'],
+    ]);
+  });
+
+  it('routers in typed struct fields and from typed functions and methods of the file', async () => {
+    expect(rows(await syntaxFacts('app.go', AGREEING_SAMPLES['ginStructs']!)).map(([line, , text]) => [line, text])).toEqual([
+      [9, 'GET /a'],
+      [11, 'GET /b'],
+      [12, 'GET /api/c'],
+      [13, 'GET /d'],
+      [14, 'PATCH /e'],
+      [15, 'POST /f'],
+    ]);
+  });
+
+  it('block-scoped := groups keep their own prefix', async () => {
+    expect(rows(await syntaxFacts('app.go', AGREEING_SAMPLES['blockScoped']!)).map(([line, , text]) => [line, text])).toEqual([
+      [7, 'GET /loans/:id'],
+      [11, 'GET /members/:id'],
+      [14, 'POST /holds'],
+    ]);
+  });
+
+  it('with the framework imported, methods on receivers that are not its routers give nothing', async () => {
+    expect(rows(await syntaxFacts('app.go', AGREEING_SAMPLES['echoNoise']!)).map(([line, , text]) => [line, text])).toEqual([[19, 'GET /ok']]);
+    // A chi pattern without a leading "/" is no route, and a re-assigned mount target loses the mount prefix.
+    expect(rows(await syntaxFacts('app.go', AGREEING_SAMPLES['chiNoise']!)).map(([line, , text]) => [line, text])).toEqual([
+      [12, 'GET /ok'],
+      [16, 'GET /x'],
+    ]);
+  });
+
+  it('chi and echo method names give nothing without their import', async () => {
+    const source = `package app
+
+type cache struct{}
+
+func (cache) Get(k string, v func()) {}
+func (cache) Group(p string) cache   { return cache{} }
+func (cache) GET(k string, v func()) {}
+
+func Register(c cache) {
+	c.Get("/x", nil)
+	c.Group("/api").GET("/y", nil)
+}
+`;
+    expect(await syntaxFacts('app.go', source)).toEqual([]);
   });
 
   it('routes by name need the framework import and a receiver that is not another package', async () => {

@@ -7,7 +7,7 @@ import { GoCompositeAdapter } from '../composite-adapter.js';
 import { GoAdapter } from '../go-adapter.js';
 import { DEFAULT_FACT_OPTIONS } from '../facts/fact-options.js';
 import { detectGoToolchain } from '../analyzer/toolchain-detect.js';
-import { AGREEING_SAMPLES, APP_GO_MOD, DIFFERING_SAMPLES, GIN_STUB } from './fixtures/go-fact-samples.js';
+import { AGREEING_SAMPLES, APP_GO_MOD, CHI_STUB, DIFFERING_SAMPLES, ECHO_STUB, GIN_STUB } from './fixtures/go-fact-samples.js';
 
 const LENDING = join(import.meta.dirname, '..', '..', 'test-fixtures', 'lending-module');
 
@@ -30,6 +30,10 @@ function writeSampleModule(root: string): void {
   write(root, 'go.mod', APP_GO_MOD);
   write(root, 'stubs/gin/go.mod', 'module github.com/gin-gonic/gin\n\ngo 1.22\n');
   write(root, 'stubs/gin/gin.go', GIN_STUB);
+  write(root, 'stubs/echo/go.mod', 'module github.com/labstack/echo/v4\n\ngo 1.22\n');
+  write(root, 'stubs/echo/echo.go', ECHO_STUB);
+  write(root, 'stubs/chi/go.mod', 'module github.com/go-chi/chi/v5\n\ngo 1.22\n');
+  write(root, 'stubs/chi/chi.go', CHI_STUB);
   for (const [name, body] of Object.entries(AGREEING_SAMPLES)) write(root, sampleFile(name), body);
   write(root, sampleFile('fakeMux'), DIFFERING_SAMPLES['fakeMux']!);
   write(root, sampleFile('namedMap'), DIFFERING_SAMPLES['namedMap']!);

@@ -374,7 +374,7 @@ func Register(mux *http.ServeMux, r *gin.Engine, g *gin.RouterGroup, f fakeMux, 
 		{Kind: "route", SymbolID: reg, Line: 17, Text: `g.POST("/loans", nil)`, Verb: "POST", Route: "/loans"},
 		{Kind: "route", SymbolID: reg, Line: 18, Text: `r.Any("/ping")`, Verb: "ANY", Route: "/ping"},
 		{Kind: "route", SymbolID: reg, Line: 19, Text: `r.Handle("delete", "/loans/:id", nil)`, Verb: "delete", Route: "/loans/:id"},
-		{Kind: "route", SymbolID: reg, Line: 20, Text: `r.Group("/v2").PUT("/members/:id", nil)`, Verb: "PUT", Route: "/members/:id"},
+		{Kind: "route", SymbolID: reg, Line: 20, Text: `r.Group("/v2").PUT("/members/:id", nil)`, Verb: "PUT", Route: "/v2/members/:id"},
 	}
 	if !reflect.DeepEqual(got, want) {
 		gotJSON, _ := json.MarshalIndent(got, "", "  ")
@@ -435,7 +435,7 @@ func Register(r gin.IRouter, routes gin.IRoutes) {
 	reg := "app.go::Register::function"
 	want := []emit.FactEvidence{
 		{Kind: "route", SymbolID: reg, Line: 5, Text: `r.GET("/loans/:id", nil)`, Verb: "GET", Route: "/loans/:id"},
-		{Kind: "route", SymbolID: reg, Line: 6, Text: `r.Group("/v2").POST("/holds", nil)`, Verb: "POST", Route: "/holds"},
+		{Kind: "route", SymbolID: reg, Line: 6, Text: `r.Group("/v2").POST("/holds", nil)`, Verb: "POST", Route: "/v2/holds"},
 		{Kind: "route", SymbolID: reg, Line: 7, Text: `routes.Any("/ping")`, Verb: "ANY", Route: "/ping"},
 		{Kind: "route", SymbolID: reg, Line: 8, Text: `routes.Handle("PATCH", "/members/:id", nil)`, Verb: "PATCH", Route: "/members/:id"},
 	}

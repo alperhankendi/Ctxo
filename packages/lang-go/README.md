@@ -96,7 +96,10 @@ When the host requests facts (`@ctxo/domain` installed, or `index.facts: true`),
   `time.Duration(n) * time.Minute`, a bare `time.Hour`), whatever their name.
 - Endpoints from `net/http` `HandleFunc` and `Handle` (package functions and `*ServeMux`; a pattern
   `"GET /loans"` gives the verb) and gin `GET`, `POST`, ..., `Any` and `Handle` on `*gin.Engine`,
-  `*gin.RouterGroup`, `gin.IRouter` and `gin.IRoutes`. `Group()` prefixes are not joined.
+  `*gin.RouterGroup`, `gin.IRouter` and `gin.IRoutes`; echo `GET`, ..., `Any` and `Add` on `*echo.Echo` and
+  `*echo.Group`; chi `Get`, ..., `Handle`, `HandleFunc`, `Method` and `MethodFunc` on `*chi.Mux` and `chi.Router`.
+  Group and mount prefixes created in the same file are joined (gin and echo `Group("/api")`, chi `Route`,
+  `Group`, `With` and `Mount`); a dynamic, conflicting or unresolved prefix leaves the route as written.
 - Raw (backtick) strings are decoded as Go does. The syntax tier matches routes by name, so a
   `HandleFunc` on another type, and router or path constants declared in another file, can read
   differently than in the full tier. A file created during `ctxo watch` gets `facts: []` until the

@@ -80,7 +80,7 @@ describe('TypeScript fact evidence', () => {
   it('receiver tracing keeps Map.get and axios.get out', async () => {
     const facts = (await sampleFacts()).get(HTTP)!;
     expect(facts.map((f) => f.text)).toEqual(['GET /holds/:id']);
-    expect(ROUTE_MODULES).toEqual(new Set(['express', 'fastify']));
+    expect(ROUTE_MODULES).toEqual(new Set(['express', 'fastify', '@koa/router', 'koa-router', 'hono']));
   });
 
   it('a route call on an untraced receiver or with a non-literal path gives nothing', async () => {

@@ -5,7 +5,7 @@
 // computed once per line, and lookups use Maps, so names such as `constructor` or `hasOwnProperty` are ordinary.
 import type { CodeFact, SymbolNode } from '@ctxo/cli/internal';
 import type { DurationUnit, FactEvidence, FactOptions, LiteralKind } from './facts/fact-types.js';
-import { MAX_FACTS_PER_FILE, MAX_FACT_TEXT, hasRetryTimeoutFragment, matchesNormalizationPattern } from './facts/fact-rules.js';
+import { MAX_FACTS_PER_FILE, MAX_FACT_TEXT, hasRetryTimeoutFragment, joinRoute, matchesNormalizationPattern } from './facts/fact-rules.js';
 import { finishFacts, innermostSymbolCursor, moduleSymbolId } from './facts/finish-facts.js';
 import { commentStyleFor, lexSourceUntil, stringDecoderFor } from './text-lexer.js';
 import type { CommentStyle, TextToken } from './text-lexer.js';
@@ -536,7 +536,60 @@ function httpPattern(pattern: string): { verb: string; route: string } | undefin
   return slash < 0 ? undefined : { verb, route: rest.slice(slash) };
 }
 
-function routes(line: Line, lineNo: number, out: FactEvidence[]): void {
+/**
+ * Flask state of one file, read line by line in order: whether `flask` has been imported (`from flask import ...`,
+ * `import flask`), and each Blueprint's `url_prefix` by variable name (undefined when it is not a constant or the
+ * name is bound twice to different prefixes).
+ */
+interface FlaskState {
+  imported: boolean;
+  readonly prefixes: Map<string, string | undefined>;
+  /** Blueprints registered with their own `url_prefix` somewhere in the file: Flask uses that one instead. */
+  readonly overridden: ReadonlySet<string>;
+}
+
+/** `register_blueprint(<name>, ... url_prefix=` anywhere in the file (a raw-text check; a false hit only drops a prefix). */
+const REGISTER_WITH_PREFIX = /register_blueprint\(\s*([A-Za-z_][A-Za-z0-9_]*)\b[^)]{0,2000}?\burl_prefix\s*=/g;
+
+function flaskState(text: string): FlaskState {
+  const overridden = new Set<string>();
+  for (const match of text.matchAll(REGISTER_WITH_PREFIX)) overridden.add(match[1]!);
+  return { imported: false, prefixes: new Map(), overridden };
+}
+
+/** Python `from flask ...` / `import flask` lines, and `<name> = [flask.]Blueprint(..., url_prefix="/x", ...)` once flask is imported. */
+function flaskLine(line: Line, state: FlaskState): void {
+  const { tokens } = line;
+  const first = tokens[0];
+  if (first?.kind !== 'word') return;
+  if ((first.text === 'from' || first.text === 'import') && tokens[1]?.kind === 'word' && tokens[1].text === 'flask') {
+    state.imported = true;
+    return;
+  }
+  if (!state.imported || !isOp(tokens[1], '=')) return;
+  let at = 2;
+  if (tokens[2]?.text === 'flask' && isOp(tokens[3], '.')) at = 4;
+  if (tokens[at]?.kind !== 'word' || tokens[at]!.text !== 'Blueprint' || !isOp(tokens[at + 1], '(')) return;
+  const open = at + 1;
+  const close = line.pairs[open]!;
+  let prefix: string | undefined = '';
+  for (let k = open + 1; k < (close < 0 ? tokens.length : close); k++) {
+    const t = tokens[k]!;
+    if (t.kind !== 'word' || t.text !== 'url_prefix' || !isOp(tokens[k + 1], '=') || line.parenDepth[k] !== line.parenDepth[open + 1]) continue;
+    const value = stringValue(line, tokens[k + 2]);
+    const next = tokens[k + 3];
+    prefix = value !== undefined && (next === undefined || isOp(next, ',') || isOp(next, ')')) ? value : undefined;
+    break;
+  }
+  // An unclosed call may set url_prefix on a later line: unknown.
+  if (close < 0 && prefix === '') prefix = undefined;
+  const name = first.text;
+  // `app.register_blueprint(bp, url_prefix="/v2")` replaces the Blueprint's own prefix: unknown here.
+  if (state.overridden.has(name)) prefix = undefined;
+  state.prefixes.set(name, state.prefixes.has(name) && state.prefixes.get(name) !== prefix ? undefined : prefix);
+}
+
+function routes(line: Line, lineNo: number, out: FactEvidence[], flask?: FlaskState): void {
   const { tokens } = line;
   const add = (verb: string, route: string): void => {
     out.push({ kind: 'route', line: lineNo, verb, route });
@@ -575,11 +628,14 @@ function routes(line: Line, lineNo: number, out: FactEvidence[]): void {
     const decorated = isOp(tokens[i - 3], '@');
     // @<word>.(get|post|put|delete|patch|route)("x")
     if (decorated && (DECORATOR_VERBS.has(t.text) || t.text === 'route')) {
+      // A Flask Blueprint's constant url_prefix, declared earlier in the same file, is joined to the route.
+      const prefix = flask?.prefixes.get(tokens[i - 2]!.text);
+      const route = prefix ? joinRoute(prefix, firstArg) : firstArg;
       if (t.text === 'route') {
         const verbs = methodsList(line, i + 1);
-        for (const verb of verbs.length > 0 ? verbs : ['ANY']) add(verb, firstArg);
+        for (const verb of verbs.length > 0 ? verbs : ['ANY']) add(verb, route);
       } else {
-        add(t.text, firstArg);
+        add(t.text, route);
       }
       continue;
     }
@@ -614,6 +670,9 @@ export function scanTextFacts(
     // first and drops only duplicates on the same line, so the file's facts are the per-line facts in line order, cut
     // at 500. Once 500 are kept no later line can change them, so lexing and collection stop there (Note A).
     const facts: CodeFact[] = [];
+    // Flask Blueprint prefixes, for files in the hash comment style (Python, Ruby, Elixir and the rest) that import
+    // flask; the import check keeps the other hash-style languages out.
+    const flask: FlaskState | undefined = style === 'hash' ? flaskState(text) : undefined;
     const finishLine = (lineNo: number, tokens: readonly TextToken[]): void => {
       const evidence: FactEvidence[] = [];
       try {
@@ -622,7 +681,8 @@ export function scanTextFacts(
         caseLabel(line, lineNo, evidence);
         calls(line, lineNo, options, evidence);
         bindingsAndDurations(line, lineNo, evidence);
-        routes(line, lineNo, evidence);
+        if (flask) flaskLine(line, flask);
+        routes(line, lineNo, evidence, flask);
       } catch {
         // A heuristic that trips on odd input stops this line's rules; the evidence they pushed before is kept.
       }
