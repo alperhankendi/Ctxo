@@ -81,14 +81,18 @@ ctxo verify-domain --since origin/main --boundaries new-only
 ```
 
 - The base is the merge base of `<ref>` and `HEAD`. Its violations come from its committed `.ctxo/index`, read from
-  git without a checkout, when that index is current for the commit (every content hash matches, no indexable file is
-  missing); otherwise ctxo indexes the base in a temporary git worktree under `.ctxo/.cache/base-worktrees/` and
-  removes it. Your working tree is never touched. The current registry and contracts judge both sides.
+  git without a checkout, when that index is current for the commit (its entries are the files `ctxo index` selects
+  there and every content hash matches, also through CRLF and git's checkout filters). Because the post-commit hook
+  commits an index with the next commit, the index of the first two commits after the base on the `--since` branch
+  is accepted too when it passes the same check against the base. Otherwise ctxo indexes the base in a temporary git
+  worktree under `.ctxo/.cache/base-worktrees/` and removes it, also on Ctrl+C; the next run removes what a killed run
+  left. C# projects restored at HEAD are restored there too, and a lower edge quality than HEAD's is warned about.
+  Your working tree is never touched. The current registry and contracts judge both sides.
 - A violation the base has is **existing**: a warning ending in `(existing at the base)`. Any other is **new**
   (ending in `(new)`) and keeps the `by-rung` severity. New ones are listed first, and a summary line reads
   `Boundaries new-only against <sha> (<source>): N new, M existing`.
 - A violation is identified by its source and target contexts, source and target symbol IDs and edge kind, never by a
-  line number. A file renamed on the branch keeps its violations existing; a renamed symbol, or a file moved into
+  line number (one per symbol pair and edge kind, not per call site). A file renamed on the branch keeps its violations existing; a renamed symbol, or a file moved into
   another context, makes its violations new.
 - If the base cannot be indexed, verify-domain says why and fails on every violation, as `by-rung` does. Without
   `--since` there is no base: `new-only` is `by-rung`, with a warning.

@@ -1,6 +1,6 @@
 import { relative } from 'node:path';
 import type { CtxoHost, FileIndex, IGitPort, ModuleCommand, ModuleCommandContext, RangeCommit } from '@ctxo/cli/internal';
-import { baseBoundaries, type BaseIndexSource } from '../adapters/base-boundaries.js';
+import { baseBoundaries, LATER_INDEX_COMMITS, type BaseIndexSource } from '../adapters/base-boundaries.js';
 import { GitChangeReader } from '../adapters/git-changes.js';
 import { loaderPlatforms, readExistingLoaderRules } from '../adapters/loader-rules-files.js';
 import { composeLoopInputs } from '../adapters/loop-inputs.js';
@@ -30,7 +30,8 @@ const USAGE = [
   '  --since <ref>        Also check that every context changed since the merge base of <ref> and HEAD has a card change or a trailer (check 11)',
   '  --boundaries <mode>  by-rung, new-only or report; overrides domain.boundaries.enforce for this run.',
   '                       new-only fails only on the boundary violations the merge base of --since lacks (from its committed',
-  '                       index when current, else from an index built in a temporary git worktree); without --since, by-rung',
+  '                       index when current, else from an index built in a temporary git worktree); without --since it runs',
+  '                       as by-rung (with a warning)',
   '  --json               Print the checks and the summary as JSON on stdout',
   '',
   'Exit codes: 0 no errors, 1 errors, 2 missing index, git failure or an internal error.',
@@ -88,6 +89,8 @@ interface BaselineReport {
   /** Short SHA of the base (the merge base of --since and HEAD); absent without --since. */
   readonly base?: string;
   readonly source?: BaseIndexSource;
+  /** Short SHA of the later commit whose committed index described the base (the post-commit hook's lag). */
+  readonly indexCommit?: string;
   /** Why the run fell back to by-rung. */
   readonly fallback?: string;
   readonly new: readonly BoundaryViolationRecord[];
@@ -105,7 +108,7 @@ function printBaseline(baseline: BaselineReport): void {
     return;
   }
   console.error(
-    `[ctxo] Boundaries new-only against ${baseline.base} (${SOURCE_TEXT[baseline.source!]}): ${baseline.new.length} new, ${baseline.existing.length} existing`,
+    `[ctxo] Boundaries new-only against ${baseline.base} (${SOURCE_TEXT[baseline.source!]}${baseline.indexCommit !== undefined ? `, committed with ${baseline.indexCommit}` : ''}): ${baseline.new.length} new, ${baseline.existing.length} existing`,
   );
 }
 
@@ -127,6 +130,21 @@ function violationJson(v: BoundaryViolationRecord): Record<string, unknown> {
 }
 
 const MARKDOWN = /\.(?:md|markdown)$/i;
+
+/**
+ * The first commits after `base` on the `--since` ref, oldest first (`LATER_INDEX_COMMITS` of them), where the
+ * post-commit hook may have committed the base's index; empty when git cannot say.
+ */
+async function commitsAfterBase(git: IGitPort | undefined, since: string, base: string): Promise<string[]> {
+  try {
+    const head = await git?.resolveCommit?.(since);
+    if (head === undefined || head === base) return [];
+    const log = await git?.getRangeLog?.({ head, exclude: [base] });
+    return (log ?? []).map((commit) => commit.hash).reverse().slice(0, LATER_INDEX_COMMITS);
+  } catch {
+    return [];
+  }
+}
 
 /** `ctxo verify-domain`: the CI gate for the registry, the cards, rule IDs, generated rules and boundaries (spec 10.5). */
 export function verifyDomainCommand(host: CtxoHost): ModuleCommand {
@@ -288,7 +306,8 @@ async function verify(host: CtxoHost, ctx: ModuleCommandContext, options: Option
   if (registry !== undefined && mode === 'new-only') {
     const all = boundaries.violations;
     const fallBack = (reason: string, base?: string): BaselineReport => {
-      console.error(`[ctxo] --boundaries new-only: ${reason}; failing on every boundary violation, as by-rung does.`);
+      // The text report says it once, in its summary line (printBaseline); --json has only stderr for it.
+      if (options.json) console.error(`[ctxo] --boundaries new-only: ${reason}; failing on every boundary violation, as by-rung does.`);
       return { mode: 'new-only', compared: false, ...(base !== undefined ? { base } : {}), fallback: reason, new: all, existing: [] };
     };
     if (range === undefined) baseline = fallBack('no base without --since <ref>');
@@ -296,6 +315,7 @@ async function verify(host: CtxoHost, ctx: ModuleCommandContext, options: Option
       const result = await baseBoundaries(host, {
         projectRoot,
         base: range.base,
+        laterCommits: await commitsAfterBase(git, options.since!, range.base),
         ctxoConfig: loaded.config,
         config,
         registry,
@@ -315,6 +335,7 @@ async function verify(host: CtxoHost, ctx: ModuleCommandContext, options: Option
           compared: true,
           base: sha7(range.base),
           source: result.source,
+          ...(result.indexCommit !== undefined && result.indexCommit !== range.base ? { indexCommit: sha7(result.indexCommit) } : {}),
           new: classified.filter((v) => v.baseline === 'new'),
           existing: classified.filter((v) => v.baseline === 'existing'),
         };
@@ -382,6 +403,7 @@ async function verify(host: CtxoHost, ctx: ModuleCommandContext, options: Option
               compared: baseline.compared,
               ...(baseline.base !== undefined ? { base: baseline.base } : {}),
               ...(baseline.source !== undefined ? { source: baseline.source } : {}),
+              ...(baseline.indexCommit !== undefined ? { indexCommit: baseline.indexCommit } : {}),
               ...(baseline.fallback !== undefined ? { fallback: baseline.fallback } : {}),
               new: baseline.new.map(violationJson),
               existing: baseline.existing.map(violationJson),

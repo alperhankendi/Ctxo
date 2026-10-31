@@ -263,12 +263,24 @@ export interface DocumentSearch {
 export interface IndexAtCommit {
   readonly indices: readonly FileIndex[];
   /**
-   * Whether the index describes the commit: every entry's content hash equals its file's at the commit, and no
-   * file of an indexed extension (not matched by `index.ignore`) lacks an entry.
+   * Whether the index describes the commit: its entries are exactly the files a full `ctxo index` of the commit
+   * selects (workspace roots, `index.ignoreProjects`, `index.ignore` at the commit, the installed plugins'
+   * extensions), and every entry's content hash equals its file's at the commit, read through git's checkout filters.
    */
   readonly current: boolean;
   /** Why it is not current: the first few reasons, then a count; empty when current. */
   readonly staleReasons: readonly string[];
+}
+
+/** A commit indexed in a temporary git worktree (`indexCommitInWorktree`). */
+export interface IndexedCommit {
+  readonly indices: readonly FileIndex[];
+  /** The tier each tiered language with files ended on (`csharp`, `go`, `java`: `full` or `syntax`). */
+  readonly tiers: Readonly<Record<string, string>>;
+  /** Decided as `communities.json` decides its `edgeQuality` (`full`, `mixed`, `syntax-only`). */
+  readonly edgeQuality?: string;
+  /** Problems worth telling the user: a lower edge quality than HEAD's index, a failed `dotnet restore`. */
+  readonly warnings: readonly string[];
 }
 
 /** The runtime services a module gets from the CLI instead of importing them. */
@@ -282,16 +294,18 @@ export interface CtxoHostServices {
   createGit(projectRoot: string): IGitPort;
   readIndex(ctxoRoot: string): FileIndex[];
   /**
-   * The committed `.ctxo/index` of `commit` (a full SHA), read from git without a checkout; undefined when the
-   * commit has no index entry. Rejects when git fails.
+   * The committed `.ctxo/index` held by `options.indexCommit` (default `commit`; a later commit covers the
+   * post-commit hook, which commits a commit's index with the next one), checked against the tree of `commit` (full
+   * SHAs), read from git without a checkout; undefined when that commit holds no index entry. Rejects when git fails.
    */
-  readIndexAtCommit(projectRoot: string, commit: string): Promise<IndexAtCommit | undefined>;
+  readIndexAtCommit(projectRoot: string, commit: string, options?: { readonly indexCommit?: string }): Promise<IndexAtCommit | undefined>;
   /**
    * Indexes `commit` in a temporary git worktree (under `.ctxo/.cache/`, detached, no hooks) that it creates and
-   * removes, and returns that index: no history, no communities, no module pass. Never touches the working tree.
-   * Rejects when git or the index fails, or the index is empty.
+   * removes, also on SIGINT and SIGTERM (a later run sweeps what a harder kill left), and returns that index with its
+   * tiers and warnings: no history, no communities, no module pass. Never touches the working tree. Rejects when git
+   * or the index fails, or the index is empty.
    */
-  indexCommitInWorktree(projectRoot: string, commit: string): Promise<FileIndex[]>;
+  indexCommitInWorktree(projectRoot: string, commit: string): Promise<IndexedCommit>;
   buildGraph(indices: readonly FileIndex[]): SymbolGraph;
   /** The configured co-change window (`cochange.maxCommits`, `cochange.since`); undefined without git history. */
   readCoChangeWindow(projectRoot: string, config: CtxoConfig): Promise<CoChangeWindowCommits | undefined>;

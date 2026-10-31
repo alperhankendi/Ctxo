@@ -31,6 +31,12 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo (ten packages today). Per-pack
   `boundaries: { mode, compared, base, source, fallback, new, existing }` with a `key` per violation. Exit codes keep
   their meaning (0 pass, 1 errors, 2 missing index, git failure or internal error).
 - `ctxo init --domain --boundaries new-only`, and the init prompt offers `new-only`.
+- The committed-index check uses the file selection of `ctxo index` itself (workspaces, `index.ignoreProjects`,
+  `index.ignore` at the base, the plugins' extensions), compares CRLF checkouts and git's checkout filters, streams
+  the blobs, and also accepts the index the post-commit hook committed with one of the next two commits on the
+  `--since` branch when it is current for the base. The temporary worktree is removed on Ctrl+C and SIGTERM, leftovers
+  of killed runs are swept, LFS smudge is skipped, C# projects restored at HEAD are restored there, and a lower base
+  edge quality than HEAD's is warned about. In the rename chain a new file never continues a base file's chain.
 
 ### Added (cli)
 

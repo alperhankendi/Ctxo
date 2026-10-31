@@ -1,30 +1,39 @@
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
-import { mkdirSync, rmSync } from 'node:fs';
-import { extname, join, posix } from 'node:path';
-import { indexIgnorePatterns, loadConfig, makeGlobMatcher } from '../core/config/load-config.js';
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { join, posix } from 'node:path';
+import { indexIgnorePatterns, indexIgnoreProjectPatterns, makeGlobMatcher, parseConfigText } from '../core/config/load-config.js';
+import { DEFAULT_CONFIG } from '../core/config/config-schema.js';
+import { resolveWorkspaceRoots, selectIndexFiles } from '../core/indexing/index-file-selection.js';
 import { ContentHasher } from '../core/staleness/content-hasher.js';
 import { createLogger } from '../core/logger.js';
-import type { FileIndex } from '../core/types.js';
-import type { IndexAtCommit } from '../ports/i-ctxo-module.js';
+import type { EdgeQuality, FileIndex } from '../core/types.js';
+import type { IndexAtCommit, IndexedCommit } from '../ports/i-ctxo-module.js';
 import { COMMUNITY_HISTORY_DIR, INDEX_ARTIFACT_FILES, JsonIndexReader, parseIndexEntry } from '../adapters/storage/json-index-reader.js';
+import { loadPlugins } from './plugin-loader.js';
 import { decodeSourceText } from './read-source.js';
 
 /**
  * The index of another commit, for a comparison with the current one (`verify-domain --boundaries new-only`):
- * the committed `.ctxo/index` read from git at that commit (no checkout), or a fresh index built in a temporary
- * git worktree that is created and removed here. The user's working tree, git index and branch are never touched.
+ * the committed `.ctxo/index` read from git (no checkout), or a fresh index built in a temporary git worktree that
+ * is created and removed here. The user's working tree, git index and branch are never touched.
  */
 
 const log = createLogger('ctxo:base-index');
 
 /** How many reasons a stale committed index reports; the rest are counted. */
 const STALE_REASON_LIMIT = 5;
+/** A leftover base worktree without a live owner is swept after this long (a run that was killed). */
+const LEFTOVER_AGE_MS = 10 * 60 * 1000;
+/** Files compared through git's own filters, one process each, after the raw and CRLF forms did not match. */
+const FILTER_LIMIT = 20;
+const RESTORE_TIMEOUT_MS = 5 * 60 * 1000;
+const RESTORE_PROJECT_LIMIT = 20;
 
-/** A `git` run in `cwd`: stdout as bytes, or an error naming the command and git's stderr. */
-function runGit(cwd: string, args: readonly string[], input?: string): Promise<Buffer> {
+/** A `git` run in `cwd`: stdout as bytes (for small outputs), or an error naming the command and git's stderr. */
+function runGit(cwd: string, args: readonly string[], env?: NodeJS.ProcessEnv): Promise<Buffer> {
   return new Promise((resolve, reject) => {
-    const child = spawn('git', args, { cwd, windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'] });
+    const child = spawn('git', args, { cwd, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'], ...(env ? { env } : {}) });
     const out: Buffer[] = [];
     const err: Buffer[] = [];
     child.stdout.on('data', (chunk: Buffer) => out.push(chunk));
@@ -32,11 +41,15 @@ function runGit(cwd: string, args: readonly string[], input?: string): Promise<B
     child.on('error', reject);
     child.on('close', (code) => {
       if (code === 0) resolve(Buffer.concat(out));
-      else reject(new Error(`git ${args[0] === '-c' ? args[2] : args[0]} failed: ${Buffer.concat(err).toString('utf-8').trim() || `exit ${code}`}`));
+      else reject(new Error(`git ${subcommand(args)} failed: ${Buffer.concat(err).toString('utf-8').trim() || `exit ${code}`}`));
     });
-    child.stdin.on('error', () => undefined);
-    child.stdin.end(input ?? '');
   });
+}
+
+function subcommand(args: readonly string[]): string {
+  let i = 0;
+  while (args[i] === '-c') i += 2;
+  return args[i] ?? '';
 }
 
 function assertRevision(commit: string): void {
@@ -48,31 +61,123 @@ async function projectPrefix(projectRoot: string): Promise<string> {
   return (await runGit(projectRoot, ['rev-parse', '--show-prefix'])).toString('utf-8').trim();
 }
 
-/** Repo-relative paths of the blobs under the project directory at `commit`. */
-async function listTree(projectRoot: string, commit: string): Promise<string[]> {
-  const out = await runGit(projectRoot, ['ls-tree', '-r', '-z', '--full-name', '--name-only', commit, '--', '.']);
-  return out.toString('utf-8').split('\0').filter((path) => path !== '');
+/**
+ * Repo-relative paths of the regular files (modes 100644 and 100755) under the project directory at `commit`.
+ * Symlinks and submodules are left out, as the on-disk index reader skips symlinks.
+ */
+async function listTree(projectRoot: string, commit: string): Promise<Tree> {
+  const out = await runGit(projectRoot, ['ls-tree', '-r', '-z', '--full-name', commit, '--', '.']);
+  const files = new Map<string, string>();
+  for (const record of out.toString('utf-8').split('\0')) {
+    const tab = record.indexOf('\t');
+    if (tab < 0) continue;
+    const [mode, type, oid] = record.slice(0, tab).split(' ');
+    if (type === 'blob' && (mode === '100644' || mode === '100755') && oid !== undefined) files.set(record.slice(tab + 1), oid);
+  }
+  return files;
 }
 
-/** The blobs at `commit` (`git cat-file --batch`), by repo-relative path; a missing path is left out. */
-async function readBlobs(projectRoot: string, commit: string, paths: readonly string[]): Promise<Map<string, Buffer>> {
-  const wanted = paths.filter((path) => !path.includes('\n'));
-  const blobs = new Map<string, Buffer>();
-  if (wanted.length === 0) return blobs;
-  const out = await runGit(projectRoot, ['cat-file', '--batch'], wanted.map((path) => `${commit}:${path}\n`).join(''));
-  let pos = 0;
-  for (const path of wanted) {
-    const newline = out.indexOf(0x0a, pos);
-    if (newline < 0) break;
-    const header = out.subarray(pos, newline).toString('utf-8');
-    pos = newline + 1;
-    if (header.endsWith(' missing') || header.endsWith(' ambiguous')) continue;
-    const size = Number(header.split(' ')[2]);
-    if (!Number.isFinite(size)) break;
-    if (header.split(' ')[1] === 'blob') blobs.set(path, out.subarray(pos, pos + size));
-    pos += size + 1;
-  }
-  return blobs;
+/** The regular files of a commit's tree under the project folder: repo-relative path to blob ID. */
+type Tree = ReadonlyMap<string, string>;
+
+/**
+ * Streams the raw blobs of `paths` (repo-relative, in `tree`) through one `git cat-file --batch`. Each blob reaches
+ * `onBlob` as it arrives and is not kept; a path missing from the tree reaches it as undefined, and so does a path with
+ * a newline, which cannot be asked for. (`--batch --filters` cannot be streamed: git prints the unfiltered size in
+ * the header and the filtered content after it, so `filteredBlob` reads a converted blob one at a time.)
+ */
+export function streamBlobs(
+  projectRoot: string,
+  tree: Tree,
+  paths: readonly string[],
+  onBlob: (path: string, bytes: Buffer | undefined) => void,
+): Promise<void> {
+  const askable = (path: string): boolean => !path.includes('\n') && tree.has(path);
+  const wanted = paths.filter(askable);
+  for (const path of paths) if (!askable(path)) onBlob(path, undefined);
+  if (wanted.length === 0) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const child = spawn('git', ['cat-file', '--batch'], { cwd: projectRoot, windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'] });
+    const err: Buffer[] = [];
+    let next = 0;
+    let header: Buffer[] = [];
+    let body: Buffer[] | undefined;
+    let need = 0;
+    let isBlob = true;
+    let failed: Error | undefined;
+    const deliver = (bytes: Buffer | undefined): void => {
+      const path = wanted[next++]!;
+      try {
+        onBlob(path, bytes);
+      } catch (e) {
+        failed ??= e as Error;
+      }
+    };
+    child.stdout.on('data', (chunk: Buffer) => {
+      let pos = 0;
+      while (pos < chunk.length) {
+        if (body !== undefined) {
+          const take = Math.min(need, chunk.length - pos);
+          body.push(chunk.subarray(pos, pos + take));
+          need -= take;
+          pos += take;
+          if (need === 0) {
+            // The blob and its trailing newline are in: drop the newline.
+            const all = Buffer.concat(body);
+            body = undefined;
+            deliver(isBlob ? all.subarray(0, all.length - 1) : undefined);
+          }
+          continue;
+        }
+        const newline = chunk.indexOf(0x0a, pos);
+        if (newline < 0) {
+          header.push(chunk.subarray(pos));
+          break;
+        }
+        header.push(chunk.subarray(pos, newline));
+        pos = newline + 1;
+        const line = Buffer.concat(header).toString('utf-8');
+        header = [];
+        const parts = line.split(' ');
+        if (parts.length < 3 || parts[1] === 'missing' || parts[1] === 'ambiguous') {
+          deliver(undefined);
+          continue;
+        }
+        const size = Number(parts[2]);
+        if (!Number.isFinite(size)) {
+          failed ??= new Error(`git cat-file: unexpected header "${line}"`);
+          deliver(undefined);
+          continue;
+        }
+        // A tree or another non-blob object is read past and reported missing.
+        isBlob = parts[1] === 'blob';
+        need = size + 1;
+        body = [];
+      }
+    });
+    child.stderr.on('data', (chunk: Buffer) => err.push(chunk));
+    child.on('error', reject);
+    child.on('close', (code) => {
+      if (code !== 0) reject(new Error(`git cat-file failed: ${Buffer.concat(err).toString('utf-8').trim() || `exit ${code}`}`));
+      else if (failed !== undefined) reject(failed);
+      else {
+        while (next < wanted.length) deliver(undefined);
+        resolve();
+      }
+    });
+    child.stdin.on('error', () => undefined);
+    child.stdin.end(wanted.map((path) => `${tree.get(path)!}\n`).join(''));
+  });
+}
+
+/** A blob converted by git's own checkout filters for `path` on this machine (end of line, smudge filters). */
+function filteredBlob(projectRoot: string, tree: Tree, path: string): Promise<Buffer> {
+  return runGit(projectRoot, ['cat-file', '--filters', `--path=${path}`, tree.get(path)!]);
+}
+
+/** The CRLF form of a text (every LF not already after a CR), as `core.autocrlf=true` or `eol=crlf` checks it out. */
+function withCrlf(text: string): string {
+  return text.replace(/\r?\n/g, '\r\n');
 }
 
 function isIndexJson(relativeToIndex: string): boolean {
@@ -82,31 +187,63 @@ function isIndexJson(relativeToIndex: string): boolean {
   return !INDEX_ARTIFACT_FILES.includes(parts[parts.length - 1]!);
 }
 
+/** The project-relative folders of a list of project-relative files, with their direct subfolder names. */
+function folderView(files: readonly string[]): { subdirectories(dir: string): string[]; directoryExists(dir: string): boolean } {
+  const children = new Map<string, Set<string>>();
+  for (const file of files) {
+    const parts = file.split('/');
+    for (let depth = 0; depth < parts.length - 1; depth++) {
+      const parent = parts.slice(0, depth).join('/');
+      let set = children.get(parent);
+      if (set === undefined) children.set(parent, (set = new Set()));
+      set.add(parts[depth]!);
+    }
+  }
+  return {
+    subdirectories: (dir) => [...(children.get(dir) ?? [])].sort(),
+    directoryExists: (dir) => dir === '' || children.has(dir),
+  };
+}
+
+/** The extensions the installed language plugins handle (lower case), from their manifests; no plugin is initialised. */
+async function pluginExtensions(projectRoot: string, ignoreProjects: string[]): Promise<Set<string>> {
+  const loaded = await loadPlugins(projectRoot, { ignoreProjects });
+  return new Set(loaded.flatMap(({ plugin }) => plugin.extensions.map((ext) => ext.toLowerCase())));
+}
+
 /**
- * The committed `.ctxo/index` of `commit`, read from git without a checkout; undefined when the commit has no
- * index entry. `current` says whether it describes that commit:
+ * The committed `.ctxo/index` held by `indexCommit` (default `commit`), checked against the tree of `commit`, read
+ * from git without a checkout; undefined when `indexCommit` holds no index entry. `current` says whether it describes
+ * `commit`:
  *
- * - every entry has a content hash, and it equals the hash of its file at the commit (decoded as `ctxo index`
- *   decodes it), and
- * - no file at the commit lacks an entry when its extension is one the index holds and `index.ignore` (the
- *   current config) does not match it.
+ * - the files it covers are exactly the files a full `ctxo index` of `commit` selects: the same workspace roots
+ *   (`package.json` workspaces at `commit`, `index.ignoreProjects`), `index.ignore` (the config at `commit`) and the
+ *   extensions of the installed plugins (`core/indexing/index-file-selection.ts`, shared with the indexer), and
+ * - every entry has a content hash equal to the hash of its file at `commit`, read through git's checkout filters.
+ *
+ * Reading the index of a later commit covers the post-commit hook, which commits the index of a commit with the next
+ * one: that index is accepted for `commit` exactly when it passes the same check against `commit`'s tree.
  */
-export async function readIndexAtCommit(projectRoot: string, commit: string): Promise<IndexAtCommit | undefined> {
+export async function readIndexAtCommit(
+  projectRoot: string,
+  commit: string,
+  options: { readonly indexCommit?: string } = {},
+): Promise<IndexAtCommit | undefined> {
   assertRevision(commit);
+  const indexCommit = options.indexCommit ?? commit;
+  assertRevision(indexCommit);
   const prefix = await projectPrefix(projectRoot);
   const indexPrefix = `${prefix}.ctxo/index/`;
-  const tree = await listTree(projectRoot, commit);
-  const jsonPaths = tree.filter((path) => path.startsWith(indexPrefix) && isIndexJson(path.slice(indexPrefix.length)));
+  const indexTree = await listTree(projectRoot, indexCommit);
+  const jsonPaths = [...indexTree.keys()].filter((path) => path.startsWith(indexPrefix) && isIndexJson(path.slice(indexPrefix.length)));
   if (jsonPaths.length === 0) return undefined;
 
-  const jsonBlobs = await readBlobs(projectRoot, commit, jsonPaths);
   const indices: FileIndex[] = [];
-  for (const path of jsonPaths) {
-    const blob = jsonBlobs.get(path);
-    if (blob === undefined) continue;
-    const entry = parseIndexEntry(blob.toString('utf-8'), `${commit.slice(0, 7)}:${path}`);
+  await streamBlobs(projectRoot, indexTree, jsonPaths, (path, blob) => {
+    if (blob === undefined) return;
+    const entry = parseIndexEntry(blob.toString('utf-8'), `${indexCommit.slice(0, 7)}:${path}`);
     if (entry !== undefined) indices.push(entry);
-  }
+  });
   if (indices.length === 0) return undefined;
 
   const reasons: string[] = [];
@@ -116,56 +253,228 @@ export async function readIndexAtCommit(projectRoot: string, commit: string): Pr
     if (reasons.length < STALE_REASON_LIMIT) reasons.push(reason);
   };
 
-  const sourcePaths = tree.filter((path) => !path.startsWith(`${prefix}.ctxo/`)).map((path) => path.slice(prefix.length));
-  const sourceSet = new Set(sourcePaths);
-  const hashed = indices.filter((index) => index.contentHash !== undefined && sourceSet.has(index.file));
-  const sourceBlobs = await readBlobs(projectRoot, commit, hashed.map((index) => `${prefix}${index.file}`));
-  const hasher = new ContentHasher();
+  // The selection a full `ctxo index` of `commit` makes, from the tree and the config of `commit`.
+  const tree = indexCommit === commit ? indexTree : await listTree(projectRoot, commit);
+  const projectFiles = [...tree.keys()].filter((path) => path.startsWith(prefix)).map((path) => path.slice(prefix.length));
+  const configPath = '.ctxo/config.yaml';
+  let config = DEFAULT_CONFIG;
+  if (projectFiles.includes(configPath)) {
+    await streamBlobs(projectRoot, tree, [`${prefix}${configPath}`], (_path, blob) => {
+      if (blob !== undefined) config = parseConfigText(blob.toString('utf-8'), `${commit.slice(0, 7)}:${configPath}`).config;
+    });
+  }
+  let packageJson: string | undefined;
+  if (projectFiles.includes('package.json')) {
+    await streamBlobs(projectRoot, tree, [`${prefix}package.json`], (_path, blob) => {
+      packageJson = blob?.toString('utf-8');
+    });
+  }
+  const sources = projectFiles.filter((path) => !path.startsWith('.ctxo/'));
+  const view = folderView(sources);
+  const roots = resolveWorkspaceRoots({ packageJson, ...view }, makeGlobMatcher(indexIgnoreProjectPatterns(config)));
+  const extensions = await pluginExtensions(projectRoot, indexIgnoreProjectPatterns(config));
+  const selected = new Set(
+    selectIndexFiles(sources, roots.kept, (ext) => extensions.has(ext), makeGlobMatcher(indexIgnorePatterns(config))),
+  );
+
+  const byFile = new Map<string, FileIndex>();
+  for (const index of indices) byFile.set(index.file, index);
+  for (const path of selected) if (!byFile.has(path)) stale(`${path}: not indexed`);
   for (const index of indices) {
-    if (index.contentHash === undefined) {
-      stale(`${index.file}: the entry has no content hash`);
-      continue;
-    }
-    const blob = sourceBlobs.get(`${prefix}${index.file}`);
-    if (blob === undefined) stale(`${index.file}: not in the commit`);
-    else if (hasher.hash(decodeSourceText(blob)) !== index.contentHash) stale(`${index.file}: content hash differs`);
+    if (!selected.has(index.file)) stale(`${index.file}: not a file ctxo index selects at ${commit.slice(0, 7)}`);
+    else if (index.contentHash === undefined) stale(`${index.file}: the entry has no content hash`);
   }
 
-  const indexed = new Set(indices.map((index) => index.file));
-  const extensions = new Set(indices.map((index) => extname(index.file).toLowerCase()).filter((ext) => ext !== ''));
-  const ignored = makeGlobMatcher(indexIgnorePatterns(loadConfig(join(projectRoot, '.ctxo')).config));
-  for (const path of sourcePaths) {
-    if (indexed.has(path) || !extensions.has(posix.extname(path).toLowerCase()) || ignored(path)) continue;
-    stale(`${path}: not indexed`);
+  // Hash each selected file as it streams in; no blob is kept. A file hashes equal when its raw blob or the blob's
+  // CRLF form (a core.autocrlf or eol=crlf checkout) matches; any other file goes through git's own checkout filters
+  // (smudge filters, other eol settings), one at a time and at most FILTER_LIMIT of them.
+  const hasher = new ContentHasher();
+  const toHash = [...selected].filter((path) => byFile.get(path)?.contentHash !== undefined);
+  const unmatched: string[] = [];
+  await streamBlobs(projectRoot, tree, toHash.map((path) => `${prefix}${path}`), (path, blob) => {
+    const file = path.slice(prefix.length);
+    const expected = byFile.get(file)!.contentHash;
+    if (blob === undefined) {
+      stale(`${file}: not in the commit`);
+      return;
+    }
+    const text = decodeSourceText(blob);
+    if (hasher.hash(text) === expected) return;
+    if (text.includes('\n') && hasher.hash(withCrlf(text)) === expected) return;
+    unmatched.push(path);
+  });
+  for (const [i, path] of unmatched.entries()) {
+    const file = path.slice(prefix.length);
+    if (i >= FILTER_LIMIT) {
+      stale(`${file}: content hash differs`);
+      continue;
+    }
+    const filtered = await filteredBlob(projectRoot, tree, path).catch(() => undefined);
+    if (filtered === undefined || hasher.hash(decodeSourceText(filtered)) !== byFile.get(file)!.contentHash) {
+      stale(`${file}: content hash differs`);
+    }
   }
 
   if (staleCount > reasons.length) reasons.push(`and ${staleCount - reasons.length} more`);
   return { indices, current: staleCount === 0, staleReasons: reasons };
 }
 
+const QUALITY_RANK: Record<EdgeQuality, number> = { 'syntax-only': 0, mixed: 1, full: 2 };
+
+/** `edgeQuality` of the project's own `communities.json` (HEAD's index), or undefined. */
+function headEdgeQuality(projectRoot: string): EdgeQuality | undefined {
+  try {
+    const value = (JSON.parse(readFileSync(join(projectRoot, '.ctxo', 'index', 'communities.json'), 'utf-8')) as { edgeQuality?: unknown }).edgeQuality;
+    return typeof value === 'string' && value in QUALITY_RANK ? (value as EdgeQuality) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function pidAlive(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (err) {
+    return (err as NodeJS.ErrnoException).code === 'EPERM';
+  }
+}
+
+/** Removes a base worktree folder and its registration synchronously (signal handlers, the sweep). */
+function removeWorktreeSync(projectRoot: string, dir: string): void {
+  spawnSync('git', ['worktree', 'remove', '--force', '--force', dir], { cwd: projectRoot, windowsHide: true, stdio: 'ignore' });
+  try {
+    rmSync(dir, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+  } catch (err) {
+    log.warn(`Cannot delete ${dir}: ${(err as Error).message}`);
+  }
+  rmSync(`${dir}.lock`, { force: true });
+}
+
+/**
+ * Removes the base worktrees a killed run left: a folder whose lock names a process that is gone, or with no lock and
+ * older than `LEFTOVER_AGE_MS`. A live run's folder (its process still runs) is never touched. Then `git worktree prune`.
+ */
+export function sweepLeftoverWorktrees(projectRoot: string, parent: string, now = Date.now()): string[] {
+  if (!existsSync(parent)) return [];
+  const removed: string[] = [];
+  for (const entry of readdirSync(parent, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+    const dir = join(parent, entry.name);
+    const lock = `${dir}.lock`;
+    let leftover: boolean;
+    if (existsSync(lock)) {
+      const pid = Number.parseInt(readFileSync(lock, 'utf-8'), 10);
+      leftover = !Number.isFinite(pid) || !pidAlive(pid);
+    } else {
+      leftover = now - statSync(dir).mtimeMs > LEFTOVER_AGE_MS;
+    }
+    if (!leftover) continue;
+    removeWorktreeSync(projectRoot, dir);
+    removed.push(entry.name);
+  }
+  for (const entry of readdirSync(parent, { withFileTypes: true })) {
+    // A lock whose folder is gone.
+    if (entry.isFile() && entry.name.endsWith('.lock') && !existsSync(join(parent, entry.name.slice(0, -'.lock'.length)))) {
+      rmSync(join(parent, entry.name), { force: true });
+    }
+  }
+  if (removed.length > 0) {
+    spawnSync('git', ['worktree', 'prune'], { cwd: projectRoot, windowsHide: true, stdio: 'ignore' });
+    log.warn(`Removed ${removed.length} leftover base worktree(s) of an interrupted run: ${removed.join(', ')}`);
+  }
+  return removed;
+}
+
+/**
+ * `dotnet restore` in the base worktree for the C# projects that are restored at HEAD (an `obj/project.assets.json`
+ * next to the `.csproj` in the project), so the base is analysed at the tier HEAD was. Cheap with a warm NuGet cache;
+ * skipped without restored projects or without `dotnet`. Returns warnings.
+ */
+function restoreCSharp(projectRoot: string, project: string, files: readonly string[]): string[] {
+  const restored = files.filter(
+    (file) => file.toLowerCase().endsWith('.csproj') && existsSync(join(projectRoot, posix.dirname(file), 'obj', 'project.assets.json')),
+  );
+  if (restored.length === 0) return [];
+  if (spawnSync('dotnet', ['--version'], { windowsHide: true, stdio: 'ignore' }).status !== 0) {
+    return ['HEAD\'s C# projects are restored, but "dotnet" is not on PATH here, so the base worktree is not restored'];
+  }
+  const warnings: string[] = [];
+  for (const file of restored.slice(0, RESTORE_PROJECT_LIMIT)) {
+    const result = spawnSync('dotnet', ['restore', join(project, file)], {
+      cwd: project,
+      windowsHide: true,
+      encoding: 'utf-8',
+      timeout: RESTORE_TIMEOUT_MS,
+    });
+    if (result.status !== 0) warnings.push(`dotnet restore ${file} failed in the base worktree: ${(result.stderr || result.stdout || String(result.error ?? '')).trim().split('\n')[0]}`);
+  }
+  if (restored.length > RESTORE_PROJECT_LIMIT) warnings.push(`only the first ${RESTORE_PROJECT_LIMIT} of ${restored.length} restored C# projects were restored in the base worktree`);
+  return warnings;
+}
+
 /**
  * Indexes `commit` in a temporary git worktree and returns its index (`ctxo index --skip-history --skip-community`,
- * no module pass). The worktree lives under `<projectRoot>/.ctxo/.cache/base-worktrees/`, so the language plugins
- * resolve from the project's own `node_modules`; it is detached (no branch), checked out with no hooks, and removed
- * (with `git worktree prune` when the removal fails) whether the run succeeds or not. Throws when git or the index fails.
+ * no module pass), the tiers it ran at and warnings. The worktree lives under
+ * `<projectRoot>/.ctxo/.cache/base-worktrees/`, so the language plugins resolve from the project's own `node_modules`;
+ * it is detached (no branch), checked out with no hooks, no LFS smudge and long paths on, and removed whether the run
+ * succeeds, fails or is interrupted (SIGINT, SIGTERM). A run that was killed harder leaves a lock naming its process;
+ * the next run sweeps such leftovers. C# projects restored at HEAD are restored in the worktree too. A warning says
+ * when the base index has a lower edge quality than HEAD's `communities.json`. Throws when git or the index fails.
  */
-export async function indexCommitInWorktree(projectRoot: string, commit: string): Promise<FileIndex[]> {
+export async function indexCommitInWorktree(projectRoot: string, commit: string): Promise<IndexedCommit> {
   assertRevision(commit);
   const prefix = await projectPrefix(projectRoot);
   const parent = join(projectRoot, '.ctxo', '.cache', 'base-worktrees');
   mkdirSync(parent, { recursive: true });
+  sweepLeftoverWorktrees(projectRoot, parent);
   const dir = join(parent, `${commit.slice(0, 8)}-${randomBytes(3).toString('hex')}`);
-  // The hooks path is the (hook-free) parent folder: no post-checkout hook of the user's runs for this worktree.
-  await runGit(projectRoot, ['-c', `core.hooksPath=${parent}`, 'worktree', 'add', '--detach', '--quiet', dir, commit]);
+  writeFileSync(`${dir}.lock`, String(process.pid), 'utf-8');
+
+  const onSignal = (signal: NodeJS.Signals): void => {
+    removeWorktreeSync(projectRoot, dir);
+    spawnSync('git', ['worktree', 'prune'], { cwd: projectRoot, windowsHide: true, stdio: 'ignore' });
+    process.off('SIGINT', onSignal);
+    process.off('SIGTERM', onSignal);
+    process.kill(process.pid, signal);
+  };
+  process.once('SIGINT', onSignal);
+  process.once('SIGTERM', onSignal);
   try {
+    // The hooks path is the (hook-free) parent folder: no post-checkout hook of the user's runs for this worktree.
+    await runGit(
+      projectRoot,
+      ['-c', `core.hooksPath=${parent}`, '-c', 'core.longpaths=true', 'worktree', 'add', '--detach', '--quiet', dir, commit],
+      { ...process.env, GIT_LFS_SKIP_SMUDGE: '1' },
+    );
     const project = prefix === '' ? dir : join(dir, ...prefix.split('/').filter((part) => part !== ''));
+    const files = [...(await listTree(projectRoot, commit)).keys()].filter((path) => path.startsWith(prefix)).map((path) => path.slice(prefix.length));
+    const warnings = restoreCSharp(projectRoot, project, files);
+
     const { IndexCommand } = await import('./index-command.js');
-    await new IndexCommand(project).run({ skipHistory: true, skipCommunity: true, skipSideEffects: true });
+    const command = new IndexCommand(project);
+    await command.run({ skipHistory: true, skipCommunity: true, skipSideEffects: true });
     const indices = new JsonIndexReader(join(project, '.ctxo')).readAll();
     if (indices.length === 0) throw new Error('the index of the base is empty (no language plugin indexed a file)');
-    return indices;
+
+    const tiers = command.lastRunTiers ?? {};
+    const edgeQuality = command.lastRunEdgeQuality;
+    const head = headEdgeQuality(projectRoot);
+    if (edgeQuality !== undefined && head !== undefined && QUALITY_RANK[edgeQuality] < QUALITY_RANK[head]) {
+      const lower = Object.entries(tiers).filter(([, tier]) => tier === 'syntax').map(([language]) => language);
+      warnings.push(
+        `the base was indexed at edge quality "${edgeQuality}"${lower.length > 0 ? ` (${lower.join(', ')} on the syntax tier)` : ''}, HEAD's index at "${head}": ` +
+          'violations the base has may be reported as new. For C#, install the .NET SDK 8+ and restore the solution ' +
+          '("dotnet restore"; ctxo then restores the base worktree too); for Go, Go 1.22+; for Java, JRE 11+ with "ctxo install java --full-tier". ' +
+          'Or commit a current .ctxo/index on the base branch, which ctxo reads instead.',
+      );
+    }
+    return { indices, tiers, ...(edgeQuality !== undefined ? { edgeQuality } : {}), warnings };
   } finally {
+    process.off('SIGINT', onSignal);
+    process.off('SIGTERM', onSignal);
     await removeWorktree(projectRoot, dir);
+    rmSync(`${dir}.lock`, { force: true });
   }
 }
 
@@ -174,6 +483,11 @@ async function removeWorktree(projectRoot: string, dir: string): Promise<void> {
     await runGit(projectRoot, ['worktree', 'remove', '--force', dir]);
     return;
   } catch (err) {
+    if (!existsSync(dir)) {
+      // `worktree add` failed before it made the folder: nothing to remove, maybe a registration to prune.
+      await runGit(projectRoot, ['worktree', 'prune']).catch(() => undefined);
+      return;
+    }
     log.warn(`git worktree remove failed (${(err as Error).message}); deleting ${dir}`);
   }
   try {

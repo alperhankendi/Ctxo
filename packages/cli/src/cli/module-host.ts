@@ -74,8 +74,8 @@ const HOST_SERVICES: CtxoHostServices = Object.freeze({
   createGit: (projectRoot: string) => new SimpleGitAdapter(projectRoot),
   readIndex: (ctxoRoot: string) => new JsonIndexReader(ctxoRoot).readAll(),
   // Loaded on first use: the indexer and its plugin loader stay out of the hook route.
-  readIndexAtCommit: async (projectRoot: string, commit: string) =>
-    (await import('./base-index.js')).readIndexAtCommit(projectRoot, commit),
+  readIndexAtCommit: async (projectRoot: string, commit: string, options?: { readonly indexCommit?: string }) =>
+    (await import('./base-index.js')).readIndexAtCommit(projectRoot, commit, options),
   indexCommitInWorktree: async (projectRoot: string, commit: string) =>
     (await import('./base-index.js')).indexCommitInWorktree(projectRoot, commit),
   buildGraph: buildGraphFromIndices,

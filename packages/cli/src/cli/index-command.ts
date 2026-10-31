@@ -4,6 +4,7 @@ import { join, relative, extname, isAbsolute, resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import { compareCodepoint } from '../core/compare-codepoint.js';
 import { ContentHasher } from '../core/staleness/content-hasher.js';
+import { resolveWorkspaceRoots, selectIndexFiles } from '../core/indexing/index-file-selection.js';
 import { LanguageAdapterRegistry } from '../adapters/language/language-adapter-registry.js';
 import { loadPlugins } from './plugin-loader.js';
 import { InstallCommand } from './install-command.js';
@@ -96,6 +97,13 @@ export class IndexCommand {
   private readonly projectRoot: string;
   ctxoRoot: string;
   private supportedExtensions: Set<string>;
+  /**
+   * The tier each tiered language (C#, Go, Java) ended the last full or incremental run on (`full`, `syntax`), for
+   * the languages that run indexed files of; undefined before a run. The base index of `verify-domain` compares it.
+   */
+  lastRunTiers: Readonly<Record<string, string>> | undefined;
+  /** The edge quality of the last run, decided as `communities.json` decides its `edgeQuality`. */
+  lastRunEdgeQuality: EdgeQuality | undefined;
 
   constructor(projectRoot: string, ctxoRoot?: string) {
     this.projectRoot = projectRoot;
@@ -655,6 +663,18 @@ export class IndexCommand {
     if (goCount > 0) console.error(`[ctxo]   Go: ${goCount} files (${goTier} tier${goTier === 'syntax' ? ' - Go 1.22+ for full analysis' : ''})`);
     if (javaCount > 0) console.error(`[ctxo]   Java: ${javaCount} files (${javaTier} tier${javaTier === 'syntax' ? ' - JRE 11+ & "ctxo install java --full-tier" for full analysis' : ''})`);
     if (sqlCount > 0) console.error(`[ctxo]   SQL: ${sqlCount} files (syntax tier)`);
+    // Decided as the community snapshot decides its edgeQuality, so the two compare.
+    this.lastRunEdgeQuality = pickEdgeQuality({
+      csharpTier,
+      goTier,
+      javaTier,
+      tsCount: indexed.filter((idx) => /\.(ts|tsx|js|jsx)$/.test(idx.file)).length,
+    });
+    this.lastRunTiers = {
+      ...(csCount > 0 ? { csharp: csharpTier } : {}),
+      ...(goCount > 0 ? { go: goTier } : {}),
+      ...(javaCount > 0 ? { java: javaTier } : {}),
+    };
 
     // Dispose Roslyn adapter
     if (roslynAdapter) await roslynAdapter.dispose();
@@ -820,15 +840,13 @@ export class IndexCommand {
         maxBuffer: 10 * 1024 * 1024,
       });
 
-      return output
+      const relativeToProject = output
         .split('\0')
         .filter((line) => line.length > 0)
-        .filter((line) => this.isSupportedExtension(line))
-        .map((line) => join(root, line))
-        .filter((abs) => {
-          const rel = relative(this.projectRoot, abs).replace(/\\/g, '/');
-          return !ignoreFile(rel);
-        })
+        .map((line) => relative(this.projectRoot, join(root, line)).replace(/\\/g, '/'));
+      // The selection the base-index check applies to a commit tree (core/indexing/index-file-selection.ts).
+      return selectIndexFiles(relativeToProject, [''], (ext) => this.supportedExtensions.has(ext), ignoreFile)
+        .map((rel) => join(this.projectRoot, rel))
         // `git ls-files --cached` still lists files that have been deleted in
         // the working tree but whose removal isn't staged yet. Filter those out
         // so we don't spam ENOENT errors from readFileSync on stale entries.
@@ -846,59 +864,32 @@ export class IndexCommand {
   private discoverWorkspaces(
     ignoreProject: (p: string) => boolean = () => false,
   ): { kept: string[]; ignored: string[] } {
+    // The same resolution the base-index check applies to a commit tree (core/indexing/index-file-selection.ts).
     const pkgPath = join(this.projectRoot, 'package.json');
-    if (!existsSync(pkgPath)) return { kept: [this.projectRoot], ignored: [] };
-
+    let packageJson: string | undefined;
     try {
-      const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
-      const workspaces: string[] | undefined = Array.isArray(pkg.workspaces)
-        ? pkg.workspaces
-        : pkg.workspaces?.packages;
-
-      if (!workspaces || workspaces.length === 0) return { kept: [this.projectRoot], ignored: [] };
-
-      // Resolve workspace patterns (supports simple globs like packages/*)
-      const resolved: string[] = [];
-      for (const ws of workspaces) {
-        if (ws.endsWith('/*') || ws.endsWith('\\*')) {
-          // Glob: packages/* → list subdirectories of packages/
-          const parentDir = join(this.projectRoot, ws.slice(0, -2));
-          if (existsSync(parentDir)) {
-            for (const entry of readdirSync(parentDir, { withFileTypes: true })) {
-              if (entry.isDirectory()) {
-                resolved.push(join(parentDir, entry.name));
-              }
-            }
-          }
-        } else {
-          // Literal path
-          const wsPath = join(this.projectRoot, ws);
-          if (existsSync(wsPath)) {
-            resolved.push(wsPath);
-          }
-        }
-      }
-
-      if (resolved.length === 0) return { kept: [this.projectRoot], ignored: [] };
-
-      const ignored: string[] = [];
-      const filtered = resolved.filter((wsAbs) => {
-        const rel = relative(this.projectRoot, wsAbs).replace(/\\/g, '/');
-        if (ignoreProject(rel)) {
-          console.error(`[ctxo] index.ignoreProjects: skipping ${rel}`);
-          ignored.push(wsAbs);
-          return false;
-        }
-        return true;
-      });
-
-      if (filtered.length === 0) return { kept: [this.projectRoot], ignored };
-
-      console.error(`[ctxo] Monorepo detected: ${filtered.length} workspace(s)`);
-      return { kept: filtered, ignored };
+      packageJson = existsSync(pkgPath) ? readFileSync(pkgPath, 'utf-8') : undefined;
     } catch {
-      return { kept: [this.projectRoot], ignored: [] };
+      packageJson = undefined;
     }
+    const roots = resolveWorkspaceRoots(
+      {
+        packageJson,
+        subdirectories: (dir) => {
+          try {
+            return readdirSync(join(this.projectRoot, dir), { withFileTypes: true }).filter((e) => e.isDirectory()).map((e) => e.name);
+          } catch {
+            return [];
+          }
+        },
+        directoryExists: (dir) => existsSync(join(this.projectRoot, dir)),
+      },
+      ignoreProject,
+    );
+    for (const dir of roots.ignored) console.error(`[ctxo] index.ignoreProjects: skipping ${dir}`);
+    if (roots.monorepo) console.error(`[ctxo] Monorepo detected: ${roots.kept.length} workspace(s)`);
+    const abs = (dir: string): string => (dir === '' ? this.projectRoot : join(this.projectRoot, dir));
+    return { kept: roots.kept.map(abs), ignored: roots.ignored.map(abs) };
   }
 
   private isSupportedExtension(filePath: string): boolean {

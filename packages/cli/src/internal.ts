@@ -35,6 +35,7 @@ export type {
   DocumentSearch,
   CtxoHostServices,
   IndexAtCommit,
+  IndexedCommit,
   CtxoHost,
   CtxoModuleRegister,
   TrivialLiteral,

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createModuleHost, type FileIndex, type RangeCommit } from '@ctxo/cli/internal';
-import { baselineKeys, branchRenames, classifyViolations, violationKey } from '../boundary-baseline.js';
+import { baselineKeys, branchRenames, classifyViolations, GONE, violationKey } from '../boundary-baseline.js';
 import { computeBoundaries, type BoundaryViolationRecord } from '../boundaries.js';
 import { createOwnership } from '../ownership.js';
 import { parseRegistry } from '../registry.js';
@@ -85,6 +85,35 @@ describe('branchRenames', () => {
     ]);
     const prefixed = [renameCommit(['app/src/A.ts', 'app/src/B.ts'], ['lib/X.ts', 'lib/Y.ts'])];
     expect([...branchRenames(prefixed, 'app/')]).toEqual([['src/A.ts', 'src/B.ts']]);
+  });
+
+  it('never makes a file the branch created a base path\'s successor (M1)', () => {
+    // Oldest last: A -> B, then a new A, then that new A -> C.
+    const commits: RangeCommit[] = [
+      renameCommit(['src/A.ts', 'src/C.ts']),
+      { hash: 'a', subject: 's', isMerge: false, trailers: [], changes: [{ status: 'A', path: 'src/A.ts' }] },
+      renameCommit(['src/A.ts', 'src/B.ts']),
+    ];
+    expect([...branchRenames(commits)]).toEqual([['src/A.ts', 'src/B.ts']]);
+    // Without the add (a merge commit lists none), the new A still starts no chain: A already moved.
+    expect([...branchRenames([commits[0]!, commits[2]!])]).toEqual([['src/A.ts', 'src/B.ts']]);
+
+    // The base's violation in A follows to B; one in C with the same symbol name and target is new.
+    const keys = baselineKeys([v('src/Lending/A.ts::Loan::class', INVOICE)], branchRenames(
+      [renameCommit(['src/Lending/A.ts', 'src/Lending/C.ts']), renameCommit(['src/Lending/A.ts', 'src/Lending/B.ts'])],
+    ));
+    expect(classifyViolations([v('src/Lending/C.ts::Loan::class', INVOICE)], keys)[0]!.baseline).toBe('new');
+    expect(classifyViolations([v('src/Lending/B.ts::Loan::class', INVOICE)], keys)[0]!.baseline).toBe('existing');
+  });
+
+  it('drops the base violations of a deleted file, so a file made again at its path has new ones', () => {
+    const commits: RangeCommit[] = [
+      { hash: 'a', subject: 's', isMerge: false, trailers: [], changes: [{ status: 'A', path: 'src/Lending/Loan.ts' }] },
+      { hash: 'd', subject: 's', isMerge: false, trailers: [], changes: [{ status: 'D', path: 'src/Lending/Loan.ts' }] },
+    ];
+    const renames = branchRenames(commits);
+    expect(renames.get('src/Lending/Loan.ts')).toBe(GONE);
+    expect(baselineKeys([v(LOAN, INVOICE)], renames).size).toBe(0);
   });
 
   it('drops a rename that comes back to its first path, and ignores other statuses', () => {

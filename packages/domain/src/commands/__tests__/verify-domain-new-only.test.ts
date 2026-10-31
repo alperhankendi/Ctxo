@@ -115,6 +115,8 @@ function json(): any {
 async function repo(options: { hashed?: boolean; config?: string } = {}): Promise<string> {
   const dir = mkdtempSync(join(tmpdir(), 'ctxo-domain-newonly-'));
   dirs.push(dir);
+  // The TypeScript plugin (resolved next to the CLI) decides which files ctxo index selects.
+  put(dir, 'package.json', JSON.stringify({ name: 'sample', private: true, devDependencies: { '@ctxo/lang-typescript': '*' } }));
   put(dir, 'docs/domain/contexts.yaml', REGISTRY);
   put(dir, 'docs/domain/lending.md', CARD('LEND-01', 'Tests: `src/Lending/Loan.test.ts`'));
   put(dir, 'docs/domain/billing.md', CARD('BILL-01', 'Untested: later'));
@@ -151,11 +153,12 @@ function withServices(dir: string, overrides: Partial<CtxoHost['services']>): Ct
   return { ...host, services: { ...host.services, ...overrides } };
 }
 
-describe('verify-domain --boundaries new-only', () => {
+// The committed-index check loads the plugin manifests, so a run takes a few seconds.
+describe('verify-domain --boundaries new-only', { timeout: 60_000 }, () => {
   it('fails on the violation the branch adds and reports the base one as existing (committed index)', async () => {
     const dir = await repo();
     addViolationOnBranch(dir);
-    const indexCommitInWorktree = vi.fn(async () => [] as FileIndex[]);
+    const indexCommitInWorktree = vi.fn(async () => ({ indices: [] as FileIndex[], tiers: {}, warnings: [] }));
     const host = withServices(dir, { indexCommitInWorktree });
 
     expect(await run(dir, ['--since', 'main', '--boundaries', 'new-only', '--json'], host)).toBe(1);
@@ -215,7 +218,7 @@ describe('verify-domain --boundaries new-only', () => {
     const baseIndex: FileIndex[] = [
       { file: 'src/Lending/Loan.ts', lastModified: 1, symbols: [], edges: [{ from: LOAN, to: INVOICE, kind: 'imports' }], intent: [], antiPatterns: [] },
     ];
-    const indexCommitInWorktree = vi.fn(async () => baseIndex);
+    const indexCommitInWorktree = vi.fn(async () => ({ indices: baseIndex, tiers: { csharp: 'syntax' }, warnings: ['the base was indexed at edge quality "mixed"'] }));
     const host = withServices(dir, { indexCommitInWorktree });
 
     expect(await run(dir, ['--since', 'main', '--boundaries', 'new-only', '--json'], host)).toBe(1);
@@ -225,6 +228,7 @@ describe('verify-domain --boundaries new-only', () => {
     expect(report.boundaries.new.map((v: any) => v.from.symbolId)).toEqual([FEE]);
     expect(report.boundaries.existing.map((v: any) => v.from.symbolId)).toEqual([LOAN]);
     expect(stderr.join('\n')).toContain('src/Lending/Loan.ts: the entry has no content hash');
+    expect(stderr.join('\n')).toContain('Base ' + base.slice(0, 7) + ': the base was indexed at edge quality "mixed"');
   });
 
   it('falls back to by-rung, saying so, when the base cannot be indexed', async () => {
@@ -257,6 +261,34 @@ describe('verify-domain --boundaries new-only', () => {
     stdout.length = 0;
     expect(await run(dir, ['--since', 'main', '--json'])).toBe(0);
     expect(json().boundaries).toMatchObject({ compared: true, new: [] });
+  });
+
+  it('reads the base index committed with the next commit on the --since branch (the post-commit hook lag)', async () => {
+    const dir = await repo({ hashed: false });
+    // On main, the commit after the base carries the base's index, as the post-commit hook writes it.
+    git(dir, 'checkout', '-q', 'main');
+    entry(dir, 'src/Lending/Loan.ts', LOAN, [INVOICE]);
+    entry(dir, 'src/Lending/Loan.test.ts', undefined);
+    entry(dir, 'src/Billing/Invoice.ts', INVOICE);
+    commit(dir, 'chore: index of the last commit');
+    const next = git(dir, 'rev-parse', '--short=7', 'HEAD');
+    git(dir, 'checkout', '-q', 'feat');
+    addViolationOnBranch(dir);
+    const indexCommitInWorktree = vi.fn(async () => ({ indices: [] as FileIndex[], tiers: {}, warnings: [] }));
+
+    expect(await run(dir, ['--since', 'main', '--boundaries', 'new-only', '--json'], withServices(dir, { indexCommitInWorktree }))).toBe(1);
+    expect(indexCommitInWorktree).not.toHaveBeenCalled();
+    const report = json();
+    expect(report.boundaries).toMatchObject({ compared: true, source: 'committed-index', indexCommit: next });
+    expect(report.boundaries.new.map((v: any) => v.from.symbolId)).toEqual([FEE]);
+    expect(report.boundaries.existing.map((v: any) => v.from.symbolId)).toEqual([LOAN]);
+  });
+
+  it('says once in the text report that it fell back', async () => {
+    const dir = await repo();
+    expect(await run(dir, ['--boundaries', 'new-only'])).toBe(1);
+    const lines = stderr.join('\n').split('\n').filter((line) => line.includes('no base without --since <ref>'));
+    expect(lines).toEqual(['[ctxo] Boundaries new-only fell back to by-rung (no base without --since <ref>): every violation counts']);
   });
 
   it('the other modes print no boundaries block', async () => {
