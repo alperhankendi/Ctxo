@@ -25,6 +25,7 @@ const FACT: CodeFact = { kind: 'endpoint', symbolId: 'src/a.fake::dbo.usp_close:
 
 const extractFacts = vi.hoisted(() => vi.fn());
 const noFactsMethod = vi.hoisted(() => ({ value: false }));
+const seenTestGlobs = vi.hoisted(() => ({ value: undefined as readonly string[] | undefined }));
 
 vi.mock('../../adapters/language/plugin-discovery.js', () => {
   const plugin: CtxoLanguagePlugin = {
@@ -34,13 +35,16 @@ vi.mock('../../adapters/language/plugin-discovery.js', () => {
     version: '0.0.1',
     extensions: ['.fake'],
     tier: 'syntax',
-    createAdapter: () => ({
-      extractSymbols: async () => SYMBOLS,
-      extractEdges: async () => EDGES,
-      extractComplexity: async () => [],
-      ...(noFactsMethod.value ? {} : { extractFacts }),
-      isSupported: () => true,
-    }),
+    createAdapter: (ctx) => {
+      seenTestGlobs.value = ctx.testGlobs;
+      return {
+        extractSymbols: async () => SYMBOLS,
+        extractEdges: async () => EDGES,
+        extractComplexity: async () => [],
+        ...(noFactsMethod.value ? {} : { extractFacts }),
+        isSupported: () => true,
+      };
+    },
   };
   return {
     discoverPlugins: async () => ({ plugins: [{ plugin, specifier: 'ctxo-lang-fake' }], failures: [] }),
@@ -50,6 +54,7 @@ vi.mock('../../adapters/language/plugin-discovery.js', () => {
 import { IndexCommand } from '../index-command.js';
 import { JsonIndexReader } from '../../adapters/storage/json-index-reader.js';
 import { SqliteStorageAdapter } from '../../adapters/storage/sqlite-storage-adapter.js';
+import { DEFAULT_TEST_GLOBS } from '../../core/test-files/test-file-classifier.js';
 
 const IDENTITY = ['-c', 'commit.gpgsign=false', '-c', 'user.name=Test', '-c', 'user.email=test@test.com'];
 
@@ -107,6 +112,15 @@ describe('IndexCommand with a protocol v2 plugin', () => {
     } finally {
       rmSync(scratch, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
     }
+  });
+
+  it('the plugins get the default test globs followed by index.tests', async () => {
+    await new IndexCommand(dir).run({ skipHistory: true });
+    expect(seenTestGlobs.value).toEqual([...DEFAULT_TEST_GLOBS]);
+
+    writeFileSync(join(dir, '.ctxo', 'config.yaml'), 'version: "1.0"\nindex:\n  tests: ["spec/**/*.check.ts"]\n', 'utf-8');
+    await new IndexCommand(dir).run({ skipHistory: true });
+    expect(seenTestGlobs.value).toEqual([...DEFAULT_TEST_GLOBS, 'spec/**/*.check.ts']);
   });
 
   it('facts are extracted and written only with index.facts: true', async () => {

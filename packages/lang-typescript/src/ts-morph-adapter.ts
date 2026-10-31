@@ -26,6 +26,7 @@ import { collectTsEvidence } from './facts/ts-evidence.js';
 import { decodeTypescriptStringLiteral } from './facts/typescript-string-literal.js';
 import { createLogger } from './logger.js';
 import { findTestBlocks, testBlockSymbol } from './test-blocks.js';
+import { createTestFileMatcher, type TestFileMatcher } from './test-file-globs.js';
 import { ModuleResolver } from './sql/module-resolver.js';
 import { collectSqlCallSites, symbolScopes, type SqlStats } from './sql/sql-call-sites.js';
 import { sqlEdgesFromCallSites } from './sql/sql-edges.js';
@@ -41,6 +42,11 @@ export interface TsMorphAdapterOptions {
   readonly projectRoot?: string;
   /** Fact detector options: set when the host requests facts (`capabilities.facts`); without them `extractFacts` returns `[]`. */
   readonly facts?: FactOptions;
+  /**
+   * The host's test-file globs (`PluginContext.testGlobs`: defaults plus `index.tests`). They decide which files
+   * get test blocks; absent, the built-in default rule decides.
+   */
+  readonly testGlobs?: readonly string[];
 }
 
 /** Source ranges `[start, end]`, sorted by start, none inside another. */
@@ -87,6 +93,7 @@ export class TsMorphAdapter implements ILanguageAdapter {
 
   private readonly project: Project;
   private readonly projectRoot: string | undefined;
+  private readonly isTestFile: TestFileMatcher;
   private readonly sqlStats: SqlStats = { constant: 0, nonConstant: 0 };
   private symbolRegistry = new Map<string, SymbolKind>();
   private projectPreloaded = false;
@@ -95,6 +102,7 @@ export class TsMorphAdapter implements ILanguageAdapter {
     this.sqlCallSites = options.sqlCallSites === true;
     this.facts = options.facts;
     this.projectRoot = options.projectRoot;
+    this.isTestFile = createTestFileMatcher(options.testGlobs);
     this.project = new Project({
       compilerOptions: {
         target: ScriptTarget.ES2022,
@@ -201,7 +209,7 @@ export class TsMorphAdapter implements ILanguageAdapter {
 
     try {
       const symbols = this.collectSymbols(sourceFile, filePath);
-      const evidence = [...collectTsEvidence(sourceFile, filePath, resolver, options), ...annotationRouteEvidence(symbols)];
+      const evidence = [...collectTsEvidence(sourceFile, filePath, resolver, options, this.isTestFile), ...annotationRouteEvidence(symbols)];
       // Every record carries its G8 owner or none (the module symbol), so no attribution by line is needed.
       return finishFacts(filePath, evidence, [], options, decodeTypescriptStringLiteral);
     } catch (err) {
@@ -260,7 +268,7 @@ export class TsMorphAdapter implements ILanguageAdapter {
     this.extractInterfaces(sourceFile, filePath, symbols);
     this.extractTypeAliases(sourceFile, filePath, symbols);
     this.extractVariables(sourceFile, filePath, symbols);
-    symbols.push(...findTestBlocks(sourceFile, filePath).map(testBlockSymbol));
+    symbols.push(...findTestBlocks(sourceFile, filePath, this.isTestFile).map(testBlockSymbol));
 
     return symbols;
   }
@@ -625,7 +633,7 @@ export class TsMorphAdapter implements ILanguageAdapter {
     filePath: string,
     edges: GraphEdge[],
   ): void {
-    const blocks = findTestBlocks(sourceFile, filePath);
+    const blocks = findTestBlocks(sourceFile, filePath, this.isTestFile);
     if (blocks.length === 0) return;
     const importMap = this.buildLocalImportMap(sourceFile, filePath);
 
@@ -656,7 +664,7 @@ export class TsMorphAdapter implements ILanguageAdapter {
   private extractSqlEdges(sourceFile: SourceFile, filePath: string, resolver: ModuleResolver): GraphEdge[] {
     try {
       const stats: SqlStats = { constant: 0, nonConstant: 0 };
-      const scopes = symbolScopes(sourceFile, filePath, findTestBlocks(sourceFile, filePath));
+      const scopes = symbolScopes(sourceFile, filePath, findTestBlocks(sourceFile, filePath, this.isTestFile));
       const sites = collectSqlCallSites(sourceFile, scopes, resolver, stats);
       this.sqlStats.constant += stats.constant;
       this.sqlStats.nonConstant += stats.nonConstant;

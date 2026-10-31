@@ -43,7 +43,7 @@ describe('@ctxo/lang-typescript package', () => {
       const text = readFileSync(file, 'utf8');
       for (const m of text.matchAll(re)) {
         const spec = m[1]!;
-        expect(spec, `${file} imports ${spec}`).toMatch(/^(?:@ctxo\/plugin-api|@ctxo\/sql-extract|ts-morph|node:[a-z:/_]+|\.{1,2}\/.*)$/);
+        expect(spec, `${file} imports ${spec}`).toMatch(/^(?:@ctxo\/plugin-api|@ctxo\/sql-extract|picomatch|ts-morph|node:[a-z:/_]+|\.{1,2}\/.*)$/);
       }
       expect(/['"]@ctxo\/cli\b/.test(text), `${file} names @ctxo/cli as a module`).toBe(false);
     }

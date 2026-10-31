@@ -187,6 +187,21 @@ Produce the names with `extractSqlAccesses` from `@ctxo/sql-extract` rather
 than your own parser, so your edges meet those of the SQL, C#, TypeScript,
 Java and Go plugins at the same node.
 
+**Test globs.** `ctx.testGlobs` (optional, any protocol version) holds the
+globs that mark a test file: the CLI's default test globs followed by the
+project's `index.tests` globs, each once. Match them as picomatch globs with
+`{ dot: true }` against the project-relative, forward-slash paths your adapter
+receives. Negation is not supported: the CLI never sends a glob that starts
+with `!`, and you should skip one. CLIs that predate the field do not set it,
+so keep a default rule of your own for that case:
+
+```ts
+createAdapter(ctx: PluginContext): ILanguageAdapter {
+  // undefined on older cores: LoanLangAdapter then uses its built-in test-file rule
+  return new LoanLangAdapter({ testGlobs: ctx.testGlobs });
+}
+```
+
 **External analyzers.** A plugin that runs a helper process (the Roslyn
 helper, the JDT analyzer JAR, ctxo-go-analyzer) owns the protocol between the
 two. Its JSON lines (symbols, edges, call-site records, summary counts) are an

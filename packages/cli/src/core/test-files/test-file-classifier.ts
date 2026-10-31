@@ -1,4 +1,4 @@
-import { makeGlobMatcher } from '../config/load-config.js';
+import { isNegatedGlob, makeGlobMatcher } from '../config/load-config.js';
 import type { FileIndex } from '../types.js';
 
 /** Globs that mark a repo-relative path as a test file, in spec 7.1 order. */
@@ -41,6 +41,16 @@ export const TEST_FRAMEWORK_ANNOTATIONS: readonly string[] = [
   'DataTestMethod',
   'TestClass',
 ];
+
+/**
+ * The test-file globs handed to every plugin as `PluginContext.testGlobs`: the defaults, then the extra
+ * (`index.tests`) globs in config order, each glob once. A negated (`!`) extra glob is skipped: `index.tests`
+ * does not support negation. Frozen, so one array serves every plugin of a run.
+ */
+export function effectiveTestGlobs(extraGlobs: readonly string[] = []): readonly string[] {
+  const extras = extraGlobs.filter((glob) => !isNegatedGlob(glob));
+  return Object.freeze([...new Set([...DEFAULT_TEST_GLOBS, ...extras])]);
+}
 
 /** Takes a repo-relative path with either separator. */
 export type TestFileClassifier = (path: string) => boolean;

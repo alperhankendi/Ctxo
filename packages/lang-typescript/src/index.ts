@@ -20,6 +20,8 @@ export const plugin: CtxoLanguagePlugin = {
     return new TsMorphAdapter({
       sqlCallSites: ctx.capabilities?.sqlCallSites === true,
       projectRoot: ctx.projectRoot,
+      // Absent on older cores: the adapter then uses its built-in test-file rule.
+      ...(ctx.testGlobs ? { testGlobs: ctx.testGlobs } : {}),
       ...(facts ? { facts } : {}),
     });
   },

@@ -48,7 +48,7 @@ interface Scope {
  * classes (exported or not: a non-exported one gets the ID the adapter would give it if exported), exported
  * variable declarations, and test blocks (the callback minus nested blocks' callbacks).
  */
-function scopesOf(sourceFile: SourceFile, filePath: string): Scope[] {
+function scopesOf(sourceFile: SourceFile, filePath: string, isTestFile?: (path: string) => boolean): Scope[] {
   const scopes: Scope[] = [];
   for (const fn of sourceFile.getFunctions()) {
     const name = fn.getName();
@@ -68,7 +68,7 @@ function scopesOf(sourceFile: SourceFile, filePath: string): Scope[] {
       scopes.push({ symbolId: `${filePath}::${declaration.getName()}::variable`, node: declaration, exclude: [] });
     }
   }
-  for (const block of findTestBlocks(sourceFile, filePath)) {
+  for (const block of findTestBlocks(sourceFile, filePath, isTestFile)) {
     scopes.push({ symbolId: block.symbolId, node: block.body, exclude: block.nested });
   }
   return scopes;
@@ -224,8 +224,9 @@ class Collector {
     filePath: string,
     private readonly resolver: ModuleResolver,
     private readonly options: FactOptions,
+    isTestFile?: (path: string) => boolean,
   ) {
-    this.owners = new Owners(scopesOf(sourceFile, filePath));
+    this.owners = new Owners(scopesOf(sourceFile, filePath, isTestFile));
     this.newlines = newlineOffsets(sourceFile.getFullText());
   }
 
@@ -403,8 +404,8 @@ class Collector {
  * `symbolId` is its G8 owner, or unset for code outside every owner (the finisher uses the module symbol).
  * Route receivers are traced through `resolver`, which may add files to the project until its `release()`.
  */
-export function collectTsEvidence(sourceFile: SourceFile, filePath: string, resolver: ModuleResolver, options: FactOptions): FactEvidence[] {
-  const collector = new Collector(sourceFile, filePath, resolver, options);
+export function collectTsEvidence(sourceFile: SourceFile, filePath: string, resolver: ModuleResolver, options: FactOptions, isTestFile?: (path: string) => boolean): FactEvidence[] {
+  const collector = new Collector(sourceFile, filePath, resolver, options, isTestFile);
   sourceFile.forEachDescendant((node) => collector.visit(node));
   return collector.evidence;
 }

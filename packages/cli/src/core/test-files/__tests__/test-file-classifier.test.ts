@@ -1,13 +1,65 @@
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   createTestFileClassifier,
   DEFAULT_TEST_GLOBS,
+  effectiveTestGlobs,
   filesWithTestAnnotations,
   hasCSharpAnnotations,
   NAME_ONLY_TEST_GLOBS,
   TEST_FRAMEWORK_ANNOTATIONS,
 } from '../test-file-classifier.js';
+import { isNegatedGlob } from '../../config/load-config.js';
 import type { FileIndex, SymbolAnnotation, SymbolNode } from '../../types.js';
+
+describe('effectiveTestGlobs', () => {
+  it('is the defaults, then the extras in order, each once, frozen', () => {
+    const globs = effectiveTestGlobs(['spec/**/*.check.ts', '**/__tests__/**', 'spec/**/*.check.ts', 'e2e/**']);
+    expect(globs).toEqual([...DEFAULT_TEST_GLOBS, 'spec/**/*.check.ts', 'e2e/**']);
+    expect(Object.isFrozen(globs)).toBe(true);
+  });
+
+  it('skips negated globs: index.tests does not support negation', () => {
+    expect(effectiveTestGlobs(['!**/fixtures/**', 'spec/**'])).toEqual([...DEFAULT_TEST_GLOBS, 'spec/**']);
+  });
+
+  it('keeps a !(...) extglob, which is not a negation', () => {
+    expect(effectiveTestGlobs(['!(fixtures)/**/*.check.ts'])).toEqual([...DEFAULT_TEST_GLOBS, '!(fixtures)/**/*.check.ts']);
+  });
+});
+
+/**
+ * `@ctxo/lang-typescript` cannot import the CLI, so its tests read the core lists from a fixture. This pins the
+ * fixture to the core: when `DEFAULT_TEST_GLOBS` changes, this fails until the plugin's copy (and its fallback rule
+ * `isTestFilePath`, which the plugin's tests check against `typescriptFallback`) is updated.
+ */
+describe('the TypeScript plugin copy of the default test globs', () => {
+  const fixture = join(
+    dirname(fileURLToPath(import.meta.url)),
+    '../../../../../lang-typescript/src/__tests__/fixtures/host-test-globs.json',
+  );
+  const copy = JSON.parse(readFileSync(fixture, 'utf-8')) as {
+    hostDefaults: string[];
+    typescriptFallback: string[];
+    negationExamples: Array<{ glob: string; negated: boolean }>;
+  };
+
+  it('isNegatedGlob agrees with the shared negation examples (the plugin test checks its own predicate on them)', () => {
+    expect(copy.negationExamples.length).toBeGreaterThan(0);
+    for (const { glob, negated } of copy.negationExamples) expect(isNegatedGlob(glob), glob).toBe(negated);
+  });
+
+  it('hostDefaults equals DEFAULT_TEST_GLOBS', () => {
+    expect(copy.hostDefaults).toEqual([...DEFAULT_TEST_GLOBS]);
+  });
+
+  it('typescriptFallback is the TypeScript and JavaScript part of DEFAULT_TEST_GLOBS, in order', () => {
+    const tsPart = DEFAULT_TEST_GLOBS.filter((glob) => !/(\.go|\.py|\.cs|Tests?\/\*\*|src\/test\/)/.test(glob));
+    expect(copy.typescriptFallback).toEqual(tsPart);
+  });
+});
 
 describe('createTestFileClassifier', () => {
   const isTest = createTestFileClassifier();

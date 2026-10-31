@@ -1,7 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
 import type { CtxoLanguagePlugin, PluginContext } from '@ctxo/plugin-api';
 
-const seen: Array<{ id: string; capabilities: PluginContext['capabilities']; config: PluginContext['config'] }> = [];
+const seen: Array<{
+  id: string;
+  capabilities: PluginContext['capabilities'];
+  config: PluginContext['config'];
+  testGlobs: PluginContext['testGlobs'];
+}> = [];
 
 function fake(id: string, extensions: string[]): CtxoLanguagePlugin {
   return {
@@ -12,7 +17,7 @@ function fake(id: string, extensions: string[]): CtxoLanguagePlugin {
     extensions,
     tier: 'syntax',
     createAdapter: (ctx: PluginContext) => {
-      seen.push({ id, capabilities: ctx.capabilities, config: ctx.config });
+      seen.push({ id, capabilities: ctx.capabilities, config: ctx.config, testGlobs: ctx.testGlobs });
       return {
         extractSymbols: async () => [],
         extractEdges: async () => [],
@@ -35,6 +40,7 @@ vi.mock('../../adapters/language/plugin-discovery.js', () => ({
 
 import { loadPlugins } from '../plugin-loader.js';
 import type { FactDetectorOptions } from '../../ports/i-ctxo-module.js';
+import { DEFAULT_TEST_GLOBS } from '../../core/test-files/test-file-classifier.js';
 
 const O: FactDetectorOptions = { trivialLiterals: [0, ''], normalizationMethods: ['trim'] };
 
@@ -57,6 +63,24 @@ describe('loadPlugins capabilities', () => {
       seen.length = 0;
       await loadPlugins(process.cwd(), options);
       expect(seen.map((s) => s.config)).toEqual([{}, {}]);
+    }
+  });
+
+  it('loadPlugins hands every plugin the default test globs followed by index.tests, as one frozen array', async () => {
+    seen.length = 0;
+    await loadPlugins(process.cwd(), { testGlobs: ['spec/**/*.check.ts', '**/__tests__/**'] });
+    expect(seen).toHaveLength(2);
+    // Defaults first, then the extra globs in config order; a glob the defaults already hold appears once.
+    expect(seen[0]!.testGlobs).toEqual([...DEFAULT_TEST_GLOBS, 'spec/**/*.check.ts']);
+    expect(seen[1]!.testGlobs).toBe(seen[0]!.testGlobs);
+    expect(Object.isFrozen(seen[0]!.testGlobs)).toBe(true);
+  });
+
+  it('loadPlugins hands the default test globs alone when index.tests is empty, unset or only negated', async () => {
+    for (const options of [{}, { testGlobs: [] }, { testGlobs: ['!**/fixtures/**'] }]) {
+      seen.length = 0;
+      await loadPlugins(process.cwd(), options);
+      for (const s of seen) expect(s.testGlobs).toEqual([...DEFAULT_TEST_GLOBS]);
     }
   });
 });

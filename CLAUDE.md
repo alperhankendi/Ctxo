@@ -172,7 +172,7 @@ index:
   ignoreProjects:              # globs applied to workspace roots (skip discovery)
     - "packages/experimental-*"
     - "examples/*"
-  tests: []                    # extra test-file globs (added to the shared defaults)
+  tests: []                    # extra test-file globs (added to the shared defaults; plugins get both as PluginContext.testGlobs)
   facts: false                 # true asks plugins for code facts (protocol v2, index JSON only)
 masking:
   clusterLabels: []            # globs; matching cluster labels become [masked-cluster-N] in MCP responses

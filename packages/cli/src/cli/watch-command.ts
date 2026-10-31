@@ -248,9 +248,14 @@ export class WatchCommand {
 
 }
 
-/** The options `ctxo watch` loads the plugins with: the same fact request as `ctxo index`. */
+/**
+ * The options `ctxo watch` loads the plugins with: the same fact request and `index.tests` globs as
+ * `ctxo index` (the globs only when set; the plugins get the default test globs either way).
+ */
 export function watchPluginOptions(config: CtxoConfig, modules: readonly LoadedModule[]): LoadPluginsOptions {
-  return pluginFactRequest(config, modules);
+  const request = pluginFactRequest(config, modules);
+  const testGlobs = indexTestPatterns(config);
+  return testGlobs.length > 0 ? { ...request, testGlobs } : request;
 }
 
 /** What a watch re-index gathers for one file, before it becomes a `FileIndex`. */

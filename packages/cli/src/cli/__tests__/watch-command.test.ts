@@ -156,4 +156,11 @@ describe('watchPluginOptions', () => {
     expect(watchPluginOptions(noConfig, [])).toEqual({ facts: false });
     expect(watchPluginOptions({ index: { facts: true } } as unknown as CtxoConfig, [])).toEqual({ facts: true });
   });
+
+  it('watch hands the plugins the index.tests globs like index (valid globs only)', () => {
+    const tooLong = 'a'.repeat(65_537); // picomatch rejects a pattern this long
+    const config = { index: { tests: ['spec/**/*.check.ts', tooLong] } } as unknown as CtxoConfig;
+    expect(watchPluginOptions(config, [])).toEqual({ facts: false, testGlobs: ['spec/**/*.check.ts'] });
+    expect(watchPluginOptions(config, [domain])).toEqual({ facts: true, factOptions: O, testGlobs: ['spec/**/*.check.ts'] });
+  });
 });

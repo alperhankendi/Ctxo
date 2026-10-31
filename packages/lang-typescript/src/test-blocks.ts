@@ -28,6 +28,7 @@ const UNTITLED = '(untitled)';
 const PATH_SEPARATOR = ' > ';
 
 /**
+ * The fallback test-file rule, used when the host sends no `PluginContext.testGlobs` (an older core).
  * The TypeScript and JavaScript part of the core's DEFAULT_TEST_GLOBS (`**\/__tests__/**`, `**\/*.test.*`,
  * `**\/*.spec.*`, `**\/test/**`, `**\/tests/**`), reimplemented because a plugin cannot import the CLI:
  * a path segment `__tests__`, `test` or `tests`, or a basename containing `.test.` or `.spec.`.
@@ -125,12 +126,17 @@ interface PendingBlock {
 }
 
 /**
- * The test blocks of a test file in source order; `[]` unless `isTestFilePath(filePath)`. A path seen again
+ * The test blocks of a test file in source order; `[]` unless `isTestFile(filePath)` (default
+ * `isTestFilePath`; the adapter passes the matcher built from the host's `testGlobs`). A path seen again
  * in the file (or equal to an exported function's name) gets ` #2`, ` #3` in source order, and children use
  * their parent's final name.
  */
-export function findTestBlocks(sourceFile: SourceFile, filePath: string): TestBlock[] {
-  if (!isTestFilePath(filePath)) return [];
+export function findTestBlocks(
+  sourceFile: SourceFile,
+  filePath: string,
+  isTestFile: (path: string) => boolean = isTestFilePath,
+): TestBlock[] {
+  if (!isTestFile(filePath)) return [];
 
   const used = new Set<string>();
   for (const fn of sourceFile.getFunctions()) {

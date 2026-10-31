@@ -37,6 +37,7 @@
   "license": "MIT",
   "dependencies": {
     "@ctxo/sql-extract": "workspace:^",
+    "picomatch": "^4.0.5",
     "ts-morph": "^28.0.0"
   },
   "peerDependencies": {
@@ -45,6 +46,7 @@
   "devDependencies": {
     "@ctxo/plugin-api": "workspace:*",
     "@types/node": "^26.6.1",
+    "@types/picomatch": "^4.0.3",
     "tsup": "^8.4.0",
     "typescript": "^6.0.3",
     "vitest": "^5.0.1"

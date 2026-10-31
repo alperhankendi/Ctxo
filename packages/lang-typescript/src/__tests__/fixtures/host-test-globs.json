@@ -1,0 +1,46 @@
+{
+  "hostDefaults": [
+    "**/__tests__/**",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "**/test/**",
+    "**/tests/**",
+    "**/*_test.go",
+    "**/src/test/**",
+    "**/*.Tests/**",
+    "**/*.Test/**",
+    "**/*Tests.cs",
+    "**/*Test.cs",
+    "**/test_*.py",
+    "**/*_test.py"
+  ],
+  "typescriptFallback": [
+    "**/__tests__/**",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "**/test/**",
+    "**/tests/**"
+  ],
+  "negationExamples": [
+    {
+      "glob": "!**/x/**",
+      "negated": true
+    },
+    {
+      "glob": "!(x)/**/*.ts",
+      "negated": false
+    },
+    {
+      "glob": "a/**",
+      "negated": false
+    },
+    {
+      "glob": "!**/fixtures/**",
+      "negated": true
+    },
+    {
+      "glob": "!(fixtures)/**/*.check.ts",
+      "negated": false
+    }
+  ]
+}
