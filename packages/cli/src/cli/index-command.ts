@@ -24,7 +24,8 @@ import {
 import type { CtxoConfig } from '../core/config/config-schema.js';
 import { selectWindow, windowCutoff } from '../core/co-change/co-change-window.js';
 import type { LoadedModule } from '../adapters/modules/module-loader.js';
-import type { IndexPassContext } from '../ports/i-ctxo-module.js';
+import { hasModuleIndexPass, runModuleIndexPasses } from './module-index-passes.js';
+import type { CoChangeWindowCommits } from '../ports/i-ctxo-module.js';
 import {
   detectLanguages,
   decideNeededLanguages,
@@ -663,7 +664,8 @@ export class IndexCommand {
    * Phase 2e. Runs each module's `indexPass` on the merged index (the one the snapshot, the artifacts and
    * the contexts view were built from), with a graph built on first use, the host's test-file check and,
    * when Phase 2 read the change log, the raw commits of the co-change window (renames intact). Each pass
-   * is awaited in turn; one that throws is reported and the next one still runs.
+   * is awaited in turn; one that throws is reported and the next one still runs (`runModuleIndexPasses`,
+   * shared with `ctxo watch`).
    */
   private async runModuleIndexPasses(
     modules: readonly LoadedModule[],
@@ -671,48 +673,32 @@ export class IndexCommand {
     indices: readonly FileIndex[],
     phase2: { readonly changeLog: ChangeLog; readonly coChange: ResolvedCoChangeConfig } | undefined,
   ): Promise<void> {
-    const passes = modules.filter((module) => typeof module.registration.indexPass === 'function');
-    if (passes.length === 0) return;
-
-    let ctx: IndexPassContext;
+    if (!hasModuleIndexPass(modules)) return;
+    let history: CoChangeWindowCommits | undefined;
     try {
-      // The host's services, so a pass classifies test files and builds the graph exactly as the module
-      // host does everywhere else.
-      const { createModuleHost } = await import('./module-host.js');
-      const { services } = createModuleHost({ projectRoot: this.projectRoot, mode: 'cli' });
-      let graph: SymbolGraph | undefined;
-      ctx = {
-        projectRoot: this.projectRoot,
-        ctxoRoot: this.ctxoRoot,
-        config,
-        indices,
-        graph: () => (graph ??= services.buildGraph(indices)),
-        isTestFile: services.createTestFileCheck(config, indices),
-        history:
-          phase2 === undefined
-            ? undefined
-            : {
-                head: phase2.changeLog.head,
-                headCommittedAt: phase2.changeLog.headCommittedAt,
-                commits: selectWindow(
-                  phase2.changeLog.commits,
-                  phase2.coChange.maxCommits,
-                  windowCutoff(phase2.coChange, phase2.changeLog.headCommittedAt),
-                ),
-              },
-      };
+      history =
+        phase2 === undefined
+          ? undefined
+          : {
+              head: phase2.changeLog.head,
+              headCommittedAt: phase2.changeLog.headCommittedAt,
+              commits: selectWindow(
+                phase2.changeLog.commits,
+                phase2.coChange.maxCommits,
+                windowCutoff(phase2.coChange, phase2.changeLog.headCommittedAt),
+              ),
+            };
     } catch (err) {
       console.error(`[ctxo] Module index passes skipped: ${(err as Error).message}`);
       return;
     }
-
-    for (const module of passes) {
-      try {
-        await module.registration.indexPass!(ctx);
-      } catch (err) {
-        console.error(`[ctxo] ${module.name} index pass failed: ${(err as Error).message}`);
-      }
-    }
+    await runModuleIndexPasses(modules, {
+      projectRoot: this.projectRoot,
+      ctxoRoot: this.ctxoRoot,
+      config,
+      indices,
+      ...(history === undefined ? {} : { history }),
+    });
   }
 
   private async autoInstallMissingPlugins(): Promise<void> {

@@ -6,6 +6,24 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo (ten packages today). Per-pack
 
 ## [Unreleased]
 
+**`ctxo watch` refreshes the domain artifacts.**
+
+### Added (watch)
+
+- With `@ctxo/domain` installed, `ctxo watch` now runs the domain index pass, the one `ctxo index` runs, after the
+  re-index of the changed files, so `.ctxo/index/domain/graph.json`, `maturity.json`, `shadow-candidates.json`,
+  `contexts.json` and `boundaries.json` follow your edits instead of waiting for the next `ctxo index` or commit, and
+  the domain tools stop answering `stale: true`. It never runs once per file event: an edit of the registry
+  (`domain.registry`, also when it is created or fixed), a card, the glossary or a context's `shadow-specs.yaml` runs
+  it 1 s after the last such event; changed source files (indexed files and `domain.facts.textScanExtensions` files)
+  arm it once `watch.snapshotMinFileChanges` (default 5) distinct ones are pending, 5 s after the last event, as the
+  community snapshot does. Passes never overlap and wait for pending re-indexes. The output is byte-identical to the
+  pass of `ctxo index` for the same index. Watch has no change log, so moved files, the discovery result and the
+  per-commit history keep their last values until the next `ctxo index`. A failing pass is logged and watch goes on;
+  without `@ctxo/domain` watch behaves as before. The stale hints now read "since the domain graph was built" and
+  name the watch refresh, and the `find_shadow_specs` and `get_context_map` descriptions say when watch refreshes them.
+- Module API: `CtxoModuleRegistration.classifyWatchPath(path, indexed)` (`input`, `source` or undefined) tells `ctxo
+  watch` which changed paths a module's `indexPass` depends on; a module without it gets no watch-time pass.
 **`index.tests` globs reach the plugins (#156, PR 1C follow-up).**
 
 ### Added (plugin protocol)

@@ -14,7 +14,7 @@ type Payload = Record<string, unknown>;
 
 const CARD = 'docs/domain/lending/domain.md';
 const GRAPH = '.ctxo/index/domain/graph.json';
-const STALE_CARDS_HINT = 'Cards or the glossary changed since the last "ctxo index"; run it to refresh rule links.';
+const STALE_CARDS_HINT = 'Cards or the glossary changed since the domain graph was built; run "ctxo index" to refresh rule links (a running "ctxo watch" does this shortly after the edit).';
 
 const LOAN_LIMIT: Record<Variant, string> = {
   csharp: 'src/Lending/LoanLimit.cs',

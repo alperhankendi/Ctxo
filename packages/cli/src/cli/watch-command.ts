@@ -16,6 +16,9 @@ import { communityDetectorOptions, indexTestPatterns, loadConfig, watchSnapshotM
 import type { CtxoConfig } from '../core/config/config-schema.js';
 import type { LoadedModule } from '../ports/i-ctxo-module.js';
 import { dropTestFileRetryTimeouts, extractFileFacts, pluginFactRequest } from './index-facts.js';
+import { runModuleIndexPasses } from './module-index-passes.js';
+import { JsonIndexReader } from '../adapters/storage/json-index-reader.js';
+import { WatchModulePassScheduler, classifyWatchPath, watchPassModules } from './watch-module-pass.js';
 import type {
   FileIndex, CommitIntent, AntiPattern, CommunitySnapshot, SymbolNode, GraphEdge, ComplexityMetrics,
 } from '../core/types.js';
@@ -35,7 +38,8 @@ export class WatchCommand {
 
   /**
    * `modules` are the opt-in modules the router loaded (@ctxo/domain); a module's fact request reaches the
-   * plugins exactly as in `ctxo index`.
+   * plugins exactly as in `ctxo index`, and a module that classifies watched paths gets its index pass run
+   * after the re-index, batched (`WatchModulePassScheduler`).
    */
   async run(options: { modules?: readonly LoadedModule[] } = {}): Promise<void> {
     console.error('[ctxo] Starting file watcher...');
@@ -94,6 +98,35 @@ export class WatchCommand {
     const snapshotThreshold = watchSnapshotMinFileChanges(watchConfig);
     const detectorOptions = communityDetectorOptions(watchConfig);
     const pathsChangedSinceSnapshot = new Set<string>();
+
+    // Module index passes (@ctxo/domain): the seam of Phase 2e of `ctxo index`, on the merged JSON index,
+    // without the change log (moved files and the discovery result keep their last recorded values). Only
+    // modules that classify watched paths take part; without one, nothing below runs.
+    const passModules = watchPassModules(options.modules ?? []);
+    let reindexesInFlight = 0;
+    const modulePasses =
+      passModules.length === 0
+        ? undefined
+        : new WatchModulePassScheduler({
+            sourceThreshold: snapshotThreshold,
+            isBusy: () => pendingFiles.size > 0 || reindexesInFlight > 0,
+            run: async (trigger) => {
+              const started = Date.now();
+              await runModuleIndexPasses(passModules, {
+                projectRoot: this.projectRoot,
+                ctxoRoot: this.ctxoRoot,
+                config: loadConfig(this.ctxoRoot).config,
+                indices: new JsonIndexReader(this.ctxoRoot).readAll(),
+              });
+              console.error(`[ctxo] Module index pass after ${describeTrigger(trigger)} (${Date.now() - started} ms)`);
+            },
+          });
+    const noteModulePath = (filePath: string, indexed: boolean) => {
+      if (!modulePasses) return;
+      const relativePath = toRepoPath(this.projectRoot, filePath);
+      const kind = classifyWatchPath(passModules, relativePath, indexed);
+      if (kind !== undefined) modulePasses.note(kind, relativePath);
+    };
 
     const reindexFile = async (filePath: string) => {
       const adapter = registry.getAdapter(filePath);
@@ -201,9 +234,17 @@ export class WatchCommand {
         filePath,
         setTimeout(async () => {
           pendingFiles.delete(filePath);
-          await reindexFile(filePath);
+          reindexesInFlight += 1;
+          try {
+            await reindexFile(filePath);
+          } finally {
+            reindexesInFlight -= 1;
+          }
           pathsChangedSinceSnapshot.add(filePath);
           scheduleCommunitySnapshot();
+          // After the re-index, so a pass that becomes due reads the new entry. A file no plugin handles
+          // (a card, the registry) was not re-indexed, but a module pass may read it.
+          noteModulePath(filePath, supportedExtensions.has(extname(filePath).toLowerCase()));
         }, DEBOUNCE_MS),
       );
     };
@@ -211,12 +252,16 @@ export class WatchCommand {
     watcher.start((event, filePath) => {
       if (event === 'unlink') {
         const ext = extname(filePath).toLowerCase();
-        if (!supportedExtensions.has(ext)) return;
+        if (!supportedExtensions.has(ext)) {
+          noteModulePath(filePath, false);
+          return;
+        }
 
         const relativePath = relative(this.projectRoot, filePath).replace(/\\/g, '/');
         writer.delete(relativePath);
         storage.deleteSymbolFile(relativePath);
         console.error(`[ctxo] Removed from index: ${relativePath}`);
+        noteModulePath(filePath, true);
       } else {
         debouncedReindex(filePath);
       }
@@ -230,9 +275,11 @@ export class WatchCommand {
         clearTimeout(timeout);
       }
       if (communitySnapshotTimer) clearTimeout(communitySnapshotTimer);
+      modulePasses?.dispose();
       // Shutdown all keep-alive capabilities (dedup via Set over Map values)
       const uniques = new Set(keepAliveByExt.values());
-      const shutdowns = Promise.all([...uniques].map((c) => c.dispose()));
+      // A module pass in flight finishes first, so no domain artifact is cut off by the exit.
+      const shutdowns = Promise.all([...[...uniques].map((c) => c.dispose()), modulePasses?.idle()]);
       shutdowns.then(() => {
         watcher.stop().then(() => {
           storage.close();
@@ -246,6 +293,19 @@ export class WatchCommand {
     process.on('SIGTERM', cleanup);
   }
 
+}
+
+/** A watched path relative to the project root, forward slashes. */
+function toRepoPath(projectRoot: string, filePath: string): string {
+  return relative(projectRoot, filePath).split('\\').join('/');
+}
+
+/** What set off a watch-time module pass, for the log line. */
+export function describeTrigger(trigger: { readonly inputs: number; readonly sources: number }): string {
+  const parts: string[] = [];
+  if (trigger.inputs > 0) parts.push(`${trigger.inputs} module input change(s)`);
+  if (trigger.sources > 0) parts.push(`${trigger.sources} source change(s)`);
+  return parts.join(' and ');
 }
 
 /**

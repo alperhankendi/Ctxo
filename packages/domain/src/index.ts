@@ -15,11 +15,13 @@ import { loopTools } from './mcp/loop-tools.js';
 import { taskContextReservation } from './mcp/graph-enrichers.js';
 import { DOMAIN_PACKAGE, domainVersion, sameMinor } from './version.js';
 import { repoIsFile } from './adapters/repo-files.js';
+import { createWatchPathClassifier } from './adapters/watch-paths.js';
 
 /**
- * The domain config for the fact request. Read only when the CLI asks for `indexCapabilities` (`ctxo index`,
- * `ctxo watch`), never at register time, so commands and the hook route do not read the config a second
- * time (the CLI's `loadConfig` logs its own warnings). Silent otherwise (W7): config problems are reported
+ * The domain config for the fact request and the watch classifier. Read only when the CLI asks for
+ * `indexCapabilities` (`ctxo index`, `ctxo watch`) or classifies a watched path, never at register time,
+ * so commands and the hook route do not read the config a second time (the CLI's `loadConfig` logs its own
+ * warnings). Silent otherwise (W7): config problems are reported
  * by the index pass and doctor. Any failure gives the defaults.
  */
 function factRequestConfig(host: CtxoHost): DomainConfig {
@@ -63,6 +65,8 @@ export const register: CtxoModuleRegister = async (host) => {
       return capabilities.value;
     },
     indexPass: domainIndexPass(host),
+    // ctxo watch: which changed paths the index pass reads (the config is read on the first event only).
+    classifyWatchPath: createWatchPathClassifier(host.projectRoot, () => factRequestConfig(host)),
     registerCommands(registrar) {
       registrar.registerCommand(contextsTouchedCommand(host));
       registrar.registerCommand(domainGuardHookCommand(host));

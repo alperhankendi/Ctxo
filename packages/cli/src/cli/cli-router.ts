@@ -512,7 +512,7 @@ Usage:
   ctxo index --file <path>       Same as --files with one path
   ctxo index --commit <rev>      Re-index the files changed by the commit just made (for example HEAD), drop the ones it deleted or renamed
   ctxo sync                 Rebuild SQLite cache from committed JSON index
-  ctxo watch                Start file watcher for incremental re-indexing
+  ctxo watch                Start file watcher for incremental re-indexing; with @ctxo/domain also refreshes the domain artifacts (graph.json, maturity.json, shadow-candidates.json)
   ctxo verify-index         CI gate: fail if index is stale
   ctxo status               Show index manifest
   ctxo init                 Interactive setup (rules, skills, guard, MCP, git hooks, config); the post-commit hook runs ctxo index --commit HEAD

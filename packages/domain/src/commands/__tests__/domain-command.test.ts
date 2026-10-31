@@ -425,7 +425,7 @@ describe('ctxo domain map and ctxo domain shadow-specs', () => {
 
   it('a graph built from another registry prints the stale-registry hint and exits 2', async () => {
     // domain-state.ts STALE_REGISTRY_HINT (not exported).
-    const STALE_REGISTRY_HINT = 'The domain registry changed since the last "ctxo index"; run it to rebuild the domain graph.';
+    const STALE_REGISTRY_HINT = 'The domain registry changed since the domain graph was built; run "ctxo index" to rebuild it (a running "ctxo watch" does this shortly after the edit).';
     await loop.index();
     loop.write('docs/domain/contexts.yaml', `${readFileSync(join(loop.root, 'docs/domain/contexts.yaml'), 'utf-8')}# edited\n`);
     loop.age('docs/domain/contexts.yaml');

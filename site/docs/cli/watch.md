@@ -33,10 +33,30 @@ cleanly.
 | --- | --- |
 | Add or change | Debounced (300 ms) re-index via the registered language adapter |
 | Delete | Remove the file's entry from both the JSON index and the SQLite cache |
-| Unsupported extension | Ignored |
+| Unsupported extension | Ignored, unless `@ctxo/domain` reads it (see below) |
 
 Each re-index also refreshes that file's commit history and anti-pattern list
 so newly committed changes are reflected immediately.
+
+## Domain artifacts (`@ctxo/domain`)
+
+With `@ctxo/domain` installed, `ctxo watch` also runs the domain index pass, the
+one `ctxo index` runs, so `.ctxo/index/domain/graph.json`, `maturity.json`,
+`shadow-candidates.json`, `contexts.json` and `boundaries.json` follow your edits
+and the domain tools stop answering `stale: true`. The pass never runs once per
+file event:
+
+| Change | When the pass runs |
+| --- | --- |
+| The registry (`domain.registry`), a card, the glossary or a context's `shadow-specs.yaml` | 1 s after the last such event |
+| Source files (indexed files, `domain.facts.textScanExtensions` files) | Once `watch.snapshotMinFileChanges` (default 5) distinct files changed, 5 s after the last event |
+
+Passes never overlap and wait for pending re-indexes. Watch has no change log,
+so moved files, the discovery result in `maturity.json` and the per-commit
+history keep their last values until the next `ctxo index` or commit. The
+config is read when watch starts. A failing pass is logged and the watcher
+keeps running. Without `@ctxo/domain` nothing changes. See the
+[domain knowledge layer](/concepts/domain-knowledge).
 
 ## Examples
 
