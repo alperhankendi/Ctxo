@@ -27,6 +27,20 @@ import type { CodeFact, IIncrementalReindex, IncrementalReindexCapable } from '@
 
 const log = createLogger('ctxo:watch');
 const DEBOUNCE_MS = 300;
+/** How long stop() waits for re-indexes in flight before it closes the cache anyway. */
+const STOP_DRAIN_MS = 10_000;
+
+/** Settles when every promise has, or after `ms` (the timer does not hold the process open). */
+async function drain(promises: readonly Promise<unknown>[], ms: number): Promise<void> {
+  if (promises.length === 0) return;
+  let timer: NodeJS.Timeout | undefined;
+  const timeout = new Promise<void>((resolve) => {
+    timer = setTimeout(resolve, ms);
+    timer.unref?.();
+  });
+  await Promise.race([Promise.allSettled(promises).then(() => undefined), timeout]);
+  if (timer) clearTimeout(timer);
+}
 const COMMUNITY_SNAPSHOT_DEBOUNCE_MS = 5000;
 
 export class WatchCommand {
@@ -110,6 +124,8 @@ export class WatchCommand {
     // tells a module whether these plugins were asked for facts.
     const passModules = watchPassModules(options.modules ?? []);
     let reindexesInFlight = 0;
+    // The re-indexes running now, so stop() can let them finish before the cache closes.
+    const inFlight = new Set<Promise<void>>();
     // Only pending re-indexes of files a plugin handles hold a due pass back (build output does not).
     const reindexPending = () =>
       reindexesInFlight > 0 || [...pendingFiles.keys()].some((f) => supportedExtensions.has(extname(f).toLowerCase()));
@@ -245,9 +261,12 @@ export class WatchCommand {
         setTimeout(async () => {
           pendingFiles.delete(filePath);
           reindexesInFlight += 1;
+          const running = reindexFile(filePath);
+          inFlight.add(running);
           try {
-            await reindexFile(filePath);
+            await running;
           } finally {
+            inFlight.delete(running);
             reindexesInFlight -= 1;
           }
           pathsChangedSinceSnapshot.add(filePath);
@@ -299,6 +318,8 @@ export class WatchCommand {
         pendingFiles.clear();
         if (communitySnapshotTimer) clearTimeout(communitySnapshotTimer);
         modulePasses?.dispose();
+        // Re-indexes already running finish first (bounded), so nothing is written after the cache closes.
+        await drain([...inFlight], STOP_DRAIN_MS);
         // Shutdown all keep-alive capabilities (dedup via Set over Map values). A module pass in flight
         // finishes first, so no domain artifact is cut off by the exit.
         const uniques = new Set(keepAliveByExt.values());

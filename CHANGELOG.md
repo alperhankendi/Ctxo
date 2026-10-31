@@ -25,8 +25,9 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo (ten packages today). Per-pack
 - For the same index at the same commit, the watch pass writes the bytes `ctxo index` writes (an e2e test compares
   every file under `.ctxo/index/domain/`). Watch has no change log, so moved files, the discovery result and the
   per-commit history keep the values of the last `ctxo index`. The config is read once when watch starts.
-- A registry created while watch runs gets no pass: the plugins were loaded without facts, so the pass logs once to run
-  `ctxo index` and restart watch, instead of writing artifacts that would answer as fresh without the native facts.
+- A registry created while watch runs gets no pass: the plugins were loaded without facts, so every skipped pass warns
+  that this watch must be restarted (and `ctxo index` run), instead of writing artifacts that would answer as fresh
+  without the native facts. A `ctxo index` run alone does not resume the passes of that watch.
 - A failing pass is logged and watch goes on; without `@ctxo/domain` watch behaves as before. The stale hints now read
   "since the domain graph was built" and name the watch refresh, and the `find_shadow_specs` and `get_context_map`
   descriptions say when watch refreshes them.

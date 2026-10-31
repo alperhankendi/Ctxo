@@ -62,7 +62,8 @@ index` writes. Watch has no change log, so moved files, the discovery result in
 `maturity.json` and the per-commit history keep the values of the last `ctxo
 index` until the next one or the next commit. The config is read once when
 watch starts. A registry created while watch runs gets no pass (the plugins were
-loaded without facts): run `ctxo index` and restart watch. A failing pass is
+loaded without facts): this watch warns on each skipped pass until it is
+restarted (run `ctxo index` too). A failing pass is
 logged and the watcher keeps running. Without `@ctxo/domain` nothing changes.
 See the [domain knowledge layer](/concepts/domain-knowledge).
 

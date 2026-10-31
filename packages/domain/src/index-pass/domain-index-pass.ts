@@ -17,10 +17,14 @@ import { classifyTests } from '../core/test-conventions.js';
 
 const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
 
-/** Logged once when the pass runs on an index built without facts while a registry exists (`factsRequested: false`). */
+/**
+ * Logged on every skipped pass while the registry exists but this watch's plugins were loaded without a fact request
+ * (`factsRequested: false`). A `ctxo index` run meanwhile does not help this watch: its own re-indexes still write no
+ * facts, so it keeps skipping until it is restarted.
+ */
 export const FACTS_MISSING_WARNING =
-  'The domain registry appeared after ctxo watch started, so the plugins report no facts; domain artifacts not updated. ' +
-  'Run "ctxo index" and restart ctxo watch.';
+  'The domain registry appeared after this ctxo watch started, so its plugins report no facts; domain artifacts not updated. ' +
+  'This watch skips the domain pass until it is restarted: restart ctxo watch (and run "ctxo index" if you have not).';
 
 /**
  * Phase 2e of `ctxo index` for `@ctxo/domain` (spec 10.7): the file-to-context map, the cross-context edges and
@@ -39,7 +43,6 @@ export const FACTS_MISSING_WARNING =
  */
 export function domainIndexPass(host: CtxoHost): (ctx: IndexPassContext) => Promise<void> {
   const log = host.services.createLogger('ctxo:domain');
-  let factsWarned = false;
   return async (ctx) => {
     const started = performance.now();
     const store = new DomainArtifactStore(ctx.ctxoRoot);
@@ -59,13 +62,10 @@ export function domainIndexPass(host: CtxoHost): (ctx: IndexPassContext) => Prom
       return;
     }
     // A registry that appeared after `ctxo watch` started: its plugins were loaded without a fact request, so
-    // the index has no facts. Artifacts built from it would answer as fresh with the native candidates
-    // missing; nothing is written, and the tools keep pointing at "ctxo index".
+    // its re-indexes write no facts. Artifacts built from them would answer as fresh with the native candidates
+    // missing; nothing is written, and every skipped (batched) pass says so, also after a `ctxo index` run.
     if (ctx.factsRequested === false) {
-      if (!factsWarned) {
-        factsWarned = true;
-        log.warn(FACTS_MISSING_WARNING);
-      }
+      log.warn(FACTS_MISSING_WARNING);
       return;
     }
     const registry = loaded.registry;

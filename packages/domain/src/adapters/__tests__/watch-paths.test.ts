@@ -175,7 +175,7 @@ describe('the domain pass under ctxo watch', () => {
     expect(artifacts()).toEqual(fromIndex);
   });
 
-  it('a registry that appeared after watch started (no facts requested) writes nothing and warns once', async () => {
+  it('a registry that appeared after watch started (no facts requested) writes nothing and warns on every skipped pass', async () => {
     await loop.index();
     const domainDir = join(loop.ctxoRoot, 'index', 'domain');
     rmSync(domainDir, { recursive: true, force: true });
@@ -187,7 +187,14 @@ describe('the domain pass under ctxo watch', () => {
     await watchPass(reg, false);
     await watchPass(reg, false);
     expect(existsSync(domainDir)).toBe(false);
-    expect(warnings.filter((w) => w.includes(FACTS_MISSING_WARNING))).toHaveLength(1);
+    expect(warnings.filter((w) => w.includes(FACTS_MISSING_WARNING))).toHaveLength(2);
+    // A ctxo index run meanwhile (artifacts with facts on disk) does not make this watch's passes write: still skipped.
+    await loop.index();
+    const before = artifacts();
+    loop.write(CARD_PATH, `${readFileSync(join(loop.root, CARD_PATH), 'utf-8')}\nEdited under the old watch.\n`);
+    await watchPass(reg, false);
+    expect(artifacts()).toEqual(before);
+    expect(warnings.filter((w) => w.includes(FACTS_MISSING_WARNING))).toHaveLength(3);
     // With facts requested (a watch started after the registry existed) the pass writes as usual.
     await watchPass(reg, true);
     expect(Object.keys(artifacts())).toEqual([...ARTIFACTS]);

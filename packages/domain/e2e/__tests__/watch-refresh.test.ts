@@ -1,6 +1,6 @@
 import { spawn, type ChildProcess } from 'node:child_process';
-import { readdirSync, readFileSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { join, relative, sep } from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { assertBuilt, childEnv, CLI_BIN, cleanupWorkspaces, SampleWorkspace } from './sample-workspace.js';
 
@@ -17,11 +17,15 @@ const DOMAIN_DIR = '.ctxo/index/domain';
 function domainArtifacts(ws: SampleWorkspace): Record<string, string> {
   const dir = ws.path(DOMAIN_DIR);
   const out: Record<string, string> = {};
-  for (const entry of readdirSync(dir, { recursive: true, withFileTypes: true })) {
-    if (!entry.isFile()) continue;
-    const full = join(entry.parentPath, entry.name);
-    out[relative(dir, full).replace(/\\/g, '/')] = readFileSync(full).toString('base64');
-  }
+  // A plain walk: Dirent.parentPath needs Node 20.12, the packages support 20.0.
+  const walk = (folder: string): void => {
+    for (const name of readdirSync(folder)) {
+      const full = join(folder, name);
+      if (statSync(full).isDirectory()) walk(full);
+      else out[relative(dir, full).split(sep).join('/')] = readFileSync(full).toString('base64');
+    }
+  };
+  walk(dir);
   return Object.fromEntries(Object.entries(out).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)));
 }
 
@@ -76,9 +80,10 @@ describe('ctxo watch refreshes the domain artifacts (built CLI)', () => {
     // Fresh artifacts: watch starts without a pass.
     const fresh = new Watch(ws);
     try {
+      // The start check runs before this line is printed, and a start pass is only ever scheduled with the
+      // "stale" line, so its absence here proves no pass at start without a timed wait.
       await fresh.until(/Watching for file changes/);
-      await new Promise((r) => setTimeout(r, 2500));
-      expect(fresh.count(/Module index pass after/)).toBe(0);
+      expect(fresh.count(/Module artifacts are stale/)).toBe(0);
     } finally {
       await fresh.kill();
     }

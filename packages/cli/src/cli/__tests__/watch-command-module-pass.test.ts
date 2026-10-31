@@ -13,6 +13,8 @@ import type { CtxoModuleRegistration, IndexPassContext, LoadedModule, WatchPathK
  */
 
 const watcherState = vi.hoisted(() => ({ handler: undefined as FileChangeHandler | undefined }));
+/** Holds the fake plugin's extraction while `hold` is set; `entered` says a re-index reached it. */
+const gate = vi.hoisted(() => ({ hold: undefined as Promise<void> | undefined, entered: false }));
 
 vi.mock('../../adapters/watcher/chokidar-watcher-adapter.js', () => ({
   ChokidarWatcherAdapter: class {
@@ -29,9 +31,11 @@ vi.mock('../plugin-loader.js', () => ({
       specifier: 'fake',
       plugin: { id: 'fake', version: '0.0.0', tier: 'syntax', extensions: ['.ts'] },
       adapter: {
-        extractSymbols: async (file: string) => [
-          { symbolId: `${file}::f::function`, name: 'f', kind: 'function', startLine: 0, endLine: 1 },
-        ],
+        extractSymbols: async (file: string) => {
+          gate.entered = true;
+          if (gate.hold) await gate.hold;
+          return [{ symbolId: `${file}::f::function`, name: 'f', kind: 'function', startLine: 0, endLine: 1 }];
+        },
         extractEdges: async () => [],
         extractComplexity: async () => [],
         isSupported: (file: string) => file.endsWith('.ts'),
@@ -113,6 +117,8 @@ describe('ctxo watch runs the module index passes', () => {
   });
 
   afterEach(async () => {
+    gate.hold = undefined;
+    gate.entered = false;
     for (const watch of running) await watch.stop();
     vi.useRealTimers();
     vi.restoreAllMocks();
@@ -224,6 +230,25 @@ describe('ctxo watch runs the module index passes', () => {
     await until(() => indexed('src/b.ts'));
     emit('change', CARD);
     await until(() => calls === 2);
+  });
+
+  it('stop() lets a re-index in flight finish before the cache closes', async () => {
+    let release: () => void = () => {};
+    gate.hold = new Promise<void>((resolve) => (release = resolve));
+    const watch = await start([domainModule()]);
+    write('src/c.ts', 'export function f() {}\n');
+    emit('add', 'src/c.ts');
+    await until(() => gate.entered);
+    const stopping = watch.stop();
+    await elapse(500);
+    expect(errors).not.toContain('[ctxo] Watcher stopped');
+    release();
+    await stopping;
+    expect(indexed('src/c.ts')).toBe(true);
+    const written = errors.indexOf('[ctxo] Re-indexed: src/c.ts');
+    expect(written).toBeGreaterThanOrEqual(0);
+    expect(written).toBeLessThan(errors.indexOf('[ctxo] Watcher stopped'));
+    expect(errors.some((e) => e.startsWith('[ctxo] Failed to re-index'))).toBe(false);
   });
 
   it('stop() drains an in-flight pass and stops further passes', async () => {
