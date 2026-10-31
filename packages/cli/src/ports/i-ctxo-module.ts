@@ -124,6 +124,12 @@ export interface IndexPassContext {
   readonly isTestFile: TestFileCheck;
   /** Raw window commits, renames intact; absent with --skip-history or without git. */
   readonly history?: CoChangeWindowCommits;
+  /**
+   * Set by `ctxo watch` only: whether its plugins were asked for facts. Watch decides it once at start, so a
+   * module whose fact request changed since (a registry created while watch runs) can tell that the index lacks
+   * facts. Absent under `ctxo index`, which asks for facts on every run that needs them.
+   */
+  readonly factsRequested?: boolean;
 }
 
 export interface InitFileResult {
@@ -200,6 +206,11 @@ export interface CtxoModuleRegistration {
    * ignores. Without it, `ctxo watch` never runs the module's pass. Called once per file event: keep it cheap.
    */
   classifyWatchPath?(path: string, indexed: boolean): WatchPathKind | undefined;
+  /**
+   * Whether the artifacts of `indexPass` are stale against the module's inputs (a cheap check). `ctxo watch`
+   * asks once at start and runs one pass when true.
+   */
+  watchArtifactsStale?(): boolean;
   registerTools?(registrar: ToolRegistrar): void;
   readonly enrich?: Partial<Record<CoreToolName, ResponseEnricher>>;
   /** Tokens kept back from `get_context_for_task`'s budget for this module's enriched fields. */

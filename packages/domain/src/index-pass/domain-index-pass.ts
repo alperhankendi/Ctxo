@@ -17,6 +17,11 @@ import { classifyTests } from '../core/test-conventions.js';
 
 const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
 
+/** Logged once when the pass runs on an index built without facts while a registry exists (`factsRequested: false`). */
+export const FACTS_MISSING_WARNING =
+  'The domain registry appeared after ctxo watch started, so the plugins report no facts; domain artifacts not updated. ' +
+  'Run "ctxo index" and restart ctxo watch.';
+
 /**
  * Phase 2e of `ctxo index` for `@ctxo/domain` (spec 10.7): the file-to-context map, the cross-context edges and
  * boundary violations, the domain graph (`graph.json`, spec 11.2), the shadow-spec candidates
@@ -34,6 +39,7 @@ const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
  */
 export function domainIndexPass(host: CtxoHost): (ctx: IndexPassContext) => Promise<void> {
   const log = host.services.createLogger('ctxo:domain');
+  let factsWarned = false;
   return async (ctx) => {
     const started = performance.now();
     const store = new DomainArtifactStore(ctx.ctxoRoot);
@@ -50,6 +56,16 @@ export function domainIndexPass(host: CtxoHost): (ctx: IndexPassContext) => Prom
       log.warn(
         `The domain registry at ${loaded.path} has ${loaded.problems.length} problem(s); domain artifacts not updated. Run "ctxo verify-domain".`,
       );
+      return;
+    }
+    // A registry that appeared after `ctxo watch` started: its plugins were loaded without a fact request, so
+    // the index has no facts. Artifacts built from it would answer as fresh with the native candidates
+    // missing; nothing is written, and the tools keep pointing at "ctxo index".
+    if (ctx.factsRequested === false) {
+      if (!factsWarned) {
+        factsWarned = true;
+        log.warn(FACTS_MISSING_WARNING);
+      }
       return;
     }
     const registry = loaded.registry;

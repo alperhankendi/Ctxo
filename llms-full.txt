@@ -618,7 +618,7 @@ level 0: install and index; 1: registry with paths; 2: cards; 3: rule IDs and te
 
 ## Domain Graph (0.15.0, #156 PR 3)
 
-With `@ctxo/domain` and a registry, `ctxo index` (and the post-commit hook, also for a card-only commit) writes `.ctxo/index/domain/graph.json` (`ctxoArtifact: "domain-graph"`, byte-identical for the same input). `ctxo watch` (with `@ctxo/domain`) also rebuilds it: 1 s after a card, glossary, registry or `shadow-specs.yaml` edit, and after `watch.snapshotMinFileChanges` re-indexed source files. Code metrics never read it.
+With `@ctxo/domain` and a registry, `ctxo index` (and the post-commit hook, also for a card-only commit) writes `.ctxo/index/domain/graph.json` (`ctxoArtifact: "domain-graph"`, byte-identical for the same input). `ctxo watch` (with `@ctxo/domain`) also rebuilds it: after a card, glossary or registry edit (quiet period max(1 s, 2 x the last pass), never postponed more than 30 s), after `watch.snapshotMinFileChanges` re-indexed source files, and once at start when the graph is stale; same bytes as `ctxo index` at the same commit (change-log fields kept from the last index); a registry created while watch runs gets no pass until `ctxo index` and a restart. Code metrics never read it.
 
 ### Nodes and links
 - Nodes: `context:<id>`, `rule:<ID>`, `term:<context>/<term-key>` (repo-wide glossary terms use `*`), `decision:<context>/<date>-<n>`; search-only `section:<card>:<line>`.
@@ -641,7 +641,7 @@ With `@ctxo/domain` and a registry, `ctxo index` (and the post-commit hook, also
 - `rule: comment names unknown rule <ID>` (warning, production code, only for a rule prefix).
 
 ### Internal API (ADR-018 addendum)
-- Async enrichers (awaited by get_blast_radius, get_pr_impact, get_why_context; dropped with a warning by synchronous tools), get_context_for_task as the seventh enrich-seam tool, `reserveTaskContextTokens` (summed, capped at a quarter of tokenBudget), `rankedContextScopes`, host services `createDocumentSearch`, `splitIdentifier`, `dataResourceKinds`. Watch seam: `classifyWatchPath(path, indexed)` (`input` or `source`) makes `ctxo watch` run the module's `indexPass` (batched, no change log).
+- Async enrichers (awaited by get_blast_radius, get_pr_impact, get_why_context; dropped with a warning by synchronous tools), get_context_for_task as the seventh enrich-seam tool, `reserveTaskContextTokens` (summed, capped at a quarter of tokenBudget), `rankedContextScopes`, host services `createDocumentSearch`, `splitIdentifier`, `dataResourceKinds`. Watch seam: `classifyWatchPath(path, indexed)` (`input` or `source`) makes `ctxo watch` run the module's `indexPass` (batched, no change log, `factsRequested` set); `watchArtifactsStale()` asks for one pass at start.
 - The ctxo-domain-fold skill marker was v0.15 in 0.15.0 (v0.16 since PR 4); `ctxo doctor` reports older copies as outdated until `ctxo init --only domain`.
 
 ---

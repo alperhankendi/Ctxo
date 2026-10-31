@@ -54,8 +54,8 @@ the source that produced it.
 | Term to identifiers | A `**Term**` in `Language` or the glossary | Symbol and table names that carry the term's words |
 
 Code metrics (PageRank, communities, snapshots, dead code, the safe-edit gate's percentiles) never read the graph, so
-editing a card never shifts code clusters. A running `ctxo watch` rebuilds it about a second after a card, glossary,
-registry or `shadow-specs.yaml` edit (see [`ctxo watch`](/cli/watch#domain-artifacts-ctxo-domain)); without it, the
+editing a card never shifts code clusters. A running `ctxo watch` rebuilds it shortly after a card, glossary or registry
+edit (see [`ctxo watch`](/cli/watch#domain-artifacts-ctxo-domain)); without it, the
 tools answer from the last graph and say `stale: true` until the next `ctxo index` or commit.
 
 With a graph the agent gets:

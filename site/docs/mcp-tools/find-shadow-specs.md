@@ -218,7 +218,8 @@ the query (`kinds`). `staleResolutions`, `unknownRules` and `resolutionProblems`
 
 `ctxo domain shadow-specs <context> [--kinds <k,...>] [--all] [--json]` prints the same body without `_meta`
 (see [domain commands](/cli/domain#ctxo-domain-shadow-specs)). Under `ctxo watch`, candidates refresh shortly after a
-card, glossary, registry or `shadow-specs.yaml` edit, and after `watch.snapshotMinFileChanges` re-indexed source files.
+card, glossary or registry edit, and after `watch.snapshotMinFileChanges` re-indexed source files. A
+`shadow-specs.yaml` edit shows at once, without a pass.
 
 ## When to use
 

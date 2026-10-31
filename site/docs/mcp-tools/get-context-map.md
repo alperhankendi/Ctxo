@@ -134,7 +134,7 @@ create no graph edges, so a context tested only that way can stay below `pinned`
 ## CLI
 
 `ctxo domain map [--json]` prints the whole map with no truncation (see [domain commands](/cli/domain#ctxo-domain-map)).
-Under `ctxo watch`, the map refreshes shortly after a card, glossary, registry or `shadow-specs.yaml` edit, and after
+Under `ctxo watch`, the map refreshes shortly after a card, glossary or registry edit, and after
 `watch.snapshotMinFileChanges` re-indexed source files.
 
 ## When to use

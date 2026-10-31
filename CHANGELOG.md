@@ -13,17 +13,33 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo (ten packages today). Per-pack
 - With `@ctxo/domain` installed, `ctxo watch` now runs the domain index pass, the one `ctxo index` runs, after the
   re-index of the changed files, so `.ctxo/index/domain/graph.json`, `maturity.json`, `shadow-candidates.json`,
   `contexts.json` and `boundaries.json` follow your edits instead of waiting for the next `ctxo index` or commit, and
-  the domain tools stop answering `stale: true`. It never runs once per file event: an edit of the registry
-  (`domain.registry`, also when it is created or fixed), a card, the glossary or a context's `shadow-specs.yaml` runs
-  it 1 s after the last such event; changed source files (indexed files and `domain.facts.textScanExtensions` files)
-  arm it once `watch.snapshotMinFileChanges` (default 5) distinct ones are pending, 5 s after the last event, as the
-  community snapshot does. Passes never overlap and wait for pending re-indexes. The output is byte-identical to the
-  pass of `ctxo index` for the same index. Watch has no change log, so moved files, the discovery result and the
-  per-commit history keep their last values until the next `ctxo index`. A failing pass is logged and watch goes on;
-  without `@ctxo/domain` watch behaves as before. The stale hints now read "since the domain graph was built" and
-  name the watch refresh, and the `find_shadow_specs` and `get_context_map` descriptions say when watch refreshes them.
+  the domain tools stop answering `stale: true`. It never runs once per file event:
+  - An edit of the registry (`domain.registry`), a card or the glossary runs it after a quiet period of 1 s, or twice
+    the duration of the last pass when that is longer (logged under `DEBUG=ctxo:watch`).
+  - Changed source files (indexed files and `domain.facts.textScanExtensions` files) arm it once
+    `watch.snapshotMinFileChanges` (default 5) distinct ones are pending, 5 s after the last event, as the community
+    snapshot does.
+  - A due pass waits for pending re-indexes of source files but is never postponed more than 30 s; passes never
+    overlap.
+  - At start, one pass runs only when the domain graph is stale against the registry, cards or glossary.
+- For the same index at the same commit, the watch pass writes the bytes `ctxo index` writes (an e2e test compares
+  every file under `.ctxo/index/domain/`). Watch has no change log, so moved files, the discovery result and the
+  per-commit history keep the values of the last `ctxo index`. The config is read once when watch starts.
+- A registry created while watch runs gets no pass: the plugins were loaded without facts, so the pass logs once to run
+  `ctxo index` and restart watch, instead of writing artifacts that would answer as fresh without the native facts.
+- A failing pass is logged and watch goes on; without `@ctxo/domain` watch behaves as before. The stale hints now read
+  "since the domain graph was built" and name the watch refresh, and the `find_shadow_specs` and `get_context_map`
+  descriptions say when watch refreshes them.
 - Module API: `CtxoModuleRegistration.classifyWatchPath(path, indexed)` (`input`, `source` or undefined) tells `ctxo
-  watch` which changed paths a module's `indexPass` depends on; a module without it gets no watch-time pass.
+  watch` which changed paths a module's `indexPass` depends on, `watchArtifactsStale()` asks for a pass at start, and
+  `IndexPassContext.factsRequested` tells the pass whether watch's plugins were asked for facts.
+
+### Fixed (domain)
+
+- `shadow-candidates.json` wrote a fact's `detail` keys in the order the plugin produced them on a full `ctxo index`,
+  but in sorted order when the facts came from the JSON index (an incremental run, `ctxo watch`), so the same input
+  could give two different files. The keys are now always in codepoint order; the file changes once.
+
 **`index.tests` globs reach the plugins (#156, PR 1C follow-up).**
 
 ### Added (plugin protocol)

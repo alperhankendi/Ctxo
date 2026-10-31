@@ -48,15 +48,23 @@ file event:
 
 | Change | When the pass runs |
 | --- | --- |
-| The registry (`domain.registry`), a card, the glossary or a context's `shadow-specs.yaml` | 1 s after the last such event |
+| The registry (`domain.registry`), a card or the glossary | 1 s after the last such event, or twice the duration of the last pass when that is longer |
 | Source files (indexed files, `domain.facts.textScanExtensions` files) | Once `watch.snapshotMinFileChanges` (default 5) distinct files changed, 5 s after the last event |
+| Watch starts while the domain graph is stale against the registry, cards or glossary | Once, shortly after start (no pass when the artifacts are current) |
 
-Passes never overlap and wait for pending re-indexes. Watch has no change log,
-so moved files, the discovery result in `maturity.json` and the per-commit
-history keep their last values until the next `ctxo index` or commit. The
-config is read when watch starts. A failing pass is logged and the watcher
-keeps running. Without `@ctxo/domain` nothing changes. See the
-[domain knowledge layer](/concepts/domain-knowledge).
+A due pass waits for pending re-indexes of source files but is never postponed
+more than 30 s, and passes never overlap. `DEBUG=ctxo:watch` logs how long each
+pass took. A `shadow-specs.yaml` edit needs no pass: resolutions apply when the
+tools read them.
+
+For the same index at the same commit, the watch pass writes the bytes `ctxo
+index` writes. Watch has no change log, so moved files, the discovery result in
+`maturity.json` and the per-commit history keep the values of the last `ctxo
+index` until the next one or the next commit. The config is read once when
+watch starts. A registry created while watch runs gets no pass (the plugins were
+loaded without facts): run `ctxo index` and restart watch. A failing pass is
+logged and the watcher keeps running. Without `@ctxo/domain` nothing changes.
+See the [domain knowledge layer](/concepts/domain-knowledge).
 
 ## Examples
 

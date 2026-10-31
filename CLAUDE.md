@@ -45,7 +45,7 @@ ctxo index --files a.ts b.ts        # re-index only these files (--file <path> i
 ctxo index --commit HEAD            # re-index the files one commit changed (the v2 post-commit hook runs this)
 ctxo index --cochange-commits 500   # co-change window in commits (default 2000, or "all")
 ctxo index --cochange-since 12m     # co-change window by age from HEAD (d, w, m, y)
-ctxo watch                          # file watcher for incremental re-index
+ctxo watch                          # file watcher for incremental re-index; with @ctxo/domain also refreshes the domain artifacts
 ctxo sync                           # rebuild SQLite from committed JSON
 ctxo init                           # rules (+ a "ctxo domain discover" line once the domain layer is set up), skills, guard, MCP config, git hooks (post-commit v2), config + plugin install prompt
 ctxo init --only <parts>            # install only these parts: rules,skills,guard,mcp,git-hooks,config,domain

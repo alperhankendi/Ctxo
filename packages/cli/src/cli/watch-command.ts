@@ -18,18 +18,22 @@ import type { LoadedModule } from '../ports/i-ctxo-module.js';
 import { dropTestFileRetryTimeouts, extractFileFacts, pluginFactRequest } from './index-facts.js';
 import { runModuleIndexPasses } from './module-index-passes.js';
 import { JsonIndexReader } from '../adapters/storage/json-index-reader.js';
-import { WatchModulePassScheduler, classifyWatchPath, watchPassModules } from './watch-module-pass.js';
+import { WatchModulePassScheduler, classifyWatchPath, watchPassModules, type WatchPassTrigger } from './watch-module-pass.js';
+import { createLogger } from '../core/logger.js';
 import type {
   FileIndex, CommitIntent, AntiPattern, CommunitySnapshot, SymbolNode, GraphEdge, ComplexityMetrics,
 } from '../core/types.js';
 import type { CodeFact, IIncrementalReindex, IncrementalReindexCapable } from '@ctxo/plugin-api';
 
+const log = createLogger('ctxo:watch');
 const DEBOUNCE_MS = 300;
 const COMMUNITY_SNAPSHOT_DEBOUNCE_MS = 5000;
 
 export class WatchCommand {
   private readonly projectRoot: string;
   private readonly ctxoRoot: string;
+  /** Set by `run`: stops the watcher, drains the passes and closes the cache. */
+  private stopWatching: (() => Promise<void>) | undefined;
 
   constructor(projectRoot: string) {
     this.projectRoot = projectRoot;
@@ -102,23 +106,29 @@ export class WatchCommand {
     // Module index passes (@ctxo/domain): the seam of Phase 2e of `ctxo index`, on the merged JSON index,
     // without the change log (moved files and the discovery result keep their last recorded values). Only
     // modules that classify watched paths take part; without one, nothing below runs.
+    // The pass reads the config watch started with (`watchConfig`), as the re-index does; `factsRequested`
+    // tells a module whether these plugins were asked for facts.
     const passModules = watchPassModules(options.modules ?? []);
     let reindexesInFlight = 0;
+    // Only pending re-indexes of files a plugin handles hold a due pass back (build output does not).
+    const reindexPending = () =>
+      reindexesInFlight > 0 || [...pendingFiles.keys()].some((f) => supportedExtensions.has(extname(f).toLowerCase()));
     const modulePasses =
       passModules.length === 0
         ? undefined
         : new WatchModulePassScheduler({
             sourceThreshold: snapshotThreshold,
-            isBusy: () => pendingFiles.size > 0 || reindexesInFlight > 0,
+            isBusy: reindexPending,
+            onPassDuration: (ms) => log.debug(`module index pass took ${ms} ms`),
             run: async (trigger) => {
-              const started = Date.now();
               await runModuleIndexPasses(passModules, {
                 projectRoot: this.projectRoot,
                 ctxoRoot: this.ctxoRoot,
-                config: loadConfig(this.ctxoRoot).config,
+                config: watchConfig,
                 indices: new JsonIndexReader(this.ctxoRoot).readAll(),
+                factsRequested: watchFacts,
               });
-              console.error(`[ctxo] Module index pass after ${describeTrigger(trigger)} (${Date.now() - started} ms)`);
+              console.error(`[ctxo] Module index pass after ${describeTrigger(trigger)}`);
             },
           });
     const noteModulePath = (filePath: string, indexed: boolean) => {
@@ -267,30 +277,44 @@ export class WatchCommand {
       }
     });
 
+    // One pass at start, only when a module reports its artifacts stale against their inputs (cards edited
+    // while watch was not running, say). Otherwise none.
+    if (modulePasses && watchArtifactsStale(passModules)) {
+      console.error('[ctxo] Module artifacts are stale against their inputs; refreshing them');
+      modulePasses.requestStartPass();
+    }
+
     console.error('[ctxo] Watching for file changes... (Ctrl+C to stop)');
 
-    const cleanup = () => {
+    const onSignal = () => {
       console.error('\n[ctxo] Stopping watcher...');
-      for (const timeout of pendingFiles.values()) {
-        clearTimeout(timeout);
-      }
-      if (communitySnapshotTimer) clearTimeout(communitySnapshotTimer);
-      modulePasses?.dispose();
-      // Shutdown all keep-alive capabilities (dedup via Set over Map values)
-      const uniques = new Set(keepAliveByExt.values());
-      // A module pass in flight finishes first, so no domain artifact is cut off by the exit.
-      const shutdowns = Promise.all([...[...uniques].map((c) => c.dispose()), modulePasses?.idle()]);
-      shutdowns.then(() => {
-        watcher.stop().then(() => {
-          storage.close();
-          console.error('[ctxo] Watcher stopped');
-          process.exit(0);
-        });
-      });
+      void this.stop().then(() => process.exit(0));
     };
+    let stopped: Promise<void> | undefined;
+    this.stopWatching = () =>
+      (stopped ??= (async () => {
+        process.removeListener('SIGINT', onSignal);
+        process.removeListener('SIGTERM', onSignal);
+        for (const timeout of pendingFiles.values()) clearTimeout(timeout);
+        pendingFiles.clear();
+        if (communitySnapshotTimer) clearTimeout(communitySnapshotTimer);
+        modulePasses?.dispose();
+        // Shutdown all keep-alive capabilities (dedup via Set over Map values). A module pass in flight
+        // finishes first, so no domain artifact is cut off by the exit.
+        const uniques = new Set(keepAliveByExt.values());
+        await Promise.all([...[...uniques].map((c) => c.dispose()), modulePasses?.idle()]);
+        await watcher.stop();
+        storage.close();
+        console.error('[ctxo] Watcher stopped');
+      })());
 
-    process.on('SIGINT', cleanup);
-    process.on('SIGTERM', cleanup);
+    process.on('SIGINT', onSignal);
+    process.on('SIGTERM', onSignal);
+  }
+
+  /** Stops a running watcher without exiting: pending re-indexes are dropped, a module pass in flight is awaited. */
+  async stop(): Promise<void> {
+    await this.stopWatching?.();
   }
 
 }
@@ -300,9 +324,22 @@ function toRepoPath(projectRoot: string, filePath: string): string {
   return relative(projectRoot, filePath).split('\\').join('/');
 }
 
+/** Whether a module reports its artifacts stale at start (a module whose check throws counts as fresh). */
+function watchArtifactsStale(modules: readonly LoadedModule[]): boolean {
+  return modules.some((module) => {
+    try {
+      return module.registration.watchArtifactsStale?.() === true;
+    } catch (err) {
+      console.error(`[ctxo] ${module.name} stale check failed: ${(err as Error).message}`);
+      return false;
+    }
+  });
+}
+
 /** What set off a watch-time module pass, for the log line. */
-export function describeTrigger(trigger: { readonly inputs: number; readonly sources: number }): string {
+export function describeTrigger(trigger: WatchPassTrigger): string {
   const parts: string[] = [];
+  if (trigger.start) parts.push('start (stale artifacts)');
   if (trigger.inputs > 0) parts.push(`${trigger.inputs} module input change(s)`);
   if (trigger.sources > 0) parts.push(`${trigger.sources} source change(s)`);
   return parts.join(' and ');

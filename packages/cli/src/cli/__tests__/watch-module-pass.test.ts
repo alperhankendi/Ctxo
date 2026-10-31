@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { CtxoModuleRegistration, LoadedModule } from '../../ports/i-ctxo-module.js';
 import {
   MODULE_INPUT_QUIET_MS,
+  MODULE_MAX_WAIT_MS,
   MODULE_SOURCE_QUIET_MS,
   WatchModulePassScheduler,
   classifyWatchPath,
@@ -33,7 +34,7 @@ describe('WatchModulePassScheduler', () => {
     await vi.advanceTimersByTimeAsync(1);
     await scheduler.idle();
     expect(run).toHaveBeenCalledTimes(1);
-    expect(run).toHaveBeenCalledWith({ inputs: 1, sources: 0 });
+    expect(run).toHaveBeenCalledWith({ inputs: 1, sources: 0, start: false });
   });
 
   it('batches many events into one pass', async () => {
@@ -47,7 +48,7 @@ describe('WatchModulePassScheduler', () => {
     await vi.advanceTimersByTimeAsync(MODULE_INPUT_QUIET_MS);
     await scheduler.idle();
     expect(run).toHaveBeenCalledTimes(1);
-    expect(run).toHaveBeenCalledWith({ inputs: 4, sources: 40 });
+    expect(run).toHaveBeenCalledWith({ inputs: 4, sources: 40, start: false });
     await vi.advanceTimersByTimeAsync(MODULE_SOURCE_QUIET_MS * 2);
     expect(run).toHaveBeenCalledTimes(1);
   });
@@ -64,7 +65,7 @@ describe('WatchModulePassScheduler', () => {
     expect(run).not.toHaveBeenCalled();
     await vi.advanceTimersByTimeAsync(1);
     await scheduler.idle();
-    expect(run).toHaveBeenCalledWith({ inputs: 0, sources: 3 });
+    expect(run).toHaveBeenCalledWith({ inputs: 0, sources: 3, start: false });
   });
 
   it('a card edit also carries the pending source files below the threshold', async () => {
@@ -73,7 +74,7 @@ describe('WatchModulePassScheduler', () => {
     scheduler.note('input', 'docs/domain/glossary.md');
     await vi.advanceTimersByTimeAsync(MODULE_INPUT_QUIET_MS);
     await scheduler.idle();
-    expect(run).toHaveBeenCalledWith({ inputs: 1, sources: 1 });
+    expect(run).toHaveBeenCalledWith({ inputs: 1, sources: 1, start: false });
   });
 
   it('waits while a re-index is pending, so the pass reads the new index', async () => {
@@ -108,9 +109,10 @@ describe('WatchModulePassScheduler', () => {
     expect(run).toHaveBeenCalledTimes(1);
     release();
     await scheduler.idle();
-    await vi.advanceTimersByTimeAsync(MODULE_INPUT_QUIET_MS);
+    // The first pass held 3 s of clock, so the follow-up waits the adaptive 2 x 3 s.
+    await vi.advanceTimersByTimeAsync(6000);
     expect(run).toHaveBeenCalledTimes(2);
-    expect(run).toHaveBeenLastCalledWith({ inputs: 2, sources: 0 });
+    expect(run).toHaveBeenLastCalledWith({ inputs: 2, sources: 0, start: false });
     release();
     await scheduler.idle();
     expect(maxActive).toBe(1);
@@ -129,6 +131,52 @@ describe('WatchModulePassScheduler', () => {
     await vi.advanceTimersByTimeAsync(MODULE_INPUT_QUIET_MS);
     await scheduler.idle();
     expect(run).toHaveBeenCalledTimes(2);
+  });
+
+  it('waits at least twice the last pass before the next card-edit pass', async () => {
+    const run = vi.fn(async () => {
+      await new Promise<void>((resolve) => setTimeout(resolve, 4000));
+    });
+    const durations: number[] = [];
+    const { scheduler } = create({ run, onPassDuration: (ms) => durations.push(ms) });
+    scheduler.note('input', 'docs/domain/a.md');
+    await vi.advanceTimersByTimeAsync(MODULE_INPUT_QUIET_MS + 4000);
+    await scheduler.idle();
+    expect(durations).toEqual([4000]);
+    scheduler.note('input', 'docs/domain/a.md');
+    await vi.advanceTimersByTimeAsync(8000 - 1);
+    expect(run).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(1);
+    expect(run).toHaveBeenCalledTimes(2);
+  });
+
+  it('a stream of edits postpones a due pass at most the max wait', async () => {
+    const { scheduler, run } = create();
+    for (let t = 0; t < MODULE_MAX_WAIT_MS + 5000; t += 500) {
+      scheduler.note('input', 'docs/domain/a.md');
+      await vi.advanceTimersByTimeAsync(500);
+    }
+    expect(run).toHaveBeenCalledTimes(1);
+  });
+
+  it('pending re-indexes postpone a due pass at most the max wait', async () => {
+    const { scheduler, run } = create({ isBusy: () => true });
+    scheduler.note('input', 'docs/domain/a.md');
+    await vi.advanceTimersByTimeAsync(MODULE_MAX_WAIT_MS - 1);
+    expect(run).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(MODULE_INPUT_QUIET_MS);
+    await scheduler.idle();
+    expect(run).toHaveBeenCalledTimes(1);
+  });
+
+  it('runs one start-up pass when asked', async () => {
+    const { scheduler, run } = create();
+    scheduler.requestStartPass();
+    await vi.advanceTimersByTimeAsync(MODULE_INPUT_QUIET_MS);
+    await scheduler.idle();
+    expect(run).toHaveBeenCalledWith({ inputs: 0, sources: 0, start: true });
+    await vi.advanceTimersByTimeAsync(MODULE_SOURCE_QUIET_MS * 2);
+    expect(run).toHaveBeenCalledTimes(1);
   });
 
   it('runs nothing after dispose', async () => {

@@ -11,6 +11,8 @@ export interface ModuleIndexPassInput {
   readonly indices: readonly FileIndex[];
   /** The raw commits of the co-change window; absent with --skip-history, without git, and under `ctxo watch`. */
   readonly history?: CoChangeWindowCommits;
+  /** `ctxo watch` only: whether its plugins were asked for facts (`IndexPassContext.factsRequested`). */
+  readonly factsRequested?: boolean;
   /** Where a failure is reported; `console.error` by default (stderr, never stdout). */
   readonly report?: (message: string) => void;
 }
@@ -46,6 +48,7 @@ export async function runModuleIndexPasses(modules: readonly LoadedModule[], inp
       graph: () => (graph ??= services.buildGraph(indices)),
       isTestFile: services.createTestFileCheck(input.config, indices),
       ...(input.history === undefined ? {} : { history: input.history }),
+      ...(input.factsRequested === undefined ? {} : { factsRequested: input.factsRequested }),
     };
   } catch (err) {
     report(`[ctxo] Module index passes skipped: ${(err as Error).message}`);
