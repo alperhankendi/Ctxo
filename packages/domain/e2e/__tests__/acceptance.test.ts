@@ -27,7 +27,8 @@ const CANBORROW_ID: Record<Variant, string> = {
 };
 
 beforeAll(assertBuilt);
-afterAll(cleanupWorkspaces);
+// Many C# workspaces with obj/ and bin/ folders take longer than the default 10 s to delete under load.
+afterAll(cleanupWorkspaces, 120_000);
 
 /** A fresh copy of the variant with its generated loader rules committed and the index built. */
 function prepared(variant: Variant): SampleWorkspace {
@@ -229,7 +230,8 @@ describe.each(VARIANTS)('PR 2B acceptance, %s sample', (variant) => {
     expect(report.messages.some((m) => m.startsWith('10 error'))).toBe(false);
   });
 
-  it('boundaries new-only: the branch fails on the violation it adds, not on the one main has', (context) => {
+  // Two C# indexes (HEAD, then the base in a temporary worktree, with a dotnet restore) take minutes under load.
+  it('boundaries new-only: the branch fails on the violation it adds, not on the one main has', { timeout: 600_000 }, (context) => {
     const ws = prepared(variant);
     ws.requireEdges();
     if (!ws.resolvesEdges) context.skip('C# needs the Roslyn tier (.NET SDK 8+) to resolve edges between files');
