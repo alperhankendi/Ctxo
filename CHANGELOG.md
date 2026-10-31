@@ -6,6 +6,28 @@ From 0.7.0 onwards, Ctxo ships as a pnpm monorepo (ten packages today). Per-pack
 
 ## [Unreleased]
 
+**Faster test-case classification, and entity tests no longer hide a file-name family (`@ctxo/domain`).**
+
+### Changed (domain)
+
+- The domain pass classifies the test cases of a file in O(n log n) instead of O(n^2) (roadmap row "Linear
+  test-case classification"), so a generated test file with thousands of cases no longer slows it down. A case is
+  still a `function` or `method` that strictly contains no other one of its file, of a kind when its path, an
+  annotation of a symbol spanning it or a marker in its name or a title on its lines says so; leaves come from two
+  span lookups, annotation holders from an interval index and titles from a binary search over their lines. The output
+  is the same: a property test compares it with the old implementation on 6,000 randomized inputs, and a cost test
+  counts the reads on a generated file of 5,000 cases. A file whose offsets contradict its lines (no plugin writes
+  one) takes the old pairwise check.
+
+### Fixed (domain)
+
+- `ctxo domain discover`: a test file named after a non-test class of the index (`LoanContractTests.cs` next to a
+  `LoanContract` class) no longer keeps its whole file-name family (`**/*ContractTests.cs`) out of the proposal (#191
+  leftover). The entity file is left out of the family's evidence, and the glob is proposed when its other files
+  still call for it; a family made only of entity files stays evidence only. The printout lists the files left out
+  (`(4, 2 named after a non-test class, left out: ...)`), and `--json` adds `entityFiles` (codepoint order) next to
+  `entityTests` in `testKindMarkers.<kind>.fileNames`.
+
 **`ctxo watch` refreshes the domain artifacts.**
 
 ### Added (watch)
