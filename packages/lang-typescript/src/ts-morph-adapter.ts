@@ -98,8 +98,6 @@ export class TsMorphAdapter implements ILanguageAdapter {
   private readonly sqlStats: SqlStats = { constant: 0, nonConstant: 0 };
   private symbolRegistry = new Map<string, SymbolKind>();
   private projectPreloaded = false;
-  /** Router mounts of the preloaded files, built on the first `extractFacts` after a preload. */
-  private preloadedPrefixes: RoutePrefixes | undefined;
 
   constructor(options: TsMorphAdapterOptions = {}) {
     this.sqlCallSites = options.sqlCallSites === true;
@@ -145,7 +143,6 @@ export class TsMorphAdapter implements ILanguageAdapter {
       }
     }
     this.projectPreloaded = true;
-    this.preloadedPrefixes = undefined;
   }
 
   clearProjectSources(): void {
@@ -153,7 +150,6 @@ export class TsMorphAdapter implements ILanguageAdapter {
       this.project.removeSourceFile(sf);
     }
     this.projectPreloaded = false;
-    this.preloadedPrefixes = undefined;
   }
 
   async extractSymbols(filePath: string, source: string): Promise<SymbolNode[]> {
@@ -201,7 +197,7 @@ export class TsMorphAdapter implements ILanguageAdapter {
 
   /**
    * Code facts (protocol v2, only with the `facts` option): ts-morph evidence plus Nest decorator routes,
-   * finished by the shared rules. Routes on a mounted router carry the mount prefix (`RoutePrefixes`). Route receivers resolve like SQL call sites (preloaded files, else disk
+   * finished by the shared rules, with same-file mount prefixes (`RoutePrefixes`). Route receivers resolve like SQL call sites (preloaded files, else disk
    * reads under `projectRoot`, released before returning). A failure is logged as a warning and gives `[]`
    * (warn-and-continue, as in the other plugins).
    */
@@ -214,7 +210,8 @@ export class TsMorphAdapter implements ILanguageAdapter {
 
     try {
       const symbols = this.collectSymbols(sourceFile, filePath);
-      const prefixes = this.routePrefixes();
+      // Route prefixes come from this file alone, so a full run and a single-file run agree.
+      const prefixes = new RoutePrefixes(sourceFile);
       const evidence = [...collectTsEvidence(sourceFile, filePath, resolver, options, this.isTestFile, prefixes), ...annotationRouteEvidence(symbols)];
       // Every record carries its G8 owner or none (the module symbol), so no attribution by line is needed.
       return finishFacts(filePath, evidence, [], options, decodeTypescriptStringLiteral);
@@ -227,18 +224,6 @@ export class TsMorphAdapter implements ILanguageAdapter {
         this.cleanupSourceFile(filePath);
       }
     }
-  }
-
-  /**
-   * Router mounts for route prefixes, from the files in the project before any disk read: every preloaded file
-   * (built once per preload), else the file being extracted. Mount targets resolve among those files only, so
-   * the prefixes never depend on the order files are read from disk.
-   */
-  private routePrefixes(): RoutePrefixes {
-    if (this.projectPreloaded && this.preloadedPrefixes) return this.preloadedPrefixes;
-    const prefixes = new RoutePrefixes(this.project.getSourceFiles(), new ModuleResolver(this.project));
-    if (this.projectPreloaded) this.preloadedPrefixes = prefixes;
-    return prefixes;
   }
 
   async extractComplexity(filePath: string, source: string): Promise<ComplexityMetrics[]> {

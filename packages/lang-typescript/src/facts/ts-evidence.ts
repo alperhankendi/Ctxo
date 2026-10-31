@@ -2,11 +2,10 @@
 // reports evidence; the shared `finishFacts` decides which evidence becomes a fact.
 import { Node, SyntaxKind, type CallExpression, type SourceFile } from 'ts-morph';
 import type { FactEvidence, FactOptions, LiteralKind } from './fact-types.js';
-import { hasRetryTimeoutFragment, matchesNormalizationPattern } from './fact-rules.js';
+import { hasRetryTimeoutFragment, joinRoute, matchesNormalizationPattern } from './fact-rules.js';
 import { findTestBlocks } from '../test-blocks.js';
 import type { ModuleResolver } from '../sql/module-resolver.js';
 import { receiverModule } from '../sql/provenance.js';
-import { joinRoute } from './fact-rules.js';
 import type { RoutePrefixes } from './route-prefixes.js';
 
 /** The packages a route call's receiver must trace to (G7): Express, Fastify, Koa routers and Hono. */

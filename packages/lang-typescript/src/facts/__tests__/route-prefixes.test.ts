@@ -88,16 +88,71 @@ describe('Express mount prefixes', () => {
     expect(await texts('src/app.ts', source)).toEqual(['GET /x']);
   });
 
-  it('joins a mount in another loaded file to an imported module-level router', async () => {
+  it('a non-constant middle segment leaves the whole prefix unresolved (never a partial join)', async () => {
+    const shapes = [
+      'const p = ver(); api.use(p, v1);',
+      'api.use(String(process.env.V), v1);',
+      "api.use(cond ? '/a' : '/b', v1);",
+      "api.use(['/a', '/b'], v1);",
+      'api.use(/^\\/v\\d+/, v1);',
+      'api.use(`/v${n}`, v1);',
+      'api.use(PREFIX, v1);',
+      "api.use(cors(), v1);",
+    ];
+    for (const shape of shapes) {
+      const source = [
+        "import express from 'express';",
+        "import { PREFIX } from './paths';",
+        'declare const cond: boolean; declare const n: number;',
+        'declare function ver(): string; declare function cors(): () => void;',
+        'const app = express();',
+        'const api = express.Router();',
+        'const v1 = express.Router();',
+        "v1.get('/loans', h);",
+        shape,
+        "app.use('/api', api);",
+        'function h() {}',
+      ].join('\n');
+      expect(await texts('src/app.ts', source), shape).toEqual(['GET /loans']);
+    }
+  });
+
+  it('a reassigned router is never prefixed by a mount of its earlier value', async () => {
+    const source = [
+      "import express from 'express';",
+      'const app = express();',
+      'let r = express.Router();',
+      "app.use('/a', r);",
+      'r = express.Router();',
+      "r.get('/x', h);",
+      'function h() {}',
+    ].join('\n');
+    expect(await texts('src/app.ts', source)).toEqual(['GET /x']);
+  });
+
+  it('a mount in another file is not joined, so a full run and a single-file run give the same facts', async () => {
     const files = {
       'src/app.ts': ["import express from 'express';", "import loans from './loans';", "import { holds } from './holds.js';", 'const app = express();', "app.use('/api', loans);", "app.use('/api/holds', holds);"].join('\n'),
       'src/loans.ts': ["import { Router } from 'express';", 'const router = Router();', "router.get('/loans/:id', (_req, res) => res.end());", 'export default router;'].join('\n'),
-      'src/holds.ts': ["import express from 'express';", 'export const holds = express.Router();', "holds.delete('/:id', (_req, res) => res.end());"].join('\n'),
+      'src/holds.ts': [
+        "import express from 'express';",
+        'export const holds = express.Router();',
+        'const inner = express.Router();',
+        "inner.delete('/:id', (_req, res) => res.end());",
+        "holds.use('/v1', inner);",
+      ].join('\n'),
     };
-    expect(await projectFacts(files, 'src/loans.ts')).toEqual(['GET /api/loans/:id']);
-    expect(await projectFacts(files, 'src/holds.ts')).toEqual(['DELETE /api/holds/:id']);
-    // Extracted alone (the mounting file not loaded), the router file keeps today's routes.
-    expect(await texts('src/loans.ts', files['src/loans.ts'])).toEqual(['GET /loans/:id']);
+    for (const file of Object.keys(files)) {
+      const full = await new TsMorphAdapter({ facts: DEFAULT_FACT_OPTIONS }).extractFacts(file, files[file as keyof typeof files]);
+      const adapter = new TsMorphAdapter({ facts: DEFAULT_FACT_OPTIONS });
+      adapter.loadProjectSources(new Map(Object.entries(files)));
+      const preloaded = await adapter.extractFacts(file, files[file as keyof typeof files]);
+      adapter.clearProjectSources();
+      expect(preloaded, file).toEqual(full);
+    }
+    expect(await projectFacts(files, 'src/loans.ts')).toEqual(['GET /loans/:id']);
+    // The same-file mount still joins; the cross-file one does not.
+    expect(await projectFacts(files, 'src/holds.ts')).toEqual(['DELETE /v1/:id']);
   });
 });
 
