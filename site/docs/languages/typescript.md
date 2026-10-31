@@ -176,12 +176,22 @@ points, and no `retry-timeout` facts in test files.
 | `literal-comparison` | `if`, `while`, `do`, `for` conditions, ternaries and `switch` case clauses with a non-trivial literal (`loans.length >= 5`, `tier === 'gold'`) |
 | `normalization` | `trim`, `toLowerCase`, `toUpperCase` and the other `domain.facts.normalizationMethods` |
 | `retry-timeout` | A numeric constant bound to a retry or timeout name (`const HOLD_TIMEOUT_MS = 7 * 24 * 60 * 60 * 1000` gives `HOLD_TIMEOUT_MS = 604800000`), and `setTimeout(fn, n)` |
-| `endpoint` | Nest `@Get`, `@Post`, ..., `@All` in an exported class decorated `@Controller` (prefix from its path); Express and Fastify `get`, `post`, ..., `all` with a string path and a handler, on a receiver traced to `express` or `fastify`; Fastify `route({ method, url })` |
+| `endpoint` | Nest `@Get`, `@Post`, ..., `@All` in an exported class decorated `@Controller` (prefix from its path); Express, Fastify, Koa and Hono `get`, `post`, ..., `all` with a string path and a handler, on a receiver traced to `express`, `fastify`, `@koa/router`, `koa-router` or `hono` (Koa also `del` and named routes `router.get('name', '/path', h)`); Fastify `route({ method, url })`. Mount prefixes are joined: Express and Koa `use('/api', router)`, Koa `new Router({ prefix })`, Hono `route('/api', app)` and `basePath('/api')` |
+
+**Route prefixes.** A route on a mounted router gets the mount path: `app.use('/api', router)` then
+`router.get('/loans/:id', h)` gives `GET /api/loans/:id`, and nested mounts compose (`api.use('/v1', v1)`). The
+mount and the router (a `const`) must be in the same file, so a full run and a single-file run (`ctxo watch`,
+`--files`, `--commit`) give the same facts. A mount without a path, or after middleware
+(`app.use('/x', auth(), router)`), counts too; a middleware call before the router with no path
+(`app.use(cors(), router)`) leaves the prefix unresolved. If any segment is not a compile-time constant string (a variable, a
+call, a conditional, an array, a regex, a template with expressions), the router is mounted at two different paths,
+reassigned, imported from another file or cannot be resolved (`require(...)`, a call result), the whole prefix is
+unresolved: the route keeps the path written at the call.
 
 Single-quoted strings and templates without substitutions are decoded for the trivial-literal check. ts-morph is
 the only tier, in process. Type guards give no fact: `typeof x === 'string'` and the labels of `switch (typeof x)`
 are skipped. A fact extraction failure warns on stderr (`ctxo:lang-typescript`) and gives `facts: []`. Limits: a Nest
-controller must be exported; `app.use('/api', router)` prefixes are not joined; a route registered in top-level code
+controller must be exported; a mount of a router imported from another file is not joined; a route registered in top-level code
 belongs to the module symbol; constructor parameter defaults (`constructor(private retries = 3)`) give no
 `retry-timeout` fact.
 

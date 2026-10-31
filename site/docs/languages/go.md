@@ -158,12 +158,26 @@ points, and no `retry-timeout` facts in test files.
 | `literal-comparison` | `if` and `for` conditions, expression `switch` case values and tagless `switch` cases |
 | `normalization` | `strings.ToLower`, `strings.TrimSpace` and the other configured methods (`q.Name` patterns match `q.Name(...)` calls only) |
 | `retry-timeout` | Numeric constants bound to retry or timeout names (`const`/`var`, `=`, `:=`, composite-literal keys) and durations (`n * time.Second`, `time.Duration(n) * time.Minute`, a bare `time.Hour`), whatever their name |
-| `endpoint` | `net/http` `HandleFunc` and `Handle` (a pattern `"GET /loans"` gives the verb, else `ANY`); gin `GET`, `POST`, ..., `Any` and `Handle` on `*gin.Engine`, `*gin.RouterGroup`, `gin.IRouter`, `gin.IRoutes` |
+| `endpoint` | `net/http` `HandleFunc` and `Handle` (a pattern `"GET /loans"` gives the verb, else `ANY`); gin `GET`, `POST`, ..., `Any` and `Handle` on `*gin.Engine`, `*gin.RouterGroup`, `gin.IRouter`, `gin.IRoutes`; echo (`github.com/labstack/echo`, v4, v5) `GET`, `POST`, ..., `Any` and `Add` on `*echo.Echo` and `*echo.Group`; chi (`github.com/go-chi/chi`, v5) `Get`, `Post`, ..., `Handle`, `HandleFunc`, `Method` and `MethodFunc` on `*chi.Mux` and `chi.Router`. Group and mount prefixes are joined: gin and echo `g := r.Group("/api")` (nested groups compose), chi `r.Route("/api", func(r chi.Router) {...})`, `Group(func)`, `With(...)` and `r.Mount("/admin", sub)` |
+
+**Route prefixes.** A route on a group or a mounted router gets the prefix when the group is created, or the router
+mounted, in the same file: `api := r.Group("/api"); api.GET("/loans/:id", h)` gives `GET /api/loans/:id`, and
+`r.Route("/api", func(r chi.Router) { r.Get("/x", h) })` gives `GET /api/x`. A router received as a parameter, or
+created or mounted in another file, has no known prefix, and a group or mount whose path is not a constant, or a
+variable bound to two different groups, gives none either: the route keeps the path written at the call, never a
+guessed one. Both tiers apply the same rules, scoping names by block as Go does. The syntax tier, without types,
+takes gin, echo and chi routes only on a receiver the file shows to be a router (a constructor such as `gin.New`,
+`echo.New` or `chi.NewRouter`, a group of one, a chi closure parameter or mount target, a declared framework type
+such as `*gin.Engine` or `chi.Router`, a field of a struct of the file declared with such a type (`s.router`), or a
+call to a function or method of the file whose result is such a type), and only the framework's routing methods, so `Header().Add(...)` or
+`cache.Get(...)` in a handler file give nothing; a router whose type is declared in another file gives a fact in the full
+tier only. A chi pattern must start with `/` (chi itself panics otherwise).
 
 The analyzer collects evidence behind `--facts=`; the tree-sitter tier gives the same facts and ids (it now drops
 type parameters from receivers, `List.Get::method`, as the full tier, a one-time ID change for generic methods).
-Raw strings are decoded as Go does. Limits: gin `Group()` prefixes are not joined; the syntax tier matches routes by
-name, so a `HandleFunc` on another type and router or path constants from another file can read differently. In `ctxo watch` a saved
+Raw strings are decoded as Go does. Limits: group and mount prefixes are read from the same file only; the syntax
+tier matches routes by name, so a `HandleFunc` on another type and router or path constants from another file can
+read differently. In `ctxo watch` a saved
 file keeps the symbols and edges of the last analyzer batch while its facts come from the tree-sitter tier on the
 new bytes (the batch is not rerun); a file created during watch gets `facts: []` until the next `ctxo index`. A fact
 extraction failure (for example a duration chain thousands of factors deep) warns and gives `facts: []`. A process
