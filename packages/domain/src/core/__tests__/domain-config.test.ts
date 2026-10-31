@@ -3,6 +3,10 @@ import { describe, it, expect } from 'vitest';
 import {
   DEFAULT_DOMAIN_CONFIG,
   DEFAULT_TEXT_SCAN_EXTENSIONS,
+  describeUnknownDomainKey,
+  findUnknownDomainKeys,
+  keyDistance,
+  knownDomainKeyPaths,
   NORMALIZATION_METHOD_PATTERN,
   resolveDomainConfig,
   toFactDetectorOptions,
@@ -227,5 +231,117 @@ describe('fact defaults stay in line with the plugins (W6)', () => {
       '',
     ];
     for (const input of inputs) expect(NORMALIZATION_METHOD_PATTERN.test(input), input).toBe(master.test(input));
+  });
+});
+
+/** A valid `domain:` section that sets every key the resolver reads. */
+const FULL_DOMAIN = {
+  registry: 'domain/ctx.yaml',
+  coverage: { unowned: 'error' },
+  boundaries: { enforce: 'report', blockingRungs: ['boring'] },
+  rules: { idPattern: '^R-\\d+$', trackerPrefixes: ['JIRA'] },
+  tests: {
+    ruleTraitKeys: ['Rule'],
+    characterization: { annotations: ['Category:Golden'], paths: ['golden/**'], names: ['[golden]'] },
+    contract: { annotations: ['Pact'], paths: ['pacts/**'], names: ['[pact]'] },
+  },
+  rungs: { pinnedCoverage: 0.5 },
+  facts: { trivialLiterals: [0], normalizationMethods: ['trim'], textScanExtensions: ['.py'] },
+  guard: { enabled: false, base: 'origin/main', subagents: true },
+};
+
+function keyPaths(value: Record<string, unknown>, prefix = 'domain'): string[] {
+  return Object.entries(value).flatMap(([key, child]) => {
+    const path = `${prefix}.${key}`;
+    return typeof child === 'object' && child !== null && !Array.isArray(child)
+      ? [path, ...keyPaths(child as Record<string, unknown>, path)]
+      : [path];
+  });
+}
+
+describe('findUnknownDomainKeys', () => {
+  it('the known keys are the keys the resolver returns (no drift between defaults, optional keys and the resolver)', () => {
+    const { config, problems } = resolveDomainConfig(FULL_DOMAIN);
+    expect(problems).toEqual([]);
+    const known = [...knownDomainKeyPaths()].sort();
+    expect(keyPaths(config as unknown as Record<string, unknown>).sort()).toEqual(known);
+    expect(keyPaths(FULL_DOMAIN).sort()).toEqual(known);
+    expect(known).toContain('domain.tests.contract.paths');
+    expect(known).toContain('domain.guard.base');
+  });
+
+  it('reports nothing for a valid full config, an empty section and an absent one', () => {
+    expect(findUnknownDomainKeys(FULL_DOMAIN)).toEqual([]);
+    expect(findUnknownDomainKeys({})).toEqual([]);
+    expect(findUnknownDomainKeys(undefined)).toEqual([]);
+    expect(findUnknownDomainKeys(null)).toEqual([]);
+    expect(findUnknownDomainKeys(['registry'])).toEqual([]);
+  });
+
+  it('names unknown top-level and nested keys by dotted path, in config order', () => {
+    const unknown = findUnknownDomainKeys({
+      boundaires: { enforce: 'report' },
+      rules: { trackerPrefix: ['JIRA'] },
+      tests: { contract: { pathz: ['x/**'], colour: 'red' } },
+    });
+    expect(unknown.map((k) => k.path)).toEqual([
+      'domain.boundaires',
+      'domain.rules.trackerPrefix',
+      'domain.tests.contract.pathz',
+      'domain.tests.contract.colour',
+    ]);
+  });
+
+  it('suggests the closest sibling for a near miss, case-insensitively', () => {
+    expect(findUnknownDomainKeys({ boundaires: {} })).toEqual([{ path: 'domain.boundaires', suggestion: 'domain.boundaries' }]);
+    expect(findUnknownDomainKeys({ rules: { trackerPrefix: [] } })).toEqual([
+      { path: 'domain.rules.trackerPrefix', suggestion: 'domain.rules.trackerPrefixes' },
+    ]);
+    expect(findUnknownDomainKeys({ tests: { contract: { pathz: [] } } })).toEqual([
+      { path: 'domain.tests.contract.pathz', suggestion: 'domain.tests.contract.paths' },
+    ]);
+    expect(findUnknownDomainKeys({ guard: { Enabled: true } })).toEqual([{ path: 'domain.guard.Enabled', suggestion: 'domain.guard.enabled' }]);
+  });
+
+  it('suggests a key of the same name in another section when no sibling is close', () => {
+    expect(findUnknownDomainKeys({ trackerPrefixes: ['JIRA'] })).toEqual([
+      { path: 'domain.trackerPrefixes', suggestion: 'domain.rules.trackerPrefixes' },
+    ]);
+  });
+
+  it('gives no suggestion for a far miss', () => {
+    expect(findUnknownDomainKeys({ colour: 'red' })).toEqual([{ path: 'domain.colour' }]);
+    expect(findUnknownDomainKeys({ rules: { somethingElse: 1 } })).toEqual([{ path: 'domain.rules.somethingElse' }]);
+  });
+
+  it('does not descend into lists, scalars or a mapping given where the schema has a leaf (the section has no free-form maps)', () => {
+    expect(
+      findUnknownDomainKeys({
+        registry: { anything: 1 },
+        boundaries: { blockingRungs: [{ odd: 1 }] },
+        facts: { trivialLiterals: [{ odd: 1 }] },
+        tests: 'not a mapping',
+      }),
+    ).toEqual([]);
+  });
+
+  it('the loader still falls back: unknown keys change nothing in the resolved config', () => {
+    const { config, problems } = resolveDomainConfig({ boundaires: { enforce: 'report' }, rules: { trackerPrefix: ['JIRA'] } });
+    expect(config).toEqual(DEFAULT_DOMAIN_CONFIG);
+    expect(problems).toEqual([]);
+  });
+
+  it('describes a key with and without a suggestion', () => {
+    expect(describeUnknownDomainKey({ path: 'domain.boundaires', suggestion: 'domain.boundaries' })).toBe(
+      'domain.boundaires (did you mean domain.boundaries?)',
+    );
+    expect(describeUnknownDomainKey({ path: 'domain.colour' })).toBe('domain.colour');
+  });
+
+  it('keyDistance counts an adjacent transposition as one edit', () => {
+    expect(keyDistance('boundaires', 'boundaries')).toBe(1);
+    expect(keyDistance('trackerPrefix', 'trackerPrefixes')).toBe(2);
+    expect(keyDistance('ABC', 'abc')).toBe(0);
+    expect(keyDistance('', 'abc')).toBe(3);
   });
 });

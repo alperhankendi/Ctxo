@@ -770,9 +770,11 @@ With `@ctxo/domain` installed, `ctxo doctor` adds three checks, all `pass` or `w
 
 | Check | Reports |
 |---|---|
-| `domain_registry` | Registry or `domain:` config problems; "no registry" is a pass |
+| `domain_registry` | Registry or `domain:` config problems, and every unknown key under `domain:` by dotted path with a "did you mean" suggestion for a near miss (`domain.boundaires (did you mean domain.boundaries?)`); "no registry" is a pass |
 | `domain_agent_setup` | With contexts: the guard hooks missing from `.claude/settings.json` (`SubagentStop` too with `domain.guard.subagents`), a missing or outdated `ctxo-domain-fold` skill, loader rules missing, outdated, stale or blocked |
 | `domain_conventions` | A tracker prefix that overlaps a rule prefix and is not in `domain.rules.trackerPrefixes`, or discovery proposing conventions the config lacks |
+
+An unknown key is one the domain config does not read, such as a typo (`domain.rules.trackerPrefix`) or a key in the wrong section (`domain.trackerPrefixes`, which suggests `domain.rules.trackerPrefixes`). Nested sections are checked to the leaf (`domain.tests.contract.pathz`). The key still falls back to its default, as before; the warning only names it. The known keys come from the defaults of the domain config, so a new key is known as soon as it has a default. Keys outside `domain:` are the core `config` check's job.
 
 A repository with neither a `.claude/` nor a `.cursor/` folder is checked as a Claude Code setup, so it gets a standing `domain_agent_setup` warning until `ctxo init --only domain` registers the hooks and installs the skill. `ctxo doctor --fix` repairs the agent setup.
 

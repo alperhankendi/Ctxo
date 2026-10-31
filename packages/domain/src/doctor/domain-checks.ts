@@ -5,7 +5,13 @@ import { gatherDiscoveryInput } from '../adapters/discovery-sources.js';
 import { loaderPlatforms, readExistingLoaderRules } from '../adapters/loader-rules-files.js';
 import { readRegistry } from '../adapters/registry-reader.js';
 import { discoverConventions, proposalAddsSomething, TRACKER_PREFIX_MIN } from '../core/discovery.js';
-import { resolveDomainConfig, type DomainConfig } from '../core/domain-config.js';
+import {
+  describeUnknownDomainKey,
+  findUnknownDomainKeys,
+  resolveDomainConfig,
+  type DomainConfig,
+  type UnknownDomainKey,
+} from '../core/domain-config.js';
 import type { HookEvent } from '../core/guard.js';
 import { diffLoaderRules, renderLoaderRules } from '../core/loader-rules.js';
 import type { LoadedRegistry } from '../core/registry.js';
@@ -13,6 +19,7 @@ import { DOMAIN_HOOK_COMMAND, readBundledSkill } from '../init/domain-init.js';
 
 const SKILL_NAME = 'ctxo-domain-fold';
 const REGISTRY_FIX = 'Run "ctxo verify-domain" for details';
+const UNKNOWN_KEYS_FIX = 'Correct or remove the unknown keys in .ctxo/config.yaml; each falls back to its default';
 const AGENT_FIX = 'Run "ctxo init --only domain" and "ctxo domain rules --write"';
 const CONVENTIONS_FIX = 'Review with "ctxo domain discover", then confirm with "--write"';
 const SKILL_MARKER = /^<!-- ctxo-skill v(\d+)\.(\d+) -->[ \t]*$/m;
@@ -22,13 +29,22 @@ interface DomainState {
   readonly loaded: ReturnType<CtxoHost['services']['loadConfig']>;
   readonly config: DomainConfig;
   readonly configProblems: number;
+  /** Keys under `domain:` the resolver does not read: a typo falls back to the default silently otherwise. */
+  readonly unknownKeys: readonly UnknownDomainKey[];
   readonly registry: LoadedRegistry | undefined;
 }
 
 function load(host: CtxoHost, ctx: CheckContext): DomainState {
   const loaded = host.services.loadConfig(ctx.ctxoRoot);
-  const { config, problems } = resolveDomainConfig((loaded.config as Record<string, unknown>)['domain']);
-  return { loaded, config, configProblems: problems.length, registry: readRegistry(ctx.projectRoot, config.registry) };
+  const raw = (loaded.config as Record<string, unknown>)['domain'];
+  const { config, problems } = resolveDomainConfig(raw);
+  return {
+    loaded,
+    config,
+    configProblems: problems.length,
+    unknownKeys: findUnknownDomainKeys(raw),
+    registry: readRegistry(ctx.projectRoot, config.registry),
+  };
 }
 
 /** A valid registry with at least one context: the other checks have nothing to check without one. */
@@ -120,11 +136,22 @@ function registryCheck(host: CtxoHost): IHealthCheck {
     run: (ctx) =>
       guarded(id, title, REGISTRY_FIX, () => {
         const state = load(host, ctx);
-        if (state.registry === undefined && state.configProblems === 0) {
+        const unknown = state.unknownKeys;
+        if (state.registry === undefined && state.configProblems === 0 && unknown.length === 0) {
           return { id, title, status: 'pass', message: 'no registry (domain layer not set up)' };
         }
         const problems = state.configProblems + (state.registry?.problems.length ?? 0);
-        if (problems > 0) return warn(id, title, `${problems} registry or config problems`, REGISTRY_FIX);
+        const parts: string[] = [];
+        const fixes: string[] = [];
+        if (problems > 0) {
+          parts.push(`${problems} registry or config problems`);
+          fixes.push(REGISTRY_FIX);
+        }
+        if (unknown.length > 0) {
+          parts.push(`unknown ${unknown.length === 1 ? 'key' : 'keys'} under domain: ${unknown.map(describeUnknownDomainKey).join(', ')}`);
+          fixes.push(UNKNOWN_KEYS_FIX);
+        }
+        if (parts.length > 0) return warn(id, title, parts.join('; '), fixes.join('; '));
         return { id, title, status: 'pass', message: `${state.registry?.registry?.contexts.length ?? 0} contexts` };
       }),
   };

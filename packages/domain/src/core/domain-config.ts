@@ -326,3 +326,114 @@ export function resolveDomainConfig(raw: unknown): { readonly config: DomainConf
     problems,
   };
 }
+
+/**
+ * Keys the resolver reads that have no default, so `DEFAULT_DOMAIN_CONFIG` does not carry them.
+ * Typed against `DomainConfig`, so a renamed or removed optional key fails the build.
+ */
+const OPTIONAL_DOMAIN_KEYS = ['guard.base'] as const satisfies readonly `guard.${keyof DomainConfig['guard'] & string}`[];
+
+/** The key tree of the `domain:` section: a mapping for each nested section, `true` for a leaf (a scalar or a list). */
+export type DomainKeyTree = { readonly [key: string]: DomainKeyTree | true };
+
+function keyTreeOf(value: Record<string, unknown>): Record<string, DomainKeyTree | true> {
+  const tree: Record<string, DomainKeyTree | true> = {};
+  for (const [key, child] of Object.entries(value)) tree[key] = isRecord(child) ? keyTreeOf(child) : true;
+  return tree;
+}
+
+/**
+ * Derived from `DEFAULT_DOMAIN_CONFIG` plus the optional keys, so it follows the defaults without a second list.
+ * The section has no free-form maps (no mapping whose keys are user-chosen names): every mapping is a fixed section.
+ */
+export const DOMAIN_KEY_TREE: DomainKeyTree = (() => {
+  const tree = keyTreeOf(DEFAULT_DOMAIN_CONFIG as unknown as Record<string, unknown>);
+  for (const path of OPTIONAL_DOMAIN_KEYS) {
+    const parts = path.split('.');
+    let node = tree;
+    for (const part of parts.slice(0, -1)) node = node[part] as Record<string, DomainKeyTree | true>;
+    node[parts[parts.length - 1]!] = true;
+  }
+  return tree;
+})();
+
+/** Every known key of the `domain:` section as a dotted path (`domain.tests.contract.paths`), sections included. */
+export function knownDomainKeyPaths(tree: DomainKeyTree = DOMAIN_KEY_TREE, prefix = 'domain'): string[] {
+  const out: string[] = [];
+  for (const [key, child] of Object.entries(tree)) {
+    const path = `${prefix}.${key}`;
+    out.push(path);
+    if (child !== true) out.push(...knownDomainKeyPaths(child, path));
+  }
+  return out;
+}
+
+/**
+ * Optimal string alignment distance (Levenshtein plus adjacent transpositions), case-insensitive,
+ * so `boundaires` is one edit from `boundaries`.
+ */
+export function keyDistance(a: string, b: string): number {
+  const s = a.toLowerCase();
+  const t = b.toLowerCase();
+  const rows: number[][] = Array.from({ length: s.length + 1 }, (_, i) => [i, ...new Array<number>(t.length).fill(0)]);
+  for (let j = 1; j <= t.length; j++) rows[0]![j] = j;
+  for (let i = 1; i <= s.length; i++) {
+    for (let j = 1; j <= t.length; j++) {
+      const cost = s[i - 1] === t[j - 1] ? 0 : 1;
+      let best = Math.min(rows[i - 1]![j]! + 1, rows[i]![j - 1]! + 1, rows[i - 1]![j - 1]! + cost);
+      if (i > 1 && j > 1 && s[i - 1] === t[j - 2] && s[i - 2] === t[j - 1]) best = Math.min(best, rows[i - 2]![j - 2]! + 1);
+      rows[i]![j] = best;
+    }
+  }
+  return rows[s.length]![t.length]!;
+}
+
+/** The largest distance that still counts as a near miss: 1 for short keys, up to 3 for long ones. */
+function nearMissLimit(key: string): number {
+  return Math.max(1, Math.min(3, Math.floor(key.length / 4)));
+}
+
+export interface UnknownDomainKey {
+  /** The dotted path of the unknown key, for example `domain.boundaires`. */
+  readonly path: string;
+  /** The dotted path of a close known key, when there is one. */
+  readonly suggestion?: string;
+}
+
+function suggest(key: string, siblings: DomainKeyTree, prefix: string, known: readonly string[]): { suggestion?: string } {
+  let best: { readonly name: string; readonly distance: number } | undefined;
+  for (const name of Object.keys(siblings)) {
+    const distance = keyDistance(key, name);
+    if (distance <= nearMissLimit(name) && (best === undefined || distance < best.distance)) best = { name, distance };
+  }
+  if (best !== undefined) return { suggestion: `${prefix}.${best.name}` };
+  const elsewhere = known.find((path) => path.slice(path.lastIndexOf('.') + 1).toLowerCase() === key.toLowerCase());
+  return elsewhere !== undefined ? { suggestion: elsewhere } : {};
+}
+
+/**
+ * The keys under `domain:` the resolver does not read, each with a "did you mean" suggestion when there is one:
+ * the closest sibling within a small edit distance (ties go to the first in schema order), else a known key of the
+ * same name in another section (`domain.trackerPrefixes` suggests `domain.rules.trackerPrefixes`). A value of the
+ * wrong type is not descended (the resolver reports it); lists and scalars are leaves.
+ */
+export function findUnknownDomainKeys(raw: unknown): UnknownDomainKey[] {
+  const out: UnknownDomainKey[] = [];
+  if (!isRecord(raw)) return out;
+  const known = knownDomainKeyPaths();
+  const walk = (value: Record<string, unknown>, tree: DomainKeyTree, prefix: string): void => {
+    for (const [key, child] of Object.entries(value)) {
+      const path = `${prefix}.${key}`;
+      const node = Object.prototype.hasOwnProperty.call(tree, key) ? tree[key] : undefined;
+      if (node === undefined) out.push({ path, ...suggest(key, tree, prefix, known) });
+      else if (node !== true && isRecord(child)) walk(child, node, path);
+    }
+  };
+  walk(raw, DOMAIN_KEY_TREE, 'domain');
+  return out;
+}
+
+/** One unknown key as the doctor names it: `domain.boundaires (did you mean domain.boundaries?)`. */
+export function describeUnknownDomainKey(key: UnknownDomainKey): string {
+  return key.suggestion !== undefined ? `${key.path} (did you mean ${key.suggestion}?)` : key.path;
+}
