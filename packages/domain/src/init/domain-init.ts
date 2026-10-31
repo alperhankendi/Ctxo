@@ -1,7 +1,8 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { parse } from 'yaml';
-import type { CtxoHost, InitContribution, InitFileResult, InitPartContext } from '@ctxo/cli/internal';
+import type { ClaudeHookEntry, CtxoHost, InitContribution, InitFileResult, InitPartContext } from '@ctxo/cli/internal';
+import { CURSOR_HOOKS_FILE, ensureCursorHooks } from '../adapters/cursor-hooks-file.js';
 import { mergeDiscoveryProposal, mergeDomainDefaults } from '../adapters/config-writer.js';
 import { gatherDiscoveryInput, readConfigText as readConfigFile, writeConfigText } from '../adapters/discovery-sources.js';
 import { applyLoaderRules, loaderPlatforms, readExistingLoaderRules } from '../adapters/loader-rules-files.js';
@@ -150,7 +151,7 @@ async function applyDiscovery(host: CtxoHost, ctx: InitPartContext, config: Doma
 const BLOCKED_WARNING = 'exists without the generated marker; rename or delete it, then run "ctxo domain rules --write"';
 
 /** Step 6: the loader rules, when the registry is valid and a context has a card. One row per written, deleted or blocked file. */
-function applyRules(ctx: InitPartContext, registryPath: string): readonly InitFileResult[] {
+function applyRules(ctx: { readonly projectRoot: string; readonly dryRun: boolean }, registryPath: string): readonly InitFileResult[] {
   try {
     const loaded = readRegistry(ctx.projectRoot, registryPath);
     const registry = loaded?.registry;
@@ -197,7 +198,8 @@ export function readBundledSkill(): string {
 
 /**
  * The domain part of `ctxo init` (`--domain`, `--only domain`): the domain config defaults with the
- * boundary mode, the registry skeleton, the fold guard hooks for Claude Code and the `ctxo-domain-fold`
+ * boundary mode, the registry skeleton, the fold guard hooks for Claude Code, the fold reminder in
+ * `.cursor/hooks.json` for Cursor and the `ctxo-domain-fold`
  * skill for Claude Code and Cursor. Every step honours `ctx.dryRun`.
  */
 export function domainInit(host: CtxoHost): InitContribution {
@@ -211,34 +213,62 @@ export function domainInit(host: CtxoHost): InitContribution {
 
       rows.push(applyRegistry(ctx, config.registry));
       rows.push(...(await applyDiscovery(host, ctx, config)));
-      rows.push(...applyRules(ctx, config.registry));
-
-      if (ctx.toolIds.includes('claude-code')) {
-        const events: HookEvent[] = ['SessionStart', 'Stop', 'TaskCompleted'];
-        if (config.guard.subagents) events.push('SubagentStop');
-        for (const event of events) {
-          const result = ctx.ensureClaudeHookEntry({ event, command: DOMAIN_HOOK_COMMAND });
-          rows.push({ ...result, file: `${result.file} (${event})` });
-        }
-      }
-
-      const platforms = SKILL_PLATFORMS.filter((id) => ctx.toolIds.includes(id));
-      if (platforms.length > 0) {
-        let content: string | undefined;
-        try {
-          content = readBundledSkill();
-        } catch (err) {
-          rows.push({ file: SKILL_NAME, action: 'skipped', warning: `${SKILL_NAME} not installed: ${(err as Error).message}` });
-        }
-        if (content !== undefined) {
-          for (const platformId of platforms) {
-            const result = ctx.installSkill(platformId, SKILL_NAME, content);
-            if (result !== undefined) rows.push(result);
-          }
-        }
-      }
+      rows.push(...applyAgentSetup(ctx, config));
 
       return rows;
     },
   };
+}
+
+/** What the agent-setup steps need: `ctxo init` and `ctxo doctor --fix` both provide it. */
+export interface AgentSetupContext {
+  readonly projectRoot: string;
+  /** The agent platforms to set up (`claude-code`, `cursor`). */
+  readonly toolIds: readonly string[];
+  readonly dryRun: boolean;
+  ensureClaudeHookEntry(entry: ClaudeHookEntry): InitFileResult;
+  installSkill(platformId: string, name: string, content: string): InitFileResult | undefined;
+}
+
+/**
+ * Steps 6 to 9, the agent setup: the loader rules, the fold guard hooks for Claude Code, the fold reminder
+ * in `.cursor/hooks.json` for Cursor and the `ctxo-domain-fold` skill. Every step honours `ctx.dryRun`.
+ */
+export function applyAgentSetup(ctx: AgentSetupContext, config: DomainConfig): InitFileResult[] {
+  const rows: InitFileResult[] = [];
+  rows.push(...applyRules(ctx, config.registry));
+
+  if (ctx.toolIds.includes('claude-code')) {
+    const events: HookEvent[] = ['SessionStart', 'Stop', 'TaskCompleted'];
+    if (config.guard.subagents) events.push('SubagentStop');
+    for (const event of events) {
+      const result = ctx.ensureClaudeHookEntry({ event, command: DOMAIN_HOOK_COMMAND });
+      rows.push({ ...result, file: `${result.file} (${event})` });
+    }
+  }
+
+  if (ctx.toolIds.includes('cursor')) {
+    try {
+      rows.push(ensureCursorHooks(ctx.projectRoot, { dryRun: ctx.dryRun }));
+    } catch (err) {
+      rows.push({ file: CURSOR_HOOKS_FILE, action: 'skipped', warning: `${CURSOR_HOOKS_FILE}: fold reminder not registered (${(err as Error).message})` });
+    }
+  }
+
+  const platforms = SKILL_PLATFORMS.filter((id) => ctx.toolIds.includes(id));
+  if (platforms.length > 0) {
+    let content: string | undefined;
+    try {
+      content = readBundledSkill();
+    } catch (err) {
+      rows.push({ file: SKILL_NAME, action: 'skipped', warning: `${SKILL_NAME} not installed: ${(err as Error).message}` });
+    }
+    if (content !== undefined) {
+      for (const platformId of platforms) {
+        const result = ctx.installSkill(platformId, SKILL_NAME, content);
+        if (result !== undefined) rows.push(result);
+      }
+    }
+  }
+  return rows;
 }

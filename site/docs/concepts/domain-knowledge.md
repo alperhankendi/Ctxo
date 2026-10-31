@@ -26,7 +26,7 @@ ctxo init --domain
 | --- | --- |
 | Registry | `docs/domain/contexts.yaml`: each context has an `id`, `paths`, a `card`, a `rung` and optional `contracts` |
 | Card | A markdown file with five headings (Language; Rules and invariants; Boundary contracts; Decisions; Open questions); rules are `### LEND-03 title` headings |
-| Fold guard | A Claude Code hook that blocks a session once when its commits changed a context without a card update |
+| Fold guard | A Claude Code hook that blocks a session once when its commits changed a context without a card update; Cursor gets the same decision as a one-time follow-up reminder that never blocks |
 | Trailer | `Domain-Unchanged: <id> (reason)` in a commit: the code changed, the behaviour did not |
 | Loader rules | Generated, path-scoped pointers (`.claude/rules`, `.cursor/rules`) that send the agent to the card |
 | CI gate | `ctxo verify-domain`: twelve structural checks |

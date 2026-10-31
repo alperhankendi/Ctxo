@@ -8,6 +8,8 @@ export interface GuardSessionRecord {
   /** Full SHA of HEAD at SessionStart; null when the repository had no commit yet (D10). */
   readonly startHead: string | null;
   readonly blocked: readonly string[];
+  /** Cursor reminder only: when the last reminder went out (ms since the epoch), for the time-window fallback. */
+  readonly remindedAt?: number;
 }
 
 const DIRECTORY = 'domain-guard';
@@ -19,7 +21,8 @@ function isRecord(value: unknown): value is GuardSessionRecord {
     v['version'] === 1 &&
     (v['startHead'] === null || typeof v['startHead'] === 'string') &&
     Array.isArray(v['blocked']) &&
-    v['blocked'].every((entry) => typeof entry === 'string')
+    v['blocked'].every((entry) => typeof entry === 'string') &&
+    (v['remindedAt'] === undefined || (typeof v['remindedAt'] === 'number' && Number.isFinite(v['remindedAt'])))
   );
 }
 
@@ -54,7 +57,14 @@ export class GuardSessionStore {
     }
     try {
       const parsed: unknown = JSON.parse(text);
-      if (isRecord(parsed)) return { version: 1, startHead: parsed.startHead, blocked: [...parsed.blocked] };
+      if (isRecord(parsed)) {
+        return {
+          version: 1,
+          startHead: parsed.startHead,
+          blocked: [...parsed.blocked],
+          ...(parsed.remindedAt !== undefined ? { remindedAt: parsed.remindedAt } : {}),
+        };
+      }
     } catch {
       // Reported below.
     }

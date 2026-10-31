@@ -25,10 +25,11 @@ export const MODULE_COMMAND_PACKAGES: Readonly<Record<string, string>> = Object.
   'contexts-touched': '@ctxo/domain',
   domain: '@ctxo/domain',
   'domain-guard-hook': '@ctxo/domain',
+  'domain-cursor-hook': '@ctxo/domain',
 });
 
 /** Commands the entry runs without the CLI router or the MCP stack (hook commands with a time budget). */
-export const FAST_ROUTE_COMMANDS: ReadonlySet<string> = new Set(['domain-guard-hook']);
+export const FAST_ROUTE_COMMANDS: ReadonlySet<string> = new Set(['domain-guard-hook', 'domain-cursor-hook']);
 
 /** The commands the CLI router handles itself. A module command with one of these names is dropped. */
 export const CORE_COMMANDS: ReadonlySet<string> = new Set([

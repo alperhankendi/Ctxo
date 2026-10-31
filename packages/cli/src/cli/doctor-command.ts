@@ -117,6 +117,7 @@ export class DoctorCommand {
         yes: options.yes,
         dryRun: options.dryRun,
         domain,
+        moduleFixes: (options.modules ?? []).flatMap((module) => module.registration.doctorFixes ?? []),
       });
       console.error(formatFixReport(fixReport));
       if (fixReport.halted) {

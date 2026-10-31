@@ -4,6 +4,7 @@ import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { JsonIndexReader } from '../adapters/storage/json-index-reader.js';
 import type { DoctorReport } from '../core/diagnostics/types.js';
+import type { ModuleDoctorFix } from '../ports/i-ctxo-module.js';
 import {
   detectLanguages,
   decideNeededLanguages,
@@ -14,10 +15,12 @@ import { classifyRulesBlock } from '../core/agent-rules/rules-block.js';
 import {
   SKILL_PLATFORMS,
   ensureClaudeHook,
+  ensureClaudeHookEntry,
   ensureConfig,
   guardExpected,
   installRules,
   installSkills,
+  installSkillContent,
   readClaudeGuardState,
   readRulesStates,
   resolveRulesTier,
@@ -42,6 +45,8 @@ export interface FixOptions {
    * committed state sets up the domain layer (`rulesDomainLine`, #191).
    */
   readonly domain?: boolean;
+  /** The loaded modules' `doctorFixes`; each runs after the AI rules step when its check did not pass. */
+  readonly moduleFixes?: readonly ModuleDoctorFix[];
 }
 
 export interface FixAttempt {
@@ -70,6 +75,8 @@ export interface FixReport {
  *   4. Claude guard hook (register ctxo gate-hook in .claude/settings.json)
  *   5. AI rules (re-render the rules blocks; runs whenever any of the three agent checks
  *      failed, after 3 and 4, so the tier follows the skills and guard fixed in this run)
+ *   5b. Module fixes (a loaded module's `doctorFixes`, such as the @ctxo/domain agent setup:
+ *      fold guard hooks, the Cursor fold reminder, its skill, loader rules), each when its check did not pass
  *   6. Language coverage (install missing plugins)
  *   7. Index (requires adapters, so it runs AFTER plugin install)
  *   8. SQLite cache (last; rebuild from index JSONs)
@@ -162,6 +169,11 @@ export async function applyFixes(report: DoctorReport, options: FixOptions): Pro
         options,
       ),
     );
+  }
+
+  for (const fix of options.moduleFixes ?? []) {
+    if (!fixableIds.has(fix.checkId)) continue;
+    attempts.push(await run(fix.name, fix.action, () => runModuleFix(fix, options), options));
   }
 
   let pluginsOk = true;
@@ -271,6 +283,23 @@ async function run(
       error: (err as Error).message,
     };
   }
+}
+
+/**
+ * One module fix step with the writers `ctxo init` hands its domain part. Rows with a warning fail the
+ * attempt; rows that are all `skipped` (or none) report it as skipped.
+ */
+async function runModuleFix(fix: ModuleDoctorFix, options: FixOptions): Promise<void | FixSkipped> {
+  const root = options.projectRoot;
+  const rows = await fix.apply({
+    projectRoot: root,
+    ctxoRoot: options.ctxoRoot,
+    ensureClaudeHookEntry: (entry) => ensureClaudeHookEntry(root, entry, { rerun: 'domain' }),
+    installSkill: (platformId, name, content) => installSkillContent(root, platformId, name, content),
+  });
+  const warnings = rows.flatMap((row) => (row.warning !== undefined ? [row.warning] : []));
+  if (warnings.length > 0) throw new Error(warnings.join('; '));
+  if (rows.every((row) => row.action === 'skipped')) return { skipped: 'nothing to change' };
 }
 
 async function fixConfig(projectRoot: string): Promise<void> {

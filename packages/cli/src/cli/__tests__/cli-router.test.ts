@@ -994,7 +994,7 @@ describe('cli-router init parts flags', () => {
 
     const help = printed();
     expect(help).toContain('ctxo init --only <parts>  Install only these parts: rules,skills,guard,mcp,git-hooks,config,domain');
-    expect(help).toContain('  ctxo init --domain        Also set up the domain layer: registry, fold guard, skill (@ctxo/domain)');
+    expect(help).toContain('  ctxo init --domain        Also set up the domain layer: registry, fold guard (Claude Code), fold reminder (Cursor), skill (@ctxo/domain)');
     expect(help).toContain('  ctxo init --boundaries <by-rung|report>   Boundary mode for --domain, without the prompt');
     expect(help).toContain('ctxo init --skip <parts>  Install everything except these parts');
     expect(help).toContain('ctxo init --no-guard      Does not install the Claude Code safe-edit guard');
@@ -1008,7 +1008,7 @@ describe('cli-router init parts flags', () => {
     await route('--help');
 
     expect(printed()).toContain(
-      'ctxo doctor --fix         Apply fixes in dependency order: config, git hooks, skills, the safe-edit guard, rules blocks, plugins, index (--dry-run, --yes)',
+      'ctxo doctor --fix         Apply fixes in dependency order: config, git hooks, skills, the safe-edit guard, rules blocks, the domain agent setup, plugins, index (--dry-run, --yes)',
     );
     expect(printed()).toContain('ctxo init --tools a,b -y  Non-interactive (claude-code,cursor,...); -y without --tools selects every tool');
   });

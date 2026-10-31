@@ -63,14 +63,15 @@ afterEach(() => {
 });
 
 describe('module command names', () => {
-  it('maps the four domain commands to @ctxo/domain and routes only the hook fast', () => {
+  it('maps the five domain commands to @ctxo/domain and routes only the two hooks fast', () => {
     expect(MODULE_COMMAND_PACKAGES).toEqual({
       'verify-domain': '@ctxo/domain',
       'contexts-touched': '@ctxo/domain',
       domain: '@ctxo/domain',
       'domain-guard-hook': '@ctxo/domain',
+      'domain-cursor-hook': '@ctxo/domain',
     });
-    expect([...FAST_ROUTE_COMMANDS]).toEqual(['domain-guard-hook']);
+    expect([...FAST_ROUTE_COMMANDS]).toEqual(['domain-guard-hook', 'domain-cursor-hook']);
   });
 
   it('no module command name is a core command name', () => {

@@ -76,6 +76,32 @@ and surface the JSON before proposing edits.
 - **HTTP transport.** For multi-window sessions sharing one index, set
   `CTXO_HTTP_PORT=7337` in the `env` block and switch to HTTP transport.
 
+## Domain fold reminder
+
+With [`@ctxo/domain`](/concepts/domain-knowledge), Claude Code gets a fold guard that blocks finishing while
+the session's commits changed a named context without a card update. Cursor's `stop` hook cannot block, so
+Cursor gets a reminder instead. `ctxo init --domain` with Cursor selected adds it to `.cursor/hooks.json`,
+next to any hooks you already have:
+
+```json
+{
+  "version": 1,
+  "hooks": {
+    "beforeSubmitPrompt": [{ "command": "ctxo domain-cursor-hook" }],
+    "stop": [{ "command": "ctxo domain-cursor-hook" }]
+  }
+}
+```
+
+- The first prompt of a conversation records where it starts; the prompt always goes through.
+- When the agent stops, the reminder makes the same decision as the Claude Code guard. If the guard would
+  block, Cursor sends the guard's reason (headed `ctxo domain reminder:`) to the agent as a follow-up
+  message, naming the contexts, their changed files, the card and the `Domain-Unchanged` trailer line.
+- At most once per conversation, never while a follow-up is already running, never when
+  `domain.guard.enabled` is `false`, and silent on any error. It never blocks.
+- `ctxo doctor` reports a missing, duplicated or unreadable entry; `ctxo doctor --fix` repairs it and keeps
+  your other hooks.
+
 ## Next steps
 
 - [MCP Client Setup](/introduction/mcp-client-setup)

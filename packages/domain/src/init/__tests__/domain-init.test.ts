@@ -198,6 +198,36 @@ describe('domainInit', () => {
     expect(cursorOnly.hooks).toEqual([]);
   });
 
+  it('registers the Cursor fold reminder in .cursor/hooks.json only when Cursor is selected', async () => {
+    const claudeOnly = project();
+    await domainInit(host).apply(recording(claudeOnly).ctx);
+    expect(existsSync(join(claudeOnly, '.cursor', 'hooks.json'))).toBe(false);
+
+    const root = project();
+    mkdirSync(join(root, '.cursor'));
+    writeFileSync(join(root, '.cursor', 'hooks.json'), JSON.stringify({ version: 1, hooks: { afterFileEdit: [{ command: './fmt.sh' }] } }));
+    const rows = await domainInit(host).apply(recording(root, { toolIds: ['claude-code', 'cursor'] }).ctx);
+    expect(rows).toContainEqual({ file: '.cursor/hooks.json', action: 'updated' });
+    expect(JSON.parse(readFileSync(join(root, '.cursor', 'hooks.json'), 'utf-8'))).toEqual({
+      version: 1,
+      hooks: {
+        afterFileEdit: [{ command: './fmt.sh' }],
+        beforeSubmitPrompt: [{ command: 'ctxo domain-cursor-hook' }],
+        stop: [{ command: 'ctxo domain-cursor-hook' }],
+      },
+    });
+
+    // A rerun is idempotent.
+    const again = await domainInit(host).apply(recording(root, { toolIds: ['cursor'] }).ctx);
+    expect(again).toContainEqual({ file: '.cursor/hooks.json', action: 'skipped' });
+
+    // A dry run plans the file and writes nothing.
+    const dry = project();
+    const planned = await domainInit(host).apply(recording(dry, { toolIds: ['cursor'], dryRun: true }).ctx);
+    expect(planned).toContainEqual({ file: '.cursor/hooks.json', action: 'created' });
+    expect(existsSync(join(dry, '.cursor'))).toBe(false);
+  });
+
   it('installs the skill for each selected platform', async () => {
     const rec = recording(project(), { toolIds: ['claude-code', 'cursor', 'windsurf'] });
     const rows = await domainInit(host).apply(rec.ctx);

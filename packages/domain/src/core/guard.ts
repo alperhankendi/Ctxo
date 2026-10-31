@@ -97,3 +97,69 @@ export function formatGuardReason(contexts: readonly TouchedContext[]): string {
   );
   return lines.join('\n');
 }
+
+/** The Cursor hook events the fold reminder handles: the first prompt records the start, `stop` reminds. */
+export type CursorHookEvent = 'beforeSubmitPrompt' | 'stop';
+
+export interface CursorPayload {
+  readonly event: CursorHookEvent;
+  /** The conversation the hook runs in; absent on a Cursor that does not send one. */
+  readonly conversationId?: string;
+  /** The current generation (one prompt and its answer). */
+  readonly generationId?: string;
+  /** Follow-up messages a stop hook already sent in this turn; above 0 the reminder stays quiet (Claude's `stop_hook_active`). */
+  readonly loopCount: number;
+  /** The first workspace root: the project the hook looks at. */
+  readonly workspaceRoot?: string;
+}
+
+const CURSOR_EVENTS: ReadonlySet<string> = new Set<CursorHookEvent>(['beforeSubmitPrompt', 'stop']);
+
+function nonEmpty(value: unknown): string | undefined {
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
+}
+
+/** The Cursor hook payload. Undefined when it is not a JSON object or names another event. */
+export function parseCursorPayload(raw: string): CursorPayload | undefined {
+  let value: unknown;
+  try {
+    value = JSON.parse(raw);
+  } catch {
+    return undefined;
+  }
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) return undefined;
+  const record = value as Record<string, unknown>;
+  const event = record['hook_event_name'];
+  if (typeof event !== 'string' || !CURSOR_EVENTS.has(event)) return undefined;
+  const conversationId = nonEmpty(record['conversation_id']);
+  const generationId = nonEmpty(record['generation_id']);
+  const roots = record['workspace_roots'];
+  const workspaceRoot = Array.isArray(roots) ? nonEmpty(roots[0]) : undefined;
+  const loopCount = record['loop_count'];
+  return {
+    event: event as CursorHookEvent,
+    ...(conversationId !== undefined ? { conversationId } : {}),
+    ...(generationId !== undefined ? { generationId } : {}),
+    loopCount: typeof loopCount === 'number' && Number.isFinite(loopCount) && loopCount > 0 ? loopCount : 0,
+    ...(workspaceRoot !== undefined ? { workspaceRoot } : {}),
+  };
+}
+
+/** How long the reminder stays quiet after one went out when the payload carries no conversation or generation id. */
+export const CURSOR_REMINDER_WINDOW_MS = 10 * 60 * 1000;
+
+/**
+ * The session-store key of a Cursor payload: the conversation, else the generation, else one shared key that
+ * the time window (`CURSOR_REMINDER_WINDOW_MS`) limits. Prefixed so it never meets a Claude Code session id.
+ */
+export function cursorSessionKey(payload: CursorPayload): { readonly key: string; readonly windowed: boolean } {
+  if (payload.conversationId !== undefined) return { key: `cursor-${payload.conversationId}`, windowed: false };
+  if (payload.generationId !== undefined) return { key: `cursor-generation-${payload.generationId}`, windowed: false };
+  return { key: 'cursor-unidentified', windowed: true };
+}
+
+/** The Cursor follow-up message: the guard's reason, worded as a reminder that does not block. */
+export function formatCursorReminder(contexts: readonly TouchedContext[]): string {
+  const reason = formatGuardReason(contexts).replace(/^ctxo domain guard: /, 'ctxo domain reminder: ');
+  return `${reason}\nThe ctxo-domain-fold skill walks through the fold. This reminder does not block and comes once per conversation.`;
+}

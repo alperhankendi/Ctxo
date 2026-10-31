@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import type { DoctorReport } from '../../core/diagnostics/types.js';
+import type { DoctorFixContext, InitFileResult, ModuleDoctorFix } from '../../ports/i-ctxo-module.js';
 import {
   LEGACY_CURSOR_FRONTMATTER,
   LEGACY_RULE_BODY,
@@ -151,6 +152,64 @@ describe('applyFixes', () => {
     const logPath = join(tmp, '.ctxo', 'doctor-fix.log');
     expect(existsSync(logPath)).toBe(true);
     expect(readFileSync(logPath, 'utf-8')).toContain('doctor --fix');
+  });
+
+  describe('module fixes', () => {
+    function moduleFix(rows: () => readonly InitFileResult[] | Promise<readonly InitFileResult[]>, calls: DoctorFixContext[] = []): ModuleDoctorFix {
+      return {
+        checkId: 'domain_agent_setup',
+        name: 'Domain agent setup',
+        action: 'repair the domain agent setup',
+        async apply(ctx) {
+          calls.push(ctx);
+          return rows();
+        },
+      };
+    }
+
+    it('runs only for a check that did not pass, with the init writers, after the AI rules step', async () => {
+      const calls: DoctorFixContext[] = [];
+      const fix = moduleFix(() => {
+        const row = calls[0]!.ensureClaudeHookEntry({ event: 'Stop', command: 'ctxo domain-guard-hook' });
+        return [row];
+      }, calls);
+
+      const passing = await applyFixes(report([{ id: 'domain_agent_setup', status: 'pass' }]), {
+        projectRoot: tmp,
+        ctxoRoot: join(tmp, '.ctxo'),
+        moduleFixes: [fix],
+      });
+      expect(passing.attempts.map((a) => a.name)).not.toContain('Domain agent setup');
+      expect(calls).toEqual([]);
+
+      const r = await applyFixes(report([{ id: 'domain_agent_setup', status: 'warn' }]), {
+        projectRoot: tmp,
+        ctxoRoot: join(tmp, '.ctxo'),
+        moduleFixes: [fix],
+      });
+      expect(r.attempts.find((a) => a.name === 'Domain agent setup')).toMatchObject({ status: 'success', action: 'repair the domain agent setup' });
+      expect(calls[0]).toMatchObject({ projectRoot: tmp, ctxoRoot: join(tmp, '.ctxo') });
+      const settings = JSON.parse(readFileSync(join(tmp, '.claude', 'settings.json'), 'utf-8')) as { hooks: Record<string, unknown> };
+      expect(JSON.stringify(settings.hooks['Stop'])).toContain('ctxo domain-guard-hook');
+    });
+
+    it('reports all-skipped rows as skipped, a warning row as failed, and plans under --dry-run', async () => {
+      const failing = report([{ id: 'domain_agent_setup', status: 'warn' }]);
+      const opts = { projectRoot: tmp, ctxoRoot: join(tmp, '.ctxo') };
+      const skipped = await applyFixes(failing, { ...opts, moduleFixes: [moduleFix(() => [{ file: 'a', action: 'skipped' }])] });
+      expect(skipped.attempts.at(-1)).toMatchObject({ name: 'Domain agent setup', status: 'skipped' });
+
+      const warned = await applyFixes(failing, {
+        ...opts,
+        moduleFixes: [moduleFix(() => [{ file: '.cursor/hooks.json', action: 'skipped', warning: '.cursor/hooks.json is not valid JSON' }])],
+      });
+      expect(warned.attempts.at(-1)).toMatchObject({ status: 'failed', error: '.cursor/hooks.json is not valid JSON' });
+
+      const calls: DoctorFixContext[] = [];
+      const planned = await applyFixes(failing, { ...opts, dryRun: true, moduleFixes: [moduleFix(() => [], calls)] });
+      expect(planned.attempts.at(-1)).toMatchObject({ name: 'Domain agent setup', status: 'planned' });
+      expect(calls).toEqual([]);
+    });
   });
 
   describe('git_hooks', () => {

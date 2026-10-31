@@ -848,7 +848,7 @@ export class InitCommand {
         stepNum,
         totalSteps,
         'Domain Knowledge',
-        'Registry, fold guard and the ctxo-domain-fold skill (@ctxo/domain).',
+        'Registry, fold guard (Cursor: fold reminder) and the ctxo-domain-fold skill (@ctxo/domain).',
         pc,
       ));
       console.error('');

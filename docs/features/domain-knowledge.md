@@ -580,7 +580,24 @@ If behaviour did not change, add this trailer to a commit:
   Domain-Unchanged: lending (reason)
 ```
 
-Claude Code is the only client with the guard. Other clients get the `ctxo-domain-fold` skill (Cursor: `.cursor/rules/ctxo-domain-fold.mdc`), the generated loader rules and the CI gate.
+Claude Code is the only client with the guard. Cursor gets a reminder instead, plus the `ctxo-domain-fold` skill (`.cursor/rules/ctxo-domain-fold.mdc`), the generated loader rules and the CI gate. Other clients get the skill where they support one, the loader rules and the CI gate.
+
+**The Cursor reminder.** Cursor's `stop` hook cannot block, so the guard's decision becomes a follow-up message there. `ctxo init --domain` with Cursor selected registers `ctxo domain-cursor-hook` (hidden) in `.cursor/hooks.json` for `beforeSubmitPrompt` and `stop`, merged into the file's existing hooks:
+
+```json
+{
+  "version": 1,
+  "hooks": {
+    "beforeSubmitPrompt": [{ "command": "ctxo domain-cursor-hook" }],
+    "stop": [{ "command": "ctxo domain-cursor-hook" }]
+  }
+}
+```
+
+- **Start.** The first `beforeSubmitPrompt` of a conversation records HEAD (the guard's `SessionStart`) under the key `cursor-<conversation_id>` and always answers `{"continue":true}`: the prompt goes through.
+- **Decision.** On `stop`, the reminder asks the guard's own decision, the same code with the same inputs (scope, branch range, config, registry, fingerprint, re-anchor), so it fires exactly when the Claude Code guard would block. It prints `{"followup_message":"..."}` with the guard's reason, headed `ctxo domain reminder:`, and Cursor sends it to the agent as the next message. Otherwise it prints nothing.
+- **Not intrusive.** At most once per conversation (`conversation_id`; without one, once per `generation_id`; with neither, once per 10 minutes). Quiet while a follow-up is already running (`loop_count` above 0), when `domain.guard.enabled` is `false`, and on any error or malformed input (fail-open, exit 0). It never blocks.
+- **Repair.** `ctxo doctor` reports a missing, duplicated or unreadable entry under `domain_agent_setup` when `.cursor/` exists; `ctxo doctor --fix` adds the entries and drops a second copy, keeping every other hook. An unreadable `hooks.json` is never written. To remove the reminder, delete its two entries; `ctxo init --domain` with Cursor and `ctxo doctor --fix` add them back, so to keep it quiet for good set `domain.guard.enabled: false` (which turns the Claude Code guard off too).
 
 ### `ctxo verify-domain`
 
@@ -686,7 +703,7 @@ ctxo init --skip domain                  # every part except domain
 3. creates the registry skeleton (`version: 1`, `contexts: []`, no cards) when there is no file;
 4. runs discovery, shows the proposal and asks for confirmation (`--yes` accepts);
 5. runs the loader rules write when a context has a card;
-6. registers `ctxo domain-guard-hook` for `SessionStart`, `Stop` and `TaskCompleted` in `.claude/settings.json` (Claude Code), and installs the `ctxo-domain-fold` skill for Claude Code and Cursor.
+6. registers `ctxo domain-guard-hook` for `SessionStart`, `Stop` and `TaskCompleted` in `.claude/settings.json` (Claude Code), registers the fold reminder `ctxo domain-cursor-hook` for `beforeSubmitPrompt` and `stop` in `.cursor/hooks.json` (Cursor), and installs the `ctxo-domain-fold` skill for Claude Code and Cursor.
 
 `--dry-run` lists every file the part would create or change and writes nothing.
 
@@ -772,12 +789,12 @@ With `@ctxo/domain` installed, `ctxo doctor` adds three checks, all `pass` or `w
 | Check | Reports |
 |---|---|
 | `domain_registry` | Registry or `domain:` config problems, and every unknown key under `domain:` by dotted path with a "did you mean" suggestion for a near miss (`domain.boundaires (did you mean domain.boundaries?)`); "no registry" is a pass |
-| `domain_agent_setup` | With contexts: the guard hooks missing from `.claude/settings.json` (`SubagentStop` too with `domain.guard.subagents`), a missing or outdated `ctxo-domain-fold` skill, loader rules missing, outdated, stale or blocked |
+| `domain_agent_setup` | With contexts: the guard hooks missing from `.claude/settings.json` (`SubagentStop` too with `domain.guard.subagents`), with `.cursor/` the fold reminder missing, duplicated or unreadable in `.cursor/hooks.json`, a missing or outdated `ctxo-domain-fold` skill, loader rules missing, outdated, stale or blocked |
 | `domain_conventions` | A tracker prefix that overlaps a rule prefix and is not in `domain.rules.trackerPrefixes`, or discovery proposing conventions the config lacks |
 
 An unknown key is one the domain config does not read, such as a typo (`domain.rules.trackerPrefix`) or a key in the wrong section (`domain.trackerPrefixes`, which suggests `domain.rules.trackerPrefixes`; when several sections have a key of that name, all of them are listed, so `domain.paths` suggests both `domain.tests.characterization.paths` and `domain.tests.contract.paths`). An empty key reads `domain.""`. Nested sections are checked to the leaf (`domain.tests.contract.pathz`). The config still ignores the unknown key, as before, so the key you meant to set keeps its default value; the warning only names the unknown key. The known keys come from the defaults of the domain config, so a new key is known as soon as it has a default. Keys outside `domain:` are the core `config` check's job.
 
-A repository with neither a `.claude/` nor a `.cursor/` folder is checked as a Claude Code setup, so it gets a standing `domain_agent_setup` warning until `ctxo init --only domain` registers the hooks and installs the skill. `ctxo doctor --fix` repairs the agent setup.
+A repository with neither a `.claude/` nor a `.cursor/` folder is checked as a Claude Code setup, so it gets a standing `domain_agent_setup` warning until `ctxo init --only domain` registers the hooks and installs the skill. `ctxo doctor --fix` repairs the agent setup: it runs the agent-setup steps of `ctxo init --domain` (loader rules, the Claude Code guard hooks, the Cursor reminder, the skill) for the agents the check expects, after the core agent-setup steps. A step that leaves a warning (an unreadable `.claude/settings.json` or `.cursor/hooks.json`, which are never written) fails the attempt with that warning.
 
 The bundled `ctxo-domain-fold` skill carries a version marker (`<!-- ctxo-skill v0.16 -->` in this release, which adds the `find_shadow_specs` step; v0.15 added the `get_domain_context` and `get_rule` step). A copy installed by an earlier release is reported as outdated until `ctxo init --only domain` or `ctxo doctor --fix` installs the new one.
 

@@ -203,3 +203,51 @@ describe('ctxo domain-guard-hook (built CLI)', () => {
     expect(existsSync(join(dir, '.ctxo', '.cache', 'domain-guard'))).toBe(false);
   });
 });
+
+function cursorHook(dir: string, event: Record<string, unknown>, options: { readonly importLog?: string } = {}): HookRun {
+  const nodeArgs = options.importLog !== undefined ? ['--import', RECORD_IMPORTS] : [];
+  const started = Date.now();
+  const result = spawnSync(process.execPath, [...nodeArgs, CLI_BIN, 'domain-cursor-hook'], {
+    cwd: dir,
+    input: JSON.stringify({ workspace_roots: [dir], ...event }),
+    encoding: 'utf-8',
+    env: childEnv(options.importLog !== undefined ? { CTXO_IMPORT_LOG: options.importLog } : {}),
+    timeout: 60_000,
+  });
+  return { status: result.status, stdout: result.stdout, stderr: result.stderr, ms: Date.now() - started };
+}
+
+describe('ctxo domain-cursor-hook (built CLI)', () => {
+  it('reminds once on stop through the fast route and never blocks', () => {
+    const dir = createProject(true);
+    const importLog = join(tempDir('ctxo-domain-cursor-imports-'), 'imports.log');
+
+    const prompt = cursorHook(dir, { conversation_id: 'conv-e2e', generation_id: 'g1', hook_event_name: 'beforeSubmitPrompt', prompt: 'go' });
+    expect(prompt).toMatchObject({ status: 0, stdout: '{"continue":true}\n', stderr: '' });
+
+    write(dir, 'src/Lending/LoanPolicy.cs', 'class LoanPolicy { int maxLoans = 5; }\n');
+    commit(dir, 'change the loan policy');
+
+    const stop = cursorHook(dir, { conversation_id: 'conv-e2e', generation_id: 'g1', hook_event_name: 'stop', status: 'completed', loop_count: 0 }, { importLog });
+    expect(stop.status).toBe(0);
+    expect(stop.stderr).toBe('');
+    const out = JSON.parse(stop.stdout) as Record<string, string>;
+    expect(Object.keys(out)).toEqual(['followup_message']);
+    expect(out['followup_message']).toContain('ctxo domain reminder: 1 context has committed changes without a card update.');
+    expect(out['followup_message']).toContain('  Domain-Unchanged: lending (reason)');
+
+    // Once per conversation.
+    const again = cursorHook(dir, { conversation_id: 'conv-e2e', generation_id: 'g2', hook_event_name: 'stop', status: 'completed', loop_count: 0 });
+    expect(again).toMatchObject({ status: 0, stdout: '', stderr: '' });
+
+    const urls = readFileSync(importLog, 'utf-8').split('\n').filter((line) => line.length > 0);
+    const forbidden = urls.filter((url) => ['@modelcontextprotocol', 'cli-router', 'mcp-server'].some((name) => url.includes(name)));
+    expect(forbidden).toEqual([]);
+  });
+
+  it('exits 0 silently without @ctxo/domain', () => {
+    const dir = createProject(false);
+    expect(cursorHook(dir, { conversation_id: 'c', hook_event_name: 'beforeSubmitPrompt' })).toMatchObject({ status: 0, stdout: '', stderr: '' });
+    expect(cursorHook(dir, { conversation_id: 'c', hook_event_name: 'stop', loop_count: 0 })).toMatchObject({ status: 0, stdout: '', stderr: '' });
+  });
+});

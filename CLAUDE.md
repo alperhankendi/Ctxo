@@ -55,7 +55,7 @@ ctxo init --dry-run                 # list every file init would create or chang
 ctxo init --no-install              # init without plugin install prompt
 ctxo status                         # show index manifest
 ctxo doctor                         # health check all subsystems (--json, --quiet)
-ctxo doctor --fix                   # dependency-ordered remediation (--dry-run, --yes): hook blocks, skills, the guard, rules blocks
+ctxo doctor --fix                   # dependency-ordered remediation (--dry-run, --yes): hook blocks, skills, the guard, rules blocks, the domain agent setup
 ctxo <command> --help               # print the help; the command is not run
 ctxo version                        # verbose version report (default)
 ctxo --version --verbose            # version + installed plugins list
@@ -70,7 +70,7 @@ ctxo contexts [--json]              # candidate contexts: table to stderr, full 
 
 # Domain knowledge layer (opt-in, needs @ctxo/domain; ADR-018)
 ctxo install domain                 # install @ctxo/domain at this CLI's version (globally without package.json)
-ctxo init --domain                  # also set up the domain part: config defaults, registry skeleton, fold guard hooks, skill
+ctxo init --domain                  # also set up the domain part: config defaults, registry skeleton, fold guard hooks, Cursor fold reminder (.cursor/hooks.json), skill
 ctxo init --domain --boundaries by-rung|report   # boundary mode without the prompt
 ctxo contexts-touched --since origin/main [--committed | --staged] [--json] [--check]   # named contexts a change touched
 ctxo verify-domain --since origin/main [--boundaries by-rung|report] [--json]            # CI gate, 12 checks, exit 0/1/2

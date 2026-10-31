@@ -172,6 +172,29 @@ export interface InitContribution {
   apply(ctx: InitPartContext): Promise<readonly InitFileResult[]>;
 }
 
+/** What a module's `ctxo doctor --fix` step receives: the project and the two writers `ctxo init` hands its part. */
+export interface DoctorFixContext {
+  readonly projectRoot: string;
+  readonly ctxoRoot: string;
+  ensureClaudeHookEntry(entry: ClaudeHookEntry): InitFileResult;
+  installSkill(platformId: string, name: string, content: string): InitFileResult | undefined;
+}
+
+/**
+ * A remediation step a module adds to `ctxo doctor --fix`. It runs after the core agent-setup steps, only when
+ * the doctor check `checkId` did not pass. A row with a warning fails the attempt (the warnings are reported);
+ * rows that are all `skipped` report the attempt as skipped. `--dry-run` lists it as planned and never calls it.
+ */
+export interface ModuleDoctorFix {
+  /** The id of the module's doctor check this step repairs. */
+  readonly checkId: string;
+  /** The fix report's name column, such as `Domain agent setup`. */
+  readonly name: string;
+  /** What the step does, in a few words. */
+  readonly action: string;
+  apply(ctx: DoctorFixContext): Promise<readonly InitFileResult[]>;
+}
+
 /** A literal value a fact detector treats as trivial (not worth a fact on its own). */
 export type TrivialLiteral = number | string | boolean | null;
 
@@ -220,6 +243,8 @@ export interface CtxoModuleRegistration {
   registerCommands?(registrar: CommandRegistrar): void;
   readonly init?: InitContribution;
   readonly doctorChecks?: readonly IHealthCheck[];
+  /** Steps `ctxo doctor --fix` runs for the module's checks that did not pass. */
+  readonly doctorFixes?: readonly ModuleDoctorFix[];
 }
 
 /** A module the CLI loaded and registered: its package name, version and registration. */

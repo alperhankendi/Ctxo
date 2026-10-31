@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import type { CheckContext, CheckResult, CtxoHost, IHealthCheck } from '@ctxo/cli/internal';
+import type { CheckContext, CheckResult, CtxoHost, DoctorFixContext, IHealthCheck, InitFileResult, ModuleDoctorFix } from '@ctxo/cli/internal';
+import { CURSOR_HOOK_COMMAND, CURSOR_HOOKS_FILE, cursorHookProblems, readCursorHooks } from '../adapters/cursor-hooks-file.js';
 import { gatherDiscoveryInput } from '../adapters/discovery-sources.js';
 import { loaderPlatforms, readExistingLoaderRules } from '../adapters/loader-rules-files.js';
 import { readRegistry } from '../adapters/registry-reader.js';
@@ -15,12 +16,12 @@ import {
 import type { HookEvent } from '../core/guard.js';
 import { diffLoaderRules, renderLoaderRules } from '../core/loader-rules.js';
 import type { LoadedRegistry } from '../core/registry.js';
-import { DOMAIN_HOOK_COMMAND, readBundledSkill } from '../init/domain-init.js';
+import { applyAgentSetup, DOMAIN_HOOK_COMMAND, readBundledSkill } from '../init/domain-init.js';
 
 const SKILL_NAME = 'ctxo-domain-fold';
 const REGISTRY_FIX = 'Run "ctxo verify-domain" for details';
 const UNKNOWN_KEYS_FIX = 'Correct or remove the unknown keys in .ctxo/config.yaml; until then the keys you meant to set keep their defaults';
-const AGENT_FIX = 'Run "ctxo init --only domain" and "ctxo domain rules --write"';
+const AGENT_FIX = 'Run "ctxo doctor --fix" (or "ctxo init --only domain" and "ctxo domain rules --write")';
 const CONVENTIONS_FIX = 'Review with "ctxo domain discover", then confirm with "--write"';
 const SKILL_MARKER = /^<!-- ctxo-skill v(\d+)\.(\d+) -->[ \t]*$/m;
 
@@ -34,7 +35,7 @@ interface DomainState {
   readonly registry: LoadedRegistry | undefined;
 }
 
-function load(host: CtxoHost, ctx: CheckContext): DomainState {
+function load(host: CtxoHost, ctx: Pick<CheckContext, 'projectRoot' | 'ctxoRoot'>): DomainState {
   const loaded = host.services.loadConfig(ctx.ctxoRoot);
   const raw = (loaded.config as Record<string, unknown>)['domain'];
   const { config, problems } = resolveDomainConfig(raw);
@@ -113,6 +114,23 @@ function skillProblems(projectRoot: string, claudeExpected: boolean, cursorExpec
   return problems;
 }
 
+/** The agents the project uses: Cursor with a `.cursor/` directory, Claude Code with `.claude/` or without Cursor. */
+function expectedAgents(projectRoot: string): { readonly claudeExpected: boolean; readonly cursorExpected: boolean } {
+  const cursorExpected = isDirectory(join(projectRoot, '.cursor'));
+  return { claudeExpected: isDirectory(join(projectRoot, '.claude')) || !cursorExpected, cursorExpected };
+}
+
+/** The fold reminder in `.cursor/hooks.json`: unreadable, missing for an event, or registered twice. */
+function cursorReminderProblems(projectRoot: string): string[] {
+  const state = readCursorHooks(projectRoot);
+  if (state.kind === 'unreadable') return [state.problem];
+  const { missing, duplicated } = cursorHookProblems(state);
+  const problems: string[] = [];
+  if (missing.length > 0) problems.push(`${CURSOR_HOOK_COMMAND} not registered in ${CURSOR_HOOKS_FILE} for ${missing.join(', ')}`);
+  if (duplicated.length > 0) problems.push(`${CURSOR_HOOK_COMMAND} registered more than once in ${CURSOR_HOOKS_FILE} for ${duplicated.join(', ')}`);
+  return problems;
+}
+
 function warn(id: string, title: string, message: string, fix: string): CheckResult {
   return { id, title, status: 'warn', message, fix };
 }
@@ -170,8 +188,7 @@ function agentSetupCheck(host: CtxoHost): IHealthCheck {
         if (registry === undefined) return { id, title, status: 'pass', message: 'no contexts; nothing to set up' };
 
         const problems: string[] = [];
-        const cursorExpected = isDirectory(join(ctx.projectRoot, '.cursor'));
-        const claudeExpected = isDirectory(join(ctx.projectRoot, '.claude')) || !cursorExpected;
+        const { claudeExpected, cursorExpected } = expectedAgents(ctx.projectRoot);
 
         if (claudeExpected) {
           const { settings, problem } = readSettings(ctx.projectRoot);
@@ -183,6 +200,8 @@ function agentSetupCheck(host: CtxoHost): IHealthCheck {
             if (missing.length > 0) problems.push(`${DOMAIN_HOOK_COMMAND} not registered for ${missing.join(', ')}`);
           }
         }
+
+        if (cursorExpected) problems.push(...cursorReminderProblems(ctx.projectRoot));
 
         problems.push(...skillProblems(ctx.projectRoot, claudeExpected, cursorExpected));
 
@@ -196,7 +215,7 @@ function agentSetupCheck(host: CtxoHost): IHealthCheck {
         if (loader.length > 0) problems.push(`loader rules out of date (${loader.join(', ')})`);
 
         if (problems.length > 0) return warn(id, title, problems.join('; '), AGENT_FIX);
-        return { id, title, status: 'pass', message: 'hooks, skill and loader rules are in place' };
+        return { id, title, status: 'pass', message: 'hooks, fold reminder, skill and loader rules are in place' };
       }),
   };
 }
@@ -233,4 +252,36 @@ function conventionsCheck(host: CtxoHost): IHealthCheck {
 /** The three domain doctor checks: they report `pass` or `warn`, never write a file and report their own errors as `warn`. */
 export function domainDoctorChecks(host: CtxoHost): IHealthCheck[] {
   return [registryCheck(host), agentSetupCheck(host), conventionsCheck(host)];
+}
+
+/**
+ * The `ctxo doctor --fix` step for `domain_agent_setup`: the agent-setup steps of `ctxo init --domain`
+ * (loader rules, the Claude Code fold guard hooks, the Cursor fold reminder, the `ctxo-domain-fold` skill)
+ * for the agents the check expects. Without a valid registry that has a context it changes nothing, as the
+ * check then passes.
+ */
+export function domainDoctorFixes(host: CtxoHost): ModuleDoctorFix[] {
+  return [
+    {
+      checkId: 'domain_agent_setup',
+      name: 'Domain agent setup',
+      action: 'register the fold guard hooks and the Cursor fold reminder, install the skill, write the loader rules',
+      async apply(ctx: DoctorFixContext): Promise<readonly InitFileResult[]> {
+        const state = load(host, ctx);
+        if (contextsOf(state) === undefined) return [];
+        const { claudeExpected, cursorExpected } = expectedAgents(ctx.projectRoot);
+        const toolIds = [...(claudeExpected ? ['claude-code'] : []), ...(cursorExpected ? ['cursor'] : [])];
+        return applyAgentSetup(
+          {
+            projectRoot: ctx.projectRoot,
+            toolIds,
+            dryRun: false,
+            ensureClaudeHookEntry: (entry) => ctx.ensureClaudeHookEntry(entry),
+            installSkill: (platformId, name, content) => ctx.installSkill(platformId, name, content),
+          },
+          state.config,
+        );
+      },
+    },
+  ];
 }
