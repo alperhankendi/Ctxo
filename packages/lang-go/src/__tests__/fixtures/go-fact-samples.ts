@@ -35,13 +35,73 @@ func (g *RouterGroup) Handle(method, path string, handlers ...HandlerFunc) IRout
 }
 `;
 
+/** The echo stand-in (github.com/labstack/echo/v4): Echo and Group with route methods and Group. */
+export const ECHO_STUB = `package echo
+
+type HandlerFunc func()
+
+type Route struct{}
+
+type Echo struct{}
+
+type Group struct{}
+
+func New() *Echo { return &Echo{} }
+
+func (e *Echo) GET(path string, h HandlerFunc) *Route         { return nil }
+func (e *Echo) Any(path string, h HandlerFunc) []*Route       { return nil }
+func (e *Echo) Add(method, path string, h HandlerFunc) *Route { return nil }
+func (e *Echo) Group(prefix string) *Group                    { return &Group{} }
+func (g *Group) GET(path string, h HandlerFunc) *Route        { return nil }
+func (g *Group) DELETE(path string, h HandlerFunc) *Route     { return nil }
+func (g *Group) Group(prefix string) *Group                   { return g }
+`;
+
+/** The chi stand-in (github.com/go-chi/chi/v5): Mux and the Router interface with Route, Group, Mount and With. */
+export const CHI_STUB = `package chi
+
+type HandlerFunc func()
+
+type Router interface {
+	Get(pattern string, h HandlerFunc)
+	Post(pattern string, h HandlerFunc)
+	Route(pattern string, fn func(r Router)) Router
+	Group(fn func(r Router)) Router
+	Mount(pattern string, h interface{})
+	With(m ...func()) Router
+	Method(method, pattern string, h HandlerFunc)
+	HandleFunc(pattern string, h HandlerFunc)
+}
+
+type Mux struct{}
+
+func NewRouter() *Mux { return &Mux{} }
+
+func (m *Mux) Get(pattern string, h HandlerFunc)              {}
+func (m *Mux) Delete(pattern string, h HandlerFunc)           {}
+func (m *Mux) Route(pattern string, fn func(r Router)) Router { return nil }
+func (m *Mux) Group(fn func(r Router)) Router                 { return nil }
+func (m *Mux) Mount(pattern string, h interface{})            {}
+func (m *Mux) With(mw ...func()) Router                       { return nil }
+func (m *Mux) Method(method, pattern string, h HandlerFunc)   {}
+func (m *Mux) HandleFunc(pattern string, h HandlerFunc)       {}
+`;
+
 export const APP_GO_MOD = `module app
 
 go 1.22
 
-require github.com/gin-gonic/gin v1.0.0
+require (
+	github.com/gin-gonic/gin v1.0.0
+	github.com/labstack/echo/v4 v4.0.0
+	github.com/go-chi/chi/v5 v5.0.0
+)
 
-replace github.com/gin-gonic/gin => ./stubs/gin
+replace (
+	github.com/gin-gonic/gin => ./stubs/gin
+	github.com/labstack/echo/v4 => ./stubs/echo
+	github.com/go-chi/chi/v5 => ./stubs/chi
+)
 `;
 
 /** Samples on which both tiers must give the same facts. */
@@ -168,6 +228,66 @@ func Register(mux *http.ServeMux, r *gin.Engine, g *gin.RouterGroup, dynamic str
 	mux.HandleFunc("lending.example", nil)
 	http.DefaultServeMux.HandleFunc("DELETE /holds/{id}", nil)
 	r.POST("/caf\\u00e9/"+"menu", nil)
+}
+`,
+  ginGroups: `package app
+
+import "github.com/gin-gonic/gin"
+
+func Register(r *gin.Engine, param *gin.RouterGroup, dynamic string) {
+	api := r.Group("/api")
+	v1 := api.Group("v1/")
+	v1.GET("/loans/:id", nil)
+	api.POST("/holds", nil)
+	param.GET("/param", nil)
+	d := r.Group(dynamic)
+	d.GET("/dyn", nil)
+	nested := d.Group("/inner")
+	nested.GET("/deep", nil)
+	twice := r.Group("/a")
+	twice = r.Group("/b")
+	twice.GET("/t", nil)
+	r.Group("/x").Group("/y").Handle("PATCH", "/z", nil)
+}
+`,
+  echoRoutes: `package app
+
+import "github.com/labstack/echo/v4"
+
+func Register() {
+	e := echo.New()
+	e.GET("/health", nil)
+	e.Any("/ping", nil)
+	e.Add("PUT", "/members/:id", nil)
+	g := e.Group("/api")
+	g.GET("/loans/:id", nil)
+	g.Group("/admin").DELETE("/users/:id", nil)
+}
+`,
+  chiRoutes: `package app
+
+import "github.com/go-chi/chi/v5"
+
+var admin = chi.NewRouter()
+
+func Register(dynamic string) {
+	r := chi.NewRouter()
+	r.Get("/health", nil)
+	r.Route("/api", func(r chi.Router) {
+		r.Get("/loans/{id}", nil)
+		r.Route("/v1", func(sub chi.Router) {
+			sub.Post("/holds", nil)
+		})
+		r.Group(func(g chi.Router) {
+			g.Method("PATCH", "/members/{id}", nil)
+		})
+		r.With().HandleFunc("/any", nil)
+	})
+	admin.Delete("/users/{id}", nil)
+	r.Mount("/admin", admin)
+	other := chi.NewRouter()
+	other.Get("/x", nil)
+	r.Mount(dynamic, other)
 }
 `,
   ginInterfaces: `package app

@@ -1,7 +1,8 @@
 // Package facts collects syntactic evidence for code facts (PR 4, issue
 // #156): comparisons with a literal in conditions and case labels, calls that
 // match a normalization pattern, retry and timeout bindings, time.Duration
-// values, and net/http and gin routes. It only reports evidence; the
+// values, and net/http, gin, echo and chi routes (with group and mount
+// prefixes). It only reports evidence; the
 // TypeScript side's shared finisher applies the fact rules (trivial literals,
 // canonical numbers, text normalization) and decides what becomes a fact, so
 // nothing here formats numbers. Calls and routes are type-resolved.
@@ -227,6 +228,7 @@ type collector struct {
 	steps    int               // duration products evaluated (the B-M2 test counts them)
 
 	durations map[*ast.BinaryExpr]*durationMatch // durationMatch results, nil for no match
+	prefixes  *prefixes                          // router groups and mounts of the file (prefixes.go)
 }
 
 // Collect walks every function declaration body of file (closures belong to
@@ -255,6 +257,7 @@ func newCollector(pkg *packages.Package, file *ast.File, opts Options, src []byt
 }
 
 func (c *collector) run(file *ast.File, relFile string) []emit.FactEvidence {
+	c.collectPrefixes(file)
 	for _, decl := range file.Decls {
 		switch d := decl.(type) {
 		case *ast.FuncDecl:
@@ -670,45 +673,70 @@ func (c *collector) call(call *ast.CallExpr, sid string) {
 }
 
 // route resolves net/http.HandleFunc and Handle, (*net/http.ServeMux).HandleFunc
-// and Handle, and the gin RouterGroup verb methods, Any and Handle, with a
-// constant string path.
+// and Handle, the gin RouterGroup verb methods, Any and Handle, the echo Echo
+// and Group verb methods, Any and Add, and the chi Mux and Router verb
+// methods, Handle, HandleFunc, Method and MethodFunc, with a constant string
+// path. A gin, echo or chi route is joined to its receiver's group or mount
+// prefix (prefixes.go).
 func (c *collector) route(call *ast.CallExpr, sel *ast.SelectorExpr) (verb, route string, ok bool) {
-	fn, isFunc := c.info.Uses[sel.Sel].(*types.Func)
-	if !isFunc || fn.Pkg() == nil {
+	fn, recv, ok := c.method(sel)
+	if !ok {
 		return "", "", false
-	}
-	sig, isSig := fn.Type().(*types.Signature)
-	if !isSig {
-		return "", "", false
-	}
-	recv := ""
-	if sig.Recv() != nil {
-		named := namedType(sig.Recv().Type())
-		if named == nil || named.Obj().Pkg() == nil {
-			return "", "", false
-		}
-		if named.Obj().Pkg().Path() != fn.Pkg().Path() {
-			return "", "", false
-		}
-		recv = named.Obj().Name()
 	}
 	name := fn.Name()
-	switch {
-	case fn.Pkg().Path() == "net/http" && (recv == "" || recv == "ServeMux") && (name == "HandleFunc" || name == "Handle"):
+	if fn.Pkg().Path() == "net/http" && (recv == "" || recv == "ServeMux") && (name == "HandleFunc" || name == "Handle") {
 		pattern, isStr := c.constString(call, 0)
 		if !isStr {
 			return "", "", false
 		}
 		return httpPattern(pattern)
-	case fn.Pkg().Path() == ginPath && ginReceivers[recv]:
+	}
+	verbPath := func(v string, pathArg int) (string, string, bool) {
+		path, isStr := c.constString(call, pathArg)
+		if !isStr {
+			return "", "", false
+		}
+		return v, c.prefixed(sel.X, path), true
+	}
+	methodPath := func() (string, string, bool) {
+		method, isMethod := c.constString(call, 0)
+		if !isMethod || method == "" {
+			return "", "", false
+		}
+		return verbPath(method, 1)
+	}
+	switch framework(fn, recv) {
+	case "gin":
 		if v, known := ginVerbs[name]; known {
-			path, isStr := c.constString(call, 0)
-			return v, path, isStr
+			return verbPath(v, 0)
 		}
 		if name == "Handle" {
-			method, isMethod := c.constString(call, 0)
-			path, isPath := c.constString(call, 1)
-			return method, path, isMethod && isPath && method != ""
+			return methodPath()
+		}
+	case "echo":
+		if v, known := echoVerbs[name]; known {
+			return verbPath(v, 0)
+		}
+		if name == "Add" {
+			return methodPath()
+		}
+	case "chi":
+		if v, known := chiVerbs[name]; known {
+			return verbPath(v, 0)
+		}
+		switch name {
+		case "Handle", "HandleFunc":
+			pattern, isStr := c.constString(call, 0)
+			if !isStr {
+				return "", "", false
+			}
+			v, path, isPattern := httpPattern(pattern)
+			if !isPattern {
+				return "", "", false
+			}
+			return v, c.prefixed(sel.X, path), true
+		case "Method", "MethodFunc":
+			return methodPath()
 		}
 	}
 	return "", "", false
