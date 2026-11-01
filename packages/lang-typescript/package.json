@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@ctxo/plugin-api": "workspace:*",
-    "@types/node": "^26.6.1",
+    "@types/node": "^26.6.6",
     "@types/picomatch": "^4.0.3",
     "tsup": "^8.4.0",
     "typescript": "^6.0.3",

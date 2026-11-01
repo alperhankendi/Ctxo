@@ -33,7 +33,7 @@
   "author": "Alper Hankendi",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^26.6.1",
+    "@types/node": "^26.6.6",
     "typescript": "^6.0.3",
     "vitest": "^5.0.1"
   },
