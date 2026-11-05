@@ -66,6 +66,11 @@ docs-private/
 # Local agent tooling / worktrees
 .claude/skills/
 .claude/worktrees/
+.superpowers/
 
 # Build caches
 *.lscache
+
+# .NET restore and build output of the C# test fixtures
+test-fixtures/**/obj/
+test-fixtures/**/bin/

@@ -15,6 +15,15 @@
             "timeout": 5000
           }
         ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ctxo gate-hook"
+          }
+        ]
       }
     ],
     "PostToolUse": [

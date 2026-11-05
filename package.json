@@ -25,9 +25,10 @@
   "license": "MIT",
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
-    "@ctxo/cli": "0.11.4",
+    "@ctxo/cli": "0.17.1",
     "@ctxo/lang-csharp": "workspace:*",
     "@ctxo/lang-go": "workspace:*",
+    "@ctxo/lang-sql": "workspace:*",
     "@ctxo/lang-typescript": "workspace:*",
     "tsx": "^4.21.0"
   }
