@@ -55,7 +55,7 @@ jobs:
           cache: maven
 
       # The Go full-tier tests build and run the ctxo-go-analyzer.
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7
         with:
           go-version-file: packages/lang-go/tools/ctxo-go-analyzer/go.mod
           cache-dependency-path: packages/lang-go/tools/ctxo-go-analyzer/go.sum
