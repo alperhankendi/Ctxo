@@ -189,6 +189,7 @@ ctxo install java                   # installs syntax tier; adds full-tier analy
 ctxo install java --full-tier       # force full-tier analyzer install
 ctxo install java --syntax-only     # skip analyzer, syntax tier only
 ```
+[![Ctxo Cli MCP server](https://mcprush.com/badge/ctxo-cli-mcp/card.svg?theme=light)](https://mcprush.com/to/ctxo-cli-mcp?ref=badge)
 
 ## Links
 
