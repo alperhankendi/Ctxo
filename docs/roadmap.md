@@ -40,11 +40,59 @@ Items on deck for v0.7.x / v0.8. No strict ordering — picked by impact + readi
 
 - **Language parity for TypeScript, Java and Go (#156, PR 1C)** - _shipped_. `@ctxo/lang-typescript`, `@ctxo/lang-java` (with `@ctxo/lang-java-analyzer`) and `@ctxo/lang-go` report annotations (TypeScript decorators, Java annotations in both tiers, Go struct tags, with `named.member` for TypeScript properties and Go fields), index tests as symbols with edges (TypeScript test blocks named by title path, Go `_test.go` files in the full tier, Java test methods with their annotations) and, with `@ctxo/lang-sql` installed, add data edges for constant SQL at known call sites: pg, mysql2, mssql, `knex.raw`, Prisma raw, TypeORM, Sequelize and better-sqlite3; JDBC, Spring `JdbcTemplate`, JPA native queries, native `@Query` and MyBatis (JDT full tier); `database/sql`, sqlx, pgx and gorm raw SQL (analyzer full tier). All parse SQL with `@ctxo/sql-extract`, and host-language corpus cases (with a placeholder case for `?`, `$1`, `:name`, `#{x}`, `@p0` and `{0}`) keep them in agreement. `find_dead_code` recognises test files with the shared classifier, so Go functions called only from tests are no longer reported. A `plugin-tests` CI job runs the three plugin suites, JUnit and `go test`. See [language parity](features/domain-knowledge.md#language-parity-typescript-java-and-go) and the [ADR-017 addendum](architecture/ADR/adr-017-plugin-protocol-v2-and-data-coupling.md#addendum-language-parity-pr-1c).
 
+- **Execution flows (#231)** - _planned_.
+  - **What it adds:**
+    - Entry points: HTTP handlers from annotations and `endpoint` facts, message listeners, scheduled jobs, request handlers, CLI commands, `main`, and conservative graph-only entries.
+    - The call tree each entry point runs, the tables each flow touches, and the communities it crosses.
+  - **Where it shows up:**
+    - `.ctxo/index/flows.json` (committed, entry points only)
+    - a new `get_execution_flows` tool (15 core tools)
+    - `flowsAffected` in `get_blast_radius`, `get_pr_impact` and `get_context_for_task`
+    - `ctxo flows`, with `--mermaid`
+  - `flows.enabled` requests facts.
+  - **Four phases, one PR each:**
+    1. TypeScript call resolution through the type checker (#232)
+    2. Method-level JDT edges (#233)
+    3. The flows core and index step (#234)
+    4. The surfaces (#235)
+
+    Phases 1 and 2 can run in parallel.
+  - Design: [execution flows spec](superpowers/specs/2026-11-12-execution-flows-design.md).
+
+- **Path search (#236)** - _planned_. A new tool, `find_path({ from, to })`.
+  - **What it returns:** the shortest directed paths between two symbols over the code edges, with data edges allowed as the last hop. Each hop carries its edge kind and confidence tier, and each path its strength (the weakest hop).
+  - **When there is no path:** the reverse direction is reported.
+  - **Related surfaces:** `get_blast_radius({ explain })` shows why a dependent is affected, and `ctxo path <from> <to>` is the CLI face.
+
+- **HTTP route coupling (#237)** - _planned_. It adds `route` virtual nodes (`@http/<VERB> <route>::route`), with `handles` edges from the existing endpoint evidence and `fetches` edges from client call sites:
+  - TypeScript: `fetch`, axios, Angular `HttpClient`
+  - C#: `HttpClient`, Refit
+  - Java: `RestTemplate`, `WebClient`, Feign
+  - Go: `net/http`, resty
+
+  **Further parts:**
+  - `routes.json` for cross-repository peers
+  - `get_route_map` and API impact
+  - routes in blast radius, PR impact and dead code
+
+  It needs the cross-file prefix rows in Deferred.
+
+- **Response controls (#240)** - _planned_.
+  - **`maxTokens` on every tool:** a per-call budget that overrides `CTXO_RESPONSE_LIMIT`, with a cut order per tool. Counts and risk are never cut.
+  - **`sections` on the large tools:** `get_pr_impact`, `get_blast_radius`, `get_context_for_task` and `get_logic_slice`. `_meta.omitted` lists what was left out, and `summaryOnly` is a shorthand for counts and risk.
+
 ### Platform & transport
 
 - **`CTXO_HTTP_PORT` shadows CLI commands** - _fixed (see [CHANGELOG](../CHANGELOG.md))_. `CTXO_HTTP_PORT` used to take the HTTP server path before the CLI router, so with the variable exported `ctxo <command>` (including `ctxo <command> --help` and the post-commit hook's `ctxo index --commit HEAD`, which made `git commit` hang) started a server. The variable now counts only when `ctxo` runs without arguments; with arguments the CLI router runs. `--http [--port <n>]` still selects HTTP mode.
 
 - **Streamable HTTP transport** — for remote/cloud MCP usage. Today Ctxo is stdio-only. Needed for hosted scenarios and non-local clients.
+
+- **MCP prompts (#238)** - _planned_. Four prompts bring the ctxo workflows to every MCP client as slash commands, including clients without skills: `ctxo_review_change`, `ctxo_safe_edit`, `ctxo_understand` and `ctxo_architecture_map`. They are rendered from the same source as the skills, and a CI test keeps the two in agreement.
+
+- **Opt-in `refresh_index` tool (#239)** - _planned_. It is listed only with `CTXO_MCP_ENABLE_REFRESH=1` or `mcp.refreshTool: true`.
+  - **What it does:** re-indexes the stale files, index only, in a child process, then reloads storage.
+  - **Bounds:** a file limit and a timeout, one refresh at a time, and `dryRun` to preview.
+  - **Staleness hint:** it names the tool when the tool is enabled.
 
 ### Ecosystem
 
@@ -58,6 +106,11 @@ Open loops from the Epic 6 audit (2026-04-13). Small-to-medium tasks; clearing t
 
 - **Cross-client smoke-test matrix** — Auto-registration works (v0.5.1) but no captured smoke-test record. Run all 14 MCP tools against Claude Code / Cursor / VS Code Copilot / Windsurf against a reference fixture; commit the result into `docs/runbook/mcp-validation/test-sessions/`.
 - **Published p95 baseline per MCP tool** — Benchmark harness exists (`pnpm --filter @ctxo/cli bench`); no baseline numbers in docs. Run once on a reference machine, publish table under [architecture.md](artifacts/architecture.md) NFR-1 budgets.
+- **Agent eval harness (#241)** - _planned_. A harness in `bench/agent-eval/`, not published, that runs the #203 comparison playbook automatically.
+  - **Runs:** YAML tasks with frozen acceptance lists, and the setups `baseline`, `ctxo` and `ctxo-tools-only`. Each run is a headless Claude Code session in an isolated config, recording time, cost, tokens and tool calls.
+  - **Scoring:** a fixed rubric, with negative controls.
+  - **Report:** mean ± SE over the runs.
+  - **Release check:** a small task set on the public fixtures.
 
 ---
 
@@ -97,15 +150,14 @@ Work that's been scoped and explicitly parked. Each has a known trigger to react
 | **`_meta.snapshotStaleness` in contexts mode uses `view.commitSha`** | #156 / PR 1A | The envelope compares the community snapshot's commit; in `mode: "contexts"` the view's own `commitSha` is the accurate reference. |
 | **`foldSmallGroups` is quadratic in small groups** | #156 / PR 1A | Fine at the measured scale (18 groups, 0.2 ms). Optimise if a repository produces thousands of small groups. |
 | **Library type information for TypeScript receivers** | #156 / PR 1C | The in-memory ts-morph project has no `node_modules` types, so a SQL receiver counts only when an 8-step provenance walk ties it to a listed module; union-typed receivers (`Pool \| null`), getters or methods returning a pool, dependency-injection containers and namespace imports of a relative module are missed. Trigger: evidence of missed edges on a real repository. |
-| **JDT `calls` / `uses` edges from methods instead of types** | #156 / PR 1C | JDT code edges start at the enclosing type, so a Java test method's own dependencies show at its class (data edges already start at the method). Changing it rewrites every Java file's edges and blast radius. Trigger: an owner request. |
 | **Count test dependents separately in the safe-edit gate** | #156 / PR 1C | TypeScript test blocks and Go test functions now count as blast-radius dependents, so the gate may fire more often on well-tested symbols (as for C#). Trigger: owner feedback after the upgrade. |
 | **Go `t.Run` subtests as symbols** | #156 / PR 1C | Go test functions are symbols; their `t.Run` subtests are not, while TypeScript `it` blocks are. Trigger: demand, for example once subtest titles reach the K6 rule scan. |
 | **Per-file Go syntax-tier fallback** | #156 / PR 1C | The Go full tier loads packages without build tags, so files excluded by a build constraint (for example `//go:build integration` tests) get no symbols and no edges; `GoCompositeAdapter` has no per-file fallback. A fix would check `analyzer.hasFile(path)` after the batch and use tree-sitter for the rest, and it needs an ID-compatibility check between the tiers for methods first. Trigger: a user reports missing build-tagged files. |
 | **TypeScript property symbols** | #156 / PR 1C | Property decorators ride on the class with `named.member`; properties are not symbols, so dead code and communities do not grow. Trigger: a consumer that needs property-level symbols. |
 | **Domain isolation and bounded-context visualization** | #156 / PR 2B (spec 17) | Showing contexts and their crossings on the dependency graph, and isolating a context for an agent. The owner will evaluate it in separate sessions. |
-| **Cross-file mount prefixes (needs a cross-file fact pass so incremental runs agree)** | #156 / endpoint facts | Express, Koa and Hono mounts and gin, echo and chi groups are joined only when the mount and the routes are in the same file. A router imported from another file (`app.use('/api', loans)` with `loans` from `./loans`), or a Go group passed to another function, keeps its routes as written: joining them per file would make a `--files`, `--commit` or `ctxo watch` run write other facts than a full run. Needs a pass over the whole index after extraction. Trigger: missed prefixes reported by users. |
+| **Cross-file mount prefixes (needs a cross-file fact pass so incremental runs agree)** | #156 / endpoint facts | Express, Koa and Hono mounts and gin, echo and chi groups are joined only when the mount and the routes are in the same file. A router imported from another file (`app.use('/api', loans)` with `loans` from `./loans`), or a Go group passed to another function, keeps its routes as written: joining them per file would make a `--files`, `--commit` or `ctxo watch` run write other facts than a full run. Needs a pass over the whole index after extraction. Trigger: missed prefixes reported by users. Now needed by #237: client routes do not match server routes without the prefixes. |
 | **Endpoint frameworks beyond the list** | #156 / PR 4 | Flask has no native plugin: its decorators and same-file Blueprint `url_prefix` reach only the text scan (a `register_blueprint(url_prefix=...)` prefix is not joined, it only drops the Blueprint's own; no multi-line `Blueprint(...)` calls). Other frameworks (Hapi, gorilla/mux, fiber) give no endpoint facts. Trigger: user demand. |
-| **Cross-file C# endpoint facts in incremental runs** | #156 / PR 4 follow-up | Roslyn-tier `MapGroup` prefixes (from call sites) and inherited `[Route]` (from base controllers) depend on other files, so `--files`, `--commit` and `ctxo watch` leave dependent files with old endpoint facts until a full `ctxo index`. A cheap step: mark such facts as cross-file in the output (for example the files they depend on) so an incremental run can re-index the dependents. Trigger: stale endpoint reports or check 12 churn from it. |
+| **Cross-file C# endpoint facts in incremental runs** | #156 / PR 4 follow-up | Roslyn-tier `MapGroup` prefixes (from call sites) and inherited `[Route]` (from base controllers) depend on other files, so `--files`, `--commit` and `ctxo watch` leave dependent files with old endpoint facts until a full `ctxo index`. A cheap step: mark such facts as cross-file in the output (for example the files they depend on) so an incremental run can re-index the dependents. Trigger: stale endpoint reports or check 12 churn from it. Now needed by #237 for routes that stay correct between full runs. |
 | **HTTP-level reachability from characterization tests** | #156 / PR 4 | `pinned` counts only graph edges, so tests that call an endpoint through an HTTP client or an in-process test server reach nothing. Trigger: owners reporting contexts under-detected as not pinned. |
 | **Configurable retry and timeout name fragments** | #156 / PR 4 | The fragments (`retry`, `retries`, `attempt`, `timeout`, `delay`, `backoff`, `ttl`, `expir`) are fixed in the shared rules. Trigger: fixture or user noise reports. |
 | **Multi-line text-scan heuristics** | #156 / PR 4 | The text fallback reads one line at a time, so comparisons and calls split over lines are missed. Trigger: precision or recall reports on the fallback. |
